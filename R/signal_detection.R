@@ -13,6 +13,7 @@
 #' predicted <- c(TRUE, TRUE, FALSE, FALSE)
 #' actual    <- c(TRUE, FALSE, TRUE, FALSE)
 #' signal_detection(predicted, actual)
+#' @export
 signal_detection <- function(predicted, actual) {
   stopifnot(length(predicted) == length(actual))
   tp <- sum(predicted & actual)

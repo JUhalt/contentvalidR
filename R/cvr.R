@@ -11,6 +11,7 @@
 #' @returns A data.frame with columns: item, ne, N, cvr, critical_ne, critical_cvr, pass.
 #' @examples
 #' cvr(essential = c(8,10,5), N = 12)
+#' @export
 cvr <- function(essential, N, alpha = 0.05) {
   stopifnot(length(N) == 1L, N > 0, all(essential >= 0), all(essential <= N))
   # binomial tail: smallest m with P(X >= m | N, .5) <= alpha

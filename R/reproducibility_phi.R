@@ -12,6 +12,7 @@
 #' sig1 <- c(TRUE, TRUE, FALSE, FALSE)
 #' sig2 <- c(TRUE, FALSE, FALSE, TRUE)
 #' reproducibility_phi(sig1, sig2)
+#' @export
 reproducibility_phi <- function(sig1, sig2) {
   stopifnot(length(sig1) == length(sig2))
   m <- table(sig1, sig2)

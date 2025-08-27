@@ -12,6 +12,7 @@
 #' @return A list: p.value, estimate (n_c/N), conf.int, decision ("significant"/"n.s.").
 #' @examples
 #' csv_binom_test(n_c = 14, N = 20)
+#' @export
 csv_binom_test <- function(n_c, N, p0 = 0.5, alpha = 0.05) {
   bt <- binom.test(n_c, N, p = p0, alternative = "greater")
   decision <- if (bt$p.value <= alpha) "significant" else "n.s."

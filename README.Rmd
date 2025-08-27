@@ -18,12 +18,18 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
   # When building via devtools, fall back to loading the source
   devtools::load_all(quiet = TRUE)
 }
+```
+
+```{r}
 library(contentvalidR)
 ```
+
 
 **contentvalidR**
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 **contentvalidR** provides tools for **substantive/content validity pretesting**:
@@ -153,4 +159,5 @@ Use Psa/Csv for quick sort-based pretests; **ANOVA** for rating studies needing 
 
 **Citing the methods**
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of measures in a confirmatory factor analysis with a pretest assessment of their substantive validities.
+
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation.

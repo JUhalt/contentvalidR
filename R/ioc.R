@@ -1,7 +1,7 @@
 #' Item–Objective Congruence (IOC)
 #'
 #' @description
-#' Computes IOC per item per objective from judges' ratings coded in {-1, 0, +1},
+#' Computes IOC per item per objective from judges' ratings coded in -1, 0, +1
 #' following Rovinelli & Hambleton. Provide data in long format.
 #'
 #' @param ratings data.frame with columns:
@@ -16,6 +16,7 @@
 #'   score = sample(c(-1,0,1), 27, replace = TRUE)
 #' )
 #' ioc(df)
+#' @export
 ioc <- function(ratings) {
   stopifnot(all(c("item","judge","objective","score") %in% names(ratings)))
   d <- ratings[, c("item","judge","objective","score")]

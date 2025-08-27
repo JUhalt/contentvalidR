@@ -1,13 +1,12 @@
 #' Proportion of Substantive Agreement (Psa)
 #'
 #' @description
-#' Computes, for each item, the proportion of raters who assigned it to its
-#' *intended* (target) construct in an item-sort pretest.
+#' For each item, the proportion of raters who assigned it to its target construct.
 #'
-#' @param assignments A data.frame with columns: item, rater, assigned_construct, target_construct.
-#' @param item_col,rater_col,assigned_col,target_col Column names if yours differ from defaults.
+#' @param assignments data.frame with columns: item, rater, assigned_construct, target_construct
+#' @param item_col,rater_col,assigned_col,target_col column names if they differ
 #'
-#' @return A data.frame with one row per item: item, n (raters), n_target, psa.
+#' @return data.frame with columns: item, n, n_target, psa
 #' @examples
 #' df <- data.frame(
 #'   item = rep(paste0("I",1:3), each = 10),
@@ -16,6 +15,7 @@
 #'   target_construct   = rep(c("A","A","B"), each = 10)
 #' )
 #' compute_psa(df)
+#' @export
 compute_psa <- function(assignments,
                         item_col = "item",
                         rater_col = "rater",
@@ -25,9 +25,12 @@ compute_psa <- function(assignments,
   d <- assignments[, c(item_col, rater_col, assigned_col, target_col)]
   names(d) <- c("item","rater","assigned","target")
   d$hit <- d$assigned == d$target
-  agg <- aggregate(hit ~ item, d, function(x) c(n = length(x), n_target = sum(x)))
-  out <- do.call(data.frame, agg)
-  names(out) <- c("item","n","n_target","psa")
-  out$psa <- out$psa / out$n
-  out
+
+  by_item <- split(d, d$item)
+  rows <- lapply(by_item, function(df) {
+    n <- nrow(df)
+    n_target <- sum(df$hit, na.rm = TRUE)
+    data.frame(item = df$item[1], n = n, n_target = n_target, psa = n_target / n)
+  })
+  do.call(rbind, rows)
 }

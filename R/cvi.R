@@ -3,8 +3,9 @@
 #' @description
 #' Expects a binary matrix: rows = judges, cols = items (1 = relevant, 0 = not).
 #' I-CVI = proportion of judges rating an item as relevant.
-#' Modified kappa uses chance agreement Pc from a binomial model with p = .5:
-#'   Pc = sum_{i=A}^N choose(N, i) * 0.5^N, where A = # of 1s for the item.
+#' Modified kappa uses chance agreement \eqn{P_c} from a binomial model with \eqn{p = 0.5}:
+#' \deqn{P_c = \sum_{i=A}^{N} \binom{N}{i} 0.5^{N},}
+#' where \eqn{A} is the number of 1s for the item.
 #'   k* = (I-CVI - Pc) / (1 - Pc), with k* set to NA when Pc == 1.
 #'
 #' @param binary matrix/data.frame (judges x items) of 0/1.
@@ -16,6 +17,7 @@
 #' @examples
 #' M <- matrix(sample(0:1, 6*8, replace=TRUE, prob=c(.3,.7)), nrow=6)
 #' cvi(M)
+#' @export
 cvi <- function(binary) {
   X <- as.matrix(binary)
   if (!all(X %in% c(0,1))) stop("binary must contain only 0/1 values")

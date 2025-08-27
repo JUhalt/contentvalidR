@@ -16,6 +16,7 @@
 #'   target_construct   = rep(c("A","B","C"), each = 12)
 #' )
 #' compute_csv(df)
+#' @export
 compute_csv <- function(assignments,
                         item_col = "item",
                         rater_col = "rater",
