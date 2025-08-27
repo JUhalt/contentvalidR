@@ -7,3 +7,6 @@
 inst/doc
 /doc/
 /Meta/
+
+# editor backups
+*.bak
