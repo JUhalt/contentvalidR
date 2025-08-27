@@ -1,9 +1,11 @@
 Package: contentvalidR
-Title: What the Package Does (One Line, Title Case)
+Title: Tools for Substantive & Content Validity Pretesting
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Description: Compute Psa and Csv for item sorts (Anderson & Gerbing, 1991), 
+an ANOVA/Tukey approach for rating studies (Hinkin & Tracey, 1999), and classic indices 
+(Aiken’s V, CVR, CVI, IOC), with diagnostics and small power simulators.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -11,7 +13,10 @@ RoxygenNote: 7.3.2
 Suggests: 
     dplyr,
     irr,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 URL: https://github.com/JUhalt/contentvalidR
 BugReports: https://github.com/JUhalt/contentvalidR/issues
+VignetteBuilder: knitr
