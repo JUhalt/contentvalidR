@@ -6,6 +6,8 @@ Authors@R:
 Description: Compute Psa and Csv for item sorts (Anderson & Gerbing, 1991), 
 an ANOVA/Tukey approach for rating studies (Hinkin & Tracey, 1999), and classic indices 
 (Aiken’s V, CVR, CVI, IOC), with diagnostics and small power simulators.
+an ANOVA/Tukey approach for rating studies (Hinkin & Tracey, 1999), and classic indices 
+(Aiken’s V, CVR, CVI, IOC), with diagnostics and small power simulators.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
