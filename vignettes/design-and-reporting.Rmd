@@ -21,7 +21,7 @@ library(contentvalidR)
 - **Classic indices** (CVR/IOC/Aiken’s V/CVI): expert-panel contexts; often complements Psa/Csv or ANOVA.
 
 **Sample size tips**
-- **Sorts**: choose the judge sample size in relation to the retention rule and the target-assignment probability you consider plausible. Avoid treating a single rule of thumb as a universal minimum.
+- **Sorts**: choose the judge sample size in relation to the retention rule and the target-assignment probability you consider plausible. `sort_power()` provides exact planning probabilities; avoid treating a single rule of thumb as a universal minimum.
 - **Rating studies**: sample-size needs depend on the design, number of constructs, expected separation, and whether ratings are repeated within judges. The current ANOVA helper remains experimental while this workflow is being redesigned.
 - **Panels**: Lawshe CVR tables are sensitive with small $N$; triangulate.
 

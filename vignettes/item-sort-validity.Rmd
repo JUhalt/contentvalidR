@@ -1,0 +1,187 @@
+---
+title: "Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Item-Sort Content Validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(contentvalidR)
+```
+
+## What this workflow answers
+
+Item-sort pretests ask judges to assign candidate items to construct definitions.
+The workflow provides two related kinds of evidence:
+
+1. **Definitional correspondence**: are items assigned to their intended construct?
+2. **Definitional distinctiveness**: are items assigned to the intended construct more often than to a competing construct?
+
+Anderson and Gerbing (1991) operationalized these ideas with **Psa** and **Csv**.
+Howard and Melloy (2016) clarified exact inference for the target-assignment count,
+particularly when more than two assignment alternatives are present. Colquitt et
+al. (2019) later supplied empirical interpretation norms based on 112 published
+scales.
+
+These statistics do not establish the entire content-validity argument. In
+particular, they do not establish that the item pool comprehensively covers the
+construct domain.
+
+## A reproducible example
+
+```{r}
+sort_dat <- data.frame(
+  item = rep(c("A1", "A2", "A3", "B1", "B2", "B3"), each = 20),
+  rater = rep(1:20, 6),
+  target_construct = rep(c("A", "A", "A", "B", "B", "B"), each = 20),
+  assigned_construct = c(
+    rep("A", 18), rep("B", 2),
+    rep("A", 16), rep("B", 4),
+    rep("A", 13), rep("B", 7),
+    rep("B", 18), rep("A", 2),
+    rep("B", 17), rep("A", 3),
+    rep("B", 14), rep("A", 6)
+  )
+)
+
+fit <- sort_validity(sort_dat)
+fit
+```
+
+The item table is intentionally diagnostic rather than merely numeric. A
+`Review` flag is not a command to delete an item. The output reports the
+strongest competing construct so that researchers can distinguish weak target
+correspondence from specific construct overlap.
+
+```{r}
+summary(fit)
+```
+
+## Item-level inference: Howard-Melloy
+
+The default exact test asks whether the target-assignment probability exceeds
+`.50`. At `N = 20` and `alpha = .05`, an item needs 15 target assignments to
+meet the one-sided exact criterion.
+
+```{r}
+csv_binom_test(n_c = 15, N = 20)
+csv_binom_test(n_c = 14, N = 20)
+```
+
+`sort_validity()` therefore uses **Retain** to mean "meets this exact statistical
+screening criterion" and **Review** to mean "does not meet it." Revision or
+removal remains a substantive decision.
+
+## Scale-level interpretation: Colquitt et al. (2019)
+
+Colquitt et al. did not create their interpretation bands from individual item
+values. They averaged Psa and Csv across the items in each of 112 scales and
+then created empirical percentile bands. `sort_validity()` follows that design:
+Howard-Melloy is used item by item, while Colquitt interpretation is reported for
+each target scale's mean Psa and mean Csv.
+
+The default uses the overall norms:
+
+```{r}
+colquitt_benchmarks("psa")
+colquitt_benchmarks("csv")
+```
+
+The labels—Very Strong, Strong, Moderate, Weak, and Lack of—are empirical
+normative standing, **not universal validity cutoffs**.
+
+### Correlation-conditional norms
+
+Colquitt et al. showed that Psa/Csv depend partly on how similar the focal scale
+is to its orbiting scales. If substantive data provide an average focal-orbiting
+correlation, supply it to the workflow. With multiple focal scales, use a named
+vector.
+
+```{r}
+fit_normed <- sort_validity(
+  sort_dat,
+  orbiting_r = c(A = .42, B = .28)
+)
+fit_normed$scale_summary
+```
+
+The conditional panels are:
+
+- `.34` or below: weaker focal-orbiting correlation;
+- `.35` to `.50`: more moderate correlation;
+- `.51` or above: stronger correlation.
+
+A given Csv can be more impressive when the focal and orbiting constructs are
+closely related, so the appropriate norm can change the descriptive category.
+
+## Judge type matters
+
+Anderson and Gerbing advocated naïve judges representative of the population of
+interest, and Colquitt et al.'s norms were generated with that kind of judge.
+Their criteria should not simply be transferred to expert panels.
+
+```{r}
+expert_fit <- sort_validity(sort_dat, judge_type = "expert")
+expert_fit$scale_summary
+```
+
+The Psa/Csv statistics and item-level screening remain available, but Colquitt
+normative labels are suppressed.
+
+## Planning judge sample size
+
+Use `sort_power()` to calculate the exact probability that an item will reach
+the required target-assignment count under a plausible true target-assignment
+probability.
+
+```{r}
+sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
+```
+
+This is preferable to treating a rule such as "20-40 judges" as a universal
+sample-size requirement. Power depends on the assumed target-assignment
+probability, `N`, the null probability, and alpha.
+
+## Plotting item evidence
+
+```{r fig.width=7, fig.height=4}
+plot(fit, metric = "psa")
+```
+
+```{r fig.width=7, fig.height=4}
+plot(fit, metric = "csv")
+```
+
+Filled points meet the exact item-level retention criterion; open points are
+flagged for review. The plot does not add Colquitt cutoff lines because those
+benchmarks are scale-level norms.
+
+## Reporting
+
+A useful report should include:
+
+- who the judges were and why they fit the intended design;
+- the focal and orbiting constructs and their definitions;
+- the number of judges and missing assignments;
+- item-level Psa, Csv, target counts, strongest competitors, and exact decisions;
+- target-scale mean Psa/Csv and the Colquitt norm set used;
+- focal-orbiting correlations if conditional norms were used; and
+- the substantive reasoning behind any revisions or removals.
+
+## References
+
+Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of measures
+in a confirmatory factor analysis with a pretest assessment of their substantive
+validities. *Journal of Applied Psychology, 76*(5), 732-740.
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
+presentation of a new statistical significance formula and methodological best
+practices. *Journal of Business and Psychology, 31*(1), 173-186.
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content
+validation guidelines: Evaluation criteria for definitional correspondence and
+definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
+1243-1265.

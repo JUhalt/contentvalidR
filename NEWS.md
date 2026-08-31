@@ -1,3 +1,22 @@
+# contentvalidR 0.0.2.9000
+
+## Modern item-sort workflow
+
+* Added Colquitt et al. (2019) empirical Psa/Csv interpretation bands, including
+  overall and focal-orbiting-correlation-conditional norms.
+* Colquitt labels are applied to target-scale averages, matching how the
+  published norms were constructed, rather than being presented as validated
+  item-level cutoffs.
+* `sort_validity()` now reports target-scale definitional correspondence and
+  distinctiveness alongside Howard-Melloy item-level Retain/Review decisions.
+* Added optional focal-orbiting correlations and explicit naive/expert judge
+  handling; Colquitt norms are suppressed for expert panels.
+* `compute_csv()` now reports the strongest competing construct(s), making item
+  confusion easier to diagnose.
+* Added `sort_power()` for exact binomial design/power planning.
+* Added `plot.contentvalid_sort()` for dependency-free item-level Psa/Csv plots.
+* Added a dedicated item-sort vignette and expanded regression tests.
+
 # contentvalidR 0.0.1.9000
 
 ## Methodological foundation

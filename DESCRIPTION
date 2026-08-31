@@ -1,7 +1,7 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.0.1.9000
+Version: 0.0.2.9000
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
@@ -9,6 +9,7 @@ Authors@R: c(
 Description: Provides quantitative tools for substantive and content-oriented
     scale pretesting. Implements item-sort indices from Anderson and Gerbing
     (1991), exact item-sort inference following Howard and Melloy (2016),
+    empirical interpretation benchmarks from Colquitt et al. (2019),
     rating-based procedures inspired by Hinkin and Tracey (1999), and
     complementary expert-panel indices including Aiken's V, Lawshe's content
     validity ratio, content validity indices, and item-objective congruence.

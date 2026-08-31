@@ -18,7 +18,7 @@ library(contentvalidR)
 
 **Overview**
 
-This vignette introduces the package's **sort-based** workflow (Psa/Csv plus exact item-sort inference), complementary **expert-panel indices** (CVR, IOC, Aiken’s V, CVI), and experimental rating/diagnostic helpers. The recommended user-facing sort workflow is `sort_validity()`, which adds plain-language interpretation and review flags to the component statistics.
+This vignette introduces the package's **sort-based** workflow (Psa/Csv plus exact item-sort inference), complementary **expert-panel indices** (CVR, IOC, Aiken’s V, CVI), and experimental rating/diagnostic helpers. The recommended user-facing sort workflow is `sort_validity()`, which adds plain-language item review flags, strongest-competitor diagnostics, and target-scale Colquitt et al. (2019) normative summaries to the component statistics.
 
 **Sort-based (Psa, Csv, binomial)**
 ```{r}

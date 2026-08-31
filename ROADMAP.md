@@ -18,7 +18,7 @@ Quantitative pretest evidence complements theory, construct-domain coverage,
 qualitative review, cognitive interviewing, and other evidence concerning
 relevance, comprehensiveness, and comprehensibility.
 
-## v0.0.1 - Methodological foundation (current)
+## v0.0.1 - Methodological foundation (completed)
 
 Goal: make the existing core statistically trustworthy before expanding the API.
 
@@ -33,21 +33,21 @@ Goal: make the existing core statistically trustworthy before expanding the API.
 - [x] Add a first user-facing `sort_validity()` workflow with print/summary.
 - [x] Replace the placeholder test with substantive regression tests.
 - [x] Consolidate GitHub Actions and remove obsolete R versions.
-- [ ] Verify all changes under R with `document()`, `test()`, and `check()`.
+- [x] Verify all changes under R with `document()`, `test()`, and `check()`.
 - [ ] Add published/hand-worked canonical validation cases for every core method.
 - [ ] Decide whether to expose the Anderson-Gerbing legacy critical-Csv test.
 
-## v0.0.2 - Modern item-sort workflow
+## v0.0.2 - Modern item-sort workflow (current)
 
 Goal: make A&G -> Howard-Melloy -> Colquitt the flagship module.
 
-- [ ] Add Colquitt et al. (2019) empirical interpretation bands for Psa/Csv,
+- [x] Add Colquitt et al. (2019) empirical interpretation bands for Psa/Csv,
       clearly labeled as normative benchmarks rather than universal cutoffs.
-- [ ] Support overall and orbiting-construct-conditional interpretation.
-- [ ] Add item and scale summaries for definitional correspondence/distinctiveness.
-- [ ] Add exact design/power planning for target-assignment retention rules.
-- [ ] Add plotting for item-sort evidence and review flags.
-- [ ] Add dedicated substantive-validity sort vignette.
+- [x] Support overall and orbiting-construct-conditional interpretation.
+- [x] Add item and scale summaries for definitional correspondence/distinctiveness.
+- [x] Add exact design/power planning for target-assignment retention rules.
+- [x] Add plotting for item-sort evidence and review flags.
+- [x] Add dedicated substantive-validity sort vignette.
 
 ## v0.0.3 - Modern construct-rating workflow
 

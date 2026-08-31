@@ -4,9 +4,9 @@ test_that("signal_detection confusion matrix has correct orientation", {
   out <- signal_detection(predicted, actual)
 
   expect_equal(unname(out$confusion["Retain", "Retain"]), 1)
-  expect_equal(unname(out$confusion["Retain", "Delete"]), 1)
-  expect_equal(unname(out$confusion["Delete", "Retain"]), 1)
-  expect_equal(unname(out$confusion["Delete", "Delete"]), 1)
+  expect_equal(unname(out$confusion["Retain", "Not retained"]), 1)
+  expect_equal(unname(out$confusion["Not retained", "Retain"]), 1)
+  expect_equal(unname(out$confusion["Not retained", "Not retained"]), 1)
   expect_equal(out$accuracy, 0.5)
   expect_equal(out$sensitivity, 0.5)
   expect_equal(out$specificity, 0.5)

@@ -11,7 +11,9 @@ sort_validity(
   assigned_col = "assigned_construct",
   target_col = "target_construct",
   p0 = 0.5,
-  alpha = 0.05
+  alpha = 0.05,
+  orbiting_r = NULL,
+  judge_type = c("naive", "expert")
 )
 }
 \arguments{
@@ -24,32 +26,43 @@ rater, assigned construct, and intended target construct.}
 Default \code{0.5}, following Howard and Melloy (2016).}
 
 \item{alpha}{Significance level. Default \code{0.05}.}
+
+\item{orbiting_r}{Optional average correlation between each focal/target
+scale and its orbiting scales. For one target, supply one correlation. For
+multiple targets, supply a named numeric vector keyed by target construct.
+If omitted, the overall Colquitt et al. norms are used.}
+
+\item{judge_type}{Either \code{"naive"} (the Anderson-Gerbing/Colquitt design) or
+\code{"expert"}. Colquitt benchmark labels are not applied to expert judges.}
 }
 \value{
-An object of class \code{contentvalid_sort}. Its \code{results} component is a
-data.frame with item-level statistics, inferential evidence, and a
-plain-language recommendation. \code{print()} and \code{summary()} provide
-user-facing interpretation.
+An object of class \code{contentvalid_sort} with item-level \code{results}, a
+target-level \code{scale_summary}, design information, and settings. \code{print()},
+\code{summary()}, and \code{plot()} provide user-facing interpretation.
 }
 \description{
-Provides the recommended user-facing workflow for item-sort studies. For
-each item, \code{sort_validity()} combines Anderson and Gerbing's (1991) Psa and
+Provides the recommended user-facing workflow for item-sort studies. At the
+item level, \code{sort_validity()} combines Anderson and Gerbing's (1991) Psa and
 Csv statistics with the exact target-count significance test recommended by
-Howard and Melloy (2016).
+Howard and Melloy (2016). Items meeting the exact criterion are labeled
+\code{"Retain"}; items that do not meet it are labeled \code{"Review"}, not
+automatically \code{"Delete"}.
 
-The output deliberately separates statistical evidence from an editorial
-decision. Items meeting the exact criterion are labeled \code{"Retain"}; items
-that do not meet it are labeled \code{"Review"}, not automatically \code{"Delete"}.
-A review decision should incorporate item wording, construct overlap,
-theoretical coverage, and qualitative feedback from the pretest.
+At the target-scale level, Psa and Csv are averaged across items and
+interpreted using the empirical percentile norms from Colquitt et al. (2019).
+This mirrors how those norms were constructed. The Colquitt categories are
+descriptive benchmarks rather than pass/fail rules.
 }
 \examples{
 sort_dat <- data.frame(
-  item = rep(c("Clear", "Review"), each = 20),
-  rater = rep(1:20, 2),
-  target_construct = rep("A", 40),
-  assigned_construct = c(rep("A", 16), rep("B", 4),
-                         rep("A", 11), rep("B", 9))
+  item = rep(c("A1", "A2", "A3"), each = 20),
+  rater = rep(1:20, 3),
+  target_construct = "A",
+  assigned_construct = c(
+    rep("A", 18), rep("B", 2),
+    rep("A", 16), rep("B", 4),
+    rep("A", 12), rep("B", 8)
+  )
 )
 fit <- sort_validity(sort_dat)
 fit
@@ -65,4 +78,9 @@ Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
 The presentation of a new statistical significance formula and
 methodological best practices. \emph{Journal of Business and Psychology, 31}(1),
 173-186. \doi{10.1007/s10869-015-9404-y}
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. \emph{Journal of Applied
+Psychology, 104}(10), 1243-1265. \doi{10.1037/apl0000406}
 }

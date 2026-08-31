@@ -25,14 +25,14 @@ reproducibility_phi <- function(sig1, sig2) {
     stop("Missing values are not supported in `sig1` or `sig2`.", call. = FALSE)
   }
 
-  f1 <- factor(sig1, levels = c(TRUE, FALSE), labels = c("Retain", "Delete"))
-  f2 <- factor(sig2, levels = c(TRUE, FALSE), labels = c("Retain", "Delete"))
+  f1 <- factor(sig1, levels = c(TRUE, FALSE), labels = c("Retain", "Not retained"))
+  f2 <- factor(sig2, levels = c(TRUE, FALSE), labels = c("Retain", "Not retained"))
   m <- table(Pretest1 = f1, Pretest2 = f2)
 
   tp <- unname(m["Retain", "Retain"])
-  fp <- unname(m["Retain", "Delete"])
-  fn <- unname(m["Delete", "Retain"])
-  tn <- unname(m["Delete", "Delete"])
+  fp <- unname(m["Retain", "Not retained"])
+  fn <- unname(m["Not retained", "Retain"])
+  tn <- unname(m["Not retained", "Not retained"])
   phi <- .signed_phi(tp = tp, tn = tn, fp = fp, fn = fn)
 
   chisq <- tryCatch(

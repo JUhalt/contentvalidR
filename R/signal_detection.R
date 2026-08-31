@@ -36,8 +36,8 @@ signal_detection <- function(predicted, actual) {
     nrow = 2,
     byrow = FALSE,
     dimnames = list(
-      Predicted = c("Retain", "Delete"),
-      Actual = c("Retain", "Delete")
+      Predicted = c("Retain", "Not retained"),
+      Actual = c("Retain", "Not retained")
     )
   )
 

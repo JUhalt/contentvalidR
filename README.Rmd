@@ -27,7 +27,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 
 **contentvalidR** provides quantitative tools for substantive and content-oriented scale pretesting. The package is being developed around three complementary workflows:
 
-1. **Item sorting** — Anderson & Gerbing (1991) Psa/Csv with exact item-sort inference following Howard & Melloy (2016).
+1. **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact item-level inference following Howard & Melloy (2016), and scale-level empirical norms from Colquitt et al. (2019).
 2. **Construct ratings** — Hinkin & Tracey (1999) rating-based procedures. This module remains experimental while the repeated-rating design is being modernized.
 3. **Expert panels** — Aiken's V, Lawshe CVR, CVI/modified kappa, and item-objective congruence.
 
@@ -48,12 +48,13 @@ remotes::install_github("JUhalt/contentvalidR")
 library(contentvalidR)
 
 sort_dat <- data.frame(
-  item = rep(c("Clear item", "Needs review"), each = 20),
-  rater = rep(1:20, 2),
-  target_construct = rep("A", 40),
+  item = rep(c("Clear 1", "Clear 2", "Needs review"), each = 20),
+  rater = rep(1:20, 3),
+  target_construct = "A",
   assigned_construct = c(
+    rep("A", 18), rep("B", 2),
     rep("A", 16), rep("B", 4),
-    rep("A", 11), rep("B", 9)
+    rep("A", 12), rep("B", 8)
   )
 )
 
@@ -62,14 +63,35 @@ fit
 summary(fit)
 ```
 
-`sort_validity()` combines:
+The workflow deliberately separates two levels of evidence:
 
-- **Psa**: proportion assigned to the intended construct;
-- **Csv**: intended assignments minus the most common competing assignment, divided by the effective judge count;
-- an **exact target-count test** following Howard & Melloy (2016); and
-- a restrained recommendation: **Retain**, **Review**, or **Insufficient data**.
+- **Item level:** Psa/Csv plus the exact Howard-Melloy target-count rule produce **Retain**, **Review**, or **Insufficient data** flags. The output also names the strongest competing construct so a weak item is diagnostically useful rather than just "non-significant."
+- **Target-scale level:** Psa and Csv are averaged across the target scale's items and interpreted using Colquitt et al. (2019)'s empirical percentile norms for definitional correspondence and distinctiveness. This matches how those norms were constructed.
 
-`Review` deliberately does **not** mean automatic deletion. The researcher should examine wording, construct overlap, theoretical coverage, and qualitative feedback before revising or removing an item.
+`Review` deliberately does **not** mean automatic deletion. Likewise, Colquitt categories such as *Strong* or *Moderate* are empirical normative standing, not universal pass/fail cutoffs.
+
+### Correlation-conditional Colquitt norms
+
+If substantive data provide the average correlation between a focal scale and its orbiting scales, the workflow can select Colquitt et al.'s correlation-conditional norm set:
+
+```{r colquitt-norms}
+sort_validity(sort_dat, orbiting_r = .42)$scale_summary
+colquitt_benchmarks("csv", orbiting_r = .42)
+```
+
+The published norms were developed with **naive judges representative of the target population**. If the sort used expert judges, declare that explicitly; the package will suppress Colquitt labels rather than apply an unsupported benchmark:
+
+```{r expert-sort}
+sort_validity(sort_dat, judge_type = "expert")$scale_summary
+```
+
+### Exact planning rather than a judge-count rule of thumb
+
+```{r sort-planning}
+sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
+```
+
+`sort_power()` gives the exact probability of reaching the Howard-Melloy retention count under each planned `N` and assumed true target-assignment probability.
 
 ### Low-level statistics
 
@@ -79,6 +101,7 @@ Researchers who need the component statistics directly can still use:
 compute_psa(sort_dat)
 compute_csv(sort_dat)
 csv_binom_test(n_c = 15, N = 20)
+interpret_colquitt(.70, "csv")
 ```
 
 Missing assignments are excluded itemwise and are reported explicitly in `n_missing` so the effective denominator is visible.
@@ -114,5 +137,6 @@ The rating/ANOVA, diagnostic, simulation, and Q-factor helpers remain available 
 
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of measures in a confirmatory factor analysis with a pretest assessment of their substantive validities. *Journal of Applied Psychology, 76*(5), 732–740. https://doi.org/10.1037/0021-9010.76.5.732
 - Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. *Journal of Business and Psychology, 31*(1), 173–186. https://doi.org/10.1007/s10869-015-9404-y
+- Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186.
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199

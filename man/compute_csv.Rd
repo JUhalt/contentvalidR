@@ -20,7 +20,7 @@ rater, assigned construct, and intended target construct.}
 }
 \value{
 A data.frame with one row per item and columns \code{item}, \code{target},
-\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, \code{n_other_max}, and \code{csv}.
+\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, \code{competitor}, \code{n_other_max}, and \code{csv}.
 }
 \description{
 For each item, computes Anderson and Gerbing's (1991) substantive-validity

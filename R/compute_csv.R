@@ -17,7 +17,7 @@
 #'   rater, assigned construct, and intended target construct.
 #'
 #' @return A data.frame with one row per item and columns `item`, `target`,
-#'   `n_total`, `n`, `n_missing`, `n_target`, `n_other_max`, and `csv`.
+#'   `n_total`, `n`, `n_missing`, `n_target`, `competitor`, `n_other_max`, and `csv`.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -54,12 +54,18 @@ compute_csv <- function(assignments,
     if (n == 0L) {
       n_target <- 0L
       n_other <- 0L
+      competitor <- NA_character_
       csv <- NA_real_
     } else {
       tab <- table(df$assigned[valid], useNA = "no")
       n_target <- if (target %in% names(tab)) unname(tab[target]) else 0L
       other_counts <- tab[names(tab) != target]
       n_other <- if (length(other_counts) > 0L) max(other_counts) else 0L
+      if (length(other_counts) > 0L && n_other > 0L) {
+        competitor <- paste(names(other_counts)[other_counts == n_other], collapse = "; ")
+      } else {
+        competitor <- NA_character_
+      }
       csv <- (n_target - n_other) / n
     }
 
@@ -70,6 +76,7 @@ compute_csv <- function(assignments,
       n = n,
       n_missing = n_missing,
       n_target = as.integer(n_target),
+      competitor = competitor,
       n_other_max = as.integer(n_other),
       csv = csv,
       stringsAsFactors = FALSE,

@@ -48,7 +48,11 @@ test_that("sort_validity gives informative retain/review recommendations", {
   expect_equal(fit$results$critical_n_target, c(15L, 15L))
   expect_true(fit$results$passes_chance[1])
   expect_false(fit$results$passes_chance[2])
-  expect_match(fit$results$interpretation[2], "review wording")
+  expect_match(
+    fit$results$interpretation[2],
+    "review.*(revise|remove)",
+    ignore.case = TRUE
+  )
 })
 
 test_that("sort_validity handles an item with no usable assignments", {
