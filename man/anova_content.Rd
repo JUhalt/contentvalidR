@@ -2,7 +2,7 @@
 % Please edit documentation in R/anova_content.R
 \name{anova_content}
 \alias{anova_content}
-\title{ANOVA content test: is an item's mean on its target construct > all others?}
+\title{Hinkin-Tracey ANOVA content test}
 \usage{
 anova_content(
   ratings,
@@ -11,47 +11,81 @@ anova_content(
   construct_col = "construct",
   rating_col = "rating",
   target_map = NULL,
-  posthoc = "tukey",
-  alpha = 0.05
+  posthoc = NULL,
+  alpha = 0.05,
+  target_col = "target_construct",
+  design = c("auto", "within", "between"),
+  adjust = c("none", "holm")
 )
 }
 \arguments{
-\item{ratings}{A data.frame with columns for item, rater, construct, rating (Likert).}
+\item{ratings}{A long-format data.frame with item, rater, construct, and
+numeric rating columns.}
 
-\item{item_col}{Name of the item column in \code{ratings}. Default "item".}
+\item{item_col, rater_col, construct_col, rating_col}{Column names.}
 
-\item{rater_col}{Name of the rater column in \code{ratings}. Default "rater".}
+\item{target_map}{Optional named character vector/list mapping item to target.
+If neither a map nor \code{target_col} is available, omnibus tests are still
+returned but target-versus-orbiting contrasts are \code{NA}.}
 
-\item{construct_col}{Name of the construct column in \code{ratings}. Default "construct".}
+\item{posthoc}{Deprecated compatibility argument. Tukey/Duncan post-hoc
+testing is no longer used because the Hinkin-Tracey question is directly
+represented by planned target-versus-orbiting contrasts.}
 
-\item{rating_col}{Name of the rating column in \code{ratings}. Default "rating".}
+\item{alpha}{Significance level for the omnibus test and planned contrasts.}
 
-\item{target_map}{A named character vector or list mapping item -> target construct
-(e.g., \code{c(I1="A", I2="A", I3="B")}). If \code{NULL}, \code{posthoc_pass} is returned as \code{NA}.}
+\item{target_col}{Target column used when \code{target_map} is \code{NULL}.}
 
-\item{posthoc}{Post-hoc method. \code{"tukey"} (default). If \code{"duncan"} is requested,
-a message is shown and Tukey is used (no extra dependency).}
+\item{design}{One of \code{"auto"}, \code{"within"}, or \code{"between"}. \code{"auto"}
+identifies the design itemwise from whether judges provide ratings for
+multiple construct definitions.}
 
-\item{alpha}{Significance level for ANOVA and post-hoc tests. Default 0.05.}
+\item{adjust}{Multiplicity adjustment for the target-versus-orbiting planned
+contrast p values. Default \code{"none"} reproduces the planned-comparison
+logic commonly used with the Hinkin-Tracey procedure; \code{"holm"} is a
+conservative option.}
 }
 \value{
-A data.frame with one row per item:
-item, target, F, df1, df2, p, posthoc_pass (TRUE/FALSE/NA).
+A data.frame with one row per item, including the omnibus F, raw p,
+Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
+within-judge designs, partial eta-squared, and planned-contrast diagnostics.
+The full planned-contrast table is stored in \code{attr(result, "contrasts")}.
+\code{posthoc_pass} is retained as an alias of \code{contrast_pass} for backward
+compatibility.
 }
 \description{
-For each item, runs a one-way ANOVA of ratings across constructs and (optionally)
-a Tukey HSD post-hoc to confirm that the item's mean rating on its target construct
-is significantly greater than its means on all non-target constructs.
+For each item, evaluates whether definitional-correspondence ratings differ
+across construct definitions and whether the intended construct is rated
+higher than every orbiting construct.
+
+The Hinkin and Tracey (1999) rating task is ordinarily a \strong{within-judge}
+design: the same judge rates an item against multiple construct definitions.
+For that design, \code{anova_content()} uses a one-way repeated-measures ANOVA on
+judges with complete ratings for the item's construct set, followed by
+one-sided paired planned contrasts of the target against each orbiting
+construct. A between-judge path is retained for genuinely independent rating
+designs, but it is not the recommended Hinkin-Tracey protocol.
+
+The repeated-measures output includes the conventional omnibus F/p and a
+Greenhouse-Geisser epsilon/corrected p-value. With more than two construct
+definitions, the corrected p-value is the safer default for omnibus screening
+when sphericity may not hold. Planned target-versus-orbiting contrasts provide
+the more direct item-level evidence.
 }
 \examples{
 set.seed(1)
-df <- data.frame(
-  item = rep(paste0("I",1:4), each = 30),
-  rater = rep(1:30, times = 4),
-  construct = rep(rep(LETTERS[1:3], each = 10), times = 4),
-  rating = rnorm(120)
-)
-# say I1,I2 target A; I3 target B; I4 target C
-tmap <- c(I1="A", I2="A", I3="B", I4="C")
-anova_content(df, target_map = tmap)
+d <- expand.grid(item = c("I1", "I2"), rater = 1:12,
+                 construct = c("A", "B", "C"))
+d$target_construct <- ifelse(d$item == "I1", "A", "B")
+d$rating <- ifelse(d$construct == d$target_construct,
+                   rnorm(nrow(d), 4.5, .4), rnorm(nrow(d), 2.3, .5))
+anova_content(d)
+}
+\references{
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. \emph{Organizational Research Methods, 2}(2), 175-186.
+
+Colquitt, J. A., Baer, M. D., Long, D. M., & Halvorsen-Ganepola, M. D. K.
+(2014). Scale indicators of social exchange relationships: A comparison of
+relative content validity. \emph{Journal of Applied Psychology, 99}(4), 599-618.
 }

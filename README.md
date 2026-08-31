@@ -19,9 +19,9 @@ three complementary workflows:
 1.  **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact
     item-level inference following Howard & Melloy (2016), and
     scale-level empirical norms from Colquitt et al. (2019).
-2.  **Construct ratings** — Hinkin & Tracey (1999) rating-based
-    procedures. This module remains experimental while the
-    repeated-rating design is being modernized.
+2.  **Construct ratings** — Hinkin & Tracey (1999) fully crossed
+    ratings, HTC/HTD, Greenhouse-Geisser-aware repeated-measures item
+    screening, and Colquitt et al. (2019) scale-level norms.
 3.  **Expert panels** — Aiken’s V, Lawshe CVR, CVI/modified kappa, and
     item-objective congruence.
 
@@ -252,6 +252,136 @@ interpret_colquitt(.70, "csv")
 Missing assignments are excluded itemwise and are reported explicitly in
 `n_missing` so the effective denominator is visible.
 
+## Recommended construct-rating workflow
+
+In the Hinkin-Tracey design, the **same judge rates each item against
+every construct definition**. `rating_validity()` treats that dependence
+explicitly rather than analyzing the ratings as independent groups.
+
+``` r
+set.seed(12)
+rating_dat <- expand.grid(
+  item = c("A1", "A2", "B1"),
+  rater = 1:20,
+  construct = c("A", "B", "C")
+)
+rating_dat$target_construct <- ifelse(rating_dat$item == "B1", "B", "A")
+rating_dat$rating <- ifelse(
+  rating_dat$construct == rating_dat$target_construct,
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 4.4, .6)))),
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 2.1, .7))))
+)
+
+rfit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
+rfit
+#> contentvalidR construct-rating analysis
+#> ---------------------------------------
+#> Items: 3 | Raters: 20 | Target scales: 2 | Constructs: 3 
+#> Design: within-judge ratings | Scale: 1 to 5 
+#> Item inference: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p) plus planned paired target-versus-orbiting contrasts 
+#> Planned-contrast adjustment: none 
+#> Judges: naive 
+#> 
+#> 3 item(s) meet the full item-level screening criterion; 0 item(s) are flagged for review.
+#> 
+#> Item-level evidence:
+#>  item target n_complete strongest_competitor  htc   htd p_value max_contrast_p
+#>    A1      A         20                    C 0.88 0.619       0              0
+#>    A2      A         20                    B 0.84 0.531       0              0
+#>    B1      B         20                    C 0.89 0.637       0              0
+#>  recommendation
+#>          Retain
+#>          Retain
+#>          Retain
+#> 
+#> Target-scale Colquitt benchmark summary:
+#>  target n_items n_htc n_htd mean_htc htc_strength mean_htd htd_strength
+#>       A       2     2     2     0.86     Moderate    0.575  Very Strong
+#>       B       1     1     1     0.89       Strong    0.637  Very Strong
+#>  benchmark_set
+#>        overall
+#>        overall
+#> 
+#> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.
+#> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,
+#> orbiting-construct choice, domain coverage, and qualitative judge feedback.
+summary(rfit)
+#> Summary of construct-rating content-validity evidence
+#> ---------------------------------------------------
+#> Retain: 3 of 3 item(s)
+#> Review: 0 of 3 item(s)
+#> 
+#> Target-scale evidence:
+#>  target n_items n_htc n_htd n_retain n_review mean_htc htc_strength mean_htd
+#>       A       2     2     2        2        0     0.86     Moderate    0.575
+#>       B       1     1     1        1        0     0.89       Strong    0.637
+#>  htd_strength overall_strength
+#>   Very Strong         Moderate
+#>   Very Strong           Strong
+#> 
+#> A: Generally supportive normative standing, with at least one content-validity dimension in the moderate range; inspect weaker items and construct overlap before finalizing the scale.
+#> B: Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
+#> 
+#> All analyzed items met the item-level inferential screening criterion.
+#> 
+#> Interpret these results alongside theory, domain coverage, and qualitative feedback.
+#> The analysis does not by itself establish comprehensiveness or the full content-validity argument.
+```
+
+The workflow combines two descriptive indices with direct item-level
+screening:
+
+- **HTC** (Hinkin-Tracey correspondence): how strongly ratings match the
+  intended definition;
+- **HTD** (Hinkin-Tracey distinctiveness): how much intended-definition
+  ratings exceed orbiting-definition ratings;
+- a **one-way repeated-measures ANOVA** for each item; and
+- **planned paired contrasts** comparing the target definition with each
+  orbiting definition.
+
+As with the item-sort workflow, `Retain` and `Review` are screening
+labels rather than automatic editorial decisions. The output names the
+strongest orbiting competitor so a weak item tells the researcher
+*where* the conceptual overlap appears. Colquitt HTC/HTD labels are
+applied to target-scale averages, not treated as universal item-level
+cutoffs.
+
+Low-level components remain available:
+
+``` r
+htc(rating_dat, scale_min = 1, scale_max = 5)
+#>   item target n_target target_mean anchors  htc
+#> 1   A1      A       20        4.40       5 0.88
+#> 2   A2      A       20        4.20       5 0.84
+#> 3   B1      B       20        4.45       5 0.89
+htd(rating_dat, scale_min = 1, scale_max = 5)
+#>   item target n_complete n_pairs target_mean_complete strongest_competitor
+#> 1   A1      A         20      40                 4.40                    C
+#> 2   A2      A         20      40                 4.20                    B
+#> 3   B1      B         20      40                 4.45                    C
+#>   competitor_mean anchors     htd
+#> 1            1.95       5 0.61875
+#> 2            2.10       5 0.53125
+#> 3            2.00       5 0.63750
+anova_content(rating_dat)
+#>   item target design n_raters n_complete n_constructs target_mean
+#> 1   A1      A within       20         20            3        4.40
+#> 2   A2      A within       20         20            3        4.20
+#> 3   B1      B within       20         20            3        4.45
+#>   strongest_competitor competitor_mean         F df1 df2            p
+#> 1                    C            1.95 108.55245   2  38 1.941920e-16
+#> 2                    B            2.10  66.92593   2  38 3.531492e-13
+#> 3                    C            2.00  94.20683   2  38 1.873865e-15
+#>   epsilon_gg   df1_gg   df2_gg         p_gg     p_screen partial_eta2
+#> 1  0.8571129 1.714226 32.57029 2.109513e-14 2.109513e-14    0.8510417
+#> 2  0.7606524 1.521305 28.90479 1.544388e-10 1.544388e-10    0.7788793
+#> 3  0.9532879 1.906576 36.22494 7.805392e-15 7.805392e-15    0.8321656
+#>   min_mean_diff max_contrast_p contrast_pass posthoc_pass
+#> 1          2.45   4.238082e-10          TRUE         TRUE
+#> 2          2.10   6.543223e-08          TRUE         TRUE
+#> 3          2.45   2.290289e-10          TRUE         TRUE
+```
+
 ## Expert-panel indices
 
 ``` r
@@ -259,10 +389,10 @@ Missing assignments are excluded itemwise and are reported explicitly in
 R <- matrix(sample(1:5, 5 * 4, replace = TRUE), nrow = 5)
 aikens_v(R, lo = 1, hi = 5)
 #>    item    V
-#> 1 Item1 0.40
-#> 2 Item2 0.35
-#> 3 Item3 0.50
-#> 4 Item4 0.60
+#> 1 Item1 0.55
+#> 2 Item2 0.30
+#> 3 Item3 0.20
+#> 4 Item4 0.40
 
 # Lawshe CVR
 cvr(essential = c(8, 10, 5), N = 12)
@@ -304,10 +434,10 @@ content-validity argument.
 
 ## Experimental modules
 
-The rating/ANOVA, diagnostic, simulation, and Q-factor helpers remain
-available while their APIs and methodological scope are being hardened.
-They should currently be treated as experimental rather than as the
-package’s primary public interface.
+The diagnostic, simulation, and Q-factor helpers remain available while
+their APIs and methodological scope are being hardened. The two
+recommended primary workflows are now `sort_validity()` and
+`rating_validity()`.
 
 ## Core methodological references
 
@@ -327,7 +457,7 @@ package’s primary public interface.
   Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance
   approach to content validation. *Organizational Research Methods,
-  2*(2), 175–186.
+  2*(2), 175–186. <https://doi.org/10.1177/109442819922004>
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
   acceptable indicator of content validity? Appraisal and
   recommendations. *Research in Nursing & Health, 30*(4), 459–467.

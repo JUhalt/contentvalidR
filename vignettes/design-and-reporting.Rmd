@@ -17,12 +17,12 @@ library(contentvalidR)
 
 **Choosing a method**
 - **Item-sort (Psa/Csv)**: fast, nominal assignments; good when raters map items → constructs.
-- **Ratings + ANOVA**: Likert ratings across all constructs; stronger convergent/discriminant evidence.
+- **Construct ratings (HTC/HTD + repeated-measures screening)**: the same judges rate each item against every focal/orbiting definition; useful for diagnosing definitional correspondence and overlap.
 - **Classic indices** (CVR/IOC/Aiken’s V/CVI): expert-panel contexts; often complements Psa/Csv or ANOVA.
 
 **Sample size tips**
 - **Sorts**: choose the judge sample size in relation to the retention rule and the target-assignment probability you consider plausible. `sort_power()` provides exact planning probabilities; avoid treating a single rule of thumb as a universal minimum.
-- **Rating studies**: sample-size needs depend on the design, number of constructs, expected separation, and whether ratings are repeated within judges. The current ANOVA helper remains experimental while this workflow is being redesigned.
+- **Rating studies**: the Hinkin-Tracey workflow is fully crossed within judges. Sample-size needs depend on the number of judges, number of construct definitions, and expected target-orbiting separation. Report the number of complete judge profiles used itemwise.
 - **Panels**: Lawshe CVR tables are sensitive with small $N$; triangulate.
 
 **Recommended reporting**
@@ -52,24 +52,24 @@ csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
   csv_binom_test(n_c = csv$n_target[i], N = csv$n[i])$decision
 }, character(1))
 
-# --- Rating-based toy data for ANOVA (items rated on all constructs) ---
+# --- Fully crossed construct-rating toy data ---
 set.seed(2)
-toy_ratings <- data.frame(
-  item = rep(paste0("I",1:4), each = 30),
-  rater = rep(1:30, times = 4),
-  construct = rep(rep(LETTERS[1:3], each = 10), times = 4),
-  rating = c(
-    rnorm(10, 4.3, 0.4), rnorm(20, 2.6, 0.6),   # I1: A high
-    rnorm(10, 4.0, 0.5), rnorm(20, 2.7, 0.6),   # I2: A high
-    rnorm(10, 2.6, 0.6), rnorm(10, 4.1, 0.5), rnorm(10, 2.6, 0.6), # I3: B high
-    rnorm(20, 2.6, 0.6), rnorm(10, 4.0, 0.5)    # I4: C high
-  )
+toy_ratings <- expand.grid(
+  item = c("I1", "I2", "I3"),
+  rater = 1:16,
+  construct = c("A", "B", "C")
 )
-target_map <- c(I1="A", I2="A", I3="B", I4="C")
-anova_out <- anova_content(toy_ratings, target_map = target_map)
+toy_ratings$target_construct <- ifelse(toy_ratings$item == "I3", "B", "A")
+toy_ratings$rating <- ifelse(
+  toy_ratings$construct == toy_ratings$target_construct,
+  pmin(5, pmax(1, round(rnorm(nrow(toy_ratings), 4.4, .6)))),
+  pmin(5, pmax(1, round(rnorm(nrow(toy_ratings), 2.2, .7))))
+)
+rating_out <- rating_validity(toy_ratings, scale_min = 1, scale_max = 5)
 ```
 
 **Table templates**
+
 **Sort-Based (per item)**
 ```{r}
 csv$psa <- compute_psa(toy_sort)$psa
@@ -85,15 +85,12 @@ csv_out
 | I1   | 20  | 16                 | 3                   | .80  | .65  | .002    | significant |
 | ...  | ... | ...                | ...                 | ...  | ...  | ...     | ...         |
 
-**Rating-based ANOVA (per item)**
+**Construct-rating evidence (per item)**
 ```{r}
-anova_out
+rating_out$results
 ```
 
-| item | target | F(df1,df2) | p      | posthoc_pass |
-|:-----|:-------|:-----------|:-------|:-------------|
-| I1   | A      | 12.4 (2,27)  | .0001  | TRUE         |
-| ...  | ...    | ...        | ...    | ...          |
+Report HTC/HTD, the repeated-measures omnibus result, the planned target-versus-orbiting contrast result, the strongest competitor, and the package's Retain/Review screening flag. At the target-scale level, report mean HTC/HTD and the applicable Colquitt normative band.
 
 **Classic indices (panel)**
 ```{r}
@@ -136,8 +133,7 @@ reproducibility_phi(csv$decision == "significant", csv2_sig)
 
 **Power quick-checks**
 ```{r}
-simulate_csv_power(N = 20, true_p = 0.65, reps = 200)
-simulate_anova_power(n_raters = 20, mean_diff = 0.5, sd = 1, k_constructs = 3, reps = 100)
+sort_power(N = c(20, 30), true_p = c(.65, .75))
 ```
 
 **Good practices**

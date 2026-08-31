@@ -37,7 +37,7 @@ Goal: make the existing core statistically trustworthy before expanding the API.
 - [ ] Add published/hand-worked canonical validation cases for every core method.
 - [ ] Decide whether to expose the Anderson-Gerbing legacy critical-Csv test.
 
-## v0.0.2 - Modern item-sort workflow (current)
+## v0.0.2 - Modern item-sort workflow (completed)
 
 Goal: make A&G -> Howard-Melloy -> Colquitt the flagship module.
 
@@ -49,22 +49,36 @@ Goal: make A&G -> Howard-Melloy -> Colquitt the flagship module.
 - [x] Add plotting for item-sort evidence and review flags.
 - [x] Add dedicated substantive-validity sort vignette.
 
-## v0.0.3 - Modern construct-rating workflow
+## v0.0.3 - Modern construct-rating workflow (current)
 
 Goal: modernize the Hinkin-Tracey side of the package.
 
-- [ ] Implement HTC (Hinkin-Tracey correspondence).
-- [ ] Implement HTD (Hinkin-Tracey distinctiveness).
-- [ ] Add Colquitt et al. (2019) HTC/HTD interpretation bands.
-- [ ] Redesign `anova_content()` so within-judge and between-judge designs are
+- [x] Implement HTC (Hinkin-Tracey correspondence).
+- [x] Implement HTD (Hinkin-Tracey distinctiveness).
+- [x] Add Colquitt et al. (2019) HTC/HTD interpretation bands.
+- [x] Redesign `anova_content()` so within-judge and between-judge designs are
       explicit and modeled appropriately.
-- [ ] Add `rating_validity()` with informative print/summary methods.
-- [ ] Add a dedicated construct-rating vignette.
+- [x] Add Greenhouse-Geisser corrected omnibus inference for repeated-measures
+      rating designs while retaining raw ANOVA output.
+- [x] Add `rating_validity()` with informative print/summary methods.
+- [x] Add dependency-free HTC/HTD plotting.
+- [x] Add a dedicated construct-rating vignette.
+- [ ] Verify the full v0.0.3 patch under R with `document()`, `test()`, `check()`,
+      and `build_readme()`.
 
 ## v0.0.4 - Expert-panel workflow
 
 Goal: provide trustworthy complementary indices without duplicating unrelated
 packages merely for feature count.
+
+Release/public-repository hygiene in this sprint:
+
+- [ ] Update GitHub Actions dependencies to current supported majors (including
+      replacing the Node-20 `actions/checkout@v4` workflow dependency).
+- [ ] Confirm a warning-free Windows/macOS/Linux CI matrix after the Actions refresh.
+- [ ] Refresh the public GitHub repository description/topics so they match the
+      modern sort + rating + expert-panel package scope.
+- [ ] Refresh README badges/public-facing wording and pkgdown-facing navigation.
 
 - [ ] Harden Aiken's V and add a score-based confidence interval.
 - [ ] Document exact CVR critical values and corrected Lawshe references.

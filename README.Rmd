@@ -28,7 +28,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 **contentvalidR** provides quantitative tools for substantive and content-oriented scale pretesting. The package is being developed around three complementary workflows:
 
 1. **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact item-level inference following Howard & Melloy (2016), and scale-level empirical norms from Colquitt et al. (2019).
-2. **Construct ratings** — Hinkin & Tracey (1999) rating-based procedures. This module remains experimental while the repeated-rating design is being modernized.
+2. **Construct ratings** — Hinkin & Tracey (1999) fully crossed ratings, HTC/HTD, Greenhouse-Geisser-aware repeated-measures item screening, and Colquitt et al. (2019) scale-level norms.
 3. **Expert panels** — Aiken's V, Lawshe CVR, CVI/modified kappa, and item-objective congruence.
 
 The design goal is **interpretable output rather than coefficient dumps**. Recommended workflow functions summarize what the evidence supports, flag items that need attention, and distinguish statistical screening from substantive decisions.
@@ -106,6 +106,47 @@ interpret_colquitt(.70, "csv")
 
 Missing assignments are excluded itemwise and are reported explicitly in `n_missing` so the effective denominator is visible.
 
+
+## Recommended construct-rating workflow
+
+In the Hinkin-Tracey design, the **same judge rates each item against every construct definition**. `rating_validity()` treats that dependence explicitly rather than analyzing the ratings as independent groups.
+
+```{r rating-workflow}
+set.seed(12)
+rating_dat <- expand.grid(
+  item = c("A1", "A2", "B1"),
+  rater = 1:20,
+  construct = c("A", "B", "C")
+)
+rating_dat$target_construct <- ifelse(rating_dat$item == "B1", "B", "A")
+rating_dat$rating <- ifelse(
+  rating_dat$construct == rating_dat$target_construct,
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 4.4, .6)))),
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 2.1, .7))))
+)
+
+rfit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
+rfit
+summary(rfit)
+```
+
+The workflow combines two descriptive indices with direct item-level screening:
+
+- **HTC** (Hinkin-Tracey correspondence): how strongly ratings match the intended definition;
+- **HTD** (Hinkin-Tracey distinctiveness): how much intended-definition ratings exceed orbiting-definition ratings;
+- a **one-way repeated-measures ANOVA** for each item; and
+- **planned paired contrasts** comparing the target definition with each orbiting definition.
+
+As with the item-sort workflow, `Retain` and `Review` are screening labels rather than automatic editorial decisions. The output names the strongest orbiting competitor so a weak item tells the researcher *where* the conceptual overlap appears. Colquitt HTC/HTD labels are applied to target-scale averages, not treated as universal item-level cutoffs.
+
+Low-level components remain available:
+
+```{r rating-components}
+htc(rating_dat, scale_min = 1, scale_max = 5)
+htd(rating_dat, scale_min = 1, scale_max = 5)
+anova_content(rating_dat)
+```
+
 ## Expert-panel indices
 
 ```{r expert-indices}
@@ -131,12 +172,12 @@ cvi(M)
 
 ## Experimental modules
 
-The rating/ANOVA, diagnostic, simulation, and Q-factor helpers remain available while their APIs and methodological scope are being hardened. They should currently be treated as experimental rather than as the package's primary public interface.
+The diagnostic, simulation, and Q-factor helpers remain available while their APIs and methodological scope are being hardened. The two recommended primary workflows are now `sort_validity()` and `rating_validity()`.
 
 ## Core methodological references
 
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of measures in a confirmatory factor analysis with a pretest assessment of their substantive validities. *Journal of Applied Psychology, 76*(5), 732–740. https://doi.org/10.1037/0021-9010.76.5.732
 - Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. *Journal of Business and Psychology, 31*(1), 173–186. https://doi.org/10.1007/s10869-015-9404-y
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
-- Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186.
+- Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199

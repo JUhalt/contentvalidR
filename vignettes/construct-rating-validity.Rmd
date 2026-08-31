@@ -1,0 +1,177 @@
+---
+title: "Construct-Rating Content Validation: Hinkin-Tracey to Colquitt"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Construct-Rating Content Validation: Hinkin-Tracey to Colquitt}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+set.seed(12)
+```
+
+```{r setup}
+library(contentvalidR)
+```
+
+## What the rating workflow asks
+
+The Hinkin and Tracey (1999) content-rating procedure asks judges to evaluate how well each item corresponds to **each** construct definition under consideration. The typical design is fully crossed within judges: the same judge rates an item against the intended definition and against one or more orbiting definitions.
+
+That design provides two complementary kinds of evidence:
+
+- **Definitional correspondence:** does the item strongly match its intended construct?
+- **Definitional distinctiveness:** does it match the intended construct more strongly than plausible orbiting constructs?
+
+`contentvalidR` keeps those questions separate rather than reducing the study to a single coefficient.
+
+## Example data
+
+```{r data}
+rating_dat <- expand.grid(
+  item = c("A1", "A2", "A3", "B1"),
+  rater = 1:24,
+  construct = c("A", "B", "C")
+)
+rating_dat$target_construct <- ifelse(rating_dat$item == "B1", "B", "A")
+
+rating_dat$rating <- ifelse(
+  rating_dat$construct == rating_dat$target_construct,
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 4.4, .6)))),
+  pmin(5, pmax(1, round(rnorm(nrow(rating_dat), 2.2, .8))))
+)
+```
+
+Each item-judge combination appears once for every construct definition. A duplicated item-rater-construct row is treated as a data error.
+
+## HTC: definitional correspondence
+
+Following Colquitt et al. (2019), the Hinkin-Tracey correspondence index is
+
+\[
+HTC = \frac{\bar{x}_{target}}{a},
+\]
+
+where \(a\) is the number of response anchors when ratings use a 1-to-\(a\) scale. `contentvalidR` can also accept an equally spaced integer scale such as 0-to-4; it shifts that scale internally to the equivalent 1-to-5 anchor metric before computing HTC.
+
+```{r htc}
+htc(rating_dat, scale_min = 1, scale_max = 5)
+```
+
+Higher HTC means stronger correspondence with the intended definition.
+
+## HTD: definitional distinctiveness
+
+HTD compares intended-definition ratings with orbiting-definition ratings:
+
+\[
+HTD = \frac{\text{average}(x_{target} - x_{orbiting})}{a - 1}.
+\]
+
+It ranges from -1 to 1. Positive values favor the intended definition; negative values indicate that orbiting definitions are rated more highly on average.
+
+```{r htd}
+htd(rating_dat, scale_min = 1, scale_max = 5)
+```
+
+The item-level table also identifies the strongest orbiting competitor. That is often more useful for revision than merely knowing that distinctiveness is weak.
+
+## Repeated-measures item screening
+
+The same judges provide multiple construct ratings, so those observations are not independent. `anova_content()` uses a one-way repeated-measures ANOVA for the standard fully crossed design and follows it with planned paired comparisons of the intended definition against every orbiting definition.
+
+```{r anova}
+aov_out <- anova_content(rating_dat, design = "within")
+aov_out
+attr(aov_out, "contrasts")
+```
+
+The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean?
+
+With more than two construct definitions, the conventional repeated-measures F test assumes sphericity. `contentvalidR` reports that historical omnibus test but does not hide the assumption. The planned target-versus-orbiting comparisons are therefore important diagnostic evidence rather than decorative post-hoc tests.
+
+## Recommended workflow
+
+```{r workflow}
+fit <- rating_validity(
+  rating_dat,
+  scale_min = 1,
+  scale_max = 5
+)
+fit
+summary(fit)
+```
+
+The item-level recommendation has deliberately limited meaning:
+
+- **Retain:** the item cleared the package's inferential screening rule in this pretest.
+- **Review:** the full screening rule was not met; inspect wording, construct overlap, and judge feedback.
+- **Insufficient data:** too few complete judge profiles are available for the repeated-measures comparison.
+
+`Review` is not an instruction to delete an item. Content coverage can be harmed by mechanical item deletion.
+
+## Scale-level Colquitt norms
+
+Colquitt et al. (2019) created empirical norms from **scale-level averages** of HTC and HTD across 112 published scales. `rating_validity()` therefore averages item HTC/HTD within each target scale before assigning those descriptive normative labels.
+
+```{r scale}
+fit$scale_summary
+colquitt_benchmarks("htc")
+colquitt_benchmarks("htd")
+```
+
+The overall bands are empirical percentile standing, not universal validity cutoffs. If the average correlation between a focal scale and its orbiting scales is known, correlation-conditional norms can be requested:
+
+```{r conditional}
+rating_validity(
+  rating_dat,
+  orbiting_r = c(A = .42, B = .55)
+)$scale_summary
+```
+
+A given level of distinctiveness can be more impressive when the focal and orbiting constructs are known to correlate strongly.
+
+## Naive versus expert judges
+
+Colquitt et al.'s normative distributions were developed using naive judges representative of substantive target populations. Their paper cautions against applying those norms to expert panels. The package therefore separates calculation from norm applicability:
+
+```{r expert}
+rating_validity(rating_dat, judge_type = "expert")$scale_summary
+```
+
+HTC/HTD are still computed, but the Colquitt labels are suppressed.
+
+## Missing ratings
+
+For HTD and repeated-measures inference, a judge must have a usable rating for every construct definition presented for that item. Incomplete profiles are excluded itemwise and counted explicitly in the output. This preserves the paired design rather than quietly treating incomplete repeated observations as independent data.
+
+## Plotting
+
+```{r plot, fig.width=7, fig.height=4}
+plot(fit, metric = "htc")
+plot(fit, metric = "htd")
+```
+
+The plot displays item-level raw indices and screening status. It does not draw the Colquitt scale-level norm bands across items because those benchmarks were not constructed as item-level thresholds.
+
+## Reporting
+
+A useful report should identify:
+
+1. the construct definitions and orbiting constructs shown to judges;
+2. the judge population and recruitment method;
+3. the response anchors and rating instructions;
+4. item-level HTC, HTD, repeated-measures omnibus results, and planned contrasts;
+5. the strongest orbiting competitor for items needing review;
+6. target-scale mean HTC/HTD and the norm set used, if applicable; and
+7. qualitative feedback and substantive decisions made after the pretest.
+
+The quantitative analysis is evidence about definitional correspondence and distinctiveness. It does not by itself demonstrate that the item pool comprehensively samples the full construct domain.
+
+## References
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175-186. https://doi.org/10.1177/109442819922004
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243-1265. https://doi.org/10.1037/apl0000406

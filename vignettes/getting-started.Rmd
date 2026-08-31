@@ -18,7 +18,7 @@ library(contentvalidR)
 
 **Overview**
 
-This vignette introduces the package's **sort-based** workflow (Psa/Csv plus exact item-sort inference), complementary **expert-panel indices** (CVR, IOC, Aiken’s V, CVI), and experimental rating/diagnostic helpers. The recommended user-facing sort workflow is `sort_validity()`, which adds plain-language item review flags, strongest-competitor diagnostics, and target-scale Colquitt et al. (2019) normative summaries to the component statistics.
+This vignette introduces the package's two primary content-pretesting workflows—**item sorting** and **construct ratings**—plus complementary expert-panel indices. `sort_validity()` and `rating_validity()` both organize item-level screening evidence and target-scale normative summaries while keeping substantive decisions separate from statistical flags.
 
 **Sort-based (Psa, Csv, binomial)**
 ```{r}
@@ -46,27 +46,32 @@ psa; csv
 - **Csv** = margin of wins: $ \frac{n_{target} - max_{other}}{N} $.
 - Binomial test (H0: $ p ≤ .5 $) flags items with above-chance targeting.
 
-**Rating-based (ANOVA + Tukey)**
+**Construct-rating workflow (HTC, HTD, repeated-measures ANOVA)**
 ```{r}
 set.seed(2)
-toy_ratings <- data.frame(
-  item = rep(paste0("I",1:4), each = 30),
-  rater = rep(1:30, times = 4),
-  construct = rep(rep(LETTERS[1:3], each = 10), times = 4),
-  rating = c(
-    rnorm(10, 4.3, 0.4), rnorm(20, 2.6, 0.6),
-    rnorm(10, 4.0, 0.5), rnorm(20, 2.7, 0.6),
-    rnorm(10, 2.6, 0.6), rnorm(10, 4.1, 0.5), rnorm(10, 2.6, 0.6),
-    rnorm(20, 2.6, 0.6), rnorm(10, 4.0, 0.5)
-  )
+toy_ratings <- expand.grid(
+  item = c("I1", "I2", "I3"),
+  rater = 1:16,
+  construct = c("A", "B", "C")
 )
-target_map <- c(I1="A", I2="A", I3="B", I4="C")
-anova_content(toy_ratings, target_map = target_map)
+toy_ratings$target_construct <- ifelse(toy_ratings$item == "I3", "B", "A")
+toy_ratings$rating <- ifelse(
+  toy_ratings$construct == toy_ratings$target_construct,
+  pmin(5, pmax(1, round(rnorm(nrow(toy_ratings), 4.4, .6)))),
+  pmin(5, pmax(1, round(rnorm(nrow(toy_ratings), 2.2, .7))))
+)
+
+rating_fit <- rating_validity(toy_ratings, scale_min = 1, scale_max = 5)
+rating_fit
+summary(rating_fit)
 ```
 
 **Interpretation**
-- ANOVA $ p $ tests any mean difference across constructs for an item.
-- Tukey confirms **target mean > all others** (strict convergent/discriminant).
+- **HTC** summarizes definitional correspondence with the intended construct.
+- **HTD** summarizes distinctiveness from orbiting constructs.
+- The repeated-measures ANOVA tests whether construct-definition ratings differ for an item.
+- Planned paired contrasts ask the direct screening question: is the target rating significantly higher than every orbiting rating?
+- Scale-level HTC/HTD averages can be interpreted using Colquitt et al. (2019) empirical norms when the judge population matches their intended use.
 
 **Classic indices**
 ```{r}
@@ -98,6 +103,5 @@ reproducibility_phi(csv$decision == "significant", csv2_sig)
 
 **Power quick-checks**
 ```{r}
-simulate_csv_power(N = 20, true_p = 0.65, reps = 200)
-simulate_anova_power(n_raters = 20, mean_diff = 0.5, sd = 1, k_constructs = 3, reps = 100)
+sort_power(N = c(20, 30), true_p = c(.65, .75))
 ```

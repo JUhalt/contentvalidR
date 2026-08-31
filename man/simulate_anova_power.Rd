@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_helpers.R
 \name{simulate_anova_power}
 \alias{simulate_anova_power}
-\title{Simulate power for ANOVA content test (balanced design)}
+\title{Legacy independent-groups ANOVA power simulator}
 \usage{
 simulate_anova_power(
   n_raters = 30,
@@ -30,7 +30,9 @@ simulate_anova_power(
 Estimated power (numeric in [0, 1]).
 }
 \description{
-Simulate power for ANOVA content test (balanced design)
+Simulates a balanced \strong{independent-groups} one-way ANOVA. This helper is
+retained for backward compatibility but does not represent the standard
+within-judge Hinkin-Tracey design used by \code{rating_validity()}.
 }
 \examples{
 simulate_anova_power(n_raters = 20, mean_diff = 0.5, sd = 1, k_constructs = 4, reps = 100)

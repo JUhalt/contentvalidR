@@ -13,7 +13,13 @@ simulate_csv_power <- function(N = 20, true_p = 0.65, reps = 2000, alpha = 0.05)
   mean(pvals <= alpha)
 }
 
-#' Simulate power for ANOVA content test (balanced design)
+#' Legacy independent-groups ANOVA power simulator
+#'
+#' @description
+#' Simulates a balanced **independent-groups** one-way ANOVA. This helper is
+#' retained for backward compatibility but does not represent the standard
+#' within-judge Hinkin-Tracey design used by `rating_validity()`.
+#'
 #' @param n_raters Number of raters per construct (balanced).
 #' @param mean_diff Target mean minus other-construct means.
 #' @param sd Within-cell standard deviation.

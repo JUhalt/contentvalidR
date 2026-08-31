@@ -1,3 +1,26 @@
+# contentvalidR 0.0.3.9000
+
+## Modern construct-rating workflow
+
+* Added `htc()` and `htd()` for Hinkin-Tracey definitional correspondence and
+  distinctiveness, with explicit rating-anchor validation.
+* Rebuilt `anova_content()` around the fully crossed within-judge design used by
+  the Hinkin-Tracey rating procedure. The function now uses a one-way repeated-
+  measures ANOVA with Greenhouse-Geisser corrected omnibus inference plus planned
+  target-versus-orbiting contrasts and retains a between-judge path only for
+  genuinely independent designs. Raw omnibus p values remain available for
+  transparency.
+* Added `rating_validity()` as the recommended user-facing construct-rating
+  workflow, including strongest-competitor diagnostics, Retain/Review/
+  Insufficient-data screening, and narrative print/summary output.
+* Extended Colquitt et al. (2019) scale-level interpretation to HTC and HTD,
+  including focal-orbiting-correlation-conditional norms and expert-judge
+  suppression.
+* Added `plot.contentvalid_rating()` for dependency-free HTC/HTD item plots.
+* Added a dedicated Hinkin-Tracey-to-Colquitt vignette and expanded tests for
+  rating indices, repeated-measures inference, incomplete profiles, and
+  user-facing output.
+
 # contentvalidR 0.0.2.9000
 
 ## Modern item-sort workflow

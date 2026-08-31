@@ -38,3 +38,27 @@ test_that("Colquitt helpers validate inputs", {
   expect_error(interpret_colquitt(c(.8, .9), "psa", orbiting_r = c(.2, .3, .4)), "length 1")
   expect_equal(nrow(colquitt_benchmarks("csv")), 5L)
 })
+
+test_that("Colquitt HTC/HTD overall boundaries are encoded", {
+  expect_equal(interpret_colquitt(.91, "htc")$interpretation, "Very Strong")
+  expect_equal(interpret_colquitt(.90, "htc")$interpretation, "Strong")
+  expect_equal(interpret_colquitt(.84, "htc")$interpretation, "Moderate")
+  expect_equal(interpret_colquitt(.60, "htc")$interpretation, "Weak")
+  expect_equal(interpret_colquitt(.59, "htc")$interpretation, "Lack of")
+
+  expect_equal(interpret_colquitt(.35, "htd")$interpretation, "Very Strong")
+  expect_equal(interpret_colquitt(.27, "htd")$interpretation, "Strong")
+  expect_equal(interpret_colquitt(.18, "htd")$interpretation, "Moderate")
+  expect_equal(interpret_colquitt(.04, "htd")$interpretation, "Weak")
+  expect_equal(interpret_colquitt(.03, "htd")$interpretation, "Lack of")
+})
+
+test_that("correlation-conditioned HTC/HTD norms follow Table 5", {
+  expect_equal(interpret_colquitt(.90, "htc", orbiting_r = .60)$interpretation, "Very Strong")
+  expect_equal(interpret_colquitt(.90, "htc", orbiting_r = .40)$interpretation, "Strong")
+  expect_equal(interpret_colquitt(.90, "htc", orbiting_r = .20)$interpretation, "Strong")
+
+  expect_equal(interpret_colquitt(.30, "htd", orbiting_r = .60)$interpretation, "Very Strong")
+  expect_equal(interpret_colquitt(.30, "htd", orbiting_r = .40)$interpretation, "Strong")
+  expect_equal(interpret_colquitt(.30, "htd", orbiting_r = .20)$interpretation, "Moderate")
+})
