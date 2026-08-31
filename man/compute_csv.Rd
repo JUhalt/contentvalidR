@@ -13,23 +13,39 @@ compute_csv(
 )
 }
 \arguments{
-\item{assignments}{A data.frame with columns: item, rater, assigned_construct, target_construct.}
+\item{assignments}{A data.frame containing item-sort responses.}
 
-\item{item_col, rater_col, assigned_col, target_col}{Column names if yours differ from defaults.}
+\item{item_col, rater_col, assigned_col, target_col}{Column names for the item,
+rater, assigned construct, and intended target construct.}
 }
 \value{
-A data.frame with: item, n, n_target (n_c), n_other_max (n_o), csv.
+A data.frame with one row per item and columns \code{item}, \code{target},
+\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, \code{n_other_max}, and \code{csv}.
 }
 \description{
-For each item, Csv compares how often raters assign it to the target
-construct vs. the most common \emph{non-target} construct: \deqn{csv = (n_c - n_o) / N}
+For each item, computes Anderson and Gerbing's (1991) substantive-validity
+coefficient:
+
+\deqn{C_{sv} = (n_c - n_o) / N,}
+
+where \eqn{n_c} is the number of non-missing assignments to the intended
+construct, \eqn{n_o} is the largest number of assignments to any one
+non-target construct, and \eqn{N} is the number of non-missing assignments.
+
+Missing assignments are excluded itemwise and reported in \code{n_missing}.
 }
 \examples{
 df <- data.frame(
-  item = rep(paste0("I",1:3), each = 12),
-  rater = rep(1:12, 3),
-  assigned_construct = sample(c("A","B","C"), 36, TRUE, c(.6,.25,.15)),
-  target_construct   = rep(c("A","B","C"), each = 12)
+  item = rep(c("I1", "I2"), each = 4),
+  rater = rep(1:4, 2),
+  assigned_construct = c("A", "A", "A", "B", "B", "B", "B", "B"),
+  target_construct = rep("A", 8)
 )
 compute_csv(df)
+}
+\references{
+Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
+measures in a confirmatory factor analysis with a pretest assessment of
+their substantive validities. \emph{Journal of Applied Psychology, 76}(5),
+732-740. \doi{10.1037/0021-9010.76.5.732}
 }

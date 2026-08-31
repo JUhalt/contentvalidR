@@ -2,22 +2,23 @@
 % Please edit documentation in R/signal_detection.R
 \name{signal_detection}
 \alias{signal_detection}
-\title{Signal-detection summary (Csv significant vs. “ground truth”)}
+\title{Signal-detection summary for binary retention decisions}
 \usage{
 signal_detection(predicted, actual)
 }
 \arguments{
-\item{predicted}{Logical vector: Csv-significant (TRUE/FALSE).}
+\item{predicted}{Logical vector of predicted retention decisions.}
 
-\item{actual}{Logical vector: ground-truth retain (TRUE/FALSE).}
+\item{actual}{Logical vector of criterion retention decisions.}
 }
 \value{
-A list: confusion (2x2 matrix), accuracy, sensitivity, specificity, phi, chisq, p.
+A list containing the confusion matrix and diagnostic statistics.
 }
 \description{
-Compares a logical vector of Csv-based "retain?" decisions to a logical
-vector of ground-truth retention (e.g., CFA retained), producing confusion
-matrix, accuracy, sensitivity, specificity, phi, and chi-square.
+Compares a logical vector of pretest retention decisions with a logical
+ground-truth criterion (for example, later CFA retention). Reports a correctly
+oriented confusion matrix, accuracy, sensitivity, specificity, signed phi,
+and Pearson's chi-square test without Yates correction.
 }
 \examples{
 predicted <- c(TRUE, TRUE, FALSE, FALSE)

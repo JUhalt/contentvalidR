@@ -2,29 +2,49 @@
 % Please edit documentation in R/cvi.R
 \name{cvi}
 \alias{cvi}
-\title{Content Validity Index (CVI): I-CVI, S-CVI/Ave, and modified kappa}
+\title{Content Validity Index (CVI)}
 \usage{
-cvi(binary)
+cvi(binary, na.rm = FALSE)
 }
 \arguments{
-\item{binary}{matrix/data.frame (judges x items) of 0/1.}
+\item{binary}{Matrix/data.frame with judges in rows and items in columns,
+coded \code{1 = relevant} and \verb{0 = not relevant}.}
+
+\item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
+If \code{TRUE}, missing ratings are removed itemwise and each item's effective
+judge count is reported in \code{N}.}
 }
 \value{
-list with:
+A classed list with:
 \itemize{
-\item item_level: data.frame (item, A, N, I_CVI, Pc, kappa_mod)
-\item scale_level: data.frame (S_CVI_Ave)
+\item \code{item_level}: item, A, N, I_CVI, Pc, kappa_mod
+\item \code{scale_level}: S_CVI_Ave and S_CVI_UA
 }
 }
 \description{
-Expects a binary matrix: rows = judges, cols = items (1 = relevant, 0 = not).
-I-CVI = proportion of judges rating an item as relevant.
-Modified kappa uses chance agreement \eqn{P_c} from a binomial model with \eqn{p = 0.5}:
-\deqn{P_c = \sum_{i=A}^{N} \binom{N}{i} 0.5^{N},}
-where \eqn{A} is the number of 1s for the item.
-k* = (I-CVI - Pc) / (1 - Pc), with k* set to NA when Pc == 1.
+Computes item-level Content Validity Index (I-CVI), scale-level average CVI
+(S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
+described by Polit, Beck, and Owen (2007).
+
+For each item, modified kappa adjusts I-CVI for chance agreement using the
+probability of observing exactly \code{A} agreements among \code{N} judges:
+
+\deqn{P_c = {N \choose A}(0.5)^N}
+
+and
+
+\deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
 }
 \examples{
-M <- matrix(sample(0:1, 6*8, replace=TRUE, prob=c(.3,.7)), nrow=6)
+M <- matrix(
+  c(1,1,1,1, 1,1,1,0, 1,1,0,0),
+  nrow = 4,
+  dimnames = list(NULL, c("Item1", "Item2", "Item3"))
+)
 cvi(M)
+}
+\references{
+Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
+indicator of content validity? Appraisal and recommendations. \emph{Research in
+Nursing & Health, 30}(4), 459-467. \doi{10.1002/nur.20199}
 }

@@ -1,15 +1,32 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.0.0.9000
-Authors@R: c(person(given="Joshua", family="Uhalt", email="Josh.Uhalt@gmail.com", role=c("aut","cre")))
-Description: Compute Psa and Csv for item sorts (Anderson and Gerbing, 1991); an ANOVA/Tukey approach for rating studies (Hinkin and Tracey, 1999); and classic indices (Aiken's V, CVR, CVI, IOC), with diagnostics and small power simulators.
+Version: 0.0.1.9000
+Authors@R: c(
+    person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
+           role = c("aut", "cre"))
+    )
+Description: Provides quantitative tools for substantive and content-oriented
+    scale pretesting. Implements item-sort indices from Anderson and Gerbing
+    (1991), exact item-sort inference following Howard and Melloy (2016),
+    rating-based procedures inspired by Hinkin and Tracey (1999), and
+    complementary expert-panel indices including Aiken's V, Lawshe's content
+    validity ratio, content validity indices, and item-objective congruence.
+    User-facing workflows emphasize interpretable summaries and transparent
+    review recommendations rather than isolated coefficients.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.0.0)
-Imports: tibble
-Suggests: dplyr, testthat (>= 3.0.0), rmarkdown, knitr
+Imports:
+    stats
+Suggests:
+    irr,
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
 URL: https://github.com/JUhalt/contentvalidR, https://juhalt.github.io/contentvalidR/
 BugReports: https://github.com/JUhalt/contentvalidR/issues
+Config/roxygen2/version: 8.1.0

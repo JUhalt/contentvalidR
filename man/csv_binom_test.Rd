@@ -2,26 +2,44 @@
 % Please edit documentation in R/csv_binom_test.R
 \name{csv_binom_test}
 \alias{csv_binom_test}
-\title{Binomial test for Csv significance}
+\title{Exact item-sort significance test}
 \usage{
 csv_binom_test(n_c, N, p0 = 0.5, alpha = 0.05)
 }
 \arguments{
-\item{n_c}{Integer; number of raters assigning item to the target construct.}
+\item{n_c}{Integer; number of non-missing assignments to the target construct.}
 
-\item{N}{Integer; total raters for the item.}
+\item{N}{Integer; total number of non-missing assignments for the item.}
 
-\item{p0}{Null proportion (default 0.5).}
+\item{p0}{Null target-assignment probability. Default \code{0.5}, following
+Howard and Melloy (2016).}
 
-\item{alpha}{Significance level (default 0.05).}
+\item{alpha}{Significance level. Default \code{0.05}.}
 }
 \value{
-A list: p.value, estimate (n_c/N), conf.int, decision ("significant"/"n.s.").
+A list containing the exact p-value, observed target proportion,
+one-sided confidence interval, the minimum critical target count,
+a logical \code{passes_chance} flag, a backward-compatible \code{decision} label,
+and a plain-language \code{interpretation}.
 }
 \description{
-Tests whether assignment to the target construct exceeds chance (H0: p <= 0.5; H1: p > 0.5),
-using the count of target assignments \code{n_c} out of \code{N} raters.
+Tests whether the number of assignments to an item's intended construct
+exceeds the count expected under a binomial chance model. With the default
+\code{p0 = 0.5}, this implements the Howard and Melloy (2016) retention test for
+item-sort tasks by testing the target-assignment count directly. Unlike the
+legacy critical-Csv procedure, the count-based test remains applicable when
+respondents choose among more than two construct alternatives.
+
+The function name is retained for backward compatibility even though the
+inferential test is performed on \code{n_c}, not on the observed Csv value.
 }
 \examples{
+csv_binom_test(n_c = 15, N = 20)
 csv_binom_test(n_c = 14, N = 20)
+}
+\references{
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
+The presentation of a new statistical significance formula and
+methodological best practices. \emph{Journal of Business and Psychology, 31}(1),
+173-186. \doi{10.1007/s10869-015-9404-y}
 }

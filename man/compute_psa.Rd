@@ -13,22 +13,35 @@ compute_psa(
 )
 }
 \arguments{
-\item{assignments}{data.frame with columns: item, rater, assigned_construct, target_construct}
+\item{assignments}{A data.frame containing item-sort responses.}
 
-\item{item_col, rater_col, assigned_col, target_col}{column names if they differ}
+\item{item_col, rater_col, assigned_col, target_col}{Column names for the item,
+rater, assigned construct, and intended target construct.}
 }
 \value{
-data.frame with columns: item, n, n_target, psa
+A data.frame with one row per item and columns \code{item}, \code{target},
+\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, and \code{psa}.
 }
 \description{
-For each item, the proportion of raters who assigned it to its target construct.
+For each item, computes the proportion of non-missing item-sort responses
+assigned to the item's intended (target) construct. This is Anderson and
+Gerbing's (1991) proportion of substantive agreement, \eqn{P_{sa}}.
+
+Missing assignments are excluded itemwise and reported in \code{n_missing} so
+that the effective denominator is transparent.
 }
 \examples{
 df <- data.frame(
-  item = rep(paste0("I",1:3), each = 10),
-  rater = rep(1:10, 3),
-  assigned_construct = sample(c("A","B"), 30, TRUE, c(.7,.3)),
-  target_construct   = rep(c("A","A","B"), each = 10)
+  item = rep(c("I1", "I2"), each = 4),
+  rater = rep(1:4, 2),
+  assigned_construct = c("A", "A", "A", "B", "B", "A", "B", "B"),
+  target_construct = rep(c("A", "B"), each = 4)
 )
 compute_psa(df)
+}
+\references{
+Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
+measures in a confirmatory factor analysis with a pretest assessment of
+their substantive validities. \emph{Journal of Applied Psychology, 76}(5),
+732-740. \doi{10.1037/0021-9010.76.5.732}
 }

@@ -21,8 +21,8 @@ library(contentvalidR)
 - **Classic indices** (CVR/IOC/Aiken’s V/CVI): expert-panel contexts; often complements Psa/Csv or ANOVA.
 
 **Sample size tips**
-- **Sorts**: $N ≥ 15$ raters gives workable binomial power; $20–40$ ideal.
-- **ANOVA**: balanced $n$ per construct (e.g., $n ≥ 10$).
+- **Sorts**: choose the judge sample size in relation to the retention rule and the target-assignment probability you consider plausible. Avoid treating a single rule of thumb as a universal minimum.
+- **Rating studies**: sample-size needs depend on the design, number of constructs, expected separation, and whether ratings are repeated within judges. The current ANOVA helper remains experimental while this workflow is being redesigned.
 - **Panels**: Lawshe CVR tables are sensitive with small $N$; triangulate.
 
 **Recommended reporting**

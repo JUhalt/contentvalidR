@@ -18,7 +18,7 @@ library(contentvalidR)
 
 **Overview**
 
-This vignette shows the two main workflows—**sort-based** (Psa/Csv) and **rating-based** (ANOVA + Tukey)—and **classic indices** (CVR, IOC, Aiken’s V, CVI), plus diagnostic tools.
+This vignette introduces the package's **sort-based** workflow (Psa/Csv plus exact item-sort inference), complementary **expert-panel indices** (CVR, IOC, Aiken’s V, CVI), and experimental rating/diagnostic helpers. The recommended user-facing sort workflow is `sort_validity()`, which adds plain-language interpretation and review flags to the component statistics.
 
 **Sort-based (Psa, Csv, binomial)**
 ```{r}

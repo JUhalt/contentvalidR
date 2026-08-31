@@ -2,21 +2,22 @@
 % Please edit documentation in R/reproducibility_phi.R
 \name{reproducibility_phi}
 \alias{reproducibility_phi}
-\title{Between-pretest reproducibility (phi) of Csv significance}
+\title{Between-pretest reproducibility (phi) of binary decisions}
 \usage{
 reproducibility_phi(sig1, sig2)
 }
 \arguments{
-\item{sig1}{Logical vector of Csv-significant flags from pretest 1.}
+\item{sig1}{Logical vector of retention decisions from pretest 1.}
 
-\item{sig2}{Logical vector of Csv-significant flags from pretest 2.}
+\item{sig2}{Logical vector of retention decisions from pretest 2.}
 }
 \value{
-A list: table (2x2), phi, chisq, p.
+A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
 }
 \description{
-Cross-tabulates Csv-significance decisions for the same items across two
-pretests and reports phi and chi-square.
+Cross-tabulates retention decisions for the same items across two pretests
+and reports signed phi and Pearson's chi-square test without Yates correction.
+The full 2 x 2 table is retained even when one response level is absent.
 }
 \examples{
 sig1 <- c(TRUE, TRUE, FALSE, FALSE)
