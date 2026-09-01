@@ -42,8 +42,9 @@ A list with components:
 }
 \description{
 Builds an item-by-item Q-correlation matrix from rating data and runs
-a simple factor extraction (PCA by default). This mirrors the Q-matrix
-comparator used in pretesting workflows; use it alongside ANOVA.
+a simple factor extraction (PCA by default). This legacy comparator is
+retained for compatibility and exploratory use; it is not part of the
+recommended sort, rating, or expert-panel workflows.
 }
 \examples{
 set.seed(1)

@@ -9,8 +9,8 @@
   if (length(targets) == 1L && length(orbiting_r) == 1L) {
     return(stats::setNames(as.numeric(orbiting_r), targets))
   }
-  if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "")) {
-    stop("For multiple target constructs, `orbiting_r` must be a named numeric vector keyed by target construct.", call. = FALSE)
+  if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "") || anyDuplicated(names(orbiting_r))) {
+    stop("For multiple target constructs, `orbiting_r` must be a uniquely named numeric vector keyed by target construct.", call. = FALSE)
   }
   missing_targets <- setdiff(targets, names(orbiting_r))
   if (length(missing_targets)) {

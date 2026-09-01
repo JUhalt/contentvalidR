@@ -33,17 +33,18 @@
 #' csv_binom_test(n_c = 14, N = 20)
 #' @export
 csv_binom_test <- function(n_c, N, p0 = 0.5, alpha = 0.05) {
-  if (length(N) != 1L || is.na(N) || N < 1 || N != floor(N)) {
-    stop("`N` must be a positive integer.", call. = FALSE)
+  if (!is.numeric(N) || length(N) != 1L || !is.finite(N) || N < 1 || N != floor(N)) {
+    stop("`N` must be a positive finite integer.", call. = FALSE)
   }
-  if (length(n_c) != 1L || is.na(n_c) || n_c < 0 || n_c > N || n_c != floor(n_c)) {
-    stop("`n_c` must be an integer between 0 and `N`.", call. = FALSE)
+  if (!is.numeric(n_c) || length(n_c) != 1L || !is.finite(n_c) ||
+      n_c < 0 || n_c > N || n_c != floor(n_c)) {
+    stop("`n_c` must be a finite integer between 0 and `N`.", call. = FALSE)
   }
-  if (length(p0) != 1L || is.na(p0) || p0 <= 0 || p0 >= 1) {
-    stop("`p0` must be a single probability strictly between 0 and 1.", call. = FALSE)
+  if (!is.numeric(p0) || length(p0) != 1L || !is.finite(p0) || p0 <= 0 || p0 >= 1) {
+    stop("`p0` must be one finite probability strictly between 0 and 1.", call. = FALSE)
   }
-  if (length(alpha) != 1L || is.na(alpha) || alpha <= 0 || alpha >= 1) {
-    stop("`alpha` must be a single probability strictly between 0 and 1.", call. = FALSE)
+  if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("`alpha` must be one finite probability strictly between 0 and 1.", call. = FALSE)
   }
 
   bt <- stats::binom.test(n_c, N, p = p0, alternative = "greater")

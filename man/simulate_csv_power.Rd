@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim_helpers.R
 \name{simulate_csv_power}
 \alias{simulate_csv_power}
-\title{Simulate power for Csv binomial significance}
+\title{Legacy simulation of item-sort target-count power}
 \usage{
 simulate_csv_power(N = 20, true_p = 0.65, reps = 2000, alpha = 0.05)
 }
@@ -19,7 +19,7 @@ simulate_csv_power(N = 20, true_p = 0.65, reps = 2000, alpha = 0.05)
 Estimated power (a number between 0 and 1).
 }
 \description{
-Simulate power for Csv binomial significance
+Auxiliary compatibility helper. For supported exact planning, prefer \code{\link[=sort_power]{sort_power()}}, which does not require Monte Carlo simulation.
 }
 \examples{
 simulate_csv_power(N = 20, true_p = 0.65, reps = 100, alpha = 0.05)

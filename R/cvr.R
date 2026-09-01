@@ -32,8 +32,9 @@
 #' @export
 cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
                 item_names = NULL) {
-  if (!is.numeric(alpha) || length(alpha) != 1L || alpha <= 0 || alpha >= 1) {
-    stop("`alpha` must be between 0 and 1.", call. = FALSE)
+  .validate_flag(na.rm, "na.rm")
+  if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("`alpha` must be one finite number between 0 and 1.", call. = FALSE)
   }
 
   if (is.matrix(essential) || is.data.frame(essential)) {
@@ -69,6 +70,9 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
       stop("`item_names` must match the number of items.", call. = FALSE)
     }
   }
+  if (anyNA(item_names) || any(!nzchar(trimws(as.character(item_names)))) || anyDuplicated(as.character(item_names))) {
+    stop("Item names must be unique, non-missing, and non-empty.", call. = FALSE)
+  }
 
   if (any(N < 0 | !is.finite(N)) || any(essential < 0) || any(essential > N) ||
       any(abs(N - round(N)) > .Machine$double.eps^0.5) ||
@@ -84,7 +88,7 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     tails <- stats::pbinom(candidates - 1L, size = n, prob = 0.5,
                            lower.tail = FALSE)
     ok <- which(tails <= alpha)
-    if (length(ok) == 0L) n + 1L else candidates[min(ok)]
+    if (length(ok) == 0L) NA_integer_ else candidates[min(ok)]
   }, integer(1))
 
   p_value <- vapply(seq_along(N), function(i) {
@@ -99,7 +103,7 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     (critical_ne - N / 2) / (N / 2),
     NA_real_
   )
-  pass <- N > 0 & critical_ne <= N & essential >= critical_ne
+  pass <- !is.na(critical_ne) & N > 0 & essential >= critical_ne
 
   data.frame(
     item = as.character(item_names),

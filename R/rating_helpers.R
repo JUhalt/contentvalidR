@@ -6,6 +6,14 @@
                                  target_map = NULL,
                                  target_col = "target_construct",
                                  require_target = TRUE) {
+  .validate_column_names(item_col, rater_col, construct_col, rating_col)
+  if (!is.null(target_col)) {
+    if (!is.character(target_col) || length(target_col) != 1L || is.na(target_col) ||
+        !nzchar(trimws(target_col))) {
+      stop("`target_col` must be NULL or one non-empty column name.", call. = FALSE)
+    }
+  }
+
   if (!is.data.frame(ratings) || nrow(ratings) == 0L) {
     stop("`ratings` must be a non-empty data.frame.", call. = FALSE)
   }
@@ -18,11 +26,14 @@
 
   d <- ratings[, needed, drop = FALSE]
   names(d) <- c("item", "rater", "construct", "rating")
-  if (anyNA(d$item) || anyNA(d$rater) || anyNA(d$construct)) {
-    stop("`item`, `rater`, and `construct` cannot contain missing values.", call. = FALSE)
-  }
+  .validate_labels(d$item, "item")
+  .validate_labels(d$rater, "rater")
+  .validate_labels(d$construct, "construct")
   if (!is.numeric(d$rating)) {
     stop("`rating` must be numeric.", call. = FALSE)
+  }
+  if (any(!is.na(d$rating) & !is.finite(d$rating))) {
+    stop("`rating` must contain only finite numeric values or NA.", call. = FALSE)
   }
 
   key <- paste(d$item, d$rater, d$construct, sep = "\r")
@@ -32,8 +43,9 @@
 
   if (!is.null(target_map)) {
     if (is.list(target_map)) target_map <- unlist(target_map, use.names = TRUE)
-    if (!is.character(target_map) || is.null(names(target_map)) || any(names(target_map) == "")) {
-      stop("`target_map` must be a named character vector or named list mapping item -> target construct.", call. = FALSE)
+    if (!is.character(target_map) || is.null(names(target_map)) || any(names(target_map) == "") ||
+        anyDuplicated(names(target_map)) || anyNA(target_map) || any(trimws(target_map) == "")) {
+      stop("`target_map` must uniquely map each item name to one non-missing, non-empty target construct.", call. = FALSE)
     }
     item_chr <- as.character(d$item)
     missing_targets <- setdiff(unique(item_chr), names(target_map))
@@ -43,7 +55,7 @@
     d$target <- unname(target_map[item_chr])
   } else if (!is.null(target_col) && target_col %in% names(ratings)) {
     d$target <- as.character(ratings[[target_col]])
-    if (anyNA(d$target) || any(d$target == "")) {
+    if (anyNA(d$target) || any(!nzchar(trimws(d$target)))) {
       stop("`target_col` cannot contain missing or empty target labels.", call. = FALSE)
     }
   } else if (isTRUE(require_target)) {
@@ -226,6 +238,7 @@
 .between_target_contrasts <- function(df, target, alpha = .05, adjust = "none") {
   constructs <- unique(df$construct)
   others <- setdiff(constructs, target)
+  if (length(others) == 0L) return(data.frame())
   rows <- lapply(others, function(other) {
     x <- df$rating[df$construct == target & !is.na(df$rating)]
     y <- df$rating[df$construct == other & !is.na(df$rating)]
@@ -267,17 +280,18 @@
 }
 
 .resolve_rating_orbiting_r <- function(targets, orbiting_r) {
+  targets <- as.character(targets)
   if (is.null(orbiting_r)) {
     return(stats::setNames(rep(NA_real_, length(targets)), targets))
   }
-  if (!is.numeric(orbiting_r)) {
-    stop("`orbiting_r` must be numeric.", call. = FALSE)
+  if (!is.numeric(orbiting_r) || any(!is.finite(orbiting_r)) || any(orbiting_r < -1 | orbiting_r > 1)) {
+    stop("`orbiting_r` must contain finite correlations between -1 and 1.", call. = FALSE)
   }
-  if (length(orbiting_r) == 1L) {
-    return(stats::setNames(rep(as.numeric(orbiting_r), length(targets)), targets))
+  if (length(targets) == 1L && length(orbiting_r) == 1L) {
+    return(stats::setNames(as.numeric(orbiting_r), targets))
   }
-  if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "")) {
-    stop("For multiple target scales, `orbiting_r` must be a named numeric vector keyed by target.", call. = FALSE)
+  if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "") || anyDuplicated(names(orbiting_r))) {
+    stop("For multiple target scales, `orbiting_r` must be a uniquely named numeric vector keyed by target.", call. = FALSE)
   }
   missing_targets <- setdiff(targets, names(orbiting_r))
   if (length(missing_targets)) {

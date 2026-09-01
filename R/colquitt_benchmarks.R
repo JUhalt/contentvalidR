@@ -29,8 +29,12 @@
 }
 
 .colquitt_norm <- function(orbiting_r = NULL) {
-  if (is.null(orbiting_r) || is.na(orbiting_r)) return("overall")
-  if (!is.numeric(orbiting_r) || length(orbiting_r) != 1L || !is.finite(orbiting_r) || orbiting_r < -1 || orbiting_r > 1) {
+  if (is.null(orbiting_r)) return("overall")
+  if (!is.numeric(orbiting_r) || length(orbiting_r) != 1L) {
+    stop("`orbiting_r` must be NULL or one finite correlation between -1 and 1.", call. = FALSE)
+  }
+  if (is.na(orbiting_r)) return("overall")
+  if (!is.finite(orbiting_r) || orbiting_r < -1 || orbiting_r > 1) {
     stop("`orbiting_r` must be NULL or one finite correlation between -1 and 1.", call. = FALSE)
   }
   if (orbiting_r <= .34) "weaker" else if (orbiting_r <= .50) "moderate" else "stronger"

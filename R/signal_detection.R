@@ -1,8 +1,8 @@
 #' Signal-detection summary for binary retention decisions
 #'
 #' @description
-#' Compares a logical vector of pretest retention decisions with a logical
-#' ground-truth criterion (for example, later CFA retention). Reports a correctly
+#' Auxiliary compatibility diagnostic. Compares a logical vector of pretest
+#' retention decisions with a logical ground-truth criterion (for example, later CFA retention). Reports a correctly
 #' oriented confusion matrix, accuracy, sensitivity, specificity, signed phi,
 #' and Pearson's chi-square test without Yates correction.
 #'

@@ -1,3 +1,18 @@
+# contentvalidR 0.0.5.9000
+
+## Release hardening
+
+* Added centralized validation for logical flags and column-name arguments used across public workflows.
+* Hardened rating data against non-finite values, malformed/duplicated target maps, empty identifiers, and ambiguous multi-scale `orbiting_r` specifications.
+* Added clearer safeguards for within- versus between-judge ANOVA designs and for distinctiveness analyses with fewer than two construct definitions.
+* Hardened expert-panel congruence target mappings, Aiken/CVI/CVR/IOC missing-data flags, alpha/seed/bootstrap inputs, and Colquitt benchmark input handling.
+* Added defensive validation to legacy/auxiliary Q-factor, agreement, and simulation helpers while keeping them outside the recommended workflow surface.
+* Added a dedicated v0.0.5 regression suite for malformed inputs, degenerate designs, legacy-helper contracts, and S3 workflow return contracts.
+* Added boundary-focused regression coverage for all-missing item columns, tiny expert panels, zero-variance/tied rating profiles, degenerate diagnostic 2 x 2 tables, and all-missing workflow plots.
+* Hardened exact item-sort inputs against non-finite counts/probabilities, made Aiken bootstrap intervals safe for all-missing item columns, and rejected whitespace-only target labels/target-column names.
+* Represented unattainable exact CVR critical counts as `NA` (rather than an out-of-range sentinel) and hardened regression tests against brittle error-message wording.
+* Closed the v0.0.5 public-API audit with an explicit namespace/export contract and S3 registration regression tests; corrected the generated namespace snapshot so `expert_validity()` is available in clean installs and vignette builds.
+
 # contentvalidR 0.0.4.9000
 
 ### Final visualization polish

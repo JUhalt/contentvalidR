@@ -38,6 +38,7 @@
 #' cvi(M)
 #' @export
 cvi <- function(binary, na.rm = FALSE) {
+  .validate_flag(na.rm, "na.rm")
   X <- as.matrix(binary)
   if (length(dim(X)) != 2L || nrow(X) < 1L || ncol(X) < 1L) {
     stop("`binary` must contain at least one judge and one item.", call. = FALSE)
@@ -56,6 +57,9 @@ cvi <- function(binary, na.rm = FALSE) {
 
   item_names <- colnames(X)
   if (is.null(item_names)) item_names <- paste0("Item", seq_len(ncol(X)))
+  if (anyNA(item_names) || any(!nzchar(trimws(item_names))) || anyDuplicated(item_names)) {
+    stop("Item names must be unique, non-missing, and non-empty.", call. = FALSE)
+  }
 
   N <- if (isTRUE(na.rm)) colSums(!is.na(X)) else rep.int(nrow(X), ncol(X))
   A <- colSums(X, na.rm = isTRUE(na.rm))

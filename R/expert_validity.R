@@ -78,8 +78,13 @@ expert_validity <- function(data,
                             na.rm = FALSE,
                             target_col = "target_objective") {
   mode <- match.arg(mode)
+  .validate_flag(na.rm, "na.rm")
 
   if (mode == "relevance") {
+    if (!is.numeric(lo) || length(lo) != 1L || !is.finite(lo) ||
+        !is.numeric(hi) || length(hi) != 1L || !is.finite(hi) || hi <= lo) {
+      stop("`lo` and `hi` must be finite scalars with `hi > lo`.", call. = FALSE)
+    }
     if (is.null(relevance_cut)) relevance_cut <- hi - 1
     if (!is.numeric(relevance_cut) || length(relevance_cut) != 1L ||
         !is.finite(relevance_cut) || relevance_cut < lo || relevance_cut > hi) {
@@ -182,6 +187,10 @@ expert_validity <- function(data,
       stop("Congruence mode requires a long data.frame.", call. = FALSE)
     }
     cells <- ioc(data, na.rm = na.rm)
+    if (!is.character(target_col) || length(target_col) != 1L || is.na(target_col) ||
+        !nzchar(trimws(target_col))) {
+      stop("`target_col` must be one non-empty column name.", call. = FALSE)
+    }
     has_target <- target_col %in% names(data)
 
     if (!has_target) {
@@ -191,9 +200,20 @@ expert_validity <- function(data,
     } else {
       map <- unique(data[, c("item", target_col), drop = FALSE])
       names(map) <- c("item", "target")
+      if (anyNA(map$target) || any(!nzchar(trimws(as.character(map$target))))) {
+        stop("Target-objective mappings cannot be missing or empty.", call. = FALSE)
+      }
       counts <- table(map$item)
       if (any(counts != 1L)) {
         stop("Each item must map to exactly one target objective.", call. = FALSE)
+      }
+      available <- split(as.character(data$objective), as.character(data$item), drop = TRUE)
+      invalid_target <- vapply(seq_len(nrow(map)), function(i) {
+        !as.character(map$target[i]) %in% unique(available[[as.character(map$item[i])]])
+      }, logical(1))
+      if (any(invalid_target)) {
+        stop("Target objective is absent from the rated objectives for item(s): ",
+             paste(as.character(map$item[invalid_target]), collapse = ", "), ".", call. = FALSE)
       }
 
       by_item <- split(cells, cells$item, drop = TRUE)

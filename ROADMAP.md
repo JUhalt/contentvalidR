@@ -34,9 +34,7 @@ Goal: make the existing core statistically trustworthy before expanding the API.
 - [x] Replace the placeholder test with substantive regression tests.
 - [x] Consolidate GitHub Actions and remove obsolete R versions.
 - [x] Verify all changes under R with `document()`, `test()`, and `check()`.
-- [ ] Add published/hand-worked canonical validation cases for every release-defining core method.
-      Coverage-closure cases are implemented in the v0.0.4b candidate and await
-      R smoke-test verification before this is checked off.
+- [x] Add published/hand-worked canonical validation cases for every release-defining core method.
 - [x] Decide whether to expose the Anderson-Gerbing legacy critical-Csv test.
       Decision: do not expose it as an alternate user-facing rule. Howard-Melloy
       is the supported default; the legacy rule adds no decision difference in
@@ -72,7 +70,7 @@ Goal: modernize the Hinkin-Tracey side of the package.
 - [x] Verify the full v0.0.3 patch under R with `document()`, `test()`, `check()`,
       and `build_readme()`.
 
-## v0.0.4 - Expert-panel workflow (current)
+## v0.0.4 - Expert-panel workflow (completed)
 
 Goal: provide trustworthy complementary indices without duplicating unrelated
 packages merely for feature count.
@@ -99,14 +97,23 @@ Release/public-repository hygiene in this sprint:
       smoke-tested and visually reviewed; final v0.0.4d polish staggers nearby
       scale labels and renders the exact critical-Psa boundary as a step function.
 
-## v0.0.5 - Test hardening
+## v0.0.5 - Test hardening (completed)
 
 Goal: reach publication-grade numerical and behavioral coverage.
 
-- [x] Reach the original 80-120 meaningful-test target (101 `test_that()` blocks in the v0.0.4b candidate).
-- [ ] Add published examples, hand calculations, boundary conditions, malformed
-      input, missingness, degenerate tables, and output-contract tests.
-- [ ] Add regression tests for every discovered bug.
+- [x] Reach the original 80-120 meaningful-test target (103 `test_that()` blocks by the final v0.0.4d candidate).
+- [x] Add published examples and hand calculations for release-defining core methods.
+- [x] Complete boundary-condition, malformed-input, missingness, degenerate-design,
+      and output-contract hardening across the public API.
+      - [x] v0.0.5a: malformed-input/design/contract audit.
+      - [x] v0.0.5b: all-missing, tiny-panel, exact-boundary, zero-variance,
+            tied-profile, and degenerate-diagnostic regression pass.
+      - [x] v0.0.5c: public export/S3 registration audit and clean-install vignette contract.
+- [x] Add regression tests for every discovered bug found during the v0.0.5 audit.
+- [x] Classify legacy helpers (`qfactor_content()`, `agreement_summary()`,
+      `simulate_*()`, `signal_detection()`, `reproducibility_phi()`) as
+      auxiliary/compatibility functions rather than release-defining workflows;
+      retain them for now but do not expand their methodological role before 0.1.0.
 
 ## v0.0.6 - Stable user-facing API
 

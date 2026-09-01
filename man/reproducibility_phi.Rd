@@ -15,8 +15,8 @@ reproducibility_phi(sig1, sig2)
 A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
 }
 \description{
-Cross-tabulates retention decisions for the same items across two pretests
-and reports signed phi and Pearson's chi-square test without Yates correction.
+Auxiliary compatibility diagnostic. Cross-tabulates retention decisions for
+the same items across two pretests and reports signed phi and Pearson's chi-square test without Yates correction.
 The full 2 x 2 table is retained even when one response level is absent.
 }
 \examples{

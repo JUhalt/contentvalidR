@@ -94,7 +94,16 @@ anova_content <- function(ratings,
     df <- by_item[[i]]
     item <- df$item[1]
     target <- unique(df$target)[1]
-    item_design <- if (design == "auto") .detect_item_rating_design(df) else design
+    detected_design <- .detect_item_rating_design(df)
+    if (design == "within" && detected_design == "between") {
+      stop("`design = \"within\"` was requested, but item '", item,
+           "' has no judge rating more than one construct definition.", call. = FALSE)
+    }
+    if (design == "between" && detected_design == "within") {
+      stop("`design = \"between\"` was requested, but item '", item,
+           "' contains judges who rated multiple construct definitions.", call. = FALSE)
+    }
+    item_design <- if (design == "auto") detected_design else design
     constructs <- unique(df$construct)
     means <- tapply(df$rating, df$construct, mean, na.rm = TRUE)
     means[is.nan(means)] <- NA_real_

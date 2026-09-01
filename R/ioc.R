@@ -27,12 +27,16 @@
 #' ioc(df)
 #' @export
 ioc <- function(ratings, na.rm = FALSE) {
+  .validate_flag(na.rm, "na.rm")
   req <- c("item", "judge", "objective", "score")
   if (!is.data.frame(ratings) || !all(req %in% names(ratings))) {
     stop("`ratings` must be a data.frame with item, judge, objective, and score columns.", call. = FALSE)
   }
   d <- ratings[, req, drop = FALSE]
   if (nrow(d) < 1L) stop("`ratings` contains no rows.", call. = FALSE)
+  .validate_labels(d$item, "item")
+  .validate_labels(d$judge, "judge")
+  .validate_labels(d$objective, "objective")
 
   key <- paste(d$item, d$judge, d$objective, sep = "\r")
   if (anyDuplicated(key)) {

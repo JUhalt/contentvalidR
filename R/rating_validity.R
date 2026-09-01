@@ -137,6 +137,13 @@ rating_validity <- function(ratings,
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
   anchors <- .validate_rating_scale(scale_min, scale_max, d$rating)
+  construct_counts <- vapply(split(d, d$item, drop = TRUE),
+                             function(z) length(unique(z$construct)), integer(1))
+  too_few <- names(construct_counts)[construct_counts < 2L]
+  if (length(too_few)) {
+    stop("`rating_validity()` requires at least two construct definitions per item. Check: ",
+         paste(too_few, collapse = ", "), ".", call. = FALSE)
+  }
 
   designs <- vapply(split(d, d$item, drop = TRUE), .detect_item_rating_design, character(1))
   between_items <- names(designs)[designs == "between"]

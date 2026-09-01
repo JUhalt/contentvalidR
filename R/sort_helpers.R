@@ -5,6 +5,8 @@
                                       rater_col,
                                       assigned_col,
                                       target_col) {
+  .validate_column_names(item_col, rater_col, assigned_col, target_col)
+
   if (!is.data.frame(assignments)) {
     stop("`assignments` must be a data.frame.", call. = FALSE)
   }
@@ -27,15 +29,10 @@
   d <- assignments[, needed, drop = FALSE]
   names(d) <- c("item", "rater", "assigned", "target")
 
-  if (anyNA(d$item)) {
-    stop("`item` identifiers cannot be missing.", call. = FALSE)
-  }
-  if (anyNA(d$rater)) {
-    stop("`rater` identifiers cannot be missing.", call. = FALSE)
-  }
-  if (anyNA(d$target)) {
-    stop("`target_construct` cannot be missing.", call. = FALSE)
-  }
+  .validate_labels(d$item, "item")
+  .validate_labels(d$rater, "rater")
+  .validate_labels(d$target, "target_construct")
+  .validate_labels(d$assigned, "assigned_construct", allow_na = TRUE)
 
   dup <- duplicated(d[c("item", "rater")])
   if (any(dup)) {
@@ -67,14 +64,14 @@
 }
 
 .critical_target_count <- function(N, p0 = 0.5, alpha = 0.05) {
-  if (length(N) != 1L || is.na(N) || N < 1 || N != floor(N)) {
-    stop("`N` must be a positive integer.", call. = FALSE)
+  if (!is.numeric(N) || length(N) != 1L || !is.finite(N) || N < 1 || N != floor(N)) {
+    stop("`N` must be a positive finite integer.", call. = FALSE)
   }
-  if (length(p0) != 1L || is.na(p0) || p0 <= 0 || p0 >= 1) {
-    stop("`p0` must be a single probability strictly between 0 and 1.", call. = FALSE)
+  if (!is.numeric(p0) || length(p0) != 1L || !is.finite(p0) || p0 <= 0 || p0 >= 1) {
+    stop("`p0` must be one finite probability strictly between 0 and 1.", call. = FALSE)
   }
-  if (length(alpha) != 1L || is.na(alpha) || alpha <= 0 || alpha >= 1) {
-    stop("`alpha` must be a single probability strictly between 0 and 1.", call. = FALSE)
+  if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("`alpha` must be one finite probability strictly between 0 and 1.", call. = FALSE)
   }
 
   candidates <- seq.int(0L, N)

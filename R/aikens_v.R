@@ -38,6 +38,7 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
                      B = 500, alpha = 0.05, seed = NULL,
                      na.rm = FALSE) {
   ci <- match.arg(ci)
+  .validate_flag(na.rm, "na.rm")
   R <- as.matrix(ratings)
 
   if (length(dim(R)) != 2L || nrow(R) < 1L || ncol(R) < 1L) {
@@ -48,8 +49,8 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
       !is.numeric(hi) || length(hi) != 1L || !is.finite(hi) || hi <= lo) {
     stop("`lo` and `hi` must be finite scalars with `hi > lo`.", call. = FALSE)
   }
-  if (!is.numeric(alpha) || length(alpha) != 1L || alpha <= 0 || alpha >= 1) {
-    stop("`alpha` must be between 0 and 1.", call. = FALSE)
+  if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("`alpha` must be one finite number between 0 and 1.", call. = FALSE)
   }
   if (!all(R >= lo & R <= hi, na.rm = TRUE)) {
     stop("Ratings fall outside the specified `lo`/`hi` bounds.", call. = FALSE)
@@ -60,6 +61,9 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
 
   item_names <- colnames(R)
   if (is.null(item_names)) item_names <- paste0("Item", seq_len(ncol(R)))
+  if (anyNA(item_names) || any(!nzchar(trimws(item_names))) || anyDuplicated(item_names)) {
+    stop("Item names must be unique, non-missing, and non-empty.", call. = FALSE)
+  }
   N_total <- nrow(R)
   N <- if (isTRUE(na.rm)) colSums(!is.na(R)) else rep.int(N_total, ncol(R))
   n_missing <- N_total - N
@@ -97,11 +101,16 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     return(out)
   }
 
-  if (!is.numeric(B) || length(B) != 1L || !is.finite(B) || B < 2) {
-    stop("`B` must be at least 2 for bootstrap intervals.", call. = FALSE)
+  if (!is.numeric(B) || length(B) != 1L || !is.finite(B) || B < 2 || B != floor(B)) {
+    stop("`B` must be an integer of at least 2 for bootstrap intervals.", call. = FALSE)
   }
   B <- as.integer(B)
-  if (!is.null(seed)) set.seed(seed)
+  if (!is.null(seed)) {
+    if (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed) || seed != floor(seed)) {
+      stop("`seed` must be NULL or one finite integer.", call. = FALSE)
+    }
+    set.seed(as.integer(seed))
+  }
   qlo <- alpha / 2
   qhi <- 1 - alpha / 2
   bootV <- matrix(NA_real_, nrow = B, ncol = ncol(R))
@@ -116,8 +125,13 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     }
   }
 
-  out$ci_low <- apply(bootV, 2, stats::quantile, probs = qlo, na.rm = TRUE)
-  out$ci_high <- apply(bootV, 2, stats::quantile, probs = qhi, na.rm = TRUE)
+  boot_quantile <- function(x, prob) {
+    x <- x[is.finite(x)]
+    if (length(x) == 0L) return(NA_real_)
+    unname(stats::quantile(x, probs = prob, names = FALSE))
+  }
+  out$ci_low <- apply(bootV, 2, boot_quantile, prob = qlo)
+  out$ci_high <- apply(bootV, 2, boot_quantile, prob = qhi)
   out$ci_method <- "percentile bootstrap"
   out
 }

@@ -13,5 +13,5 @@ agreement_summary(ratings)
 list with results, or a message if 'irr' is not installed
 }
 \description{
-Computes Fleiss' kappa via 'irr' if available (auxiliary only).
+Computes Fleiss' kappa via 'irr' if available. This is an auxiliary compatibility helper, not part of the recommended contentvalidR workflows.
 }

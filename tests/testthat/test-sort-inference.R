@@ -27,7 +27,7 @@ test_that("csv_binom_test validates counts and probabilities", {
   expect_error(csv_binom_test(-1, 20), "between 0 and `N`")
   expect_error(csv_binom_test(21, 20), "between 0 and `N`")
   expect_error(csv_binom_test(10.5, 20), "integer")
-  expect_error(csv_binom_test(10, 0), "positive integer")
+  expect_error(csv_binom_test(10, 0), "positive.*integer")
   expect_error(csv_binom_test(10, 20, p0 = 1), "strictly between")
   expect_error(csv_binom_test(10, 20, alpha = 0), "strictly between")
 })

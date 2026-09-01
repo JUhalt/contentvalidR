@@ -1,8 +1,8 @@
 #' Between-pretest reproducibility (phi) of binary decisions
 #'
 #' @description
-#' Cross-tabulates retention decisions for the same items across two pretests
-#' and reports signed phi and Pearson's chi-square test without Yates correction.
+#' Auxiliary compatibility diagnostic. Cross-tabulates retention decisions for
+#' the same items across two pretests and reports signed phi and Pearson's chi-square test without Yates correction.
 #' The full 2 x 2 table is retained even when one response level is absent.
 #'
 #' @param sig1 Logical vector of retention decisions from pretest 1.

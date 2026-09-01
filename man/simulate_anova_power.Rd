@@ -32,7 +32,8 @@ Estimated power (numeric in [0, 1]).
 \description{
 Simulates a balanced \strong{independent-groups} one-way ANOVA. This helper is
 retained for backward compatibility but does not represent the standard
-within-judge Hinkin-Tracey design used by \code{rating_validity()}.
+within-judge Hinkin-Tracey design used by \code{rating_validity()}. It is an
+auxiliary compatibility helper and is not a release-defining workflow.
 }
 \examples{
 simulate_anova_power(n_raters = 20, mean_diff = 0.5, sd = 1, k_constructs = 4, reps = 100)
