@@ -4,12 +4,27 @@
 \alias{plot.contentvalid_sort}
 \title{Plot item-sort evidence}
 \usage{
-\method{plot}{contentvalid_sort}(x, metric = c("psa", "csv"), ...)
+\method{plot}{contentvalid_sort}(
+  x,
+  metric = c("psa", "csv"),
+  type = c("item", "map"),
+  label = c("review", "all", "none"),
+  show_legend = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{contentvalid_sort} object.}
 
-\item{metric}{Either \code{"psa"} or \code{"csv"}.}
+\item{metric}{Either \code{"psa"} or \code{"csv"} for \code{type = "item"}.}
+
+\item{type}{Either \code{"item"} for the original one-index plot or \code{"map"} for the
+correspondence-distinctiveness evidence map.}
+
+\item{label}{Which item labels to draw on the map: \code{"review"} (default), \code{"all"},
+or \code{"none"}.}
+
+\item{show_legend}{Logical; draw the compact plot key. Default \code{TRUE}.}
 
 \item{...}{Additional graphical arguments passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -17,5 +32,10 @@
 The input object invisibly.
 }
 \description{
-Plot item-sort evidence
+Draws either the original one-index item plot or a correspondence-distinctiveness
+evidence map. The map places Psa on the x-axis and Csv on the y-axis so that
+intended-construct correspondence and distinctiveness can be inspected together.
+Target-scale means are added as diamonds when available. Colquitt benchmark bands
+are deliberately not drawn across item points because those norms were developed
+for scale-level averages rather than individual items.
 }

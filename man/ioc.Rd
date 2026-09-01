@@ -2,27 +2,36 @@
 % Please edit documentation in R/ioc.R
 \name{ioc}
 \alias{ioc}
-\title{Item–Objective Congruence (IOC)}
+\title{Item-Objective Congruence (IOC)}
 \usage{
-ioc(ratings)
+ioc(ratings, na.rm = FALSE)
 }
 \arguments{
-\item{ratings}{data.frame with columns:
-item (chr/num), judge (chr/num), objective (chr/num), score (numeric in -1,0,1).}
+\item{ratings}{Data frame with columns \code{item}, \code{judge}, \code{objective}, \code{score}.}
+
+\item{na.rm}{Logical. If \code{FALSE}, missing scores are an error; if \code{TRUE},
+missing scores are removed within item-objective cells.}
 }
 \value{
-data.frame with: item, objective, n_judges, ioc (mean of scores).
+A data.frame with item, objective, total rows, effective judge count,
+missing count, and IOC.
 }
 \description{
-Computes IOC per item per objective from judges' ratings coded in -1, 0, +1
-following Rovinelli & Hambleton. Provide data in long format.
+Computes item-objective congruence from expert ratings coded \code{-1}, \code{0}, and
+\code{+1}. Duplicate item-judge-objective ratings are rejected. Missing ratings
+may be removed cellwise with transparent effective judge counts.
 }
 \examples{
 df <- data.frame(
-  item = rep(paste0("I",1:3), each = 9),
-  judge = rep(1:3, times = 9),
-  objective = rep(rep(LETTERS[1:3], each = 3), times = 3),
-  score = sample(c(-1,0,1), 27, replace = TRUE)
+  item = rep("I1", 6),
+  judge = rep(1:3, 2),
+  objective = rep(c("A", "B"), each = 3),
+  score = c(1,1,1, 0,-1,0)
 )
 ioc(df)
+}
+\references{
+Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+specialists in the assessment of criterion-referenced test item validity.
+\emph{Dutch Journal of Educational Research, 2}, 49-60.
 }

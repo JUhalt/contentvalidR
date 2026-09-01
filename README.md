@@ -382,62 +382,233 @@ anova_content(rating_dat)
 #> 3          2.45   2.290289e-10          TRUE         TRUE
 ```
 
-## Expert-panel indices
+## Recommended expert-panel workflow
+
+Expert panels answer several *different* questions, so
+`expert_validity()` uses an explicit mode rather than pretending that
+Aiken V, CVR, CVI, and IOC are interchangeable.
+
+### Relevance: Aiken V + CVI / modified kappa
 
 ``` r
-# Aiken's V: judges x items
-R <- matrix(sample(1:5, 5 * 4, replace = TRUE), nrow = 5)
-aikens_v(R, lo = 1, hi = 5)
-#>    item    V
-#> 1 Item1 0.55
-#> 2 Item2 0.30
-#> 3 Item3 0.20
-#> 4 Item4 0.40
-
-# Lawshe CVR
-cvr(essential = c(8, 10, 5), N = 12)
-#>   item ne  N        cvr critical_ne critical_cvr  pass
-#> 1    1  8 12  0.3333333          10    0.6666667 FALSE
-#> 2    2 10 12  0.6666667          10    0.6666667  TRUE
-#> 3    3  5 12 -0.1666667          10    0.6666667 FALSE
-
-# CVI with Polit-Beck-Owen modified kappa
-M <- matrix(
-  c(1,1,1,1,
-    1,1,1,0,
-    1,1,0,0),
-  nrow = 4,
+expert_ratings <- matrix(
+  c(4,4,4,4,4,4,
+    4,4,4,3,4,4,
+    4,3,4,4,3,4),
+  nrow = 6,
   dimnames = list(NULL, c("Item1", "Item2", "Item3"))
 )
-cvi(M)
+
+efit <- expert_validity(
+  expert_ratings,
+  mode = "relevance",
+  lo = 1, hi = 4
+)
+efit
+#> contentvalidR expert-panel analysis
+#> -----------------------------------
+#> Mode: relevance 
+#> Items: 3 | Experts/item: 6 
+#> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
+#> Strong support: 3 | Support: 0 | Review: 0 
+#> 
+#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
+#>  Item1 6 1.000  0.824   1.000     1         1 Strong support
+#>  Item2 6 0.944  0.742   0.990     1         1 Strong support
+#>  Item3 6 0.889  0.672   0.969     1         1 Strong support
+#> 
+#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
+#> 
+#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
+summary(efit)
+#> Summary of expert-panel content-validity evidence
+#> ---------------------------------------------
+#> Mode: relevance 
+#> No items were flagged by the workflow's quantitative review rules.
+#> 
+#> These summaries support, but do not replace, qualitative content review.
+```
+
+Relevance mode reports Aiken’s V with the Penfield-Giacobbi score
+confidence interval, I-CVI, Polit-Beck-Owen modified kappa, S-CVI/Ave,
+and S-CVI/UA. The workflow displays common panel-size CVI guidelines as
+**review aids**, not universal validity cutoffs. Aiken V is not
+converted into an automatic deletion rule.
+
+The CVI relevance threshold is explicit and can be changed when a study
+uses a different rating convention:
+
+``` r
+expert_validity(expert_ratings, mode = "relevance",
+                lo = 1, hi = 4, relevance_cut = 3)
+#> contentvalidR expert-panel analysis
+#> -----------------------------------
+#> Mode: relevance 
+#> Items: 3 | Experts/item: 6 
+#> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
+#> Strong support: 3 | Support: 0 | Review: 0 
+#> 
+#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
+#>  Item1 6 1.000  0.824   1.000     1         1 Strong support
+#>  Item2 6 0.944  0.742   0.990     1         1 Strong support
+#>  Item3 6 0.889  0.672   0.969     1         1 Strong support
+#> 
+#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
+#> 
+#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
+```
+
+### Essentiality: Lawshe CVR + exact inference
+
+``` r
+expert_validity(
+  c(10, 8, 6),
+  mode = "essentiality",
+  N = 12
+)
+#> contentvalidR expert-panel analysis
+#> -----------------------------------
+#> Mode: essentiality 
+#> Method: Lawshe CVR with exact binomial critical values 
+#> 
+#>   item ne  N   cvr p_value critical_ne recommendation
+#>  Item1 10 12 0.667   0.019          10      Supported
+#>  Item2  8 12 0.333   0.194          10         Review
+#>  Item3  6 12 0.000   0.613          10         Review
+#> 
+#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
+```
+
+The CVR workflow derives the item-specific critical essential count
+directly from the exact binomial distribution, following the logic
+revisited by Ayre and Scally (2014). Judge-by-item 0/1 matrices are also
+accepted, including itemwise missingness when explicitly requested.
+
+### Item-objective congruence
+
+``` r
+ioc_dat <- expand.grid(
+  item = c("I1", "I2"),
+  judge = 1:4,
+  objective = c("A", "B")
+)
+ioc_dat$target_objective <- ifelse(ioc_dat$item == "I1", "A", "B")
+ioc_dat$score <- ifelse(
+  ioc_dat$objective == ioc_dat$target_objective, 1, -1
+)
+
+expert_validity(ioc_dat, mode = "congruence")
+#> contentvalidR expert-panel analysis
+#> -----------------------------------
+#> Mode: congruence 
+#> Method: Rovinelli-Hambleton item-objective congruence 
+#> 
+#>  item target target_ioc strongest_competitor competitor_ioc margin
+#>    I1      A          1                    B             -1      2
+#>    I2      B          1                    A             -1      2
+#>  recommendation
+#>  Target favored
+#>  Target favored
+#>                                                                                                      interpretation
+#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
+#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
+#> 
+#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
+```
+
+When a target objective is supplied, the workflow reports the intended
+IOC, strongest competing objective, and target-minus-competitor margin.
+Without a target mapping, IOC cells are returned descriptively instead
+of manufacturing a pass/fail claim.
+
+Low-level functions remain available for researchers who need the
+components directly:
+
+``` r
+aikens_v(expert_ratings, lo = 1, hi = 4)
+#>    item N n_missing         V    ci_low   ci_high               ci_method
+#> 1 Item1 6         0 1.0000000 0.8241208 1.0000000 Penfield-Giacobbi score
+#> 2 Item2 6         0 0.9444444 0.7424270 0.9901248 Penfield-Giacobbi score
+#> 3 Item3 6         0 0.8888889 0.6720023 0.9689805 Penfield-Giacobbi score
+cvr(essential = c(8, 10, 5), N = 12)
+#>    item ne  N        cvr    p_value critical_ne critical_cvr  pass
+#> 1 Item1  8 12  0.3333333 0.19384766          10    0.6666667 FALSE
+#> 2 Item2 10 12  0.6666667 0.01928711          10    0.6666667  TRUE
+#> 3 Item3  5 12 -0.1666667 0.80615234          10    0.6666667 FALSE
+cvi(expert_ratings >= 3)
 #> Content Validity Index (CVI)
 #> ----------------------------
 #> Items analyzed: 3 
-#> Judges per item: 4 
-#> S-CVI/Ave: 0.750 
-#> S-CVI/UA : 0.333 
+#> Judges per item: 6 
+#> S-CVI/Ave: 1.000 
+#> S-CVI/UA : 1.000 
 #> 
 #> Item-level results (modified kappa is chance-corrected):
 #>   item A N I_CVI    Pc kappa_mod
-#>  Item1 4 4  1.00 0.062     1.000
-#>  Item2 3 4  0.75 0.250     0.667
-#>  Item3 2 4  0.50 0.375     0.200
+#>  Item1 6 6     1 0.016         1
+#>  Item2 6 6     1 0.016         1
+#>  Item3 6 6     1 0.016         1
 #> 
 #> Interpretation should consider panel size, item purpose, and qualitative expert feedback;
 #> CVI statistics alone do not establish comprehensive content validity.
+ioc(ioc_dat[c("item", "judge", "objective", "score")])
+#>   item objective n_total n_judges n_missing ioc
+#> 1   I1         A       4        4         0   1
+#> 2   I1         B       4        4         0  -1
+#> 3   I2         A       4        4         0  -1
+#> 4   I2         B       4        4         0   1
 ```
 
-`cvi()` reports I-CVI, S-CVI/Ave, S-CVI/UA, the exact chance-agreement
-probability, and modified kappa. Its print method also reminds users
-that those indices do not, by themselves, establish the full
-content-validity argument.
+## Interpretive visualization
+
+The workflow objects include dependency-free base-R graphics designed
+around the substantive questions in each method:
+
+``` r
+plot(fit, type = "map")
+```
+
+<img src="man/figures/README-visualization-1.png" alt="" width="100%" />
+
+``` r
+plot(rfit, type = "map")
+```
+
+<img src="man/figures/README-visualization-2.png" alt="" width="100%" />
+
+``` r
+plot(rfit, type = "profile")
+```
+
+<img src="man/figures/README-visualization-3.png" alt="" width="100%" />
+
+``` r
+plot(efit)
+```
+
+<img src="man/figures/README-visualization-4.png" alt="" width="100%" />
+
+The sort and rating maps jointly display **definitional correspondence**
+and **definitional distinctiveness**, with target-scale means
+distinguished from item points. The rating profile plot shows the
+intended-definition mean against the strongest competitor for every
+item. Expert-panel plots use Aiken score intervals, panel-specific CVR
+criteria, or target-versus-competitor IOC gaps as appropriate. The plots
+intentionally avoid converting scale-level empirical norms into
+item-level cutoffs.
+
+``` r
+plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
+```
+
+<img src="man/figures/README-visualization-power-1.png" alt="" width="100%" />
 
 ## Experimental modules
 
 The diagnostic, simulation, and Q-factor helpers remain available while
-their APIs and methodological scope are being hardened. The two
-recommended primary workflows are now `sort_validity()` and
-`rating_validity()`.
+their APIs and methodological scope are being hardened. The three
+recommended primary workflows are now `sort_validity()`,
+`rating_validity()`, and `expert_validity()`.
 
 ## Core methodological references
 
@@ -462,3 +633,19 @@ recommended primary workflows are now `sort_validity()` and
   acceptable indicator of content validity? Appraisal and
   recommendations. *Research in Nursing & Health, 30*(4), 459–467.
   <https://doi.org/10.1002/nur.20199>
+- Aiken, L. R. (1980). Content validity and reliability of single items
+  or questionnaires. *Educational and Psychological Measurement, 40*,
+  955–959.
+- Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
+  confidence interval to Aiken’s item content-relevance index.
+  *Measurement in Physical Education and Exercise Science, 8*(4),
+  213–225. <https://doi.org/10.1207/S15327841MPEE0804_3>
+- Lawshe, C. H. (1975). A quantitative approach to content validity.
+  *Personnel Psychology, 28*, 563–575.
+- Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe’s content
+  validity ratio: Revisiting the original methods of calculation.
+  *Measurement and Evaluation in Counseling and Development, 47*(1),
+  79–86. <https://doi.org/10.1177/0748175613513808>
+- Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+  specialists in the assessment of criterion-referenced test item
+  validity. *Dutch Journal of Educational Research, 2*, 49–60.

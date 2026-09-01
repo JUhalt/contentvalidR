@@ -2,14 +2,28 @@
 % Please edit documentation in R/rating_validity.R
 \name{plot.contentvalid_rating}
 \alias{plot.contentvalid_rating}
-\title{Plot Hinkin-Tracey item-level rating evidence}
+\title{Plot Hinkin-Tracey rating evidence}
 \usage{
-\method{plot}{contentvalid_rating}(x, metric = c("htc", "htd"), ...)
+\method{plot}{contentvalid_rating}(
+  x,
+  metric = c("htc", "htd"),
+  type = c("item", "map", "profile"),
+  label = c("review", "all", "none"),
+  show_legend = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{A \code{contentvalid_rating} object.}
 
-\item{metric}{Either \code{"htc"} or \code{"htd"}.}
+\item{metric}{Either \code{"htc"} or \code{"htd"} for \code{type = "item"}.}
+
+\item{type}{One of \code{"item"}, \code{"map"}, or \code{"profile"}.}
+
+\item{label}{Which item labels to draw on the map: \code{"review"} (default), \code{"all"},
+or \code{"none"}.}
+
+\item{show_legend}{Logical; draw the compact plot key. Default \code{TRUE}.}
 
 \item{...}{Additional graphical arguments passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -17,5 +31,9 @@
 The input object invisibly.
 }
 \description{
-Plot Hinkin-Tracey item-level rating evidence
+Provides three complementary views of a construct-rating pretest. \code{"item"}
+reproduces the original one-index plot, \code{"map"} places HTC against HTD to show
+correspondence and distinctiveness jointly, and \code{"profile"} draws a target-versus-
+strongest-competitor gap plot on the original response scale. The latter is a
+graphical analogue of the mean-rating tables used in Hinkin and Tracey (1999).
 }

@@ -2,7 +2,7 @@
 title: "Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Item-Sort Content Validation}
+  %\VignetteIndexEntry{Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -147,17 +147,46 @@ probability, `N`, the null probability, and alpha.
 
 ## Plotting item evidence
 
-```{r fig.width=7, fig.height=4}
-plot(fit, metric = "psa")
-```
+The one-index views remain available:
 
 ```{r fig.width=7, fig.height=4}
+plot(fit, metric = "psa")
 plot(fit, metric = "csv")
 ```
 
-Filled points meet the exact item-level retention criterion; open points are
-flagged for review. The plot does not add Colquitt cutoff lines because those
-benchmarks are scale-level norms.
+For diagnosis, the package also introduces a **correspondence-distinctiveness
+evidence map**:
+
+```{r fig.width=7, fig.height=5}
+plot(fit, type = "map")
+```
+
+Psa and Csv are shown jointly, review items are labeled by default, and target-
+scale averages are added as diamonds. This makes it easier to distinguish a
+correspondence problem (low Psa) from a construct-overlap problem (low or
+negative Csv). The map does not draw Colquitt cutoff regions across individual
+items because those empirical norms were constructed from scale-level averages.
+
+The exact planning object is also plotable:
+
+```{r fig.width=7, fig.height=4}
+plan <- sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80))
+plot(plan)
+plot(plan, type = "critical")
+```
+
+No conventional target-power line is imposed unless the analyst supplies one.
+
+## Why the Anderson-Gerbing legacy critical-Csv rule is not exposed
+
+`contentvalidR` retains Anderson and Gerbing's Psa and Csv indices but does not
+provide their legacy critical-Csv decision rule as a user-selectable alternative.
+Howard and Melloy (2016) showed that the older rule is appropriate for the original
+two-choice case but becomes miscalibrated when it is applied to sorts with more
+than two construct choices. Their revised target-count procedure agrees with the
+legacy logic in the two-choice case and is applicable to the broader designs now
+used in practice. Exposing the obsolete rule would therefore add a reproducibility
+option that is easy to misuse without adding a recommended analysis path.
 
 ## Reporting
 

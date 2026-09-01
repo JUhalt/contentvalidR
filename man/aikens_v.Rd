@@ -2,40 +2,57 @@
 % Please edit documentation in R/aikens_v.R
 \name{aikens_v}
 \alias{aikens_v}
-\title{Aiken's V for content validity (ordinal ratings)}
+\title{Aiken's V for expert content-relevance ratings}
 \usage{
 aikens_v(
   ratings,
   lo = 1,
   hi = 5,
-  ci = c("none", "bootstrap"),
+  ci = c("score", "none", "bootstrap"),
   B = 500,
   alpha = 0.05,
-  seed = NULL
+  seed = NULL,
+  na.rm = FALSE
 )
 }
 \arguments{
-\item{ratings}{matrix/data.frame with rows = judges, cols = items (numeric).}
+\item{ratings}{Matrix/data.frame with judges in rows and items in columns.}
 
-\item{lo, hi}{Numeric scale bounds (default 1 and 5).}
+\item{lo, hi}{Numeric lower and upper bounds of the rating scale.}
 
-\item{ci}{one of c("none","bootstrap"). If "bootstrap", percentile CI is returned.}
+\item{ci}{Confidence-interval method: \code{"score"} (default), \code{"bootstrap"},
+or \code{"none"}.}
 
-\item{B}{bootstrap reps (default 500; keep small for CRAN examples).}
+\item{B}{Number of bootstrap replicates when \code{ci = "bootstrap"}.}
 
-\item{alpha}{CI level (default .05).}
+\item{alpha}{Two-sided CI alpha level; \code{.05} gives a 95\% interval.}
 
-\item{seed}{optional integer for reproducibility of bootstrap.}
+\item{seed}{Optional integer seed for bootstrap reproducibility.}
+
+\item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
+If \code{TRUE}, item-specific effective judge counts are used.}
 }
 \value{
-data.frame: item, V, (optional) ci_low, ci_high.
+A data.frame with item, effective judge count \code{N}, number missing,
+Aiken's \code{V}, and (when requested) \code{ci_low} and \code{ci_high}.
 }
 \description{
-Computes Aiken's V per item from judges' ordinal ratings on a bounded scale defined by \code{lo} and \code{hi}.
-Optionally computes percentile bootstrap confidence intervals.
+Computes Aiken's V per item for bounded ordinal expert ratings. By default,
+confidence intervals use the score method described by Penfield and
+Giacobbi (2004). Percentile bootstrap intervals remain available for
+compatibility and sensitivity analysis.
 }
 \examples{
-set.seed(1)
-R <- matrix(sample(1:5, 5*6, replace=TRUE), nrow=5)  # 5 judges x 6 items
-aikens_v(R, lo=1, hi=5, ci="none")
+R <- matrix(c(4,4,3,4, 4,3,4,4, 3,3,4,4), nrow = 4)
+colnames(R) <- c("Item1", "Item2", "Item3")
+aikens_v(R, lo = 1, hi = 4)
+}
+\references{
+Aiken, L. R. (1980). Content validity and reliability of single items or
+questionnaires. \emph{Educational and Psychological Measurement, 40}, 955-959.
+
+Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
+interval to Aiken's item content-relevance index. \emph{Measurement in Physical
+Education and Exercise Science, 8}(4), 213-225.
+\doi{10.1207/S15327841MPEE0804_3}
 }

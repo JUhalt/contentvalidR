@@ -315,26 +315,93 @@ print.summary.contentvalid_sort <- function(x, digits = 3, ...) {
 
 #' Plot item-sort evidence
 #'
+#' @description
+#' Draws either the original one-index item plot or a correspondence-distinctiveness
+#' evidence map. The map places Psa on the x-axis and Csv on the y-axis so that
+#' intended-construct correspondence and distinctiveness can be inspected together.
+#' Target-scale means are added as diamonds when available. Colquitt benchmark bands
+#' are deliberately not drawn across item points because those norms were developed
+#' for scale-level averages rather than individual items.
+#'
 #' @param x A `contentvalid_sort` object.
-#' @param metric Either `"psa"` or `"csv"`.
+#' @param metric Either `"psa"` or `"csv"` for `type = "item"`.
+#' @param type Either `"item"` for the original one-index plot or `"map"` for the
+#'   correspondence-distinctiveness evidence map.
+#' @param label Which item labels to draw on the map: `"review"` (default), `"all"`,
+#'   or `"none"`.
+#' @param show_legend Logical; draw the compact plot key. Default `TRUE`.
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #'
 #' @return The input object invisibly.
 #' @export
-plot.contentvalid_sort <- function(x, metric = c("psa", "csv"), ...) {
-  metric <- match.arg(metric)
+plot.contentvalid_sort <- function(x,
+                                   metric = c("psa", "csv"),
+                                   type = c("item", "map"),
+                                   label = c("review", "all", "none"),
+                                   show_legend = TRUE,
+                                   ...) {
+  type <- match.arg(type)
+  label <- match.arg(label)
   r <- x$results
-  y <- r[[metric]]
+
+  if (type == "item") {
+    metric <- match.arg(metric)
+    y <- r[[metric]]
+    pch <- ifelse(r$recommendation == "Retain", 19,
+                  ifelse(r$recommendation == "Review", 1, 4))
+    ylim <- if (metric == "psa") c(0, 1) else c(-1, 1)
+    ylab <- if (metric == "psa") "Psa correspondence" else "Csv distinctiveness"
+
+    graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
+                   ylim = ylim, pch = pch, ...)
+    graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
+    if (metric == "csv") graphics::abline(h = 0, lty = 3)
+    if (isTRUE(show_legend)) {
+      graphics::legend("bottomleft", legend = c("Retain", "Review", "No data"),
+                       pch = c(19, 1, 4), bty = "n", cex = 0.72)
+    }
+    return(invisible(x))
+  }
+
+  ok <- is.finite(r$psa) & is.finite(r$csv)
   pch <- ifelse(r$recommendation == "Retain", 19,
                 ifelse(r$recommendation == "Review", 1, 4))
-  ylim <- if (metric == "psa") c(0, 1) else c(-1, 1)
-  ylab <- if (metric == "psa") "Psa (definitional correspondence)" else "Csv (definitional distinctiveness)"
+  graphics::plot(r$psa[ok], r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1),
+                 xlab = "Psa correspondence",
+                 ylab = "Csv distinctiveness",
+                 pch = pch[ok], ...)
+  graphics::abline(h = 0, lty = 3)
 
-  graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
-                 ylim = ylim, pch = pch, ...)
-  graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
-  if (metric == "csv") graphics::abline(h = 0, lty = 3)
-  graphics::legend("bottomright", legend = c("Retain", "Review", "Insufficient data"),
-                   pch = c(19, 1, 4), bty = "n")
+  lab_idx <- switch(
+    label,
+    review = which(ok & r$recommendation != "Retain"),
+    all = which(ok),
+    none = integer(0)
+  )
+  if (length(lab_idx)) {
+    graphics::text(r$psa[lab_idx], r$csv[lab_idx], labels = r$item[lab_idx],
+                   pos = 3, cex = 0.70, offset = 0.35)
+  }
+
+  s <- x$scale_summary
+  s_ok <- is.finite(s$mean_psa) & is.finite(s$mean_csv)
+  if (any(s_ok)) {
+    sx <- s$mean_psa[s_ok]
+    sy <- s$mean_csv[s_ok]
+    graphics::points(sx, sy, pch = 18, cex = 1.25)
+    label_y <- .map_scale_label_y(sx, sy)
+    graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
+  }
+
+  if (isTRUE(show_legend)) {
+    legend_labels <- c("Retain", "Review")
+    legend_pch <- c(19, 1)
+    if (any(s_ok)) {
+      legend_labels <- c(legend_labels, "Scale mean")
+      legend_pch <- c(legend_pch, 18)
+    }
+    graphics::legend("bottomleft", legend = legend_labels, pch = legend_pch,
+                     bty = "n", cex = 0.72)
+  }
   invisible(x)
 }

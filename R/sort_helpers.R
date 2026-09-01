@@ -88,3 +88,76 @@
   if (denom == 0) return(NA_real_)
   (tp * tn - fp * fn) / denom
 }
+
+# Internal plotting helpers -------------------------------------------------
+
+.map_scale_label_y <- function(x,
+                               y,
+                               base_offset = -0.06,
+                               cluster_gap = 0.055,
+                               x_tolerance = 0.06,
+                               y_tolerance = 0.10,
+                               limits = c(-0.94, 0.94)) {
+  if (length(x) != length(y)) {
+    stop("`x` and `y` must have the same length.", call. = FALSE)
+  }
+  if (length(y) == 0L) return(numeric(0))
+
+  out <- y + base_offset
+  ok <- is.finite(x) & is.finite(y)
+  idx <- which(ok)
+  if (length(idx) > 1L) {
+    # Build proximity components so labels for nearby scale means are
+    # deterministically staggered instead of printed on top of one another.
+    adj <- outer(x[idx], x[idx], function(a, b) abs(a - b) <= x_tolerance) &
+      outer(y[idx], y[idx], function(a, b) abs(a - b) <= y_tolerance)
+    diag(adj) <- TRUE
+
+    seen <- rep(FALSE, length(idx))
+    for (start in seq_along(idx)) {
+      if (seen[start]) next
+      component <- integer(0)
+      frontier <- start
+      while (length(frontier)) {
+        current <- frontier[1]
+        frontier <- frontier[-1]
+        if (seen[current]) next
+        seen[current] <- TRUE
+        component <- c(component, current)
+        neighbours <- which(adj[current, ] & !seen)
+        frontier <- unique(c(frontier, neighbours))
+      }
+
+      if (length(component) > 1L) {
+        original <- idx[component]
+        # Stable ordering keeps the same targets in the same relative label
+        # positions across devices and repeated plots.
+        ord <- order(x[original], y[original], original)
+        original <- original[ord]
+        offsets <- (seq_along(original) - (length(original) + 1) / 2) * cluster_gap
+        center <- mean(y[original]) + base_offset
+        out[original] <- center + offsets
+      }
+    }
+  }
+
+  pmin(limits[2], pmax(limits[1], out))
+}
+
+.critical_psa_curve <- function(N, p0 = 0.5, alpha = 0.05) {
+  N <- as.integer(N)
+  N_full <- seq.int(min(N), max(N))
+  critical <- vapply(
+    N_full,
+    .critical_target_count,
+    integer(1),
+    p0 = p0,
+    alpha = alpha
+  )
+  data.frame(
+    N = N_full,
+    critical_n_target = critical,
+    minimum_observed_psa = critical / N_full,
+    row.names = NULL
+  )
+}

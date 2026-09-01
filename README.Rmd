@@ -147,32 +147,105 @@ htd(rating_dat, scale_min = 1, scale_max = 5)
 anova_content(rating_dat)
 ```
 
-## Expert-panel indices
+## Recommended expert-panel workflow
 
-```{r expert-indices}
-# Aiken's V: judges x items
-R <- matrix(sample(1:5, 5 * 4, replace = TRUE), nrow = 5)
-aikens_v(R, lo = 1, hi = 5)
+Expert panels answer several *different* questions, so `expert_validity()` uses an explicit mode rather than pretending that Aiken V, CVR, CVI, and IOC are interchangeable.
 
-# Lawshe CVR
-cvr(essential = c(8, 10, 5), N = 12)
+### Relevance: Aiken V + CVI / modified kappa
 
-# CVI with Polit-Beck-Owen modified kappa
-M <- matrix(
-  c(1,1,1,1,
-    1,1,1,0,
-    1,1,0,0),
-  nrow = 4,
+```{r expert-relevance}
+expert_ratings <- matrix(
+  c(4,4,4,4,4,4,
+    4,4,4,3,4,4,
+    4,3,4,4,3,4),
+  nrow = 6,
   dimnames = list(NULL, c("Item1", "Item2", "Item3"))
 )
-cvi(M)
+
+efit <- expert_validity(
+  expert_ratings,
+  mode = "relevance",
+  lo = 1, hi = 4
+)
+efit
+summary(efit)
 ```
 
-`cvi()` reports I-CVI, S-CVI/Ave, S-CVI/UA, the exact chance-agreement probability, and modified kappa. Its print method also reminds users that those indices do not, by themselves, establish the full content-validity argument.
+Relevance mode reports Aiken's V with the Penfield-Giacobbi score confidence interval, I-CVI, Polit-Beck-Owen modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common panel-size CVI guidelines as **review aids**, not universal validity cutoffs. Aiken V is not converted into an automatic deletion rule.
+
+The CVI relevance threshold is explicit and can be changed when a study uses a different rating convention:
+
+```{r expert-relevance-cut}
+expert_validity(expert_ratings, mode = "relevance",
+                lo = 1, hi = 4, relevance_cut = 3)
+```
+
+### Essentiality: Lawshe CVR + exact inference
+
+```{r expert-essentiality}
+expert_validity(
+  c(10, 8, 6),
+  mode = "essentiality",
+  N = 12
+)
+```
+
+The CVR workflow derives the item-specific critical essential count directly from the exact binomial distribution, following the logic revisited by Ayre and Scally (2014). Judge-by-item 0/1 matrices are also accepted, including itemwise missingness when explicitly requested.
+
+### Item-objective congruence
+
+```{r expert-congruence}
+ioc_dat <- expand.grid(
+  item = c("I1", "I2"),
+  judge = 1:4,
+  objective = c("A", "B")
+)
+ioc_dat$target_objective <- ifelse(ioc_dat$item == "I1", "A", "B")
+ioc_dat$score <- ifelse(
+  ioc_dat$objective == ioc_dat$target_objective, 1, -1
+)
+
+expert_validity(ioc_dat, mode = "congruence")
+```
+
+When a target objective is supplied, the workflow reports the intended IOC, strongest competing objective, and target-minus-competitor margin. Without a target mapping, IOC cells are returned descriptively instead of manufacturing a pass/fail claim.
+
+Low-level functions remain available for researchers who need the components directly:
+
+```{r expert-components}
+aikens_v(expert_ratings, lo = 1, hi = 4)
+cvr(essential = c(8, 10, 5), N = 12)
+cvi(expert_ratings >= 3)
+ioc(ioc_dat[c("item", "judge", "objective", "score")])
+```
+
+## Interpretive visualization
+
+The workflow objects include dependency-free base-R graphics designed around the
+substantive questions in each method:
+
+```{r visualization, fig.width=7, fig.height=5}
+plot(fit, type = "map")
+plot(rfit, type = "map")
+plot(rfit, type = "profile")
+plot(efit)
+```
+
+The sort and rating maps jointly display **definitional correspondence** and
+**definitional distinctiveness**, with target-scale means distinguished from item
+points. The rating profile plot shows the intended-definition mean against the
+strongest competitor for every item. Expert-panel plots use Aiken score intervals,
+panel-specific CVR criteria, or target-versus-competitor IOC gaps as appropriate.
+The plots intentionally avoid converting scale-level empirical norms into item-level
+cutoffs.
+
+```{r visualization-power, fig.width=7, fig.height=4}
+plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
+```
 
 ## Experimental modules
 
-The diagnostic, simulation, and Q-factor helpers remain available while their APIs and methodological scope are being hardened. The two recommended primary workflows are now `sort_validity()` and `rating_validity()`.
+The diagnostic, simulation, and Q-factor helpers remain available while their APIs and methodological scope are being hardened. The three recommended primary workflows are now `sort_validity()`, `rating_validity()`, and `expert_validity()`.
 
 ## Core methodological references
 
@@ -181,3 +254,8 @@ The diagnostic, simulation, and Q-factor helpers remain available while their AP
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
+- Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. *Educational and Psychological Measurement, 40*, 955–959.
+- Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence interval to Aiken's item content-relevance index. *Measurement in Physical Education and Exercise Science, 8*(4), 213–225. https://doi.org/10.1207/S15327841MPEE0804_3
+- Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*, 563–575.
+- Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity ratio: Revisiting the original methods of calculation. *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86. https://doi.org/10.1177/0748175613513808
+- Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. *Dutch Journal of Educational Research, 2*, 49–60.

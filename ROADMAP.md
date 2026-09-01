@@ -34,8 +34,14 @@ Goal: make the existing core statistically trustworthy before expanding the API.
 - [x] Replace the placeholder test with substantive regression tests.
 - [x] Consolidate GitHub Actions and remove obsolete R versions.
 - [x] Verify all changes under R with `document()`, `test()`, and `check()`.
-- [ ] Add published/hand-worked canonical validation cases for every core method.
-- [ ] Decide whether to expose the Anderson-Gerbing legacy critical-Csv test.
+- [ ] Add published/hand-worked canonical validation cases for every release-defining core method.
+      Coverage-closure cases are implemented in the v0.0.4b candidate and await
+      R smoke-test verification before this is checked off.
+- [x] Decide whether to expose the Anderson-Gerbing legacy critical-Csv test.
+      Decision: do not expose it as an alternate user-facing rule. Howard-Melloy
+      is the supported default; the legacy rule adds no decision difference in
+      the original two-choice case and is miscalibrated when generalized to
+      multi-choice sorts.
 
 ## v0.0.2 - Modern item-sort workflow (completed)
 
@@ -49,7 +55,7 @@ Goal: make A&G -> Howard-Melloy -> Colquitt the flagship module.
 - [x] Add plotting for item-sort evidence and review flags.
 - [x] Add dedicated substantive-validity sort vignette.
 
-## v0.0.3 - Modern construct-rating workflow (current)
+## v0.0.3 - Modern construct-rating workflow (completed)
 
 Goal: modernize the Hinkin-Tracey side of the package.
 
@@ -63,36 +69,41 @@ Goal: modernize the Hinkin-Tracey side of the package.
 - [x] Add `rating_validity()` with informative print/summary methods.
 - [x] Add dependency-free HTC/HTD plotting.
 - [x] Add a dedicated construct-rating vignette.
-- [ ] Verify the full v0.0.3 patch under R with `document()`, `test()`, `check()`,
+- [x] Verify the full v0.0.3 patch under R with `document()`, `test()`, `check()`,
       and `build_readme()`.
 
-## v0.0.4 - Expert-panel workflow
+## v0.0.4 - Expert-panel workflow (current)
 
 Goal: provide trustworthy complementary indices without duplicating unrelated
 packages merely for feature count.
 
 Release/public-repository hygiene in this sprint:
 
-- [ ] Update GitHub Actions dependencies to current supported majors (including
+- [x] Update GitHub Actions dependencies to current supported majors (including
       replacing the Node-20 `actions/checkout@v4` workflow dependency).
 - [ ] Confirm a warning-free Windows/macOS/Linux CI matrix after the Actions refresh.
 - [ ] Refresh the public GitHub repository description/topics so they match the
       modern sort + rating + expert-panel package scope.
-- [ ] Refresh README badges/public-facing wording and pkgdown-facing navigation.
+- [x] Refresh README badges/public-facing wording; pkgdown navigation remains in v0.0.7.
 
-- [ ] Harden Aiken's V and add a score-based confidence interval.
-- [ ] Document exact CVR critical values and corrected Lawshe references.
+- [x] Harden Aiken's V and add a Penfield-Giacobbi score confidence interval.
+- [x] Document exact CVR critical values and Ayre-Scally references.
 - [x] Correct I-CVI / modified kappa calculations.
 - [x] Add S-CVI/Ave and S-CVI/UA.
-- [ ] Harden IOC validation and missing-data handling.
-- [ ] Add `expert_validity()` with informative print/summary methods.
-- [ ] Add a dedicated expert-panel vignette.
+- [x] Harden IOC validation and missing-data handling.
+- [x] Add `expert_validity()` with informative print/summary/plot methods.
+- [x] Add a dedicated expert-panel vignette.
+- [x] Add correspondence-distinctiveness evidence maps for sort/rating workflows,
+      target-versus-competitor gap plots for rating/IOC, richer expert evidence
+      plots, and exact sort-power planning plots. Full-size exported plots were
+      smoke-tested and visually reviewed; final v0.0.4d polish staggers nearby
+      scale labels and renders the exact critical-Psa boundary as a step function.
 
 ## v0.0.5 - Test hardening
 
 Goal: reach publication-grade numerical and behavioral coverage.
 
-- [ ] Target roughly 80-120 meaningful tests across methods and edge cases.
+- [x] Reach the original 80-120 meaningful-test target (101 `test_that()` blocks in the v0.0.4b candidate).
 - [ ] Add published examples, hand calculations, boundary conditions, malformed
       input, missingness, degenerate tables, and output-contract tests.
 - [ ] Add regression tests for every discovered bug.
@@ -106,8 +117,9 @@ Goal: reach publication-grade numerical and behavioral coverage.
 
 ## v0.0.7 - Documentation and reproducibility
 
-- [ ] Rewrite/get dedicated vignettes for each major workflow.
-- [ ] Add a design-and-reporting vignette and reporting templates.
+- [x] Add dedicated vignettes for each major workflow (sort, rating, expert panel).
+- [x] Add a design-and-reporting vignette.
+- [ ] Add reusable reporting templates/examples for manuscript-ready results.
 - [ ] Add example datasets and `data-raw/` provenance scripts.
 - [ ] Add `inst/CITATION` and complete method references/DOIs.
 - [x] Add `NEWS.md` development history.

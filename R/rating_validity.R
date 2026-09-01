@@ -356,28 +356,116 @@ print.summary.contentvalid_rating <- function(x, digits = 3, ...) {
   invisible(x)
 }
 
-#' Plot Hinkin-Tracey item-level rating evidence
+#' Plot Hinkin-Tracey rating evidence
+#'
+#' @description
+#' Provides three complementary views of a construct-rating pretest. `"item"`
+#' reproduces the original one-index plot, `"map"` places HTC against HTD to show
+#' correspondence and distinctiveness jointly, and `"profile"` draws a target-versus-
+#' strongest-competitor gap plot on the original response scale. The latter is a
+#' graphical analogue of the mean-rating tables used in Hinkin and Tracey (1999).
 #'
 #' @param x A `contentvalid_rating` object.
-#' @param metric Either `"htc"` or `"htd"`.
+#' @param metric Either `"htc"` or `"htd"` for `type = "item"`.
+#' @param type One of `"item"`, `"map"`, or `"profile"`.
+#' @param label Which item labels to draw on the map: `"review"` (default), `"all"`,
+#'   or `"none"`.
+#' @param show_legend Logical; draw the compact plot key. Default `TRUE`.
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #'
 #' @return The input object invisibly.
 #' @export
-plot.contentvalid_rating <- function(x, metric = c("htc", "htd"), ...) {
-  metric <- match.arg(metric)
+plot.contentvalid_rating <- function(x,
+                                     metric = c("htc", "htd"),
+                                     type = c("item", "map", "profile"),
+                                     label = c("review", "all", "none"),
+                                     show_legend = TRUE,
+                                     ...) {
+  type <- match.arg(type)
+  label <- match.arg(label)
   r <- x$results
-  y <- r[[metric]]
-  pch <- ifelse(r$recommendation == "Retain", 19,
-                ifelse(r$recommendation == "Review", 1, 4))
-  ylim <- if (metric == "htc") c(0, 1) else c(-1, 1)
-  ylab <- if (metric == "htc") "HTC (definitional correspondence)" else
-    "HTD (definitional distinctiveness)"
-  graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
-                 ylim = ylim, pch = pch, ...)
-  graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
-  if (metric == "htd") graphics::abline(h = 0, lty = 3)
-  graphics::legend("bottomright", legend = c("Retain", "Review", "Insufficient data"),
-                   pch = c(19, 1, 4), bty = "n")
+
+  if (type == "item") {
+    metric <- match.arg(metric)
+    y <- r[[metric]]
+    pch <- ifelse(r$recommendation == "Retain", 19,
+                  ifelse(r$recommendation == "Review", 1, 4))
+    ylim <- if (metric == "htc") c(0, 1) else c(-1, 1)
+    ylab <- if (metric == "htc") "HTC correspondence" else "HTD distinctiveness"
+    graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
+                   ylim = ylim, pch = pch, ...)
+    graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
+    if (metric == "htd") graphics::abline(h = 0, lty = 3)
+    if (isTRUE(show_legend)) {
+      graphics::legend("bottomleft", legend = c("Retain", "Review", "No data"),
+                       pch = c(19, 1, 4), bty = "n", cex = 0.72)
+    }
+    return(invisible(x))
+  }
+
+  if (type == "map") {
+    ok <- is.finite(r$htc) & is.finite(r$htd)
+    pch <- ifelse(r$recommendation == "Retain", 19,
+                  ifelse(r$recommendation == "Review", 1, 4))
+    graphics::plot(r$htc[ok], r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1),
+                   xlab = "HTC correspondence",
+                   ylab = "HTD distinctiveness",
+                   pch = pch[ok], ...)
+    graphics::abline(h = 0, lty = 3)
+
+    lab_idx <- switch(
+      label,
+      review = which(ok & r$recommendation != "Retain"),
+      all = which(ok),
+      none = integer(0)
+    )
+    if (length(lab_idx)) {
+      graphics::text(r$htc[lab_idx], r$htd[lab_idx], labels = r$item[lab_idx],
+                     pos = 3, cex = 0.70, offset = 0.35)
+    }
+
+    s <- x$scale_summary
+    s_ok <- is.finite(s$mean_htc) & is.finite(s$mean_htd)
+    if (any(s_ok)) {
+      sx <- s$mean_htc[s_ok]
+      sy <- s$mean_htd[s_ok]
+      graphics::points(sx, sy, pch = 18, cex = 1.25)
+      label_y <- .map_scale_label_y(sx, sy)
+      graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
+    }
+    if (isTRUE(show_legend)) {
+      legend_labels <- c("Retain", "Review")
+      legend_pch <- c(19, 1)
+      if (any(s_ok)) {
+        legend_labels <- c(legend_labels, "Scale mean")
+        legend_pch <- c(legend_pch, 18)
+      }
+      graphics::legend("bottomleft", legend = legend_labels, pch = legend_pch,
+                       bty = "n", cex = 0.72)
+    }
+    return(invisible(x))
+  }
+
+  y <- seq_len(nrow(r))
+  xlim <- c(x$settings$scale_min, x$settings$scale_max)
+  finite_any <- is.finite(r$target_mean) | is.finite(r$competitor_mean)
+  graphics::plot(r$target_mean[finite_any], y[finite_any], xlim = xlim,
+                 ylim = c(0.5, nrow(r) + 1.25), yaxt = "n",
+                 xlab = "Mean definition rating", ylab = "", pch = 19, ...)
+  graphics::axis(2, at = y, labels = r$item, las = 1)
+  both <- is.finite(r$target_mean) & is.finite(r$competitor_mean)
+  if (any(both)) {
+    lty <- ifelse(r$recommendation[both] == "Retain", 1,
+                  ifelse(r$recommendation[both] == "Review", 2, 3))
+    graphics::segments(r$competitor_mean[both], y[both], r$target_mean[both], y[both], lty = lty)
+    graphics::points(r$competitor_mean[both], y[both], pch = 1)
+  }
+  target_ok <- is.finite(r$target_mean)
+  graphics::points(r$target_mean[target_ok], y[target_ok], pch = 19)
+  if (isTRUE(show_legend)) {
+    graphics::legend("top", legend = c("Target", "Competitor", "Review gap"),
+                     pch = c(19, 1, NA), lty = c(NA, NA, 2), bty = "n",
+                     horiz = TRUE, cex = 0.68, x.intersp = 0.7)
+  }
   invisible(x)
 }

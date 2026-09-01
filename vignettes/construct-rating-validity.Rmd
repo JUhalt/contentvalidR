@@ -149,12 +149,36 @@ For HTD and repeated-measures inference, a judge must have a usable rating for e
 
 ## Plotting
 
+The original one-index views remain available:
+
 ```{r plot, fig.width=7, fig.height=4}
 plot(fit, metric = "htc")
 plot(fit, metric = "htd")
 ```
 
-The plot displays item-level raw indices and screening status. It does not draw the Colquitt scale-level norm bands across items because those benchmarks were not constructed as item-level thresholds.
+A correspondence-distinctiveness evidence map displays HTC and HTD together:
+
+```{r rating-map, fig.width=7, fig.height=5}
+plot(fit, type = "map")
+```
+
+Target-scale averages are shown as diamonds and items needing review are labeled
+by default. As with the item-sort map, Colquitt norm regions are not drawn across
+individual items because those benchmarks were constructed from scale averages.
+
+The **target-versus-competitor gap plot** makes the Hinkin-Tracey mean-rating
+logic more directly visible:
+
+```{r rating-profile, fig.width=7, fig.height=5}
+plot(fit, type = "profile")
+```
+
+Filled points are intended-definition means, open points are the strongest
+orbiting-definition means, and the connecting segment is the observed content
+distinctiveness gap. A reversed segment immediately identifies an item whose
+strongest competitor outrates its intended definition. This is a graphical
+extension of the mean-rating tables used in the original procedure, not a new
+statistical cutoff.
 
 ## Reporting
 

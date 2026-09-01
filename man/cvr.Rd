@@ -4,22 +4,41 @@
 \alias{cvr}
 \title{Lawshe's Content Validity Ratio (CVR)}
 \usage{
-cvr(essential, N, alpha = 0.05)
+cvr(essential, N = NULL, alpha = 0.05, na.rm = FALSE, item_names = NULL)
 }
 \arguments{
-\item{essential}{integer vector of counts (per item) of judges rating the item "essential".}
+\item{essential}{Numeric/integer vector of essential counts, or a matrix/data
+frame with judges in rows, items in columns, coded \code{1 = essential} and
+\verb{0 = not essential}.}
 
-\item{N}{integer scalar: number of judges on the panel (same for all items).}
+\item{N}{Panel size. Required for count-vector input. May be a scalar or a
+vector matching \code{essential}. Ignored for matrix input, where effective N is
+calculated itemwise.}
 
-\item{alpha}{significance level for the one-sided binomial test (default .05).}
+\item{alpha}{One-sided exact alpha level. Default \code{.05}.}
+
+\item{na.rm}{Logical; for matrix input, permit itemwise missing ratings.}
+
+\item{item_names}{Optional item names for count-vector input.}
 }
 \value{
-A data.frame with columns: item, ne, N, cvr, critical_ne, critical_cvr, pass.
+A data.frame containing item, \code{ne}, effective \code{N}, CVR, exact
+p-value, critical essential count/CVR, and \code{pass}.
 }
 \description{
-Computes CVR per item and evaluates significance by deriving the
-critical number of "essential" ratings via a binomial tail test at p0 = .5.
+Computes Lawshe's CVR and exact one-sided binomial inference following the
+critical-value logic revisited by Ayre and Scally (2014). Input may be either
+counts of experts marking each item essential or a judge-by-item 0/1 matrix.
 }
 \examples{
-cvr(essential = c(8,10,5), N = 12)
+cvr(essential = c(8, 10, 5), N = 12)
+}
+\references{
+Lawshe, C. H. (1975). A quantitative approach to content validity.
+\emph{Personnel Psychology, 28}, 563-575.
+
+Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
+validity ratio: Revisiting the original methods of calculation.
+\emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79-86.
+\doi{10.1177/0748175613513808}
 }

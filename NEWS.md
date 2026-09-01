@@ -1,3 +1,38 @@
+# contentvalidR 0.0.4.9000
+
+### Final visualization polish
+
+- Deterministically stagger nearby target-scale labels on Psa/Csv and HTC/HTD evidence maps so similar scale means remain legible without manual annotation.
+- Draw the exact critical-Psa planning view as an integer-N step function, with requested design points overlaid, to reflect the discrete binomial retention rule rather than implying smooth interpolation.
+- Added regression tests for map-label separation and the full integer critical-Psa curve.
+
+### Visualization polish
+
+- Tightened default axis labels and plot keys so diagnostic graphics remain readable in smaller RStudio plotting panes.
+- Moved profile/expert plot keys into reserved top space and moved item-sort power keys to a low-conflict location.
+- Added `show_legend = FALSE` to workflow plot methods for compact/custom reporting.
+- Reduced map-label collisions by separating item labels from target-scale-mean labels.
+- Fixed the expert-panel vignette plotting object name and aligned the item-sort vignette index title with its YAML title.
+
+## Visualization and roadmap closure
+
+* Added correspondence-distinctiveness evidence maps for item-sort (Psa/Csv) and construct-rating (HTC/HTD) workflows, with target-scale means shown separately from item points.
+* Added a Hinkin-Tracey target-versus-strongest-competitor gap plot and strengthened expert-panel plots for Aiken V/I-CVI, CVR critical values, and IOC target-versus-competitor margins.
+* Added plotting for exact item-sort power and the critical observed-Psa boundary.
+* Added canonical published/hand-worked reference tests, including Hinkin-Tracey Study 1 mean ratings, Polit-Beck-Owen modified kappa, and the Ayre-Scally N=10 CVR boundary.
+* Closed the Anderson-Gerbing legacy-inference decision: Psa/Csv remain supported, but the obsolete critical-Csv decision rule is not exposed as an alternate workflow because Howard-Melloy is applicable to multi-choice sorts and agrees in the original two-choice case.
+
+
+## Expert-panel workflow and repository hygiene
+
+* Added `expert_validity()` with relevance, essentiality, and congruence modes plus informative `print()`, `summary()`, and `plot()` methods.
+* Hardened Aiken's V and made the Penfield-Giacobbi score confidence interval the default deterministic interval; bootstrap intervals remain available.
+* Extended `cvr()` to support item-specific panel sizes and judge-by-item 0/1 input, with exact one-sided binomial p-values and critical counts following Ayre and Scally's revisiting of Lawshe's method.
+* Hardened `ioc()` input validation, duplicate detection, and missing-data reporting.
+* Added common panel-size CVI guidelines to the user-facing relevance workflow while explicitly treating them as review aids rather than universal validity cutoffs.
+* Updated GitHub Actions from `actions/checkout@v4` to the current Node-24-compatible `actions/checkout@v7` line.
+* Expanded public README guidance and added a dedicated expert-panel vignette.
+
 # contentvalidR 0.0.3.9000
 
 ## Modern construct-rating workflow

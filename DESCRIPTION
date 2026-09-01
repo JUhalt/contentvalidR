@@ -1,7 +1,7 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.0.3.9000
+Version: 0.0.4.9000
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
@@ -12,8 +12,9 @@ Description: Provides quantitative tools for substantive and content-oriented
     empirical interpretation benchmarks from Colquitt et al. (2019),
     the Hinkin and Tracey (1999) construct-rating procedure with HTC/HTD
     indices and repeated-measures item screening, and
-    complementary expert-panel indices including Aiken's V, Lawshe's content
-    validity ratio, content validity indices, and item-objective congruence.
+    an expert-panel workflow combining Aiken's V with score confidence intervals,
+    Lawshe content validity ratios with exact inference, content validity indices
+    with modified kappa, and item-objective congruence.
     User-facing workflows emphasize interpretable summaries and transparent
     review recommendations rather than isolated coefficients.
 License: MIT + file LICENSE
