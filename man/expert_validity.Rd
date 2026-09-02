@@ -39,8 +39,12 @@ vector of essential counts. For congruence, a long data frame accepted by
 item's intended objective. If absent, IOC cells are returned descriptively.}
 }
 \value{
-An object of class \code{contentvalid_expert} with mode-specific item
-results, scale/panel summaries where applicable, settings, and raw details.
+An object of class \code{contentvalid_expert} and
+\code{contentvalid_workflow}. All flagship workflow objects expose the common
+components \code{results}, \code{scale_summary}, \code{settings}, \code{design}, and \code{details}.
+The historical top-level \code{scale} component is retained as a compatibility
+alias for \code{scale_summary}. Results include a standardized \code{status} field
+while retaining mode-specific \code{recommendation} wording.
 }
 \description{
 Provides a user-facing workflow for three common expert-panel tasks:

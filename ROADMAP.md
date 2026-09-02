@@ -115,22 +115,32 @@ Goal: reach publication-grade numerical and behavioral coverage.
       auxiliary/compatibility functions rather than release-defining workflows;
       retain them for now but do not expand their methodological role before 0.1.0.
 
-## v0.0.6 - Stable user-facing API
+## v0.0.6 - Stable user-facing API (completed)
 
-- [ ] Harmonize workflow object structure across sort/rating/expert analyses.
-- [ ] Implement consistent `print()`, `summary()`, and `plot()` conventions.
-- [ ] Standardize terminology, recommendations, warnings, and missingness reports.
-- [ ] Review low-level function names and deprecation/compatibility needs.
+- [x] Harmonize workflow object structure across sort/rating/expert analyses.
+      All flagship fits expose `results`, `scale_summary`, `settings`, `design`,
+      and `details`, plus a common `contentvalid_workflow` superclass.
+- [x] Implement consistent `print()`, `summary()`, and `plot()` conventions.
+      Summary objects share common counts/metadata; primary print methods validate
+      `digits`; plots validate the common `show_legend` control and return fits
+      invisibly.
+- [x] Standardize terminology, recommendations, warnings, and missingness reports.
+      A common `status` field uses Supported / Review / Insufficient data /
+      Descriptive only while method-specific recommendation language remains
+      available; design metadata now exposes effective judge ranges and missingness.
+- [x] Review low-level function names and deprecation/compatibility needs.
+      No gratuitous renaming is needed before v0.1.0. Existing low-level names and
+      compatibility aliases are retained; auxiliary helpers remain non-flagship.
 
-## v0.0.7 - Documentation and reproducibility
+## v0.0.7 - Documentation and reproducibility (completed)
 
 - [x] Add dedicated vignettes for each major workflow (sort, rating, expert panel).
 - [x] Add a design-and-reporting vignette.
-- [ ] Add reusable reporting templates/examples for manuscript-ready results.
-- [ ] Add example datasets and `data-raw/` provenance scripts.
-- [ ] Add `inst/CITATION` and complete method references/DOIs.
+- [x] Add reusable reporting templates/examples for manuscript-ready results.
+- [x] Add example datasets and `data-raw/` provenance scripts.
+- [x] Add `inst/CITATION` and complete method references/DOIs.
 - [x] Add `NEWS.md` development history.
-- [ ] Organize pkgdown reference sections and articles.
+- [x] Organize pkgdown reference sections and articles.
 
 ## v0.0.8 - CRAN hardening
 

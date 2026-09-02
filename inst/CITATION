@@ -1,0 +1,8 @@
+bibentry(
+  bibtype = "Manual",
+  title = "contentvalidR: Tools for Substantive and Content Validity Pretesting",
+  author = person("Joshua", "Uhalt"),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/JUhalt/contentvalidR"
+)

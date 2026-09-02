@@ -48,10 +48,12 @@
 #' @references
 #' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
 #' content validation. *Organizational Research Methods, 2*(2), 175-186.
+#' \doi{10.1177/109442819922004}
 #'
 #' Colquitt, J. A., Baer, M. D., Long, D. M., & Halvorsen-Ganepola, M. D. K.
 #' (2014). Scale indicators of social exchange relationships: A comparison of
 #' relative content validity. *Journal of Applied Psychology, 99*(4), 599-618.
+#' \doi{10.1037/a0036374}
 #'
 #' @examples
 #' set.seed(1)

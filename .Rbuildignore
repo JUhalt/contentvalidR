@@ -8,3 +8,5 @@
 
 ^.*\.bak$
 ^ROADMAP\.md$
+^data-raw$
+^_pkgdown\.yml$

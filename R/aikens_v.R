@@ -21,7 +21,8 @@
 #'
 #' @references
 #' Aiken, L. R. (1980). Content validity and reliability of single items or
-#' questionnaires. *Educational and Psychological Measurement, 40*, 955-959.
+#' questionnaires. *Educational and Psychological Measurement, 40*(4), 955-959.
+#' \doi{10.1177/001316448004000419}
 #'
 #' Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
 #' interval to Aiken's item content-relevance index. *Measurement in Physical

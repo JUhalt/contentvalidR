@@ -1,3 +1,27 @@
+# contentvalidR 0.0.7.9000
+
+## Documentation and reproducibility
+
+* Added five deterministic, human-readable example datasets for item-sort, construct-rating, and all three expert-panel tasks, plus a base-R `data-raw/` provenance script that regenerates them.
+* Added a manuscript-ready reporting vignette with conservative methods/results scaffolds, reproducibility guidance, and examples of language that avoids treating statistical review flags as automatic validity decisions.
+* Added `inst/CITATION` for the package and a centralized `inst/REFERENCES.bib` bibliography covering the release-defining methods and verified DOIs.
+* Completed missing DOI metadata in core function references for Aiken V, Hinkin-Tracey ratings, Lawshe CVR, Penfield-Giacobbi score intervals, and IOC-related sources.
+* Added pkgdown reference/article organization that foregrounds the three flagship workflows and clearly separates auxiliary compatibility helpers.
+* Added clean-install tests for documentation assets, example-data schemas, citation metadata, and the pkgdown/reference structure.
+
+# contentvalidR 0.0.6.9000
+
+## Stable user-facing workflow API
+
+* Harmonized `sort_validity()`, `rating_validity()`, and `expert_validity()` around a common workflow-object contract: `results`, `scale_summary`, `settings`, `design`, and `details`, with a shared `contentvalid_workflow` superclass.
+* Added a standardized `status` field (`Supported`, `Review`, `Insufficient data`, or `Descriptive only`) while preserving method-specific `recommendation` wording such as `Retain`, `Strong support`, and `Target favored`.
+* Harmonized `summary()` objects around common counts, reviewed-item tables, scale summaries, settings, and design metadata; retained `n_retain`, expert `scale`/`flagged`, and rating `contrasts` compatibility aliases.
+* Standardized design metadata for effective judge ranges and missingness reporting across item-sort, construct-rating, and expert-panel workflows.
+* Standardized validation of `digits` and plot `show_legend` controls across the primary workflow methods and exact sort-power planning object.
+* Added compatibility handling so pre-v0.0.6 expert workflow objects remain printable and summarizable.
+* Reviewed low-level function names and retained the existing public names through v0.1.0; auxiliary diagnostic, simulation, agreement, and Q-factor helpers remain available but are not promoted as flagship workflows.
+* Added API regression tests and updated README/getting-started guidance for the unified workflow contract.
+
 # contentvalidR 0.0.5.9000
 
 ## Release hardening

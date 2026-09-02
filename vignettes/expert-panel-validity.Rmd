@@ -162,7 +162,10 @@ not, by itself, a complete validity argument.
 ## References
 
 Aiken, L. R. (1980). Content validity and reliability of single items or
-questionnaires. *Educational and Psychological Measurement, 40*, 955-959.
+questionnaires. *Educational and Psychological Measurement, 40*(4), 955-959. https://doi.org/10.1177/001316448004000419
+
+Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel
+Psychology, 28*(4), 563-575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
 
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity
 ratio: Revisiting the original methods of calculation. *Measurement and
@@ -181,3 +184,7 @@ Nursing & Health, 30*(4), 459-467. https://doi.org/10.1002/nur.20199
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists
 in the assessment of criterion-referenced test item validity. *Dutch Journal of
 Educational Research, 2*, 49-60.
+
+Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence for
+multidimensional items. *International Journal of Testing, 3*(2), 163-171.
+https://doi.org/10.1207/S15327574IJT0302_5

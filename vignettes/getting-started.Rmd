@@ -18,7 +18,11 @@ library(contentvalidR)
 
 **Overview**
 
-This vignette introduces the package's two primary content-pretesting workflows—**item sorting** and **construct ratings**—plus complementary expert-panel indices. `sort_validity()` and `rating_validity()` both organize item-level screening evidence and target-scale normative summaries while keeping substantive decisions separate from statistical flags.
+This vignette introduces the package's three recommended content-pretesting workflows—**item sorting**, **construct ratings**, and **expert panels**. `sort_validity()`, `rating_validity()`, and `expert_validity()` organize quantitative evidence while keeping substantive decisions separate from statistical flags.
+
+**A common workflow contract**
+
+All three fitted workflow objects expose `results`, `scale_summary`, `settings`, `design`, and `details`. Their result tables also contain a common `status` field: `Supported`, `Review`, `Insufficient data`, or `Descriptive only`. Method-specific recommendation wording is preserved alongside that common status. This makes it possible to write reusable code across workflows without pretending that a Howard-Melloy retention decision, Hinkin-Tracey screening result, and expert-panel judgment are substantively identical.
 
 **Sort-based (Psa, Csv, binomial)**
 ```{r}
@@ -72,6 +76,47 @@ summary(rating_fit)
 - The repeated-measures ANOVA tests whether construct-definition ratings differ for an item.
 - Planned paired contrasts ask the direct screening question: is the target rating significantly higher than every orbiting rating?
 - Scale-level HTC/HTD averages can be interpreted using Colquitt et al. (2019) empirical norms when the judge population matches their intended use.
+
+**Expert-panel workflow**
+```{r}
+expert_ratings <- matrix(
+  c(4,4,4,4,4,4,
+    4,4,4,3,4,4,
+    4,3,4,4,3,4),
+  nrow = 6,
+  dimnames = list(NULL, paste0("Item", 1:3))
+)
+expert_fit <- expert_validity(expert_ratings, mode = "relevance", lo = 1, hi = 4)
+expert_fit
+summary(expert_fit)
+```
+
+Relevance, essentiality, and congruence are intentionally separate expert tasks.
+Use `mode = "relevance"` for Aiken V + CVI/modified kappa, `mode =
+"essentiality"` for Lawshe CVR, and `mode = "congruence"` for IOC.
+
+**Bundled reproducible examples**
+
+The package also installs deterministic CSV examples for the three workflow
+families and all expert-panel modes. They are synthetic, contain no participant
+data, and are regenerated from `data-raw/build-example-data.R` in the source
+repository.
+
+```{r bundled-data}
+example_files <- c(
+  "sort_example.csv",
+  "rating_example.csv",
+  "expert_relevance_example.csv",
+  "expert_essentiality_example.csv",
+  "expert_congruence_example.csv"
+)
+vapply(example_files, function(x) {
+  system.file("extdata", x, package = "contentvalidR")
+}, character(1))
+```
+
+See `vignette("reporting-examples", package = "contentvalidR")` for
+manuscript-ready reporting scaffolds built from those same files.
 
 **Classic indices**
 ```{r}

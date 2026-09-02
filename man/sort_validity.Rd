@@ -36,9 +36,12 @@ If omitted, the overall Colquitt et al. norms are used.}
 \code{"expert"}. Colquitt benchmark labels are not applied to expert judges.}
 }
 \value{
-An object of class \code{contentvalid_sort} with item-level \code{results}, a
-target-level \code{scale_summary}, design information, and settings. \code{print()},
-\code{summary()}, and \code{plot()} provide user-facing interpretation.
+An object of class \code{contentvalid_sort} and \code{contentvalid_workflow}.
+All flagship workflow objects expose the common components \code{results},
+\code{scale_summary}, \code{settings}, \code{design}, and \code{details}. Item-level \code{results}
+include a standardized \code{status} field while retaining the method-specific
+\code{recommendation} field. \code{print()}, \code{summary()}, and \code{plot()} provide
+user-facing interpretation.
 }
 \description{
 Provides the recommended user-facing workflow for item-sort studies. At the

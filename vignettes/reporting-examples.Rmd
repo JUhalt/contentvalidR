@@ -1,0 +1,194 @@
+---
+title: "Manuscript-Ready Reporting Examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Manuscript-Ready Reporting Examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(contentvalidR)
+read_example <- function(name) {
+  utils::read.csv(
+    system.file("extdata", name, package = "contentvalidR"),
+    stringsAsFactors = FALSE
+  )
+}
+```
+
+## Purpose
+
+This vignette provides reporting scaffolds for the three flagship workflows. The
+examples are intentionally conservative: statistical screening is described as
+**evidence for retention or review**, not as proof that an item or scale is
+content valid. Final decisions should also consider construct-domain coverage,
+item wording, qualitative judge feedback, and the intended use of the measure.
+
+The bundled CSV files are synthetic, deterministic, and regenerated from
+`data-raw/build-example-data.R`. They are useful for reproducing the examples
+and for seeing the expected input shape before analyzing a new study.
+
+## Item-sort study
+
+```{r sort-fit}
+sort_dat <- read_example("sort_example.csv")
+sort_fit <- sort_validity(sort_dat)
+sort_sum <- summary(sort_fit)
+sort_fit$results
+sort_fit$scale_summary
+```
+
+### Methods scaffold
+
+Report who completed the sort, how the construct definitions were presented,
+the available assignment alternatives, and the a priori screening rule. A
+concise methods statement can follow this structure:
+
+> Candidate items were evaluated in an item-sort pretest in which judges
+> assigned each item to the construct definition that best represented its
+> content. We quantified definitional correspondence using the proportion of
+> substantive agreement (Psa) and definitional distinctiveness using the
+> substantive-validity coefficient (Csv). Item-level screening used the exact
+> target-assignment test described by Howard and Melloy (2016), with the null
+> target-assignment probability and alpha specified a priori. Target-scale mean
+> Psa and Csv were interpreted against Colquitt et al. (2019) norms only when the
+> judge population matched the intended use of those norms.
+
+### Results scaffold
+
+For this bundled example, `r sort_fit$design$n_raters` judges evaluated
+`r sort_fit$design$n_items` items. `r sort_sum$n_supported` items met the exact
+screening criterion, `r sort_sum$n_review` were flagged for review, and
+`r sort_sum$n_insufficient` had insufficient usable assignments.
+
+A manuscript table can usually be built directly from:
+
+```{r sort-table}
+sort_fit$results[c(
+  "item", "target", "n", "n_target", "competitor",
+  "psa", "csv", "p_value", "status", "recommendation"
+)]
+```
+
+Do not report `Review` as synonymous with deletion. A review flag identifies an
+item for substantive inspection; retaining an item for domain coverage can be a
+reasonable decision when that rationale is documented.
+
+## Construct-rating study
+
+```{r rating-fit}
+rating_dat <- read_example("rating_example.csv")
+rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
+rating_sum <- summary(rating_fit)
+rating_fit$results
+rating_fit$scale_summary
+```
+
+### Methods scaffold
+
+> Judges rated every candidate item against each focal and orbiting construct
+> definition using the same response scale. We summarized correspondence with
+> HTC and distinctiveness with HTD. Because the same judges rated the competing
+> definitions, item-level inference used a repeated-measures design. Planned
+> paired contrasts compared each item's intended definition with every orbiting
+> definition; omnibus Greenhouse-Geisser-corrected inference was used when
+> applicable. Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated
+> as empirical benchmarks rather than universal item cutoffs.
+
+### Results scaffold
+
+The example contains `r rating_fit$design$n_items` items rated by
+`r rating_fit$design$n_raters` judges against
+`r rating_fit$design$n_constructs_observed` construct definitions.
+`r rating_sum$n_supported` items were supported by the complete screening rule
+and `r rating_sum$n_review` were flagged for review.
+
+```{r rating-table}
+rating_fit$results[c(
+  "item", "target", "n_complete", "strongest_competitor",
+  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
+)]
+```
+
+For review items, report the strongest orbiting competitor. That information
+turns a generic statement about weak distinctiveness into a specific diagnostic
+about where construct overlap may be occurring.
+
+## Expert-panel study
+
+### Relevance
+
+```{r expert-relevance}
+expert_rel <- read_example("expert_relevance_example.csv")
+expert_rel_matrix <- as.matrix(expert_rel[setdiff(names(expert_rel), "expert")])
+expert_fit <- expert_validity(
+  expert_rel_matrix,
+  mode = "relevance",
+  lo = 1,
+  hi = 4
+)
+expert_sum <- summary(expert_fit)
+expert_fit$results
+expert_fit$scale_summary
+```
+
+> Experts rated the relevance of each candidate item on a bounded ordinal
+> scale. We summarized relevance using Aiken's V with Penfield-Giacobbi score
+> confidence intervals and calculated I-CVI with Polit-Beck-Owen modified kappa.
+> S-CVI/Ave and S-CVI/UA were reported at the scale level. Panel-size CVI
+> guidelines were used as review aids and were considered alongside written
+> expert feedback and construct coverage.
+
+In this example, `r expert_fit$design$n_judges` experts evaluated
+`r expert_fit$design$n_items` items. The workflow identifies
+`r expert_sum$n_supported` supported items and `r expert_sum$n_review` review
+items under its quantitative rules.
+
+### Essentiality
+
+```{r expert-essentiality}
+expert_ess <- read_example("expert_essentiality_example.csv")
+expert_ess_matrix <- as.matrix(expert_ess[setdiff(names(expert_ess), "expert")])
+ess_fit <- expert_validity(expert_ess_matrix, mode = "essentiality")
+ess_fit$results
+```
+
+For an essentiality task, state that CVR is tied to a different expert judgment
+than relevance. Report the effective panel size and exact critical essential
+count for each item rather than borrowing a relevance/CVI threshold.
+
+### Congruence
+
+```{r expert-congruence}
+expert_ioc <- read_example("expert_congruence_example.csv")
+ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
+ioc_fit$results
+```
+
+For IOC, report the intended objective, target IOC, strongest competing
+objective, and target-minus-competitor margin. The margin is diagnostic evidence
+about alignment; it is not a newly invented significance test.
+
+## Minimum reproducibility statement
+
+At minimum, a manuscript or supplement should identify the package version and
+record the analysis settings that determine the results. For a fitted workflow:
+
+```{r reproducibility}
+packageVersion("contentvalidR")
+sort_fit$settings
+sort_fit$design
+```
+
+A strong reproducibility supplement should also archive the item wording,
+construct definitions, judge instructions, anonymized response data when
+permitted, and the script that reproduces all tables and figures.
+
+## Language to avoid
+
+Avoid claims such as "the scale was proven content valid" or "items failing the
+cutoff were invalid." The workflows quantify evidence from a defined pretest.
+They do not replace a theory-based definition of the construct domain or the
+researcher's responsibility to justify substantive item decisions.

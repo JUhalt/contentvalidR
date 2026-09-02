@@ -44,9 +44,13 @@ target scales, use a named numeric vector keyed by target.}
 are not applied to expert-judge data.}
 }
 \value{
-An object of class \code{contentvalid_rating} containing item-level
-\code{results}, \code{scale_summary}, full planned \code{contrasts}, settings, and design
-information.
+An object of class \code{contentvalid_rating} and
+\code{contentvalid_workflow}. All flagship workflow objects expose the common
+components \code{results}, \code{scale_summary}, \code{settings}, \code{design}, and \code{details}.
+Planned contrasts live in \code{details$contrasts}; the historical top-level
+\code{contrasts} component is retained as a compatibility alias. Item-level
+\code{results} include a standardized \code{status} field while retaining the
+method-specific \code{recommendation} field.
 }
 \description{
 Provides the recommended user-facing workflow for a fully crossed

@@ -193,25 +193,37 @@ test_that("agreement helper validates shape before optional dependency lookup", 
   expect_error(agreement_summary(data.frame(rater1 = c("A", "B"))), "two raters")
 })
 
-test_that("workflow objects expose stable v0.0.5 contracts", {
+test_that("v0.0.6 workflow contracts preserve v0.0.5 compatibility aliases", {
+  core <- c("workflow", "results", "scale_summary", "settings", "design", "details")
+  summary_core <- c("workflow", "n_items", "n_results", "n_supported", "n_review",
+                    "n_insufficient", "n_descriptive", "scale_summary",
+                    "reviewed_items", "settings", "design")
+
   sfit <- sort_validity(.make_v005_sort())
   expect_s3_class(sfit, "contentvalid_sort")
-  expect_named(sfit, c("results", "scale_summary", "settings", "design"))
-  expect_named(summary(sfit), c("n_items", "n_retain", "n_review", "n_insufficient",
-                               "scale_summary", "reviewed_items", "settings"))
+  expect_true(all(core %in% names(sfit)))
+  ss <- summary(sfit)
+  expect_true(all(summary_core %in% names(ss)))
+  expect_equal(ss$n_retain, ss$n_supported)
   expect_false(withVisible(print(sfit))$visible)
 
   rfit <- rating_validity(.make_v005_rating())
   expect_s3_class(rfit, "contentvalid_rating")
-  expect_named(rfit, c("results", "scale_summary", "contrasts", "settings", "design"))
-  expect_named(summary(rfit), c("n_items", "n_retain", "n_review", "n_insufficient",
-                               "scale_summary", "reviewed_items", "settings"))
+  expect_true(all(core %in% names(rfit)))
+  expect_identical(rfit$contrasts, rfit$details$contrasts)
+  rs <- summary(rfit)
+  expect_true(all(summary_core %in% names(rs)))
+  expect_equal(rs$n_retain, rs$n_supported)
   expect_false(withVisible(print(rfit))$visible)
 
   efit <- expert_validity(.make_v005_expert(), mode = "relevance", lo = 1, hi = 4)
   expect_s3_class(efit, "contentvalid_expert")
-  expect_named(efit, c("mode", "results", "scale", "settings", "details"))
-  expect_named(summary(efit), c("mode", "scale", "flagged", "settings"))
+  expect_true(all(core %in% names(efit)))
+  expect_identical(efit$scale, efit$scale_summary)
+  es <- summary(efit)
+  expect_true(all(summary_core %in% names(es)))
+  expect_identical(es$scale, es$scale_summary)
+  expect_identical(es$flagged, es$reviewed_items)
   expect_false(withVisible(print(efit))$visible)
 })
 

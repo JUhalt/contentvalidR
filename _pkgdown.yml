@@ -1,0 +1,58 @@
+url: https://juhalt.github.io/contentvalidR/
+
+template:
+  bootstrap: 5
+
+reference:
+- title: Flagship workflows
+  desc: Recommended user-facing analyses for scale content pretesting.
+  contents:
+  - sort_validity
+  - rating_validity
+  - expert_validity
+
+- title: Item-sort components and planning
+  contents:
+  - compute_psa
+  - compute_csv
+  - csv_binom_test
+  - sort_power
+  - colquitt_benchmarks
+  - interpret_colquitt
+
+- title: Construct-rating components
+  contents:
+  - htc
+  - htd
+  - anova_content
+
+- title: Expert-panel indices
+  contents:
+  - aikens_v
+  - cvi
+  - cvr
+  - ioc
+
+- title: Auxiliary and compatibility helpers
+  desc: Retained utilities that are not flagship v0.1.0 workflows.
+  contents:
+  - agreement_summary
+  - qfactor_content
+  - signal_detection
+  - reproducibility_phi
+  - simulate_anova_power
+  - simulate_csv_power
+
+articles:
+- title: Start here
+  navbar: ~
+  contents:
+  - getting-started
+  - design-and-reporting
+  - reporting-examples
+
+- title: Workflow guides
+  contents:
+  - item-sort-validity
+  - construct-rating-validity
+  - expert-panel-validity

@@ -35,6 +35,30 @@ The design goal is **interpretable output rather than coefficient dumps**. Recom
 
 > Quantitative content-validity statistics are one part of a broader validity argument. They complement, rather than replace, construct definition, domain coverage, qualitative expert feedback, cognitive interviewing, and other evidence about relevance, comprehensiveness, and comprehensibility.
 
+## One workflow API
+
+The three recommended workflows now share a stable object contract. A fitted
+`sort_validity()`, `rating_validity()`, or `expert_validity()` object always
+contains:
+
+- `results` — item/result-level evidence;
+- `scale_summary` — target-scale or panel-level evidence;
+- `settings` — analysis choices;
+- `design` — sample-size, missingness, and design metadata; and
+- `details` — method-specific supporting results.
+
+Every `results` table also includes a common `status` field with the restrained
+categories **Supported**, **Review**, **Insufficient data**, or **Descriptive
+only**. Method-specific `recommendation` wording is retained alongside it—for
+example, item-sort and construct-rating workflows still use `Retain` when their
+full statistical screening criterion is met. This keeps the methods faithful to
+their evidentiary role while making programmatic use consistent across workflows.
+
+`summary()` uses the same common count fields across all three workflows, and
+`print()`/`plot()` retain method-appropriate displays. Compatibility aliases such
+as `rating_fit$contrasts` and `expert_fit$scale` remain available for code written
+before v0.0.6.
+
 ## Installation
 
 ```{r installation, eval=FALSE}
@@ -243,9 +267,31 @@ cutoffs.
 plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
 ```
 
-## Experimental modules
+## Reproducible examples and reporting
 
-The diagnostic, simulation, and Q-factor helpers remain available while their APIs and methodological scope are being hardened. The three recommended primary workflows are now `sort_validity()`, `rating_validity()`, and `expert_validity()`.
+The package ships five deterministic, human-readable CSV examples covering the
+item-sort, construct-rating, relevance, essentiality, and IOC/congruence input
+shapes. They are installed under `inst/extdata` and are regenerated from the
+base-R provenance script in `data-raw/build-example-data.R`. This keeps the
+worked examples inspectable outside R as well as reproducible inside the package.
+
+For example:
+
+```{r bundled-example, eval=FALSE}
+sort_path <- system.file("extdata", "sort_example.csv", package = "contentvalidR")
+bundled_sort <- utils::read.csv(sort_path, stringsAsFactors = FALSE)
+sort_validity(bundled_sort)
+```
+
+See `vignette("reporting-examples", package = "contentvalidR")` for conservative
+manuscript-ready methods/results scaffolds, table-building examples, and a
+minimum reproducibility statement. Package citation metadata are available with
+`citation("contentvalidR")`; the method bibliography is installed as
+`REFERENCES.bib`.
+
+## Auxiliary modules
+
+The diagnostic, simulation, and Q-factor helpers remain available as auxiliary/compatibility functions, but they are not release-defining workflows for v0.1.0. The three recommended primary workflows are `sort_validity()`, `rating_validity()`, and `expert_validity()`. Their existing low-level function names are retained through the first public release; v0.0.6 introduces no gratuitous renaming or deprecation.
 
 ## Core methodological references
 
@@ -254,8 +300,9 @@ The diagnostic, simulation, and Q-factor helpers remain available while their AP
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
-- Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. *Educational and Psychological Measurement, 40*, 955–959.
+- Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. *Educational and Psychological Measurement, 40*(4), 955–959. https://doi.org/10.1177/001316448004000419
 - Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence interval to Aiken's item content-relevance index. *Measurement in Physical Education and Exercise Science, 8*(4), 213–225. https://doi.org/10.1207/S15327841MPEE0804_3
-- Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*, 563–575.
+- Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*(4), 563–575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
 - Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity ratio: Revisiting the original methods of calculation. *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86. https://doi.org/10.1177/0748175613513808
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. *Dutch Journal of Educational Research, 2*, 49–60.
+- Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence for multidimensional items. *International Journal of Testing, 3*(2), 163–171. https://doi.org/10.1207/S15327574IJT0302_5

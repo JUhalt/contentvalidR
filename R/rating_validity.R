@@ -94,13 +94,18 @@
 #' @param judge_type Either `"naive"` or `"expert"`. Colquitt normative labels
 #'   are not applied to expert-judge data.
 #'
-#' @return An object of class `contentvalid_rating` containing item-level
-#'   `results`, `scale_summary`, full planned `contrasts`, settings, and design
-#'   information.
+#' @return An object of class `contentvalid_rating` and
+#'   `contentvalid_workflow`. All flagship workflow objects expose the common
+#'   components `results`, `scale_summary`, `settings`, `design`, and `details`.
+#'   Planned contrasts live in `details$contrasts`; the historical top-level
+#'   `contrasts` component is retained as a compatibility alias. Item-level
+#'   `results` include a standardized `status` field while retaining the
+#'   method-specific `recommendation` field.
 #'
 #' @references
 #' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
 #' content validation. *Organizational Research Methods, 2*(2), 175-186.
+#' \doi{10.1177/109442819922004}
 #'
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 #' Content validation guidelines: Evaluation criteria for definitional
@@ -238,34 +243,46 @@ rating_validity <- function(ratings,
                                          judge_type = judge_type)
   contrasts <- attr(anova_out, "contrasts")
 
-  out <- list(
+  results$status <- .workflow_status_from_recommendation(results$recommendation)
+
+  settings <- list(
+    method = "Hinkin-Tracey within-judge ratings",
+    item_inference = "one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p) plus planned paired target-versus-orbiting contrasts",
+    scale_benchmarks = "Colquitt et al. (2019) empirical percentile norms",
+    scale_min = scale_min,
+    scale_max = scale_max,
+    anchors = anchors,
+    alpha = alpha,
+    adjust = adjust,
+    judge_type = judge_type
+  )
+  design <- list(
+    type = "within-judge construct-rating",
+    n_items = nrow(results),
+    n_raters = length(unique(d$rater)),
+    n_judges_min = if (nrow(results)) min(results$n_complete) else 0L,
+    n_judges_max = if (nrow(results)) max(results$n_complete) else 0L,
+    n_missing = sum(is.na(d$rating)),
+    n_incomplete_profiles = sum(results$n_incomplete),
+    n_target_scales = length(unique(d$target)),
+    n_constructs_observed = length(unique(d$construct))
+  )
+
+  .new_contentvalid_workflow(
+    subclass = "contentvalid_rating",
+    workflow = "construct-rating",
     results = results,
     scale_summary = scale_summary,
-    contrasts = contrasts,
-    settings = list(
-      method = "Hinkin-Tracey within-judge ratings",
-      item_inference = "one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p) plus planned paired target-versus-orbiting contrasts",
-      scale_benchmarks = "Colquitt et al. (2019) empirical percentile norms",
-      scale_min = scale_min,
-      scale_max = scale_max,
-      anchors = anchors,
-      alpha = alpha,
-      adjust = adjust,
-      judge_type = judge_type
-    ),
-    design = list(
-      n_items = nrow(results),
-      n_raters = length(unique(d$rater)),
-      n_target_scales = length(unique(d$target)),
-      n_constructs_observed = length(unique(d$construct))
-    )
+    settings = settings,
+    design = design,
+    details = list(contrasts = contrasts),
+    legacy = list(contrasts = contrasts)
   )
-  class(out) <- "contentvalid_rating"
-  out
 }
 
 #' @export
 print.contentvalid_rating <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   r <- x$results
   cat("contentvalidR construct-rating analysis\n")
   cat(strrep("-", 39), "\n", sep = "")
@@ -315,21 +332,16 @@ print.contentvalid_rating <- function(x, digits = 3, ...) {
 
 #' @export
 summary.contentvalid_rating <- function(object, ...) {
-  out <- list(
-    n_items = nrow(object$results),
-    n_retain = sum(object$results$recommendation == "Retain"),
-    n_review = sum(object$results$recommendation == "Review"),
-    n_insufficient = sum(object$results$recommendation == "Insufficient data"),
-    scale_summary = object$scale_summary,
-    reviewed_items = object$results[object$results$recommendation != "Retain", , drop = FALSE],
-    settings = object$settings
-  )
-  class(out) <- "summary.contentvalid_rating"
+  out <- .workflow_summary_core(object)
+  # Compatibility alias retained for pre-v0.0.6 user code.
+  out$n_retain <- out$n_supported
+  class(out) <- c("summary.contentvalid_rating", "summary.contentvalid_workflow")
   out
 }
 
 #' @export
 print.summary.contentvalid_rating <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   cat("Summary of construct-rating content-validity evidence\n")
   cat(strrep("-", 51), "\n", sep = "")
   cat("Retain:", x$n_retain, "of", x$n_items, "item(s)\n")
@@ -390,6 +402,7 @@ plot.contentvalid_rating <- function(x,
                                      ...) {
   type <- match.arg(type)
   label <- match.arg(label)
+  .validate_flag(show_legend, "show_legend")
   r <- x$results
 
   if (type == "item") {

@@ -109,9 +109,12 @@
 #' @param judge_type Either `"naive"` (the Anderson-Gerbing/Colquitt design) or
 #'   `"expert"`. Colquitt benchmark labels are not applied to expert judges.
 #'
-#' @return An object of class `contentvalid_sort` with item-level `results`, a
-#'   target-level `scale_summary`, design information, and settings. `print()`,
-#'   `summary()`, and `plot()` provide user-facing interpretation.
+#' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
+#'   All flagship workflow objects expose the common components `results`,
+#'   `scale_summary`, `settings`, `design`, and `details`. Item-level `results`
+#'   include a standardized `status` field while retaining the method-specific
+#'   `recommendation` field. `print()`, `summary()`, and `plot()` provide
+#'   user-facing interpretation.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -198,29 +201,41 @@ sort_validity <- function(assignments,
   d <- .prepare_sort_assignments(assignments, item_col, rater_col, assigned_col, target_col)
   scale_summary <- .sort_scale_summary(results, orbiting_r = orbiting_r, judge_type = judge_type)
 
-  out <- list(
+  results$status <- .workflow_status_from_recommendation(results$recommendation)
+
+  settings <- list(
+    method = "Anderson-Gerbing Psa/Csv with Howard-Melloy exact inference",
+    item_inference = "Howard-Melloy exact target-count test",
+    scale_benchmarks = "Colquitt et al. (2019) empirical percentile norms",
+    p0 = p0,
+    alpha = alpha,
+    judge_type = judge_type
+  )
+  design <- list(
+    type = "item-sort",
+    n_items = nrow(results),
+    n_raters = length(unique(d$rater)),
+    n_judges_min = if (nrow(results)) min(results$n) else 0L,
+    n_judges_max = if (nrow(results)) max(results$n) else 0L,
+    n_missing = sum(results$n_missing),
+    n_target_scales = length(unique(d$target)),
+    n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
+  )
+
+  .new_contentvalid_workflow(
+    subclass = "contentvalid_sort",
+    workflow = "item-sort",
     results = results,
     scale_summary = scale_summary,
-    settings = list(
-      item_inference = "Howard-Melloy exact target-count test",
-      scale_benchmarks = "Colquitt et al. (2019) empirical percentile norms",
-      p0 = p0,
-      alpha = alpha,
-      judge_type = judge_type
-    ),
-    design = list(
-      n_items = nrow(results),
-      n_raters = length(unique(d$rater)),
-      n_target_scales = length(unique(d$target)),
-      n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
-    )
+    settings = settings,
+    design = design,
+    details = list()
   )
-  class(out) <- "contentvalid_sort"
-  out
 }
 
 #' @export
 print.contentvalid_sort <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   r <- x$results
   n_retain <- sum(r$recommendation == "Retain")
   n_review <- sum(r$recommendation == "Review")
@@ -268,22 +283,16 @@ print.contentvalid_sort <- function(x, digits = 3, ...) {
 
 #' @export
 summary.contentvalid_sort <- function(object, ...) {
-  r <- object$results
-  out <- list(
-    n_items = nrow(r),
-    n_retain = sum(r$recommendation == "Retain"),
-    n_review = sum(r$recommendation == "Review"),
-    n_insufficient = sum(r$recommendation == "Insufficient data"),
-    scale_summary = object$scale_summary,
-    reviewed_items = r[r$recommendation != "Retain", , drop = FALSE],
-    settings = object$settings
-  )
-  class(out) <- "summary.contentvalid_sort"
+  out <- .workflow_summary_core(object)
+  # Compatibility aliases retained for pre-v0.0.6 user code.
+  out$n_retain <- out$n_supported
+  class(out) <- c("summary.contentvalid_sort", "summary.contentvalid_workflow")
   out
 }
 
 #' @export
 print.summary.contentvalid_sort <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   cat("Summary of item-sort content-validity evidence\n")
   cat(strrep("-", 43), "\n", sep = "")
   cat("Retain:", x$n_retain, "of", x$n_items, "item(s)\n")
@@ -342,6 +351,7 @@ plot.contentvalid_sort <- function(x,
                                    ...) {
   type <- match.arg(type)
   label <- match.arg(label)
+  .validate_flag(show_legend, "show_legend")
   r <- x$results
 
   if (type == "item") {

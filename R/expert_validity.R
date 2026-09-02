@@ -42,17 +42,23 @@
 #' @param target_col In congruence mode, optional column identifying each
 #'   item's intended objective. If absent, IOC cells are returned descriptively.
 #'
-#' @return An object of class `contentvalid_expert` with mode-specific item
-#'   results, scale/panel summaries where applicable, settings, and raw details.
+#' @return An object of class `contentvalid_expert` and
+#'   `contentvalid_workflow`. All flagship workflow objects expose the common
+#'   components `results`, `scale_summary`, `settings`, `design`, and `details`.
+#'   The historical top-level `scale` component is retained as a compatibility
+#'   alias for `scale_summary`. Results include a standardized `status` field
+#'   while retaining mode-specific `recommendation` wording.
 #'
 #' @references
 #' Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
 #' interval to Aiken's item content-relevance index. *Measurement in Physical
 #' Education and Exercise Science, 8*(4), 213-225.
+#' \doi{10.1207/s15327841mpee0804_3}
 #'
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 #' validity ratio: Revisiting the original methods of calculation.
 #' *Measurement and Evaluation in Counseling and Development, 47*(1), 79-86.
+#' \doi{10.1177/0748175613513808}
 #'
 #' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 #' indicator of content validity? *Research in Nursing & Health, 30*(4),
@@ -144,14 +150,32 @@ expert_validity <- function(data,
       stringsAsFactors = FALSE
     )
 
-    out <- list(
+    item$status <- .workflow_status_from_recommendation(item$recommendation)
+    settings <- list(
+      method = "Aiken V with score intervals plus CVI/modified kappa",
+      lo = lo, hi = hi, relevance_cut = relevance_cut,
+      alpha = alpha, na.rm = isTRUE(na.rm),
+      judge_type = "expert",
+      aiken_ci = "Penfield-Giacobbi score"
+    )
+    design <- list(
+      type = "expert-panel relevance",
+      n_items = nrow(item),
+      n_judges = nrow(R),
+      n_judges_min = if (nrow(item)) min(item$N) else 0L,
+      n_judges_max = if (nrow(item)) max(item$N) else 0L,
+      n_missing = sum(is.na(R))
+    )
+    out <- .new_contentvalid_workflow(
+      subclass = "contentvalid_expert",
+      workflow = "expert-panel",
       mode = mode,
       results = item,
-      scale = scale,
-      settings = list(lo = lo, hi = hi, relevance_cut = relevance_cut,
-                      alpha = alpha, na.rm = isTRUE(na.rm),
-                      aiken_ci = "Penfield-Giacobbi score"),
-      details = list(cvi = cv)
+      scale_summary = scale,
+      settings = settings,
+      design = design,
+      details = list(cvi = cv),
+      legacy = list(scale = scale)
     )
   } else if (mode == "essentiality") {
     res <- cvr(data, N = N, alpha = alpha, na.rm = na.rm)
@@ -169,18 +193,37 @@ expert_validity <- function(data,
         "Essential ratings do not meet the exact panel-size criterion; review the item and expert rationale before deciding whether to revise or remove it."
       )
     )
-    out <- list(
+    res$status <- .workflow_status_from_recommendation(res$recommendation)
+    scale <- data.frame(
+      n_items = nrow(res),
+      n_supported = sum(res$status == "Supported"),
+      n_review = sum(res$status == "Review"),
+      n_insufficient = sum(res$status == "Insufficient data"),
+      stringsAsFactors = FALSE
+    )
+    matrix_input <- is.matrix(data) || is.data.frame(data)
+    settings <- list(
+      alpha = alpha, na.rm = isTRUE(na.rm), judge_type = "expert",
+      method = "Lawshe CVR with exact binomial critical values"
+    )
+    design <- list(
+      type = "expert-panel essentiality",
+      n_items = nrow(res),
+      n_judges = if (matrix_input) nrow(data) else if (length(unique(res$N)) == 1L) unique(res$N) else NA_integer_,
+      n_judges_min = if (nrow(res)) min(res$N) else 0L,
+      n_judges_max = if (nrow(res)) max(res$N) else 0L,
+      n_missing = if (matrix_input) sum(is.na(as.matrix(data))) else NA_integer_
+    )
+    out <- .new_contentvalid_workflow(
+      subclass = "contentvalid_expert",
+      workflow = "expert-panel",
       mode = mode,
       results = res,
-      scale = data.frame(
-        n_items = nrow(res),
-        n_supported = sum(res$recommendation == "Supported"),
-        n_review = sum(res$recommendation == "Review"),
-        stringsAsFactors = FALSE
-      ),
-      settings = list(alpha = alpha, na.rm = isTRUE(na.rm),
-                      method = "Lawshe CVR with exact binomial critical values"),
-      details = NULL
+      scale_summary = scale,
+      settings = settings,
+      design = design,
+      details = list(),
+      legacy = list(scale = scale)
     )
   } else {
     if (!is.data.frame(data)) {
@@ -265,25 +308,52 @@ expert_validity <- function(data,
       }, character(1))
     }
 
-    out <- list(
+    res$status <- .workflow_status_from_recommendation(res$recommendation)
+    scale <- data.frame(
+      n_items = length(unique(cells$item)),
+      n_supported = sum(res$status == "Supported", na.rm = TRUE),
+      n_review = sum(res$status == "Review", na.rm = TRUE),
+      n_insufficient = sum(res$status == "Insufficient data", na.rm = TRUE),
+      n_descriptive = sum(res$status == "Descriptive only", na.rm = TRUE),
+      stringsAsFactors = FALSE
+    )
+    settings <- list(
+      na.rm = isTRUE(na.rm), target_col = if (has_target) target_col else NULL,
+      judge_type = "expert",
+      method = "Rovinelli-Hambleton item-objective congruence"
+    )
+    design <- list(
+      type = "expert-panel congruence",
+      n_items = length(unique(cells$item)),
+      n_judges = length(unique(data$judge)),
+      n_judges_min = if (nrow(cells)) min(cells$n_judges) else 0L,
+      n_judges_max = if (nrow(cells)) max(cells$n_judges) else 0L,
+      n_missing = sum(cells$n_missing),
+      n_objectives = length(unique(data$objective))
+    )
+    out <- .new_contentvalid_workflow(
+      subclass = "contentvalid_expert",
+      workflow = "expert-panel",
       mode = mode,
       results = res,
-      scale = data.frame(n_items = length(unique(cells$item)), stringsAsFactors = FALSE),
-      settings = list(na.rm = isTRUE(na.rm), target_col = if (has_target) target_col else NULL,
-                      method = "Rovinelli-Hambleton item-objective congruence"),
-      details = list(cells = cells)
+      scale_summary = scale,
+      settings = settings,
+      design = design,
+      details = list(cells = cells),
+      legacy = list(scale = scale)
     )
   }
 
-  class(out) <- "contentvalid_expert"
   out
 }
 
 #' @export
 print.contentvalid_expert <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   cat("contentvalidR expert-panel analysis\n")
   cat(strrep("-", 35), "\n", sep = "")
   cat("Mode:", x$mode, "\n")
+  d <- .workflow_design(x)
 
   if (x$mode == "relevance") {
     s <- x$scale[1, ]
@@ -294,18 +364,35 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
         "| S-CVI/UA:", round(s$S_CVI_UA, digits), "\n")
     cat("Strong support:", s$n_strong_support,
         "| Support:", s$n_support,
-        "| Review:", s$n_review, "\n\n")
+        "| Review:", s$n_review, "\n")
+    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
+      cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
+    }
+    cat("\n")
     tab <- x$results[c("item", "N", "V", "ci_low", "ci_high", "I_CVI", "kappa_mod", "recommendation")]
     num <- c("V", "ci_low", "ci_high", "I_CVI", "kappa_mod")
     tab[num] <- lapply(tab[num], round, digits = digits)
     print(tab, row.names = FALSE)
     cat("\nCVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.\n")
   } else if (x$mode == "essentiality") {
+    cat("Items:", d$n_items,
+        "| Experts/item:", paste0(d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max) else ""), "\n")
+    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
+      cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
+    }
     cat("Method:", x$settings$method, "\n\n")
     tab <- x$results[c("item", "ne", "N", "cvr", "p_value", "critical_ne", "recommendation")]
     tab[c("cvr", "p_value")] <- lapply(tab[c("cvr", "p_value")], round, digits = digits)
     print(tab, row.names = FALSE)
   } else {
+    cat("Items:", d$n_items,
+        "| Experts/cell:", paste0(d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max) else ""),
+        "| Objectives:", d$n_objectives, "\n")
+    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
+      cat("Missing ratings:", d$n_missing, "; effective expert N is used cellwise.\n")
+    }
     cat("Method:", x$settings$method, "\n\n")
     tab <- x$results
     numeric_cols <- names(tab)[vapply(tab, is.numeric, logical(1))]
@@ -319,21 +406,25 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
 
 #' @export
 summary.contentvalid_expert <- function(object, ...) {
-  out <- list(
-    mode = object$mode,
-    scale = object$scale,
-    flagged = object$results[grepl("Review|Insufficient", object$results$recommendation, ignore.case = TRUE), , drop = FALSE],
-    settings = object$settings
-  )
-  class(out) <- "summary.contentvalid_expert"
+  out <- .workflow_summary_core(object)
+  out$mode <- object$mode
+  # Compatibility aliases retained for pre-v0.0.6 user code.
+  out$scale <- out$scale_summary
+  out$flagged <- out$reviewed_items
+  class(out) <- c("summary.contentvalid_expert", "summary.contentvalid_workflow")
   out
 }
 
 #' @export
 print.summary.contentvalid_expert <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   cat("Summary of expert-panel content-validity evidence\n")
   cat(strrep("-", 45), "\n", sep = "")
   cat("Mode:", x$mode, "\n")
+  cat("Supported:", x$n_supported, "| Review:", x$n_review)
+  if (x$n_insufficient > 0L) cat(" | Insufficient data:", x$n_insufficient)
+  if (x$n_descriptive > 0L) cat(" | Descriptive only:", x$n_descriptive)
+  cat("\n")
   if (nrow(x$flagged) == 0L) {
     cat("No items were flagged by the workflow's quantitative review rules.\n")
   } else {
@@ -359,6 +450,7 @@ print.summary.contentvalid_expert <- function(x, digits = 3, ...) {
 #' @return The input object invisibly.
 #' @export
 plot.contentvalid_expert <- function(x, show_legend = TRUE, ...) {
+  .validate_flag(show_legend, "show_legend")
   if (x$mode == "relevance") {
     r <- x$results
     y <- seq_len(nrow(r))

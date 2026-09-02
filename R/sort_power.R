@@ -42,6 +42,7 @@ sort_power <- function(N, true_p, p0 = .5, alpha = .05) {
 
 #' @export
 print.contentvalid_sort_power <- function(x, digits = 3, ...) {
+  .validate_digits(digits)
   cat("Exact item-sort planning analysis\n")
   cat(strrep("-", 33), "\n", sep = "")
   cat(sprintf("Retention rule: p0 = %.2f, alpha = %.3f\n\n", x$settings$p0, x$settings$alpha))
@@ -80,6 +81,7 @@ plot.contentvalid_sort_power <- function(x,
                                          show_legend = TRUE,
                                          ...) {
   type <- match.arg(type)
+  .validate_flag(show_legend, "show_legend")
   tab <- x$table
 
   if (type == "critical") {

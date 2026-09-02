@@ -20,7 +20,7 @@
 #'
 #' @references
 #' Lawshe, C. H. (1975). A quantitative approach to content validity.
-#' *Personnel Psychology, 28*, 563-575.
+#' *Personnel Psychology, 28*(4), 563-575. \doi{10.1111/j.1744-6570.1975.tb01393.x}
 #'
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 #' validity ratio: Revisiting the original methods of calculation.
