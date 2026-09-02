@@ -73,10 +73,12 @@ summary(fit)
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
 interval to Aiken's item content-relevance index. \emph{Measurement in Physical
 Education and Exercise Science, 8}(4), 213-225.
+\doi{10.1207/s15327841mpee0804_3}
 
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
 \emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79-86.
+\doi{10.1177/0748175613513808}
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? \emph{Research in Nursing & Health, 30}(4),

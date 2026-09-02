@@ -34,4 +34,8 @@ ioc(df)
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
 specialists in the assessment of criterion-referenced test item validity.
 \emph{Dutch Journal of Educational Research, 2}, 49-60.
+
+Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence
+for multidimensional items. \emph{International Journal of Testing, 3}(2), 163-171.
+\doi{10.1207/S15327574IJT0302_5}
 }

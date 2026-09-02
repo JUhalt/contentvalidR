@@ -87,6 +87,7 @@ summary(fit)
 \references{
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
 content validation. \emph{Organizational Research Methods, 2}(2), 175-186.
+\doi{10.1177/109442819922004}
 
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
