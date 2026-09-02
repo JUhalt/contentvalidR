@@ -10,3 +10,8 @@
 ^ROADMAP\.md$
 ^data-raw$
 ^_pkgdown\.yml$
+^docs$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^.*\.Rcheck$
+^.*\.tar\.gz$

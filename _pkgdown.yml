@@ -11,6 +11,14 @@ reference:
   - rating_validity
   - expert_validity
 
+- title: Workflow plotting methods
+  desc: Diagnostic plots for the flagship workflow objects and exact sort-power plans.
+  contents:
+  - plot.contentvalid_sort
+  - plot.contentvalid_rating
+  - plot.contentvalid_expert
+  - plot.contentvalid_sort_power
+
 - title: Item-sort components and planning
   contents:
   - compute_psa

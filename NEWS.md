@@ -1,3 +1,14 @@
+# contentvalidR 0.0.8.9000
+
+## CRAN and release hardening
+
+* Added a dedicated CRAN-style GitHub Actions job on R-devel with NOTE-as-failure, while retaining release/oldrel/devel checks across Windows, macOS, and Linux.
+* Updated the workflow to `actions/checkout@v7` and current `r-lib/actions@v2` conventions.
+* Hardened source-package exclusions for generated pkgdown output, CRAN submission metadata, check directories, and source tarballs.
+* Added a reproducible `data-raw/release-check.R` developer checklist covering documentation, tests, README, standard and `--as-cran` checks, optional URL/spelling audits, and pkgdown construction.
+* Added a draft `cran-comments.md` for the first submission; it is excluded from the built package and must be populated with actual final check results before submission.
+* Synchronized the development roadmap through v0.0.7 and moved the remaining CI/public-repository verification items into the v0.0.8 release checklist.
+
 # contentvalidR 0.0.7.9000
 
 ## Documentation and reproducibility

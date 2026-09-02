@@ -1,7 +1,7 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.0.7.9000
+Version: 0.0.8.9000
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
@@ -19,6 +19,7 @@ Description: Provides quantitative tools for substantive and content-oriented
     review recommendations rather than isolated coefficients.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Language: en-US
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.0.0)
 Imports:

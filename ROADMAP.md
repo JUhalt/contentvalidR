@@ -79,9 +79,8 @@ Release/public-repository hygiene in this sprint:
 
 - [x] Update GitHub Actions dependencies to current supported majors (including
       replacing the Node-20 `actions/checkout@v4` workflow dependency).
-- [ ] Confirm a warning-free Windows/macOS/Linux CI matrix after the Actions refresh.
-- [ ] Refresh the public GitHub repository description/topics so they match the
-      modern sort + rating + expert-panel package scope.
+- [x] Move final cross-platform CI verification into the v0.0.8 release-hardening gate so it is checked against the release candidate rather than an intermediate sprint.
+- [x] Move the final public GitHub description/topics refresh into the v0.0.8 release-hygiene gate.
 - [x] Refresh README badges/public-facing wording; pkgdown navigation remains in v0.0.7.
 
 - [x] Harden Aiken's V and add a Penfield-Giacobbi score confidence interval.
@@ -142,12 +141,20 @@ Goal: reach publication-grade numerical and behavioral coverage.
 - [x] Add `NEWS.md` development history.
 - [x] Organize pkgdown reference sections and articles.
 
-## v0.0.8 - CRAN hardening
+## v0.0.8 - CRAN hardening (current)
 
-- [ ] Linux / Windows / macOS CI on release, oldrel, and devel R.
-- [ ] Clean imports/suggests, examples, URLs, spelling, and source-package files.
-- [ ] Build README, vignettes, and pkgdown site from clean source.
-- [ ] `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
+Goal: turn the tested development package into a clean, reproducible first-release candidate.
+
+- [x] Refresh GitHub Actions configuration to Windows/macOS/Linux release plus Linux oldrel-1/devel and add a dedicated R-devel `--as-cran` gate with NOTE-as-failure.
+- [x] Use Node-24-compatible `actions/checkout@v7` while retaining the current `r-lib/actions@v2` line.
+- [x] Audit source-package exclusions and ignore generated pkgdown output, check directories, source tarballs, and CRAN-only submission metadata.
+- [x] Add a reproducible developer release-check script and first-submission `cran-comments.md` draft.
+- [ ] Run dependency/import, example, URL, and spelling audits and resolve every actionable finding.
+- [ ] Build README and all vignettes from clean source; build the pkgdown site successfully.
+- [ ] Run local `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
+- [ ] Confirm the full GitHub Actions matrix, including the `--as-cran` job, is warning/note-free after push.
+- [ ] Refresh the live GitHub repository description/topics to match the modern sort + rating + expert-panel scope.
+- [ ] Verify the live GitHub `ROADMAP.md`, `DESCRIPTION`, README, and workflow reflect the release candidate rather than an older cached/remote state.
 
 ## v0.1.0 - First public/CRAN release
 
