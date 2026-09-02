@@ -1,0 +1,14 @@
+pandoc: 3.8.3
+pkgdown: 2.2.1
+pkgdown_sha: ~
+articles:
+  construct-rating-validity: construct-rating-validity.html
+  design-and-reporting: design-and-reporting.html
+  expert-panel-validity: expert-panel-validity.html
+  getting-started: getting-started.html
+  item-sort-validity: item-sort-validity.html
+  reporting-examples: reporting-examples.html
+last_built: 2026-09-02T16:23Z
+urls:
+  reference: https://juhalt.github.io/contentvalidR/reference
+  article: https://juhalt.github.io/contentvalidR/articles
