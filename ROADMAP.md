@@ -141,7 +141,7 @@ Goal: reach publication-grade numerical and behavioral coverage.
 - [x] Add `NEWS.md` development history.
 - [x] Organize pkgdown reference sections and articles.
 
-## v0.0.8 - CRAN hardening (current)
+## v0.0.8 - CRAN hardening (completed)
 
 Goal: turn the tested development package into a clean, reproducible first-release candidate.
 
@@ -149,14 +149,14 @@ Goal: turn the tested development package into a clean, reproducible first-relea
 - [x] Use Node-24-compatible `actions/checkout@v7` while retaining the current `r-lib/actions@v2` line.
 - [x] Audit source-package exclusions and ignore generated pkgdown output, check directories, source tarballs, and CRAN-only submission metadata.
 - [x] Add a reproducible developer release-check script and first-submission `cran-comments.md` draft.
-- [ ] Run dependency/import, example, URL, and spelling audits and resolve every actionable finding.
-- [ ] Build README and all vignettes from clean source; build the pkgdown site successfully.
-- [ ] Run local `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
-- [ ] Confirm the full GitHub Actions matrix, including the `--as-cran` job, is warning/note-free after push.
-- [ ] Refresh the live GitHub repository description/topics to match the modern sort + rating + expert-panel scope.
-- [ ] Verify the live GitHub `ROADMAP.md`, `DESCRIPTION`, README, and workflow reflect the release candidate rather than an older cached/remote state.
+- [x] Run dependency/import, example, URL, and spelling audits and resolve every actionable finding.
+- [x] Build README and all vignettes from clean source; build the pkgdown site successfully.
+- [x] Run local `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
+- [x] Confirm the full GitHub Actions matrix, including the `--as-cran` job, is warning/note-free after push.
+- [x] Refresh the live GitHub repository description/topics to match the modern sort + rating + expert-panel scope.
+- [x] Verify the live GitHub `ROADMAP.md`, `DESCRIPTION`, README, and workflow reflect the release candidate rather than an older cached/remote state.
 
-## v0.1.0 - First public/CRAN release
+## v0.1.0 - First public/CRAN release (next)
 
 Focused release claim: reproducible quantitative tools for substantive and
 content-oriented scale pretesting, centered on modern item-sort and
