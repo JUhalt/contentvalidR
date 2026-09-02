@@ -167,7 +167,7 @@ correspondence problem (low Psa) from a construct-overlap problem (low or
 negative Csv). The map does not draw Colquitt cutoff regions across individual
 items because those empirical norms were constructed from scale-level averages.
 
-The exact planning object is also plotable:
+The exact planning object is also plottable:
 
 ```{r fig.width=7, fig.height=4}
 plan <- sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80))
