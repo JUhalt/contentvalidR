@@ -1,3 +1,33 @@
+# contentvalidR 0.1.0
+
+## First public release
+
+* First public release of `contentvalidR`, providing reproducible quantitative
+  tools for substantive and content-oriented scale pretesting.
+* The recommended API centers on three complementary workflows:
+  `sort_validity()` for item sorting, `rating_validity()` for construct ratings,
+  and `expert_validity()` for relevance, essentiality, and congruence expert
+  panels.
+* Item-sort inference combines Anderson-Gerbing Psa/Csv indices with exact
+  Howard-Melloy target-count inference and scale-level Colquitt et al. empirical
+  interpretation benchmarks.
+* Construct-rating analyses implement Hinkin-Tracey correspondence and
+  distinctiveness, repeated-measures item screening with Greenhouse-Geisser
+  correction, planned target-versus-orbiting contrasts, and Colquitt et al.
+  scale-level interpretation.
+* Expert-panel analyses support Aiken's V with Penfield-Giacobbi score
+  confidence intervals, Lawshe CVR with exact inference, CVI/modified kappa,
+  and item-objective congruence.
+* Flagship workflow objects share a stable user-facing structure, common status
+  terminology, informative print/summary/plot methods, explicit missingness and
+  design metadata, and restrained review recommendations.
+* The release includes deterministic example data, workflow/design/reporting
+  vignettes, manuscript-ready reporting examples, citation metadata, extensive
+  regression and boundary-condition tests, and a cross-platform release matrix
+  including a dedicated R-devel `--as-cran` NOTE-as-failure gate.
+* Quantitative screening is explicitly framed as one component of a broader
+  validity argument rather than an automatic item-retention or deletion rule.
+
 # contentvalidR 0.0.8.9000
 
 ## CRAN and release hardening
@@ -71,7 +101,6 @@
 * Added plotting for exact item-sort power and the critical observed-Psa boundary.
 * Added canonical published/hand-worked reference tests, including Hinkin-Tracey Study 1 mean ratings, Polit-Beck-Owen modified kappa, and the Ayre-Scally N=10 CVR boundary.
 * Closed the Anderson-Gerbing legacy-inference decision: Psa/Csv remain supported, but the obsolete critical-Csv decision rule is not exposed as an alternate workflow because Howard-Melloy is applicable to multi-choice sorts and agrees in the original two-choice case.
-
 
 ## Expert-panel workflow and repository hygiene
 

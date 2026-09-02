@@ -75,101 +75,78 @@ Goal: modernize the Hinkin-Tracey side of the package.
 Goal: provide trustworthy complementary indices without duplicating unrelated
 packages merely for feature count.
 
-Release/public-repository hygiene in this sprint:
-
-- [x] Update GitHub Actions dependencies to current supported majors (including
-      replacing the Node-20 `actions/checkout@v4` workflow dependency).
-- [x] Move final cross-platform CI verification into the v0.0.8 release-hardening gate so it is checked against the release candidate rather than an intermediate sprint.
-- [x] Move the final public GitHub description/topics refresh into the v0.0.8 release-hygiene gate.
-- [x] Refresh README badges/public-facing wording; pkgdown navigation remains in v0.0.7.
-
-- [x] Harden Aiken's V and add a Penfield-Giacobbi score confidence interval.
-- [x] Document exact CVR critical values and Ayre-Scally references.
-- [x] Correct I-CVI / modified kappa calculations.
-- [x] Add S-CVI/Ave and S-CVI/UA.
-- [x] Harden IOC validation and missing-data handling.
-- [x] Add `expert_validity()` with informative print/summary/plot methods.
-- [x] Add a dedicated expert-panel vignette.
-- [x] Add correspondence-distinctiveness evidence maps for sort/rating workflows,
-      target-versus-competitor gap plots for rating/IOC, richer expert evidence
-      plots, and exact sort-power planning plots. Full-size exported plots were
-      smoke-tested and visually reviewed; final v0.0.4d polish staggers nearby
-      scale labels and renders the exact critical-Psa boundary as a step function.
+- [x] Complete the expert-panel workflow and visualization hardening.
+- [x] Harden Aiken V, CVR, CVI/modified kappa, and IOC behavior.
+- [x] Add public workflow print/summary/plot methods and dedicated documentation.
+- [x] Move final cross-platform and public-repository verification to v0.0.8.
 
 ## v0.0.5 - Test hardening (completed)
 
 Goal: reach publication-grade numerical and behavioral coverage.
 
-- [x] Reach the original 80-120 meaningful-test target (103 `test_that()` blocks by the final v0.0.4d candidate).
-- [x] Add published examples and hand calculations for release-defining core methods.
-- [x] Complete boundary-condition, malformed-input, missingness, degenerate-design,
-      and output-contract hardening across the public API.
-      - [x] v0.0.5a: malformed-input/design/contract audit.
-      - [x] v0.0.5b: all-missing, tiny-panel, exact-boundary, zero-variance,
-            tied-profile, and degenerate-diagnostic regression pass.
-      - [x] v0.0.5c: public export/S3 registration audit and clean-install vignette contract.
-- [x] Add regression tests for every discovered bug found during the v0.0.5 audit.
-- [x] Classify legacy helpers (`qfactor_content()`, `agreement_summary()`,
-      `simulate_*()`, `signal_detection()`, `reproducibility_phi()`) as
-      auxiliary/compatibility functions rather than release-defining workflows;
-      retain them for now but do not expand their methodological role before 0.1.0.
+- [x] Complete malformed-input, boundary-condition, missingness, degenerate-design,
+      canonical-value, public-export, and S3 registration regression coverage.
+- [x] Classify legacy helpers as auxiliary/compatibility rather than flagship API.
 
 ## v0.0.6 - Stable user-facing API (completed)
 
 - [x] Harmonize workflow object structure across sort/rating/expert analyses.
-      All flagship fits expose `results`, `scale_summary`, `settings`, `design`,
-      and `details`, plus a common `contentvalid_workflow` superclass.
 - [x] Implement consistent `print()`, `summary()`, and `plot()` conventions.
-      Summary objects share common counts/metadata; primary print methods validate
-      `digits`; plots validate the common `show_legend` control and return fits
-      invisibly.
 - [x] Standardize terminology, recommendations, warnings, and missingness reports.
-      A common `status` field uses Supported / Review / Insufficient data /
-      Descriptive only while method-specific recommendation language remains
-      available; design metadata now exposes effective judge ranges and missingness.
-- [x] Review low-level function names and deprecation/compatibility needs.
-      No gratuitous renaming is needed before v0.1.0. Existing low-level names and
-      compatibility aliases are retained; auxiliary helpers remain non-flagship.
+- [x] Review low-level names and compatibility needs before the first public release.
 
 ## v0.0.7 - Documentation and reproducibility (completed)
 
-- [x] Add dedicated vignettes for each major workflow (sort, rating, expert panel).
-- [x] Add a design-and-reporting vignette.
-- [x] Add reusable reporting templates/examples for manuscript-ready results.
-- [x] Add example datasets and `data-raw/` provenance scripts.
-- [x] Add `inst/CITATION` and complete method references/DOIs.
-- [x] Add `NEWS.md` development history.
+- [x] Add dedicated workflow, design/reporting, and manuscript-ready vignettes.
+- [x] Add deterministic example data and `data-raw/` provenance.
+- [x] Add package citation and centralized method references.
 - [x] Organize pkgdown reference sections and articles.
 
 ## v0.0.8 - CRAN hardening (completed)
 
-Goal: turn the tested development package into a clean, reproducible first-release candidate.
+- [x] Complete source-package, URL, spelling, README, vignette, pkgdown, and
+      local `--as-cran` release audits.
+- [x] Complete the six-job GitHub Actions matrix, including R-devel
+      `--as-cran` with NOTE-as-failure.
+- [x] Publish the pkgdown site and refresh repository metadata.
+- [x] Verify live GitHub files reflect the release candidate.
 
-- [x] Refresh GitHub Actions configuration to Windows/macOS/Linux release plus Linux oldrel-1/devel and add a dedicated R-devel `--as-cran` gate with NOTE-as-failure.
-- [x] Use Node-24-compatible `actions/checkout@v7` while retaining the current `r-lib/actions@v2` line.
-- [x] Audit source-package exclusions and ignore generated pkgdown output, check directories, source tarballs, and CRAN-only submission metadata.
-- [x] Add a reproducible developer release-check script and first-submission `cran-comments.md` draft.
-- [x] Run dependency/import, example, URL, and spelling audits and resolve every actionable finding.
-- [x] Build README and all vignettes from clean source; build the pkgdown site successfully.
-- [x] Run local `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
-- [x] Confirm the full GitHub Actions matrix, including the `--as-cran` job, is warning/note-free after push.
-- [x] Refresh the live GitHub repository description/topics to match the modern sort + rating + expert-panel scope.
-- [x] Verify the live GitHub `ROADMAP.md`, `DESCRIPTION`, README, and workflow reflect the release candidate rather than an older cached/remote state.
+## v0.1.0 - First public/CRAN release (current)
 
-## v0.1.0 - First public/CRAN release (next)
+Goal: publish the frozen and validated first public release without adding new
+features during the release cut.
 
-Focused release claim: reproducible quantitative tools for substantive and
-content-oriented scale pretesting, centered on modern item-sort and
-construct-rating workflows with complementary expert-panel indices.
+- [x] Freeze the feature set at the completed v0.0.8 release candidate.
+- [x] Stamp `DESCRIPTION` as version `0.1.0`.
+- [x] Add first-public-release notes to `NEWS.md`.
+- [ ] Run the final release battery against the actual stamped `0.1.0` source:
+      `document()`, `test()`, `build_readme()`, standard check, `--as-cran`,
+      URL audit, spelling audit, and pkgdown build.
+- [ ] Commit and push the `0.1.0` release candidate.
+- [ ] Confirm all six GitHub Actions jobs are green on the stamped `0.1.0` commit.
+- [ ] Create annotated Git tag `v0.1.0` and push it.
+- [ ] Create the GitHub `v0.1.0` release.
+- [ ] Publish `contentvalidR` through a personal R-universe so the tagged/public
+      package is installable from a CRAN-like repository without waiting for CRAN.
+- [ ] Submit `contentvalidR` 0.1.0 to CRAN using the verified source tarball and
+      final `cran-comments.md`.
+- [ ] Confirm CRAN acceptance and verify the public CRAN package page/install path.
+- [ ] Replace this historical pre-0.1 roadmap with the new post-0.1 development
+      roadmap; the `v0.1.0` tag preserves this release roadmap permanently.
 
 ## Post-0.1 parking lot
 
-Potentially useful but not release-defining features:
+These ideas move to the new roadmap immediately after v0.1.0 is public:
 
+- Bayesian extensions and uncertainty-first content-validity inference;
+- formal content validity analysis and richer domain-coverage modeling;
+- judge/rater heterogeneity and influence diagnostics, including modern
+  latent-variable or IRT approaches;
 - Q-factor helper / alternative extraction approaches;
 - later-CFA signal-detection diagnostics;
-- between-pretest reproducibility helpers;
-- broader simulation framework;
-- APA/report exporters;
-- Bayesian extensions;
-- interactive applications.
+- between-pretest and multi-round reproducibility helpers;
+- broader design/power and simulation framework;
+- APA/Quarto/report exporters and tidy interoperability;
+- interactive applications;
+- a methodological/package paper framed as a practical primer for researchers
+  learning scale development and substantive/content-validity pretesting.
