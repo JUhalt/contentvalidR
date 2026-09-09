@@ -14,8 +14,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 version: 0.1.0.9000, targeting v0.2.0.**
 
 **contentvalidR** provides quantitative tools for substantive and
-content-oriented scale pretesting. The package is being developed around
-three complementary workflows:
+content-oriented scale pretesting. The package provides three
+complementary workflows:
 
 1.  **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact
     item-level inference following Howard & Melloy (2016), and
