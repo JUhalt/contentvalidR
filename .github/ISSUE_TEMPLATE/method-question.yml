@@ -1,0 +1,31 @@
+name: Methodological question
+description: Ask about the statistical reasoning, interpretation, or scope of a contentvalidR method.
+title: "[Method] "
+labels: ["question", "methodology"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for questions about what contentvalidR computes, why a method is used, or how content-validity evidence should be interpreted.
+  - type: textarea
+    id: question
+    attributes:
+      label: Methodological question
+      description: What statistical, measurement, or content-validation question are you trying to resolve?
+    validations:
+      required: true
+  - type: input
+    id: function
+    attributes:
+      label: Relevant contentvalidR function
+      placeholder: "sort_validity(), rating_validity(), expert_validity(), ..."
+  - type: textarea
+    id: context
+    attributes:
+      label: Research context
+      description: Briefly describe the construct, pretest design, judges/raters, items, or decision motivating the question.
+  - type: textarea
+    id: references
+    attributes:
+      label: References or competing approaches
+      description: Optional citations, packages, papers, or alternative methods relevant to the question.
