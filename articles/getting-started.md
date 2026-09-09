@@ -214,16 +214,16 @@ example_files <- c(
 vapply(example_files, function(x) {
   system.file("extdata", x, package = "contentvalidR")
 }, character(1))
-#>                                                                                       sort_example.csv 
-#>                "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/sort_example.csv" 
-#>                                                                                     rating_example.csv 
-#>              "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/rating_example.csv" 
-#>                                                                           expert_relevance_example.csv 
-#>    "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_relevance_example.csv" 
-#>                                                                        expert_essentiality_example.csv 
-#> "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_essentiality_example.csv" 
-#>                                                                          expert_congruence_example.csv 
-#>   "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_congruence_example.csv"
+#>                                                                        sort_example.csv 
+#>                "/home/runner/work/_temp/Library/contentvalidR/extdata/sort_example.csv" 
+#>                                                                      rating_example.csv 
+#>              "/home/runner/work/_temp/Library/contentvalidR/extdata/rating_example.csv" 
+#>                                                            expert_relevance_example.csv 
+#>    "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_relevance_example.csv" 
+#>                                                         expert_essentiality_example.csv 
+#> "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_essentiality_example.csv" 
+#>                                                           expert_congruence_example.csv 
+#>   "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_congruence_example.csv"
 ```
 
 See

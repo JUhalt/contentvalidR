@@ -1,8 +1,8 @@
 # contentvalidR
 
 **contentvalidR** provides quantitative tools for substantive and
-content-oriented scale pretesting. The package is being developed around
-three complementary workflows:
+content-oriented scale pretesting. The package provides three
+complementary workflows:
 
 1.  **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact
     item-level inference following Howard & Melloy (2016), and
@@ -56,6 +56,21 @@ retain method-appropriate displays. Compatibility aliases such as
 written before v0.0.6.
 
 ## Installation
+
+Install the current stable release from the JUhalt R-universe:
+
+``` r
+
+install.packages(
+  "contentvalidR",
+  repos = c(
+    "https://juhalt.r-universe.dev",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+Install the current development version directly from GitHub:
 
 ``` r
 

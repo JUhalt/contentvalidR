@@ -112,167 +112,230 @@ Verify the full v0.0.3 patch under R with `document()`, `test()`,
 Goal: provide trustworthy complementary indices without duplicating
 unrelated packages merely for feature count.
 
-Release/public-repository hygiene in this sprint:
+Complete the expert-panel workflow and visualization hardening.
 
-Update GitHub Actions dependencies to current supported majors
-(including replacing the Node-20 `actions/checkout@v4` workflow
-dependency).
+Harden Aiken V, CVR, CVI/modified kappa, and IOC behavior.
 
-Move final cross-platform CI verification into the v0.0.8
-release-hardening gate so it is checked against the release candidate
-rather than an intermediate sprint.
+Add public workflow print/summary/plot methods and dedicated
+documentation.
 
-Move the final public GitHub description/topics refresh into the v0.0.8
-release-hygiene gate.
-
-Refresh README badges/public-facing wording; pkgdown navigation remains
-in v0.0.7.
-
-Harden Aiken’s V and add a Penfield-Giacobbi score confidence interval.
-
-Document exact CVR critical values and Ayre-Scally references.
-
-Correct I-CVI / modified kappa calculations.
-
-Add S-CVI/Ave and S-CVI/UA.
-
-Harden IOC validation and missing-data handling.
-
-Add
-[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
-with informative print/summary/plot methods.
-
-Add a dedicated expert-panel vignette.
-
-Add correspondence-distinctiveness evidence maps for sort/rating
-workflows, target-versus-competitor gap plots for rating/IOC, richer
-expert evidence plots, and exact sort-power planning plots. Full-size
-exported plots were smoke-tested and visually reviewed; final v0.0.4d
-polish staggers nearby scale labels and renders the exact critical-Psa
-boundary as a step function.
+Move final cross-platform and public-repository verification to v0.0.8.
 
 ## v0.0.5 - Test hardening (completed)
 
 Goal: reach publication-grade numerical and behavioral coverage.
 
-Reach the original 80-120 meaningful-test target (103 `test_that()`
-blocks by the final v0.0.4d candidate).
+Complete malformed-input, boundary-condition, missingness,
+degenerate-design, canonical-value, public-export, and S3 registration
+regression coverage.
 
-Add published examples and hand calculations for release-defining core
-methods.
-
-Complete boundary-condition, malformed-input, missingness,
-degenerate-design, and output-contract hardening across the public
-API. - \[x\] v0.0.5a: malformed-input/design/contract audit. - \[x\]
-v0.0.5b: all-missing, tiny-panel, exact-boundary, zero-variance,
-tied-profile, and degenerate-diagnostic regression pass. - \[x\]
-v0.0.5c: public export/S3 registration audit and clean-install vignette
-contract.
-
-Add regression tests for every discovered bug found during the v0.0.5
-audit.
-
-Classify legacy helpers
-([`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md),
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
-`simulate_*()`,
-[`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md),
-[`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md))
-as auxiliary/compatibility functions rather than release-defining
-workflows; retain them for now but do not expand their methodological
-role before 0.1.0.
+Classify legacy helpers as auxiliary/compatibility rather than flagship
+API.
 
 ## v0.0.6 - Stable user-facing API (completed)
 
 Harmonize workflow object structure across sort/rating/expert analyses.
-All flagship fits expose `results`, `scale_summary`, `settings`,
-`design`, and `details`, plus a common `contentvalid_workflow`
-superclass.
 
 Implement consistent [`print()`](https://rdrr.io/r/base/print.html),
 [`summary()`](https://rdrr.io/r/base/summary.html), and
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) conventions.
-Summary objects share common counts/metadata; primary print methods
-validate `digits`; plots validate the common `show_legend` control and
-return fits invisibly.
 
 Standardize terminology, recommendations, warnings, and missingness
-reports. A common `status` field uses Supported / Review / Insufficient
-data / Descriptive only while method-specific recommendation language
-remains available; design metadata now exposes effective judge ranges
-and missingness.
+reports.
 
-Review low-level function names and deprecation/compatibility needs. No
-gratuitous renaming is needed before v0.1.0. Existing low-level names
-and compatibility aliases are retained; auxiliary helpers remain
-non-flagship.
+Review low-level names and compatibility needs before the first public
+release.
 
 ## v0.0.7 - Documentation and reproducibility (completed)
 
-Add dedicated vignettes for each major workflow (sort, rating, expert
-panel).
+Add dedicated workflow, design/reporting, and manuscript-ready
+vignettes.
 
-Add a design-and-reporting vignette.
+Add deterministic example data and `data-raw/` provenance.
 
-Add reusable reporting templates/examples for manuscript-ready results.
-
-Add example datasets and `data-raw/` provenance scripts.
-
-Add `inst/CITATION` and complete method references/DOIs.
-
-Add `NEWS.md` development history.
+Add package citation and centralized method references.
 
 Organize pkgdown reference sections and articles.
 
-## v0.0.8 - CRAN hardening (current)
+## v0.0.8 - CRAN hardening (completed)
 
-Goal: turn the tested development package into a clean, reproducible
-first-release candidate.
+Complete source-package, URL, spelling, README, vignette, pkgdown, and
+local `--as-cran` release audits.
 
-Refresh GitHub Actions configuration to Windows/macOS/Linux release plus
-Linux oldrel-1/devel and add a dedicated R-devel `--as-cran` gate with
-NOTE-as-failure.
+Complete the six-job GitHub Actions matrix, including R-devel
+`--as-cran` with NOTE-as-failure.
 
-Use Node-24-compatible `actions/checkout@v7` while retaining the current
-`r-lib/actions@v2` line.
+Publish the pkgdown site and refresh repository metadata.
 
-Audit source-package exclusions and ignore generated pkgdown output,
-check directories, source tarballs, and CRAN-only submission metadata.
+Verify live GitHub files reflect the release candidate.
 
-Add a reproducible developer release-check script and first-submission
-`cran-comments.md` draft.
+## v0.1.0 - First public release (completed)
 
-Run dependency/import, example, URL, and spelling audits and resolve
-every actionable finding.
+**Status:** Released September 2, 2026
 
-Build README and all vignettes from clean source; build the pkgdown site
-successfully.
+Goal: publish a frozen, validated first public release of the three
+flagship content-validity workflows.
 
-Run local `R CMD check --as-cran`: 0 errors, 0 warnings, 0 notes.
+Freeze the feature set at the completed v0.0.8 release candidate.
 
-Confirm the full GitHub Actions matrix, including the `--as-cran` job,
-is warning/note-free after push.
+Stamp `DESCRIPTION` as version `0.1.0`.
 
-Refresh the live GitHub repository description/topics to match the
-modern sort + rating + expert-panel scope.
+Add first-public-release notes to `NEWS.md`.
 
-Verify the live GitHub `ROADMAP.md`, `DESCRIPTION`, README, and workflow
-reflect the release candidate rather than an older cached/remote state.
+Run the final release battery against the stamped `0.1.0` source.
 
-## v0.1.0 - First public/CRAN release
+Commit and push the stable `0.1.0` source.
 
-Focused release claim: reproducible quantitative tools for substantive
-and content-oriented scale pretesting, centered on modern item-sort and
-construct-rating workflows with complementary expert-panel indices.
+Confirm the six-job GitHub Actions release matrix is green.
 
-## Post-0.1 parking lot
+Create the `v0.1.0` Git tag.
 
-Potentially useful but not release-defining features:
+Publish the GitHub `contentvalidR 0.1.0` release.
 
-- Q-factor helper / alternative extraction approaches;
-- later-CFA signal-detection diagnostics;
-- between-pretest reproducibility helpers;
-- broader simulation framework;
-- APA/report exporters;
-- Bayesian extensions;
-- interactive applications.
+Publish the stable release through the JUhalt R-universe.
+
+Verify the public pkgdown site and repository metadata.
+
+CRAN submission is optional and is **not** a requirement for the
+completed `v0.1.0` release. The existing CRAN-preparation infrastructure
+may be retained for a future submission if useful.
+
+------------------------------------------------------------------------
+
+## v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility
+
+**Status:** Active development **Development version:** `0.1.0.9000`
+
+Goal: extend the stable content-validity workflow without turning the
+package into a disconnected collection of coefficients. New methods
+should improve the quality, transparency, or reproducibility of
+substantive/content-validity decisions.
+
+### Bayesian and uncertainty-first extensions
+
+Conduct a focused methodological review of Bayesian approaches relevant
+to item sorting, construct ratings, expert-panel evidence, and
+content-domain coverage.
+
+Identify where Bayesian models add information beyond the package’s
+current exact/frequentist uncertainty summaries.
+
+Prototype posterior or probability-based summaries only where
+assumptions can be explained transparently to applied researchers.
+
+Develop frequentist/exact-versus-Bayesian comparison examples.
+
+Establish simulation-based calibration/recovery tests before exposing
+any Bayesian method as a flagship workflow.
+
+Decide which Bayesian extensions are mature enough for the public API
+and which remain methodological research.
+
+### Judge and rater heterogeneity
+
+Add influence diagnostics showing whether conclusions depend strongly on
+particular judges or raters.
+
+Explore heterogeneity summaries for judge severity, response style, and
+construct discrimination.
+
+Evaluate latent-variable, multilevel, or IRT-style approaches where they
+materially improve interpretation over aggregate indices.
+
+Preserve transparent raw-judge evidence alongside model-based summaries.
+
+### Domain coverage and content structure
+
+Expand item-objective/domain congruence tools beyond isolated
+coefficients.
+
+Add summaries of construct-domain coverage and potential content gaps.
+
+Support richer item-to-domain mappings where items legitimately address
+multiple facets.
+
+Keep domain-coverage evidence distinct from downstream empirical
+factor-analytic evidence handled by `nomologR`.
+
+### Multi-round and reproducibility workflows
+
+Add helpers for comparing repeated pretests or successive item-revision
+rounds.
+
+Quantify stability/change in item recommendations across rounds.
+
+Expand reproducibility diagnostics for independent judge samples.
+
+Provide audit trails showing why an item’s status changed.
+
+### Design, simulation, and power
+
+Generalize the existing item-sort planning framework.
+
+Add planning/simulation tools for expert-panel and construct-rating
+designs where a defensible planning target can be specified.
+
+Show sensitivity to judge count, missingness, effect magnitude, and
+decision criteria.
+
+Avoid unsupported universal sample-size rules of thumb.
+
+### Reporting and interoperability
+
+Add tidy extraction helpers for flagship workflow objects.
+
+Expand manuscript-ready table/report scaffolds.
+
+Evaluate Quarto/HTML reporting helpers without making reporting
+dependencies mandatory for core analyses.
+
+Improve interoperability with downstream `nomologR` workflows where the
+conceptual handoff is scientifically appropriate.
+
+### v0.2.0 exit gate
+
+Every new public method has a documented methodological basis or
+explicit derivation when the method is novel.
+
+Canonical-value, simulation/recovery, malformed-input, and edge-case
+tests cover every release-defining extension.
+
+R CMD check is clean across the supported OS/R matrix.
+
+Documentation clearly distinguishes established methods, package
+extensions, and experimental research features.
+
+README, vignettes, NEWS, citation metadata, pkgdown, and R-universe
+instructions reflect the release candidate.
+
+Clean-library installation and flagship workflow smoke tests pass.
+
+------------------------------------------------------------------------
+
+## v0.3.x - Advanced Modeling and Dissemination
+
+Candidate directions after the v0.2 foundation:
+
+Mature latent-variable/IRT models for judge/rater behavior.
+
+Q-factor and alternative extraction approaches where justified.
+
+Later-CFA signal-detection diagnostics and stronger handoffs to
+`nomologR`.
+
+Interactive applications for teaching and applied workflow exploration.
+
+A methodological/package paper on substantive/content-validity
+pretesting.
+
+Research evaluating whether guided package output improves applied
+measurement decisions and methodological understanding.
+
+------------------------------------------------------------------------
+
+## Development principle
+
+`contentvalidR` should continue to distinguish **quantitative evidence**
+from automatic item-retention decisions. New functionality belongs in a
+stable release only when it improves the validity argument, transparency
+of the decision process, or reproducibility of the workflow.

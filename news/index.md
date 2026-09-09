@@ -1,5 +1,53 @@
 # Changelog
 
+## contentvalidR 0.1.0.9000
+
+### Development
+
+- Opened post-v0.1 development toward `v0.2.0`.
+- Updated installation guidance to distinguish the stable R-universe
+  release from the GitHub development version.
+- Replaced the completed pre-v0.1 release roadmap with an active
+  post-release development plan.
+- Removed the obsolete committed `DESCRIPTION.bak` file.
+- Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt
+  repository metadata. \# contentvalidR 0.1.0
+
+### First public release
+
+- First public release of `contentvalidR`, providing reproducible
+  quantitative tools for substantive and content-oriented scale
+  pretesting.
+- The recommended API centers on three complementary workflows:
+  [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+  for item sorting,
+  [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)
+  for construct ratings, and
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  for relevance, essentiality, and congruence expert panels.
+- Item-sort inference combines Anderson-Gerbing Psa/Csv indices with
+  exact Howard-Melloy target-count inference and scale-level Colquitt et
+  al. empirical interpretation benchmarks.
+- Construct-rating analyses implement Hinkin-Tracey correspondence and
+  distinctiveness, repeated-measures item screening with
+  Greenhouse-Geisser correction, planned target-versus-orbiting
+  contrasts, and Colquitt et al. scale-level interpretation.
+- Expert-panel analyses support Aiken’s V with Penfield-Giacobbi score
+  confidence intervals, Lawshe CVR with exact inference, CVI/modified
+  kappa, and item-objective congruence.
+- Flagship workflow objects share a stable user-facing structure, common
+  status terminology, informative print/summary/plot methods, explicit
+  missingness and design metadata, and restrained review
+  recommendations.
+- The release includes deterministic example data,
+  workflow/design/reporting vignettes, manuscript-ready reporting
+  examples, citation metadata, extensive regression and
+  boundary-condition tests, and a cross-platform release matrix
+  including a dedicated R-devel `--as-cran` NOTE-as-failure gate.
+- Quantitative screening is explicitly framed as one component of a
+  broader validity argument rather than an automatic item-retention or
+  deletion rule.
+
 ## contentvalidR 0.0.8.9000
 
 ### CRAN and release hardening
