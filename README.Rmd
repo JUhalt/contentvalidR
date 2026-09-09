@@ -24,6 +24,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
+**Current stable release: 0.1.0. Development version: 0.1.0.9000, targeting v0.2.0.**
 
 **contentvalidR** provides quantitative tools for substantive and content-oriented scale pretesting. The package is being developed around three complementary workflows:
 
@@ -61,11 +62,24 @@ before v0.0.6.
 
 ## Installation
 
-```{r installation, eval=FALSE}
+Install the current stable release from the JUhalt R-universe:
+
+```{r installation-stable, eval=FALSE}
+install.packages(
+  "contentvalidR",
+  repos = c(
+    "https://juhalt.r-universe.dev",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+Install the current development version directly from GitHub:
+
+```{r installation-development, eval=FALSE}
 # install.packages("remotes")
 remotes::install_github("JUhalt/contentvalidR")
 ```
-
 ## Recommended item-sort workflow
 
 ```{r sort-workflow}

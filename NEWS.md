@@ -1,3 +1,12 @@
+# contentvalidR 0.1.0.9000
+
+## Development
+
+* Opened post-v0.1 development toward `v0.2.0`.
+* Updated installation guidance to distinguish the stable R-universe release from the GitHub development version.
+* Replaced the completed pre-v0.1 release roadmap with an active post-release development plan.
+* Removed the obsolete committed `DESCRIPTION.bak` file.
+* Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata.
 # contentvalidR 0.1.0
 
 ## First public release
