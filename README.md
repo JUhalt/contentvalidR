@@ -10,7 +10,8 @@
 MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-<!-- badges: end -->
+<!-- badges: end --> **Current stable release: 0.1.0. Development
+version: 0.1.0.9000, targeting v0.2.0.**
 
 **contentvalidR** provides quantitative tools for substantive and
 content-oriented scale pretesting. The package is being developed around
@@ -62,6 +63,20 @@ Compatibility aliases such as `rating_fit$contrasts` and
 `expert_fit$scale` remain available for code written before v0.0.6.
 
 ## Installation
+
+Install the current stable release from the JUhalt R-universe:
+
+``` r
+install.packages(
+  "contentvalidR",
+  repos = c(
+    "https://juhalt.r-universe.dev",
+    "https://cloud.r-project.org"
+  )
+)
+```
+
+Install the current development version directly from GitHub:
 
 ``` r
 # install.packages("remotes")
