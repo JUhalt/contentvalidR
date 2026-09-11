@@ -42,7 +42,11 @@ jobs:
           needs: website
 
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        run: |
+          pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+          # Keep previously published license URLs accurate after removing the MIT stub.
+          stopifnot(file.copy("docs/LICENSE.html", "docs/LICENSE-text.html", overwrite = TRUE))
+          stopifnot(file.copy("LICENSE.md", "docs/LICENSE-text.md", overwrite = TRUE))
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages

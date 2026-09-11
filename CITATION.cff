@@ -1,12 +1,11 @@
 cff-version: 1.2.0
-message: "If you use contentvalidR in your work, please cite the software."
+message: "If you use contentvalidR in your work, please cite the software version used. This file describes the current development source."
 title: "contentvalidR: Tools for Substantive and Content Validity Pretesting"
 type: software
 authors:
   - family-names: Uhalt
     given-names: Joshua
-version: 0.1.0
-date-released: 2026-09-02
+version: 0.1.0.9000
 repository-code: "https://github.com/JUhalt/contentvalidR"
 url: "https://juhalt.github.io/contentvalidR/"
-license: MIT
+license: GPL-3.0-only

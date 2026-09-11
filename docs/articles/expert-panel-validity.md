@@ -25,44 +25,42 @@ content-validity argument.
 Suppose six experts rate item relevance from 1 (not relevant) to 4
 (highly relevant):
 
-``` r
-
-R <- matrix(
-  c(4,4,4,4,4,4,
-    4,4,4,3,4,4,
-    4,3,4,4,3,4,
-    3,3,4,3,2,3),
-  nrow = 6,
-  dimnames = list(NULL, paste0("Item", 1:4))
-)
-
-fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4)
-fit
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
-#> Mode: relevance 
-#> Items: 4 | Experts/item: 6 
-#> Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 
-#> Strong support: 4 | Support: 0 | Review: 0 
-#> 
-#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
-#>  Item1 6 1.000  0.824   1.000 1.000     1.000 Strong support
-#>  Item2 6 0.944  0.742   0.990 1.000     1.000 Strong support
-#>  Item3 6 0.889  0.672   0.969 1.000     1.000 Strong support
-#>  Item4 6 0.667  0.437   0.837 0.833     0.816 Strong support
-#> 
-#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
-#> 
-#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
-summary(fit)
-#> Summary of expert-panel content-validity evidence
-#> ---------------------------------------------
-#> Mode: relevance 
-#> Supported: 4 | Review: 0
-#> No items were flagged by the workflow's quantitative review rules.
-#> 
-#> These summaries support, but do not replace, qualitative content review.
-```
+\
+`R`` ``<-`` `[`matrix`](https://rdrr.io/r/base/matrix.html)`(`\
+`  `[`c`](https://rdrr.io/r/base/c.html)`(``4``,``4``,``4``,``4``,``4``,``4``,`\
+`    ``4``,``4``,``4``,``3``,``4``,``4``,`\
+`    ``4``,``3``,``4``,``4``,``3``,``4``,`\
+`    ``3``,``3``,``4``,``3``,``2``,``3``)``,`\
+`  nrow ``=`` ``6``,`\
+`  dimnames ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``NULL``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"Item"``, ``1``:``4``)``)`\
+`)`\
+\
+`fit`` ``<-`` `[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(``R``, mode ``=`` ``"relevance"``, lo ``=`` ``1``, hi ``=`` ``4``)`\
+`fit`\
+`#> contentvalidR expert-panel analysis`\
+`#> -----------------------------------`\
+`#> Mode: relevance `\
+`#> Items: 4 | Experts/item: 6 `\
+`#> Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 `\
+`#> Strong support: 4 | Support: 0 | Review: 0 `\
+`#> `\
+`#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation`\
+`#>  Item1 6 1.000  0.824   1.000 1.000     1.000 Strong support`\
+`#>  Item2 6 0.944  0.742   0.990 1.000     1.000 Strong support`\
+`#>  Item3 6 0.889  0.672   0.969 1.000     1.000 Strong support`\
+`#>  Item4 6 0.667  0.437   0.837 0.833     0.816 Strong support`\
+`#> `\
+`#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.`\
+`#> `\
+`#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`\
+[`summary`](https://rdrr.io/r/base/summary.html)`(``fit``)`\
+`#> Summary of expert-panel content-validity evidence`\
+`#> ---------------------------------------------`\
+`#> Mode: relevance `\
+`#> Supported: 4 | Review: 0`\
+`#> No items were flagged by the workflow's quantitative review rules.`\
+`#> `\
+`#> These summaries support, but do not replace, qualitative content review.`
 
 Aiken’s V rescales the bounded expert ratings to the 0-1 interval. The
 default confidence interval is the score interval proposed by Penfield
@@ -70,15 +68,13 @@ and Giacobbi (2004), rather than a simulation-dependent bootstrap
 interval. Bootstrap intervals remain available through the low-level
 function:
 
-``` r
-
-aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 200, seed = 1)
-#>    item N n_missing         V    ci_low   ci_high            ci_method
-#> 1 Item1 6         0 1.0000000 1.0000000 1.0000000 percentile bootstrap
-#> 2 Item2 6         0 0.9444444 0.8333333 1.0000000 percentile bootstrap
-#> 3 Item3 6         0 0.8888889 0.7763889 1.0000000 percentile bootstrap
-#> 4 Item4 6         0 0.6666667 0.5000000 0.8333333 percentile bootstrap
-```
+\
+[`aikens_v`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md)`(``R``, lo ``=`` ``1``, hi ``=`` ``4``, ci ``=`` ``"bootstrap"``, B ``=`` ``200``, seed ``=`` ``1``)`\
+`#>    item N n_missing         V    ci_low   ci_high            ci_method`\
+`#> 1 Item1 6         0 1.0000000 1.0000000 1.0000000 percentile bootstrap`\
+`#> 2 Item2 6         0 0.9444444 0.8333333 1.0000000 percentile bootstrap`\
+`#> 3 Item3 6         0 0.8888889 0.7763889 1.0000000 percentile bootstrap`\
+`#> 4 Item4 6         0 0.6666667 0.5000000 0.8333333 percentile bootstrap`
 
 For CVI, the workflow dichotomizes ratings at `relevance_cut`. On a 1-4
 scale the default is 3, so ratings of 3 or 4 count as relevant. Declare
@@ -98,22 +94,20 @@ should be interpreted alongside the distribution of item-level evidence.
 Lawshe’s task asks experts whether an item is essential. With twelve
 experts:
 
-``` r
-
-expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
-#> Mode: essentiality 
-#> Items: 3 | Experts/item: 12 
-#> Method: Lawshe CVR with exact binomial critical values 
-#> 
-#>   item ne  N   cvr p_value critical_ne recommendation
-#>  Item1 10 12 0.667   0.019          10      Supported
-#>  Item2  8 12 0.333   0.194          10         Review
-#>  Item3  6 12 0.000   0.613          10         Review
-#> 
-#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
-```
+\
+[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``8``, ``6``)``, mode ``=`` ``"essentiality"``, N ``=`` ``12``)`\
+`#> contentvalidR expert-panel analysis`\
+`#> -----------------------------------`\
+`#> Mode: essentiality `\
+`#> Items: 3 | Experts/item: 12 `\
+`#> Method: Lawshe CVR with exact binomial critical values `\
+`#> `\
+`#>   item ne  N   cvr p_value critical_ne recommendation`\
+`#>  Item1 10 12 0.667   0.019          10      Supported`\
+`#>  Item2  8 12 0.333   0.194          10         Review`\
+`#>  Item3  6 12 0.000   0.613          10         Review`\
+`#> `\
+`#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 
 [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md)
 derives the smallest essential count whose one-sided binomial upper-tail
@@ -123,25 +117,23 @@ Ayre and Scally (2014).
 
 Judge-by-item binary data can be supplied directly:
 
-``` r
-
-E <- cbind(
-  Item1 = c(1,1,1,1,1,1,1,1),
-  Item2 = c(1,1,1,1,1,0,0,0)
-)
-expert_validity(E, mode = "essentiality")
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
-#> Mode: essentiality 
-#> Items: 2 | Experts/item: 8 
-#> Method: Lawshe CVR with exact binomial critical values 
-#> 
-#>   item ne N  cvr p_value critical_ne recommendation
-#>  Item1  8 8 1.00   0.004           7      Supported
-#>  Item2  5 8 0.25   0.363           7         Review
-#> 
-#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
-```
+\
+`E`` ``<-`` `[`cbind`](https://rdrr.io/r/base/cbind.html)`(`\
+`  Item1 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``,``1``,``1``,``1``,``1``,``1``,``1``,``1``)``,`\
+`  Item2 ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``1``,``1``,``1``,``1``,``1``,``0``,``0``,``0``)`\
+`)`\
+[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(``E``, mode ``=`` ``"essentiality"``)`\
+`#> contentvalidR expert-panel analysis`\
+`#> -----------------------------------`\
+`#> Mode: essentiality `\
+`#> Items: 2 | Experts/item: 8 `\
+`#> Method: Lawshe CVR with exact binomial critical values `\
+`#> `\
+`#>   item ne N  cvr p_value critical_ne recommendation`\
+`#>  Item1  8 8 1.00   0.004           7      Supported`\
+`#>  Item2  5 8 0.25   0.363           7         Review`\
+`#> `\
+`#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 
 A failure to clear the exact criterion is labeled `Review`, not
 automatic deletion. Expert rationales and domain coverage matter when
@@ -154,38 +146,36 @@ IOC uses expert ratings of -1, 0, and +1 for item-objective congruence.
 A target mapping lets the workflow compare intended and competing
 objectives:
 
-``` r
-
-d <- expand.grid(
-  item = c("I1", "I2"),
-  judge = 1:4,
-  objective = c("A", "B")
-)
-d$target_objective <- ifelse(d$item == "I1", "A", "B")
-d$score <- ifelse(d$objective == d$target_objective, 1, -1)
-
-expert_validity(d, mode = "congruence")
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
-#> Mode: congruence 
-#> Items: 2 | Experts/cell: 4 | Objectives: 2 
-#> Method: Rovinelli-Hambleton item-objective congruence 
-#> 
-#>  item target target_ioc strongest_competitor competitor_ioc margin
-#>    I1      A          1                    B             -1      2
-#>    I2      B          1                    A             -1      2
-#>  recommendation
-#>  Target favored
-#>  Target favored
-#>                                                                                                      interpretation
-#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
-#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
-#>     status
-#>  Supported
-#>  Supported
-#> 
-#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
-```
+\
+`d`` ``<-`` `[`expand.grid`](https://rdrr.io/r/base/expand.grid.html)`(`\
+`  item ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"I1"``, ``"I2"``)``,`\
+`  judge ``=`` ``1``:``4``,`\
+`  objective ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``"A"``, ``"B"``)`\
+`)`\
+`d``$``target_objective`` ``<-`` `[`ifelse`](https://rdrr.io/r/base/ifelse.html)`(``d``$``item`` ``==`` ``"I1"``, ``"A"``, ``"B"``)`\
+`d``$``score`` ``<-`` `[`ifelse`](https://rdrr.io/r/base/ifelse.html)`(``d``$``objective`` ``==`` ``d``$``target_objective``, ``1``, ``-``1``)`\
+\
+[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(``d``, mode ``=`` ``"congruence"``)`\
+`#> contentvalidR expert-panel analysis`\
+`#> -----------------------------------`\
+`#> Mode: congruence `\
+`#> Items: 2 | Experts/cell: 4 | Objectives: 2 `\
+`#> Method: Rovinelli-Hambleton item-objective congruence `\
+`#> `\
+`#>  item target target_ioc strongest_competitor competitor_ioc margin`\
+`#>    I1      A          1                    B             -1      2`\
+`#>    I2      B          1                    A             -1      2`\
+`#>  recommendation`\
+`#>  Target favored`\
+`#>  Target favored`\
+`#>                                                                                                      interpretation`\
+`#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.`\
+`#>  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.`\
+`#>     status`\
+`#>  Supported`\
+`#>  Supported`\
+`#> `\
+`#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 
 The workflow reports target IOC, the strongest competitor, and their
 margin. This is a diagnostic comparison, not a manufactured significance
@@ -204,24 +194,18 @@ downstream interpretation uses the actual panel size.
 Each mode uses a plot matched to the expert task rather than forcing
 unlike indices into one generic chart.
 
-``` r
-
-plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
-```
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(`[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(``R``, mode ``=`` ``"relevance"``, lo ``=`` ``1``, hi ``=`` ``4``)``)`
 
 ![](expert-panel-validity_files/figure-html/expert-plots-1.png)
 
-``` r
-
-plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
-```
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(`[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(`[`c`](https://rdrr.io/r/base/c.html)`(``10``, ``8``, ``6``)``, mode ``=`` ``"essentiality"``, N ``=`` ``12``)``)`
 
 ![](expert-panel-validity_files/figure-html/expert-plots-2.png)
 
-``` r
-
-plot(expert_validity(d, mode = "congruence"))
-```
+\
+[`plot`](https://rdrr.io/r/graphics/plot.default.html)`(`[`expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)`(``d``, mode ``=`` ``"congruence"``)``)`
 
 ![](expert-panel-validity_files/figure-html/expert-plots-3.png)
 

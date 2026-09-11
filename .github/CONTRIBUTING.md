@@ -61,3 +61,17 @@ Pull requests should describe what changed, why it changed, how it was tested,
 and any methodological or API decisions that deserve review.
 
 The current development specification is maintained in `ROADMAP.md`.
+
+## Planning and published pages
+
+Link proposed work to an issue and the relevant [roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) section.
+Give research proposals a checked primary source or an explicit derivation,
+state what is established versus proposed, and describe observable acceptance
+criteria. Assign a milestone when scope is accepted; update the roadmap and NEWS
+when work ships or is deferred.
+
+Edit `README.Rmd` before regenerating `README.md`. The root roadmap, NEWS,
+DESCRIPTION, and citation metadata are authoritative for the current source.
+Refresh tracked `docs/` output with pkgdown; the existing workflow also rebuilds
+and publishes the site. Review license/version links and the visible homepage
+status after publication. Historical release tags retain their original metadata.

@@ -6,12 +6,20 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml)
-[![License:
-MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: GPL v3
+only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](LICENSE.md)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
-<!-- badges: end --> **Current stable release: 0.1.0. Development
-version: 0.1.0.9000, targeting v0.2.0.**
+<!-- badges: end -->
+
+**Current stable release: 0.1.0. Development version: 0.1.0.9000,
+targeting v0.2.0.**
+
+Development plans: [Roadmap](ROADMAP.md) · [v0.2.0
+milestone](https://github.com/JUhalt/contentvalidR/milestone/1) · [Open
+issues](https://github.com/JUhalt/contentvalidR/issues). Documentation:
+[Package website](https://juhalt.github.io/contentvalidR/) ·
+[Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
 **contentvalidR** provides quantitative tools for substantive and
 content-oriented scale pretesting. The package provides three
@@ -724,3 +732,18 @@ release; v0.0.6 introduces no gratuitous renaming or deprecation.
 - Turner, R. C., & Carlson, L. (2003). Indexes of item-objective
   congruence for multidimensional items. *International Journal of
   Testing, 3*(2), 163–171. <https://doi.org/10.1207/S15327574IJT0302_5>
+
+## License
+
+The current development source is licensed under the **GNU General
+Public License, version 3 only** (SPDX: `GPL-3.0-only`; R metadata:
+`GPL-3`). See the [full license](LICENSE.md). Copyright (c) 2025-2026
+Joshua Uhalt.
+
+The previously published [v0.1.0
+release](https://github.com/JUhalt/contentvalidR/releases/tag/v0.1.0)
+remains available under its original MIT license. Stable R-universe
+installation currently retrieves that release; the next published
+release will carry the GPLv3-only license. Historical attribution is
+preserved in
+[inst/NOTICE](https://github.com/JUhalt/contentvalidR/blob/master/inst/NOTICE).

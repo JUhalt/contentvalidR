@@ -17,7 +17,7 @@ Description: Provides quantitative tools for substantive and content-oriented
     with modified kappa, and item-objective congruence.
     User-facing workflows emphasize interpretable summaries and transparent
     review recommendations rather than isolated coefficients.
-License: MIT + file LICENSE
+License: GPL-3
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
