@@ -27,3 +27,13 @@ body:
     attributes:
       label: Researcher-control considerations
       description: Note any decisions the package should expose rather than automate.
+  - type: textarea
+    id: roadmap
+    attributes:
+      label: Roadmap impact and linked evidence
+      description: Link the roadmap section or existing issue, identify published evidence or a proposed derivation, and say whether this is an uncommitted research option.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Observable outcome
+      description: What example, documentation, or validation would show that this request is complete?

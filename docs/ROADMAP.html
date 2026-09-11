@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,35 +131,108 @@
 <li><label><input type="checkbox" checked>Verify live GitHub files reflect the release candidate.</label></li>
 </ul></div>
 <div class="section level2">
-<h2 id="v010---first-publiccran-release-current">v0.1.0 - First public/CRAN release (current)<a class="anchor" aria-label="anchor" href="#v010---first-publiccran-release-current"></a></h2>
-<p>Goal: publish the frozen and validated first public release without adding new features during the release cut.</p>
+<h2 id="v010---first-public-release-completed">v0.1.0 - First public release (completed)<a class="anchor" aria-label="anchor" href="#v010---first-public-release-completed"></a></h2>
+<p><strong>Status:</strong> Released September 2, 2026</p>
+<p>Goal: publish a frozen, validated first public release of the three flagship content-validity workflows.</p>
 <ul class="task-list"><li><label><input type="checkbox" checked>Freeze the feature set at the completed v0.0.8 release candidate.</label></li>
 <li><label><input type="checkbox" checked>Stamp <code>DESCRIPTION</code> as version <code>0.1.0</code>.</label></li>
 <li><label><input type="checkbox" checked>Add first-public-release notes to <code>NEWS.md</code>.</label></li>
-<li><label><input type="checkbox">Run the final release battery against the actual stamped <code>0.1.0</code> source: <code>document()</code>, <code>test()</code>, <code>build_readme()</code>, standard check, <code>--as-cran</code>, URL audit, spelling audit, and pkgdown build.</label></li>
-<li><label><input type="checkbox">Commit and push the <code>0.1.0</code> release candidate.</label></li>
-<li><label><input type="checkbox">Confirm all six GitHub Actions jobs are green on the stamped <code>0.1.0</code> commit.</label></li>
-<li><label><input type="checkbox">Create annotated Git tag <code>v0.1.0</code> and push it.</label></li>
-<li><label><input type="checkbox">Create the GitHub <code>v0.1.0</code> release.</label></li>
-<li><label><input type="checkbox">Publish <code>contentvalidR</code> through a personal R-universe so the tagged/public package is installable from a CRAN-like repository without waiting for CRAN.</label></li>
-<li><label><input type="checkbox">Submit <code>contentvalidR</code> 0.1.0 to CRAN using the verified source tarball and final <code>cran-comments.md</code>.</label></li>
-<li><label><input type="checkbox">Confirm CRAN acceptance and verify the public CRAN package page/install path.</label></li>
-<li><label><input type="checkbox">Replace this historical pre-0.1 roadmap with the new post-0.1 development roadmap; the <code>v0.1.0</code> tag preserves this release roadmap permanently.</label></li>
-</ul></div>
+<li><label><input type="checkbox" checked>Run the final release battery against the stamped <code>0.1.0</code> source.</label></li>
+<li><label><input type="checkbox" checked>Commit and push the stable <code>0.1.0</code> source.</label></li>
+<li><label><input type="checkbox" checked>Confirm the six-job GitHub Actions release matrix is green.</label></li>
+<li><label><input type="checkbox" checked>Create the <code>v0.1.0</code> Git tag.</label></li>
+<li><label><input type="checkbox" checked>Publish the GitHub <code>contentvalidR 0.1.0</code> release.</label></li>
+<li><label><input type="checkbox" checked>Publish the stable release through the JUhalt R-universe.</label></li>
+<li><label><input type="checkbox" checked>Verify the public pkgdown site and repository metadata.</label></li>
+</ul><p>CRAN submission is optional and is <strong>not</strong> a requirement for the completed <code>v0.1.0</code> release. The existing CRAN-preparation infrastructure may be retained for a future submission if useful.</p>
+<hr></div>
 <div class="section level2">
-<h2 id="post-01-parking-lot">Post-0.1 parking lot<a class="anchor" aria-label="anchor" href="#post-01-parking-lot"></a></h2>
-<p>These ideas move to the new roadmap immediately after v0.1.0 is public:</p>
-<ul><li>Bayesian extensions and uncertainty-first content-validity inference;</li>
-<li>formal content validity analysis and richer domain-coverage modeling;</li>
-<li>judge/rater heterogeneity and influence diagnostics, including modern latent-variable or IRT approaches;</li>
-<li>Q-factor helper / alternative extraction approaches;</li>
-<li>later-CFA signal-detection diagnostics;</li>
-<li>between-pretest and multi-round reproducibility helpers;</li>
-<li>broader design/power and simulation framework;</li>
-<li>APA/Quarto/report exporters and tidy interoperability;</li>
-<li>interactive applications;</li>
-<li>a methodological/package paper framed as a practical primer for researchers learning scale development and substantive/content-validity pretesting.</li>
+<h2 id="v020---uncertainty-heterogeneity-and-reproducibility">v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility<a class="anchor" aria-label="anchor" href="#v020---uncertainty-heterogeneity-and-reproducibility"></a></h2>
+<p><strong>Status:</strong> Planning and public-page reconciliation before development resumes <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/1" class="external-link">v0.2.0</a> <strong>Development version:</strong> <code>0.1.0.9000</code></p>
+<p>Goal: extend the stable content-validity workflow without turning the package into a disconnected collection of coefficients. New methods should improve the quality, transparency, or reproducibility of substantive/content-validity decisions.</p>
+<p>The issues below retain the existing v0.2.0 workstreams. A workstream’s presence in the milestone is a planning target, not evidence that it is implemented. Research options require explicit scope and validation decisions before release.</p>
+<p>Current-source housekeeping: GPLv3-only licensing and development citation metadata are synchronized; the MIT terms of historical releases are unchanged.</p>
+<div class="section level3">
+<h3 id="bayesian-and-uncertainty-first-extensions">Bayesian and uncertainty-first extensions<a class="anchor" aria-label="anchor" href="#bayesian-and-uncertainty-first-extensions"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/2" class="external-link">#2</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Conduct a focused methodological review of Bayesian approaches relevant to item sorting, construct ratings, expert-panel evidence, and content-domain coverage.</label></li>
+<li><label><input type="checkbox">Identify where Bayesian models add information beyond the package’s current exact/frequentist uncertainty summaries.</label></li>
+<li><label><input type="checkbox">Prototype posterior or probability-based summaries only where assumptions can be explained transparently to applied researchers.</label></li>
+<li><label><input type="checkbox">Develop frequentist/exact-versus-Bayesian comparison examples.</label></li>
+<li><label><input type="checkbox">Establish simulation-based calibration/recovery tests before exposing any Bayesian method as a flagship workflow.</label></li>
+<li><label><input type="checkbox">Decide which Bayesian extensions are mature enough for the public API and which remain methodological research.</label></li>
 </ul></div>
+<div class="section level3">
+<h3 id="judge-and-rater-heterogeneity">Judge and rater heterogeneity<a class="anchor" aria-label="anchor" href="#judge-and-rater-heterogeneity"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/3" class="external-link">#3</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Add influence diagnostics showing whether conclusions depend strongly on particular judges or raters.</label></li>
+<li><label><input type="checkbox">Explore heterogeneity summaries for judge severity, response style, and construct discrimination.</label></li>
+<li><label><input type="checkbox">Evaluate latent-variable, multilevel, or IRT-style approaches where they materially improve interpretation over aggregate indices.</label></li>
+<li><label><input type="checkbox">Preserve transparent raw-judge evidence alongside model-based summaries.</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="domain-coverage-and-content-structure">Domain coverage and content structure<a class="anchor" aria-label="anchor" href="#domain-coverage-and-content-structure"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/4" class="external-link">#4</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Expand item-objective/domain congruence tools beyond isolated coefficients.</label></li>
+<li><label><input type="checkbox">Add summaries of construct-domain coverage and potential content gaps.</label></li>
+<li><label><input type="checkbox">Support richer item-to-domain mappings where items legitimately address multiple facets.</label></li>
+<li><label><input type="checkbox">Keep domain-coverage evidence distinct from downstream empirical factor-analytic evidence handled by <code>nomologR</code>.</label></li>
+</ul><p>Research option for triage in <a href="https://github.com/JUhalt/contentvalidR/issues/4" class="external-link">#4</a>: link domain coverage to a structured register of qualitative evidence about relevance, comprehensiveness, and comprehensibility. This is a proposed extension informed by <a href="https://doi.org/10.1007/s11136-018-1829-0" class="external-link">Terwee et al. (2018)</a>, not a validated package method or a release commitment.</p>
+</div>
+<div class="section level3">
+<h3 id="multi-round-and-reproducibility-workflows">Multi-round and reproducibility workflows<a class="anchor" aria-label="anchor" href="#multi-round-and-reproducibility-workflows"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/5" class="external-link">#5</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Add helpers for comparing repeated pretests or successive item-revision rounds.</label></li>
+<li><label><input type="checkbox">Quantify stability/change in item recommendations across rounds.</label></li>
+<li><label><input type="checkbox">Expand reproducibility diagnostics for independent judge samples.</label></li>
+<li><label><input type="checkbox">Provide audit trails showing why an item’s status changed.</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="design-simulation-and-power">Design, simulation, and power<a class="anchor" aria-label="anchor" href="#design-simulation-and-power"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/6" class="external-link">#6</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Generalize the existing item-sort planning framework.</label></li>
+<li><label><input type="checkbox">Add planning/simulation tools for expert-panel and construct-rating designs where a defensible planning target can be specified.</label></li>
+<li><label><input type="checkbox">Show sensitivity to judge count, missingness, effect magnitude, and decision criteria.</label></li>
+<li><label><input type="checkbox">Avoid unsupported universal sample-size rules of thumb.</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="reporting-and-interoperability">Reporting and interoperability<a class="anchor" aria-label="anchor" href="#reporting-and-interoperability"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/7" class="external-link">#7</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Add tidy extraction helpers for flagship workflow objects.</label></li>
+<li><label><input type="checkbox">Expand manuscript-ready table/report scaffolds.</label></li>
+<li><label><input type="checkbox">Evaluate Quarto/HTML reporting helpers without making reporting dependencies mandatory for core analyses.</label></li>
+<li><label><input type="checkbox">Improve interoperability with downstream <code>nomologR</code> workflows where the conceptual handoff is scientifically appropriate.</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="v020-exit-gate">v0.2.0 exit gate<a class="anchor" aria-label="anchor" href="#v020-exit-gate"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/8" class="external-link">#8</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Every new public method has a documented methodological basis or explicit derivation when the method is novel.</label></li>
+<li><label><input type="checkbox">Canonical-value, simulation/recovery, malformed-input, and edge-case tests cover every release-defining extension.</label></li>
+<li><label><input type="checkbox">R CMD check is clean across the supported OS/R matrix.</label></li>
+<li><label><input type="checkbox">Documentation clearly distinguishes established methods, package extensions, and experimental research features.</label></li>
+<li><label><input type="checkbox">README, vignettes, NEWS, citation metadata, pkgdown, and R-universe instructions reflect the release candidate.</label></li>
+<li><label><input type="checkbox">Clean-library installation and flagship workflow smoke tests pass.</label></li>
+</ul><hr></div>
+</div>
+<div class="section level2">
+<h2 id="v03x---advanced-modeling-and-dissemination">v0.3.x - Advanced Modeling and Dissemination<a class="anchor" aria-label="anchor" href="#v03x---advanced-modeling-and-dissemination"></a></h2>
+<p>Candidate directions after the v0.2 foundation:</p>
+<ul class="task-list"><li><label><input type="checkbox">Mature latent-variable/IRT models for judge/rater behavior.</label></li>
+<li><label><input type="checkbox">Q-factor and alternative extraction approaches where justified.</label></li>
+<li><label><input type="checkbox">Later-CFA signal-detection diagnostics and stronger handoffs to <code>nomologR</code>.</label></li>
+<li><label><input type="checkbox">Interactive applications for teaching and applied workflow exploration.</label></li>
+<li><label><input type="checkbox">A methodological/package paper on substantive/content-validity pretesting.</label></li>
+<li><label><input type="checkbox">Research evaluating whether guided package output improves applied measurement decisions and methodological understanding.</label></li>
+</ul><hr></div>
+<div class="section level2">
+<h2 id="development-principle">Development principle<a class="anchor" aria-label="anchor" href="#development-principle"></a></h2>
+<p><code>contentvalidR</code> should continue to distinguish <strong>quantitative evidence</strong> from automatic item-retention decisions. New functionality belongs in a stable release only when it improves the validity argument, transparency of the decision process, or reproducibility of the workflow.</p>
+</div>
+<div class="section level2">
+<h2 id="keeping-plans-and-pages-aligned">Keeping plans and pages aligned<a class="anchor" aria-label="anchor" href="#keeping-plans-and-pages-aligned"></a></h2>
+<p>Root <code>README.Rmd</code>, <code>ROADMAP.md</code>, <code>NEWS.md</code>, <code>DESCRIPTION</code>, and <code>CITATION.cff</code> are the sources of current project information. Regenerate <code>README.md</code> from <code>README.Rmd</code> and refresh the tracked <code>docs/</code> output after documentation changes; do not edit generated HTML independently. The pkgdown workflow rebuilds the site for pull requests and publishes default-branch changes to GitHub Pages.</p>
+<p>Record findings or proposals in an issue with evidence and an observable outcome. Link the issue here, assign a milestone when its scope is accepted, and update the roadmap and NEWS when an implementation ships. Preserve completed release history and identify deferred or experimental work explicitly.</p>
+</div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

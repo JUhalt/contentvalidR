@@ -2,6 +2,16 @@
 
 ## Development
 
+* Changed the current development source to GNU GPL version 3 only (`GPL-3.0-only`;
+  R metadata `GPL-3`), retaining the original MIT notice in `inst/NOTICE`.
+  Previously published releases keep their original terms.
+* Aligned citation metadata with development version `0.1.0.9000`, restored the
+  README release-status paragraph outside the badge block, and linked roadmap
+  workstreams to their issues and milestone.
+* Refreshed generated documentation and documented the publishing sources.
+* Recorded an optional research proposal for qualitative-evidence traceability
+  under the domain-coverage issue; no statistical implementation changed.
+
 * Opened post-v0.1 development toward `v0.2.0`.
 * Updated installation guidance to distinguish the stable R-universe release from the GitHub development version.
 * Replaced the completed pre-v0.1 release roadmap with an active post-release development plan.

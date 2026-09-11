@@ -169,10 +169,12 @@ Publish the pkgdown site and refresh repository metadata.
 
 Verify live GitHub files reflect the release candidate.
 
-## v0.1.0 - First public/CRAN release (current)
+## v0.1.0 - First public release (completed)
 
-Goal: publish the frozen and validated first public release without
-adding new features during the release cut.
+**Status:** Released September 2, 2026
+
+Goal: publish a frozen, validated first public release of the three
+flagship content-validity workflows.
 
 Freeze the feature set at the completed v0.0.8 release candidate.
 
@@ -180,47 +182,209 @@ Stamp `DESCRIPTION` as version `0.1.0`.
 
 Add first-public-release notes to `NEWS.md`.
 
-Run the final release battery against the actual stamped `0.1.0` source:
-`document()`, `test()`, `build_readme()`, standard check, `--as-cran`,
-URL audit, spelling audit, and pkgdown build.
+Run the final release battery against the stamped `0.1.0` source.
 
-Commit and push the `0.1.0` release candidate.
+Commit and push the stable `0.1.0` source.
 
-Confirm all six GitHub Actions jobs are green on the stamped `0.1.0`
-commit.
+Confirm the six-job GitHub Actions release matrix is green.
 
-Create annotated Git tag `v0.1.0` and push it.
+Create the `v0.1.0` Git tag.
 
-Create the GitHub `v0.1.0` release.
+Publish the GitHub `contentvalidR 0.1.0` release.
 
-Publish `contentvalidR` through a personal R-universe so the
-tagged/public package is installable from a CRAN-like repository without
-waiting for CRAN.
+Publish the stable release through the JUhalt R-universe.
 
-Submit `contentvalidR` 0.1.0 to CRAN using the verified source tarball
-and final `cran-comments.md`.
+Verify the public pkgdown site and repository metadata.
 
-Confirm CRAN acceptance and verify the public CRAN package page/install
-path.
+CRAN submission is optional and is **not** a requirement for the
+completed `v0.1.0` release. The existing CRAN-preparation infrastructure
+may be retained for a future submission if useful.
 
-Replace this historical pre-0.1 roadmap with the new post-0.1
-development roadmap; the `v0.1.0` tag preserves this release roadmap
-permanently.
+------------------------------------------------------------------------
 
-## Post-0.1 parking lot
+## v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility
 
-These ideas move to the new roadmap immediately after v0.1.0 is public:
+**Status:** Planning and public-page reconciliation before development
+resumes **Milestone:**
+[v0.2.0](https://github.com/JUhalt/contentvalidR/milestone/1)
+**Development version:** `0.1.0.9000`
 
-- Bayesian extensions and uncertainty-first content-validity inference;
-- formal content validity analysis and richer domain-coverage modeling;
-- judge/rater heterogeneity and influence diagnostics, including modern
-  latent-variable or IRT approaches;
-- Q-factor helper / alternative extraction approaches;
-- later-CFA signal-detection diagnostics;
-- between-pretest and multi-round reproducibility helpers;
-- broader design/power and simulation framework;
-- APA/Quarto/report exporters and tidy interoperability;
-- interactive applications;
-- a methodological/package paper framed as a practical primer for
-  researchers learning scale development and
-  substantive/content-validity pretesting.
+Goal: extend the stable content-validity workflow without turning the
+package into a disconnected collection of coefficients. New methods
+should improve the quality, transparency, or reproducibility of
+substantive/content-validity decisions.
+
+The issues below retain the existing v0.2.0 workstreams. A workstream’s
+presence in the milestone is a planning target, not evidence that it is
+implemented. Research options require explicit scope and validation
+decisions before release.
+
+Current-source housekeeping: GPLv3-only licensing and development
+citation metadata are synchronized; the MIT terms of historical releases
+are unchanged.
+
+### Bayesian and uncertainty-first extensions
+
+Tracking: [\#2](https://github.com/JUhalt/contentvalidR/issues/2).
+
+Conduct a focused methodological review of Bayesian approaches relevant
+to item sorting, construct ratings, expert-panel evidence, and
+content-domain coverage.
+
+Identify where Bayesian models add information beyond the package’s
+current exact/frequentist uncertainty summaries.
+
+Prototype posterior or probability-based summaries only where
+assumptions can be explained transparently to applied researchers.
+
+Develop frequentist/exact-versus-Bayesian comparison examples.
+
+Establish simulation-based calibration/recovery tests before exposing
+any Bayesian method as a flagship workflow.
+
+Decide which Bayesian extensions are mature enough for the public API
+and which remain methodological research.
+
+### Judge and rater heterogeneity
+
+Tracking: [\#3](https://github.com/JUhalt/contentvalidR/issues/3).
+
+Add influence diagnostics showing whether conclusions depend strongly on
+particular judges or raters.
+
+Explore heterogeneity summaries for judge severity, response style, and
+construct discrimination.
+
+Evaluate latent-variable, multilevel, or IRT-style approaches where they
+materially improve interpretation over aggregate indices.
+
+Preserve transparent raw-judge evidence alongside model-based summaries.
+
+### Domain coverage and content structure
+
+Tracking: [\#4](https://github.com/JUhalt/contentvalidR/issues/4).
+
+Expand item-objective/domain congruence tools beyond isolated
+coefficients.
+
+Add summaries of construct-domain coverage and potential content gaps.
+
+Support richer item-to-domain mappings where items legitimately address
+multiple facets.
+
+Keep domain-coverage evidence distinct from downstream empirical
+factor-analytic evidence handled by `nomologR`.
+
+Research option for triage in
+[\#4](https://github.com/JUhalt/contentvalidR/issues/4): link domain
+coverage to a structured register of qualitative evidence about
+relevance, comprehensiveness, and comprehensibility. This is a proposed
+extension informed by [Terwee et
+al. (2018)](https://doi.org/10.1007/s11136-018-1829-0), not a validated
+package method or a release commitment.
+
+### Multi-round and reproducibility workflows
+
+Tracking: [\#5](https://github.com/JUhalt/contentvalidR/issues/5).
+
+Add helpers for comparing repeated pretests or successive item-revision
+rounds.
+
+Quantify stability/change in item recommendations across rounds.
+
+Expand reproducibility diagnostics for independent judge samples.
+
+Provide audit trails showing why an item’s status changed.
+
+### Design, simulation, and power
+
+Tracking: [\#6](https://github.com/JUhalt/contentvalidR/issues/6).
+
+Generalize the existing item-sort planning framework.
+
+Add planning/simulation tools for expert-panel and construct-rating
+designs where a defensible planning target can be specified.
+
+Show sensitivity to judge count, missingness, effect magnitude, and
+decision criteria.
+
+Avoid unsupported universal sample-size rules of thumb.
+
+### Reporting and interoperability
+
+Tracking: [\#7](https://github.com/JUhalt/contentvalidR/issues/7).
+
+Add tidy extraction helpers for flagship workflow objects.
+
+Expand manuscript-ready table/report scaffolds.
+
+Evaluate Quarto/HTML reporting helpers without making reporting
+dependencies mandatory for core analyses.
+
+Improve interoperability with downstream `nomologR` workflows where the
+conceptual handoff is scientifically appropriate.
+
+### v0.2.0 exit gate
+
+Tracking: [\#8](https://github.com/JUhalt/contentvalidR/issues/8).
+
+Every new public method has a documented methodological basis or
+explicit derivation when the method is novel.
+
+Canonical-value, simulation/recovery, malformed-input, and edge-case
+tests cover every release-defining extension.
+
+R CMD check is clean across the supported OS/R matrix.
+
+Documentation clearly distinguishes established methods, package
+extensions, and experimental research features.
+
+README, vignettes, NEWS, citation metadata, pkgdown, and R-universe
+instructions reflect the release candidate.
+
+Clean-library installation and flagship workflow smoke tests pass.
+
+------------------------------------------------------------------------
+
+## v0.3.x - Advanced Modeling and Dissemination
+
+Candidate directions after the v0.2 foundation:
+
+Mature latent-variable/IRT models for judge/rater behavior.
+
+Q-factor and alternative extraction approaches where justified.
+
+Later-CFA signal-detection diagnostics and stronger handoffs to
+`nomologR`.
+
+Interactive applications for teaching and applied workflow exploration.
+
+A methodological/package paper on substantive/content-validity
+pretesting.
+
+Research evaluating whether guided package output improves applied
+measurement decisions and methodological understanding.
+
+------------------------------------------------------------------------
+
+## Development principle
+
+`contentvalidR` should continue to distinguish **quantitative evidence**
+from automatic item-retention decisions. New functionality belongs in a
+stable release only when it improves the validity argument, transparency
+of the decision process, or reproducibility of the workflow.
+
+## Keeping plans and pages aligned
+
+Root `README.Rmd`, `ROADMAP.md`, `NEWS.md`, `DESCRIPTION`, and
+`CITATION.cff` are the sources of current project information.
+Regenerate `README.md` from `README.Rmd` and refresh the tracked `docs/`
+output after documentation changes; do not edit generated HTML
+independently. The pkgdown workflow rebuilds the site for pull requests
+and publishes default-branch changes to GitHub Pages.
+
+Record findings or proposals in an issue with evidence and an observable
+outcome. Link the issue here, assign a milestone when its scope is
+accepted, and update the roadmap and NEWS when an implementation ships.
+Preserve completed release history and identify deferred or experimental
+work explicitly.
