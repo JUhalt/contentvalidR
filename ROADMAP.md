@@ -267,6 +267,7 @@ Candidate directions after the v0.2 foundation:
 automatic item-retention decisions. New functionality belongs in a stable release
 only when it improves the validity argument, transparency of the decision
 process, or reproducibility of the workflow.
+
 ## Keeping plans and pages aligned
 
 Root `README.Rmd`, `ROADMAP.md`, `NEWS.md`, `DESCRIPTION`, and `CITATION.cff`
