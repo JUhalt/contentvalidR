@@ -75,7 +75,7 @@ A fully covered blueprint shows that items exist for every intended cell. It
 does not show that those items are good ones, that the blueprint itself is
 the right description of the domain, or that the cells are equally important.
 Coverage is evidence about the item set's reach, and is properly read
-alongside item-level relevance evidence and expert judgement about the
+alongside item-level relevance evidence and expert judgment about the
 blueprint itself.
 }
 

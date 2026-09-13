@@ -325,8 +325,8 @@ print.contentvalid_rating <- function(x, digits = 3, ...) {
   } else {
     cat("\nColquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.\n")
     cat("HTC is an average rating and HTD is a difference between ratings, so they sit on\n")
-    cat("different scales with different typical values. A high HTC can be labelled Weak in\n")
-    cat("the same analysis where a much smaller HTD is labelled Very Strong. Compare each\n")
+    cat("different scales with different typical values. A high HTC can be labeled Weak in\n")
+    cat("the same analysis where a much smaller HTD is labeled Very Strong. Compare each\n")
     cat("index against its own benchmark, never against the other index's number.\n")
   }
 

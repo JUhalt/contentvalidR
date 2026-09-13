@@ -18,7 +18,7 @@
 }
 \description{
 Plots the multidimensional scaling content map from \code{\link[=content_structure]{content_structure()}},
-with each item positioned by expert-perceived similarity and labelled by its
+with each item positioned by expert-perceived similarity and labeled by its
 blueprint cell. Items that sit away from others sharing their cell are the
 ones experts did not group as the blueprint expects.
 }

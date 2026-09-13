@@ -54,7 +54,7 @@
 #' does not show that those items are good ones, that the blueprint itself is
 #' the right description of the domain, or that the cells are equally important.
 #' Coverage is evidence about the item set's reach, and is properly read
-#' alongside item-level relevance evidence and expert judgement about the
+#' alongside item-level relevance evidence and expert judgment about the
 #' blueprint itself.
 #'
 #' @references
@@ -377,7 +377,7 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #'
 #' @description
 #' Plots the multidimensional scaling content map from [content_structure()],
-#' with each item positioned by expert-perceived similarity and labelled by its
+#' with each item positioned by expert-perceived similarity and labeled by its
 #' blueprint cell. Items that sit away from others sharing their cell are the
 #' ones experts did not group as the blueprint expects.
 #'
