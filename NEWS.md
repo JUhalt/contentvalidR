@@ -19,6 +19,41 @@
 * Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata.
 # contentvalidR 0.1.0.9000
 
+## Domain coverage and content structure (in development)
+
+* Added `domain_validity()`, a flagship workflow assessing whether an item set
+  spans its intended content domain. Its `results` table has one row per
+  blueprint cell, supporting construct-only or crossed construct-by-facet
+  tables of specifications.
+* Empty, thinly covered, and over-represented cells are reported against
+  explicit, user-settable thresholds rather than silent defaults, and
+  over-representation is documented as an attention-drawing heuristic rather
+  than a standard. Intended item counts can be supplied through `targets` so
+  expected shares come from the blueprint instead of an assumption of equal
+  cells.
+* Detecting a cell that the blueprint intends but no item addresses requires
+  the full cell list to be supplied through `domain`. When it is omitted, the
+  output states plainly that empty cells could not be detected, rather than
+  implying full coverage.
+* Added `content_structure()`, implementing the multidimensional scaling and
+  hierarchical cluster analysis of expert item-similarity data described by
+  Sireci and Geisinger (1992, 1995). Correspondence between recovered clusters
+  and blueprint cells is quantified with the chance-corrected adjusted Rand
+  index and reported alongside the raw cross-tabulation.
+* Multidimensional scaling fit is reported across dimensionalities with Kruskal
+  stress-1 and its conventional descriptors, documented as descriptive
+  conventions rather than rules for deciding how many dimensions a content
+  domain has. A requested dimensionality beyond what the similarities support
+  is reduced and the reduction is reported.
+* Added `similarity_from_sort()`, deriving item similarities from an item-sort
+  task as the proportion of judges co-assigning each pair. The documentation
+  states why this is weaker evidence than pairwise similarity ratings collected
+  for the purpose.
+* Added `plot.contentvalid_structure()`, drawing the expert content map with
+  items labelled by blueprint cell.
+* Weak blueprint correspondence is framed as a reason to re-examine the
+  blueprint or item wording, explicitly not as grounds for deleting items.
+
 ## Judge and rater heterogeneity (in development)
 
 * Added `judge_validity()`, a flagship workflow reporting how far
