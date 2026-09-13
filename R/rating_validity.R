@@ -324,8 +324,20 @@ print.contentvalid_rating <- function(x, digits = 3, ...) {
     cat("\nColquitt benchmark labels are suppressed because the analysis was marked as using expert judges.\n")
   } else {
     cat("\nColquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.\n")
+    cat("HTC is an average rating and HTD is a difference between ratings, so they sit on\n")
+    cat("different scales with different typical values. A high HTC can be labelled Weak in\n")
+    cat("the same analysis where a much smaller HTD is labelled Very Strong. Compare each\n")
+    cat("index against its own benchmark, never against the other index's number.\n")
   }
-  cat("'Review' is not an automatic deletion decision. Consider construct definitions, item wording,\n")
+
+  if (.show_key()) {
+    .print_key(c("htc", "htd"))
+    .print_status_legend()
+    cat("\nSee `contentvalid_glossary()` for all terms, or set",
+        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+  }
+
+  cat("\n'Review' is not an automatic deletion decision. Consider construct definitions, item wording,\n")
   cat("orbiting-construct choice, domain coverage, and qualitative judge feedback.\n")
   invisible(x)
 }

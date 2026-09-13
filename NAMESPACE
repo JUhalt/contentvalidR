@@ -4,15 +4,25 @@ S3method(plot,contentvalid_expert)
 S3method(plot,contentvalid_rating)
 S3method(plot,contentvalid_sort)
 S3method(plot,contentvalid_sort_power)
+S3method(plot,contentvalid_structure)
 S3method(print,contentvalid_cvi)
+S3method(print,contentvalid_domain)
 S3method(print,contentvalid_expert)
+S3method(print,contentvalid_glossary)
+S3method(print,contentvalid_gtheory)
+S3method(print,contentvalid_judge)
 S3method(print,contentvalid_rating)
 S3method(print,contentvalid_sort)
 S3method(print,contentvalid_sort_power)
+S3method(print,contentvalid_structure)
+S3method(print,summary.contentvalid_domain)
 S3method(print,summary.contentvalid_expert)
+S3method(print,summary.contentvalid_judge)
 S3method(print,summary.contentvalid_rating)
 S3method(print,summary.contentvalid_sort)
+S3method(summary,contentvalid_domain)
 S3method(summary,contentvalid_expert)
+S3method(summary,contentvalid_judge)
 S3method(summary,contentvalid_rating)
 S3method(summary,contentvalid_sort)
 export(agreement_summary)
@@ -21,30 +31,50 @@ export(anova_content)
 export(colquitt_benchmarks)
 export(compute_csv)
 export(compute_psa)
+export(content_structure)
+export(contentvalid_glossary)
 export(csv_binom_test)
 export(cvi)
 export(cvr)
+export(domain_validity)
 export(expert_validity)
+export(gtheory_content)
 export(htc)
 export(htd)
 export(interpret_colquitt)
 export(ioc)
+export(judge_validity)
 export(qfactor_content)
 export(rating_validity)
 export(reproducibility_phi)
 export(signal_detection)
+export(similarity_from_sort)
 export(simulate_anova_power)
 export(simulate_csv_power)
 export(sort_power)
 export(sort_validity)
 importFrom(stats,
   aggregate,
+  as.dist,
   binom.test,
+  binomial,
   chisq.test,
+  cmdscale,
+  coef,
+  complete.cases,
   cor,
+  cutree,
   dbinom,
+  dist,
+  fitted,
+  glm,
+  hclust,
+  median,
   pbinom,
   quantile,
   rbinom,
-  rnorm
+  rnorm,
+  sd,
+  setNames,
+  vcov
 )

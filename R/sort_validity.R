@@ -274,9 +274,19 @@ print.contentvalid_sort <- function(x, digits = 3, ...) {
     cat("\nColquitt benchmark labels are not applied because the analysis was marked as using expert judges.\n")
   } else {
     cat("\nColquitt labels are empirical percentile norms derived from scale-level averages,\n")
-    cat("not universal cutoffs or automatic scale-retention rules.\n")
+    cat("not universal cutoffs or automatic scale-retention rules. They place a scale\n")
+    cat("against published scales; Psa and Csv sit on different scales, so their labels\n")
+    cat("are not comparable with each other.\n")
   }
-  cat("'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,\n")
+
+  if (.show_key()) {
+    .print_key(c("psa", "csv", "competitor", "p_value"))
+    .print_status_legend()
+    cat("\nSee `contentvalid_glossary()` for all terms, or set",
+        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+  }
+
+  cat("\n'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,\n")
   cat("item wording, and qualitative judge feedback alongside these statistics.\n")
   invisible(x)
 }

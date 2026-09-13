@@ -10,6 +10,8 @@ reference:
   - sort_validity
   - rating_validity
   - expert_validity
+  - judge_validity
+  - domain_validity
 
 - title: Workflow plotting methods
   desc: Diagnostic plots for the flagship workflow objects and exact sort-power plans.
@@ -18,6 +20,12 @@ reference:
   - plot.contentvalid_rating
   - plot.contentvalid_expert
   - plot.contentvalid_sort_power
+  - plot.contentvalid_structure
+
+- title: Reading the output
+  desc: Plain-language definitions of every index and status label the package reports.
+  contents:
+  - contentvalid_glossary
 
 - title: Item-sort components and planning
   contents:
@@ -41,6 +49,17 @@ reference:
   - cvr
   - ioc
 
+- title: Judge and rater heterogeneity
+  desc: Evidence about how far conclusions depend on the particular judges used.
+  contents:
+  - gtheory_content
+
+- title: Domain coverage and content structure
+  desc: Whether the item set spans the blueprint, and whether experts group items as the blueprint expects.
+  contents:
+  - content_structure
+  - similarity_from_sort
+
 - title: Auxiliary and compatibility helpers
   desc: Retained utilities that are not flagship v0.1.0 workflows.
   contents:
@@ -56,6 +75,7 @@ articles:
   navbar: ~
   contents:
   - getting-started
+  - reading-output
   - design-and-reporting
   - reporting-examples
 

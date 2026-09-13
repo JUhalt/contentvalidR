@@ -400,6 +400,19 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
     print(tab, row.names = FALSE)
   }
 
+  if (.show_key()) {
+    key_terms <- switch(
+      x$mode,
+      relevance = c("V", "I_CVI", "kappa_mod"),
+      essentiality = "cvr",
+      "ioc"
+    )
+    .print_key(key_terms)
+    .print_status_legend()
+    cat("\nSee `contentvalid_glossary()` for all terms, or set",
+        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+  }
+
   cat("\nUse quantitative indices alongside expert comments, construct coverage, and comprehensibility review.\n")
   invisible(x)
 }
