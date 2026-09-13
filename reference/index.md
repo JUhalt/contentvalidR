@@ -30,14 +30,22 @@ plans.
   : Plot exact item-sort planning evidence
 - [`plot(`*`<contentvalid_structure>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md)
   : Plot an expert content map
+- [`plot(`*`<contentvalid_expert_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert_power.md)
+  : Plot an expert-panel planning curve
 
-## Reading the output
+## Reading and reporting results
 
-Plain-language definitions of every index and status label the package
-reports.
+Definitions of every index and status label, plus extraction into
+reports and downstream workflows.
 
 - [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md)
   : Glossary of contentvalidR indices and status terms
+- [`as.data.frame(`*`<contentvalid_workflow>`*`)`](https://juhalt.github.io/contentvalidR/reference/as.data.frame.contentvalid_workflow.md)
+  : Extract workflow results as a plain data frame
+- [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  : Build a manuscript-ready results table
+- [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  : Compare content-validity evidence across pretest rounds
 
 ## Item-sort components and planning
 
@@ -53,6 +61,14 @@ reports.
   : Colquitt et al. (2019) empirical content-validation benchmarks
 - [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md)
   : Interpret a statistic using Colquitt et al. (2019) norms
+
+## Expert-panel planning
+
+Probability of clearing an explicit decision criterion at a given panel
+size.
+
+- [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  : Plan an expert panel against an explicit decision criterion
 
 ## Construct-rating components
 

@@ -336,41 +336,71 @@ package method or a release commitment.
 Tracking: [\#5](https://github.com/JUhalt/contentvalidR/issues/5).
 
 Add helpers for comparing repeated pretests or successive item-revision
-rounds.
+rounds, via
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md).
 
-Quantify stability/change in item recommendations across rounds.
+Quantify stability/change in item recommendations across rounds,
+including units that entered or left the item set.
 
-Expand reproducibility diagnostics for independent judge samples.
+Provide audit trails showing whether a status change can be read as an
+evidence change at all: settings are compared between rounds and the
+comparison is marked not comparable when a decision rule changed.
 
-Provide audit trails showing why an item’s status changed.
+Retain
+[`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md)
+for agreement between independent judge samples analyzed under identical
+settings; cross-referenced from
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+rather than duplicated.
 
 ### Design, simulation, and power
 
 Tracking: [\#6](https://github.com/JUhalt/contentvalidR/issues/6).
 
-Generalize the existing item-sort planning framework.
+Extend planning beyond item sorting with
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md),
+giving the exact probability of clearing the panel-size I-CVI guideline
+or the Lawshe CVR critical count.
 
-Add planning/simulation tools for expert-panel and construct-rating
-designs where a defensible planning target can be specified.
+Show sensitivity to judge count, assumed endorsement probability,
+decision criterion, and non-response, the last by averaging over the
+realized panel size rather than assuming the invited panel arrives
+intact.
 
-Show sensitivity to judge count, missingness, effect magnitude, and
-decision criteria.
+Report the I-CVI criterion’s step at six experts rather than smoothing
+it, including the case where a fourth or fifth expert lowers the
+probability of clearing under unanimity.
 
-Avoid unsupported universal sample-size rules of thumb.
+Avoid unsupported universal sample-size rules of thumb: planning output
+reports the consequences of the panel sizes requested and explicitly
+declines to recommend one.
+
+Plan judge counts against a generalizability target through the
+[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+decision study.
 
 ### Reporting and interoperability
 
 Tracking: [\#7](https://github.com/JUhalt/contentvalidR/issues/7).
 
-Add tidy extraction helpers for flagship workflow objects.
+Add extraction helpers for flagship workflow objects: an
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) method
+returning results or the scale summary with workflow provenance, so
+tables from several analyses stack.
 
-Expand manuscript-ready table/report scaffolds.
+Add manuscript-ready table scaffolds through
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md).
 
-Evaluate Quarto/HTML reporting helpers without making reporting
-dependencies mandatory for core analyses.
+Support Quarto/R Markdown reporting by generating Markdown directly,
+with analysis settings attached to the output, and without adding any
+reporting dependency to the package.
 
-Improve interoperability with downstream `nomologR` workflows where the
-conceptual handoff is scientifically appropriate.
+Decide against a helper that returns only the units that passed.
+Filtering on status is a substantive decision that belongs in the user’s
+own visible code, and `Review` is not an instruction to delete.
+
+Revisit a closer `nomologR` handoff once that package’s intake format is
+settled; the documented evidence table is the handoff for now.
 
 ### Interpretable output for researchers and students
 

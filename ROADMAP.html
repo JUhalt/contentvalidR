@@ -194,26 +194,28 @@
 <div class="section level3">
 <h3 id="multi-round-and-reproducibility-workflows">Multi-round and reproducibility workflows<a class="anchor" aria-label="anchor" href="#multi-round-and-reproducibility-workflows"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/5" class="external-link">#5</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Add helpers for comparing repeated pretests or successive item-revision rounds.</label></li>
-<li><label><input type="checkbox">Quantify stability/change in item recommendations across rounds.</label></li>
-<li><label><input type="checkbox">Expand reproducibility diagnostics for independent judge samples.</label></li>
-<li><label><input type="checkbox">Provide audit trails showing why an item’s status changed.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Add helpers for comparing repeated pretests or successive item-revision rounds, via <code><a href="reference/compare_rounds.html">compare_rounds()</a></code>.</label></li>
+<li><label><input type="checkbox" checked>Quantify stability/change in item recommendations across rounds, including units that entered or left the item set.</label></li>
+<li><label><input type="checkbox" checked>Provide audit trails showing whether a status change can be read as an evidence change at all: settings are compared between rounds and the comparison is marked not comparable when a decision rule changed.</label></li>
+<li><label><input type="checkbox" checked>Retain <code><a href="reference/reproducibility_phi.html">reproducibility_phi()</a></code> for agreement between independent judge samples analyzed under identical settings; cross-referenced from <code><a href="reference/compare_rounds.html">compare_rounds()</a></code> rather than duplicated.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="design-simulation-and-power">Design, simulation, and power<a class="anchor" aria-label="anchor" href="#design-simulation-and-power"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/6" class="external-link">#6</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Generalize the existing item-sort planning framework.</label></li>
-<li><label><input type="checkbox">Add planning/simulation tools for expert-panel and construct-rating designs where a defensible planning target can be specified.</label></li>
-<li><label><input type="checkbox">Show sensitivity to judge count, missingness, effect magnitude, and decision criteria.</label></li>
-<li><label><input type="checkbox">Avoid unsupported universal sample-size rules of thumb.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Extend planning beyond item sorting with <code><a href="reference/expert_power.html">expert_power()</a></code>, giving the exact probability of clearing the panel-size I-CVI guideline or the Lawshe CVR critical count.</label></li>
+<li><label><input type="checkbox" checked>Show sensitivity to judge count, assumed endorsement probability, decision criterion, and non-response, the last by averaging over the realized panel size rather than assuming the invited panel arrives intact.</label></li>
+<li><label><input type="checkbox" checked>Report the I-CVI criterion’s step at six experts rather than smoothing it, including the case where a fourth or fifth expert lowers the probability of clearing under unanimity.</label></li>
+<li><label><input type="checkbox" checked>Avoid unsupported universal sample-size rules of thumb: planning output reports the consequences of the panel sizes requested and explicitly declines to recommend one.</label></li>
+<li><label><input type="checkbox" checked>Plan judge counts against a generalizability target through the <code><a href="reference/gtheory_content.html">gtheory_content()</a></code> decision study.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="reporting-and-interoperability">Reporting and interoperability<a class="anchor" aria-label="anchor" href="#reporting-and-interoperability"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/7" class="external-link">#7</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Add tidy extraction helpers for flagship workflow objects.</label></li>
-<li><label><input type="checkbox">Expand manuscript-ready table/report scaffolds.</label></li>
-<li><label><input type="checkbox">Evaluate Quarto/HTML reporting helpers without making reporting dependencies mandatory for core analyses.</label></li>
-<li><label><input type="checkbox">Improve interoperability with downstream <code>nomologR</code> workflows where the conceptual handoff is scientifically appropriate.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Add extraction helpers for flagship workflow objects: an <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> method returning results or the scale summary with workflow provenance, so tables from several analyses stack.</label></li>
+<li><label><input type="checkbox" checked>Add manuscript-ready table scaffolds through <code><a href="reference/content_report.html">content_report()</a></code>.</label></li>
+<li><label><input type="checkbox" checked>Support Quarto/R Markdown reporting by generating Markdown directly, with analysis settings attached to the output, and without adding any reporting dependency to the package.</label></li>
+<li><label><input type="checkbox" checked>Decide against a helper that returns only the units that passed. Filtering on status is a substantive decision that belongs in the user’s own visible code, and <code>Review</code> is not an instruction to delete.</label></li>
+<li><label><input type="checkbox">Revisit a closer <code>nomologR</code> handoff once that package’s intake format is settled; the documented evidence table is the handoff for now.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="interpretable-output-for-researchers-and-students">Interpretable output for researchers and students<a class="anchor" aria-label="anchor" href="#interpretable-output-for-researchers-and-students"></a></h3>

@@ -56,6 +56,21 @@
 <li><p>Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata. # contentvalidR 0.1.0.9000</p></li>
 </ul></div>
 <div class="section level3">
+<h3 id="multi-round-comparison-planning-and-reporting-in-development-0-1-0-9000">Multi-round comparison, planning, and reporting (in development)<a class="anchor" aria-label="anchor" href="#multi-round-comparison-planning-and-reporting-in-development-0-1-0-9000"></a></h3>
+<ul><li>Added <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code>, comparing two or more fitted workflow objects from successive pretest rounds. Reports each unit’s status in every round, whether it strengthened, weakened, or held, and which units entered or left the item set.</li>
+<li>
+<code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> also compares the <code>settings</code> of each round and marks the comparison as not comparable when they differ. This is the audit trail the workstream called for: a status change under a changed criterion may reflect only the changed rule, and the output says so rather than letting a bookkeeping change read as progress.</li>
+<li>Comparisons across different workflows are refused, since status labels from different workflows rest on different criteria.</li>
+<li>Added <code><a href="../reference/expert_power.html">expert_power()</a></code>, reporting the exact probability that an item clears its expert-panel criterion at a given panel size and assumed endorsement probability, for the panel-size I-CVI guideline or the Lawshe CVR critical count. It reports the consequences of the panel sizes asked about rather than recommending one.</li>
+<li>
+<code><a href="../reference/expert_power.html">expert_power()</a></code> makes the I-CVI criterion’s step visible instead of smoothing it: because the guideline requires unanimity up to five experts and 0.78 from six, a fourth or fifth expert <em>lowers</em> the probability of clearing while a sixth raises it sharply. The plot is drawn as a step function for the same reason.</li>
+<li>
+<code><a href="../reference/expert_power.html">expert_power()</a></code> accepts a <code>response_rate</code> below 1, averaging over the realized panel size rather than assuming the invited panel arrives intact, which also captures the criterion that a smaller realized panel triggers.</li>
+<li>Added an <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> method for workflow objects, returning results or the scale summary as a plain data frame with a <code>workflow</code> column so tables from several analyses stack without losing their identity.</li>
+<li>Added <code><a href="../reference/content_report.html">content_report()</a></code>, building a manuscript-ready table as a data frame or as Markdown for Quarto and R Markdown. Markdown is generated directly, so no reporting package is required and none is added as a dependency. Analysis settings travel with Markdown output as an attribute, and columns that are entirely missing are dropped.</li>
+<li>No helper is provided that returns “the items that passed.” Filtering on status is a substantive decision that belongs in the user’s own visible code, and <code>Review</code> never means an item must be dropped.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="interpretable-output-in-development-0-1-0-9000">Interpretable output (in development)<a class="anchor" aria-label="anchor" href="#interpretable-output-in-development-0-1-0-9000"></a></h3>
 <ul><li>Printed workflow output now defines the abbreviated quantities it reports. Each flagship workflow prints a key explaining, in plain language, what its columns measure and which direction is stronger, followed by the meaning of the shared status labels and a note connecting each workflow’s own recommendation wording to them.</li>
 <li>Added <code><a href="../reference/contentvalid_glossary.html">contentvalid_glossary()</a></code>, a single source of those definitions. The inline keys and the glossary read from the same table, so a term cannot be defined differently in two places.</li>
