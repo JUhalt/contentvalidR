@@ -6,13 +6,17 @@ S3method(plot,contentvalid_sort)
 S3method(plot,contentvalid_sort_power)
 S3method(print,contentvalid_cvi)
 S3method(print,contentvalid_expert)
+S3method(print,contentvalid_gtheory)
+S3method(print,contentvalid_judge)
 S3method(print,contentvalid_rating)
 S3method(print,contentvalid_sort)
 S3method(print,contentvalid_sort_power)
 S3method(print,summary.contentvalid_expert)
+S3method(print,summary.contentvalid_judge)
 S3method(print,summary.contentvalid_rating)
 S3method(print,summary.contentvalid_sort)
 S3method(summary,contentvalid_expert)
+S3method(summary,contentvalid_judge)
 S3method(summary,contentvalid_rating)
 S3method(summary,contentvalid_sort)
 export(agreement_summary)
@@ -25,10 +29,12 @@ export(csv_binom_test)
 export(cvi)
 export(cvr)
 export(expert_validity)
+export(gtheory_content)
 export(htc)
 export(htd)
 export(interpret_colquitt)
 export(ioc)
+export(judge_validity)
 export(qfactor_content)
 export(rating_validity)
 export(reproducibility_phi)
@@ -40,11 +46,24 @@ export(sort_validity)
 importFrom(stats,
   aggregate,
   binom.test,
+  binomial,
   chisq.test,
+  cmdscale,
+  coef,
+  complete.cases,
   cor,
+  cutree,
   dbinom,
+  dist,
+  fitted,
+  glm,
+  hclust,
+  median,
   pbinom,
   quantile,
   rbinom,
-  rnorm
+  rnorm,
+  sd,
+  setNames,
+  vcov
 )

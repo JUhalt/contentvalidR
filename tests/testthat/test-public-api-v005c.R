@@ -10,10 +10,12 @@ test_that("the intended public API is exported from a clean namespace", {
     "cvi",
     "cvr",
     "expert_validity",
+    "gtheory_content",
     "htc",
     "htd",
     "interpret_colquitt",
     "ioc",
+    "judge_validity",
     "qfactor_content",
     "rating_validity",
     "reproducibility_phi",
@@ -46,7 +48,11 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("print", "summary.contentvalid_expert"),
     c("print", "contentvalid_sort_power"),
     c("plot", "contentvalid_sort_power"),
-    c("print", "contentvalid_cvi")
+    c("print", "contentvalid_cvi"),
+    c("print", "contentvalid_judge"),
+    c("summary", "contentvalid_judge"),
+    c("print", "summary.contentvalid_judge"),
+    c("print", "contentvalid_gtheory")
   )
 
   for (spec in expected_methods) {

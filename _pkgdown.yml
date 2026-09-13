@@ -10,6 +10,7 @@ reference:
   - sort_validity
   - rating_validity
   - expert_validity
+  - judge_validity
 
 - title: Workflow plotting methods
   desc: Diagnostic plots for the flagship workflow objects and exact sort-power plans.
@@ -40,6 +41,11 @@ reference:
   - cvi
   - cvr
   - ioc
+
+- title: Judge and rater heterogeneity
+  desc: Evidence about how far conclusions depend on the particular judges used.
+  contents:
+  - gtheory_content
 
 - title: Auxiliary and compatibility helpers
   desc: Retained utilities that are not flagship v0.1.0 workflows.

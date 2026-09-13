@@ -17,6 +17,47 @@
 * Replaced the completed pre-v0.1 release roadmap with an active post-release development plan.
 * Removed the obsolete committed `DESCRIPTION.bak` file.
 * Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata.
+# contentvalidR 0.1.0.9000
+
+## Judge and rater heterogeneity (in development)
+
+* Added `judge_validity()`, a flagship workflow reporting how far
+  content-validity conclusions depend on the particular judges who served on
+  the panel. Unlike the item-oriented workflows, its `results` table has one row
+  per judge.
+* Added `gtheory_content()`, implementing the generalizability-theory treatment
+  of content-validity ratings in Crocker, Llabre, and Miller (1988). Reports
+  item, judge, and residual variance components, generalizability (relative) and
+  dependability (absolute) coefficients, and a decision study giving the panel
+  size implied by a target coefficient.
+* Added judge severity estimation from a many-facet Rasch model fitted as a
+  logistic regression, following the generalized linear model formulation of
+  de Boeck and Wilson (2004). Estimation is joint maximum likelihood with the
+  standard Wright-Douglas bias correction applied and reported; the
+  documentation states that the correction reduces rather than removes that
+  bias, and that marginal maximum likelihood is preferable where precise
+  calibration matters.
+* Judges and items showing no variation in the dichotomized relevance decision
+  are excluded from the facets model and reported, rather than producing
+  infinite estimates. Because near-complete agreement is common in relevance
+  ratings, severity in raw rating points is always reported and is used for
+  flagging whenever the logit model is not estimable.
+* Added descriptive rater-effect summaries for severity, differentiation, and
+  central versus extreme category use, following the effects named in
+  Engelhard (1994). Halo is deliberately not estimated from a single-dimension
+  design, where it is not separable from low differentiation.
+* Added leave-one-judge-out influence diagnostics identifying items whose
+  CVI-based review status would change if any single judge were removed, and
+  stating in the output that removing a judge also reduces the panel size and
+  can therefore change the CVI criterion itself.
+* Output states that a judge flagged for `Review` is not a judge to delete:
+  disagreement may be substantive expertise, and the flag marks where a
+  conclusion rests on one person's ratings.
+* Zero item-level true-score variance is now reported as a descriptive result
+  explaining that judges did not distinguish the items, rather than as weak
+  generalizability, and explicitly notes that a uniformly relevant item set
+  produces the same value.
+
 # contentvalidR 0.1.0
 
 ## First public release
