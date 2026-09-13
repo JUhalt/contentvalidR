@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -125,6 +126,32 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   V -- Aiken's V. Relevance index that rescales the experts' average rating</span></span>
+<span><span class="co">#&gt;       to run from 0 to 1 given the bounds of the rating scale used. (0 to</span></span>
+<span><span class="co">#&gt;       1; higher is stronger)</span></span>
+<span><span class="co">#&gt;   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span></span>
+<span><span class="co">#&gt;       rated the item as relevant, after applying the relevance cut. (0 to</span></span>
+<span><span class="co">#&gt;       1; compared against a panel-size guideline)</span></span>
+<span><span class="co">#&gt;   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span></span>
+<span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
+<span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
+<span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the status labels mean</span></span>
+<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;       to delete anything.</span></span>
+<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgement.</span></span>
+<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;       applied.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
+<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
+<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Summary of expert-panel content-validity evidence</span></span>
@@ -178,6 +205,25 @@ experts:</p>
 <span><span class="co">#&gt;  Item2  8 12 0.333   0.194          10         Review</span></span>
 <span><span class="co">#&gt;  Item3  6 12 0.000   0.613          10         Review</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
+<span><span class="co">#&gt;       calling the item essential rather than merely useful. (-1 to 1; above</span></span>
+<span><span class="co">#&gt;       0 means more than half the panel called it essential)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the status labels mean</span></span>
+<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;       to delete anything.</span></span>
+<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgement.</span></span>
+<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;       applied.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
+<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
+<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
 <p><code><a href="../reference/cvr.html">cvr()</a></code> derives the smallest essential count whose
 one-sided binomial upper-tail probability is no greater than
@@ -200,6 +246,25 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="co">#&gt;   item ne N  cvr p_value critical_ne recommendation</span></span>
 <span><span class="co">#&gt;  Item1  8 8 1.00   0.004           7      Supported</span></span>
 <span><span class="co">#&gt;  Item2  5 8 0.25   0.363           7         Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
+<span><span class="co">#&gt;       calling the item essential rather than merely useful. (-1 to 1; above</span></span>
+<span><span class="co">#&gt;       0 means more than half the panel called it essential)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the status labels mean</span></span>
+<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;       to delete anything.</span></span>
+<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgement.</span></span>
+<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;       applied.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
+<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
+<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
 <p>A failure to clear the exact criterion is labeled
@@ -241,6 +306,25 @@ competing objectives:</p>
 <span><span class="co">#&gt;     status</span></span>
 <span><span class="co">#&gt;  Supported</span></span>
 <span><span class="co">#&gt;  Supported</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   ioc -- Item-Objective Congruence. How consistently experts linked the</span></span>
+<span><span class="co">#&gt;       item to the objective it was written for rather than to another</span></span>
+<span><span class="co">#&gt;       objective. (-1 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the status labels mean</span></span>
+<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;       to delete anything.</span></span>
+<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgement.</span></span>
+<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;       applied.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
+<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
+<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
 <p>The workflow reports target IOC, the strongest competitor, and their

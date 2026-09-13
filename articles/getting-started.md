@@ -118,6 +118,35 @@ rating_fit
 #>        overall
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.
+#> HTC is an average rating and HTD is a difference between ratings, so they sit on
+#> different scales with different typical values. A high HTC can be labelled Weak in
+#> the same analysis where a much smaller HTD is labelled Very Strong. Compare each
+#> index against its own benchmark, never against the other index's number.
+#> 
+#> What these columns mean
+#>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
+#>       its intended construct definition, expressed as a proportion of the
+#>       rating scale. (0 to 1; higher is stronger)
+#>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's
+#>       average rating exceeds the best competing construct's, as a
+#>       proportion of the rating scale. It is a difference, so its typical
+#>       values are far smaller than HTC's. (usually a small positive number;
+#>       higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,
 #> orbiting-construct choice, domain coverage, and qualitative judge feedback.
 summary(rating_fit)
@@ -178,6 +207,32 @@ expert_fit
 #>  Item3 6 0.889  0.672   0.969     1         1 Strong support
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
+#> 
+#> What these columns mean
+#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
+#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
+#>       1; higher is stronger)
+#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
+#>       rated the item as relevant, after applying the relevance cut. (0 to
+#>       1; compared against a panel-size guideline)
+#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
+#>       would have agreed even if rating at random. With small panels, chance
+#>       agreement is substantial, which is why the raw I-CVI alone can
+#>       overstate consensus. (0 to 1; higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 summary(expert_fit)

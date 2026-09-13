@@ -67,7 +67,41 @@ fit
 #>  Overall (not correlation-normed)
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level averages,
-#> not universal cutoffs or automatic scale-retention rules.
+#> not universal cutoffs or automatic scale-retention rules. They place a scale
+#> against published scales; Psa and Csv sit on different scales, so their labels
+#> are not comparable with each other.
+#> 
+#> What these columns mean
+#>   psa -- Proportion of Substantive Agreement. Share of judges who assigned
+#>       the item to the construct it was written for. Higher means judges
+#>       recognized the item as belonging where you intended. (0 to 1; higher
+#>       is stronger)
+#>   csv -- Coefficient of Substantive Validity. How much more often the item
+#>       went to its intended construct than to the alternative construct
+#>       judges chose most. It rewards being distinctly right, not merely
+#>       often right. (-1 to 1; 0 means the intended construct and its closest
+#>       rival were chosen equally often)
+#>   competitor -- Strongest competing construct. The construct, other than
+#>       the intended one, that judges chose most often for this item.
+#>   p_value -- Howard-Melloy exact test. Probability of seeing at least this
+#>       many target assignments if judges were assigning at the chance rate
+#>       p0. Small values mean the item's assignment pattern is unlikely to be
+#>       chance. (0 to 1; compared against alpha)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,
 #> item wording, and qualitative judge feedback alongside these statistics.
 ```

@@ -10,6 +10,10 @@ Recommended user-facing analyses for scale content pretesting.
   : Analyze a Hinkin-Tracey construct-rating content-validity pretest
 - [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   : Analyze expert-panel content-validity evidence
+- [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  : Analyze judge and rater heterogeneity in content-validity ratings
+- [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+  : Analyze content-domain coverage and structure
 
 ## Workflow plotting methods
 
@@ -24,6 +28,16 @@ plans.
   : Plot expert-panel content-validity results
 - [`plot(`*`<contentvalid_sort_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_sort_power.md)
   : Plot exact item-sort planning evidence
+- [`plot(`*`<contentvalid_structure>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md)
+  : Plot an expert content map
+
+## Reading the output
+
+Plain-language definitions of every index and status label the package
+reports.
+
+- [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md)
+  : Glossary of contentvalidR indices and status terms
 
 ## Item-sort components and planning
 
@@ -59,6 +73,23 @@ plans.
   Lawshe's Content Validity Ratio (CVR)
 - [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md) :
   Item-Objective Congruence (IOC)
+
+## Judge and rater heterogeneity
+
+Evidence about how far conclusions depend on the particular judges used.
+
+- [`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+  : Generalizability analysis of content-validity ratings
+
+## Domain coverage and content structure
+
+Whether the item set spans the blueprint, and whether experts group
+items as the blueprint expects.
+
+- [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+  : Item-similarity structure of a content domain
+- [`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md)
+  : Derive item similarities from an item-sort task
 
 ## Auxiliary and compatibility helpers
 

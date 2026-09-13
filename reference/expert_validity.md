@@ -123,6 +123,32 @@ fit
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
+#> What these columns mean
+#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
+#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
+#>       1; higher is stronger)
+#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
+#>       rated the item as relevant, after applying the relevance cut. (0 to
+#>       1; compared against a panel-size guideline)
+#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
+#>       would have agreed even if rating at random. With small panels, chance
+#>       agreement is substantial, which is why the raw I-CVI alone can
+#>       overstate consensus. (0 to 1; higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 summary(fit)
 #> Summary of expert-panel content-validity evidence

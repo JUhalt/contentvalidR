@@ -37,6 +37,7 @@ descriptive benchmarks rather than pass/fail rules."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -182,7 +183,41 @@ Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Overall (not correlation-normed)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms derived from scale-level averages,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> not universal cutoffs or automatic scale-retention rules.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> not universal cutoffs or automatic scale-retention rules. They place a scale</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> against published scales; Psa and Csv sit on different scales, so their labels</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> are not comparable with each other.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   psa -- Proportion of Substantive Agreement. Share of judges who assigned</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the item to the construct it was written for. Higher means judges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       recognized the item as belonging where you intended. (0 to 1; higher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   csv -- Coefficient of Substantive Validity. How much more often the item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       went to its intended construct than to the alternative construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       judges chose most. It rewards being distinctly right, not merely</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       often right. (-1 to 1; 0 means the intended construct and its closest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rival were chosen equally often)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   competitor -- Strongest competing construct. The construct, other than</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the intended one, that judges chose most often for this item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   p_value -- Howard-Melloy exact test. Probability of seeing at least this</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       many target assignments if judges were assigning at the chance rate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       p0. Small values mean the item's assignment pattern is unlikely to be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       chance. (0 to 1; compared against alpha)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgement.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the recommendation column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Retain, Strong support, Typical, Covered, and so on). Those words map</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   onto the shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> item wording, and qualitative judge feedback alongside these statistics.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>

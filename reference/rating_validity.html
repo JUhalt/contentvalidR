@@ -49,6 +49,7 @@ constructed. The labels are suppressed for expert judges.'></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -211,6 +212,35 @@ Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406
 <span class="r-out co"><span class="r-pr">#&gt;</span>        overall</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> HTC is an average rating and HTD is a difference between ratings, so they sit on</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> different scales with different typical values. A high HTC can be labelled Weak in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the same analysis where a much smaller HTD is labelled Very Strong. Compare each</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> index against its own benchmark, never against the other index's number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       its intended construct definition, expressed as a proportion of the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rating scale. (0 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       average rating exceeds the best competing construct's, as a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       proportion of the rating scale. It is a difference, so its typical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       values are far smaller than HTC's. (usually a small positive number;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgement.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the recommendation column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Retain, Strong support, Typical, Covered, and so on). Those words map</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   onto the shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> orbiting-construct choice, domain coverage, and qualitative judge feedback.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>

@@ -4,6 +4,8 @@
 
 - [Getting Started with
   contentvalidR](https://juhalt.github.io/contentvalidR/articles/getting-started.md):
+- [How to Read contentvalidR
+  Output](https://juhalt.github.io/contentvalidR/articles/reading-output.md):
 - [Design & Reporting
   Guide](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md):
 - [Manuscript-Ready Reporting

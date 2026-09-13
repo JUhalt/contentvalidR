@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -265,6 +266,35 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <span><span class="co">#&gt;        overall</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.</span></span>
+<span><span class="co">#&gt; HTC is an average rating and HTD is a difference between ratings, so they sit on</span></span>
+<span><span class="co">#&gt; different scales with different typical values. A high HTC can be labelled Weak in</span></span>
+<span><span class="co">#&gt; the same analysis where a much smaller HTD is labelled Very Strong. Compare each</span></span>
+<span><span class="co">#&gt; index against its own benchmark, never against the other index's number.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span></span>
+<span><span class="co">#&gt;       its intended construct definition, expressed as a proportion of the</span></span>
+<span><span class="co">#&gt;       rating scale. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's</span></span>
+<span><span class="co">#&gt;       average rating exceeds the best competing construct's, as a</span></span>
+<span><span class="co">#&gt;       proportion of the rating scale. It is a difference, so its typical</span></span>
+<span><span class="co">#&gt;       values are far smaller than HTC's. (usually a small positive number;</span></span>
+<span><span class="co">#&gt;       higher is stronger)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the status labels mean</span></span>
+<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;       to delete anything.</span></span>
+<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgement.</span></span>
+<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;       applied.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
+<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
+<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,</span></span>
 <span><span class="co">#&gt; orbiting-construct choice, domain coverage, and qualitative judge feedback.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
