@@ -19,6 +19,44 @@
 * Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata.
 # contentvalidR 0.1.0.9000
 
+## Multi-round comparison, planning, and reporting (in development)
+
+* Added `compare_rounds()`, comparing two or more fitted workflow objects from
+  successive pretest rounds. Reports each unit's status in every round, whether
+  it strengthened, weakened, or held, and which units entered or left the item
+  set.
+* `compare_rounds()` also compares the `settings` of each round and marks the
+  comparison as not comparable when they differ. This is the audit trail the
+  workstream called for: a status change under a changed criterion may reflect
+  only the changed rule, and the output says so rather than letting a
+  bookkeeping change read as progress.
+* Comparisons across different workflows are refused, since status labels from
+  different workflows rest on different criteria.
+* Added `expert_power()`, reporting the exact probability that an item clears
+  its expert-panel criterion at a given panel size and assumed endorsement
+  probability, for the panel-size I-CVI guideline or the Lawshe CVR critical
+  count. It reports the consequences of the panel sizes asked about rather than
+  recommending one.
+* `expert_power()` makes the I-CVI criterion's step visible instead of smoothing
+  it: because the guideline requires unanimity up to five experts and 0.78 from
+  six, a fourth or fifth expert *lowers* the probability of clearing while a
+  sixth raises it sharply. The plot is drawn as a step function for the same
+  reason.
+* `expert_power()` accepts a `response_rate` below 1, averaging over the
+  realized panel size rather than assuming the invited panel arrives intact,
+  which also captures the criterion that a smaller realized panel triggers.
+* Added an `as.data.frame()` method for workflow objects, returning results or
+  the scale summary as a plain data frame with a `workflow` column so tables
+  from several analyses stack without losing their identity.
+* Added `content_report()`, building a manuscript-ready table as a data frame or
+  as Markdown for Quarto and R Markdown. Markdown is generated directly, so no
+  reporting package is required and none is added as a dependency. Analysis
+  settings travel with Markdown output as an attribute, and columns that are
+  entirely missing are dropped.
+* No helper is provided that returns "the items that passed." Filtering on
+  status is a substantive decision that belongs in the user's own visible code,
+  and `Review` never means an item must be dropped.
+
 ## Interpretable output (in development)
 
 * Printed workflow output now defines the abbreviated quantities it reports.
