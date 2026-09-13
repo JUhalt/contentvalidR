@@ -21,11 +21,15 @@ reference:
   - plot.contentvalid_expert
   - plot.contentvalid_sort_power
   - plot.contentvalid_structure
+  - plot.contentvalid_expert_power
 
-- title: Reading the output
-  desc: Plain-language definitions of every index and status label the package reports.
+- title: Reading and reporting results
+  desc: Definitions of every index and status label, plus extraction into reports and downstream workflows.
   contents:
   - contentvalid_glossary
+  - as.data.frame.contentvalid_workflow
+  - content_report
+  - compare_rounds
 
 - title: Item-sort components and planning
   contents:
@@ -35,6 +39,11 @@ reference:
   - sort_power
   - colquitt_benchmarks
   - interpret_colquitt
+
+- title: Expert-panel planning
+  desc: Probability of clearing an explicit decision criterion at a given panel size.
+  contents:
+  - expert_power
 
 - title: Construct-rating components
   contents:

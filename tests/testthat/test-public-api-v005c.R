@@ -4,14 +4,17 @@ test_that("the intended public API is exported from a clean namespace", {
     "aikens_v",
     "anova_content",
     "colquitt_benchmarks",
+    "compare_rounds",
     "compute_csv",
     "compute_psa",
+    "content_report",
     "content_structure",
     "contentvalid_glossary",
     "csv_binom_test",
     "cvi",
     "cvr",
     "domain_validity",
+    "expert_power",
     "expert_validity",
     "gtheory_content",
     "htc",
@@ -62,7 +65,13 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("print", "contentvalid_domain"),
     c("summary", "contentvalid_domain"),
     c("print", "summary.contentvalid_domain"),
-    c("print", "contentvalid_glossary")
+    c("print", "contentvalid_glossary"),
+    c("print", "contentvalid_rounds"),
+    c("summary", "contentvalid_rounds"),
+    c("print", "summary.contentvalid_rounds"),
+    c("print", "contentvalid_expert_power"),
+    c("plot", "contentvalid_expert_power"),
+    c("as.data.frame", "contentvalid_workflow")
   )
 
   for (spec in expected_methods) {
