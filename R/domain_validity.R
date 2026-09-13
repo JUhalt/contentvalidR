@@ -309,6 +309,21 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
                 format(round(st$adjusted_rand, digits)), st$status))
   }
 
+  if (.show_key()) {
+    terms <- "share"
+    if (!is.null(x$details$structure)) terms <- c(terms, "adjusted_rand", "stress")
+    .print_key(terms)
+    cat("\nWhat the cell labels mean\n")
+    cat(strwrap(paste(
+      "Covered -- the cell met the coverage criteria set for this analysis.",
+      "Thinly covered -- fewer items than the minimum you set.",
+      "Over-represented -- a larger share of the instrument than expected.",
+      "Not covered -- the blueprint intends this cell but no item addresses it."
+    ), width = 76, prefix = "  "), sep = "\n")
+    cat("\nSee `contentvalid_glossary()` for all terms, or set",
+        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+  }
+
   cat("\nCoverage shows that items exist for each cell. It does not show that",
       "\nthose items are good ones, or that the blueprint is the right",
       "\ndescription of the domain.\n")

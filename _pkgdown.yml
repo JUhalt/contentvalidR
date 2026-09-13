@@ -22,6 +22,11 @@ reference:
   - plot.contentvalid_sort_power
   - plot.contentvalid_structure
 
+- title: Reading the output
+  desc: Plain-language definitions of every index and status label the package reports.
+  contents:
+  - contentvalid_glossary
+
 - title: Item-sort components and planning
   contents:
   - compute_psa
@@ -70,6 +75,7 @@ articles:
   navbar: ~
   contents:
   - getting-started
+  - reading-output
   - design-and-reporting
   - reporting-examples
 

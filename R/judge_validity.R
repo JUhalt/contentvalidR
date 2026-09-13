@@ -387,6 +387,15 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
     cat("\nNo item's review status depends on any single judge.\n")
   }
 
+  if (.show_key()) {
+    terms <- c("severity", "differentiation", "phi_coefficient")
+    if (estimable) terms <- append(terms, "infit/outfit", after = 1L)
+    .print_key(terms)
+    .print_status_legend(statuses = c("Supported", "Review", "Insufficient data"))
+    cat("\nSee `contentvalid_glossary()` for all terms, or set",
+        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+  }
+
   cat("\nA `Review` judge is not a judge to remove. Disagreement can be",
       "\nsubstantive expertise; the flag marks where a conclusion rests on",
       "\none person's ratings.\n")

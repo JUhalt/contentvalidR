@@ -7,6 +7,7 @@ test_that("the intended public API is exported from a clean namespace", {
     "compute_csv",
     "compute_psa",
     "content_structure",
+    "contentvalid_glossary",
     "csv_binom_test",
     "cvi",
     "cvr",
@@ -60,7 +61,8 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("plot", "contentvalid_structure"),
     c("print", "contentvalid_domain"),
     c("summary", "contentvalid_domain"),
-    c("print", "summary.contentvalid_domain")
+    c("print", "summary.contentvalid_domain"),
+    c("print", "contentvalid_glossary")
   )
 
   for (spec in expected_methods) {

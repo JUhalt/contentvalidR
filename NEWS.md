@@ -19,6 +19,35 @@
 * Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt repository metadata.
 # contentvalidR 0.1.0.9000
 
+## Interpretable output (in development)
+
+* Printed workflow output now defines the abbreviated quantities it reports.
+  Each flagship workflow prints a key explaining, in plain language, what its
+  columns measure and which direction is stronger, followed by the meaning of
+  the shared status labels and a note connecting each workflow's own
+  recommendation wording to them.
+* Added `contentvalid_glossary()`, a single source of those definitions. The
+  inline keys and the glossary read from the same table, so a term cannot be
+  defined differently in two places.
+* Inline keys can be suppressed with
+  `options(contentvalidR.show_key = FALSE)` once the terminology is familiar.
+  Substantive cautions are never suppressed by that option.
+* Benchmark output now states that strength labels are percentile positions
+  relative to published scales and are **not comparable across indices**. This
+  addresses a genuine misreading: HTC is an average rating while HTD is a
+  difference between ratings, so a scale-level HTC of 0.83 is labelled `Weak`
+  in the same row where an HTD of 0.44 is labelled `Very Strong`. Output now
+  explains why, rather than leaving the contrast looking like an error.
+* Added a "How to Read contentvalidR Output" vignette aimed at readers meeting
+  these methods for the first time: an annotated walkthrough of every flagship
+  workflow's output field by field, a section on the benchmark trap above, a
+  list of common misreadings, and worked manuscript language that reports what
+  the analysis does and does not establish.
+* Added regression coverage asserting that interpretive wording is present and
+  stable, that every term shown in a key is defined in the glossary, and that
+  the documented HTC/HTD contrast still occurs in the shipped example data, so
+  the explanation cannot drift away from the behaviour it explains.
+
 ## Domain coverage and content structure (in development)
 
 * Added `domain_validity()`, a flagship workflow assessing whether an item set
