@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -149,7 +149,7 @@
 <hr></div>
 <div class="section level2">
 <h2 id="v020---uncertainty-heterogeneity-and-reproducibility">v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility<a class="anchor" aria-label="anchor" href="#v020---uncertainty-heterogeneity-and-reproducibility"></a></h2>
-<p><strong>Status:</strong> Scoped and in development <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/1" class="external-link">v0.2.0</a> <strong>Development version:</strong> <code>0.1.0.9000</code></p>
+<p><strong>Status:</strong> Released <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/1" class="external-link">v0.2.0</a> <strong>Version:</strong> <code>0.2.0</code></p>
 <p>Goal: extend the stable content-validity workflow without turning the package into a disconnected collection of coefficients. New methods should improve the quality, transparency, or reproducibility of substantive/content-validity decisions.</p>
 <p>Current-source housekeeping: GPLv3-only licensing and development citation metadata are synchronized; the MIT terms of historical releases are unchanged.</p>
 <div class="section level3">
@@ -221,30 +221,32 @@
 <h3 id="interpretable-output-for-researchers-and-students">Interpretable output for researchers and students<a class="anchor" aria-label="anchor" href="#interpretable-output-for-researchers-and-students"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/11" class="external-link">#11</a>.</p>
 <p>The product principle that this package is “not a bag of coefficients” is only real if a second-year doctoral student can run a workflow, read the output, and correctly explain what it does and does not support without first reading four primary sources. Where that fails, it is a defect in how results are communicated, not a documentation gap.</p>
-<ul class="task-list"><li><label><input type="checkbox">Audit every <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method against whether a reader who has not read the source paper could act on it correctly.</label></li>
-<li><label><input type="checkbox">State in plain language what each index measures and what a high or low value means in context, not only its value and cut point.</label></li>
-<li><label><input type="checkbox">Make the distinction between <code>Review</code> and deletion unmissable in the output itself, not only in the documentation.</label></li>
-<li><label><input type="checkbox">Standardize status vocabulary across workflows and define terms where shown.</label></li>
-<li><label><input type="checkbox">Report what the analysis cannot establish with the same prominence as what it can.</label></li>
-<li><label><input type="checkbox">Add a “how to read contentvalidR output” vignette for graduate students, annotating each flagship workflow’s output field by field.</label></li>
-<li><label><input type="checkbox">Add a glossary of indices, status terms, and decision language.</label></li>
-<li><label><input type="checkbox">Add worked interpretation examples for a clean result and an ambiguous one, including how to write up each.</label></li>
-<li><label><input type="checkbox">Document common misreadings, including treating benchmarks as universal cut scores and treating a single index as sufficient validity evidence.</label></li>
-<li><label><input type="checkbox">Verify new output from #3 and #4 meets the same interpretive standard before those features are considered complete.</label></li>
-<li><label><input type="checkbox">Add regression tests covering interpretive output so wording users rely on cannot silently disappear.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Audit every <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method against whether a reader who has not read the source paper could act on it correctly.</label></li>
+<li><label><input type="checkbox" checked>State in plain language what each index measures and what a high or low value means in context, not only its value and cut point.</label></li>
+<li><label><input type="checkbox" checked>Make the distinction between <code>Review</code> and deletion unmissable in the output itself, not only in the documentation.</label></li>
+<li><label><input type="checkbox" checked>Standardize status vocabulary across workflows and define terms where shown, including how each workflow’s own recommendation wording maps onto it.</label></li>
+<li><label><input type="checkbox" checked>Report what the analysis cannot establish with the same prominence as what it can.</label></li>
+<li><label><input type="checkbox" checked>Add a “how to read contentvalidR output” vignette for graduate students, annotating each flagship workflow’s output field by field.</label></li>
+<li><label><input type="checkbox" checked>Add a glossary of indices, status terms, and decision language, via <code><a href="reference/contentvalid_glossary.html">contentvalid_glossary()</a></code>, which is also the source of the inline keys so a term cannot be defined differently in two places.</label></li>
+<li><label><input type="checkbox" checked>Add worked interpretation examples for a clean result and an ambiguous one, including how to write up each.</label></li>
+<li><label><input type="checkbox" checked>Document common misreadings, including treating benchmarks as universal cut scores and treating a single index as sufficient validity evidence.</label></li>
+<li><label><input type="checkbox" checked>State that benchmark labels are not comparable across indices. A scale-level HTC of 0.83 is labelled <code>Weak</code> in the same row where an HTD of 0.44 is labelled <code>Very Strong</code>, because HTC is an average rating and HTD is a difference. Output that leaves this unexplained reads as an error.</label></li>
+<li><label><input type="checkbox" checked>Verify new output from #3 and #4 meets the same interpretive standard before those features are considered complete.</label></li>
+<li><label><input type="checkbox" checked>Add regression tests covering interpretive output so wording users rely on cannot silently disappear, including a test that the documented HTC/HTD contrast still occurs in the shipped example data.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="v020-exit-gate">v0.2.0 exit gate<a class="anchor" aria-label="anchor" href="#v020-exit-gate"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/8" class="external-link">#8</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Every new public method has a documented methodological basis or explicit derivation when the method is novel.</label></li>
-<li><label><input type="checkbox">Canonical-value, simulation/recovery, malformed-input, and edge-case tests cover every release-defining extension.</label></li>
-<li><label><input type="checkbox">R CMD check is clean across the supported OS/R matrix.</label></li>
-<li><label><input type="checkbox">Documentation clearly distinguishes established methods, package extensions, and experimental research features.</label></li>
-<li><label><input type="checkbox">README, vignettes, NEWS, citation metadata, pkgdown, and R-universe instructions reflect the release candidate.</label></li>
-<li><label><input type="checkbox">Clean-library installation and flagship workflow smoke tests pass.</label></li>
-<li><label><input type="checkbox">Output from every release-defining extension meets the interpretive standard in <a href="https://github.com/JUhalt/contentvalidR/issues/11" class="external-link">#11</a>.</label></li>
-<li><label><input type="checkbox">CRAN submission is completed rather than deferred again; <code>cran-comments.md</code> is populated with actual final check results.</label></li>
-</ul><hr></div>
+<ul class="task-list"><li><label><input type="checkbox" checked>Every new public method has a documented methodological basis or explicit derivation when the method is novel.</label></li>
+<li><label><input type="checkbox" checked>Canonical-value, simulation/recovery, malformed-input, and edge-case tests cover every release-defining extension.</label></li>
+<li><label><input type="checkbox" checked>R CMD check is clean across the supported OS/R matrix, including the R-devel <code>--as-cran</code> job that treats any NOTE as a failure.</label></li>
+<li><label><input type="checkbox" checked>Documentation clearly distinguishes established methods, package extensions, and experimental research features.</label></li>
+<li><label><input type="checkbox" checked>README, vignettes, NEWS, citation metadata, pkgdown, and R-universe instructions reflect the release candidate.</label></li>
+<li><label><input type="checkbox" checked>Clean-library installation and flagship workflow smoke tests pass.</label></li>
+<li><label><input type="checkbox" checked>Output from every release-defining extension meets the interpretive standard in <a href="https://github.com/JUhalt/contentvalidR/issues/11" class="external-link">#11</a>.</label></li>
+<li><label><input type="checkbox" checked>Stable version stamped, tagged, and published through GitHub and the personal R-universe.</label></li>
+</ul><p><strong>CRAN submission is deferred to v0.3.0</strong> and tracked on its own in <a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>, so that the completed v0.2.0 workstreams reach users without waiting on a submission round. It is a separate issue rather than a line in a release gate because it has now slipped twice inside larger gates that closed around it.</p>
+<hr></div>
 </div>
 <div class="section level2">
 <h2 id="v030---advanced-modeling-and-dissemination">v0.3.0 - Advanced Modeling and Dissemination<a class="anchor" aria-label="anchor" href="#v030---advanced-modeling-and-dissemination"></a></h2>
@@ -259,6 +261,16 @@
 <li><label><input type="checkbox">Decide the dependency question explicitly: sampler in <code>Suggests</code> with graceful degradation, a companion package, or not at all.</label></li>
 <li><label><input type="checkbox">Establish simulation-based calibration/recovery tests before exposing any Bayesian method as a flagship workflow.</label></li>
 </ul></div>
+<div class="section level3">
+<h3 id="cran-submission">CRAN submission<a class="anchor" aria-label="anchor" href="#cran-submission"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Populate <code>cran-comments.md</code> with actual final check results.</label></li>
+<li><label><input type="checkbox">Confirm no stray <code>LICENSE</code> file reaches the built tarball, and that the source carries <code>License: GPL-3</code> with <code>inst/NOTICE</code> preserving the historical MIT attribution for v0.1.0.</label></li>
+<li><label><input type="checkbox">Check the built tarball with <code>--as-cran</code>, not only the source directory.</label></li>
+<li><label><input type="checkbox">Submit, respond to maintainer feedback, and confirm acceptance.</label></li>
+<li><label><input type="checkbox">Update README installation guidance once CRAN is live.</label></li>
+</ul><p>The package is already check-clean across the matrix with <code>Imports: stats</code> only and no compiled code, so the submission is expected to be straightforward whenever it is taken up.</p>
+</div>
 <div class="section level3">
 <h3 id="other-candidate-directions">Other candidate directions<a class="anchor" aria-label="anchor" href="#other-candidate-directions"></a></h3>
 <ul class="task-list"><li><label><input type="checkbox">Marginal-ML / full many-facet Rasch estimation as an optional upgrade path over the v0.2.0 base-R facets model.</label></li>

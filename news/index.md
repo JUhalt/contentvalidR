@@ -1,39 +1,34 @@
 # Changelog
 
-## contentvalidR 0.1.0.9000
+## contentvalidR 0.2.0
 
-### Development
+Second public release. v0.1.0 established three item-level workflows;
+v0.2.0 adds the two questions those workflows could not answer — whether
+conclusions depend on the particular judges used, and whether the item
+set covers its intended domain — together with multi-round comparison,
+expert-panel planning, reporting helpers, and a substantial rework of
+how results explain themselves.
 
-- Changed the current development source to GNU GPL version 3 only
-  (`GPL-3.0-only`; R metadata `GPL-3`), retaining the original MIT
-  notice in `inst/NOTICE`. Previously published releases keep their
-  original terms.
+The package continues to declare `Imports: stats` only. Every method
+here is implemented in base R, so the package installs without a
+compiler toolchain.
 
-- Aligned citation metadata with development version `0.1.0.9000`,
-  restored the README release-status paragraph outside the badge block,
-  and linked roadmap workstreams to their issues and milestone.
+New flagship workflows:
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+and
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md).
+New supporting functions:
+[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md),
+[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
+[`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md),
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md),
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md),
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),
+[`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md),
+and an [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
+method for workflow objects.
 
-- Refreshed generated documentation and documented the publishing
-  sources.
-
-- Recorded an optional research proposal for qualitative-evidence
-  traceability under the domain-coverage issue; no statistical
-  implementation changed.
-
-- Opened post-v0.1 development toward `v0.2.0`.
-
-- Updated installation guidance to distinguish the stable R-universe
-  release from the GitHub development version.
-
-- Replaced the completed pre-v0.1 release roadmap with an active
-  post-release development plan.
-
-- Removed the obsolete committed `DESCRIPTION.bak` file.
-
-- Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt
-  repository metadata. \# contentvalidR 0.1.0.9000
-
-### Multi-round comparison, planning, and reporting (in development)
+### Multi-round comparison, planning, and reporting
 
 - Added
   [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md),
@@ -82,7 +77,7 @@
   on status is a substantive decision that belongs in the user’s own
   visible code, and `Review` never means an item must be dropped.
 
-### Interpretable output (in development)
+### Interpretable output
 
 - Printed workflow output now defines the abbreviated quantities it
   reports. Each flagship workflow prints a key explaining, in plain
@@ -101,8 +96,8 @@
   positions relative to published scales and are **not comparable across
   indices**. This addresses a genuine misreading: HTC is an average
   rating while HTD is a difference between ratings, so a scale-level HTC
-  of 0.83 is labelled `Weak` in the same row where an HTD of 0.44 is
-  labelled `Very Strong`. Output now explains why, rather than leaving
+  of 0.83 is labeled `Weak` in the same row where an HTD of 0.44 is
+  labeled `Very Strong`. Output now explains why, rather than leaving
   the contrast looking like an error.
 - Added a “How to Read contentvalidR Output” vignette aimed at readers
   meeting these methods for the first time: an annotated walkthrough of
@@ -114,9 +109,9 @@
   present and stable, that every term shown in a key is defined in the
   glossary, and that the documented HTC/HTD contrast still occurs in the
   shipped example data, so the explanation cannot drift away from the
-  behaviour it explains.
+  behavior it explains.
 
-### Domain coverage and content structure (in development)
+### Domain coverage and content structure
 
 - Added
   [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md),
@@ -155,12 +150,12 @@
   purpose.
 - Added
   [`plot.contentvalid_structure()`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md),
-  drawing the expert content map with items labelled by blueprint cell.
+  drawing the expert content map with items labeled by blueprint cell.
 - Weak blueprint correspondence is framed as a reason to re-examine the
   blueprint or item wording, explicitly not as grounds for deleting
   items.
 
-### Judge and rater heterogeneity (in development)
+### Judge and rater heterogeneity
 
 - Added
   [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md),
@@ -203,6 +198,28 @@
   result explaining that judges did not distinguish the items, rather
   than as weak generalizability, and explicitly notes that a uniformly
   relevant item set produces the same value.
+
+### Licensing and project infrastructure
+
+- Relicensed the source to GNU GPL version 3 only (`GPL-3.0-only`; R
+  metadata `GPL-3`), retaining the original MIT notice in `inst/NOTICE`.
+  The previously published v0.1.0 release keeps its original MIT terms;
+  this release does not relicense it retroactively.
+- Stamped citation metadata to the released version and aligned the
+  README release-status paragraph and roadmap links with the issues and
+  milestone they track.
+- Added repository infrastructure: contributing, support, security and
+  code-of-conduct documents, issue and pull-request templates, and
+  pkgdown and test-coverage workflows alongside the existing check
+  matrix.
+- Replaced the completed pre-v0.1 release roadmap with an active
+  post-release development plan, and removed the obsolete committed
+  `DESCRIPTION.bak` file.
+- Hardened the Ubuntu GitHub Actions setup against stale Google Chrome
+  apt repository metadata.
+- CRAN submission is deferred to v0.3.0 and tracked separately, so that
+  the completed v0.2.0 workstreams reach users through GitHub and the
+  R-universe without waiting on a submission round.
 
 ## contentvalidR 0.1.0
 

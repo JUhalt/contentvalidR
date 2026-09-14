@@ -1,17 +1,16 @@
 # contentvalidR
 
-**Current stable release: 0.1.0. Development version: 0.1.0.9000,
-targeting v0.2.0.**
+**Current stable release: 0.2.0.**
 
 Development plans:
-[Roadmap](https://juhalt.github.io/contentvalidR/ROADMAP.md) · [v0.2.0
-milestone](https://github.com/JUhalt/contentvalidR/milestone/1) · [Open
+[Roadmap](https://juhalt.github.io/contentvalidR/ROADMAP.md) · [v0.3.0
+milestone](https://github.com/JUhalt/contentvalidR/milestone/2) · [Open
 issues](https://github.com/JUhalt/contentvalidR/issues). Documentation:
 [Package website](https://juhalt.github.io/contentvalidR/) ·
 [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
 **contentvalidR** provides quantitative tools for substantive and
-content-oriented scale pretesting. The package provides three
+content-oriented scale pretesting. The package provides five
 complementary workflows:
 
 1.  **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact
@@ -22,11 +21,28 @@ complementary workflows:
     screening, and Colquitt et al. (2019) scale-level norms.
 3.  **Expert panels** — Aiken’s V, Lawshe CVR, CVI/modified kappa, and
     item-objective congruence.
+4.  **Judge heterogeneity** — generalizability theory for
+    content-validity ratings following Crocker, Llabre & Miller (1988),
+    judge severity and rater effects, and leave-one-judge-out influence
+    diagnostics.
+5.  **Domain coverage** — blueprint coverage, and expert-perceived
+    content structure via the multidimensional scaling and clustering
+    procedure of Sireci & Geisinger (1992).
+
+The first three ask whether each **item** behaves as intended. The last
+two ask questions no item-level index can reach: whether your
+conclusions depend on the particular **judges** you recruited, and
+whether your item set actually covers the **domain** you set out to
+measure. An item can only be rated if someone wrote it, so a perfect
+relevance index says nothing about the facet you forgot.
 
 The design goal is **interpretable output rather than coefficient
 dumps**. Recommended workflow functions summarize what the evidence
 supports, flag items that need attention, and distinguish statistical
-screening from substantive decisions.
+screening from substantive decisions. Printed output defines every index
+it reports, so results can be read without first consulting the source
+papers; see
+[`vignette("reading-output")`](https://juhalt.github.io/contentvalidR/articles/reading-output.html).
 
 > Quantitative content-validity statistics are one part of a broader
 > validity argument. They complement, rather than replace, construct
@@ -36,19 +52,32 @@ screening from substantive decisions.
 
 ## One workflow API
 
-The three recommended workflows now share a stable object contract. A
-fitted
+All five recommended workflows share a stable object contract. A fitted
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
 [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md),
 or
-[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
 object always contains:
 
-- `results` — item/result-level evidence;
+- `results` — evidence at the workflow’s unit of analysis;
 - `scale_summary` — target-scale or panel-level evidence;
 - `settings` — analysis choices;
 - `design` — sample-size, missingness, and design metadata; and
 - `details` — method-specific supporting results.
+
+The unit of analysis in `results` differs by workflow, which matters
+when writing code against them:
+[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
+[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+and
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+return one row per **item**,
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+one row per **judge**, and
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+one row per **blueprint cell**.
 
 Every `results` table also includes a common `status` field with the
 restrained categories **Supported**, **Review**, **Insufficient data**,
@@ -129,7 +158,41 @@ fit
 #>  Overall (not correlation-normed)
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level averages,
-#> not universal cutoffs or automatic scale-retention rules.
+#> not universal cutoffs or automatic scale-retention rules. They place a scale
+#> against published scales; Psa and Csv sit on different scales, so their labels
+#> are not comparable with each other.
+#> 
+#> What these columns mean
+#>   psa -- Proportion of Substantive Agreement. Share of judges who assigned
+#>       the item to the construct it was written for. Higher means judges
+#>       recognized the item as belonging where you intended. (0 to 1; higher
+#>       is stronger)
+#>   csv -- Coefficient of Substantive Validity. How much more often the item
+#>       went to its intended construct than to the alternative construct
+#>       judges chose most. It rewards being distinctly right, not merely
+#>       often right. (-1 to 1; 0 means the intended construct and its closest
+#>       rival were chosen equally often)
+#>   competitor -- Strongest competing construct. The construct, other than
+#>       the intended one, that judges chose most often for this item.
+#>   p_value -- Howard-Melloy exact test. Probability of seeing at least this
+#>       many target assignments if judges were assigning at the chance rate
+#>       p0. Small values mean the item's assignment pattern is unlikely to be
+#>       chance. (0 to 1; compared against alpha)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,
 #> item wording, and qualitative judge feedback alongside these statistics.
 summary(fit)
@@ -357,6 +420,35 @@ rfit
 #>        overall
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.
+#> HTC is an average rating and HTD is a difference between ratings, so they sit on
+#> different scales with different typical values. A high HTC can be labeled Weak in
+#> the same analysis where a much smaller HTD is labeled Very Strong. Compare each
+#> index against its own benchmark, never against the other index's number.
+#> 
+#> What these columns mean
+#>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
+#>       its intended construct definition, expressed as a proportion of the
+#>       rating scale. (0 to 1; higher is stronger)
+#>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's
+#>       average rating exceeds the best competing construct's, as a
+#>       proportion of the rating scale. It is a difference, so its typical
+#>       values are far smaller than HTC's. (usually a small positive number;
+#>       higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,
 #> orbiting-construct choice, domain coverage, and qualitative judge feedback.
 summary(rfit)
@@ -476,6 +568,32 @@ efit
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
+#> What these columns mean
+#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
+#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
+#>       1; higher is stronger)
+#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
+#>       rated the item as relevant, after applying the relevance cut. (0 to
+#>       1; compared against a panel-size guideline)
+#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
+#>       would have agreed even if rating at random. With small panels, chance
+#>       agreement is substantial, which is why the raw I-CVI alone can
+#>       overstate consensus. (0 to 1; higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 summary(efit)
 #> Summary of expert-panel content-validity evidence
@@ -514,6 +632,32 @@ expert_validity(expert_ratings, mode = "relevance",
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
+#> What these columns mean
+#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
+#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
+#>       1; higher is stronger)
+#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
+#>       rated the item as relevant, after applying the relevance cut. (0 to
+#>       1; compared against a panel-size guideline)
+#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
+#>       would have agreed even if rating at random. With small panels, chance
+#>       agreement is substantial, which is why the raw I-CVI alone can
+#>       overstate consensus. (0 to 1; higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 ```
 
@@ -536,6 +680,25 @@ expert_validity(
 #>  Item1 10 12 0.667   0.019          10      Supported
 #>  Item2  8 12 0.333   0.194          10         Review
 #>  Item3  6 12 0.000   0.613          10         Review
+#> 
+#> What these columns mean
+#>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward
+#>       calling the item essential rather than merely useful. (-1 to 1; above
+#>       0 means more than half the panel called it essential)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 ```
@@ -578,6 +741,25 @@ expert_validity(ioc_dat, mode = "congruence")
 #>     status
 #>  Supported
 #>  Supported
+#> 
+#> What these columns mean
+#>   ioc -- Item-Objective Congruence. How consistently experts linked the
+#>       item to the objective it was written for rather than to another
+#>       objective. (-1 to 1; higher is stronger)
+#> 
+#> What the status labels mean
+#>   Supported -- The evidence met the criteria set for this analysis.
+#>   Review -- Something here needs a closer look. This is not an instruction
+#>       to delete anything.
+#>   Insufficient data -- Too little usable data to reach a judgment.
+#>   Descriptive only -- Reported for description only; no decision rule was
+#>       applied.
+#>   Each workflow also uses its own wording in the recommendation column
+#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
+#>   onto the shared statuses above.
+#> 
+#> See `contentvalid_glossary()` for all terms, or set 
+#> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
 ```
@@ -625,6 +807,161 @@ ioc(ioc_dat[c("item", "judge", "objective", "score")])
 #> 3   I2         A       4        4         0  -1
 #> 4   I2         B       4        4         0   1
 ```
+
+## Recommended judge-heterogeneity workflow
+
+Aggregate indices average heterogeneity away.
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+asks whether your conclusions depend on the particular judges who
+happened to serve, and returns **one row per judge**.
+
+``` r
+
+judge_ratings <- rbind(
+  c(4, 4, 4, 3, 2, 2), c(4, 4, 3, 4, 2, 1), c(4, 3, 4, 4, 1, 2),
+  c(3, 4, 4, 4, 2, 2), c(4, 4, 4, 4, 2, 1), c(4, 3, 4, 3, 1, 2),
+  c(4, 4, 3, 4, 2, 2), c(2, 2, 2, 2, 1, 1)
+)
+dimnames(judge_ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
+
+judge_fit <- judge_validity(judge_ratings, lo = 1, hi = 4)
+judge_fit$results[, c("judge", "mean_rating", "severity_raw",
+                      "differentiation", "n_items_flipped", "recommendation")]
+#>    judge mean_rating severity_raw differentiation n_items_flipped
+#> 1 Judge1    3.166667   -0.2708333       0.9136465               0
+#> 2 Judge2    3.000000   -0.1041667       1.1754383               0
+#> 3 Judge3    3.000000   -0.1041667       1.1754383               0
+#> 4 Judge4    3.166667   -0.2708333       0.9136465               0
+#> 5 Judge5    3.166667   -0.2708333       1.2351428               0
+#> 6 Judge6    2.833333    0.0625000       1.0863535               0
+#> 7 Judge7    3.166667   -0.2708333       0.9136465               0
+#> 8 Judge8    1.666667    1.2291667       0.4798707               0
+#>   recommendation
+#> 1        Typical
+#> 2        Typical
+#> 3        Typical
+#> 4        Typical
+#> 5        Typical
+#> 6        Typical
+#> 7        Typical
+#> 8         Severe
+```
+
+Severity is signed so positive means harsher. `n_items_flipped` is the
+influence diagnostic: how many items would change review status if that
+judge were removed. A judge flagged here is **not** a judge to delete —
+a dissenting expert may be the one reading the construct definition
+correctly.
+
+Generalizability theory answers the planning question of how many judges
+the design actually needs:
+
+``` r
+
+gt <- gtheory_content(judge_ratings)
+gt$coefficients
+#>   n_judges g_coefficient phi_coefficient rel_error_var abs_error_var
+#> 1        8     0.9682114        0.941527    0.03087798    0.05840774
+gt$judges_needed
+#>   target n_judges_relative n_judges_absolute
+#> 1    0.7                 1                 2
+#> 2    0.8                 2                 2
+#> 3    0.9                 3                 5
+```
+
+The dependability coefficient (`phi_coefficient`) concerns the absolute
+level of ratings and is penalized by judge severity differences, which
+is usually what content-validity decisions rest on. `NA` in
+`judges_needed` means no realistic panel reaches that target, which
+happens when judges barely distinguished the items.
+
+## Recommended domain-coverage workflow
+
+Relevance indices describe items that exist. They cannot reveal a facet
+nobody wrote an item for.
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+returns **one row per blueprint cell**.
+
+``` r
+
+assignments <- data.frame(
+  item = paste0("I", 1:7),
+  construct = c("Autonomy", "Autonomy", "Autonomy", "Autonomy",
+                "Competence", "Competence", "Relatedness"),
+  stringsAsFactors = FALSE
+)
+
+domain_fit <- domain_validity(
+  assignments,
+  cell_col = "construct",
+  domain = c("Autonomy", "Competence", "Relatedness", "Belonging")
+)
+domain_fit$results[, c("cell", "n_items", "share", "recommendation")]
+#>          cell n_items     share   recommendation
+#> 1    Autonomy       4 0.5714286 Over-represented
+#> 2  Competence       2 0.2857143          Covered
+#> 3 Relatedness       1 0.1428571   Thinly covered
+#> 4   Belonging       0 0.0000000      Not covered
+```
+
+`Belonging` is the point: the blueprint asks for it and nothing
+addresses it. Detecting that requires passing the full cell list through
+`domain`, since an empty cell leaves no trace in the item assignments.
+Omit it and the output says coverage gaps could not be detected rather
+than implying complete coverage.
+
+Where experts rated item similarity,
+[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+tests whether they group items the way the blueprint claims, using
+multidimensional scaling and clustering with a chance-corrected adjusted
+Rand index.
+[`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md)
+derives those similarities from an existing sorting task.
+
+## Planning, rounds, and reporting
+
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+replaces “use about six experts” with a question that has an answer:
+
+``` r
+
+expert_power(n_experts = 3:8, prob = 0.9)$results
+#>   n_experts prob required_endorsements     power
+#> 1         3  0.9                     3 0.7290000
+#> 2         4  0.9                     4 0.6561000
+#> 3         5  0.9                     5 0.5904900
+#> 4         6  0.9                     5 0.8857350
+#> 5         7  0.9                     6 0.8503056
+#> 6         8  0.9                     7 0.8131047
+```
+
+Note the step. The common I-CVI guideline requires unanimity up to five
+experts and 0.78 from six, so a fourth or fifth expert **lowers** the
+probability of clearing while a sixth raises it sharply. That is a
+property of the guideline, not of the items, and the package reports it
+rather than smoothing it away.
+
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+compares successive pretest rounds and, critically, checks whether the
+analysis settings changed between them — so a relaxed criterion cannot
+read as item improvement.
+
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+builds manuscript-ready tables as a data frame or as Markdown for Quarto
+and R Markdown, with no reporting dependency added to the package.
+
+``` r
+
+content_report(fit, include = "flagged")
+#>           item target  n n_target competitor psa csv p_value recommendation
+#> 1 Needs review      A 20       12          B 0.6 0.2    0.25         Review
+#>   status
+#> 1 Review
+```
+
+There is deliberately no helper returning “the items that passed.”
+Filtering on `status` is a substantive decision that belongs in your own
+visible code.
 
 ## Interpretive visualization
 
@@ -756,6 +1093,31 @@ public release; v0.0.6 introduces no gratuitous renaming or deprecation.
 - Turner, R. C., & Carlson, L. (2003). Indexes of item-objective
   congruence for multidimensional items. *International Journal of
   Testing, 3*(2), 163–171. <https://doi.org/10.1207/S15327574IJT0302_5>
+- Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability
+  of content validity ratings. *Journal of Educational Measurement,
+  25*(4), 287–299. <https://doi.org/10.1111/j.1745-3984.1988.tb00309.x>
+- Engelhard, G. (1994). Examining rater errors in the assessment of
+  written composition with a many-faceted Rasch model. *Journal of
+  Educational Measurement, 31*(2), 93–112.
+  <https://doi.org/10.1111/j.1745-3984.1994.tb00436.x>
+- Linacre, J. M. (1989). *Many-Facet Rasch Measurement.* MESA Press.
+- de Boeck, P., & Wilson, M. (2004). *Explanatory Item Response Models:
+  A Generalized Linear and Nonlinear Approach.* Springer.
+- Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
+  cluster analysis and multidimensional scaling. *Applied Psychological
+  Measurement, 16*(1), 17–31.
+  <https://doi.org/10.1177/014662169201600102>
+- Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts
+  to assess content representation: An MDS analysis. *Applied
+  Psychological Measurement, 19*(3), 241–255.
+  <https://doi.org/10.1177/014662169501900303>
+- Sireci, S. G. (1998). The construct of content validity. *Social
+  Indicators Research, 45*(1–3), 83–117.
+  <https://doi.org/10.1023/A:1006985528729>
+- Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of
+  Classification, 2*(1), 193–218. <https://doi.org/10.1007/BF01908075>
+- Lynn, M. R. (1986). Determination and quantification of content
+  validity. *Nursing Research, 35*(6), 382–385.
 
 ## License
 

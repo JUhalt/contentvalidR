@@ -192,7 +192,7 @@ fit
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Each workflow also uses its own wording in the recommendation column
 #>   (Retain, Strong support, Typical, Covered, and so on). Those words map
 #>   onto the shared statuses above.

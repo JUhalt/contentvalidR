@@ -69,7 +69,7 @@ fit
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column
@@ -147,7 +147,7 @@ expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column
@@ -194,7 +194,7 @@ expert_validity(E, mode = "essentiality")
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column
@@ -257,7 +257,7 @@ expert_validity(d, mode = "congruence")
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column

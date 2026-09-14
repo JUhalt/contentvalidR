@@ -33,12 +33,11 @@ definitions as the `"statuses"` attribute.
 Strength labels such as `Strong` or `Weak` from
 [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md)
 are percentile positions relative to scales published in the measurement
-literature. They are not absolute judgements, and they are not
-comparable across indices: HTC and HTD sit on different scales with
-different typical values, so an HTC of 0.83 can be labelled `Weak` in
-the same analysis where an HTD of 0.44 is labelled `Very Strong`.
-Compare each index against its own benchmark, never against another
-index's number.
+literature. They are not absolute judgments, and they are not comparable
+across indices: HTC and HTD sit on different scales with different
+typical values, so an HTC of 0.83 can be labeled `Weak` in the same
+analysis where an HTD of 0.44 is labeled `Very Strong`. Compare each
+index against its own benchmark, never against another index's number.
 
 ## See also
 
@@ -137,12 +136,12 @@ contentvalid_glossary()
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions 
-#> relative to published scales, not absolute judgements, and are not 
+#> relative to published scales, not absolute judgments, and are not 
 #> comparable across different indices.
 contentvalid_glossary("item-sort")
 #> contentvalidR glossary
@@ -168,11 +167,11 @@ contentvalid_glossary("item-sort")
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions 
-#> relative to published scales, not absolute judgements, and are not 
+#> relative to published scales, not absolute judgments, and are not 
 #> comparable across different indices.
 ```

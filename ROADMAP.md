@@ -204,9 +204,9 @@ may be retained for a future submission if useful.
 
 ## v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility
 
-**Status:** Scoped and in development **Milestone:**
+**Status:** Released **Milestone:**
 [v0.2.0](https://github.com/JUhalt/contentvalidR/milestone/1)
-**Development version:** `0.1.0.9000`
+**Version:** `0.2.0`
 
 Goal: extend the stable content-validity workflow without turning the
 package into a disconnected collection of coefficients. New methods
@@ -424,7 +424,8 @@ Make the distinction between `Review` and deletion unmissable in the
 output itself, not only in the documentation.
 
 Standardize status vocabulary across workflows and define terms where
-shown.
+shown, including how each workflow’s own recommendation wording maps
+onto it.
 
 Report what the analysis cannot establish with the same prominence as
 what it can.
@@ -432,7 +433,10 @@ what it can.
 Add a “how to read contentvalidR output” vignette for graduate students,
 annotating each flagship workflow’s output field by field.
 
-Add a glossary of indices, status terms, and decision language.
+Add a glossary of indices, status terms, and decision language, via
+[`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md),
+which is also the source of the inline keys so a term cannot be defined
+differently in two places.
 
 Add worked interpretation examples for a clean result and an ambiguous
 one, including how to write up each.
@@ -440,11 +444,18 @@ one, including how to write up each.
 Document common misreadings, including treating benchmarks as universal
 cut scores and treating a single index as sufficient validity evidence.
 
+State that benchmark labels are not comparable across indices. A
+scale-level HTC of 0.83 is labelled `Weak` in the same row where an HTD
+of 0.44 is labelled `Very Strong`, because HTC is an average rating and
+HTD is a difference. Output that leaves this unexplained reads as an
+error.
+
 Verify new output from \#3 and \#4 meets the same interpretive standard
 before those features are considered complete.
 
 Add regression tests covering interpretive output so wording users rely
-on cannot silently disappear.
+on cannot silently disappear, including a test that the documented
+HTC/HTD contrast still occurs in the shipped example data.
 
 ### v0.2.0 exit gate
 
@@ -456,7 +467,8 @@ explicit derivation when the method is novel.
 Canonical-value, simulation/recovery, malformed-input, and edge-case
 tests cover every release-defining extension.
 
-R CMD check is clean across the supported OS/R matrix.
+R CMD check is clean across the supported OS/R matrix, including the
+R-devel `--as-cran` job that treats any NOTE as a failure.
 
 Documentation clearly distinguishes established methods, package
 extensions, and experimental research features.
@@ -469,8 +481,15 @@ Clean-library installation and flagship workflow smoke tests pass.
 Output from every release-defining extension meets the interpretive
 standard in [\#11](https://github.com/JUhalt/contentvalidR/issues/11).
 
-CRAN submission is completed rather than deferred again;
-`cran-comments.md` is populated with actual final check results.
+Stable version stamped, tagged, and published through GitHub and the
+personal R-universe.
+
+**CRAN submission is deferred to v0.3.0** and tracked on its own in
+[\#14](https://github.com/JUhalt/contentvalidR/issues/14), so that the
+completed v0.2.0 workstreams reach users without waiting on a submission
+round. It is a separate issue rather than a line in a release gate
+because it has now slipped twice inside larger gates that closed around
+it.
 
 ------------------------------------------------------------------------
 
@@ -509,6 +528,26 @@ graceful degradation, a companion package, or not at all.
 
 Establish simulation-based calibration/recovery tests before exposing
 any Bayesian method as a flagship workflow.
+
+### CRAN submission
+
+Tracking: [\#14](https://github.com/JUhalt/contentvalidR/issues/14).
+
+Populate `cran-comments.md` with actual final check results.
+
+Confirm no stray `LICENSE` file reaches the built tarball, and that the
+source carries `License: GPL-3` with `inst/NOTICE` preserving the
+historical MIT attribution for v0.1.0.
+
+Check the built tarball with `--as-cran`, not only the source directory.
+
+Submit, respond to maintainer feedback, and confirm acceptance.
+
+Update README installation guidance once CRAN is live.
+
+The package is already check-clean across the matrix with
+`Imports: stats` only and no compiled code, so the submission is
+expected to be straightforward whenever it is taken up.
 
 ### Other candidate directions
 

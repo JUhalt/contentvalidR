@@ -2,7 +2,7 @@
 
 Plots the multidimensional scaling content map from
 [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
-with each item positioned by expert-perceived similarity and labelled by
+with each item positioned by expert-perceived similarity and labeled by
 its blueprint cell. Items that sit away from others sharing their cell
 are the ones experts did not group as the blueprint expects.
 

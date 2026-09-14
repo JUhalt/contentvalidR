@@ -150,8 +150,8 @@ fit
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.
 #> HTC is an average rating and HTD is a difference between ratings, so they sit on
-#> different scales with different typical values. A high HTC can be labelled Weak in
-#> the same analysis where a much smaller HTD is labelled Very Strong. Compare each
+#> different scales with different typical values. A high HTC can be labeled Weak in
+#> the same analysis where a much smaller HTD is labeled Very Strong. Compare each
 #> index against its own benchmark, never against the other index's number.
 #> 
 #> What these columns mean
@@ -168,7 +168,7 @@ fit
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column

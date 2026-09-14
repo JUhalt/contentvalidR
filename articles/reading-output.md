@@ -17,7 +17,7 @@ vignettes show how to *run* each workflow; this one shows how to *read*
 what comes back.
 
 If you only remember one thing: **every statistic here is evidence for a
-judgement you make, not a judgement the package makes for you.**
+judgment you make, not a judgment the package makes for you.**
 
 ## The shared vocabulary
 
@@ -57,7 +57,7 @@ attr(contentvalid_glossary(), "statuses")
 #>                                                                              meaning
 #> 1                               The evidence met the criteria set for this analysis.
 #> 2 Something here needs a closer look. This is not an instruction to delete anything.
-#> 3                                       Too little usable data to reach a judgement.
+#> 3                                        Too little usable data to reach a judgment.
 #> 4                       Reported for description only; no decision rule was applied.
 ```
 
@@ -129,7 +129,7 @@ fit_sort
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgement.
+#>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #>   Each workflow also uses its own wording in the recommendation column
@@ -165,7 +165,7 @@ Working across the item table:
 
 The scale-level table adds Colquitt strength labels. These are
 **percentile positions relative to scales published in the literature**,
-not absolute judgements, and they are the most frequently misreported
+not absolute judgments, and they are the most frequently misreported
 part of this output.
 
 ## The benchmark trap
@@ -187,8 +187,8 @@ fit_rating$scale_summary[, c("target", "mean_htc", "htc_strength",
 #> 3      C 0.8333333         Weak   0.4375  Very Strong
 ```
 
-An HTC of about 0.83 is labelled `Weak`, while an HTD of about 0.44 in
-the same row is labelled `Very Strong`. Read as raw numbers this looks
+An HTC of about 0.83 is labeled `Weak`, while an HTD of about 0.44 in
+the same row is labeled `Very Strong`. Read as raw numbers this looks
 backwards, and it is a common source of confusion.
 
 The two indices are not on the same scale and their numbers are not
@@ -376,8 +376,9 @@ validity. These are components of an argument that also rests on
 construct definitions, domain coverage, cognitive interviewing, and
 expert comment.
 
-**“The numbers are comparable.”** HTC against HTD, Psa against Csv, one
-index against another’s benchmark: these comparisons are not meaningful.
+**“The numbers are comparable.”** HTC against HTD, Psa against Csv, or
+one index against the benchmark belonging to a different index: these
+comparisons are not meaningful.
 
 **“A high coefficient means the domain is covered.”** Relevance and
 coverage are different questions. Only
