@@ -73,20 +73,20 @@ head(as.data.frame(fit, include_interpretation = FALSE))
 #> 4 item-sort   B2      B      20 20         0       13          A           5
 #> 5 item-sort   C1      C      20 20         0       18       A; B           1
 #> 6 item-sort   C2      C      20 20         0       14          B           4
-#>    psa  csv      p_value critical_n_target passes_chance recommendation
-#> 1 0.90 0.85 0.0002012253                15          TRUE         Retain
-#> 2 0.75 0.60 0.0206947327                15          TRUE         Retain
-#> 3 0.85 0.75 0.0012884140                15          TRUE         Retain
-#> 4 0.65 0.40 0.1315879822                15         FALSE         Review
-#> 5 0.90 0.85 0.0002012253                15          TRUE         Retain
-#> 6 0.70 0.50 0.0576591492                15         FALSE         Review
-#>                                     issue    status
-#> 1                               Supported Supported
-#> 2                               Supported Supported
-#> 3                               Supported Supported
-#> 4 Target favored, exact criterion not met    Review
-#> 5                               Supported Supported
-#> 6 Target favored, exact criterion not met    Review
+#>    psa   psa_low  psa_high  csv      p_value critical_n_target passes_chance
+#> 1 0.90 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
+#> 2 0.75 0.5312991 0.8881383 0.60 0.0206947327                15          TRUE
+#> 3 0.85 0.6395811 0.9476313 0.75 0.0012884140                15          TRUE
+#> 4 0.65 0.4328543 0.8188082 0.40 0.1315879822                15         FALSE
+#> 5 0.90 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
+#> 6 0.70 0.4810272 0.8545228 0.50 0.0576591492                15         FALSE
+#>   recommendation                                   issue    status
+#> 1         Retain                               Supported Supported
+#> 2         Retain                               Supported Supported
+#> 3         Retain                               Supported Supported
+#> 4         Review Target favored, exact criterion not met    Review
+#> 5         Retain                               Supported Supported
+#> 6         Review Target favored, exact criterion not met    Review
 as.data.frame(fit, component = "scale_summary")
 #>    workflow target n_items n_items_usable n_retain n_review mean_psa
 #> 1 item-sort      A       2              2        2        0    0.825

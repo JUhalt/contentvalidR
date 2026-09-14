@@ -27,7 +27,8 @@ expert_validity(
   N = NULL,
   alpha = 0.05,
   na.rm = FALSE,
-  target_col = "target_objective"
+  target_col = "target_objective",
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
 )
 ```
 
@@ -70,6 +71,14 @@ expert_validity(
 
   In congruence mode, optional column identifying each item's intended
   objective. If absent, IOC cells are returned descriptively.
+
+- proportion_ci:
+
+  Interval method for I-CVI in relevance mode: `"wilson"` (default),
+  `"agresti_coull"`, `"exact"`, or `"none"`. The interval uses the same
+  `alpha` as Aiken's V. See `ci` in
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) for
+  the methods and the evidence for each.
 
 ## Value
 
@@ -115,11 +124,23 @@ fit
 #> Mean Aiken V: 0.917 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 4 | Support: 0 | Review: 0 
 #> 
-#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
-#>  Item1 4 0.917  0.646   0.985     1         1 Strong support
-#>  Item2 4 0.917  0.646   0.985     1         1 Strong support
-#>  Item3 4 0.917  0.646   0.985     1         1 Strong support
-#>  Item4 4 0.917  0.646   0.985     1         1 Strong support
+#>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
+#>  Item1 4 0.917  0.646   0.985     1      0.51          1         1
+#>  Item2 4 0.917  0.646   0.985     1      0.51          1         1
+#>  Item3 4 0.917  0.646   0.985     1      0.51          1         1
+#>  Item4 4 0.917  0.646   0.985     1      0.51          1         1
+#>  recommendation
+#>  Strong support
+#>  Strong support
+#>  Strong support
+#>  Strong support
+#> 
+#> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);
+#> I_CVI_low and I_CVI_high bound I-CVI.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -130,6 +151,11 @@ fit
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
+#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>       interval around I-CVI. Expert panels are usually small, so these
+#>       intervals are often wide: a single I-CVI value can look more settled
+#>       than the number of experts behind it supports. (between 0 and 1; the
+#>       method and level are named in the output)
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can

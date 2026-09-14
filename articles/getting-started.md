@@ -49,11 +49,11 @@ csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
   csv_binom_test(csv$n_target[i], csv$n[i])$decision
 }, character(1))
 psa; csv
-#>   item target n_total  n n_missing n_target       psa
-#> 1   I1      A      12 12         0        9 0.7500000
-#> 2   I2      A      12 12         0        5 0.4166667
-#> 3   I3      B      12 12         0        2 0.1666667
-#> 4   I4      B      12 12         0        5 0.4166667
+#>   item target n_total  n n_missing n_target       psa    psa_low  psa_high
+#> 1   I1      A      12 12         0        9 0.7500000 0.46769467 0.9110583
+#> 2   I2      A      12 12         0        5 0.4166667 0.19326031 0.6804887
+#> 3   I3      B      12 12         0        2 0.1666667 0.04696514 0.4480309
+#> 4   I4      B      12 12         0        5 0.4166667 0.19326031 0.6804887
 #>   item target n_total  n n_missing n_target competitor n_other_max        csv
 #> 1   I1      A      12 12         0        9          B           3  0.5000000
 #> 2   I2      A      12 12         0        5          B           7 -0.1666667
@@ -201,10 +201,21 @@ expert_fit
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
 #> 
-#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
-#>  Item1 6 1.000  0.824   1.000     1         1 Strong support
-#>  Item2 6 0.944  0.742   0.990     1         1 Strong support
-#>  Item3 6 0.889  0.672   0.969     1         1 Strong support
+#>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
+#>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
+#>  Item2 6 0.944  0.742   0.990     1      0.61          1         1
+#>  Item3 6 0.889  0.672   0.969     1      0.61          1         1
+#>  recommendation
+#>  Strong support
+#>  Strong support
+#>  Strong support
+#> 
+#> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);
+#> I_CVI_low and I_CVI_high bound I-CVI.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -215,6 +226,11 @@ expert_fit
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
+#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>       interval around I-CVI. Expert panels are usually small, so these
+#>       intervals are often wide: a single I-CVI value can look more settled
+#>       than the number of experts behind it supports. (between 0 and 1; the
+#>       method and level are named in the output)
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
@@ -315,12 +331,17 @@ cvi(M)
 #> S-CVI/UA : 0.200 
 #> 
 #> Item-level results (modified kappa is chance-corrected):
-#>   item A N I_CVI    Pc kappa_mod
-#>  Item1 6 6 1.000 0.016     1.000
-#>  Item2 3 6 0.500 0.312     0.273
-#>  Item3 4 6 0.667 0.234     0.565
-#>  Item4 3 6 0.500 0.312     0.273
-#>  Item5 5 6 0.833 0.094     0.816
+#>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod
+#>  Item1 6 6 1.000     0.610      1.000 0.016     1.000
+#>  Item2 3 6 0.500     0.188      0.812 0.312     0.273
+#>  Item3 4 6 0.667     0.300      0.903 0.234     0.565
+#>  Item4 3 6 0.500     0.188      0.812 0.312     0.273
+#>  Item5 5 6 0.833     0.436      0.970 0.094     0.816
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Interpretation should consider panel size, item purpose, and qualitative expert feedback;
 #> CVI statistics alone do not establish comprehensive content validity.

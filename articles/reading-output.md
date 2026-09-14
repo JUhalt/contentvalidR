@@ -85,13 +85,25 @@ fit_sort
 #> Review: B2, C2 
 #> 
 #> Item-level evidence:
-#>  item target  n n_target competitor  psa  csv p_value recommendation
-#>    A1      A 20       18       B; C 0.90 0.85   0.000         Retain
-#>    A2      A 20       15          B 0.75 0.60   0.021         Retain
-#>    B1      B 20       17          A 0.85 0.75   0.001         Retain
-#>    B2      B 20       13          A 0.65 0.40   0.132         Review
-#>    C1      C 20       18       A; B 0.90 0.85   0.000         Retain
-#>    C2      C 20       14          B 0.70 0.50   0.058         Review
+#>  item target  n n_target competitor  psa psa_low psa_high  csv p_value
+#>    A1      A 20       18       B; C 0.90   0.699    0.972 0.85   0.000
+#>    A2      A 20       15          B 0.75   0.531    0.888 0.60   0.021
+#>    B1      B 20       17          A 0.85   0.640    0.948 0.75   0.001
+#>    B2      B 20       13          A 0.65   0.433    0.819 0.40   0.132
+#>    C1      C 20       18       A; B 0.90   0.699    0.972 0.85   0.000
+#>    C2      C 20       14          B 0.70   0.481    0.855 0.50   0.058
+#>  recommendation
+#>          Retain
+#>          Retain
+#>          Retain
+#>          Review
+#>          Retain
+#>          Review
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmark summary:
 #>  target n_items mean_psa psa_strength mean_csv csv_strength
@@ -113,6 +125,11 @@ fit_sort
 #>       the item to the construct it was written for. Higher means judges
 #>       recognized the item as belonging where you intended. (0 to 1; higher
 #>       is stronger)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #>   csv -- Coefficient of Substantive Validity. How much more often the item
 #>       went to its intended construct than to the alternative construct
 #>       judges chose most. It rewards being distinctly right, not merely
@@ -246,13 +263,14 @@ relevance <- read.csv(
 )
 panel <- as.matrix(relevance[, setdiff(names(relevance), "expert")])
 fit_expert <- expert_validity(panel, mode = "relevance", lo = 1, hi = 4)
-fit_expert$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "recommendation")]
-#>    item N         V I_CVI kappa_mod recommendation
-#> 1 Item1 8 1.0000000  1.00 1.0000000 Strong support
-#> 2 Item2 8 0.9166667  1.00 1.0000000 Strong support
-#> 3 Item3 8 0.8333333  1.00 1.0000000 Strong support
-#> 4 Item4 8 0.5833333  0.75 0.7192982         Review
-#> 5 Item5 8 0.4166667  0.25 0.1578947         Review
+fit_expert$results[, c("item", "N", "V", "I_CVI", "I_CVI_low", "I_CVI_high",
+                       "kappa_mod", "recommendation")]
+#>    item N         V I_CVI  I_CVI_low I_CVI_high kappa_mod recommendation
+#> 1 Item1 8 1.0000000  1.00 0.67559244  1.0000000 1.0000000 Strong support
+#> 2 Item2 8 0.9166667  1.00 0.67559244  1.0000000 1.0000000 Strong support
+#> 3 Item3 8 0.8333333  1.00 0.67559244  1.0000000 1.0000000 Strong support
+#> 4 Item4 8 0.5833333  0.75 0.40927543  0.9285208 0.7192982         Review
+#> 5 Item5 8 0.4166667  0.25 0.07147921  0.5907246 0.1578947         Review
 ```
 
 `I_CVI` is the proportion of experts calling the item relevant.
@@ -264,6 +282,35 @@ cut, so it distinguishes items that `I_CVI` rates identically.
 Note that the I-CVI criterion depends on panel size: 1.00 for three to
 five experts, 0.78 for six or more. An item can therefore change status
 simply because a judge was added or dropped.
+
+### Reading the intervals
+
+`I_CVI_low` and `I_CVI_high` bound the I-CVI. With eight experts, an
+item that every expert rated relevant still has a lower limit well below
+1: a panel that size cannot rule out a noticeably lower relevance rate.
+Read the interval before treating an I-CVI as settled, and report it
+alongside the point estimate.
+
+The interval method is a choice. The Wilson score interval is the
+default, following Newcombe (1998), and alternatives are available when
+a study needs to match earlier work:
+
+``` r
+
+exact <- expert_validity(panel, mode = "relevance", lo = 1, hi = 4,
+                         proportion_ci = "exact")
+exact$results[, c("item", "I_CVI", "I_CVI_low", "I_CVI_high")]
+#>    item I_CVI  I_CVI_low I_CVI_high
+#> 1 Item1  1.00 0.63058335  1.0000000
+#> 2 Item2  1.00 0.63058335  1.0000000
+#> 3 Item3  1.00 0.63058335  1.0000000
+#> 4 Item4  0.75 0.34914421  0.9681460
+#> 5 Item5  0.25 0.03185403  0.6508558
+```
+
+The exact (Clopper-Pearson) interval is conservative, so its limits sit
+further apart. The printed output always names the method that produced
+the interval.
 
 ## Reading judge heterogeneity
 

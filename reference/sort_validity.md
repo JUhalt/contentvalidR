@@ -24,7 +24,8 @@ sort_validity(
   p0 = 0.5,
   alpha = 0.05,
   orbiting_r = NULL,
-  judge_type = c("naive", "expert")
+  judge_type = c("naive", "expert"),
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
 )
 ```
 
@@ -59,6 +60,14 @@ sort_validity(
 
   Either `"naive"` (the Anderson-Gerbing/Colquitt design) or `"expert"`.
   Colquitt benchmark labels are not applied to expert judges.
+
+- proportion_ci:
+
+  Interval method for Psa: `"wilson"` (default), `"agresti_coull"`,
+  `"exact"`, or `"none"`. The interval uses the same `alpha` as the
+  exact test. See `ci` in
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) for
+  the methods and the evidence for each.
 
 ## Value
 
@@ -117,10 +126,19 @@ fit
 #> Review: A3 
 #> 
 #> Item-level evidence:
-#>  item target  n n_target competitor psa csv p_value recommendation
-#>    A1      A 20       18          B 0.9 0.8   0.000         Retain
-#>    A2      A 20       16          B 0.8 0.6   0.006         Retain
-#>    A3      A 20       12          B 0.6 0.2   0.252         Review
+#>  item target  n n_target competitor psa psa_low psa_high csv p_value
+#>    A1      A 20       18          B 0.9   0.699    0.972 0.8   0.000
+#>    A2      A 20       16          B 0.8   0.584    0.919 0.6   0.006
+#>    A3      A 20       12          B 0.6   0.387    0.781 0.2   0.252
+#>  recommendation
+#>          Retain
+#>          Retain
+#>          Review
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmark summary:
 #>  target n_items mean_psa psa_strength mean_csv csv_strength
@@ -138,6 +156,11 @@ fit
 #>       the item to the construct it was written for. Higher means judges
 #>       recognized the item as belonging where you intended. (0 to 1; higher
 #>       is stronger)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #>   csv -- Coefficient of Substantive Validity. How much more often the item
 #>       went to its intended construct than to the alternative construct
 #>       judges chose most. It rewards being distinctly right, not merely

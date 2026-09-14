@@ -6,14 +6,18 @@ For each item, modified kappa adjusts I-CVI for chance agreement using the
 probability of observing exactly A agreements among N judges:
 $$P_c = {N \choose A}(0.5)^N$$
 and
-$$k^* = (I_CVI - P_c) / (1 - P_c).$$"><meta property="og:description" content="Computes item-level Content Validity Index (I-CVI), scale-level average CVI
+$$k^* = (I_CVI - P_c) / (1 - P_c).$$
+I-CVI is a proportion of what is usually a small panel, so an interval is
+reported alongside it. The interval method is selectable; see ci."><meta property="og:description" content="Computes item-level Content Validity Index (I-CVI), scale-level average CVI
 (S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
 described by Polit, Beck, and Owen (2007).
 For each item, modified kappa adjusts I-CVI for chance agreement using the
 probability of observing exactly A agreements among N judges:
 $$P_c = {N \choose A}(0.5)^N$$
 and
-$$k^* = (I_CVI - P_c) / (1 - P_c).$$"></head><body>
+$$k^* = (I_CVI - P_c) / (1 - P_c).$$
+I-CVI is a proportion of what is usually a small panel, so an interval is
+reported alongside it. The interval method is selectable; see ci."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -21,7 +25,7 @@ $$k^* = (I_CVI - P_c) / (1 - P_c).$$"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +56,7 @@ $$k^* = (I_CVI - P_c) / (1 - P_c).$$"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Content Validity Index (CVI)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/R/cvi.R" class="external-link"><code>R/cvi.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/cvi.R" class="external-link"><code>R/cvi.R</code></a></small>
       <div class="d-none name"><code>cvi.Rd</code></div>
     </div>
 
@@ -65,11 +69,18 @@ probability of observing exactly <code>A</code> agreements among <code>N</code> 
 <p>$$P_c = {N \choose A}(0.5)^N$$</p>
 <p>and</p>
 <p>$$k^* = (I_CVI - P_c) / (1 - P_c).$$</p>
+<p>I-CVI is a proportion of what is usually a small panel, so an interval is
+reported alongside it. The interval method is selectable; see <code>ci</code>.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cvi</span><span class="op">(</span><span class="va">binary</span>, na.rm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cvi</span><span class="op">(</span></span>
+<span>  <span class="va">binary</span>,</span>
+<span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -86,17 +97,48 @@ coded <code>1 = relevant</code> and <code>0 = not relevant</code>.</p></dd>
 If <code>TRUE</code>, missing ratings are removed itemwise and each item's effective
 judge count is reported in <code>N</code>.</p></dd>
 
+
+<dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
+<dd><p>Interval method for I-CVI:</p><ul><li><p><code>"wilson"</code> (default): the Wilson (1927) score interval. Newcombe (1998)
+compared seven methods and recommends score intervals over the Wald
+interval.</p></li>
+<li><p><code>"agresti_coull"</code>: the adjusted Wald interval of Agresti and Coull
+(1998), which they show performs well even in small samples. Limits are
+clipped so they stay between 0 and 1.</p></li>
+<li><p><code>"exact"</code>: the Clopper and Pearson (1934) interval. It is conservative:
+Agresti and Coull (1998) show its coverage runs above the nominal level.</p></li>
+<li><p><code>"none"</code>: no interval is computed, and the interval columns are <code>NA</code>.</p></li>
+</ul></dd>
+
+
+<dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dd><p>Two-sided alpha level for the interval; <code>0.05</code> gives a 95%
+interval.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A classed list with:</p><ul><li><p><code>item_level</code>: item, A, N, I_CVI, Pc, kappa_mod</p></li>
+    <p>A classed list with:</p><ul><li><p><code>item_level</code>: item, A, N, I_CVI, I_CVI_low, I_CVI_high, Pc, kappa_mod</p></li>
 <li><p><code>scale_level</code>: S_CVI_Ave and S_CVI_UA</p></li>
+<li><p><code>ci</code> and <code>alpha</code>: the interval settings used</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Polit, D. F., Beck, C. T., &amp; Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? Appraisal and recommendations. <em>Research in
 Nursing &amp; Health, 30</em>(4), 459-467. <a href="https://doi.org/10.1002/nur.20199" class="external-link">doi:10.1002/nur.20199</a></p>
+<p>Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. <em>Journal of the American Statistical Association,
+22</em>(158), 209-212. <a href="https://doi.org/10.1080/01621459.1927.10502953" class="external-link">doi:10.1080/01621459.1927.10502953</a></p>
+<p>Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. <em>Statistics in Medicine, 17</em>(8),
+857-872.</p>
+<p>Agresti, A., &amp; Coull, B. A. (1998). Approximate is better than "exact" for
+interval estimation of binomial proportions. <em>The American Statistician,
+52</em>(2), 119-126. <a href="https://doi.org/10.1080/00031305.1998.10480550" class="external-link">doi:10.1080/00031305.1998.10480550</a></p>
+<p>Clopper, C. J., &amp; Pearson, E. S. (1934). The use of confidence or fiducial
+limits illustrated in the case of the binomial. <em>Biometrika, 26</em>(4),
+404-413. <a href="https://doi.org/10.1093/biomet/26.4.404" class="external-link">doi:10.1093/biomet/26.4.404</a></p>
     </div>
 
     <div class="section level2">
@@ -115,10 +157,36 @@ Nursing &amp; Health, 30</em>(4), 459-467. <a href="https://doi.org/10.1002/nur.
 <span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/UA : 0.333 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results (modified kappa is chance-corrected):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item A N I_CVI    Pc kappa_mod</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 4  1.00 0.062     1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 3 4  0.75 0.250     0.667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 2 4  0.50 0.375     0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 4  1.00     0.510      1.000 0.062     1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 3 4  0.75     0.301      0.954 0.250     0.667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 2 4  0.50     0.150      0.850 0.375     0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> interval. An interval reflects how few ratings an item received, not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> whether the right judges were chosen.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative expert feedback;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> CVI statistics alone do not establish comprehensive content validity.</span>
+<span class="r-in"><span><span class="fu">cvi</span><span class="op">(</span><span class="va">M</span>, ci <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content Validity Index (CVI)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items analyzed: 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judges per item: 4 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/Ave: 0.750 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/UA : 0.333 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results (modified kappa is chance-corrected):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 4  1.00     0.398      1.000 0.062     1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 3 4  0.75     0.194      0.994 0.250     0.667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 2 4  0.50     0.068      0.932 0.375     0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Agresti and Coull (1998) show its coverage runs above the nominal level, so</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> intervals are wider than they need to be. An interval reflects how few</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ratings an item received, not whether the right judges were chosen.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative expert feedback;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CVI statistics alone do not establish comprehensive content validity.</span>

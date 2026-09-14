@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
       <h1>Getting Started with contentvalidR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
@@ -109,11 +109,11 @@ substantively identical.</p>
 <span>  <span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">n_target</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">csv</span><span class="op">$</span><span class="va">n</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">decision</span></span>
 <span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">psa</span>; <span class="va">csv</span></span>
-<span><span class="co">#&gt;   item target n_total  n n_missing n_target       psa</span></span>
-<span><span class="co">#&gt; 1   I1      A      12 12         0        9 0.7500000</span></span>
-<span><span class="co">#&gt; 2   I2      A      12 12         0        5 0.4166667</span></span>
-<span><span class="co">#&gt; 3   I3      B      12 12         0        2 0.1666667</span></span>
-<span><span class="co">#&gt; 4   I4      B      12 12         0        5 0.4166667</span></span>
+<span><span class="co">#&gt;   item target n_total  n n_missing n_target       psa    psa_low  psa_high</span></span>
+<span><span class="co">#&gt; 1   I1      A      12 12         0        9 0.7500000 0.46769467 0.9110583</span></span>
+<span><span class="co">#&gt; 2   I2      A      12 12         0        5 0.4166667 0.19326031 0.6804887</span></span>
+<span><span class="co">#&gt; 3   I3      B      12 12         0        2 0.1666667 0.04696514 0.4480309</span></span>
+<span><span class="co">#&gt; 4   I4      B      12 12         0        5 0.4166667 0.19326031 0.6804887</span></span>
 <span><span class="co">#&gt;   item target n_total  n n_missing n_target competitor n_other_max        csv</span></span>
 <span><span class="co">#&gt; 1   I1      A      12 12         0        9          B           3  0.5000000</span></span>
 <span><span class="co">#&gt; 2   I2      A      12 12         0        5          B           7 -0.1666667</span></span>
@@ -254,10 +254,21 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 </span></span>
 <span><span class="co">#&gt; Strong support: 3 | Support: 0 | Review: 0 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI kappa_mod recommendation</span></span>
-<span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000     1         1 Strong support</span></span>
-<span><span class="co">#&gt;  Item2 6 0.944  0.742   0.990     1         1 Strong support</span></span>
-<span><span class="co">#&gt;  Item3 6 0.889  0.672   0.969     1         1 Strong support</span></span>
+<span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span></span>
+<span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000     1      0.61          1         1</span></span>
+<span><span class="co">#&gt;  Item2 6 0.944  0.742   0.990     1      0.61          1         1</span></span>
+<span><span class="co">#&gt;  Item3 6 0.889  0.672   0.969     1      0.61          1         1</span></span>
+<span><span class="co">#&gt;  recommendation</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);</span></span>
+<span><span class="co">#&gt; I_CVI_low and I_CVI_high bound I-CVI.</span></span>
+<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
+<span><span class="co">#&gt; whether the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -268,6 +279,11 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span></span>
 <span><span class="co">#&gt;       rated the item as relevant, after applying the relevance cut. (0 to</span></span>
 <span><span class="co">#&gt;       1; compared against a panel-size guideline)</span></span>
+<span><span class="co">#&gt;   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span></span>
+<span><span class="co">#&gt;       interval around I-CVI. Expert panels are usually small, so these</span></span>
+<span><span class="co">#&gt;       intervals are often wide: a single I-CVI value can look more settled</span></span>
+<span><span class="co">#&gt;       than the number of experts behind it supports. (between 0 and 1; the</span></span>
+<span><span class="co">#&gt;       method and level are named in the output)</span></span>
 <span><span class="co">#&gt;   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span></span>
 <span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
@@ -358,12 +374,17 @@ files.</p>
 <span><span class="co">#&gt; S-CVI/UA : 0.200 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level results (modified kappa is chance-corrected):</span></span>
-<span><span class="co">#&gt;   item A N I_CVI    Pc kappa_mod</span></span>
-<span><span class="co">#&gt;  Item1 6 6 1.000 0.016     1.000</span></span>
-<span><span class="co">#&gt;  Item2 3 6 0.500 0.312     0.273</span></span>
-<span><span class="co">#&gt;  Item3 4 6 0.667 0.234     0.565</span></span>
-<span><span class="co">#&gt;  Item4 3 6 0.500 0.312     0.273</span></span>
-<span><span class="co">#&gt;  Item5 5 6 0.833 0.094     0.816</span></span>
+<span><span class="co">#&gt;   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span></span>
+<span><span class="co">#&gt;  Item1 6 6 1.000     0.610      1.000 0.016     1.000</span></span>
+<span><span class="co">#&gt;  Item2 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
+<span><span class="co">#&gt;  Item3 4 6 0.667     0.300      0.903 0.234     0.565</span></span>
+<span><span class="co">#&gt;  Item4 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
+<span><span class="co">#&gt;  Item5 5 6 0.833     0.436      0.970 0.094     0.816</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
+<span><span class="co">#&gt; whether the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Interpretation should consider panel size, item purpose, and qualitative expert feedback;</span></span>
 <span><span class="co">#&gt; CVI statistics alone do not establish comprehensive content validity.</span></span>

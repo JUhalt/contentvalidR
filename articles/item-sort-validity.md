@@ -50,13 +50,25 @@ fit
 #> Review: A3, B3 
 #> 
 #> Item-level evidence:
-#>  item target  n n_target competitor  psa csv p_value recommendation
-#>    A1      A 20       18          B 0.90 0.8   0.000         Retain
-#>    A2      A 20       16          B 0.80 0.6   0.006         Retain
-#>    A3      A 20       13          B 0.65 0.3   0.132         Review
-#>    B1      B 20       18          A 0.90 0.8   0.000         Retain
-#>    B2      B 20       17          A 0.85 0.7   0.001         Retain
-#>    B3      B 20       14          A 0.70 0.4   0.058         Review
+#>  item target  n n_target competitor  psa psa_low psa_high csv p_value
+#>    A1      A 20       18          B 0.90   0.699    0.972 0.8   0.000
+#>    A2      A 20       16          B 0.80   0.584    0.919 0.6   0.006
+#>    A3      A 20       13          B 0.65   0.433    0.819 0.3   0.132
+#>    B1      B 20       18          A 0.90   0.699    0.972 0.8   0.000
+#>    B2      B 20       17          A 0.85   0.640    0.948 0.7   0.001
+#>    B3      B 20       14          A 0.70   0.481    0.855 0.4   0.058
+#>  recommendation
+#>          Retain
+#>          Retain
+#>          Review
+#>          Retain
+#>          Retain
+#>          Review
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmark summary:
 #>  target n_items mean_psa psa_strength mean_csv csv_strength
@@ -76,6 +88,11 @@ fit
 #>       the item to the construct it was written for. Higher means judges
 #>       recognized the item as belonging where you intended. (0 to 1; higher
 #>       is stronger)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #>   csv -- Coefficient of Substantive Validity. How much more often the item
 #>       went to its intended construct than to the alternative construct
 #>       judges chose most. It rewards being distinctly right, not merely

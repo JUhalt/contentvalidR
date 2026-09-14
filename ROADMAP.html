@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +38,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>contentvalidR development roadmap</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
     </div>
 
 <div id="contentvalidr-development-roadmap" class="section level1">
@@ -249,38 +249,59 @@
 <hr></div>
 </div>
 <div class="section level2">
-<h2 id="v030---advanced-modeling-and-dissemination">v0.3.0 - Advanced Modeling and Dissemination<a class="anchor" aria-label="anchor" href="#v030---advanced-modeling-and-dissemination"></a></h2>
+<h2 id="v030---evidence-based-methods-with-selectable-options">v0.3.0 - Evidence-based methods with selectable options<a class="anchor" aria-label="anchor" href="#v030---evidence-based-methods-with-selectable-options"></a></h2>
 <p><strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/2" class="external-link">v0.3.0</a></p>
+<p>Scope was set on 2026-09-14 after an evidence review of every candidate. v0.3 implements only approaches with published, verifiable methodological support.</p>
+<p><strong>Design rule.</strong> Where more than one published approach exists, researchers choose it through an argument that has an evidence-based default. Output names the method that ran, why the default is the default, and the method’s known limits. Methods with published evidence against them remain available but are never the default, and selecting one prints the critique.</p>
 <div class="section level3">
-<h3 id="bayesian-and-uncertainty-first-extensions">Bayesian and uncertainty-first extensions<a class="anchor" aria-label="anchor" href="#bayesian-and-uncertainty-first-extensions"></a></h3>
-<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/2" class="external-link">#2</a>.</p>
-<p>Deferred from v0.2.0 on sequencing and dependency grounds, <strong>not</strong> for lack of published evidence. Credible work exists — see <a href="https://doi.org/10.3758/s13428-022-01997-z" class="external-link">Uto (2023)</a>, <em>Behavior Research Methods</em> 55(7), 3910-3928, on a Bayesian many-facet Rasch model for rater severity drift. Two blockers: credible estimation needs a Stan- or JAGS-class backend, which reverses the zero-compiled-dependency decision and must be weighed on its own merits; and the literature aimed specifically at content-validity evidence, as distinct from rater-mediated performance assessment generally, needs a focused review first.</p>
-<p>The base-R joint-ML facets model shipped in v0.2.0 fixes the estimand and the output contract, which makes a later Bayesian version a substitution rather than a new design.</p>
-<ul class="task-list"><li><label><input type="checkbox">Conduct the focused methodological review.</label></li>
-<li><label><input type="checkbox">Evaluate whether a Bayesian facet model materially improves on the v0.2.0 joint-ML severity estimates for the small panels (5-20 experts) typical of content-validity work, where JML bias is largest.</label></li>
-<li><label><input type="checkbox">Decide the dependency question explicitly: sampler in <code>Suggests</code> with graceful degradation, a companion package, or not at all.</label></li>
-<li><label><input type="checkbox">Establish simulation-based calibration/recovery tests before exposing any Bayesian method as a flagship workflow.</label></li>
+<h3 id="selectable-score-intervals-for-i-cvi-and-psa">Selectable score intervals for I-CVI and Psa<a class="anchor" aria-label="anchor" href="#selectable-score-intervals-for-i-cvi-and-psa"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/17" class="external-link">#17</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).</label></li>
+<li><label><input type="checkbox">Agresti-Coull adjusted Wald interval (Agresti &amp; Coull, 1998).</label></li>
+<li><label><input type="checkbox">Clopper-Pearson exact interval (Clopper &amp; Pearson, 1934), documented as conservative.</label></li>
+<li><label><input type="checkbox">Verification against <code>prop.test(correct = FALSE)</code> and <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>.</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="selectable-agreement-coefficients-for-expert-panels">Selectable agreement coefficients for expert panels<a class="anchor" aria-label="anchor" href="#selectable-agreement-coefficients-for-expert-panels"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/18" class="external-link">#18</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Modified kappa stays the default (Polit, Beck &amp; Owen, 2007).</label></li>
+<li><label><input type="checkbox">Krippendorff’s alpha with bootstrap intervals (Hayes &amp; Krippendorff, 2007; Zapf et al., 2016), documented as a general reliability coefficient with no content-validity-specific publication.</label></li>
+<li><label><input type="checkbox">Gwet’s AC1 (Gwet, 2008) as a never-default option that prints the critique in Vach &amp; Gerke (2023).</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="evidence-based-factor-retention-and-citations-for-auxiliary-helpers">Evidence-based factor retention and citations for auxiliary helpers<a class="anchor" aria-label="anchor" href="#evidence-based-factor-retention-and-citations-for-auxiliary-helpers"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/19" class="external-link">#19</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox">Parallel analysis (Horn, 1965) replaces Kaiser’s eigenvalue &gt; 1 rule as the <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> default, since Zwick &amp; Velicer (1986) found the Kaiser rule severely overestimates the number of components.</label></li>
+<li><label><input type="checkbox">The Kaiser rule stays selectable by name so earlier results can be reproduced, and prints the critique when chosen.</label></li>
+<li><label><input type="checkbox">Cite Schriesheim et al. (1993, 1999) in <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> and Anderson &amp; Gerbing (1991) in <code><a href="reference/signal_detection.html">signal_detection()</a></code>.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="cran-submission">CRAN submission<a class="anchor" aria-label="anchor" href="#cran-submission"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Populate <code>cran-comments.md</code> with actual final check results.</label></li>
+<ul class="task-list"><li><label><input type="checkbox">Populate <code>cran-comments.md</code> with actual final check results, including a sentence distinguishing contentvalidR from the <code>contentValidity</code> package.</label></li>
 <li><label><input type="checkbox">Confirm no stray <code>LICENSE</code> file reaches the built tarball, and that the source carries <code>License: GPL-3</code> with <code>inst/NOTICE</code> preserving the historical MIT attribution for v0.1.0.</label></li>
 <li><label><input type="checkbox">Check the built tarball with <code>--as-cran</code>, not only the source directory.</label></li>
 <li><label><input type="checkbox">Submit, respond to maintainer feedback, and confirm acceptance.</label></li>
 <li><label><input type="checkbox">Update README installation guidance once CRAN is live.</label></li>
-</ul><p>The package is already check-clean across the matrix with <code>Imports: stats</code> only and no compiled code, so the submission is expected to be straightforward whenever it is taken up.</p>
-</div>
+</ul></div>
 <div class="section level3">
-<h3 id="other-candidate-directions">Other candidate directions<a class="anchor" aria-label="anchor" href="#other-candidate-directions"></a></h3>
-<ul class="task-list"><li><label><input type="checkbox">Marginal-ML / full many-facet Rasch estimation as an optional upgrade path over the v0.2.0 base-R facets model.</label></li>
-<li><label><input type="checkbox">Q-factor and alternative extraction approaches where justified.</label></li>
-<li><label><input type="checkbox">Later-CFA signal-detection diagnostics and stronger handoffs to <code>nomologR</code>.</label></li>
-<li><label><input type="checkbox">Interactive applications for teaching and applied workflow exploration.</label></li>
-<li><label><input type="checkbox">A methodological/package paper on substantive/content-validity pretesting.</label></li>
-<li><label><input type="checkbox">Research evaluating whether guided package output improves applied measurement decisions and methodological understanding.</label></li>
+<h3 id="not-implemented-on-evidence-grounds">Not implemented on evidence grounds<a class="anchor" aria-label="anchor" href="#not-implemented-on-evidence-grounds"></a></h3>
+<ul><li>
+<strong>Halo index.</strong> This was deferred from the v0.2.0 judge-heterogeneity work. Murphy, Jako &amp; Anhalt (1993) reviewed the halo literature and called for a moratorium on halo indices, because true and illusory halo cannot be separated.</li>
 </ul><hr></div>
 </div>
+<div class="section level2">
+<h2 id="future-research">Future research<a class="anchor" aria-label="anchor" href="#future-research"></a></h2>
+<p><strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/3" class="external-link">Future research</a></p>
+<p>Evidence-reviewed items that are not release commitments. Each records why it is parked and what would move it into a release.</p>
+<ul class="task-list"><li><label><input type="checkbox"><strong>Bayesian content-validity extensions</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/2" class="external-link">#2</a>). The one content-validity-specific method found, Bayesian Instrument Development (Gajewski et al., 2013; Jiang et al., 2014), needs participant response data and MCMC. That places it at the handoff to <code>nomologR</code>, and it conflicts with the dependency policy.</label></li>
+<li><label><input type="checkbox"><strong>COSMIN content-validity appraisal</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/16" class="external-link">#16</a>). Strong evidence (Terwee et al., 2018), but it is a qualitative appraisal framework, and it was developed for patient-reported outcome measures.</label></li>
+<li><label><input type="checkbox"><strong>Delphi consensus and stability</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/20" class="external-link">#20</a>). Supported by Diamond et al. (2014) and Schifano &amp; Niederberger (2025). The stability statistic still needs verifying from Holey et al. (2007).</label></li>
+<li><label><input type="checkbox"><strong>Marginal-ML many-facet Rasch estimation.</strong> An established method, but it needs a compiled estimation engine, which the dependency policy rules out.</label></li>
+<li><label><input type="checkbox"><strong>Hernández-Nieto’s content validity coefficient.</strong> Published in a book with a fixed 0.80 cutoff, and close to Aiken’s V, which is already implemented.</label></li>
+<li><label><input type="checkbox"><strong>rWG within-group agreement</strong> (James, Demaree &amp; Wolf, 1984). Designed for aggregating group ratings; no content-validity application was verified.</label></li>
+<li><label><input type="checkbox">Stronger <code>nomologR</code> handoffs, interactive teaching applications, a methodological package paper, and research on whether guided output improves applied decisions. These are not methods questions and are scoped separately.</label></li>
+</ul><hr></div>
 <div class="section level2">
 <h2 id="development-principle">Development principle<a class="anchor" aria-label="anchor" href="#development-principle"></a></h2>
 <p><code>contentvalidR</code> should continue to distinguish <strong>quantitative evidence</strong> from automatic item-retention decisions. New functionality belongs in a stable release only when it improves the validity argument, transparency of the decision process, or reproducibility of the workflow.</p>

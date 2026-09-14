@@ -3,11 +3,13 @@
 assigned to the item's intended (target) construct. This is Anderson and
 Gerbing's (1991) proportion of substantive agreement, \(P_{sa}\).
 Missing assignments are excluded itemwise and reported in n_missing so
-that the effective denominator is transparent."><meta property="og:description" content="For each item, computes the proportion of non-missing item-sort responses
+that the effective denominator is transparent. Psa is a proportion of a
+finite set of judges, so an interval is reported alongside it; see ci."><meta property="og:description" content="For each item, computes the proportion of non-missing item-sort responses
 assigned to the item's intended (target) construct. This is Anderson and
 Gerbing's (1991) proportion of substantive agreement, \(P_{sa}\).
 Missing assignments are excluded itemwise and reported in n_missing so
-that the effective denominator is transparent."></head><body>
+that the effective denominator is transparent. Psa is a proportion of a
+finite set of judges, so an interval is reported alongside it; see ci."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -15,7 +17,7 @@ that the effective denominator is transparent."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +48,7 @@ that the effective denominator is transparent."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Proportion of Substantive Agreement (Psa)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/R/compute_psa.R" class="external-link"><code>R/compute_psa.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/compute_psa.R" class="external-link"><code>R/compute_psa.R</code></a></small>
       <div class="d-none name"><code>compute_psa.Rd</code></div>
     </div>
 
@@ -55,7 +57,8 @@ that the effective denominator is transparent."></head><body>
 assigned to the item's intended (target) construct. This is Anderson and
 Gerbing's (1991) proportion of substantive agreement, \(P_{sa}\).</p>
 <p>Missing assignments are excluded itemwise and reported in <code>n_missing</code> so
-that the effective denominator is transparent.</p>
+that the effective denominator is transparent. Psa is a proportion of a
+finite set of judges, so an interval is reported alongside it; see <code>ci</code>.</p>
     </div>
 
     <div class="section level2">
@@ -65,7 +68,9 @@ that the effective denominator is transparent.</p>
 <span>  item_col <span class="op">=</span> <span class="st">"item"</span>,</span>
 <span>  rater_col <span class="op">=</span> <span class="st">"rater"</span>,</span>
 <span>  assigned_col <span class="op">=</span> <span class="st">"assigned_construct"</span>,</span>
-<span>  target_col <span class="op">=</span> <span class="st">"target_construct"</span></span>
+<span>  target_col <span class="op">=</span> <span class="st">"target_construct"</span>,</span>
+<span>  ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -81,11 +86,22 @@ that the effective denominator is transparent.</p>
 <dd><p>Column names for the item,
 rater, assigned construct, and intended target construct.</p></dd>
 
+
+<dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
+<dd><p>Interval method for Psa: <code>"wilson"</code> (default), <code>"agresti_coull"</code>,
+<code>"exact"</code>, or <code>"none"</code>. The methods and the evidence for each are described
+under <code>ci</code> in <code><a href="cvi.html">cvi()</a></code>.</p></dd>
+
+
+<dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
+<dd><p>Two-sided alpha level for the interval; <code>0.05</code> gives a 95%
+interval.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame with one row per item and columns <code>item</code>, <code>target</code>,
-<code>n_total</code>, <code>n</code>, <code>n_missing</code>, <code>n_target</code>, and <code>psa</code>.</p>
+<code>n_total</code>, <code>n</code>, <code>n_missing</code>, <code>n_target</code>, <code>psa</code>, <code>psa_low</code>, and <code>psa_high</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -93,6 +109,22 @@ rater, assigned construct, and intended target construct.</p></dd>
 measures in a confirmatory factor analysis with a pretest assessment of
 their substantive validities. <em>Journal of Applied Psychology, 76</em>(5),
 732-740. <a href="https://doi.org/10.1037/0021-9010.76.5.732" class="external-link">doi:10.1037/0021-9010.76.5.732</a></p>
+<p>Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. <em>Journal of the American Statistical Association,
+22</em>(158), 209-212. <a href="https://doi.org/10.1080/01621459.1927.10502953" class="external-link">doi:10.1080/01621459.1927.10502953</a></p>
+<p>Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. <em>Statistics in Medicine, 17</em>(8),
+857-872.</p>
+<p>Agresti, A., &amp; Coull, B. A. (1998). Approximate is better than "exact" for
+interval estimation of binomial proportions. <em>The American Statistician,
+52</em>(2), 119-126. <a href="https://doi.org/10.1080/00031305.1998.10480550" class="external-link">doi:10.1080/00031305.1998.10480550</a></p>
+<p>Clopper, C. J., &amp; Pearson, E. S. (1934). The use of confidence or fiducial
+limits illustrated in the case of the binomial. <em>Biometrika, 26</em>(4),
+404-413. <a href="https://doi.org/10.1093/biomet/26.4.404" class="external-link">doi:10.1093/biomet/26.4.404</a></p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="cvi.html">cvi()</a></code> for the same interval methods applied to I-CVI.</p></div>
     </div>
 
     <div class="section level2">
@@ -104,9 +136,13 @@ their substantive validities. <em>Journal of Applied Psychology, 76</em>(5),
 <span class="r-in"><span>  target_construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">compute_psa</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item target n_total n n_missing n_target  psa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A       4 4         0        3 0.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B       4 4         0        3 0.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item target n_total n n_missing n_target  psa   psa_low  psa_high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A       4 4         0        3 0.75 0.3006418 0.9544127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B       4 4         0        3 0.75 0.3006418 0.9544127</span>
+<span class="r-in"><span><span class="fu">compute_psa</span><span class="op">(</span><span class="va">df</span>, ci <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item target n_total n n_missing n_target  psa   psa_low  psa_high</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A       4 4         0        3 0.75 0.1941204 0.9936905</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B       4 4         0        3 0.75 0.1941204 0.9936905</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

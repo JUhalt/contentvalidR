@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
       <h1>Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/vignettes/expert-panel-validity.Rmd" class="external-link"><code>vignettes/expert-panel-validity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/expert-panel-validity.Rmd" class="external-link"><code>vignettes/expert-panel-validity.Rmd</code></a></small>
       <div class="d-none name"><code>expert-panel-validity.Rmd</code></div>
     </div>
 
@@ -118,11 +118,23 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 </span></span>
 <span><span class="co">#&gt; Strong support: 4 | Support: 0 | Review: 0 </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI kappa_mod recommendation</span></span>
-<span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000 1.000     1.000 Strong support</span></span>
-<span><span class="co">#&gt;  Item2 6 0.944  0.742   0.990 1.000     1.000 Strong support</span></span>
-<span><span class="co">#&gt;  Item3 6 0.889  0.672   0.969 1.000     1.000 Strong support</span></span>
-<span><span class="co">#&gt;  Item4 6 0.667  0.437   0.837 0.833     0.816 Strong support</span></span>
+<span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span></span>
+<span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000 1.000     0.610       1.00     1.000</span></span>
+<span><span class="co">#&gt;  Item2 6 0.944  0.742   0.990 1.000     0.610       1.00     1.000</span></span>
+<span><span class="co">#&gt;  Item3 6 0.889  0.672   0.969 1.000     0.610       1.00     1.000</span></span>
+<span><span class="co">#&gt;  Item4 6 0.667  0.437   0.837 0.833     0.436       0.97     0.816</span></span>
+<span><span class="co">#&gt;  recommendation</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);</span></span>
+<span><span class="co">#&gt; I_CVI_low and I_CVI_high bound I-CVI.</span></span>
+<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
+<span><span class="co">#&gt; whether the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -133,6 +145,11 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt;   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span></span>
 <span><span class="co">#&gt;       rated the item as relevant, after applying the relevance cut. (0 to</span></span>
 <span><span class="co">#&gt;       1; compared against a panel-size guideline)</span></span>
+<span><span class="co">#&gt;   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span></span>
+<span><span class="co">#&gt;       interval around I-CVI. Expert panels are usually small, so these</span></span>
+<span><span class="co">#&gt;       intervals are often wide: a single I-CVI value can look more settled</span></span>
+<span><span class="co">#&gt;       than the number of experts behind it supports. (between 0 and 1; the</span></span>
+<span><span class="co">#&gt;       method and level are named in the output)</span></span>
 <span><span class="co">#&gt;   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span></span>
 <span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>

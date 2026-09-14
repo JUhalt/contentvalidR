@@ -17,7 +17,7 @@ the terms are familiar."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ the terms are familiar."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Glossary of contentvalidR indices and status terms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
       <div class="d-none name"><code>contentvalid_glossary.Rd</code></div>
     </div>
 
@@ -120,6 +120,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       many target assignments if judges were assigning at the chance rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       p0. Small values mean the item's assignment pattern is unlikely to be</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       chance. (0 to 1; compared against alpha)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       interval around Psa. A wide interval means few judges sorted the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item, so a different sample of judges could plausibly give a quite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       different Psa. (between 0 and 1; the method and level are named in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the output)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> construct-rating</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
@@ -138,6 +143,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item as relevant, after applying the relevance cut. (0 to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared against a panel-size guideline)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       interval around I-CVI. Expert panels are usually small, so these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       intervals are often wide: a single I-CVI value can look more settled</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       than the number of experts behind it supports. (between 0 and 1; the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       method and level are named in the output)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       would have agreed even if rating at random. With small panels, chance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>
@@ -216,6 +226,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       many target assignments if judges were assigning at the chance rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       p0. Small values mean the item's assignment pattern is unlikely to be</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       chance. (0 to 1; compared against alpha)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       interval around Psa. A wide interval means few judges sorted the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item, so a different sample of judges could plausibly give a quite</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       different Psa. (between 0 and 1; the method and level are named in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the output)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> status labels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>

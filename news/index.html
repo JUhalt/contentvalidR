@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,9 +38,20 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0.9000" id="contentvalidr-0209000">contentvalidR 0.2.0.9000<a class="anchor" aria-label="anchor" href="#contentvalidr-0209000"></a></h2>
+<div class="section level3">
+<h3 id="selectable-intervals-for-proportion-indices-in-development-0-2-0-9000">Selectable intervals for proportion indices (in development)<a class="anchor" aria-label="anchor" href="#selectable-intervals-for-proportion-indices-in-development-0-2-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/cvi.html">cvi()</a></code> now reports an interval for each I-CVI (<code>I_CVI_low</code>, <code>I_CVI_high</code>), and <code><a href="../reference/compute_psa.html">compute_psa()</a></code> does the same for each Psa (<code>psa_low</code>, <code>psa_high</code>). Both indices previously appeared as bare proportions, usually from small panels.</li>
+<li>The interval method is selectable: <code>ci</code> in those two functions, and <code>proportion_ci</code> in <code><a href="../reference/expert_validity.html">expert_validity()</a></code> and <code><a href="../reference/sort_validity.html">sort_validity()</a></code>. The options are the Wilson score interval (the default; Wilson, 1927), which Newcombe (1998) recommends over the Wald interval; the Agresti-Coull adjusted Wald interval (Agresti &amp; Coull, 1998); and the Clopper-Pearson exact interval (Clopper &amp; Pearson, 1934), which is conservative. Printed output names the method, the interval level, and the method’s limits.</li>
+<li>The new interval columns have their own names, so they never collide with the Aiken’s V <code>ci_low</code> and <code>ci_high</code> columns in <code><a href="../reference/expert_validity.html">expert_validity()</a></code>.</li>
+<li>Point estimates are unchanged.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="contentvalidr-020">contentvalidR 0.2.0<a class="anchor" aria-label="anchor" href="#contentvalidr-020"></a></h2>
 <p>Second public release. v0.1.0 established three item-level workflows; v0.2.0 adds the two questions those workflows could not answer — whether conclusions depend on the particular judges used, and whether the item set covers its intended domain — together with multi-round comparison, expert-panel planning, reporting helpers, and a substantial rework of how results explain themselves.</p>

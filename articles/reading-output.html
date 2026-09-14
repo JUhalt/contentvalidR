@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@
       <h1>How to Read contentvalidR Output</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/vignettes/reading-output.Rmd" class="external-link"><code>vignettes/reading-output.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/reading-output.Rmd" class="external-link"><code>vignettes/reading-output.Rmd</code></a></small>
       <div class="d-none name"><code>reading-output.Rmd</code></div>
     </div>
 
@@ -171,13 +171,25 @@ are the one who looks.</p>
 <span><span class="co">#&gt; Review: B2, C2 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence:</span></span>
-<span><span class="co">#&gt;  item target  n n_target competitor  psa  csv p_value recommendation</span></span>
-<span><span class="co">#&gt;    A1      A 20       18       B; C 0.90 0.85   0.000         Retain</span></span>
-<span><span class="co">#&gt;    A2      A 20       15          B 0.75 0.60   0.021         Retain</span></span>
-<span><span class="co">#&gt;    B1      B 20       17          A 0.85 0.75   0.001         Retain</span></span>
-<span><span class="co">#&gt;    B2      B 20       13          A 0.65 0.40   0.132         Review</span></span>
-<span><span class="co">#&gt;    C1      C 20       18       A; B 0.90 0.85   0.000         Retain</span></span>
-<span><span class="co">#&gt;    C2      C 20       14          B 0.70 0.50   0.058         Review</span></span>
+<span><span class="co">#&gt;  item target  n n_target competitor  psa psa_low psa_high  csv p_value</span></span>
+<span><span class="co">#&gt;    A1      A 20       18       B; C 0.90   0.699    0.972 0.85   0.000</span></span>
+<span><span class="co">#&gt;    A2      A 20       15          B 0.75   0.531    0.888 0.60   0.021</span></span>
+<span><span class="co">#&gt;    B1      B 20       17          A 0.85   0.640    0.948 0.75   0.001</span></span>
+<span><span class="co">#&gt;    B2      B 20       13          A 0.65   0.433    0.819 0.40   0.132</span></span>
+<span><span class="co">#&gt;    C1      C 20       18       A; B 0.90   0.699    0.972 0.85   0.000</span></span>
+<span><span class="co">#&gt;    C2      C 20       14          B 0.70   0.481    0.855 0.50   0.058</span></span>
+<span><span class="co">#&gt;  recommendation</span></span>
+<span><span class="co">#&gt;          Retain</span></span>
+<span><span class="co">#&gt;          Retain</span></span>
+<span><span class="co">#&gt;          Retain</span></span>
+<span><span class="co">#&gt;          Review</span></span>
+<span><span class="co">#&gt;          Retain</span></span>
+<span><span class="co">#&gt;          Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
+<span><span class="co">#&gt; whether the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmark summary:</span></span>
 <span><span class="co">#&gt;  target n_items mean_psa psa_strength mean_csv csv_strength</span></span>
@@ -199,6 +211,11 @@ are the one who looks.</p>
 <span><span class="co">#&gt;       the item to the construct it was written for. Higher means judges</span></span>
 <span><span class="co">#&gt;       recognized the item as belonging where you intended. (0 to 1; higher</span></span>
 <span><span class="co">#&gt;       is stronger)</span></span>
+<span><span class="co">#&gt;   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an</span></span>
+<span><span class="co">#&gt;       interval around Psa. A wide interval means few judges sorted the</span></span>
+<span><span class="co">#&gt;       item, so a different sample of judges could plausibly give a quite</span></span>
+<span><span class="co">#&gt;       different Psa. (between 0 and 1; the method and level are named in</span></span>
+<span><span class="co">#&gt;       the output)</span></span>
 <span><span class="co">#&gt;   csv -- Coefficient of Substantive Validity. How much more often the item</span></span>
 <span><span class="co">#&gt;       went to its intended construct than to the alternative construct</span></span>
 <span><span class="co">#&gt;       judges chose most. It rewards being distinctly right, not merely</span></span>
@@ -334,13 +351,14 @@ for retention.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">)</span>, <span class="st">"expert"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">fit_expert</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">panel</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span><span class="va">fit_expert</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"N"</span>, <span class="st">"V"</span>, <span class="st">"I_CVI"</span>, <span class="st">"kappa_mod"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    item N         V I_CVI kappa_mod recommendation</span></span>
-<span><span class="co">#&gt; 1 Item1 8 1.0000000  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 2 Item2 8 0.9166667  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 3 Item3 8 0.8333333  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 4 Item4 8 0.5833333  0.75 0.7192982         Review</span></span>
-<span><span class="co">#&gt; 5 Item5 8 0.4166667  0.25 0.1578947         Review</span></span></code></pre></div>
+<span><span class="va">fit_expert</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"N"</span>, <span class="st">"V"</span>, <span class="st">"I_CVI"</span>, <span class="st">"I_CVI_low"</span>, <span class="st">"I_CVI_high"</span>,</span>
+<span>                       <span class="st">"kappa_mod"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    item N         V I_CVI  I_CVI_low I_CVI_high kappa_mod recommendation</span></span>
+<span><span class="co">#&gt; 1 Item1 8 1.0000000  1.00 0.67559244  1.0000000 1.0000000 Strong support</span></span>
+<span><span class="co">#&gt; 2 Item2 8 0.9166667  1.00 0.67559244  1.0000000 1.0000000 Strong support</span></span>
+<span><span class="co">#&gt; 3 Item3 8 0.8333333  1.00 0.67559244  1.0000000 1.0000000 Strong support</span></span>
+<span><span class="co">#&gt; 4 Item4 8 0.5833333  0.75 0.40927543  0.9285208 0.7192982         Review</span></span>
+<span><span class="co">#&gt; 5 Item5 8 0.4166667  0.25 0.07147921  0.5907246 0.1578947         Review</span></span></code></pre></div>
 <p><code>I_CVI</code> is the proportion of experts calling the item
 relevant. <code>kappa_mod</code> corrects that for chance agreement, and
 the gap between them matters most with small panels, where several
@@ -350,13 +368,38 @@ rating scale rather than a relevance cut, so it distinguishes items that
 <p>Note that the I-CVI criterion depends on panel size: 1.00 for three
 to five experts, 0.78 for six or more. An item can therefore change
 status simply because a judge was added or dropped.</p>
+<div class="section level3">
+<h3 id="reading-the-intervals">Reading the intervals<a class="anchor" aria-label="anchor" href="#reading-the-intervals"></a>
+</h3>
+<p><code>I_CVI_low</code> and <code>I_CVI_high</code> bound the I-CVI.
+With eight experts, an item that every expert rated relevant still has a
+lower limit well below 1: a panel that size cannot rule out a noticeably
+lower relevance rate. Read the interval before treating an I-CVI as
+settled, and report it alongside the point estimate.</p>
+<p>The interval method is a choice. The Wilson score interval is the
+default, following Newcombe (1998), and alternatives are available when
+a study needs to match earlier work:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">exact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">panel</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                         proportion_ci <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span>
+<span><span class="va">exact</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"I_CVI"</span>, <span class="st">"I_CVI_low"</span>, <span class="st">"I_CVI_high"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    item I_CVI  I_CVI_low I_CVI_high</span></span>
+<span><span class="co">#&gt; 1 Item1  1.00 0.63058335  1.0000000</span></span>
+<span><span class="co">#&gt; 2 Item2  1.00 0.63058335  1.0000000</span></span>
+<span><span class="co">#&gt; 3 Item3  1.00 0.63058335  1.0000000</span></span>
+<span><span class="co">#&gt; 4 Item4  0.75 0.34914421  0.9681460</span></span>
+<span><span class="co">#&gt; 5 Item5  0.25 0.03185403  0.6508558</span></span></code></pre></div>
+<p>The exact (Clopper-Pearson) interval is conservative, so its limits
+sit further apart. The printed output always names the method that
+produced the interval.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="reading-judge-heterogeneity">Reading judge heterogeneity<a class="anchor" aria-label="anchor" href="#reading-judge-heterogeneity"></a>
 </h2>
 <p><code><a href="../reference/judge_validity.html">judge_validity()</a></code> asks a different question: do your
 conclusions depend on <em>these particular judges</em>?</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">judge_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -396,7 +439,7 @@ tells you a conclusion rests on one person’s ratings, which is worth
 knowing before you write it up.</p>
 <p>The panel-level dependability coefficient answers a planning
 question:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_judge</span><span class="op">)</span><span class="op">$</span><span class="va">gtheory</span><span class="op">$</span><span class="va">judges_needed</span></span>
 <span><span class="co">#&gt;   target n_judges_relative n_judges_absolute</span></span>
 <span><span class="co">#&gt; 1    0.7                 1                 2</span></span>
@@ -410,7 +453,7 @@ items.</p>
 <div class="section level2">
 <h2 id="reading-domain-coverage">Reading domain coverage<a class="anchor" aria-label="anchor" href="#reading-domain-coverage"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assignments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
 <span>  construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>,</span>
@@ -487,7 +530,7 @@ blueprint.</p>
 <p><code>settings</code> and <code>design</code> hold everything a
 reader needs to reproduce the decision rules, so report them rather than
 only the coefficients:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_sort</span><span class="op">$</span><span class="va">settings</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p0"</span>, <span class="st">"alpha"</span>, <span class="st">"judge_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $p0</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span>
@@ -503,10 +546,10 @@ only the coefficients:</p>
 </h2>
 <p>Printed output includes a key defining each column. Once the terms
 are familiar:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The definitions remain available at any time:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contentvalid_glossary.html">contentvalid_glossary</a></span><span class="op">(</span><span class="st">"expert-panel"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -88,7 +88,7 @@ criterion is met. This keeps the methods faithful to their evidentiary
 role while making programmatic use consistent across workflows.
 
 [`summary()`](https://rdrr.io/r/base/summary.html) uses the same common
-count fields across all three workflows, and
+count fields across every workflow, and
 [`print()`](https://rdrr.io/r/base/print.html)/[`plot()`](https://rdrr.io/r/graphics/plot.default.html)
 retain method-appropriate displays. Compatibility aliases such as
 `rating_fit$contrasts` and `expert_fit$scale` remain available for code
@@ -146,10 +146,19 @@ fit
 #> Review: Needs review 
 #> 
 #> Item-level evidence:
-#>          item target  n n_target competitor psa csv p_value recommendation
-#>       Clear 1      A 20       18          B 0.9 0.8   0.000         Retain
-#>       Clear 2      A 20       16          B 0.8 0.6   0.006         Retain
-#>  Needs review      A 20       12          B 0.6 0.2   0.252         Review
+#>          item target  n n_target competitor psa psa_low psa_high csv p_value
+#>       Clear 1      A 20       18          B 0.9   0.699    0.972 0.8   0.000
+#>       Clear 2      A 20       16          B 0.8   0.584    0.919 0.6   0.006
+#>  Needs review      A 20       12          B 0.6   0.387    0.781 0.2   0.252
+#>  recommendation
+#>          Retain
+#>          Retain
+#>          Review
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmark summary:
 #>  target n_items mean_psa psa_strength mean_csv csv_strength
@@ -167,6 +176,11 @@ fit
 #>       the item to the construct it was written for. Higher means judges
 #>       recognized the item as belonging where you intended. (0 to 1; higher
 #>       is stronger)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #>   csv -- Coefficient of Substantive Validity. How much more often the item
 #>       went to its intended construct than to the alternative construct
 #>       judges chose most. It rewards being distinctly right, not merely
@@ -222,8 +236,10 @@ summary(fit)
 The workflow deliberately separates two levels of evidence:
 
 - **Item level:** Psa/Csv plus the exact Howard-Melloy target-count rule
-  produce **Retain**, **Review**, or **Insufficient data** flags. The
-  output also names the strongest competing construct so a weak item is
+  produce **Retain**, **Review**, or **Insufficient data** flags. Psa is
+  reported with an interval (`psa_low`, `psa_high`), so an item sorted
+  by few judges does not look more settled than it is. The output also
+  names the strongest competing construct so a weak item is
   diagnostically useful rather than just “non-significant.”
 - **Target-scale level:** Psa and Csv are averaged across the target
   scale’s items and interpreted using Colquitt et al. (2019)’s empirical
@@ -322,10 +338,10 @@ Researchers who need the component statistics directly can still use:
 ``` r
 
 compute_psa(sort_dat)
-#>           item target n_total  n n_missing n_target psa
-#> 1      Clear 1      A      20 20         0       18 0.9
-#> 2      Clear 2      A      20 20         0       16 0.8
-#> 3 Needs review      A      20 20         0       12 0.6
+#>           item target n_total  n n_missing n_target psa   psa_low  psa_high
+#> 1      Clear 1      A      20 20         0       18 0.9 0.6989664 0.9721335
+#> 2      Clear 2      A      20 20         0       16 0.8 0.5839826 0.9193423
+#> 3 Needs review      A      20 20         0       12 0.6 0.3865815 0.7811935
 compute_csv(sort_dat)
 #>           item target n_total  n n_missing n_target competitor n_other_max csv
 #> 1      Clear 1      A      20 20         0       18          B           2 0.8
@@ -561,10 +577,21 @@ efit
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
 #> 
-#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
-#>  Item1 6 1.000  0.824   1.000     1         1 Strong support
-#>  Item2 6 0.944  0.742   0.990     1         1 Strong support
-#>  Item3 6 0.889  0.672   0.969     1         1 Strong support
+#>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
+#>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
+#>  Item2 6 0.944  0.742   0.990     1      0.61          1         1
+#>  Item3 6 0.889  0.672   0.969     1      0.61          1         1
+#>  recommendation
+#>  Strong support
+#>  Strong support
+#>  Strong support
+#> 
+#> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);
+#> I_CVI_low and I_CVI_high bound I-CVI.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -575,6 +602,11 @@ efit
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
+#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>       interval around I-CVI. Expert panels are usually small, so these
+#>       intervals are often wide: a single I-CVI value can look more settled
+#>       than the number of experts behind it supports. (between 0 and 1; the
+#>       method and level are named in the output)
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
@@ -606,10 +638,29 @@ summary(efit)
 ```
 
 Relevance mode reports Aiken’s V with the Penfield-Giacobbi score
-confidence interval, I-CVI, Polit-Beck-Owen modified kappa, S-CVI/Ave,
-and S-CVI/UA. The workflow displays common panel-size CVI guidelines as
-**review aids**, not universal validity cutoffs. Aiken V is not
-converted into an automatic deletion rule.
+confidence interval, I-CVI with its own interval, Polit-Beck-Owen
+modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common
+panel-size CVI guidelines as **review aids**, not universal validity
+cutoffs. Aiken V is not converted into an automatic deletion rule.
+
+I-CVI here, like Psa in
+[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
+is a proportion of a small panel, so it comes with an interval. The
+Wilson score interval is the default, following Newcombe (1998).
+Agresti-Coull and Clopper-Pearson exact intervals are available through
+`proportion_ci` for studies that need to match earlier work, and the
+printed output names whichever method ran:
+
+``` r
+
+exact_fit <- expert_validity(expert_ratings, mode = "relevance",
+                             lo = 1, hi = 4, proportion_ci = "exact")
+exact_fit$results[, c("item", "I_CVI", "I_CVI_low", "I_CVI_high")]
+#>    item I_CVI I_CVI_low I_CVI_high
+#> 1 Item1     1 0.5407419          1
+#> 2 Item2     1 0.5407419          1
+#> 3 Item3     1 0.5407419          1
+```
 
 The CVI relevance threshold is explicit and can be changed when a study
 uses a different rating convention:
@@ -625,10 +676,21 @@ expert_validity(expert_ratings, mode = "relevance",
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
 #> 
-#>   item N     V ci_low ci_high I_CVI kappa_mod recommendation
-#>  Item1 6 1.000  0.824   1.000     1         1 Strong support
-#>  Item2 6 0.944  0.742   0.990     1         1 Strong support
-#>  Item3 6 0.889  0.672   0.969     1         1 Strong support
+#>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
+#>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
+#>  Item2 6 0.944  0.742   0.990     1      0.61          1         1
+#>  Item3 6 0.889  0.672   0.969     1      0.61          1         1
+#>  recommendation
+#>  Strong support
+#>  Strong support
+#>  Strong support
+#> 
+#> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);
+#> I_CVI_low and I_CVI_high bound I-CVI.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -639,6 +701,11 @@ expert_validity(expert_ratings, mode = "relevance",
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
+#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>       interval around I-CVI. Expert panels are usually small, so these
+#>       intervals are often wide: a single I-CVI value can look more settled
+#>       than the number of experts behind it supports. (between 0 and 1; the
+#>       method and level are named in the output)
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
@@ -793,10 +860,15 @@ cvi(expert_ratings >= 3)
 #> S-CVI/UA : 1.000 
 #> 
 #> Item-level results (modified kappa is chance-corrected):
-#>   item A N I_CVI    Pc kappa_mod
-#>  Item1 6 6     1 0.016         1
-#>  Item2 6 6     1 0.016         1
-#>  Item3 6 6     1 0.016         1
+#>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod
+#>  Item1 6 6     1      0.61          1 0.016         1
+#>  Item2 6 6     1      0.61          1 0.016         1
+#>  Item3 6 6     1      0.61          1 0.016         1
+#> 
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald
+#> interval. An interval reflects how few ratings an item received, not
+#> whether the right judges were chosen.
 #> 
 #> Interpretation should consider panel size, item purpose, and qualitative expert feedback;
 #> CVI statistics alone do not establish comprehensive content validity.
@@ -953,10 +1025,10 @@ and R Markdown, with no reporting dependency added to the package.
 ``` r
 
 content_report(fit, include = "flagged")
-#>           item target  n n_target competitor psa csv p_value recommendation
-#> 1 Needs review      A 20       12          B 0.6 0.2    0.25         Review
-#>   status
-#> 1 Review
+#>           item target  n n_target competitor psa psa_low psa_high csv p_value
+#> 1 Needs review      A 20       12          B 0.6    0.39     0.78 0.2    0.25
+#>   recommendation status
+#> 1         Review Review
 ```
 
 There is deliberately no helper returning “the items that passed.”
@@ -1041,14 +1113,14 @@ Package citation metadata are available with
 ## Auxiliary modules
 
 The diagnostic, simulation, and Q-factor helpers remain available as
-auxiliary/compatibility functions, but they are not release-defining
-workflows for v0.1.0. The three recommended primary workflows are
+auxiliary functions, but they are not recommended workflows. The five
+recommended workflows are
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
 [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md),
 and
-[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md).
-Their existing low-level function names are retained through the first
-public release; v0.0.6 introduces no gratuitous renaming or deprecation.
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md).
 
 ## Core methodological references
 
@@ -1118,6 +1190,20 @@ public release; v0.0.6 introduces no gratuitous renaming or deprecation.
   Classification, 2*(1), 193–218. <https://doi.org/10.1007/BF01908075>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
+- Wilson, E. B. (1927). Probable inference, the law of succession, and
+  statistical inference. *Journal of the American Statistical
+  Association, 22*(158), 209–212.
+  <https://doi.org/10.1080/01621459.1927.10502953>
+- Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or
+  fiducial limits illustrated in the case of the binomial. *Biometrika,
+  26*(4), 404–413. <https://doi.org/10.1093/biomet/26.4.404>
+- Agresti, A., & Coull, B. A. (1998). Approximate is better than “exact”
+  for interval estimation of binomial proportions. *The American
+  Statistician, 52*(2), 119–126.
+  <https://doi.org/10.1080/00031305.1998.10480550>
+- Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+  proportion: Comparison of seven methods. *Statistics in Medicine,
+  17*(8), 857–872.
 
 ## License
 

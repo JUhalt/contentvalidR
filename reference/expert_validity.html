@@ -25,7 +25,7 @@ or other parts of a content-validity argument."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,7 +56,7 @@ or other parts of a content-validity argument."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Analyze expert-panel content-validity evidence</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.2.0/R/expert_validity.R" class="external-link"><code>R/expert_validity.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/expert_validity.R" class="external-link"><code>R/expert_validity.R</code></a></small>
       <div class="d-none name"><code>expert_validity.Rd</code></div>
     </div>
 
@@ -81,7 +81,8 @@ or other parts of a content-validity argument.</p>
 <span>  N <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  target_col <span class="op">=</span> <span class="st">"target_objective"</span></span>
+<span>  target_col <span class="op">=</span> <span class="st">"target_objective"</span>,</span>
+<span>  proportion_ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -125,6 +126,13 @@ vector of essential counts. For congruence, a long data frame accepted by
 <dd><p>In congruence mode, optional column identifying each
 item's intended objective. If absent, IOC cells are returned descriptively.</p></dd>
 
+
+<dt id="arg-proportion-ci">proportion_ci<a class="anchor" aria-label="anchor" href="#arg-proportion-ci"></a></dt>
+<dd><p>Interval method for I-CVI in relevance mode:
+<code>"wilson"</code> (default), <code>"agresti_coull"</code>, <code>"exact"</code>, or <code>"none"</code>. The
+interval uses the same <code>alpha</code> as Aiken's V. See <code>ci</code> in <code><a href="cvi.html">cvi()</a></code> for the
+methods and the evidence for each.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -166,11 +174,23 @@ indicator of content validity? <em>Research in Nursing &amp; Health, 30</em>(4),
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Aiken V: 0.917 | S-CVI/Ave: 1 | S-CVI/UA: 1 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Strong support: 4 | Support: 0 | Review: 0 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item N     V ci_low ci_high I_CVI kappa_mod recommendation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 0.917  0.646   0.985     1         1 Strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 4 0.917  0.646   0.985     1         1 Strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 4 0.917  0.646   0.985     1         1 Strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4 4 0.917  0.646   0.985     1         1 Strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 0.917  0.646   0.985     1      0.51          1         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 4 0.917  0.646   0.985     1      0.51          1         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 4 0.917  0.646   0.985     1      0.51          1         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4 4 0.917  0.646   0.985     1      0.51          1         1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  recommendation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I_CVI_low and I_CVI_high bound I-CVI.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> interval. An interval reflects how few ratings an item received, not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> whether the right judges were chosen.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -181,6 +201,11 @@ indicator of content validity? <em>Research in Nursing &amp; Health, 30</em>(4),
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item as relevant, after applying the relevance cut. (0 to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared against a panel-size guideline)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       interval around I-CVI. Expert panels are usually small, so these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       intervals are often wide: a single I-CVI value can look more settled</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       than the number of experts behind it supports. (between 0 and 1; the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       method and level are named in the output)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       would have agreed even if rating at random. With small panels, chance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>

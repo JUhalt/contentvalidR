@@ -72,16 +72,23 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 content_report(fit)
-#>   item target  n n_target competitor  psa  csv p_value recommendation    status
-#> 1   A1      A 20       18       B; C 0.90 0.85    0.00         Retain Supported
-#> 2   A2      A 20       15          B 0.75 0.60    0.02         Retain Supported
-#> 3   B1      B 20       17          A 0.85 0.75    0.00         Retain Supported
-#> 4   B2      B 20       13          A 0.65 0.40    0.13         Review    Review
-#> 5   C1      C 20       18       A; B 0.90 0.85    0.00         Retain Supported
-#> 6   C2      C 20       14          B 0.70 0.50    0.06         Review    Review
+#>   item target  n n_target competitor  psa psa_low psa_high  csv p_value
+#> 1   A1      A 20       18       B; C 0.90    0.70     0.97 0.85    0.00
+#> 2   A2      A 20       15          B 0.75    0.53     0.89 0.60    0.02
+#> 3   B1      B 20       17          A 0.85    0.64     0.95 0.75    0.00
+#> 4   B2      B 20       13          A 0.65    0.43     0.82 0.40    0.13
+#> 5   C1      C 20       18       A; B 0.90    0.70     0.97 0.85    0.00
+#> 6   C2      C 20       14          B 0.70    0.48     0.85 0.50    0.06
+#>   recommendation    status
+#> 1         Retain Supported
+#> 2         Retain Supported
+#> 3         Retain Supported
+#> 4         Review    Review
+#> 5         Retain Supported
+#> 6         Review    Review
 cat(content_report(fit, format = "markdown", include = "flagged"), sep = "\n")
-#> | item | target | n | n_target | competitor | psa | csv | p_value | recommendation | status |
-#> | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-#> | B2 | B | 20 | 13 | A | 0.65 | 0.4 | 0.13 | Review | Review |
-#> | C2 | C | 20 | 14 | B | 0.70 | 0.5 | 0.06 | Review | Review |
+#> | item | target | n | n_target | competitor | psa | psa_low | psa_high | csv | p_value | recommendation | status |
+#> | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+#> | B2 | B | 20 | 13 | A | 0.65 | 0.43 | 0.82 | 0.4 | 0.13 | Review | Review |
+#> | C2 | C | 20 | 14 | B | 0.70 | 0.48 | 0.85 | 0.5 | 0.06 | Review | Review |
 ```

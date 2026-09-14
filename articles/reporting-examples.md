@@ -22,27 +22,27 @@ sort_dat <- read_example("sort_example.csv")
 sort_fit <- sort_validity(sort_dat)
 sort_sum <- summary(sort_fit)
 sort_fit$results
-#>   item target n_total  n n_missing n_target competitor n_other_max  psa  csv
-#> 1   A1      A      20 20         0       18       B; C           1 0.90 0.85
-#> 2   A2      A      20 20         0       15          B           3 0.75 0.60
-#> 3   B1      B      20 20         0       17          A           2 0.85 0.75
-#> 4   B2      B      20 20         0       13          A           5 0.65 0.40
-#> 5   C1      C      20 20         0       18       A; B           1 0.90 0.85
-#> 6   C2      C      20 20         0       14          B           4 0.70 0.50
-#>        p_value critical_n_target passes_chance recommendation
-#> 1 0.0002012253                15          TRUE         Retain
-#> 2 0.0206947327                15          TRUE         Retain
-#> 3 0.0012884140                15          TRUE         Retain
-#> 4 0.1315879822                15         FALSE         Review
-#> 5 0.0002012253                15          TRUE         Retain
-#> 6 0.0576591492                15         FALSE         Review
-#>                                     issue
-#> 1                               Supported
-#> 2                               Supported
-#> 3                               Supported
-#> 4 Target favored, exact criterion not met
-#> 5                               Supported
-#> 6 Target favored, exact criterion not met
+#>   item target n_total  n n_missing n_target competitor n_other_max  psa
+#> 1   A1      A      20 20         0       18       B; C           1 0.90
+#> 2   A2      A      20 20         0       15          B           3 0.75
+#> 3   B1      B      20 20         0       17          A           2 0.85
+#> 4   B2      B      20 20         0       13          A           5 0.65
+#> 5   C1      C      20 20         0       18       A; B           1 0.90
+#> 6   C2      C      20 20         0       14          B           4 0.70
+#>     psa_low  psa_high  csv      p_value critical_n_target passes_chance
+#> 1 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
+#> 2 0.5312991 0.8881383 0.60 0.0206947327                15          TRUE
+#> 3 0.6395811 0.9476313 0.75 0.0012884140                15          TRUE
+#> 4 0.4328543 0.8188082 0.40 0.1315879822                15         FALSE
+#> 5 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
+#> 6 0.4810272 0.8545228 0.50 0.0576591492                15         FALSE
+#>   recommendation                                   issue
+#> 1         Retain                               Supported
+#> 2         Retain                               Supported
+#> 3         Retain                               Supported
+#> 4         Review Target favored, exact criterion not met
+#> 5         Retain                               Supported
+#> 6         Review Target favored, exact criterion not met
 #>                                                                                                                                                                               interpretation
 #> 1                                                                                                        Target assignment meets the exact retention criterion (strongest competitor: B; C).
 #> 2                                                                                                           Target assignment meets the exact retention criterion (strongest competitor: B).
@@ -266,18 +266,18 @@ expert_fit$results
 #> 3 Item3 8         0 0.8333333 0.6414693 0.9332132 Penfield-Giacobbi score 8
 #> 4 Item4 8         0 0.5833333 0.3883467 0.7553240 Penfield-Giacobbi score 6
 #> 5 Item5 8         0 0.4166667 0.2446760 0.6116533 Penfield-Giacobbi score 2
-#>   I_CVI         Pc kappa_mod cvi_criterion kappa_quality  ci_width
-#> 1  1.00 0.00390625 1.0000000          0.78     Excellent 0.1379762
-#> 2  1.00 0.00390625 1.0000000          0.78     Excellent 0.2353292
-#> 3  1.00 0.00390625 1.0000000          0.78     Excellent 0.2917439
-#> 4  0.75 0.10937500 0.7192982          0.78          Good 0.3669773
-#> 5  0.25 0.10937500 0.1578947          0.78           Low 0.3669773
-#>   recommendation
-#> 1 Strong support
-#> 2 Strong support
-#> 3 Strong support
-#> 4         Review
-#> 5         Review
+#>   I_CVI  I_CVI_low I_CVI_high         Pc kappa_mod cvi_criterion kappa_quality
+#> 1  1.00 0.67559244  1.0000000 0.00390625 1.0000000          0.78     Excellent
+#> 2  1.00 0.67559244  1.0000000 0.00390625 1.0000000          0.78     Excellent
+#> 3  1.00 0.67559244  1.0000000 0.00390625 1.0000000          0.78     Excellent
+#> 4  0.75 0.40927543  0.9285208 0.10937500 0.7192982          0.78          Good
+#> 5  0.25 0.07147921  0.5907246 0.10937500 0.1578947          0.78           Low
+#>    ci_width recommendation
+#> 1 0.1379762 Strong support
+#> 2 0.2353292 Strong support
+#> 3 0.2917439 Strong support
+#> 4 0.3669773         Review
+#> 5 0.3669773         Review
 #>                                                                                                                                                                interpretation
 #> 1 The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
 #> 2 The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
@@ -381,7 +381,7 @@ a fitted workflow:
 ``` r
 
 packageVersion("contentvalidR")
-#> [1] '0.2.0'
+#> [1] '0.2.0.9000'
 sort_fit$settings
 #> $method
 #> [1] "Anderson-Gerbing Psa/Csv with Howard-Melloy exact inference"
@@ -400,6 +400,9 @@ sort_fit$settings
 #> 
 #> $judge_type
 #> [1] "naive"
+#> 
+#> $proportion_ci
+#> [1] "wilson"
 sort_fit$design
 #> $type
 #> [1] "item-sort"

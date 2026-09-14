@@ -66,6 +66,11 @@ contentvalid_glossary()
 #>       many target assignments if judges were assigning at the chance rate
 #>       p0. Small values mean the item's assignment pattern is unlikely to be
 #>       chance. (0 to 1; compared against alpha)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #> 
 #> construct-rating
 #>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
@@ -84,6 +89,11 @@ contentvalid_glossary()
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
+#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>       interval around I-CVI. Expert panels are usually small, so these
+#>       intervals are often wide: a single I-CVI value can look more settled
+#>       than the number of experts behind it supports. (between 0 and 1; the
+#>       method and level are named in the output)
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
@@ -162,6 +172,11 @@ contentvalid_glossary("item-sort")
 #>       many target assignments if judges were assigning at the chance rate
 #>       p0. Small values mean the item's assignment pattern is unlikely to be
 #>       chance. (0 to 1; compared against alpha)
+#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
+#>       interval around Psa. A wide interval means few judges sorted the
+#>       item, so a different sample of judges could plausibly give a quite
+#>       different Psa. (between 0 and 1; the method and level are named in
+#>       the output)
 #> 
 #> status labels
 #>   Supported -- The evidence met the criteria set for this analysis.
