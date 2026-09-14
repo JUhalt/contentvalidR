@@ -394,12 +394,12 @@ across the whole item set, which `expert_validity()` did not previously report.
 
 Tracking: [#19](https://github.com/JUhalt/contentvalidR/issues/19).
 
-- [ ] Parallel analysis (Horn, 1965) replaces Kaiser's eigenvalue > 1 rule as the
+- [x] Parallel analysis (Horn, 1965) replaces Kaiser's eigenvalue > 1 rule as the
       `qfactor_content()` default, since Zwick & Velicer (1986) found the Kaiser
       rule severely overestimates the number of components.
-- [ ] The Kaiser rule stays selectable by name so earlier results can be
+- [x] The Kaiser rule stays selectable by name so earlier results can be
       reproduced, and prints the critique when chosen.
-- [ ] Cite Schriesheim et al. (1993, 1999) in `qfactor_content()` and Anderson &
+- [x] Cite Schriesheim et al. (1993, 1999) in `qfactor_content()` and Anderson &
       Gerbing (1991) in `signal_detection()`.
 
 ### CRAN submission
