@@ -1,3 +1,21 @@
+# contentvalidR 0.2.0.9000
+
+## Selectable intervals for proportion indices (in development)
+
+* `cvi()` now reports an interval for each I-CVI (`I_CVI_low`, `I_CVI_high`),
+  and `compute_psa()` does the same for each Psa (`psa_low`, `psa_high`). Both
+  indices previously appeared as bare proportions, usually from small panels.
+* The interval method is selectable: `ci` in those two functions, and
+  `proportion_ci` in `expert_validity()` and `sort_validity()`. The options are
+  the Wilson score interval (the default; Wilson, 1927), which Newcombe (1998)
+  recommends over the Wald interval; the Agresti-Coull adjusted Wald interval
+  (Agresti & Coull, 1998); and the Clopper-Pearson exact interval (Clopper &
+  Pearson, 1934), which is conservative. Printed output names the method, the
+  interval level, and the method's limits.
+* The new interval columns have their own names, so they never collide with the
+  Aiken's V `ci_low` and `ci_high` columns in `expert_validity()`.
+* Point estimates are unchanged.
+
 # contentvalidR 0.2.0
 
 Second public release. v0.1.0 established three item-level workflows; v0.2.0

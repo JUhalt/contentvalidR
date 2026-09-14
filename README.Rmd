@@ -68,7 +68,7 @@ example, item-sort and construct-rating workflows still use `Retain` when their
 full statistical screening criterion is met. This keeps the methods faithful to
 their evidentiary role while making programmatic use consistent across workflows.
 
-`summary()` uses the same common count fields across all three workflows, and
+`summary()` uses the same common count fields across every workflow, and
 `print()`/`plot()` retain method-appropriate displays. Compatibility aliases such
 as `rating_fit$contrasts` and `expert_fit$scale` remain available for code written
 before v0.0.6.
@@ -116,7 +116,7 @@ summary(fit)
 
 The workflow deliberately separates two levels of evidence:
 
-- **Item level:** Psa/Csv plus the exact Howard-Melloy target-count rule produce **Retain**, **Review**, or **Insufficient data** flags. The output also names the strongest competing construct so a weak item is diagnostically useful rather than just "non-significant."
+- **Item level:** Psa/Csv plus the exact Howard-Melloy target-count rule produce **Retain**, **Review**, or **Insufficient data** flags. Psa is reported with an interval (`psa_low`, `psa_high`), so an item sorted by few judges does not look more settled than it is. The output also names the strongest competing construct so a weak item is diagnostically useful rather than just "non-significant."
 - **Target-scale level:** Psa and Csv are averaged across the target scale's items and interpreted using Colquitt et al. (2019)'s empirical percentile norms for definitional correspondence and distinctiveness. This matches how those norms were constructed.
 
 `Review` deliberately does **not** mean automatic deletion. Likewise, Colquitt categories such as *Strong* or *Moderate* are empirical normative standing, not universal pass/fail cutoffs.
@@ -222,7 +222,15 @@ efit
 summary(efit)
 ```
 
-Relevance mode reports Aiken's V with the Penfield-Giacobbi score confidence interval, I-CVI, Polit-Beck-Owen modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common panel-size CVI guidelines as **review aids**, not universal validity cutoffs. Aiken V is not converted into an automatic deletion rule.
+Relevance mode reports Aiken's V with the Penfield-Giacobbi score confidence interval, I-CVI with its own interval, Polit-Beck-Owen modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common panel-size CVI guidelines as **review aids**, not universal validity cutoffs. Aiken V is not converted into an automatic deletion rule.
+
+I-CVI here, like Psa in `sort_validity()`, is a proportion of a small panel, so it comes with an interval. The Wilson score interval is the default, following Newcombe (1998). Agresti-Coull and Clopper-Pearson exact intervals are available through `proportion_ci` for studies that need to match earlier work, and the printed output names whichever method ran:
+
+```{r expert-relevance-interval}
+exact_fit <- expert_validity(expert_ratings, mode = "relevance",
+                             lo = 1, hi = 4, proportion_ci = "exact")
+exact_fit$results[, c("item", "I_CVI", "I_CVI_low", "I_CVI_high")]
+```
 
 The CVI relevance threshold is explicit and can be changed when a study uses a different rating convention:
 
@@ -391,7 +399,7 @@ minimum reproducibility statement. Package citation metadata are available with
 
 ## Auxiliary modules
 
-The diagnostic, simulation, and Q-factor helpers remain available as auxiliary/compatibility functions, but they are not release-defining workflows for v0.1.0. The three recommended primary workflows are `sort_validity()`, `rating_validity()`, and `expert_validity()`. Their existing low-level function names are retained through the first public release; v0.0.6 introduces no gratuitous renaming or deprecation.
+The diagnostic, simulation, and Q-factor helpers remain available as auxiliary functions, but they are not recommended workflows. The five recommended workflows are `sort_validity()`, `rating_validity()`, `expert_validity()`, `judge_validity()`, and `domain_validity()`.
 
 ## Core methodological references
 
@@ -415,6 +423,10 @@ The diagnostic, simulation, and Q-factor helpers remain available as auxiliary/c
 - Sireci, S. G. (1998). The construct of content validity. *Social Indicators Research, 45*(1–3), 83–117. https://doi.org/10.1023/A:1006985528729
 - Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of Classification, 2*(1), 193–218. https://doi.org/10.1007/BF01908075
 - Lynn, M. R. (1986). Determination and quantification of content validity. *Nursing Research, 35*(6), 382–385.
+- Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association, 22*(158), 209–212. https://doi.org/10.1080/01621459.1927.10502953
+- Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. *Biometrika, 26*(4), 404–413. https://doi.org/10.1093/biomet/26.4.404
+- Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. *The American Statistician, 52*(2), 119–126. https://doi.org/10.1080/00031305.1998.10480550
+- Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8), 857–872.
 
 ## License
 

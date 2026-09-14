@@ -41,6 +41,10 @@
 #' @param na.rm Permit itemwise/cellwise missing ratings where supported.
 #' @param target_col In congruence mode, optional column identifying each
 #'   item's intended objective. If absent, IOC cells are returned descriptively.
+#' @param proportion_ci Interval method for I-CVI in relevance mode:
+#'   `"wilson"` (default), `"agresti_coull"`, `"exact"`, or `"none"`. The
+#'   interval uses the same `alpha` as Aiken's V. See `ci` in [cvi()] for the
+#'   methods and the evidence for each.
 #'
 #' @return An object of class `contentvalid_expert` and
 #'   `contentvalid_workflow`. All flagship workflow objects expose the common
@@ -82,8 +86,10 @@ expert_validity <- function(data,
                             N = NULL,
                             alpha = 0.05,
                             na.rm = FALSE,
-                            target_col = "target_objective") {
+                            target_col = "target_objective",
+                            proportion_ci = c("wilson", "agresti_coull", "exact", "none")) {
   mode <- match.arg(mode)
+  proportion_ci <- match.arg(proportion_ci)
   .validate_flag(na.rm, "na.rm")
 
   if (mode == "relevance") {
@@ -103,12 +109,13 @@ expert_validity <- function(data,
     B <- ifelse(is.na(R), NA_real_, as.numeric(R >= relevance_cut))
     dim(B) <- dim(R)
     dimnames(B) <- dimnames(R)
-    cv <- cvi(B, na.rm = na.rm)
+    cv <- cvi(B, na.rm = na.rm, ci = proportion_ci, alpha = alpha)
 
     idx <- match(aiken$item, cv$item_level$item)
     item <- cbind(
       aiken,
-      cv$item_level[idx, c("A", "I_CVI", "Pc", "kappa_mod"), drop = FALSE]
+      cv$item_level[idx, c("A", "I_CVI", "I_CVI_low", "I_CVI_high", "Pc", "kappa_mod"),
+                    drop = FALSE]
     )
     item$cvi_criterion <- .cvi_common_criterion(item$N)
     item$kappa_quality <- .kappa_quality(item$kappa_mod)
@@ -156,7 +163,8 @@ expert_validity <- function(data,
       lo = lo, hi = hi, relevance_cut = relevance_cut,
       alpha = alpha, na.rm = isTRUE(na.rm),
       judge_type = "expert",
-      aiken_ci = "Penfield-Giacobbi score"
+      aiken_ci = "Penfield-Giacobbi score",
+      proportion_ci = proportion_ci
     )
     design <- list(
       type = "expert-panel relevance",
@@ -369,10 +377,23 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
       cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
     }
     cat("\n")
-    tab <- x$results[c("item", "N", "V", "ci_low", "ci_high", "I_CVI", "kappa_mod", "recommendation")]
-    num <- c("V", "ci_low", "ci_high", "I_CVI", "kappa_mod")
+    # intersect() keeps objects saved before the interval columns existed printable.
+    cols <- intersect(c("item", "N", "V", "ci_low", "ci_high", "I_CVI", "I_CVI_low",
+                        "I_CVI_high", "kappa_mod", "recommendation"), names(x$results))
+    tab <- x$results[cols]
+    num <- intersect(c("V", "ci_low", "ci_high", "I_CVI", "I_CVI_low", "I_CVI_high",
+                       "kappa_mod"), names(tab))
     tab[num] <- lapply(tab[num], round, digits = digits)
     print(tab, row.names = FALSE)
+    cat("\n")
+    cat(strwrap(paste(
+      "ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);",
+      "I_CVI_low and I_CVI_high bound I-CVI."
+    ), width = 76), sep = "\n")
+    if (!is.null(x$settings$proportion_ci)) {
+      cat(strwrap(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha),
+                  width = 76), sep = "\n")
+    }
     cat("\nCVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.\n")
   } else if (x$mode == "essentiality") {
     cat("Items:", d$n_items,
@@ -403,7 +424,7 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
   if (.show_key()) {
     key_terms <- switch(
       x$mode,
-      relevance = c("V", "I_CVI", "kappa_mod"),
+      relevance = c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod"),
       essentiality = "cvr",
       "ioc"
     )

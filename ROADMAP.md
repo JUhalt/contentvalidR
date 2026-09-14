@@ -347,42 +347,58 @@ twice inside larger gates that closed around it.
 
 ***
 
-## v0.3.0 - Advanced Modeling and Dissemination
+## v0.3.0 - Evidence-based methods with selectable options
 
 **Milestone:** [v0.3.0](https://github.com/JUhalt/contentvalidR/milestone/2)
 
-### Bayesian and uncertainty-first extensions
+Scope was set on 2026-09-14 after an evidence review of every candidate. v0.3
+implements only approaches with published, verifiable methodological support.
 
-Tracking: [#2](https://github.com/JUhalt/contentvalidR/issues/2).
+**Design rule.** Where more than one published approach exists, researchers
+choose it through an argument that has an evidence-based default. Output names
+the method that ran, why the default is the default, and the method's known
+limits. Methods with published evidence against them remain available but are
+never the default, and selecting one prints the critique.
 
-Deferred from v0.2.0 on sequencing and dependency grounds, **not** for lack of
-published evidence. Credible work exists — see
-[Uto (2023)](https://doi.org/10.3758/s13428-022-01997-z), *Behavior Research
-Methods* 55(7), 3910-3928, on a Bayesian many-facet Rasch model for rater
-severity drift. Two blockers: credible estimation needs a Stan- or JAGS-class
-backend, which reverses the zero-compiled-dependency decision and must be
-weighed on its own merits; and the literature aimed specifically at
-content-validity evidence, as distinct from rater-mediated performance
-assessment generally, needs a focused review first.
+### Selectable score intervals for I-CVI and Psa
 
-The base-R joint-ML facets model shipped in v0.2.0 fixes the estimand and the
-output contract, which makes a later Bayesian version a substitution rather than
-a new design.
+Tracking: [#17](https://github.com/JUhalt/contentvalidR/issues/17).
 
-- [ ] Conduct the focused methodological review.
-- [ ] Evaluate whether a Bayesian facet model materially improves on the v0.2.0
-      joint-ML severity estimates for the small panels (5-20 experts) typical of
-      content-validity work, where JML bias is largest.
-- [ ] Decide the dependency question explicitly: sampler in `Suggests` with
-      graceful degradation, a companion package, or not at all.
-- [ ] Establish simulation-based calibration/recovery tests before exposing any
-      Bayesian method as a flagship workflow.
+- [ ] Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).
+- [ ] Agresti-Coull adjusted Wald interval (Agresti & Coull, 1998).
+- [ ] Clopper-Pearson exact interval (Clopper & Pearson, 1934), documented as
+      conservative.
+- [ ] Verification against `prop.test(correct = FALSE)` and `binom.test()`.
+
+### Selectable agreement coefficients for expert panels
+
+Tracking: [#18](https://github.com/JUhalt/contentvalidR/issues/18).
+
+- [ ] Modified kappa stays the default (Polit, Beck & Owen, 2007).
+- [ ] Krippendorff's alpha with bootstrap intervals (Hayes & Krippendorff, 2007;
+      Zapf et al., 2016), documented as a general reliability coefficient with
+      no content-validity-specific publication.
+- [ ] Gwet's AC1 (Gwet, 2008) as a never-default option that prints the critique
+      in Vach & Gerke (2023).
+
+### Evidence-based factor retention and citations for auxiliary helpers
+
+Tracking: [#19](https://github.com/JUhalt/contentvalidR/issues/19).
+
+- [ ] Parallel analysis (Horn, 1965) replaces Kaiser's eigenvalue > 1 rule as the
+      `qfactor_content()` default, since Zwick & Velicer (1986) found the Kaiser
+      rule severely overestimates the number of components.
+- [ ] The Kaiser rule stays selectable by name so earlier results can be
+      reproduced, and prints the critique when chosen.
+- [ ] Cite Schriesheim et al. (1993, 1999) in `qfactor_content()` and Anderson &
+      Gerbing (1991) in `signal_detection()`.
 
 ### CRAN submission
 
 Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 
-- [ ] Populate `cran-comments.md` with actual final check results.
+- [ ] Populate `cran-comments.md` with actual final check results, including a
+      sentence distinguishing contentvalidR from the `contentValidity` package.
 - [ ] Confirm no stray `LICENSE` file reaches the built tarball, and that the
       source carries `License: GPL-3` with `inst/NOTICE` preserving the historical
       MIT attribution for v0.1.0.
@@ -390,20 +406,47 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 - [ ] Submit, respond to maintainer feedback, and confirm acceptance.
 - [ ] Update README installation guidance once CRAN is live.
 
-The package is already check-clean across the matrix with `Imports: stats` only
-and no compiled code, so the submission is expected to be straightforward
-whenever it is taken up.
+### Not implemented on evidence grounds
 
-### Other candidate directions
+- **Halo index.** This was deferred from the v0.2.0 judge-heterogeneity work.
+  Murphy, Jako & Anhalt (1993) reviewed the halo literature and called for a
+  moratorium on halo indices, because true and illusory halo cannot be
+  separated.
 
-- [ ] Marginal-ML / full many-facet Rasch estimation as an optional upgrade path
-      over the v0.2.0 base-R facets model.
-- [ ] Q-factor and alternative extraction approaches where justified.
-- [ ] Later-CFA signal-detection diagnostics and stronger handoffs to `nomologR`.
-- [ ] Interactive applications for teaching and applied workflow exploration.
-- [ ] A methodological/package paper on substantive/content-validity pretesting.
-- [ ] Research evaluating whether guided package output improves applied
-      measurement decisions and methodological understanding.
+***
+
+## Future research
+
+**Milestone:** [Future research](https://github.com/JUhalt/contentvalidR/milestone/3)
+
+Evidence-reviewed items that are not release commitments. Each records why it
+is parked and what would move it into a release.
+
+- [ ] **Bayesian content-validity extensions**
+      ([#2](https://github.com/JUhalt/contentvalidR/issues/2)). The one
+      content-validity-specific method found, Bayesian Instrument Development
+      (Gajewski et al., 2013; Jiang et al., 2014), needs participant response
+      data and MCMC. That places it at the handoff to `nomologR`, and it
+      conflicts with the dependency policy.
+- [ ] **COSMIN content-validity appraisal**
+      ([#16](https://github.com/JUhalt/contentvalidR/issues/16)). Strong evidence
+      (Terwee et al., 2018), but it is a qualitative appraisal framework, and it
+      was developed for patient-reported outcome measures.
+- [ ] **Delphi consensus and stability**
+      ([#20](https://github.com/JUhalt/contentvalidR/issues/20)). Supported by
+      Diamond et al. (2014) and Schifano & Niederberger (2025). The stability
+      statistic still needs verifying from Holey et al. (2007).
+- [ ] **Marginal-ML many-facet Rasch estimation.** An established method, but it
+      needs a compiled estimation engine, which the dependency policy rules out.
+- [ ] **Hernández-Nieto's content validity coefficient.** Published in a book
+      with a fixed 0.80 cutoff, and close to Aiken's V, which is already
+      implemented.
+- [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
+      aggregating group ratings; no content-validity application was verified.
+- [ ] Stronger `nomologR` handoffs, interactive teaching applications, a
+      methodological package paper, and research on whether guided output
+      improves applied decisions. These are not methods questions and are
+      scoped separately.
 
 ***
 

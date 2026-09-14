@@ -131,7 +131,8 @@ relevance <- read.csv(
 )
 panel <- as.matrix(relevance[, setdiff(names(relevance), "expert")])
 fit_expert <- expert_validity(panel, mode = "relevance", lo = 1, hi = 4)
-fit_expert$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "recommendation")]
+fit_expert$results[, c("item", "N", "V", "I_CVI", "I_CVI_low", "I_CVI_high",
+                       "kappa_mod", "recommendation")]
 ```
 
 `I_CVI` is the proportion of experts calling the item relevant. `kappa_mod`
@@ -143,6 +144,26 @@ that `I_CVI` rates identically.
 Note that the I-CVI criterion depends on panel size: 1.00 for three to five
 experts, 0.78 for six or more. An item can therefore change status simply
 because a judge was added or dropped.
+
+### Reading the intervals
+
+`I_CVI_low` and `I_CVI_high` bound the I-CVI. With eight experts, an item that
+every expert rated relevant still has a lower limit well below 1: a panel that
+size cannot rule out a noticeably lower relevance rate. Read the interval before
+treating an I-CVI as settled, and report it alongside the point estimate.
+
+The interval method is a choice. The Wilson score interval is the default,
+following Newcombe (1998), and alternatives are available when a study needs to
+match earlier work:
+
+```{r}
+exact <- expert_validity(panel, mode = "relevance", lo = 1, hi = 4,
+                         proportion_ci = "exact")
+exact$results[, c("item", "I_CVI", "I_CVI_low", "I_CVI_high")]
+```
+
+The exact (Clopper-Pearson) interval is conservative, so its limits sit further
+apart. The printed output always names the method that produced the interval.
 
 ## Reading judge heterogeneity
 

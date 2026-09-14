@@ -84,8 +84,9 @@ test_that("every term printed as a key is defined in the glossary", {
   defined <- contentvalid_glossary()$term
   # Terms referenced by the print methods, gathered here so that adding a key
   # term without a definition fails loudly.
-  referenced <- c("psa", "csv", "competitor", "p_value", "htc", "htd",
-                  "V", "I_CVI", "kappa_mod", "cvr", "ioc",
+  referenced <- c("psa", "psa_low/psa_high", "csv", "competitor", "p_value",
+                  "htc", "htd",
+                  "V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod", "cvr", "ioc",
                   "severity", "infit/outfit", "differentiation",
                   "phi_coefficient", "g_coefficient",
                   "share", "adjusted_rand", "stress")

@@ -13,7 +13,8 @@ expert_validity(
   N = NULL,
   alpha = 0.05,
   na.rm = FALSE,
-  target_col = "target_objective"
+  target_col = "target_objective",
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
 )
 }
 \arguments{
@@ -37,6 +38,11 @@ vector of essential counts. For congruence, a long data frame accepted by
 
 \item{target_col}{In congruence mode, optional column identifying each
 item's intended objective. If absent, IOC cells are returned descriptively.}
+
+\item{proportion_ci}{Interval method for I-CVI in relevance mode:
+\code{"wilson"} (default), \code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The
+interval uses the same \code{alpha} as Aiken's V. See \code{ci} in \code{\link[=cvi]{cvi()}} for the
+methods and the evidence for each.}
 }
 \value{
 An object of class \code{contentvalid_expert} and
