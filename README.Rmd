@@ -216,13 +216,16 @@ expert_ratings <- matrix(
 efit <- expert_validity(
   expert_ratings,
   mode = "relevance",
-  lo = 1, hi = 4
+  lo = 1, hi = 4,
+  seed = 1
 )
 efit
 summary(efit)
 ```
 
-Relevance mode reports Aiken's V with the Penfield-Giacobbi score confidence interval, I-CVI with its own interval, Polit-Beck-Owen modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common panel-size CVI guidelines as **review aids**, not universal validity cutoffs. Aiken V is not converted into an automatic deletion rule.
+Relevance mode reports Aiken's V with the Penfield-Giacobbi score confidence interval, I-CVI with its own interval, Polit-Beck-Owen modified kappa, S-CVI/Ave, S-CVI/UA, and panel-level agreement. The workflow displays common panel-size CVI guidelines as **review aids**, not universal validity cutoffs. Aiken V is not converted into an automatic deletion rule.
+
+Panel-level agreement is one coefficient for how consistently the panel rated the whole item set; modified kappa still describes each item. The default is Krippendorff's alpha on the ordinal ratings (Hayes & Krippendorff, 2007), and `agreement_level` switches to nominal or interval. Its bootstrap interval resamples items with all of their ratings, following Zapf et al. (2016); set `seed` to make it reproducible. In the example above, alpha is near zero even though most rating pairs are identical: the three items were rated almost the same, so the ratings barely distinguish one item from another. That is why the output reports identical rating pairs beside alpha. Gwet's AC1 is available through `agreement = "ac1"` but is never the default, and its output repeats the critique in Vach and Gerke (2023). `panel_agreement()` runs the same analysis on any rater-by-item matrix.
 
 I-CVI here, like Psa in `sort_validity()`, is a proportion of a small panel, so it comes with an interval. The Wilson score interval is the default, following Newcombe (1998). Agresti-Coull and Clopper-Pearson exact intervals are available through `proportion_ci` for studies that need to match earlier work, and the printed output names whichever method ran:
 
@@ -236,7 +239,7 @@ The CVI relevance threshold is explicit and can be changed when a study uses a d
 
 ```{r expert-relevance-cut}
 expert_validity(expert_ratings, mode = "relevance",
-                lo = 1, hi = 4, relevance_cut = 3)
+                lo = 1, hi = 4, relevance_cut = 3, seed = 1)
 ```
 
 ### Essentiality: Lawshe CVR + exact inference
@@ -427,6 +430,10 @@ The diagnostic, simulation, and Q-factor helpers remain available as auxiliary f
 - Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. *Biometrika, 26*(4), 404–413. https://doi.org/10.1093/biomet/26.4.404
 - Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. *The American Statistician, 52*(2), 119–126. https://doi.org/10.1080/00031305.1998.10480550
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8), 857–872.
+- Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard reliability measure for coding data. *Communication Methods and Measures, 1*(1), 77–89. https://doi.org/10.1080/19312450709336664
+- Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? *BMC Medical Research Methodology, 16*, 93. https://doi.org/10.1186/s12874-016-0200-9
+- Gwet, K. L. (2008). Computing inter-rater reliability and its variance in the presence of high agreement. *British Journal of Mathematical and Statistical Psychology, 61*(1), 29–48. https://doi.org/10.1348/000711006X126600
+- Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
 
 ## License
 

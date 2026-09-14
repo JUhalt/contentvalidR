@@ -1,5 +1,26 @@
 # contentvalidR 0.2.0.9000
 
+## Panel-level agreement for expert panels (in development)
+
+* Added `panel_agreement()`, reporting one coefficient for how consistently an
+  expert panel rated the whole item set, with a bootstrap interval. It
+  complements the item-level I-CVI and modified kappa rather than replacing
+  them.
+* Krippendorff's alpha is the default, computed from the coincidence matrix
+  (Krippendorff, 2011) at a selectable measurement level: ordinal (the
+  default), nominal, or interval. It reproduces the worked example in
+  Krippendorff (2011) and agrees with `irr::kripp.alpha()`.
+* Gwet's AC1 (Gwet, 2008) is available but is never the default, and selecting
+  it prints the critique in Vach and Gerke (2023).
+* Intervals resample items with all of their ratings, following Zapf et al.
+  (2016), who found Krippendorff's original bootstrap under-covered.
+* `expert_validity()` relevance mode reports panel agreement in its scale
+  summary, controlled by `agreement`, `agreement_level`, `agreement_B`, and
+  `seed`.
+* Output reports the share of identical rating pairs next to the coefficient,
+  and explains that alpha can be low when ratings cluster on one value, so a
+  low alpha on a close-agreeing panel is not read as a poor panel.
+
 ## Selectable intervals for proportion indices (in development)
 
 * `cvi()` now reports an interval for each I-CVI (`I_CVI_low`, `I_CVI_high`),

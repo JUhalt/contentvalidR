@@ -165,6 +165,24 @@ exact$results[, c("item", "I_CVI", "I_CVI_low", "I_CVI_high")]
 The exact (Clopper-Pearson) interval is conservative, so its limits sit further
 apart. The printed output always names the method that produced the interval.
 
+### Reading panel agreement
+
+Relevance mode also reports one agreement coefficient for the whole panel, in
+`scale_summary` as `agreement`, `agreement_low`, and `agreement_high`. The full
+result, with its explanation, is in `details$agreement`, and
+`panel_agreement()` produces the same result directly:
+
+```{r}
+panel_agreement(panel, seed = 1)
+```
+
+Read two numbers together: the coefficient and the share of identical rating
+pairs. Krippendorff's alpha, the default, can be low on a panel that agrees
+closely when nearly every rating is the same value, because chance then predicts
+very little disagreement. A low alpha next to a high share of identical pairs
+reflects that clustering. Agreement describes the raters, not the items: a
+consistent panel can still consistently rate an item as irrelevant.
+
 ## Reading judge heterogeneity
 
 `judge_validity()` asks a different question: do your conclusions depend on
