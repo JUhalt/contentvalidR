@@ -27,7 +27,7 @@ and how to describe the result in a manuscript. The other vignettes show how to
 *run* each workflow; this one shows how to *read* what comes back.
 
 If you only remember one thing: **every statistic here is evidence for a
-judgement you make, not a judgement the package makes for you.**
+judgment you make, not a judgment the package makes for you.**
 
 ## The shared vocabulary
 
@@ -85,7 +85,7 @@ Working across the item table:
 
 The scale-level table adds Colquitt strength labels. These are **percentile
 positions relative to scales published in the literature**, not absolute
-judgements, and they are the most frequently misreported part of this output.
+judgments, and they are the most frequently misreported part of this output.
 
 ## The benchmark trap
 
@@ -101,8 +101,8 @@ fit_rating$scale_summary[, c("target", "mean_htc", "htc_strength",
                              "mean_htd", "htd_strength")]
 ```
 
-An HTC of about 0.83 is labelled `Weak`, while an HTD of about 0.44 in the same
-row is labelled `Very Strong`. Read as raw numbers this looks backwards, and it
+An HTC of about 0.83 is labeled `Weak`, while an HTD of about 0.44 in the same
+row is labeled `Very Strong`. Read as raw numbers this looks backwards, and it
 is a common source of confusion.
 
 The two indices are not on the same scale and their numbers are not comparable:
@@ -221,8 +221,9 @@ is fit for your purpose.
 These are components of an argument that also rests on construct definitions,
 domain coverage, cognitive interviewing, and expert comment.
 
-**"The numbers are comparable."** HTC against HTD, Psa against Csv, one index
-against another's benchmark: these comparisons are not meaningful.
+**"The numbers are comparable."** HTC against HTD, Psa against Csv, or one index
+against the benchmark belonging to a different index: these comparisons are not
+meaningful.
 
 **"A high coefficient means the domain is covered."** Relevance and coverage are
 different questions. Only `domain_validity()` addresses coverage, and only when

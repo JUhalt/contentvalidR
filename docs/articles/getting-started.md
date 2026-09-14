@@ -113,6 +113,35 @@ flags items with above-chance targeting.
 `#>        overall`\
 `#> `\
 `#> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.`\
+`#> HTC is an average rating and HTD is a difference between ratings, so they sit on`\
+`#> different scales with different typical values. A high HTC can be labeled Weak in`\
+`#> the same analysis where a much smaller HTD is labeled Very Strong. Compare each`\
+`#> index against its own benchmark, never against the other index's number.`\
+`#> `\
+`#> What these columns mean`\
+`#>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against`\
+`#>       its intended construct definition, expressed as a proportion of the`\
+`#>       rating scale. (0 to 1; higher is stronger)`\
+`#>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's`\
+`#>       average rating exceeds the best competing construct's, as a`\
+`#>       proportion of the rating scale. It is a difference, so its typical`\
+`#>       values are far smaller than HTC's. (usually a small positive number;`\
+`#>       higher is stronger)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
+`#> `\
 `#> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,`\
 `#> orbiting-construct choice, domain coverage, and qualitative judge feedback.`\
 [`summary`](https://rdrr.io/r/base/summary.html)`(``rating_fit``)`\
@@ -172,6 +201,32 @@ when the judge population matches their intended use.
 `#> `\
 `#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.`\
 `#> `\
+`#> What these columns mean`\
+`#>   V -- Aiken's V. Relevance index that rescales the experts' average rating`\
+`#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to`\
+`#>       1; higher is stronger)`\
+`#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who`\
+`#>       rated the item as relevant, after applying the relevance cut. (0 to`\
+`#>       1; compared against a panel-size guideline)`\
+`#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts`\
+`#>       would have agreed even if rating at random. With small panels, chance`\
+`#>       agreement is substantial, which is why the raw I-CVI alone can`\
+`#>       overstate consensus. (0 to 1; higher is stronger)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
+`#> `\
 `#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`\
 [`summary`](https://rdrr.io/r/base/summary.html)`(``expert_fit``)`\
 `#> Summary of expert-panel content-validity evidence`\
@@ -205,16 +260,16 @@ contain no participant data, and are regenerated from
 [`vapply`](https://rdrr.io/r/base/lapply.html)`(``example_files``, ``function``(``x``)`` ``{`\
 `  `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"extdata"``, ``x``, package ``=`` ``"contentvalidR"``)`\
 `}``, `[`character`](https://rdrr.io/r/base/character.html)`(``1``)``)`\
-`#>                                                                                       sort_example.csv `\
-`#>                "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/sort_example.csv" `\
-`#>                                                                                     rating_example.csv `\
-`#>              "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/rating_example.csv" `\
-`#>                                                                           expert_relevance_example.csv `\
-`#>    "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_relevance_example.csv" `\
-`#>                                                                        expert_essentiality_example.csv `\
-`#> "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_essentiality_example.csv" `\
-`#>                                                                          expert_congruence_example.csv `\
-`#>   "C:/Users/TheGr/AppData/Local/R/win-library/4.6/contentvalidR/extdata/expert_congruence_example.csv"`
+`#>                                                                                                              sort_example.csv `\
+`#>                "C:/Users/TheGr/AppData/Local/Temp/Rtmp8ozpmx/temp_libpathbfac517c5b85/contentvalidR/extdata/sort_example.csv" `\
+`#>                                                                                                            rating_example.csv `\
+`#>              "C:/Users/TheGr/AppData/Local/Temp/Rtmp8ozpmx/temp_libpathbfac517c5b85/contentvalidR/extdata/rating_example.csv" `\
+`#>                                                                                                  expert_relevance_example.csv `\
+`#>    "C:/Users/TheGr/AppData/Local/Temp/Rtmp8ozpmx/temp_libpathbfac517c5b85/contentvalidR/extdata/expert_relevance_example.csv" `\
+`#>                                                                                               expert_essentiality_example.csv `\
+`#> "C:/Users/TheGr/AppData/Local/Temp/Rtmp8ozpmx/temp_libpathbfac517c5b85/contentvalidR/extdata/expert_essentiality_example.csv" `\
+`#>                                                                                                 expert_congruence_example.csv `\
+`#>   "C:/Users/TheGr/AppData/Local/Temp/Rtmp8ozpmx/temp_libpathbfac517c5b85/contentvalidR/extdata/expert_congruence_example.csv"`
 
 See
 [`vignette("reporting-examples", package = "contentvalidR")`](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md)

@@ -1,37 +1,227 @@
 # Changelog
 
-## contentvalidR 0.1.0.9000
+## contentvalidR 0.2.0
 
-### Development
+Second public release. v0.1.0 established three item-level workflows;
+v0.2.0 adds the two questions those workflows could not answer — whether
+conclusions depend on the particular judges used, and whether the item
+set covers its intended domain — together with multi-round comparison,
+expert-panel planning, reporting helpers, and a substantial rework of
+how results explain themselves.
 
-- Changed the current development source to GNU GPL version 3 only
-  (`GPL-3.0-only`; R metadata `GPL-3`), retaining the original MIT
-  notice in `inst/NOTICE`. Previously published releases keep their
-  original terms.
+The package continues to declare `Imports: stats` only. Every method
+here is implemented in base R, so the package installs without a
+compiler toolchain.
 
-- Aligned citation metadata with development version `0.1.0.9000`,
-  restored the README release-status paragraph outside the badge block,
-  and linked roadmap workstreams to their issues and milestone.
+New flagship workflows:
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+and
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md).
+New supporting functions:
+[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md),
+[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
+[`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md),
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md),
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md),
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),
+[`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md),
+and an [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
+method for workflow objects.
 
-- Refreshed generated documentation and documented the publishing
-  sources.
+### Multi-round comparison, planning, and reporting
 
-- Recorded an optional research proposal for qualitative-evidence
-  traceability under the domain-coverage issue; no statistical
-  implementation changed.
+- Added
+  [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md),
+  comparing two or more fitted workflow objects from successive pretest
+  rounds. Reports each unit’s status in every round, whether it
+  strengthened, weakened, or held, and which units entered or left the
+  item set.
+- [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  also compares the `settings` of each round and marks the comparison as
+  not comparable when they differ. This is the audit trail the
+  workstream called for: a status change under a changed criterion may
+  reflect only the changed rule, and the output says so rather than
+  letting a bookkeeping change read as progress.
+- Comparisons across different workflows are refused, since status
+  labels from different workflows rest on different criteria.
+- Added
+  [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md),
+  reporting the exact probability that an item clears its expert-panel
+  criterion at a given panel size and assumed endorsement probability,
+  for the panel-size I-CVI guideline or the Lawshe CVR critical count.
+  It reports the consequences of the panel sizes asked about rather than
+  recommending one.
+- [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  makes the I-CVI criterion’s step visible instead of smoothing it:
+  because the guideline requires unanimity up to five experts and 0.78
+  from six, a fourth or fifth expert *lowers* the probability of
+  clearing while a sixth raises it sharply. The plot is drawn as a step
+  function for the same reason.
+- [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  accepts a `response_rate` below 1, averaging over the realized panel
+  size rather than assuming the invited panel arrives intact, which also
+  captures the criterion that a smaller realized panel triggers.
+- Added an
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) method
+  for workflow objects, returning results or the scale summary as a
+  plain data frame with a `workflow` column so tables from several
+  analyses stack without losing their identity.
+- Added
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),
+  building a manuscript-ready table as a data frame or as Markdown for
+  Quarto and R Markdown. Markdown is generated directly, so no reporting
+  package is required and none is added as a dependency. Analysis
+  settings travel with Markdown output as an attribute, and columns that
+  are entirely missing are dropped.
+- No helper is provided that returns “the items that passed.” Filtering
+  on status is a substantive decision that belongs in the user’s own
+  visible code, and `Review` never means an item must be dropped.
 
-- Opened post-v0.1 development toward `v0.2.0`.
+### Interpretable output
 
-- Updated installation guidance to distinguish the stable R-universe
-  release from the GitHub development version.
+- Printed workflow output now defines the abbreviated quantities it
+  reports. Each flagship workflow prints a key explaining, in plain
+  language, what its columns measure and which direction is stronger,
+  followed by the meaning of the shared status labels and a note
+  connecting each workflow’s own recommendation wording to them.
+- Added
+  [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md),
+  a single source of those definitions. The inline keys and the glossary
+  read from the same table, so a term cannot be defined differently in
+  two places.
+- Inline keys can be suppressed with
+  `options(contentvalidR.show_key = FALSE)` once the terminology is
+  familiar. Substantive cautions are never suppressed by that option.
+- Benchmark output now states that strength labels are percentile
+  positions relative to published scales and are **not comparable across
+  indices**. This addresses a genuine misreading: HTC is an average
+  rating while HTD is a difference between ratings, so a scale-level HTC
+  of 0.83 is labeled `Weak` in the same row where an HTD of 0.44 is
+  labeled `Very Strong`. Output now explains why, rather than leaving
+  the contrast looking like an error.
+- Added a “How to Read contentvalidR Output” vignette aimed at readers
+  meeting these methods for the first time: an annotated walkthrough of
+  every flagship workflow’s output field by field, a section on the
+  benchmark trap above, a list of common misreadings, and worked
+  manuscript language that reports what the analysis does and does not
+  establish.
+- Added regression coverage asserting that interpretive wording is
+  present and stable, that every term shown in a key is defined in the
+  glossary, and that the documented HTC/HTD contrast still occurs in the
+  shipped example data, so the explanation cannot drift away from the
+  behavior it explains.
 
+### Domain coverage and content structure
+
+- Added
+  [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md),
+  a flagship workflow assessing whether an item set spans its intended
+  content domain. Its `results` table has one row per blueprint cell,
+  supporting construct-only or crossed construct-by-facet tables of
+  specifications.
+- Empty, thinly covered, and over-represented cells are reported against
+  explicit, user-settable thresholds rather than silent defaults, and
+  over-representation is documented as an attention-drawing heuristic
+  rather than a standard. Intended item counts can be supplied through
+  `targets` so expected shares come from the blueprint instead of an
+  assumption of equal cells.
+- Detecting a cell that the blueprint intends but no item addresses
+  requires the full cell list to be supplied through `domain`. When it
+  is omitted, the output states plainly that empty cells could not be
+  detected, rather than implying full coverage.
+- Added
+  [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
+  implementing the multidimensional scaling and hierarchical cluster
+  analysis of expert item-similarity data described by Sireci and
+  Geisinger (1992, 1995). Correspondence between recovered clusters and
+  blueprint cells is quantified with the chance-corrected adjusted Rand
+  index and reported alongside the raw cross-tabulation.
+- Multidimensional scaling fit is reported across dimensionalities with
+  Kruskal stress-1 and its conventional descriptors, documented as
+  descriptive conventions rather than rules for deciding how many
+  dimensions a content domain has. A requested dimensionality beyond
+  what the similarities support is reduced and the reduction is
+  reported.
+- Added
+  [`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md),
+  deriving item similarities from an item-sort task as the proportion of
+  judges co-assigning each pair. The documentation states why this is
+  weaker evidence than pairwise similarity ratings collected for the
+  purpose.
+- Added
+  [`plot.contentvalid_structure()`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md),
+  drawing the expert content map with items labeled by blueprint cell.
+- Weak blueprint correspondence is framed as a reason to re-examine the
+  blueprint or item wording, explicitly not as grounds for deleting
+  items.
+
+### Judge and rater heterogeneity
+
+- Added
+  [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md),
+  a flagship workflow reporting how far content-validity conclusions
+  depend on the particular judges who served on the panel. Unlike the
+  item-oriented workflows, its `results` table has one row per judge.
+- Added
+  [`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md),
+  implementing the generalizability-theory treatment of content-validity
+  ratings in Crocker, Llabre, and Miller (1988). Reports item, judge,
+  and residual variance components, generalizability (relative) and
+  dependability (absolute) coefficients, and a decision study giving the
+  panel size implied by a target coefficient.
+- Added judge severity estimation from a many-facet Rasch model fitted
+  as a logistic regression, following the generalized linear model
+  formulation of de Boeck and Wilson (2004). Estimation is joint maximum
+  likelihood with the standard Wright-Douglas bias correction applied
+  and reported; the documentation states that the correction reduces
+  rather than removes that bias, and that marginal maximum likelihood is
+  preferable where precise calibration matters.
+- Judges and items showing no variation in the dichotomized relevance
+  decision are excluded from the facets model and reported, rather than
+  producing infinite estimates. Because near-complete agreement is
+  common in relevance ratings, severity in raw rating points is always
+  reported and is used for flagging whenever the logit model is not
+  estimable.
+- Added descriptive rater-effect summaries for severity,
+  differentiation, and central versus extreme category use, following
+  the effects named in Engelhard (1994). Halo is deliberately not
+  estimated from a single-dimension design, where it is not separable
+  from low differentiation.
+- Added leave-one-judge-out influence diagnostics identifying items
+  whose CVI-based review status would change if any single judge were
+  removed, and stating in the output that removing a judge also reduces
+  the panel size and can therefore change the CVI criterion itself.
+- Output states that a judge flagged for `Review` is not a judge to
+  delete: disagreement may be substantive expertise, and the flag marks
+  where a conclusion rests on one person’s ratings.
+- Zero item-level true-score variance is now reported as a descriptive
+  result explaining that judges did not distinguish the items, rather
+  than as weak generalizability, and explicitly notes that a uniformly
+  relevant item set produces the same value.
+
+### Licensing and project infrastructure
+
+- Relicensed the source to GNU GPL version 3 only (`GPL-3.0-only`; R
+  metadata `GPL-3`), retaining the original MIT notice in `inst/NOTICE`.
+  The previously published v0.1.0 release keeps its original MIT terms;
+  this release does not relicense it retroactively.
+- Stamped citation metadata to the released version and aligned the
+  README release-status paragraph and roadmap links with the issues and
+  milestone they track.
+- Added repository infrastructure: contributing, support, security and
+  code-of-conduct documents, issue and pull-request templates, and
+  pkgdown and test-coverage workflows alongside the existing check
+  matrix.
 - Replaced the completed pre-v0.1 release roadmap with an active
-  post-release development plan.
+  post-release development plan, and removed the obsolete committed
+  `DESCRIPTION.bak` file.
+- Hardened the Ubuntu GitHub Actions setup against stale Google Chrome
+  apt repository metadata.
+- CRAN submission is deferred to v0.3.0 and tracked separately, so that
+  the completed v0.2.0 workstreams reach users through GitHub and the
+  R-universe without waiting on a submission round.
 
-- Removed the obsolete committed `DESCRIPTION.bak` file.
-
-- Hardened Ubuntu GitHub Actions setup against stale Google Chrome apt
-  repository metadata. \# contentvalidR 0.1.0
+## contentvalidR 0.1.0
 
 ### First public release
 

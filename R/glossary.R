@@ -200,7 +200,7 @@
     meaning = c(
       "The evidence met the criteria set for this analysis.",
       "Something here needs a closer look. This is not an instruction to delete anything.",
-      "Too little usable data to reach a judgement.",
+      "Too little usable data to reach a judgment.",
       "Reported for description only; no decision rule was applied."
     ),
     stringsAsFactors = FALSE
@@ -268,10 +268,10 @@
 #' @section A note on benchmark labels:
 #' Strength labels such as `Strong` or `Weak` from [interpret_colquitt()] are
 #' percentile positions relative to scales published in the measurement
-#' literature. They are not absolute judgements, and they are not comparable
+#' literature. They are not absolute judgments, and they are not comparable
 #' across indices: HTC and HTD sit on different scales with different typical
-#' values, so an HTC of 0.83 can be labelled `Weak` in the same analysis where
-#' an HTD of 0.44 is labelled `Very Strong`. Compare each index against its own
+#' values, so an HTC of 0.83 can be labeled `Weak` in the same analysis where
+#' an HTD of 0.44 is labeled `Very Strong`. Compare each index against its own
 #' benchmark, never against another index's number.
 #'
 #' @seealso [interpret_colquitt()] for the benchmark bands themselves.
@@ -322,7 +322,7 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
     }
   }
   cat("\nStrength labels such as Strong or Weak are percentile positions",
-      "\nrelative to published scales, not absolute judgements, and are not",
+      "\nrelative to published scales, not absolute judgments, and are not",
       "\ncomparable across different indices.\n")
   invisible(x)
 }

@@ -56,7 +56,7 @@
 #' There is deliberately no helper that returns "the items that passed."
 #' Selecting on `status == "Supported"` is a substantive decision that should
 #' appear in your own code where a reader can see it, and `Review` never means
-#' an item must be dropped. Keeping the filter explicit keeps that judgement
+#' an item must be dropped. Keeping the filter explicit keeps that judgment
 #' visible in the analysis script and in the manuscript.
 #'
 #' @examples

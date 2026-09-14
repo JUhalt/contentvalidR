@@ -237,7 +237,7 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
     sub <- r[r$prob == probs[i], , drop = FALSE]
     sub <- sub[order(sub$n_experts), , drop = FALSE]
     # Drawn as a step function: the criterion itself changes with panel size,
-    # so joining the points with straight lines would imply smooth behaviour
+    # so joining the points with straight lines would imply smooth behavior
     # the decision rule does not have.
     graphics::lines(sub$n_experts, sub$power, type = "s",
                     lty = (i - 1L) %% 5L + 1L)

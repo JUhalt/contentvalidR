@@ -1,7 +1,7 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.1.0.9000
+Version: 0.2.0
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
@@ -15,6 +15,11 @@ Description: Provides quantitative tools for substantive and content-oriented
     an expert-panel workflow combining Aiken's V with score confidence intervals,
     Lawshe content validity ratios with exact inference, content validity indices
     with modified kappa, and item-objective congruence.
+    Also provides judge and rater heterogeneity analysis following the
+    generalizability-theory treatment of content-validity ratings in Crocker,
+    Llabre and Miller (1988), content-domain coverage and expert-perceived
+    content structure following Sireci and Geisinger (1992), comparison across
+    successive pretest rounds, and exact expert-panel planning.
     User-facing workflows emphasize interpretable summaries and transparent
     review recommendations rather than isolated coefficients.
 License: GPL-3
