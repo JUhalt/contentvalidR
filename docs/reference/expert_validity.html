@@ -25,7 +25,7 @@ or other parts of a content-validity argument."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,7 @@ or other parts of a content-validity argument."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -172,6 +173,32 @@ indicator of content validity? <em>Research in Nursing &amp; Health, 30</em>(4),
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Item4 4 0.917  0.646   0.985     1         1 Strong support</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Relevance index that rescales the experts' average rating</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to run from 0 to 1 given the bounds of the rating scale used. (0 to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item as relevant, after applying the relevance cut. (0 to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared against a panel-size guideline)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       would have agreed even if rating at random. With small panels, chance</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (0 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the recommendation column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Retain, Strong support, Typical, Covered, and so on). Those words map</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   onto the shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>

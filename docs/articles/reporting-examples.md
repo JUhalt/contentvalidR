@@ -366,7 +366,7 @@ a fitted workflow:
 
 \
 [`packageVersion`](https://rdrr.io/r/utils/packageDescription.html)`(``"contentvalidR"``)`\
-`#> [1] '0.1.0'`\
+`#> [1] '0.2.0'`\
 `sort_fit``$``settings`\
 `#> $method`\
 `#> [1] "Anderson-Gerbing Psa/Csv with Howard-Melloy exact inference"`\

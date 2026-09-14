@@ -204,73 +204,121 @@ may be retained for a future submission if useful.
 
 ## v0.2.0 - Uncertainty, Heterogeneity, and Reproducibility
 
-**Status:** Planning and public-page reconciliation before development
-resumes **Milestone:**
+**Status:** Released **Milestone:**
 [v0.2.0](https://github.com/JUhalt/contentvalidR/milestone/1)
-**Development version:** `0.1.0.9000`
+**Version:** `0.2.0`
 
 Goal: extend the stable content-validity workflow without turning the
 package into a disconnected collection of coefficients. New methods
 should improve the quality, transparency, or reproducibility of
 substantive/content-validity decisions.
 
-The issues below retain the existing v0.2.0 workstreams. A workstream’s
-presence in the milestone is a planning target, not evidence that it is
-implemented. Research options require explicit scope and validation
-decisions before release.
-
 Current-source housekeeping: GPLv3-only licensing and development
 citation metadata are synchronized; the MIT terms of historical releases
 are unchanged.
 
-### Bayesian and uncertainty-first extensions
+### Scope decisions (2026-09-13)
 
-Tracking: [\#2](https://github.com/JUhalt/contentvalidR/issues/2).
-
-Conduct a focused methodological review of Bayesian approaches relevant
-to item sorting, construct ratings, expert-panel evidence, and
-content-domain coverage.
-
-Identify where Bayesian models add information beyond the package’s
-current exact/frequentist uncertainty summaries.
-
-Prototype posterior or probability-based summaries only where
-assumptions can be explained transparently to applied researchers.
-
-Develop frequentist/exact-versus-Bayesian comparison examples.
-
-Establish simulation-based calibration/recovery tests before exposing
-any Bayesian method as a flagship workflow.
-
-Decide which Bayesian extensions are mature enough for the public API
-and which remain methodological research.
+- **Judge/rater heterogeneity
+  ([\#3](https://github.com/JUhalt/contentvalidR/issues/3)) and domain
+  coverage ([\#4](https://github.com/JUhalt/contentvalidR/issues/4)) are
+  confirmed release commitments.** Both rest on established published
+  methodology and both are implementable within `Imports: stats`.
+- **Bayesian extensions
+  ([\#2](https://github.com/JUhalt/contentvalidR/issues/2)) moved to
+  v0.3.0** on sequencing and dependency grounds, not for lack of
+  published evidence.
+- **Interpretable output
+  ([\#11](https://github.com/JUhalt/contentvalidR/issues/11)) added as a
+  first-class release commitment.** The package is intended for serious
+  researchers and for Master’s and doctoral students. Output that cannot
+  be read correctly without the primary sources is treated as a defect,
+  not as missing polish.
+- **The zero-compiled-dependency install profile is retained.** The
+  package must remain installable on managed and locked-down machines
+  without a compiler toolchain. Where a method has a defensible base-R
+  formulation, that formulation is used and its tradeoffs are documented
+  rather than hidden.
 
 ### Judge and rater heterogeneity
 
 Tracking: [\#3](https://github.com/JUhalt/contentvalidR/issues/3).
 
-Add influence diagnostics showing whether conclusions depend strongly on
-particular judges or raters.
+Methodological basis: generalizability theory for content-validity
+ratings ([Crocker, Llabre & Miller,
+1988](https://doi.org/10.1111/j.1745-3984.1988.tb00309.x)); many-facet
+Rasch measurement (Linacre, 1989); rater errors as named, measurable
+effects ([Engelhard,
+1994](https://doi.org/10.1111/j.1745-3984.1994.tb00436.x)); the
+generalized linear model formulation of facet models (de Boeck & Wilson,
+2004).
 
-Explore heterogeneity summaries for judge severity, response style, and
-construct discrimination.
+Estimation decision: rater severity is estimated with a base-R facets
+model fitted via [`stats::glm()`](https://rdrr.io/r/stats/glm.html)
+(joint maximum likelihood), not an external Rasch engine. The candidate
+engines (`sirt`, `immer`, `TAM`) each pull a compiled dependency chain
+that works against the package’s intended audience. The joint-ML
+small-sample bias is corrected, reported, and documented; marginal-ML
+estimation is tracked for v0.3.0.
 
-Evaluate latent-variable, multilevel, or IRT-style approaches where they
-materially improve interpretation over aggregate indices.
+Implement G-theory variance decomposition (judge, item, judge x item)
+with generalizability and dependability coefficients.
+
+Add a decision study reporting judges required to reach a target
+coefficient.
+
+Implement the [`stats::glm()`](https://rdrr.io/r/stats/glm.html) facets
+model for judge severity/leniency, with standard errors and infit/outfit
+fit statistics.
+
+Apply and document the joint-ML bias correction and state its limits.
+
+Add rater-effect indices for severity, central tendency, halo, and
+restriction of range.
+
+Add leave-one-judge-out influence diagnostics across I-CVI, Aiken’s V,
+CVR, and Psa/Csv, flagging items whose status changes when a judge is
+removed.
 
 Preserve transparent raw-judge evidence alongside model-based summaries.
+
+Add canonical-value and simulation-recovery tests for severity
+parameters.
 
 ### Domain coverage and content structure
 
 Tracking: [\#4](https://github.com/JUhalt/contentvalidR/issues/4).
 
-Expand item-objective/domain congruence tools beyond isolated
-coefficients.
+Methodological basis: expert item-similarity ratings analyzed by
+multidimensional scaling and hierarchical cluster analysis against the a
+priori blueprint ([Sireci & Geisinger,
+1992](https://doi.org/10.1177/014662169201600102);
+[1995](https://doi.org/10.1177/014662169501900303)), within the
+content-validity framing of [Sireci
+(1998)](https://doi.org/10.1023/A:1006985528729). Implemented with
+[`stats::cmdscale`](https://rdrr.io/r/stats/cmdscale.html),
+[`stats::dist`](https://rdrr.io/r/stats/dist.html), and
+[`stats::hclust`](https://rdrr.io/r/stats/hclust.html).
 
-Add summaries of construct-domain coverage and potential content gaps.
+Add a blueprint / table-of-specifications representation with item
+assignments.
 
-Support richer item-to-domain mappings where items legitimately address
-multiple facets.
+Report coverage per blueprint cell, flagging empty, thin, and
+over-represented cells with explicit thresholds.
+
+Implement the expert item-similarity MDS + hierarchical clustering
+pipeline.
+
+Report MDS stress/fit and recommend dimensionality transparently.
+
+Quantify recovered-structure versus blueprint agreement with a
+chance-corrected index, alongside the raw cross-tabulation.
+
+Derive similarity structure from existing item-sort data where no
+dedicated similarity task was run, documenting the weaker inference this
+supports.
+
+Add MDS content-map plotting with blueprint membership indicated.
 
 Keep domain-coverage evidence distinct from downstream empirical
 factor-analytic evidence handled by `nomologR`.
@@ -288,41 +336,126 @@ package method or a release commitment.
 Tracking: [\#5](https://github.com/JUhalt/contentvalidR/issues/5).
 
 Add helpers for comparing repeated pretests or successive item-revision
-rounds.
+rounds, via
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md).
 
-Quantify stability/change in item recommendations across rounds.
+Quantify stability/change in item recommendations across rounds,
+including units that entered or left the item set.
 
-Expand reproducibility diagnostics for independent judge samples.
+Provide audit trails showing whether a status change can be read as an
+evidence change at all: settings are compared between rounds and the
+comparison is marked not comparable when a decision rule changed.
 
-Provide audit trails showing why an item’s status changed.
+Retain
+[`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md)
+for agreement between independent judge samples analyzed under identical
+settings; cross-referenced from
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+rather than duplicated.
 
 ### Design, simulation, and power
 
 Tracking: [\#6](https://github.com/JUhalt/contentvalidR/issues/6).
 
-Generalize the existing item-sort planning framework.
+Extend planning beyond item sorting with
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md),
+giving the exact probability of clearing the panel-size I-CVI guideline
+or the Lawshe CVR critical count.
 
-Add planning/simulation tools for expert-panel and construct-rating
-designs where a defensible planning target can be specified.
+Show sensitivity to judge count, assumed endorsement probability,
+decision criterion, and non-response, the last by averaging over the
+realized panel size rather than assuming the invited panel arrives
+intact.
 
-Show sensitivity to judge count, missingness, effect magnitude, and
-decision criteria.
+Report the I-CVI criterion’s step at six experts rather than smoothing
+it, including the case where a fourth or fifth expert lowers the
+probability of clearing under unanimity.
 
-Avoid unsupported universal sample-size rules of thumb.
+Avoid unsupported universal sample-size rules of thumb: planning output
+reports the consequences of the panel sizes requested and explicitly
+declines to recommend one.
+
+Plan judge counts against a generalizability target through the
+[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+decision study.
 
 ### Reporting and interoperability
 
 Tracking: [\#7](https://github.com/JUhalt/contentvalidR/issues/7).
 
-Add tidy extraction helpers for flagship workflow objects.
+Add extraction helpers for flagship workflow objects: an
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) method
+returning results or the scale summary with workflow provenance, so
+tables from several analyses stack.
 
-Expand manuscript-ready table/report scaffolds.
+Add manuscript-ready table scaffolds through
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md).
 
-Evaluate Quarto/HTML reporting helpers without making reporting
-dependencies mandatory for core analyses.
+Support Quarto/R Markdown reporting by generating Markdown directly,
+with analysis settings attached to the output, and without adding any
+reporting dependency to the package.
 
-Improve interoperability with downstream `nomologR` workflows where the
-conceptual handoff is scientifically appropriate.
+Decide against a helper that returns only the units that passed.
+Filtering on status is a substantive decision that belongs in the user’s
+own visible code, and `Review` is not an instruction to delete.
+
+Revisit a closer `nomologR` handoff once that package’s intake format is
+settled; the documented evidence table is the handoff for now.
+
+### Interpretable output for researchers and students
+
+Tracking: [\#11](https://github.com/JUhalt/contentvalidR/issues/11).
+
+The product principle that this package is “not a bag of coefficients”
+is only real if a second-year doctoral student can run a workflow, read
+the output, and correctly explain what it does and does not support
+without first reading four primary sources. Where that fails, it is a
+defect in how results are communicated, not a documentation gap.
+
+Audit every [`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) method against
+whether a reader who has not read the source paper could act on it
+correctly.
+
+State in plain language what each index measures and what a high or low
+value means in context, not only its value and cut point.
+
+Make the distinction between `Review` and deletion unmissable in the
+output itself, not only in the documentation.
+
+Standardize status vocabulary across workflows and define terms where
+shown, including how each workflow’s own recommendation wording maps
+onto it.
+
+Report what the analysis cannot establish with the same prominence as
+what it can.
+
+Add a “how to read contentvalidR output” vignette for graduate students,
+annotating each flagship workflow’s output field by field.
+
+Add a glossary of indices, status terms, and decision language, via
+[`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md),
+which is also the source of the inline keys so a term cannot be defined
+differently in two places.
+
+Add worked interpretation examples for a clean result and an ambiguous
+one, including how to write up each.
+
+Document common misreadings, including treating benchmarks as universal
+cut scores and treating a single index as sufficient validity evidence.
+
+State that benchmark labels are not comparable across indices. A
+scale-level HTC of 0.83 is labelled `Weak` in the same row where an HTD
+of 0.44 is labelled `Very Strong`, because HTC is an average rating and
+HTD is a difference. Output that leaves this unexplained reads as an
+error.
+
+Verify new output from \#3 and \#4 meets the same interpretive standard
+before those features are considered complete.
+
+Add regression tests covering interpretive output so wording users rely
+on cannot silently disappear, including a test that the documented
+HTC/HTD contrast still occurs in the shipped example data.
 
 ### v0.2.0 exit gate
 
@@ -334,7 +467,8 @@ explicit derivation when the method is novel.
 Canonical-value, simulation/recovery, malformed-input, and edge-case
 tests cover every release-defining extension.
 
-R CMD check is clean across the supported OS/R matrix.
+R CMD check is clean across the supported OS/R matrix, including the
+R-devel `--as-cran` job that treats any NOTE as a failure.
 
 Documentation clearly distinguishes established methods, package
 extensions, and experimental research features.
@@ -344,13 +478,81 @@ instructions reflect the release candidate.
 
 Clean-library installation and flagship workflow smoke tests pass.
 
+Output from every release-defining extension meets the interpretive
+standard in [\#11](https://github.com/JUhalt/contentvalidR/issues/11).
+
+Stable version stamped, tagged, and published through GitHub and the
+personal R-universe.
+
+**CRAN submission is deferred to v0.3.0** and tracked on its own in
+[\#14](https://github.com/JUhalt/contentvalidR/issues/14), so that the
+completed v0.2.0 workstreams reach users without waiting on a submission
+round. It is a separate issue rather than a line in a release gate
+because it has now slipped twice inside larger gates that closed around
+it.
+
 ------------------------------------------------------------------------
 
-## v0.3.x - Advanced Modeling and Dissemination
+## v0.3.0 - Advanced Modeling and Dissemination
 
-Candidate directions after the v0.2 foundation:
+**Milestone:**
+[v0.3.0](https://github.com/JUhalt/contentvalidR/milestone/2)
 
-Mature latent-variable/IRT models for judge/rater behavior.
+### Bayesian and uncertainty-first extensions
+
+Tracking: [\#2](https://github.com/JUhalt/contentvalidR/issues/2).
+
+Deferred from v0.2.0 on sequencing and dependency grounds, **not** for
+lack of published evidence. Credible work exists — see [Uto
+(2023)](https://doi.org/10.3758/s13428-022-01997-z), *Behavior Research
+Methods* 55(7), 3910-3928, on a Bayesian many-facet Rasch model for
+rater severity drift. Two blockers: credible estimation needs a Stan- or
+JAGS-class backend, which reverses the zero-compiled-dependency decision
+and must be weighed on its own merits; and the literature aimed
+specifically at content-validity evidence, as distinct from
+rater-mediated performance assessment generally, needs a focused review
+first.
+
+The base-R joint-ML facets model shipped in v0.2.0 fixes the estimand
+and the output contract, which makes a later Bayesian version a
+substitution rather than a new design.
+
+Conduct the focused methodological review.
+
+Evaluate whether a Bayesian facet model materially improves on the
+v0.2.0 joint-ML severity estimates for the small panels (5-20 experts)
+typical of content-validity work, where JML bias is largest.
+
+Decide the dependency question explicitly: sampler in `Suggests` with
+graceful degradation, a companion package, or not at all.
+
+Establish simulation-based calibration/recovery tests before exposing
+any Bayesian method as a flagship workflow.
+
+### CRAN submission
+
+Tracking: [\#14](https://github.com/JUhalt/contentvalidR/issues/14).
+
+Populate `cran-comments.md` with actual final check results.
+
+Confirm no stray `LICENSE` file reaches the built tarball, and that the
+source carries `License: GPL-3` with `inst/NOTICE` preserving the
+historical MIT attribution for v0.1.0.
+
+Check the built tarball with `--as-cran`, not only the source directory.
+
+Submit, respond to maintainer feedback, and confirm acceptance.
+
+Update README installation guidance once CRAN is live.
+
+The package is already check-clean across the matrix with
+`Imports: stats` only and no compiled code, so the submission is
+expected to be straightforward whenever it is taken up.
+
+### Other candidate directions
+
+Marginal-ML / full many-facet Rasch estimation as an optional upgrade
+path over the v0.2.0 base-R facets model.
 
 Q-factor and alternative extraction approaches where justified.
 

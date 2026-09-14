@@ -52,6 +52,32 @@ Suppose six experts rate item relevance from 1 (not relevant) to 4
 `#> `\
 `#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.`\
 `#> `\
+`#> What these columns mean`\
+`#>   V -- Aiken's V. Relevance index that rescales the experts' average rating`\
+`#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to`\
+`#>       1; higher is stronger)`\
+`#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who`\
+`#>       rated the item as relevant, after applying the relevance cut. (0 to`\
+`#>       1; compared against a panel-size guideline)`\
+`#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts`\
+`#>       would have agreed even if rating at random. With small panels, chance`\
+`#>       agreement is substantial, which is why the raw I-CVI alone can`\
+`#>       overstate consensus. (0 to 1; higher is stronger)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
+`#> `\
 `#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`\
 [`summary`](https://rdrr.io/r/base/summary.html)`(``fit``)`\
 `#> Summary of expert-panel content-validity evidence`\
@@ -107,6 +133,25 @@ experts:
 `#>  Item2  8 12 0.333   0.194          10         Review`\
 `#>  Item3  6 12 0.000   0.613          10         Review`\
 `#> `\
+`#> What these columns mean`\
+`#>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward`\
+`#>       calling the item essential rather than merely useful. (-1 to 1; above`\
+`#>       0 means more than half the panel called it essential)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
+`#> `\
 `#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 
 [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md)
@@ -132,6 +177,25 @@ Judge-by-item binary data can be supplied directly:
 `#>   item ne N  cvr p_value critical_ne recommendation`\
 `#>  Item1  8 8 1.00   0.004           7      Supported`\
 `#>  Item2  5 8 0.25   0.363           7         Review`\
+`#> `\
+`#> What these columns mean`\
+`#>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward`\
+`#>       calling the item essential rather than merely useful. (-1 to 1; above`\
+`#>       0 means more than half the panel called it essential)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
 `#> `\
 `#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 
@@ -174,6 +238,25 @@ objectives:
 `#>     status`\
 `#>  Supported`\
 `#>  Supported`\
+`#> `\
+`#> What these columns mean`\
+`#>   ioc -- Item-Objective Congruence. How consistently experts linked the`\
+`#>       item to the objective it was written for rather than to another`\
+`#>       objective. (-1 to 1; higher is stronger)`\
+`#> `\
+`#> What the status labels mean`\
+`#>   Supported -- The evidence met the criteria set for this analysis.`\
+`#>   Review -- Something here needs a closer look. This is not an instruction`\
+`#>       to delete anything.`\
+`#>   Insufficient data -- Too little usable data to reach a judgment.`\
+`#>   Descriptive only -- Reported for description only; no decision rule was`\
+`#>       applied.`\
+`#>   Each workflow also uses its own wording in the recommendation column`\
+`#>   (Retain, Strong support, Typical, Covered, and so on). Those words map`\
+`#>   onto the shared statuses above.`\
+`#> `\
+`` #> See `contentvalid_glossary()` for all terms, or set  ``\
+`` #> `options(contentvalidR.show_key = FALSE)` to hide this key. ``\
 `#> `\
 `#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.`
 

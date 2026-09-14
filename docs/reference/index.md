@@ -10,6 +10,10 @@ Recommended user-facing analyses for scale content pretesting.
   : Analyze a Hinkin-Tracey construct-rating content-validity pretest
 - [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   : Analyze expert-panel content-validity evidence
+- [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  : Analyze judge and rater heterogeneity in content-validity ratings
+- [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+  : Analyze content-domain coverage and structure
 
 ## Workflow plotting methods
 
@@ -24,6 +28,24 @@ plans.
   : Plot expert-panel content-validity results
 - [`plot(`*`<contentvalid_sort_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_sort_power.md)
   : Plot exact item-sort planning evidence
+- [`plot(`*`<contentvalid_structure>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md)
+  : Plot an expert content map
+- [`plot(`*`<contentvalid_expert_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert_power.md)
+  : Plot an expert-panel planning curve
+
+## Reading and reporting results
+
+Definitions of every index and status label, plus extraction into
+reports and downstream workflows.
+
+- [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md)
+  : Glossary of contentvalidR indices and status terms
+- [`as.data.frame(`*`<contentvalid_workflow>`*`)`](https://juhalt.github.io/contentvalidR/reference/as.data.frame.contentvalid_workflow.md)
+  : Extract workflow results as a plain data frame
+- [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  : Build a manuscript-ready results table
+- [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  : Compare content-validity evidence across pretest rounds
 
 ## Item-sort components and planning
 
@@ -39,6 +61,14 @@ plans.
   : Colquitt et al. (2019) empirical content-validation benchmarks
 - [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md)
   : Interpret a statistic using Colquitt et al. (2019) norms
+
+## Expert-panel planning
+
+Probability of clearing an explicit decision criterion at a given panel
+size.
+
+- [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  : Plan an expert panel against an explicit decision criterion
 
 ## Construct-rating components
 
@@ -59,6 +89,23 @@ plans.
   Lawshe's Content Validity Ratio (CVR)
 - [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md) :
   Item-Objective Congruence (IOC)
+
+## Judge and rater heterogeneity
+
+Evidence about how far conclusions depend on the particular judges used.
+
+- [`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+  : Generalizability analysis of content-validity ratings
+
+## Domain coverage and content structure
+
+Whether the item set spans the blueprint, and whether experts group
+items as the blueprint expects.
+
+- [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+  : Item-similarity structure of a content domain
+- [`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md)
+  : Derive item similarities from an item-sort task
 
 ## Auxiliary and compatibility helpers
 

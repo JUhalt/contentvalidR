@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+    <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><hr class="dropdown-divider"></li>
@@ -69,6 +70,20 @@
 
         </dt>
         <dd>Analyze expert-panel content-validity evidence</dd>
+
+        <dt>
+
+          <code><a href="judge_validity.html">judge_validity()</a></code>
+
+        </dt>
+        <dd>Analyze judge and rater heterogeneity in content-validity ratings</dd>
+
+        <dt>
+
+          <code><a href="domain_validity.html">domain_validity()</a></code>
+
+        </dt>
+        <dd>Analyze content-domain coverage and structure</dd>
       </dl></div><div class="section level2">
       <h2 id="workflow-plotting-methods">Workflow plotting methods<a class="anchor" aria-label="anchor" href="#workflow-plotting-methods"></a></h2>
 
@@ -106,6 +121,57 @@
 
         </dt>
         <dd>Plot exact item-sort planning evidence</dd>
+
+        <dt>
+
+          <code><a href="plot.contentvalid_structure.html">plot(<i>&lt;contentvalid_structure&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot an expert content map</dd>
+
+        <dt>
+
+          <code><a href="plot.contentvalid_expert_power.html">plot(<i>&lt;contentvalid_expert_power&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Plot an expert-panel planning curve</dd>
+      </dl></div><div class="section level2">
+      <h2 id="reading-and-reporting-results">Reading and reporting results<a class="anchor" aria-label="anchor" href="#reading-and-reporting-results"></a></h2>
+
+      <div class="section-desc"><p>Definitions of every index and status label, plus extraction into reports and downstream workflows.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="contentvalid_glossary.html">contentvalid_glossary()</a></code>
+
+        </dt>
+        <dd>Glossary of contentvalidR indices and status terms</dd>
+
+        <dt>
+
+          <code><a href="as.data.frame.contentvalid_workflow.html">as.data.frame(<i>&lt;contentvalid_workflow&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Extract workflow results as a plain data frame</dd>
+
+        <dt>
+
+          <code><a href="content_report.html">content_report()</a></code>
+
+        </dt>
+        <dd>Build a manuscript-ready results table</dd>
+
+        <dt>
+
+          <code><a href="compare_rounds.html">compare_rounds()</a></code>
+
+        </dt>
+        <dd>Compare content-validity evidence across pretest rounds</dd>
       </dl></div><div class="section level2">
       <h2 id="item-sort-components-and-planning">Item-sort components and planning<a class="anchor" aria-label="anchor" href="#item-sort-components-and-planning"></a></h2>
 
@@ -157,6 +223,22 @@
 
         </dt>
         <dd>Interpret a statistic using Colquitt et al. (2019) norms</dd>
+      </dl></div><div class="section level2">
+      <h2 id="expert-panel-planning">Expert-panel planning<a class="anchor" aria-label="anchor" href="#expert-panel-planning"></a></h2>
+
+      <div class="section-desc"><p>Probability of clearing an explicit decision criterion at a given panel size.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="expert_power.html">expert_power()</a></code>
+
+        </dt>
+        <dd>Plan an expert panel against an explicit decision criterion</dd>
       </dl></div><div class="section level2">
       <h2 id="construct-rating-components">Construct-rating components<a class="anchor" aria-label="anchor" href="#construct-rating-components"></a></h2>
 
@@ -224,6 +306,45 @@
 
         </dt>
         <dd>Item-Objective Congruence (IOC)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="judge-and-rater-heterogeneity">Judge and rater heterogeneity<a class="anchor" aria-label="anchor" href="#judge-and-rater-heterogeneity"></a></h2>
+
+      <div class="section-desc"><p>Evidence about how far conclusions depend on the particular judges used.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="gtheory_content.html">gtheory_content()</a></code>
+
+        </dt>
+        <dd>Generalizability analysis of content-validity ratings</dd>
+      </dl></div><div class="section level2">
+      <h2 id="domain-coverage-and-content-structure">Domain coverage and content structure<a class="anchor" aria-label="anchor" href="#domain-coverage-and-content-structure"></a></h2>
+
+      <div class="section-desc"><p>Whether the item set spans the blueprint, and whether experts group items as the blueprint expects.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="content_structure.html">content_structure()</a></code>
+
+        </dt>
+        <dd>Item-similarity structure of a content domain</dd>
+
+        <dt>
+
+          <code><a href="similarity_from_sort.html">similarity_from_sort()</a></code>
+
+        </dt>
+        <dd>Derive item similarities from an item-sort task</dd>
       </dl></div><div class="section level2">
       <h2 id="auxiliary-and-compatibility-helpers">Auxiliary and compatibility helpers<a class="anchor" aria-label="anchor" href="#auxiliary-and-compatibility-helpers"></a></h2>
 
