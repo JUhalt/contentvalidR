@@ -83,6 +83,28 @@
       stringsAsFactors = FALSE
     ),
     data.frame(
+      term = "I_CVI_low/I_CVI_high", workflow = "expert-panel",
+      label = "Interval for I-CVI",
+      definition = paste(
+        "Lower and upper limits of an interval around I-CVI. Expert panels are",
+        "usually small, so these intervals are often wide: a single I-CVI value",
+        "can look more settled than the number of experts behind it supports."
+      ),
+      range = "between 0 and 1; the method and level are named in the output",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "psa_low/psa_high", workflow = "item-sort",
+      label = "Interval for Psa",
+      definition = paste(
+        "Lower and upper limits of an interval around Psa. A wide interval means",
+        "few judges sorted the item, so a different sample of judges could",
+        "plausibly give a quite different Psa."
+      ),
+      range = "between 0 and 1; the method and level are named in the output",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
       term = "kappa_mod", workflow = "expert-panel",
       label = "Modified kappa",
       definition = paste(

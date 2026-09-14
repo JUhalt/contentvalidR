@@ -14,20 +14,52 @@
 #'
 #' \deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
 #'
+#' I-CVI is a proportion of what is usually a small panel, so an interval is
+#' reported alongside it. The interval method is selectable; see `ci`.
+#'
 #' @param binary Matrix/data.frame with judges in rows and items in columns,
 #'   coded `1 = relevant` and `0 = not relevant`.
 #' @param na.rm Logical. If `FALSE` (default), missing ratings are an error.
 #'   If `TRUE`, missing ratings are removed itemwise and each item's effective
 #'   judge count is reported in `N`.
+#' @param ci Interval method for I-CVI:
+#'   * `"wilson"` (default): the Wilson (1927) score interval. Newcombe (1998)
+#'     compared seven methods and recommends score intervals over the Wald
+#'     interval.
+#'   * `"agresti_coull"`: the adjusted Wald interval of Agresti and Coull
+#'     (1998), which they show performs well even in small samples. Limits are
+#'     clipped so they stay between 0 and 1.
+#'   * `"exact"`: the Clopper and Pearson (1934) interval. It is conservative:
+#'     Agresti and Coull (1998) show its coverage runs above the nominal level.
+#'   * `"none"`: no interval is computed, and the interval columns are `NA`.
+#' @param alpha Two-sided alpha level for the interval; `0.05` gives a 95%
+#'   interval.
 #'
 #' @return A classed list with:
-#'   - `item_level`: item, A, N, I_CVI, Pc, kappa_mod
+#'   - `item_level`: item, A, N, I_CVI, I_CVI_low, I_CVI_high, Pc, kappa_mod
 #'   - `scale_level`: S_CVI_Ave and S_CVI_UA
+#'   - `ci` and `alpha`: the interval settings used
 #'
 #' @references
 #' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 #' indicator of content validity? Appraisal and recommendations. *Research in
 #' Nursing & Health, 30*(4), 459-467. \doi{10.1002/nur.20199}
+#'
+#' Wilson, E. B. (1927). Probable inference, the law of succession, and
+#' statistical inference. *Journal of the American Statistical Association,
+#' 22*(158), 209-212. \doi{10.1080/01621459.1927.10502953}
+#'
+#' Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+#' proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8),
+#' 857-872.
+#'
+#' Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for
+#' interval estimation of binomial proportions. *The American Statistician,
+#' 52*(2), 119-126. \doi{10.1080/00031305.1998.10480550}
+#'
+#' Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial
+#' limits illustrated in the case of the binomial. *Biometrika, 26*(4),
+#' 404-413. \doi{10.1093/biomet/26.4.404}
 #'
 #' @examples
 #' M <- matrix(
@@ -36,9 +68,14 @@
 #'   dimnames = list(NULL, c("Item1", "Item2", "Item3"))
 #' )
 #' cvi(M)
+#' cvi(M, ci = "exact")
 #' @export
-cvi <- function(binary, na.rm = FALSE) {
+cvi <- function(binary,
+                na.rm = FALSE,
+                ci = c("wilson", "agresti_coull", "exact", "none"),
+                alpha = 0.05) {
   .validate_flag(na.rm, "na.rm")
+  ci <- match.arg(ci)
   X <- as.matrix(binary)
   if (length(dim(X)) != 2L || nrow(X) < 1L || ncol(X) < 1L) {
     stop("`binary` must contain at least one judge and one item.", call. = FALSE)
@@ -67,12 +104,15 @@ cvi <- function(binary, na.rm = FALSE) {
   Pc <- ifelse(N > 0, stats::dbinom(A, size = N, prob = 0.5), NA_real_)
   kappa_mod <- (I_CVI - Pc) / (1 - Pc)
   kappa_mod[!is.finite(kappa_mod)] <- NA_real_
+  interval <- .proportion_ci(A, N, method = ci, alpha = alpha)
 
   item_level <- data.frame(
     item = item_names,
     A = as.integer(A),
     N = as.integer(N),
     I_CVI = I_CVI,
+    I_CVI_low = interval$low,
+    I_CVI_high = interval$high,
     Pc = Pc,
     kappa_mod = kappa_mod,
     row.names = NULL,
@@ -87,7 +127,13 @@ cvi <- function(binary, na.rm = FALSE) {
     row.names = NULL
   )
 
-  out <- list(item_level = item_level, scale_level = scale_level, na.rm = isTRUE(na.rm))
+  out <- list(
+    item_level = item_level,
+    scale_level = scale_level,
+    na.rm = isTRUE(na.rm),
+    ci = ci,
+    alpha = alpha
+  )
   class(out) <- "contentvalid_cvi"
   out
 }
@@ -108,9 +154,13 @@ print.contentvalid_cvi <- function(x, digits = 3, ...) {
   cat("S-CVI/UA :", format(round(sl$S_CVI_UA, digits), nsmall = digits), "\n\n")
   cat("Item-level results (modified kappa is chance-corrected):\n")
   tab <- x$item_level
-  numeric_cols <- c("I_CVI", "Pc", "kappa_mod")
+  numeric_cols <- intersect(c("I_CVI", "I_CVI_low", "I_CVI_high", "Pc", "kappa_mod"), names(tab))
   tab[numeric_cols] <- lapply(tab[numeric_cols], round, digits = digits)
   print(tab, row.names = FALSE)
+  if (!is.null(x$ci)) {
+    cat("\n")
+    cat(strwrap(.proportion_ci_note(x$ci, x$alpha), width = 76), sep = "\n")
+  }
   cat("\nInterpretation should consider panel size, item purpose, and qualitative expert feedback;\n")
   cat("CVI statistics alone do not establish comprehensive content validity.\n")
   invisible(x)

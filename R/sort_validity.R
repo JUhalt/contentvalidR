@@ -108,6 +108,10 @@
 #'   If omitted, the overall Colquitt et al. norms are used.
 #' @param judge_type Either `"naive"` (the Anderson-Gerbing/Colquitt design) or
 #'   `"expert"`. Colquitt benchmark labels are not applied to expert judges.
+#' @param proportion_ci Interval method for Psa: `"wilson"` (default),
+#'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval uses the same
+#'   `alpha` as the exact test. See `ci` in [cvi()] for the methods and the
+#'   evidence for each.
 #'
 #' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
 #'   All flagship workflow objects expose the common components `results`,
@@ -155,19 +159,24 @@ sort_validity <- function(assignments,
                           p0 = 0.5,
                           alpha = 0.05,
                           orbiting_r = NULL,
-                          judge_type = c("naive", "expert")) {
+                          judge_type = c("naive", "expert"),
+                          proportion_ci = c("wilson", "agresti_coull", "exact", "none")) {
   judge_type <- match.arg(judge_type)
+  proportion_ci <- match.arg(proportion_ci)
   invisible(.critical_target_count(1L, p0 = p0, alpha = alpha))
 
-  psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col)
+  psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
+                     ci = proportion_ci, alpha = alpha)
   csv <- compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
 
   idx <- match(csv$item, psa$item)
   results <- csv
   results$psa <- psa$psa[idx]
+  results$psa_low <- psa$psa_low[idx]
+  results$psa_high <- psa$psa_high[idx]
   results <- results[c(
     "item", "target", "n_total", "n", "n_missing", "n_target",
-    "competitor", "n_other_max", "psa", "csv"
+    "competitor", "n_other_max", "psa", "psa_low", "psa_high", "csv"
   )]
 
   tests <- lapply(seq_len(nrow(results)), function(i) {
@@ -209,7 +218,8 @@ sort_validity <- function(assignments,
     scale_benchmarks = "Colquitt et al. (2019) empirical percentile norms",
     p0 = p0,
     alpha = alpha,
-    judge_type = judge_type
+    judge_type = judge_type,
+    proportion_ci = proportion_ci
   )
   design <- list(
     type = "item-sort",
@@ -261,9 +271,19 @@ print.contentvalid_sort <- function(x, digits = 3, ...) {
   }
 
   cat("\nItem-level evidence:\n")
-  tab <- r[c("item", "target", "n", "n_target", "competitor", "psa", "csv", "p_value", "recommendation")]
-  tab[c("psa", "csv", "p_value")] <- lapply(tab[c("psa", "csv", "p_value")], round, digits = digits)
+  # intersect() keeps objects saved before the interval columns existed printable.
+  cols <- intersect(c("item", "target", "n", "n_target", "competitor", "psa",
+                      "psa_low", "psa_high", "csv", "p_value", "recommendation"),
+                    names(r))
+  tab <- r[cols]
+  num <- intersect(c("psa", "psa_low", "psa_high", "csv", "p_value"), names(tab))
+  tab[num] <- lapply(tab[num], round, digits = digits)
   print(tab, row.names = FALSE)
+  if (!is.null(x$settings$proportion_ci)) {
+    cat("\n")
+    cat(strwrap(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha),
+                width = 76), sep = "\n")
+  }
 
   cat("\nScale-level Colquitt benchmark summary:\n")
   s <- x$scale_summary[c("target", "n_items", "mean_psa", "psa_strength", "mean_csv", "csv_strength", "benchmark_set")]
@@ -280,7 +300,7 @@ print.contentvalid_sort <- function(x, digits = 3, ...) {
   }
 
   if (.show_key()) {
-    .print_key(c("psa", "csv", "competitor", "p_value"))
+    .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"))
     .print_status_legend()
     cat("\nSee `contentvalid_glossary()` for all terms, or set",
         "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")

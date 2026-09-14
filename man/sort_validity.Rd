@@ -13,7 +13,8 @@ sort_validity(
   p0 = 0.5,
   alpha = 0.05,
   orbiting_r = NULL,
-  judge_type = c("naive", "expert")
+  judge_type = c("naive", "expert"),
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
 )
 }
 \arguments{
@@ -34,6 +35,11 @@ If omitted, the overall Colquitt et al. norms are used.}
 
 \item{judge_type}{Either \code{"naive"} (the Anderson-Gerbing/Colquitt design) or
 \code{"expert"}. Colquitt benchmark labels are not applied to expert judges.}
+
+\item{proportion_ci}{Interval method for Psa: \code{"wilson"} (default),
+\code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The interval uses the same
+\code{alpha} as the exact test. See \code{ci} in \code{\link[=cvi]{cvi()}} for the methods and the
+evidence for each.}
 }
 \value{
 An object of class \code{contentvalid_sort} and \code{contentvalid_workflow}.

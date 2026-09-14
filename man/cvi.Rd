@@ -4,7 +4,12 @@
 \alias{cvi}
 \title{Content Validity Index (CVI)}
 \usage{
-cvi(binary, na.rm = FALSE)
+cvi(
+  binary,
+  na.rm = FALSE,
+  ci = c("wilson", "agresti_coull", "exact", "none"),
+  alpha = 0.05
+)
 }
 \arguments{
 \item{binary}{Matrix/data.frame with judges in rows and items in columns,
@@ -13,12 +18,29 @@ coded \code{1 = relevant} and \verb{0 = not relevant}.}
 \item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
 If \code{TRUE}, missing ratings are removed itemwise and each item's effective
 judge count is reported in \code{N}.}
+
+\item{ci}{Interval method for I-CVI:
+\itemize{
+\item \code{"wilson"} (default): the Wilson (1927) score interval. Newcombe (1998)
+compared seven methods and recommends score intervals over the Wald
+interval.
+\item \code{"agresti_coull"}: the adjusted Wald interval of Agresti and Coull
+(1998), which they show performs well even in small samples. Limits are
+clipped so they stay between 0 and 1.
+\item \code{"exact"}: the Clopper and Pearson (1934) interval. It is conservative:
+Agresti and Coull (1998) show its coverage runs above the nominal level.
+\item \code{"none"}: no interval is computed, and the interval columns are \code{NA}.
+}}
+
+\item{alpha}{Two-sided alpha level for the interval; \code{0.05} gives a 95\%
+interval.}
 }
 \value{
 A classed list with:
 \itemize{
-\item \code{item_level}: item, A, N, I_CVI, Pc, kappa_mod
+\item \code{item_level}: item, A, N, I_CVI, I_CVI_low, I_CVI_high, Pc, kappa_mod
 \item \code{scale_level}: S_CVI_Ave and S_CVI_UA
+\item \code{ci} and \code{alpha}: the interval settings used
 }
 }
 \description{
@@ -34,6 +56,9 @@ probability of observing exactly \code{A} agreements among \code{N} judges:
 and
 
 \deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
+
+I-CVI is a proportion of what is usually a small panel, so an interval is
+reported alongside it. The interval method is selectable; see \code{ci}.
 }
 \examples{
 M <- matrix(
@@ -42,9 +67,26 @@ M <- matrix(
   dimnames = list(NULL, c("Item1", "Item2", "Item3"))
 )
 cvi(M)
+cvi(M, ci = "exact")
 }
 \references{
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? Appraisal and recommendations. \emph{Research in
 Nursing & Health, 30}(4), 459-467. \doi{10.1002/nur.20199}
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. \emph{Journal of the American Statistical Association,
+22}(158), 209-212. \doi{10.1080/01621459.1927.10502953}
+
+Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. \emph{Statistics in Medicine, 17}(8),
+857-872.
+
+Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for
+interval estimation of binomial proportions. \emph{The American Statistician,
+52}(2), 119-126. \doi{10.1080/00031305.1998.10480550}
+
+Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial
+limits illustrated in the case of the binomial. \emph{Biometrika, 26}(4),
+404-413. \doi{10.1093/biomet/26.4.404}
 }

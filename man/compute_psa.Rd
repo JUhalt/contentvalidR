@@ -9,7 +9,9 @@ compute_psa(
   item_col = "item",
   rater_col = "rater",
   assigned_col = "assigned_construct",
-  target_col = "target_construct"
+  target_col = "target_construct",
+  ci = c("wilson", "agresti_coull", "exact", "none"),
+  alpha = 0.05
 )
 }
 \arguments{
@@ -17,10 +19,17 @@ compute_psa(
 
 \item{item_col, rater_col, assigned_col, target_col}{Column names for the item,
 rater, assigned construct, and intended target construct.}
+
+\item{ci}{Interval method for Psa: \code{"wilson"} (default), \code{"agresti_coull"},
+\code{"exact"}, or \code{"none"}. The methods and the evidence for each are described
+under \code{ci} in \code{\link[=cvi]{cvi()}}.}
+
+\item{alpha}{Two-sided alpha level for the interval; \code{0.05} gives a 95\%
+interval.}
 }
 \value{
 A data.frame with one row per item and columns \code{item}, \code{target},
-\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, and \code{psa}.
+\code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, \code{psa}, \code{psa_low}, and \code{psa_high}.
 }
 \description{
 For each item, computes the proportion of non-missing item-sort responses
@@ -28,7 +37,8 @@ assigned to the item's intended (target) construct. This is Anderson and
 Gerbing's (1991) proportion of substantive agreement, \eqn{P_{sa}}.
 
 Missing assignments are excluded itemwise and reported in \code{n_missing} so
-that the effective denominator is transparent.
+that the effective denominator is transparent. Psa is a proportion of a
+finite set of judges, so an interval is reported alongside it; see \code{ci}.
 }
 \examples{
 df <- data.frame(
@@ -38,10 +48,30 @@ df <- data.frame(
   target_construct = rep(c("A", "B"), each = 4)
 )
 compute_psa(df)
+compute_psa(df, ci = "exact")
 }
 \references{
 Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
 measures in a confirmatory factor analysis with a pretest assessment of
 their substantive validities. \emph{Journal of Applied Psychology, 76}(5),
 732-740. \doi{10.1037/0021-9010.76.5.732}
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. \emph{Journal of the American Statistical Association,
+22}(158), 209-212. \doi{10.1080/01621459.1927.10502953}
+
+Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. \emph{Statistics in Medicine, 17}(8),
+857-872.
+
+Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for
+interval estimation of binomial proportions. \emph{The American Statistician,
+52}(2), 119-126. \doi{10.1080/00031305.1998.10480550}
+
+Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial
+limits illustrated in the case of the binomial. \emph{Biometrika, 26}(4),
+404-413. \doi{10.1093/biomet/26.4.404}
+}
+\seealso{
+\code{\link[=cvi]{cvi()}} for the same interval methods applied to I-CVI.
 }
