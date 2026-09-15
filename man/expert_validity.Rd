@@ -14,7 +14,11 @@ expert_validity(
   alpha = 0.05,
   na.rm = FALSE,
   target_col = "target_objective",
-  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
+  agreement = c("krippendorff", "ac1", "none"),
+  agreement_level = c("ordinal", "nominal", "interval"),
+  agreement_B = 1000,
+  seed = NULL
 )
 }
 \arguments{
@@ -43,6 +47,21 @@ item's intended objective. If absent, IOC cells are returned descriptively.}
 \code{"wilson"} (default), \code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The
 interval uses the same \code{alpha} as Aiken's V. See \code{ci} in \code{\link[=cvi]{cvi()}} for the
 methods and the evidence for each.}
+
+\item{agreement}{Panel-level agreement coefficient for relevance mode:
+\code{"krippendorff"} (default), \code{"ac1"}, or \code{"none"}. Krippendorff's alpha uses
+the relevance ratings at \code{agreement_level}; Gwet's AC1 uses the
+relevant/not-relevant decision. See \code{\link[=panel_agreement]{panel_agreement()}} for the evidence
+behind each, including why AC1 is never the default. Panels with fewer
+than two experts or two items report no agreement coefficient.}
+
+\item{agreement_level}{Measurement level for Krippendorff's alpha:
+\code{"ordinal"} (default), \code{"nominal"}, or \code{"interval"}. Ignored for AC1.}
+
+\item{agreement_B}{Bootstrap resamples for the agreement interval; \code{0} skips
+the interval.}
+
+\item{seed}{Optional seed that makes the agreement interval reproducible.}
 }
 \value{
 An object of class \code{contentvalid_expert} and
@@ -50,13 +69,17 @@ An object of class \code{contentvalid_expert} and
 components \code{results}, \code{scale_summary}, \code{settings}, \code{design}, and \code{details}.
 The historical top-level \code{scale} component is retained as a compatibility
 alias for \code{scale_summary}. Results include a standardized \code{status} field
-while retaining mode-specific \code{recommendation} wording.
+while retaining mode-specific \code{recommendation} wording. In relevance mode,
+\code{scale_summary} also holds \code{agreement}, \code{agreement_low}, and
+\code{agreement_high}, and \code{details$agreement} holds the full
+\code{\link[=panel_agreement]{panel_agreement()}} result.
 }
 \description{
 Provides a user-facing workflow for three common expert-panel tasks:
 \itemize{
 \item \code{mode = "relevance"}: bounded ordinal relevance ratings, combining Aiken's
-V (with Penfield-Giacobbi score intervals) and CVI/modified kappa.
+V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
 \item \code{mode = "congruence"}: Rovinelli-Hambleton item-objective congruence.
 }
@@ -71,7 +94,7 @@ relevance <- matrix(
   nrow = 4,
   dimnames = list(NULL, paste0("Item", 1:4))
 )
-fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4)
+fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 summary(fit)
 }
@@ -89,4 +112,13 @@ validity ratio: Revisiting the original methods of calculation.
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
 459-467. \doi{10.1002/nur.20199}
+
+Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
+reliability measure for coding data. \emph{Communication Methods and Measures,
+1}(1), 77-89. \doi{10.1080/19312450709336664}
+
+Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
+inter-rater reliability for nominal data: Which coefficients and confidence
+intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
+\doi{10.1186/s12874-016-0200-9}
 }

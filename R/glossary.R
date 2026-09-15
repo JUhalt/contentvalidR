@@ -116,6 +116,20 @@
       stringsAsFactors = FALSE
     ),
     data.frame(
+      term = "agreement", workflow = "expert-panel",
+      label = "Panel-level agreement",
+      definition = paste(
+        "One coefficient describing how consistently the whole panel rated the",
+        "item set: Krippendorff's alpha by default, or Gwet's AC1 if chosen. It",
+        "is separate from modified kappa, which describes one item at a time."
+      ),
+      range = paste(
+        "1 is perfect agreement and 0 is agreement no better than chance; it can",
+        "be low on a close-agreeing panel whose ratings cluster on one value"
+      ),
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
       term = "cvr", workflow = "expert-panel",
       label = "Lawshe's Content Validity Ratio",
       definition = "How far the panel leans toward calling the item essential rather than merely useful.",

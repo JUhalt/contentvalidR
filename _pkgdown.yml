@@ -57,6 +57,7 @@ reference:
   - cvi
   - cvr
   - ioc
+  - panel_agreement
 
 - title: Judge and rater heterogeneity
   desc: Evidence about how far conclusions depend on the particular judges used.

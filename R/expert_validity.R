@@ -20,7 +20,8 @@
 #' Provides a user-facing workflow for three common expert-panel tasks:
 #'
 #' * `mode = "relevance"`: bounded ordinal relevance ratings, combining Aiken's
-#'   V (with Penfield-Giacobbi score intervals) and CVI/modified kappa.
+#'   V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+#'   panel-level agreement coefficient.
 #' * `mode = "essentiality"`: Lawshe CVR with exact binomial critical values.
 #' * `mode = "congruence"`: Rovinelli-Hambleton item-objective congruence.
 #'
@@ -45,13 +46,27 @@
 #'   `"wilson"` (default), `"agresti_coull"`, `"exact"`, or `"none"`. The
 #'   interval uses the same `alpha` as Aiken's V. See `ci` in [cvi()] for the
 #'   methods and the evidence for each.
+#' @param agreement Panel-level agreement coefficient for relevance mode:
+#'   `"krippendorff"` (default), `"ac1"`, or `"none"`. Krippendorff's alpha uses
+#'   the relevance ratings at `agreement_level`; Gwet's AC1 uses the
+#'   relevant/not-relevant decision. See [panel_agreement()] for the evidence
+#'   behind each, including why AC1 is never the default. Panels with fewer
+#'   than two experts or two items report no agreement coefficient.
+#' @param agreement_level Measurement level for Krippendorff's alpha:
+#'   `"ordinal"` (default), `"nominal"`, or `"interval"`. Ignored for AC1.
+#' @param agreement_B Bootstrap resamples for the agreement interval; `0` skips
+#'   the interval.
+#' @param seed Optional seed that makes the agreement interval reproducible.
 #'
 #' @return An object of class `contentvalid_expert` and
 #'   `contentvalid_workflow`. All flagship workflow objects expose the common
 #'   components `results`, `scale_summary`, `settings`, `design`, and `details`.
 #'   The historical top-level `scale` component is retained as a compatibility
 #'   alias for `scale_summary`. Results include a standardized `status` field
-#'   while retaining mode-specific `recommendation` wording.
+#'   while retaining mode-specific `recommendation` wording. In relevance mode,
+#'   `scale_summary` also holds `agreement`, `agreement_low`, and
+#'   `agreement_high`, and `details$agreement` holds the full
+#'   [panel_agreement()] result.
 #'
 #' @references
 #' Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
@@ -68,13 +83,22 @@
 #' indicator of content validity? *Research in Nursing & Health, 30*(4),
 #' 459-467. \doi{10.1002/nur.20199}
 #'
+#' Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
+#' reliability measure for coding data. *Communication Methods and Measures,
+#' 1*(1), 77-89. \doi{10.1080/19312450709336664}
+#'
+#' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
+#' inter-rater reliability for nominal data: Which coefficients and confidence
+#' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
+#' \doi{10.1186/s12874-016-0200-9}
+#'
 #' @examples
 #' relevance <- matrix(
 #'   c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
 #'   nrow = 4,
 #'   dimnames = list(NULL, paste0("Item", 1:4))
 #' )
-#' fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4)
+#' fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 #' fit
 #' summary(fit)
 #' @export
@@ -87,9 +111,15 @@ expert_validity <- function(data,
                             alpha = 0.05,
                             na.rm = FALSE,
                             target_col = "target_objective",
-                            proportion_ci = c("wilson", "agresti_coull", "exact", "none")) {
+                            proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
+                            agreement = c("krippendorff", "ac1", "none"),
+                            agreement_level = c("ordinal", "nominal", "interval"),
+                            agreement_B = 1000,
+                            seed = NULL) {
   mode <- match.arg(mode)
   proportion_ci <- match.arg(proportion_ci)
+  agreement <- match.arg(agreement)
+  agreement_level <- match.arg(agreement_level)
   .validate_flag(na.rm, "na.rm")
 
   if (mode == "relevance") {
@@ -142,6 +172,20 @@ expert_validity <- function(data,
       "The item does not meet the common panel-size CVI guideline; review wording, relevance, construct coverage, and expert comments before revising or removing it."
     }, character(1))
 
+    agree <- NULL
+    if (agreement != "none") {
+      .validate_bootstrap_args(agreement_B, seed, "agreement_B")
+      if (nrow(R) >= 2L && ncol(R) >= 2L) {
+        # Alpha uses the ratings at the chosen level; AC1 uses the
+        # relevant/not-relevant decision, the categorical judgment it was built for.
+        agree <- panel_agreement(
+          if (agreement == "ac1") B else R,
+          method = agreement, level = agreement_level,
+          B = agreement_B, alpha = alpha, seed = seed
+        )
+      }
+    }
+
     sl <- cv$scale_level
     scale <- data.frame(
       n_items = nrow(item),
@@ -150,6 +194,9 @@ expert_validity <- function(data,
       mean_Aiken_V = if (all(is.na(item$V))) NA_real_ else mean(item$V, na.rm = TRUE),
       S_CVI_Ave = sl$S_CVI_Ave,
       S_CVI_UA = sl$S_CVI_UA,
+      agreement = if (is.null(agree)) NA_real_ else agree$estimate,
+      agreement_low = if (is.null(agree)) NA_real_ else agree$ci_low,
+      agreement_high = if (is.null(agree)) NA_real_ else agree$ci_high,
       n_strong_support = sum(item$recommendation == "Strong support"),
       n_support = sum(item$recommendation == "Support"),
       n_review = sum(item$recommendation == "Review"),
@@ -164,7 +211,11 @@ expert_validity <- function(data,
       alpha = alpha, na.rm = isTRUE(na.rm),
       judge_type = "expert",
       aiken_ci = "Penfield-Giacobbi score",
-      proportion_ci = proportion_ci
+      proportion_ci = proportion_ci,
+      agreement = agreement,
+      agreement_level = if (agreement == "krippendorff") agreement_level else NA_character_,
+      agreement_B = agreement_B,
+      seed = seed
     )
     design <- list(
       type = "expert-panel relevance",
@@ -182,7 +233,7 @@ expert_validity <- function(data,
       scale_summary = scale,
       settings = settings,
       design = design,
-      details = list(cvi = cv),
+      details = list(cvi = cv, agreement = agree),
       legacy = list(scale = scale)
     )
   } else if (mode == "essentiality") {
@@ -362,6 +413,9 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
   cat(strrep("-", 35), "\n", sep = "")
   cat("Mode:", x$mode, "\n")
   d <- .workflow_design(x)
+  # Objects saved before panel agreement existed carry no agreement setting.
+  show_agreement <- identical(x$mode, "relevance") &&
+    is.character(x$settings$agreement) && !identical(x$settings$agreement, "none")
 
   if (x$mode == "relevance") {
     s <- x$scale[1, ]
@@ -373,6 +427,10 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
     cat("Strong support:", s$n_strong_support,
         "| Support:", s$n_support,
         "| Review:", s$n_review, "\n")
+    if (show_agreement) {
+      cat(strwrap(.expert_agreement_line(x$details$agreement, digits),
+                  width = 76, exdent = 2), sep = "\n")
+    }
     if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
       cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
     }
@@ -393,6 +451,10 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
     if (!is.null(x$settings$proportion_ci)) {
       cat(strwrap(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha),
                   width = 76), sep = "\n")
+    }
+    if (show_agreement && !is.null(x$details$agreement)) {
+      cat("\n")
+      cat(strwrap(.expert_agreement_note(x$details$agreement), width = 76), sep = "\n")
     }
     cat("\nCVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.\n")
   } else if (x$mode == "essentiality") {
@@ -424,7 +486,8 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
   if (.show_key()) {
     key_terms <- switch(
       x$mode,
-      relevance = c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod"),
+      relevance = c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod",
+                    if (show_agreement) "agreement"),
       essentiality = "cvr",
       "ioc"
     )
@@ -442,6 +505,7 @@ print.contentvalid_expert <- function(x, digits = 3, ...) {
 summary.contentvalid_expert <- function(object, ...) {
   out <- .workflow_summary_core(object)
   out$mode <- object$mode
+  out$agreement <- if (is.list(object$details)) object$details$agreement else NULL
   # Compatibility aliases retained for pre-v0.0.6 user code.
   out$scale <- out$scale_summary
   out$flagged <- out$reviewed_items
@@ -459,6 +523,11 @@ print.summary.contentvalid_expert <- function(x, digits = 3, ...) {
   if (x$n_insufficient > 0L) cat(" | Insufficient data:", x$n_insufficient)
   if (x$n_descriptive > 0L) cat(" | Descriptive only:", x$n_descriptive)
   cat("\n")
+  if (identical(x$mode, "relevance") && is.character(x$settings$agreement) &&
+      !identical(x$settings$agreement, "none")) {
+    cat(strwrap(.expert_agreement_line(x$agreement, digits), width = 76, exdent = 2),
+        sep = "\n")
+  }
   if (nrow(x$flagged) == 0L) {
     cat("No items were flagged by the workflow's quantitative review rules.\n")
   } else {
