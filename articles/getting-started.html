@@ -253,6 +253,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 6 </span></span>
 <span><span class="co">#&gt; Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 </span></span>
 <span><span class="co">#&gt; Strong support: 3 | Support: 0 | Review: 0 </span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133</span></span>
+<span><span class="co">#&gt;   to 0.15). Identical rating pairs: 71.1%</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span></span>
 <span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000     1      0.61          1         1</span></span>
@@ -269,6 +271,13 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
 <span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
 <span><span class="co">#&gt; whether the right judges were chosen.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas kappa_mod</span></span>
+<span><span class="co">#&gt; describes each item. Alpha can be low when nearly every rating is the same</span></span>
+<span><span class="co">#&gt; value, even on a panel that agrees closely, so read it beside the share of</span></span>
+<span><span class="co">#&gt; identical rating pairs. A low alpha with many identical pairs is not by</span></span>
+<span><span class="co">#&gt; itself evidence of a poor panel. Print `details$agreement` for the full</span></span>
+<span><span class="co">#&gt; explanation and interval details.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -288,6 +297,12 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
 <span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;   agreement -- Panel-level agreement. One coefficient describing how</span></span>
+<span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
+<span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
+<span><span class="co">#&gt;       kappa, which describes one item at a time. (1 is perfect agreement</span></span>
+<span><span class="co">#&gt;       and 0 is agreement no better than chance; it can be low on a</span></span>
+<span><span class="co">#&gt;       close-agreeing panel whose ratings cluster on one value)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the status labels mean</span></span>
 <span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
@@ -309,6 +324,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; ---------------------------------------------</span></span>
 <span><span class="co">#&gt; Mode: relevance </span></span>
 <span><span class="co">#&gt; Supported: 3 | Review: 0</span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133</span></span>
+<span><span class="co">#&gt;   to 0.15). Identical rating pairs: 71.1%</span></span>
 <span><span class="co">#&gt; No items were flagged by the workflow's quantitative review rules.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span></code></pre></div>
@@ -351,12 +368,12 @@ files.</p>
 <code class="sourceCode R"><span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">*</span><span class="fl">6</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/aikens_v.html">aikens_v</a></span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    item N n_missing    V    ci_low   ci_high               ci_method</span></span>
-<span><span class="co">#&gt; 1 Item1 5         0 0.65 0.4328543 0.8188082 Penfield-Giacobbi score</span></span>
-<span><span class="co">#&gt; 2 Item2 5         0 0.75 0.5312991 0.8881383 Penfield-Giacobbi score</span></span>
-<span><span class="co">#&gt; 3 Item3 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; 1 Item1 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; 2 Item2 5         0 0.30 0.1454772 0.5189728 Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; 3 Item3 5         0 0.70 0.4810272 0.8545228 Penfield-Giacobbi score</span></span>
 <span><span class="co">#&gt; 4 Item4 5         0 0.35 0.1811918 0.5671457 Penfield-Giacobbi score</span></span>
-<span><span class="co">#&gt; 5 Item5 5         0 0.55 0.3420853 0.7418021 Penfield-Giacobbi score</span></span>
-<span><span class="co">#&gt; 6 Item6 5         0 0.55 0.3420853 0.7418021 Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; 5 Item5 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; 6 Item6 5         0 0.65 0.4328543 0.8188082 Penfield-Giacobbi score</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/cvr.html">cvr</a></span><span class="op">(</span>essential <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>,<span class="fl">10</span>,<span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    item ne  N        cvr    p_value critical_ne critical_cvr  pass</span></span>
@@ -370,16 +387,16 @@ files.</p>
 <span><span class="co">#&gt; ----------------------------</span></span>
 <span><span class="co">#&gt; Items analyzed: 5 </span></span>
 <span><span class="co">#&gt; Judges per item: 6 </span></span>
-<span><span class="co">#&gt; S-CVI/Ave: 0.700 </span></span>
+<span><span class="co">#&gt; S-CVI/Ave: 0.667 </span></span>
 <span><span class="co">#&gt; S-CVI/UA : 0.200 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level results (modified kappa is chance-corrected):</span></span>
 <span><span class="co">#&gt;   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span></span>
-<span><span class="co">#&gt;  Item1 6 6 1.000     0.610      1.000 0.016     1.000</span></span>
-<span><span class="co">#&gt;  Item2 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
-<span><span class="co">#&gt;  Item3 4 6 0.667     0.300      0.903 0.234     0.565</span></span>
-<span><span class="co">#&gt;  Item4 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
-<span><span class="co">#&gt;  Item5 5 6 0.833     0.436      0.970 0.094     0.816</span></span>
+<span><span class="co">#&gt;  Item1 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
+<span><span class="co">#&gt;  Item2 4 6 0.667     0.300      0.903 0.234     0.565</span></span>
+<span><span class="co">#&gt;  Item3 3 6 0.500     0.188      0.812 0.312     0.273</span></span>
+<span><span class="co">#&gt;  Item4 6 6 1.000     0.610      1.000 0.016     1.000</span></span>
+<span><span class="co">#&gt;  Item5 4 6 0.667     0.300      0.903 0.234     0.565</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
@@ -397,12 +414,12 @@ files.</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ioc.html">ioc</a></span><span class="op">(</span><span class="va">ioc_df</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   item objective n_total n_judges n_missing        ioc</span></span>
-<span><span class="co">#&gt; 1   I1         A       3        3         0  0.3333333</span></span>
+<span><span class="co">#&gt; 1   I1         A       3        3         0  0.0000000</span></span>
 <span><span class="co">#&gt; 2   I1         B       3        3         0  0.3333333</span></span>
-<span><span class="co">#&gt; 3   I1         C       3        3         0 -0.3333333</span></span>
+<span><span class="co">#&gt; 3   I1         C       3        3         0 -0.6666667</span></span>
 <span><span class="co">#&gt; 4   I2         A       3        3         0  0.0000000</span></span>
 <span><span class="co">#&gt; 5   I2         B       3        3         0  0.0000000</span></span>
-<span><span class="co">#&gt; 6   I2         C       3        3         0 -0.6666667</span></span></code></pre></div>
+<span><span class="co">#&gt; 6   I2         C       3        3         0  0.0000000</span></span></code></pre></div>
 <p><strong>Diagnostics &amp; reproducibility</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># pretend "kept" after CFA</span></span>

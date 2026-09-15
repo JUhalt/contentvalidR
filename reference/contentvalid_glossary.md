@@ -98,6 +98,12 @@ contentvalid_glossary()
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
+#>   agreement -- Panel-level agreement. One coefficient describing how
+#>       consistently the whole panel rated the item set: Krippendorff's alpha
+#>       by default, or Gwet's AC1 if chosen. It is separate from modified
+#>       kappa, which describes one item at a time. (1 is perfect agreement
+#>       and 0 is agreement no better than chance; it can be low on a
+#>       close-agreeing panel whose ratings cluster on one value)
 #>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward
 #>       calling the item essential rather than merely useful. (-1 to 1; above
 #>       0 means more than half the panel called it essential)

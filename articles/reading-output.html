@@ -393,13 +393,54 @@ a study needs to match earlier work:</p>
 sit further apart. The printed output always names the method that
 produced the interval.</p>
 </div>
+<div class="section level3">
+<h3 id="reading-panel-agreement">Reading panel agreement<a class="anchor" aria-label="anchor" href="#reading-panel-agreement"></a>
+</h3>
+<p>Relevance mode also reports one agreement coefficient for the whole
+panel, in <code>scale_summary</code> as <code>agreement</code>,
+<code>agreement_low</code>, and <code>agreement_high</code>. The full
+result, with its explanation, is in <code>details$agreement</code>, and
+<code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> produces the same result directly:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/panel_agreement.html">panel_agreement</a></span><span class="op">(</span><span class="va">panel</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Panel-level agreement</span></span>
+<span><span class="co">#&gt; Items rated by two or more raters: 5   Raters: 8</span></span>
+<span><span class="co">#&gt; Krippendorff's alpha (ordinal): 0.693   95% interval: 0.071 to 0.86</span></span>
+<span><span class="co">#&gt; Identical rating pairs: 62.9%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Alpha compares the disagreement observed within items with the disagreement</span></span>
+<span><span class="co">#&gt; expected if these same ratings were assigned to items at random: 1 means</span></span>
+<span><span class="co">#&gt; perfect agreement and 0 means agreement no better than chance. Alpha falls</span></span>
+<span><span class="co">#&gt; when ratings cluster on a few values, because little disagreement is then</span></span>
+<span><span class="co">#&gt; expected by chance. A high share of identical rating pairs alongside a low</span></span>
+<span><span class="co">#&gt; alpha reflects that clustering, which is common when nearly every item is</span></span>
+<span><span class="co">#&gt; rated relevant, and is not by itself evidence of a poor panel.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Krippendorff's alpha is the default because it handles ordinal ratings and</span></span>
+<span><span class="co">#&gt; missing ratings (Zapf et al., 2016). It is a general reliability</span></span>
+<span><span class="co">#&gt; coefficient; no publication applying it specifically to content-validity</span></span>
+<span><span class="co">#&gt; panels was found.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The interval resamples items with all of their ratings, following Zapf et</span></span>
+<span><span class="co">#&gt; al. (2016), and varies slightly between runs unless `seed` is set.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. </span></span>
+<span><span class="co">#&gt; It does not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+<p>Read two numbers together: the coefficient and the share of identical
+rating pairs. Krippendorff’s alpha, the default, can be low on a panel
+that agrees closely when nearly every rating is the same value, because
+chance then predicts very little disagreement. A low alpha next to a
+high share of identical pairs reflects that clustering. Agreement
+describes the raters, not the items: a consistent panel can still
+consistently rate an item as irrelevant.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="reading-judge-heterogeneity">Reading judge heterogeneity<a class="anchor" aria-label="anchor" href="#reading-judge-heterogeneity"></a>
 </h2>
 <p><code><a href="../reference/judge_validity.html">judge_validity()</a></code> asks a different question: do your
 conclusions depend on <em>these particular judges</em>?</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">judge_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
@@ -439,7 +480,7 @@ tells you a conclusion rests on one person’s ratings, which is worth
 knowing before you write it up.</p>
 <p>The panel-level dependability coefficient answers a planning
 question:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_judge</span><span class="op">)</span><span class="op">$</span><span class="va">gtheory</span><span class="op">$</span><span class="va">judges_needed</span></span>
 <span><span class="co">#&gt;   target n_judges_relative n_judges_absolute</span></span>
 <span><span class="co">#&gt; 1    0.7                 1                 2</span></span>
@@ -453,7 +494,7 @@ items.</p>
 <div class="section level2">
 <h2 id="reading-domain-coverage">Reading domain coverage<a class="anchor" aria-label="anchor" href="#reading-domain-coverage"></a>
 </h2>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assignments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
 <span>  construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>,</span>
@@ -530,7 +571,7 @@ blueprint.</p>
 <p><code>settings</code> and <code>design</code> hold everything a
 reader needs to reproduce the decision rules, so report them rather than
 only the coefficients:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_sort</span><span class="op">$</span><span class="va">settings</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p0"</span>, <span class="st">"alpha"</span>, <span class="st">"judge_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $p0</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span>
@@ -546,10 +587,10 @@ only the coefficients:</p>
 </h2>
 <p>Printed output includes a key defining each column. Once the terms
 are familiar:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The definitions remain available at any time:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contentvalid_glossary.html">contentvalid_glossary</a></span><span class="op">(</span><span class="st">"expert-panel"</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

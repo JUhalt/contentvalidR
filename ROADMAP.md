@@ -523,18 +523,30 @@ conservative.
 Verification against `prop.test(correct = FALSE)` and
 [`binom.test()`](https://rdrr.io/r/stats/binom.test.html).
 
-### Selectable agreement coefficients for expert panels
+### Panel-level agreement coefficients for expert panels
 
 Tracking: [\#18](https://github.com/JUhalt/contentvalidR/issues/18).
 
-Modified kappa stays the default (Polit, Beck & Owen, 2007).
+Modified kappa (Polit, Beck & Owen, 2007) is an item-level correction
+and stays as it is. This workstream adds a panel-level coefficient
+describing agreement across the whole item set, which
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+did not previously report.
 
-Krippendorff’s alpha with bootstrap intervals (Hayes & Krippendorff,
-2007; Zapf et al., 2016), documented as a general reliability
+Krippendorff’s alpha as the default (Hayes & Krippendorff, 2007;
+Krippendorff, 2011), with the measurement level selectable: ordinal
+(default), nominal, or interval. Documented as a general reliability
 coefficient with no content-validity-specific publication.
 
-Gwet’s AC1 (Gwet, 2008) as a never-default option that prints the
-critique in Vach & Gerke (2023).
+Percentile bootstrap intervals that resample items with all ratings
+intact, following Zapf et al. (2016).
+
+Gwet’s AC1 (Gwet, 2008) as a never-default option on the relevance
+decision, printing the critique in Vach & Gerke (2023).
+
+Output explains that alpha can be low on a high-agreement panel when
+nearly every rating is “relevant”, so a low value is not read as a poor
+panel.
 
 ### Evidence-based factor retention and citations for auxiliary helpers
 

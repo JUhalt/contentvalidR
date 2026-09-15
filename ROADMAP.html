@@ -262,11 +262,13 @@
 <li><label><input type="checkbox">Verification against <code>prop.test(correct = FALSE)</code> and <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>.</label></li>
 </ul></div>
 <div class="section level3">
-<h3 id="selectable-agreement-coefficients-for-expert-panels">Selectable agreement coefficients for expert panels<a class="anchor" aria-label="anchor" href="#selectable-agreement-coefficients-for-expert-panels"></a></h3>
+<h3 id="panel-level-agreement-coefficients-for-expert-panels">Panel-level agreement coefficients for expert panels<a class="anchor" aria-label="anchor" href="#panel-level-agreement-coefficients-for-expert-panels"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/18" class="external-link">#18</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Modified kappa stays the default (Polit, Beck &amp; Owen, 2007).</label></li>
-<li><label><input type="checkbox">Krippendorff’s alpha with bootstrap intervals (Hayes &amp; Krippendorff, 2007; Zapf et al., 2016), documented as a general reliability coefficient with no content-validity-specific publication.</label></li>
-<li><label><input type="checkbox">Gwet’s AC1 (Gwet, 2008) as a never-default option that prints the critique in Vach &amp; Gerke (2023).</label></li>
+<p>Modified kappa (Polit, Beck &amp; Owen, 2007) is an item-level correction and stays as it is. This workstream adds a panel-level coefficient describing agreement across the whole item set, which <code><a href="reference/expert_validity.html">expert_validity()</a></code> did not previously report.</p>
+<ul class="task-list"><li><label><input type="checkbox" checked>Krippendorff’s alpha as the default (Hayes &amp; Krippendorff, 2007; Krippendorff, 2011), with the measurement level selectable: ordinal (default), nominal, or interval. Documented as a general reliability coefficient with no content-validity-specific publication.</label></li>
+<li><label><input type="checkbox" checked>Percentile bootstrap intervals that resample items with all ratings intact, following Zapf et al. (2016).</label></li>
+<li><label><input type="checkbox" checked>Gwet’s AC1 (Gwet, 2008) as a never-default option on the relevance decision, printing the critique in Vach &amp; Gerke (2023).</label></li>
+<li><label><input type="checkbox" checked>Output explains that alpha can be low on a high-agreement panel when nearly every rating is “relevant”, so a low value is not read as a poor panel.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="evidence-based-factor-retention-and-citations-for-auxiliary-helpers">Evidence-based factor retention and citations for auxiliary helpers<a class="anchor" aria-label="anchor" href="#evidence-based-factor-retention-and-citations-for-auxiliary-helpers"></a></h3>

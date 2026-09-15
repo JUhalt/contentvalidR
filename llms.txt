@@ -567,7 +567,8 @@ expert_ratings <- matrix(
 efit <- expert_validity(
   expert_ratings,
   mode = "relevance",
-  lo = 1, hi = 4
+  lo = 1, hi = 4,
+  seed = 1
 )
 efit
 #> contentvalidR expert-panel analysis
@@ -576,6 +577,8 @@ efit
 #> Items: 3 | Experts/item: 6 
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133
+#>   to 0.15). Identical rating pairs: 71.1%
 #> 
 #>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
 #>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
@@ -592,6 +595,13 @@ efit
 #> compared seven methods and recommends score intervals over the Wald
 #> interval. An interval reflects how few ratings an item received, not
 #> whether the right judges were chosen.
+#> 
+#> Panel agreement is one coefficient for the whole panel, whereas kappa_mod
+#> describes each item. Alpha can be low when nearly every rating is the same
+#> value, even on a panel that agrees closely, so read it beside the share of
+#> identical rating pairs. A low alpha with many identical pairs is not by
+#> itself evidence of a poor panel. Print `details$agreement` for the full
+#> explanation and interval details.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -611,6 +621,12 @@ efit
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
+#>   agreement -- Panel-level agreement. One coefficient describing how
+#>       consistently the whole panel rated the item set: Krippendorff's alpha
+#>       by default, or Gwet's AC1 if chosen. It is separate from modified
+#>       kappa, which describes one item at a time. (1 is perfect agreement
+#>       and 0 is agreement no better than chance; it can be low on a
+#>       close-agreeing panel whose ratings cluster on one value)
 #> 
 #> What the status labels mean
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -632,6 +648,8 @@ summary(efit)
 #> ---------------------------------------------
 #> Mode: relevance 
 #> Supported: 3 | Review: 0
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133
+#>   to 0.15). Identical rating pairs: 71.1%
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.
@@ -639,9 +657,25 @@ summary(efit)
 
 Relevance mode reports Aiken’s V with the Penfield-Giacobbi score
 confidence interval, I-CVI with its own interval, Polit-Beck-Owen
-modified kappa, S-CVI/Ave, and S-CVI/UA. The workflow displays common
-panel-size CVI guidelines as **review aids**, not universal validity
-cutoffs. Aiken V is not converted into an automatic deletion rule.
+modified kappa, S-CVI/Ave, S-CVI/UA, and panel-level agreement. The
+workflow displays common panel-size CVI guidelines as **review aids**,
+not universal validity cutoffs. Aiken V is not converted into an
+automatic deletion rule.
+
+Panel-level agreement is one coefficient for how consistently the panel
+rated the whole item set; modified kappa still describes each item. The
+default is Krippendorff’s alpha on the ordinal ratings (Hayes &
+Krippendorff, 2007), and `agreement_level` switches to nominal or
+interval. Its bootstrap interval resamples items with all of their
+ratings, following Zapf et al. (2016); set `seed` to make it
+reproducible. In the example above, alpha is near zero even though most
+rating pairs are identical: the three items were rated almost the same,
+so the ratings barely distinguish one item from another. That is why the
+output reports identical rating pairs beside alpha. Gwet’s AC1 is
+available through `agreement = "ac1"` but is never the default, and its
+output repeats the critique in Vach and Gerke (2023).
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+runs the same analysis on any rater-by-item matrix.
 
 I-CVI here, like Psa in
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
@@ -668,13 +702,15 @@ uses a different rating convention:
 ``` r
 
 expert_validity(expert_ratings, mode = "relevance",
-                lo = 1, hi = 4, relevance_cut = 3)
+                lo = 1, hi = 4, relevance_cut = 3, seed = 1)
 #> contentvalidR expert-panel analysis
 #> -----------------------------------
 #> Mode: relevance 
 #> Items: 3 | Experts/item: 6 
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133
+#>   to 0.15). Identical rating pairs: 71.1%
 #> 
 #>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
 #>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
@@ -691,6 +727,13 @@ expert_validity(expert_ratings, mode = "relevance",
 #> compared seven methods and recommends score intervals over the Wald
 #> interval. An interval reflects how few ratings an item received, not
 #> whether the right judges were chosen.
+#> 
+#> Panel agreement is one coefficient for the whole panel, whereas kappa_mod
+#> describes each item. Alpha can be low when nearly every rating is the same
+#> value, even on a panel that agrees closely, so read it beside the share of
+#> identical rating pairs. A low alpha with many identical pairs is not by
+#> itself evidence of a poor panel. Print `details$agreement` for the full
+#> explanation and interval details.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -710,6 +753,12 @@ expert_validity(expert_ratings, mode = "relevance",
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
+#>   agreement -- Panel-level agreement. One coefficient describing how
+#>       consistently the whole panel rated the item set: Krippendorff's alpha
+#>       by default, or Gwet's AC1 if chosen. It is separate from modified
+#>       kappa, which describes one item at a time. (1 is perfect agreement
+#>       and 0 is agreement no better than chance; it can be low on a
+#>       close-agreeing panel whose ratings cluster on one value)
 #> 
 #> What the status labels mean
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -1204,6 +1253,21 @@ and
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single
   proportion: Comparison of seven methods. *Statistics in Medicine,
   17*(8), 857–872.
+- Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a
+  standard reliability measure for coding data. *Communication Methods
+  and Measures, 1*(1), 77–89.
+  <https://doi.org/10.1080/19312450709336664>
+- Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
+  inter-rater reliability for nominal data: Which coefficients and
+  confidence intervals are appropriate? *BMC Medical Research
+  Methodology, 16*, 93. <https://doi.org/10.1186/s12874-016-0200-9>
+- Gwet, K. L. (2008). Computing inter-rater reliability and its variance
+  in the presence of high agreement. *British Journal of Mathematical
+  and Statistical Psychology, 61*(1), 29–48.
+  <https://doi.org/10.1348/000711006X126600>
+- Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for
+  Cohen’s kappa: A comparison of basic properties. *MethodsX, 10*,
+  102212. 
 
 ## License
 
@@ -1312,6 +1376,8 @@ size.
   Lawshe's Content Validity Ratio (CVR)
 - [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md) :
   Item-Objective Congruence (IOC)
+- [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  : Panel-level agreement among expert raters
 
 ## Judge and rater heterogeneity
 

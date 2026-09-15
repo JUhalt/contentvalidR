@@ -200,6 +200,8 @@ expert_fit
 #> Items: 3 | Experts/item: 6 
 #> Mean Aiken V: 0.944 | S-CVI/Ave: 1 | S-CVI/UA: 1 
 #> Strong support: 3 | Support: 0 | Review: 0 
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133
+#>   to 0.15). Identical rating pairs: 71.1%
 #> 
 #>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
 #>  Item1 6 1.000  0.824   1.000     1      0.61          1         1
@@ -216,6 +218,13 @@ expert_fit
 #> compared seven methods and recommends score intervals over the Wald
 #> interval. An interval reflects how few ratings an item received, not
 #> whether the right judges were chosen.
+#> 
+#> Panel agreement is one coefficient for the whole panel, whereas kappa_mod
+#> describes each item. Alpha can be low when nearly every rating is the same
+#> value, even on a panel that agrees closely, so read it beside the share of
+#> identical rating pairs. A low alpha with many identical pairs is not by
+#> itself evidence of a poor panel. Print `details$agreement` for the full
+#> explanation and interval details.
 #> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
@@ -235,6 +244,12 @@ expert_fit
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
+#>   agreement -- Panel-level agreement. One coefficient describing how
+#>       consistently the whole panel rated the item set: Krippendorff's alpha
+#>       by default, or Gwet's AC1 if chosen. It is separate from modified
+#>       kappa, which describes one item at a time. (1 is perfect agreement
+#>       and 0 is agreement no better than chance; it can be low on a
+#>       close-agreeing panel whose ratings cluster on one value)
 #> 
 #> What the status labels mean
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -256,6 +271,8 @@ summary(expert_fit)
 #> ---------------------------------------------
 #> Mode: relevance 
 #> Supported: 3 | Review: 0
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.018 (95% interval -0.133
+#>   to 0.15). Identical rating pairs: 71.1%
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.
@@ -308,12 +325,12 @@ for manuscript-ready reporting scaffolds built from those same files.
 R <- matrix(sample(1:5, 5*6, replace = TRUE), nrow = 5)
 aikens_v(R, lo = 1, hi = 5)
 #>    item N n_missing    V    ci_low   ci_high               ci_method
-#> 1 Item1 5         0 0.65 0.4328543 0.8188082 Penfield-Giacobbi score
-#> 2 Item2 5         0 0.75 0.5312991 0.8881383 Penfield-Giacobbi score
-#> 3 Item3 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score
+#> 1 Item1 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score
+#> 2 Item2 5         0 0.30 0.1454772 0.5189728 Penfield-Giacobbi score
+#> 3 Item3 5         0 0.70 0.4810272 0.8545228 Penfield-Giacobbi score
 #> 4 Item4 5         0 0.35 0.1811918 0.5671457 Penfield-Giacobbi score
-#> 5 Item5 5         0 0.55 0.3420853 0.7418021 Penfield-Giacobbi score
-#> 6 Item6 5         0 0.55 0.3420853 0.7418021 Penfield-Giacobbi score
+#> 5 Item5 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score
+#> 6 Item6 5         0 0.65 0.4328543 0.8188082 Penfield-Giacobbi score
 
 cvr(essential = c(8,10,5), N = 12)
 #>    item ne  N        cvr    p_value critical_ne critical_cvr  pass
@@ -327,16 +344,16 @@ cvi(M)
 #> ----------------------------
 #> Items analyzed: 5 
 #> Judges per item: 6 
-#> S-CVI/Ave: 0.700 
+#> S-CVI/Ave: 0.667 
 #> S-CVI/UA : 0.200 
 #> 
 #> Item-level results (modified kappa is chance-corrected):
 #>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod
-#>  Item1 6 6 1.000     0.610      1.000 0.016     1.000
-#>  Item2 3 6 0.500     0.188      0.812 0.312     0.273
-#>  Item3 4 6 0.667     0.300      0.903 0.234     0.565
-#>  Item4 3 6 0.500     0.188      0.812 0.312     0.273
-#>  Item5 5 6 0.833     0.436      0.970 0.094     0.816
+#>  Item1 3 6 0.500     0.188      0.812 0.312     0.273
+#>  Item2 4 6 0.667     0.300      0.903 0.234     0.565
+#>  Item3 3 6 0.500     0.188      0.812 0.312     0.273
+#>  Item4 6 6 1.000     0.610      1.000 0.016     1.000
+#>  Item5 4 6 0.667     0.300      0.903 0.234     0.565
 #> 
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald
@@ -354,12 +371,12 @@ ioc_df <- data.frame(
 )
 ioc(ioc_df)
 #>   item objective n_total n_judges n_missing        ioc
-#> 1   I1         A       3        3         0  0.3333333
+#> 1   I1         A       3        3         0  0.0000000
 #> 2   I1         B       3        3         0  0.3333333
-#> 3   I1         C       3        3         0 -0.3333333
+#> 3   I1         C       3        3         0 -0.6666667
 #> 4   I2         A       3        3         0  0.0000000
 #> 5   I2         B       3        3         0  0.0000000
-#> 6   I2         C       3        3         0 -0.6666667
+#> 6   I2         C       3        3         0  0.0000000
 ```
 
 **Diagnostics & reproducibility**

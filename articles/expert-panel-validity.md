@@ -12,7 +12,8 @@ interchangeable.
 
 The three modes are:
 
-- **relevance**: Aiken’s V plus CVI and modified kappa;
+- **relevance**: Aiken’s V plus CVI and modified kappa, with a
+  panel-level agreement coefficient;
 - **essentiality**: Lawshe’s CVR with exact binomial inference; and
 - **congruence**: Rovinelli-Hambleton IOC.
 
@@ -36,7 +37,7 @@ R <- matrix(
   dimnames = list(NULL, paste0("Item", 1:4))
 )
 
-fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4)
+fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 #> contentvalidR expert-panel analysis
 #> -----------------------------------
@@ -44,6 +45,8 @@ fit
 #> Items: 4 | Experts/item: 6 
 #> Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 
 #> Strong support: 4 | Support: 0 | Review: 0 
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121
+#>   to 0.634). Identical rating pairs: 63.3%
 #> 
 #>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
 #>  Item1 6 1.000  0.824   1.000 1.000     0.610       1.00     1.000
@@ -63,6 +66,13 @@ fit
 #> interval. An interval reflects how few ratings an item received, not
 #> whether the right judges were chosen.
 #> 
+#> Panel agreement is one coefficient for the whole panel, whereas kappa_mod
+#> describes each item. Alpha can be low when nearly every rating is the same
+#> value, even on a panel that agrees closely, so read it beside the share of
+#> identical rating pairs. A low alpha with many identical pairs is not by
+#> itself evidence of a poor panel. Print `details$agreement` for the full
+#> explanation and interval details.
+#> 
 #> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
 #> 
 #> What these columns mean
@@ -81,6 +91,12 @@ fit
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
+#>   agreement -- Panel-level agreement. One coefficient describing how
+#>       consistently the whole panel rated the item set: Krippendorff's alpha
+#>       by default, or Gwet's AC1 if chosen. It is separate from modified
+#>       kappa, which describes one item at a time. (1 is perfect agreement
+#>       and 0 is agreement no better than chance; it can be low on a
+#>       close-agreeing panel whose ratings cluster on one value)
 #> 
 #> What the status labels mean
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -102,6 +118,8 @@ summary(fit)
 #> ---------------------------------------------
 #> Mode: relevance 
 #> Supported: 4 | Review: 0
+#> Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121
+#>   to 0.634). Identical rating pairs: 63.3%
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.
@@ -135,6 +153,120 @@ Modified kappa provides a chance-corrected complement to I-CVI.
 At the scale level, S-CVI/Ave and S-CVI/UA are reported together.
 S-CVI/Ave is generally less brittle than universal agreement, but both
 should be interpreted alongside the distribution of item-level evidence.
+
+## Panel-level agreement
+
+I-CVI and modified kappa describe one item at a time. Relevance mode
+also reports how consistently the panel rated the whole item set, as one
+coefficient with a bootstrap interval:
+
+``` r
+
+fit$scale_summary[, c("agreement", "agreement_low", "agreement_high")]
+#>   agreement agreement_low agreement_high
+#> 1 0.3743873    -0.1210084      0.6340909
+fit$details$agreement
+#> Panel-level agreement
+#> Items rated by two or more raters: 4   Raters: 6
+#> Krippendorff's alpha (ordinal): 0.374   95% interval: -0.121 to 0.634
+#> Identical rating pairs: 63.3%
+#> 
+#> Alpha compares the disagreement observed within items with the disagreement
+#> expected if these same ratings were assigned to items at random: 1 means
+#> perfect agreement and 0 means agreement no better than chance. Alpha falls
+#> when ratings cluster on a few values, because little disagreement is then
+#> expected by chance. A high share of identical rating pairs alongside a low
+#> alpha reflects that clustering, which is common when nearly every item is
+#> rated relevant, and is not by itself evidence of a poor panel.
+#> 
+#> Krippendorff's alpha is the default because it handles ordinal ratings and
+#> missing ratings (Zapf et al., 2016). It is a general reliability
+#> coefficient; no publication applying it specifically to content-validity
+#> panels was found.
+#> 
+#> The interval resamples items with all of their ratings, following Zapf et
+#> al. (2016), and varies slightly between runs unless `seed` is set. In 5 of
+#> 1000 resamples the coefficient could not be computed, usually because every
+#> resampled rating was identical; the interval uses the rest. With few items
+#> this interval is imprecise and can be misleading.
+#> 
+#> Panel agreement describes how consistently raters rated these items. 
+#> It does not show that the items are relevant or that the domain is covered.
+```
+
+The default coefficient is Krippendorff’s alpha. It accepts any number
+of experts and missing ratings, and Zapf et al. (2016) recommend it when
+ratings are ordinal or incomplete, which describes most expert panels.
+It is a general reliability coefficient (Hayes & Krippendorff, 2007)
+rather than one developed for content validity; no publication applying
+it specifically to content-validity panels was found.
+
+Choose the measurement level that matches the rating scale. Relevance
+ratings are treated as ordinal by default.
+`agreement_level = "interval"` treats the distances between scale points
+as equal, and `"nominal"` treats every disagreement as equally serious:
+
+``` r
+
+expert_validity(R, mode = "relevance", lo = 1, hi = 4,
+                agreement_level = "interval", agreement_B = 0)$scale_summary$agreement
+#> [1] 0.3715847
+```
+
+### Why alpha can be low when experts agree
+
+Alpha compares the disagreement within items with the disagreement
+expected if the same ratings were scattered across items at random. When
+a panel rates nearly every item 4, very little disagreement is expected
+by chance, so a few 3s pull alpha down even though most rating pairs are
+identical. Feinstein and Cicchetti (1990) described the same pattern for
+kappa. The output reports the share of identical rating pairs next to
+alpha so the two can be read together. A low alpha alongside a high
+share of identical pairs is not by itself evidence of a poor panel.
+
+### Gwet’s AC1
+
+Gwet’s (2008) AC1 was designed to stay high in that situation, and it is
+available with `agreement = "ac1"`. It is never the default. Vach and
+Gerke (2023) show that AC1 rises as ratings concentrate in one category
+even when agreement does not change, and that it can be above zero when
+experts rate independently. Its output always repeats that critique. In
+relevance mode, AC1 is computed on the relevant/not-relevant decision at
+`relevance_cut`:
+
+``` r
+
+ac1_fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4,
+                           agreement = "ac1", agreement_B = 0)
+ac1_fit$details$agreement
+#> Panel-level agreement
+#> Items rated by two or more raters: 4   Raters: 6
+#> Gwet's AC1: 0.909
+#> Identical rating pairs: 91.7%
+#> 
+#> AC1 compares observed agreement with the agreement expected by chance,
+#> estimated so that it stays high when nearly every rating falls in one
+#> category (Gwet, 2008).
+#> 
+#> Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show
+#> that it rises as ratings concentrate in one category even when agreement is
+#> unchanged, that it can be non-zero when raters are independent, and that
+#> benchmark labels developed for kappa, such as Landis and Koch's, must not
+#> be applied to it.
+#> 
+#> Panel agreement describes how consistently raters rated these items. 
+#> It does not show that the items are relevant or that the domain is covered.
+```
+
+### The interval
+
+The interval resamples items with all of their ratings intact, the
+procedure Zapf et al. (2016) evaluated; they found that Krippendorff’s
+original bootstrap, which ignores dependence between raters, reached
+only about 60% coverage. The interval varies slightly between runs, so
+set `seed` to make it reproducible, or set `agreement_B = 0` to skip it.
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+runs the same analysis on any rater-by-item matrix.
 
 ## Essentiality: Lawshe CVR with exact critical values
 
@@ -338,7 +470,8 @@ A concise methods/results description should identify:
 
 1.  who the experts were and why they were qualified;
 2.  the exact task and response scale;
-3.  the index and inference/CI procedure used;
+3.  the index and inference/CI procedure used, and for relevance ratings
+    the agreement coefficient and its measurement level;
 4.  the panel size, including item-specific missingness;
 5.  quantitative item and scale evidence; and
 6.  how expert comments, construct coverage, and comprehensibility
@@ -362,6 +495,22 @@ validity ratio: Revisiting the original methods of calculation.
 *Measurement and Evaluation in Counseling and Development, 47*(1),
 79-86. <https://doi.org/10.1177/0748175613513808>
 
+Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
+kappa: I. The problems of two paradoxes. *Journal of Clinical
+Epidemiology, 43*(6), 543-549.
+
+Gwet, K. L. (2008). Computing inter-rater reliability and its variance
+in the presence of high agreement. *British Journal of Mathematical and
+Statistical Psychology, 61*(1), 29-48.
+<https://doi.org/10.1348/000711006X126600>
+
+Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a
+standard reliability measure for coding data. *Communication Methods and
+Measures, 1*(1), 77-89. <https://doi.org/10.1080/19312450709336664>
+
+Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability.*
+Annenberg School for Communication, University of Pennsylvania.
+
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken’s item content-relevance index.
 *Measurement in Physical Education and Exercise Science, 8*(4), 213-225.
@@ -379,3 +528,11 @@ validity. *Dutch Journal of Educational Research, 2*, 49-60.
 Turner, R. C., & Carlson, L. (2003). Indexes of item-objective
 congruence for multidimensional items. *International Journal of
 Testing, 3*(2), 163-171. <https://doi.org/10.1207/S15327574IJT0302_5>
+
+Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for Cohen’s
+kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+
+Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
+inter-rater reliability for nominal data: Which coefficients and
+confidence intervals are appropriate? *BMC Medical Research Methodology,
+16*, 93. <https://doi.org/10.1186/s12874-016-0200-9>

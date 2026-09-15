@@ -291,10 +291,12 @@ expert_fit$results
 #> 4    Review
 #> 5    Review
 expert_fit$scale_summary
-#>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA
-#> 1       5             8             8         0.75       0.8      0.6
-#>   n_strong_support n_support n_review n_insufficient
-#> 1                3         0        2              0
+#>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
+#> 1       5             8             8         0.75       0.8      0.6 0.6934253
+#>   agreement_low agreement_high n_strong_support n_support n_review
+#> 1    0.07142857      0.8457143                3         0        2
+#>   n_insufficient
+#> 1              0
 ```
 
 > Experts rated the relevance of each candidate item on a bounded

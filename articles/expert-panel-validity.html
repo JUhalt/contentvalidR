@@ -82,8 +82,8 @@ interchangeable.</p>
 <p>The three modes are:</p>
 <ul>
 <li>
-<strong>relevance</strong>: Aiken’s V plus CVI and modified
-kappa;</li>
+<strong>relevance</strong>: Aiken’s V plus CVI and modified kappa,
+with a panel-level agreement coefficient;</li>
 <li>
 <strong>essentiality</strong>: Lawshe’s CVR with exact binomial
 inference; and</li>
@@ -109,7 +109,7 @@ of the content-validity argument.</p>
 <span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -117,6 +117,8 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; Items: 4 | Experts/item: 6 </span></span>
 <span><span class="co">#&gt; Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 </span></span>
 <span><span class="co">#&gt; Strong support: 4 | Support: 0 | Review: 0 </span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121</span></span>
+<span><span class="co">#&gt;   to 0.634). Identical rating pairs: 63.3%</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span></span>
 <span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000 1.000     0.610       1.00     1.000</span></span>
@@ -136,6 +138,13 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
 <span><span class="co">#&gt; whether the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas kappa_mod</span></span>
+<span><span class="co">#&gt; describes each item. Alpha can be low when nearly every rating is the same</span></span>
+<span><span class="co">#&gt; value, even on a panel that agrees closely, so read it beside the share of</span></span>
+<span><span class="co">#&gt; identical rating pairs. A low alpha with many identical pairs is not by</span></span>
+<span><span class="co">#&gt; itself evidence of a poor panel. Print `details$agreement` for the full</span></span>
+<span><span class="co">#&gt; explanation and interval details.</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
@@ -154,6 +163,12 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
 <span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;   agreement -- Panel-level agreement. One coefficient describing how</span></span>
+<span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
+<span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
+<span><span class="co">#&gt;       kappa, which describes one item at a time. (1 is perfect agreement</span></span>
+<span><span class="co">#&gt;       and 0 is agreement no better than chance; it can be low on a</span></span>
+<span><span class="co">#&gt;       close-agreeing panel whose ratings cluster on one value)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the status labels mean</span></span>
 <span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
@@ -175,6 +190,8 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; ---------------------------------------------</span></span>
 <span><span class="co">#&gt; Mode: relevance </span></span>
 <span><span class="co">#&gt; Supported: 4 | Review: 0</span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121</span></span>
+<span><span class="co">#&gt;   to 0.634). Identical rating pairs: 63.3%</span></span>
 <span><span class="co">#&gt; No items were flagged by the workflow's quantitative review rules.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span></code></pre></div>
@@ -205,11 +222,120 @@ should be interpreted alongside the distribution of item-level
 evidence.</p>
 </div>
 <div class="section level2">
+<h2 id="panel-level-agreement">Panel-level agreement<a class="anchor" aria-label="anchor" href="#panel-level-agreement"></a>
+</h2>
+<p>I-CVI and modified kappa describe one item at a time. Relevance mode
+also reports how consistently the panel rated the whole item set, as one
+coefficient with a bootstrap interval:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"agreement"</span>, <span class="st">"agreement_low"</span>, <span class="st">"agreement_high"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   agreement agreement_low agreement_high</span></span>
+<span><span class="co">#&gt; 1 0.3743873    -0.1210084      0.6340909</span></span>
+<span><span class="va">fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">agreement</span></span>
+<span><span class="co">#&gt; Panel-level agreement</span></span>
+<span><span class="co">#&gt; Items rated by two or more raters: 4   Raters: 6</span></span>
+<span><span class="co">#&gt; Krippendorff's alpha (ordinal): 0.374   95% interval: -0.121 to 0.634</span></span>
+<span><span class="co">#&gt; Identical rating pairs: 63.3%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Alpha compares the disagreement observed within items with the disagreement</span></span>
+<span><span class="co">#&gt; expected if these same ratings were assigned to items at random: 1 means</span></span>
+<span><span class="co">#&gt; perfect agreement and 0 means agreement no better than chance. Alpha falls</span></span>
+<span><span class="co">#&gt; when ratings cluster on a few values, because little disagreement is then</span></span>
+<span><span class="co">#&gt; expected by chance. A high share of identical rating pairs alongside a low</span></span>
+<span><span class="co">#&gt; alpha reflects that clustering, which is common when nearly every item is</span></span>
+<span><span class="co">#&gt; rated relevant, and is not by itself evidence of a poor panel.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Krippendorff's alpha is the default because it handles ordinal ratings and</span></span>
+<span><span class="co">#&gt; missing ratings (Zapf et al., 2016). It is a general reliability</span></span>
+<span><span class="co">#&gt; coefficient; no publication applying it specifically to content-validity</span></span>
+<span><span class="co">#&gt; panels was found.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The interval resamples items with all of their ratings, following Zapf et</span></span>
+<span><span class="co">#&gt; al. (2016), and varies slightly between runs unless `seed` is set. In 5 of</span></span>
+<span><span class="co">#&gt; 1000 resamples the coefficient could not be computed, usually because every</span></span>
+<span><span class="co">#&gt; resampled rating was identical; the interval uses the rest. With few items</span></span>
+<span><span class="co">#&gt; this interval is imprecise and can be misleading.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. </span></span>
+<span><span class="co">#&gt; It does not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+<p>The default coefficient is Krippendorff’s alpha. It accepts any
+number of experts and missing ratings, and Zapf et al. (2016) recommend
+it when ratings are ordinal or incomplete, which describes most expert
+panels. It is a general reliability coefficient (Hayes &amp;
+Krippendorff, 2007) rather than one developed for content validity; no
+publication applying it specifically to content-validity panels was
+found.</p>
+<p>Choose the measurement level that matches the rating scale. Relevance
+ratings are treated as ordinal by default.
+<code>agreement_level = "interval"</code> treats the distances between
+scale points as equal, and <code>"nominal"</code> treats every
+disagreement as equally serious:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                agreement_level <span class="op">=</span> <span class="st">"interval"</span>, agreement_B <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">$</span><span class="va">agreement</span></span>
+<span><span class="co">#&gt; [1] 0.3715847</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="why-alpha-can-be-low-when-experts-agree">Why alpha can be low when experts agree<a class="anchor" aria-label="anchor" href="#why-alpha-can-be-low-when-experts-agree"></a>
+</h3>
+<p>Alpha compares the disagreement within items with the disagreement
+expected if the same ratings were scattered across items at random. When
+a panel rates nearly every item 4, very little disagreement is expected
+by chance, so a few 3s pull alpha down even though most rating pairs are
+identical. Feinstein and Cicchetti (1990) described the same pattern for
+kappa. The output reports the share of identical rating pairs next to
+alpha so the two can be read together. A low alpha alongside a high
+share of identical pairs is not by itself evidence of a poor panel.</p>
+</div>
+<div class="section level3">
+<h3 id="gwets-ac1">Gwet’s AC1<a class="anchor" aria-label="anchor" href="#gwets-ac1"></a>
+</h3>
+<p>Gwet’s (2008) AC1 was designed to stay high in that situation, and it
+is available with <code>agreement = "ac1"</code>. It is never the
+default. Vach and Gerke (2023) show that AC1 rises as ratings
+concentrate in one category even when agreement does not change, and
+that it can be above zero when experts rate independently. Its output
+always repeats that critique. In relevance mode, AC1 is computed on the
+relevant/not-relevant decision at <code>relevance_cut</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ac1_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                           agreement <span class="op">=</span> <span class="st">"ac1"</span>, agreement_B <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">ac1_fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">agreement</span></span>
+<span><span class="co">#&gt; Panel-level agreement</span></span>
+<span><span class="co">#&gt; Items rated by two or more raters: 4   Raters: 6</span></span>
+<span><span class="co">#&gt; Gwet's AC1: 0.909</span></span>
+<span><span class="co">#&gt; Identical rating pairs: 91.7%</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; AC1 compares observed agreement with the agreement expected by chance,</span></span>
+<span><span class="co">#&gt; estimated so that it stays high when nearly every rating falls in one</span></span>
+<span><span class="co">#&gt; category (Gwet, 2008).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show</span></span>
+<span><span class="co">#&gt; that it rises as ratings concentrate in one category even when agreement is</span></span>
+<span><span class="co">#&gt; unchanged, that it can be non-zero when raters are independent, and that</span></span>
+<span><span class="co">#&gt; benchmark labels developed for kappa, such as Landis and Koch's, must not</span></span>
+<span><span class="co">#&gt; be applied to it.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. </span></span>
+<span><span class="co">#&gt; It does not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="the-interval">The interval<a class="anchor" aria-label="anchor" href="#the-interval"></a>
+</h3>
+<p>The interval resamples items with all of their ratings intact, the
+procedure Zapf et al. (2016) evaluated; they found that Krippendorff’s
+original bootstrap, which ignores dependence between raters, reached
+only about 60% coverage. The interval varies slightly between runs, so
+set <code>seed</code> to make it reproducible, or set
+<code>agreement_B = 0</code> to skip it. <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>
+runs the same analysis on any rater-by-item matrix.</p>
+</div>
+</div>
+<div class="section level2">
 <h2 id="essentiality-lawshe-cvr-with-exact-critical-values">Essentiality: Lawshe CVR with exact critical values<a class="anchor" aria-label="anchor" href="#essentiality-lawshe-cvr-with-exact-critical-values"></a>
 </h2>
 <p>Lawshe’s task asks experts whether an item is essential. With twelve
 experts:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
@@ -248,7 +374,7 @@ one-sided binomial upper-tail probability is no greater than
 follows the exact-probability logic revisited by Ayre and Scally
 (2014).</p>
 <p>Judge-by-item binary data can be supplied directly:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">E</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
 <span>  Item1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>,</span>
 <span>  Item2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span></span>
@@ -295,7 +421,7 @@ rewritten, retained for breadth, or removed.</p>
 <p>IOC uses expert ratings of -1, 0, and +1 for item-objective
 congruence. A target mapping lets the workflow compare intended and
 competing objectives:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I1"</span>, <span class="st">"I2"</span><span class="op">)</span>,</span>
 <span>  judge <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
@@ -362,13 +488,13 @@ reported so downstream interpretation uses the actual panel size.</p>
 </h2>
 <p>Each mode uses a plot matched to the expert task rather than forcing
 unlike indices into one generic chart.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-1.png" class="r-plt" alt="" width="672"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-2.png" class="r-plt" alt="" width="672"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="" width="672"></p>
 <p>Relevance mode displays Aiken’s V with its score interval and
@@ -385,7 +511,8 @@ not create new validity thresholds.</p>
 <ol style="list-style-type: decimal">
 <li>who the experts were and why they were qualified;</li>
 <li>the exact task and response scale;</li>
-<li>the index and inference/CI procedure used;</li>
+<li>the index and inference/CI procedure used, and for relevance ratings
+the agreement coefficient and its measurement level;</li>
 <li>the panel size, including item-specific missingness;</li>
 <li>quantitative item and scale evidence; and</li>
 <li>how expert comments, construct coverage, and comprehensibility
@@ -406,6 +533,18 @@ or questionnaires. <em>Educational and Psychological Measurement,
 content validity ratio: Revisiting the original methods of calculation.
 <em>Measurement and Evaluation in Counseling and Development,
 47</em>(1), 79-86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a></p>
+<p>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but
+low kappa: I. The problems of two paradoxes. <em>Journal of Clinical
+Epidemiology, 43</em>(6), 543-549.</p>
+<p>Gwet, K. L. (2008). Computing inter-rater reliability and its
+variance in the presence of high agreement. <em>British Journal of
+Mathematical and Statistical Psychology, 61</em>(1), 29-48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a></p>
+<p>Hayes, A. F., &amp; Krippendorff, K. (2007). Answering the call for a
+standard reliability measure for coding data. <em>Communication Methods
+and Measures, 1</em>(1), 77-89. <a href="https://doi.org/10.1080/19312450709336664" class="external-link uri">https://doi.org/10.1080/19312450709336664</a></p>
+<p>Krippendorff, K. (2011). <em>Computing Krippendorff’s
+alpha-reliability.</em> Annenberg School for Communication, University
+of Pennsylvania.</p>
 <p>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken’s item content-relevance index.
 <em>Measurement in Physical Education and Exercise Science, 8</em>(4),
@@ -419,6 +558,13 @@ validity. <em>Dutch Journal of Educational Research, 2</em>, 49-60.</p>
 <p>Turner, R. C., &amp; Carlson, L. (2003). Indexes of item-objective
 congruence for multidimensional items. <em>International Journal of
 Testing, 3</em>(2), 163-171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a></p>
+<p>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for
+Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>,
+102212.</p>
+<p>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016).
+Measuring inter-rater reliability for nominal data: Which coefficients
+and confidence intervals are appropriate? <em>BMC Medical Research
+Methodology, 16</em>, 93. <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link uri">https://doi.org/10.1186/s12874-016-0200-9</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

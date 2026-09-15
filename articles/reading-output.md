@@ -312,6 +312,51 @@ The exact (Clopper-Pearson) interval is conservative, so its limits sit
 further apart. The printed output always names the method that produced
 the interval.
 
+### Reading panel agreement
+
+Relevance mode also reports one agreement coefficient for the whole
+panel, in `scale_summary` as `agreement`, `agreement_low`, and
+`agreement_high`. The full result, with its explanation, is in
+`details$agreement`, and
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+produces the same result directly:
+
+``` r
+
+panel_agreement(panel, seed = 1)
+#> Panel-level agreement
+#> Items rated by two or more raters: 5   Raters: 8
+#> Krippendorff's alpha (ordinal): 0.693   95% interval: 0.071 to 0.86
+#> Identical rating pairs: 62.9%
+#> 
+#> Alpha compares the disagreement observed within items with the disagreement
+#> expected if these same ratings were assigned to items at random: 1 means
+#> perfect agreement and 0 means agreement no better than chance. Alpha falls
+#> when ratings cluster on a few values, because little disagreement is then
+#> expected by chance. A high share of identical rating pairs alongside a low
+#> alpha reflects that clustering, which is common when nearly every item is
+#> rated relevant, and is not by itself evidence of a poor panel.
+#> 
+#> Krippendorff's alpha is the default because it handles ordinal ratings and
+#> missing ratings (Zapf et al., 2016). It is a general reliability
+#> coefficient; no publication applying it specifically to content-validity
+#> panels was found.
+#> 
+#> The interval resamples items with all of their ratings, following Zapf et
+#> al. (2016), and varies slightly between runs unless `seed` is set.
+#> 
+#> Panel agreement describes how consistently raters rated these items. 
+#> It does not show that the items are relevant or that the domain is covered.
+```
+
+Read two numbers together: the coefficient and the share of identical
+rating pairs. Krippendorff’s alpha, the default, can be low on a panel
+that agrees closely when nearly every rating is the same value, because
+chance then predicts very little disagreement. A low alpha next to a
+high share of identical pairs reflects that clustering. Agreement
+describes the raters, not the items: a consistent panel can still
+consistently rate an item as irrelevant.
+
 ## Reading judge heterogeneity
 
 [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
