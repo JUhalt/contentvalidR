@@ -1,25 +1,31 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.2.0.9000
+Version: 0.3.0
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
     )
 Description: Provides quantitative tools for substantive and content-oriented
     scale pretesting. Implements item-sort indices from Anderson and Gerbing
-    (1991), exact item-sort inference following Howard and Melloy (2016),
-    empirical interpretation benchmarks from Colquitt et al. (2019),
-    the Hinkin and Tracey (1999) construct-rating procedure with HTC/HTD
-    indices and repeated-measures item screening, and
-    an expert-panel workflow combining Aiken's V with score confidence intervals,
-    Lawshe content validity ratios with exact inference, content validity indices
-    with modified kappa, and item-objective congruence.
-    Also provides judge and rater heterogeneity analysis following the
-    generalizability-theory treatment of content-validity ratings in Crocker,
-    Llabre and Miller (1988), content-domain coverage and expert-perceived
-    content structure following Sireci and Geisinger (1992), comparison across
-    successive pretest rounds, and exact expert-panel planning.
+    (1991) <doi:10.1037/0021-9010.76.5.732>, exact item-sort inference
+    following Howard and Melloy (2016) <doi:10.1007/s10869-015-9404-y>,
+    empirical interpretation benchmarks from Colquitt et al. (2019)
+    <doi:10.1037/apl0000406>, and the construct-rating procedure of Hinkin and
+    Tracey (1999) <doi:10.1177/109442819922004> with HTC/HTD indices and
+    repeated-measures item screening. The expert-panel workflow combines Aiken's
+    V with score confidence intervals, Lawshe content validity ratios with exact
+    inference, content validity indices with modified kappa and score
+    intervals, item-objective congruence, and panel-level agreement using
+    Krippendorff's alpha as described by Hayes and Krippendorff (2007)
+    <doi:10.1080/19312450709336664>. Also provides judge and rater
+    heterogeneity analysis following the generalizability-theory treatment of
+    content-validity ratings in Crocker, Llabre and Miller (1988)
+    <doi:10.1111/j.1745-3984.1988.tb00309.x>, content-domain coverage and
+    expert-perceived content structure following Sireci and Geisinger (1992)
+    <doi:10.1177/014662169201600102>, comparison across successive pretest
+    rounds, and exact expert-panel planning. Where published methods compete,
+    users choose among them through arguments with evidence-based defaults.
     User-facing workflows emphasize interpretable summaries and transparent
     review recommendations rather than isolated coefficients.
 License: GPL-3

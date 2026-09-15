@@ -23,3 +23,13 @@ mode shows each observed CVR against its item-specific critical CVR. Congruence
 mode uses a target-versus-strongest-competitor gap plot when a target mapping is
 available.
 }
+\examples{
+relevance <- matrix(
+  c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
+  nrow = 4,
+  dimnames = list(NULL, paste0("Item", 1:4))
+)
+plot(expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
+                     agreement = "none"))
+plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
+}
