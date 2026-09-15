@@ -630,6 +630,13 @@ implemented.
 for aggregating group ratings; no content-validity application was
 verified.
 
+**95th-percentile criterion for parallel analysis** (Glorfeld, 1995). A
+refinement of Horn’s mean criterion, which can retain an extra factor or
+two by chance on noisy data. Kept out of v0.3 so
+[`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+ships the approved rule; the citation needs verifying before it is
+offered as a selectable, non-default criterion.
+
 Stronger `nomologR` handoffs, interactive teaching applications, a
 methodological package paper, and research on whether guided output
 improves applied decisions. These are not methods questions and are

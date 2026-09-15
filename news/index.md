@@ -2,6 +2,27 @@
 
 ## contentvalidR 0.2.0.9000
 
+### Evidence-based factor retention for `qfactor_content()` (in development)
+
+- **Behavior change:**
+  [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+  now chooses the number of factors with Horn’s (1965) parallel analysis
+  by default, instead of Kaiser’s eigenvalue-greater-than-1 rule. Calls
+  that relied on the old default can return a different number of
+  factors. Use `retention = "kaiser"` to reproduce earlier results; it
+  prints the finding of Zwick and Velicer (1986) that the rule severely
+  overestimates the number of components.
+- Parallel analysis simulates random data with the same size and missing
+  cells as the ratings. New `n_iter` and `seed` arguments control it,
+  and the result records `retention`, `k_suggested`, and
+  `parallel_eigen`.
+- A supplied `k_factors` still takes precedence, and is recorded as
+  `retention = "fixed"`.
+- [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+  now cites Schriesheim et al. (1993, 1999), and
+  [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md)
+  cites Anderson and Gerbing (1991).
+
 ### Panel-level agreement for expert panels (in development)
 
 - Added

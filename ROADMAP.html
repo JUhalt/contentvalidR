@@ -273,9 +273,9 @@
 <div class="section level3">
 <h3 id="evidence-based-factor-retention-and-citations-for-auxiliary-helpers">Evidence-based factor retention and citations for auxiliary helpers<a class="anchor" aria-label="anchor" href="#evidence-based-factor-retention-and-citations-for-auxiliary-helpers"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/19" class="external-link">#19</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Parallel analysis (Horn, 1965) replaces Kaiser’s eigenvalue &gt; 1 rule as the <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> default, since Zwick &amp; Velicer (1986) found the Kaiser rule severely overestimates the number of components.</label></li>
-<li><label><input type="checkbox">The Kaiser rule stays selectable by name so earlier results can be reproduced, and prints the critique when chosen.</label></li>
-<li><label><input type="checkbox">Cite Schriesheim et al. (1993, 1999) in <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> and Anderson &amp; Gerbing (1991) in <code><a href="reference/signal_detection.html">signal_detection()</a></code>.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Parallel analysis (Horn, 1965) replaces Kaiser’s eigenvalue &gt; 1 rule as the <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> default, since Zwick &amp; Velicer (1986) found the Kaiser rule severely overestimates the number of components.</label></li>
+<li><label><input type="checkbox" checked>The Kaiser rule stays selectable by name so earlier results can be reproduced, and prints the critique when chosen.</label></li>
+<li><label><input type="checkbox" checked>Cite Schriesheim et al. (1993, 1999) in <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> and Anderson &amp; Gerbing (1991) in <code><a href="reference/signal_detection.html">signal_detection()</a></code>.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="cran-submission">CRAN submission<a class="anchor" aria-label="anchor" href="#cran-submission"></a></h3>
@@ -302,6 +302,7 @@
 <li><label><input type="checkbox"><strong>Marginal-ML many-facet Rasch estimation.</strong> An established method, but it needs a compiled estimation engine, which the dependency policy rules out.</label></li>
 <li><label><input type="checkbox"><strong>Hernández-Nieto’s content validity coefficient.</strong> Published in a book with a fixed 0.80 cutoff, and close to Aiken’s V, which is already implemented.</label></li>
 <li><label><input type="checkbox"><strong>rWG within-group agreement</strong> (James, Demaree &amp; Wolf, 1984). Designed for aggregating group ratings; no content-validity application was verified.</label></li>
+<li><label><input type="checkbox"><strong>95th-percentile criterion for parallel analysis</strong> (Glorfeld, 1995). A refinement of Horn’s mean criterion, which can retain an extra factor or two by chance on noisy data. Kept out of v0.3 so <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> ships the approved rule; the citation needs verifying before it is offered as a selectable, non-default criterion.</label></li>
 <li><label><input type="checkbox">Stronger <code>nomologR</code> handoffs, interactive teaching applications, a methodological package paper, and research on whether guided output improves applied decisions. These are not methods questions and are scoped separately.</label></li>
 </ul><hr></div>
 <div class="section level2">

@@ -44,6 +44,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0.9000" id="contentvalidr-0209000">contentvalidR 0.2.0.9000<a class="anchor" aria-label="anchor" href="#contentvalidr-0209000"></a></h2>
 <div class="section level3">
+<h3 id="evidence-based-factor-retention-for-qfactor_content-in-development-0-2-0-9000">Evidence-based factor retention for <code>qfactor_content()</code> (in development)<a class="anchor" aria-label="anchor" href="#evidence-based-factor-retention-for-qfactor_content-in-development-0-2-0-9000"></a></h3>
+<ul><li>
+<strong>Behavior change:</strong> <code><a href="../reference/qfactor_content.html">qfactor_content()</a></code> now chooses the number of factors with Horn’s (1965) parallel analysis by default, instead of Kaiser’s eigenvalue-greater-than-1 rule. Calls that relied on the old default can return a different number of factors. Use <code>retention = "kaiser"</code> to reproduce earlier results; it prints the finding of Zwick and Velicer (1986) that the rule severely overestimates the number of components.</li>
+<li>Parallel analysis simulates random data with the same size and missing cells as the ratings. New <code>n_iter</code> and <code>seed</code> arguments control it, and the result records <code>retention</code>, <code>k_suggested</code>, and <code>parallel_eigen</code>.</li>
+<li>A supplied <code>k_factors</code> still takes precedence, and is recorded as <code>retention = "fixed"</code>.</li>
+<li>
+<code><a href="../reference/qfactor_content.html">qfactor_content()</a></code> now cites Schriesheim et al. (1993, 1999), and <code><a href="../reference/signal_detection.html">signal_detection()</a></code> cites Anderson and Gerbing (1991).</li>
+</ul></div>
+<div class="section level3">
 <h3 id="panel-level-agreement-for-expert-panels-in-development-0-2-0-9000">Panel-level agreement for expert panels (in development)<a class="anchor" aria-label="anchor" href="#panel-level-agreement-for-expert-panels-in-development-0-2-0-9000"></a></h3>
 <ul><li>Added <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>, reporting one coefficient for how consistently an expert panel rated the whole item set, with a bootstrap interval. It complements the item-level I-CVI and modified kappa rather than replacing them.</li>
 <li>Krippendorff’s alpha is the default, computed from the coincidence matrix (Krippendorff, 2011) at a selectable measurement level: ordinal (the default), nominal, or interval. It reproduces the worked example in Krippendorff (2011) and agrees with <code><a href="https://rdrr.io/pkg/irr/man/kripp.alpha.html" class="external-link">irr::kripp.alpha()</a></code>.</li>
