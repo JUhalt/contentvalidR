@@ -394,12 +394,12 @@ across the whole item set, which `expert_validity()` did not previously report.
 
 Tracking: [#19](https://github.com/JUhalt/contentvalidR/issues/19).
 
-- [ ] Parallel analysis (Horn, 1965) replaces Kaiser's eigenvalue > 1 rule as the
+- [x] Parallel analysis (Horn, 1965) replaces Kaiser's eigenvalue > 1 rule as the
       `qfactor_content()` default, since Zwick & Velicer (1986) found the Kaiser
       rule severely overestimates the number of components.
-- [ ] The Kaiser rule stays selectable by name so earlier results can be
+- [x] The Kaiser rule stays selectable by name so earlier results can be
       reproduced, and prints the critique when chosen.
-- [ ] Cite Schriesheim et al. (1993, 1999) in `qfactor_content()` and Anderson &
+- [x] Cite Schriesheim et al. (1993, 1999) in `qfactor_content()` and Anderson &
       Gerbing (1991) in `signal_detection()`.
 
 ### CRAN submission
@@ -452,6 +452,11 @@ is parked and what would move it into a release.
       implemented.
 - [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
       aggregating group ratings; no content-validity application was verified.
+- [ ] **95th-percentile criterion for parallel analysis** (Glorfeld, 1995). A
+      refinement of Horn's mean criterion, which can retain an extra factor or
+      two by chance on noisy data. Kept out of v0.3 so `qfactor_content()` ships
+      the approved rule; the citation needs verifying before it is offered as a
+      selectable, non-default criterion.
 - [ ] Stronger `nomologR` handoffs, interactive teaching applications, a
       methodological package paper, and research on whether guided output
       improves applied decisions. These are not methods questions and are
