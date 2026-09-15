@@ -48,3 +48,12 @@ plot(
 ## Value
 
 The input object invisibly.
+
+## Examples
+
+``` r
+plan <- sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
+plot(plan)
+
+plot(plan, type = "critical")
+```

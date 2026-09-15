@@ -1,29 +1,29 @@
 # Changelog
 
-## contentvalidR 0.2.0.9000
+## contentvalidR 0.3.0
 
-### Evidence-based factor retention for `qfactor_content()` (in development)
+Third public release, and the first prepared for CRAN. Every addition
+rests on published, verifiable methodology, and one design rule runs
+through the release: where more than one published method exists,
+researchers choose through an argument whose default is the
+best-supported option. Methods with published evidence against them stay
+available for reproducing earlier work, but they are never the default,
+and selecting one prints the critique.
 
-- **Behavior change:**
-  [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
-  now chooses the number of factors with Horn’s (1965) parallel analysis
-  by default, instead of Kaiser’s eigenvalue-greater-than-1 rule. Calls
-  that relied on the old default can return a different number of
-  factors. Use `retention = "kaiser"` to reproduce earlier results; it
-  prints the finding of Zwick and Velicer (1986) that the rule severely
-  overestimates the number of components.
-- Parallel analysis simulates random data with the same size and missing
-  cells as the ratings. New `n_iter` and `seed` arguments control it,
-  and the result records `retention`, `k_suggested`, and
-  `parallel_eigen`.
-- A supplied `k_factors` still takes precedence, and is recorded as
-  `retention = "fixed"`.
-- [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
-  now cites Schriesheim et al. (1993, 1999), and
-  [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md)
-  cites Anderson and Gerbing (1991).
+The package continues to declare `Imports: stats` only.
 
-### Panel-level agreement for expert panels (in development)
+Two defaults change results for existing code.
+[`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+now chooses the number of factors by parallel analysis, and
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+relevance mode now bootstraps an interval for panel agreement, so set
+`seed` when printed output must be reproducible. Other existing results
+are unchanged; the new interval and agreement columns are additions.
+
+New function:
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
+
+### Panel-level agreement for expert panels
 
 - Added
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md),
@@ -48,7 +48,40 @@
   on one value, so a low alpha on a close-agreeing panel is not read as
   a poor panel.
 
-### Selectable intervals for proportion indices (in development)
+### Evidence-based factor retention for `qfactor_content()`
+
+- **Behavior change:**
+  [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+  now chooses the number of factors with Horn’s (1965) parallel analysis
+  by default, instead of Kaiser’s eigenvalue-greater-than-1 rule. Calls
+  that relied on the old default can return a different number of
+  factors. Use `retention = "kaiser"` to reproduce earlier results; it
+  prints the finding of Zwick and Velicer (1986) that the rule severely
+  overestimates the number of components.
+- Parallel analysis simulates random data with the same size and missing
+  cells as the ratings. New `n_iter` and `seed` arguments control it,
+  and the result records `retention`, `k_suggested`, and
+  `parallel_eigen`.
+- A supplied `k_factors` still takes precedence, and is recorded as
+  `retention = "fixed"`.
+- [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+  now cites Schriesheim et al. (1993, 1999), and
+  [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md)
+  cites Anderson and Gerbing (1991).
+
+### Packaging
+
+- `DESCRIPTION` now gives DOIs for the methods it cites, and citation
+  metadata is stamped for 0.3.0.
+- [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  and the [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
+  methods for sort, rating, expert, and sort-power objects now have
+  runnable examples, so every help page shows how to use its function.
+  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  also points to
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
+
+### Selectable intervals for proportion indices
 
 - [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) now
   reports an interval for each I-CVI (`I_CVI_low`, `I_CVI_high`), and

@@ -1,10 +1,10 @@
 # contentvalidR
 
-**Current stable release: 0.2.0.**
+**Current stable release: 0.3.0.**
 
 Development plans:
-[Roadmap](https://juhalt.github.io/contentvalidR/ROADMAP.md) · [v0.3.0
-milestone](https://github.com/JUhalt/contentvalidR/milestone/2) · [Open
+[Roadmap](https://juhalt.github.io/contentvalidR/ROADMAP.md) · [Future
+research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open
 issues](https://github.com/JUhalt/contentvalidR/issues). Documentation:
 [Package website](https://juhalt.github.io/contentvalidR/) ·
 [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
@@ -19,8 +19,9 @@ complementary workflows:
 2.  **Construct ratings** — Hinkin & Tracey (1999) fully crossed
     ratings, HTC/HTD, Greenhouse-Geisser-aware repeated-measures item
     screening, and Colquitt et al. (2019) scale-level norms.
-3.  **Expert panels** — Aiken’s V, Lawshe CVR, CVI/modified kappa, and
-    item-objective congruence.
+3.  **Expert panels** — Aiken’s V, Lawshe CVR, CVI/modified kappa with
+    score intervals, item-objective congruence, and panel-level
+    agreement.
 4.  **Judge heterogeneity** — generalizability theory for
     content-validity ratings following Crocker, Llabre & Miller (1988),
     judge severity and rater effects, and leave-one-judge-out influence
@@ -1271,18 +1272,16 @@ and
 
 ## License
 
-The current development source is licensed under the **GNU General
-Public License, version 3 only** (SPDX: `GPL-3.0-only`; R metadata:
-`GPL-3`). See the [full
-license](https://juhalt.github.io/contentvalidR/LICENSE.md). Copyright
-(c) 2025-2026 Joshua Uhalt.
+contentvalidR is licensed under the **GNU General Public License,
+version 3 only** (SPDX: `GPL-3.0-only`; R metadata: `GPL-3`). See the
+[full license](https://juhalt.github.io/contentvalidR/LICENSE.md).
+Copyright (c) 2025-2026 Joshua Uhalt.
 
-The previously published [v0.1.0
+Releases from v0.2.0 onward carry the GPLv3-only license. The earlier
+[v0.1.0
 release](https://github.com/JUhalt/contentvalidR/releases/tag/v0.1.0)
-remains available under its original MIT license. Stable R-universe
-installation currently retrieves that release; the next published
-release will carry the GPLv3-only license. Historical attribution is
-preserved in
+remains available under its original MIT license, and historical
+attribution is preserved in
 [inst/NOTICE](https://github.com/JUhalt/contentvalidR/blob/master/inst/NOTICE).
 
 # Package index

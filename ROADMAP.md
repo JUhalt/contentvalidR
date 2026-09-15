@@ -495,8 +495,9 @@ it.
 
 ## v0.3.0 - Evidence-based methods with selectable options
 
-**Milestone:**
+**Status:** Release candidate **Milestone:**
 [v0.3.0](https://github.com/JUhalt/contentvalidR/milestone/2)
+**Version:** `0.3.0`
 
 Scope was set on 2026-09-14 after an evidence review of every candidate.
 v0.3 implements only approaches with published, verifiable
@@ -583,6 +584,30 @@ Check the built tarball with `--as-cran`, not only the source directory.
 Submit, respond to maintainer feedback, and confirm acceptance.
 
 Update README installation guidance once CRAN is live.
+
+### v0.3.0 exit gate
+
+Every new method has a verified published basis, and output names the
+method that ran, why it is the default, and its known limits.
+
+Tests reproduce published worked examples for each new method, alongside
+recovery, malformed-input, and edge-case tests.
+
+R CMD check is clean across the supported OS/R matrix, including the
+R-devel `--as-cran` job that treats any NOTE as a failure.
+
+The built source tarball passes `R CMD check --as-cran` locally, with no
+errors or warnings; its notes are explained in `cran-comments.md`.
+
+README, vignettes, NEWS, and citation metadata reflect the release
+candidate, and every URL and DOI resolves.
+
+Stable version stamped, tagged, and published through GitHub and the
+personal R-universe.
+
+Submitted to CRAN
+([\#14](https://github.com/JUhalt/contentvalidR/issues/14)). The GitHub
+release does not wait on CRAN acceptance.
 
 ### Not implemented on evidence grounds
 

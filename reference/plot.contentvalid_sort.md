@@ -54,3 +54,22 @@ plot(
 ## Value
 
 The input object invisibly.
+
+## Examples
+
+``` r
+sort_dat <- data.frame(
+  item = rep(c("A1", "A2", "A3"), each = 20),
+  rater = rep(1:20, 3),
+  target_construct = "A",
+  assigned_construct = c(
+    rep("A", 18), rep("B", 2),
+    rep("A", 16), rep("B", 4),
+    rep("A", 12), rep("B", 8)
+  )
+)
+fit <- sort_validity(sort_dat)
+plot(fit)
+
+plot(fit, type = "map")
+```
