@@ -1,3 +1,12 @@
+# contentvalidR 0.3.1
+
+Patch release for the CRAN submission. Package code, documentation of methods,
+and results are unchanged from 0.3.0.
+
+* README links to the license and the roadmap now use full URLs. The relative
+  links pointed at files that are not part of the built package, which CRAN's
+  incoming checks report as invalid file URIs.
+
 # contentvalidR 0.3.0
 
 Third public release, and the first prepared for CRAN. Every addition rests on

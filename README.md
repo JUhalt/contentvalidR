@@ -7,17 +7,19 @@
 
 [![R-CMD-check](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v3
-only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](LICENSE.md)
+only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.3.0.**
+**Current stable release: 0.3.1.**
 
-Development plans: [Roadmap](ROADMAP.md) · [Future
-research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open
-issues](https://github.com/JUhalt/contentvalidR/issues). Documentation:
-[Package website](https://juhalt.github.io/contentvalidR/) ·
+Development plans:
+[Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
+· [Future research](https://github.com/JUhalt/contentvalidR/milestone/3)
+· [Open issues](https://github.com/JUhalt/contentvalidR/issues).
+Documentation: [Package
+website](https://juhalt.github.io/contentvalidR/) ·
 [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
 **contentvalidR** provides quantitative tools for substantive and
@@ -1228,7 +1230,9 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
 
 contentvalidR is licensed under the **GNU General Public License,
 version 3 only** (SPDX: `GPL-3.0-only`; R metadata: `GPL-3`). See the
-[full license](LICENSE.md). Copyright (c) 2025-2026 Joshua Uhalt.
+[full
+license](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md).
+Copyright (c) 2025-2026 Joshua Uhalt.
 
 Releases from v0.2.0 onward carry the GPLv3-only license. The earlier
 [v0.1.0

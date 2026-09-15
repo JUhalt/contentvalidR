@@ -1,3 +1,12 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Replaced the relative links to `LICENSE.md` and `ROADMAP.md` in README.md
+  with full URLs. Those files are not part of the built package, so the
+  incoming checks for 0.3.0 reported them as invalid file URIs. Nothing else
+  changed.
+
 ## Test environments
 
 * Local: Windows 11, R 4.6.1, `R CMD check --as-cran` on the built source
@@ -38,6 +47,11 @@ for every help topic, all seven vignettes, and the citation ran successfully.
 ## Submission notes
 
 * This is the first CRAN submission of contentvalidR.
+* The words flagged as possibly misspelled in DESCRIPTION are spelled
+  correctly. Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
+  Lawshe, Llabre, Melloy, and Sireci are author surnames. HTC and HTD are the
+  Hinkin-Tracey correspondence and distinctiveness indices, and "et al." is the
+  standard citation abbreviation.
 * contentvalidR is distinct from the CRAN package contentValidity (version
   0.2.0). contentValidity computes item- and scale-level content validity
   indices: I-CVI, S-CVI, modified kappa, Aiken's V, and Lawshe's CVR.
