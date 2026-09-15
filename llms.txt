@@ -1,12 +1,13 @@
 # contentvalidR
 
-**Current stable release: 0.3.0.**
+**Current stable release: 0.3.1.**
 
 Development plans:
-[Roadmap](https://juhalt.github.io/contentvalidR/ROADMAP.md) · [Future
-research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open
-issues](https://github.com/JUhalt/contentvalidR/issues). Documentation:
-[Package website](https://juhalt.github.io/contentvalidR/) ·
+[Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
+· [Future research](https://github.com/JUhalt/contentvalidR/milestone/3)
+· [Open issues](https://github.com/JUhalt/contentvalidR/issues).
+Documentation: [Package
+website](https://juhalt.github.io/contentvalidR/) ·
 [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
 **contentvalidR** provides quantitative tools for substantive and
@@ -1274,7 +1275,8 @@ and
 
 contentvalidR is licensed under the **GNU General Public License,
 version 3 only** (SPDX: `GPL-3.0-only`; R metadata: `GPL-3`). See the
-[full license](https://juhalt.github.io/contentvalidR/LICENSE.md).
+[full
+license](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md).
 Copyright (c) 2025-2026 Joshua Uhalt.
 
 Releases from v0.2.0 onward carry the GPLv3-only license. The earlier

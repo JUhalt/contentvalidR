@@ -495,9 +495,10 @@ it.
 
 ## v0.3.0 - Evidence-based methods with selectable options
 
-**Status:** Release candidate **Milestone:**
+**Status:** Released (0.3.0 on 2026-09-15; patch 0.3.1 fixes README
+links flagged by CRAN’s incoming checks) **Milestone:**
 [v0.3.0](https://github.com/JUhalt/contentvalidR/milestone/2)
-**Version:** `0.3.0`
+**Version:** `0.3.1`
 
 Scope was set on 2026-09-14 after an evidence review of every candidate.
 v0.3 implements only approaches with published, verifiable
@@ -607,7 +608,10 @@ personal R-universe.
 
 Submitted to CRAN
 ([\#14](https://github.com/JUhalt/contentvalidR/issues/14)). The GitHub
-release does not wait on CRAN acceptance.
+release does not wait on CRAN acceptance. Win-builder’s R-devel incoming
+check then flagged relative README links to files that are not part of
+the built package, which the local and CI checks had not reported; 0.3.1
+replaces them with full URLs.
 
 ### Not implemented on evidence grounds
 
