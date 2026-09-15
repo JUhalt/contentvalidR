@@ -366,11 +366,11 @@ never the default, and selecting one prints the critique.
 
 Tracking: [#17](https://github.com/JUhalt/contentvalidR/issues/17).
 
-- [ ] Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).
-- [ ] Agresti-Coull adjusted Wald interval (Agresti & Coull, 1998).
-- [ ] Clopper-Pearson exact interval (Clopper & Pearson, 1934), documented as
+- [x] Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).
+- [x] Agresti-Coull adjusted Wald interval (Agresti & Coull, 1998).
+- [x] Clopper-Pearson exact interval (Clopper & Pearson, 1934), documented as
       conservative.
-- [ ] Verification against `prop.test(correct = FALSE)` and `binom.test()`.
+- [x] Verification against `prop.test(correct = FALSE)` and `binom.test()`.
 
 ### Panel-level agreement coefficients for expert panels
 
@@ -414,7 +414,12 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
       source carries `License: GPL-3` with `inst/NOTICE` preserving the historical
       MIT attribution for v0.1.0.
 - [x] Check the built tarball with `--as-cran`, not only the source directory.
-- [ ] Submit, respond to maintainer feedback, and confirm acceptance.
+- [x] Submit. 0.3.0 was uploaded on 2026-09-15 at 15:56 UTC and confirmed by the
+      maintainer; it entered CRAN's `pretest` queue the same day.
+- [ ] Respond to maintainer feedback and confirm acceptance. Win-builder's
+      R-devel check of 0.3.0 flagged relative README links to build-ignored
+      files as invalid file URIs. 0.3.1 fixes them and checks clean on the same
+      R-devel, so it is ready to resubmit when CRAN replies.
 - [ ] Update README installation guidance once CRAN is live.
 
 ### v0.3.0 exit gate
@@ -446,6 +451,38 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 
 ***
 
+## v0.4.0 - Handoff to empirical validation
+
+**Status:** Planning
+**Milestone:** [v0.4.0](https://github.com/JUhalt/contentvalidR/milestone/4)
+
+### Handoff to nomologR
+
+Tracking: [#27](https://github.com/JUhalt/contentvalidR/issues/27), with the
+downstream companion in
+[JUhalt/nomologR#45](https://github.com/JUhalt/nomologR/issues/45).
+
+contentvalidR ends where empirical data begin, and `nomologR` starts there:
+`nomo_screen(data, items = <names>)` already takes the item set as a character
+vector. Today a researcher retypes the surviving item names, and the reasons
+behind each decision do not travel with them.
+
+- [ ] `content_handoff()` returning the retained item names, a per-item evidence
+      table, and provenance (workflow, settings, design, version, date).
+- [ ] Item-level workflows only. `judge_validity()` and `domain_validity()`
+      refuse with a message naming the reason, since their rows are judges and
+      blueprint cells rather than items.
+- [ ] Items held back stay listed with `carried = FALSE`. Review is not
+      deletion, and nothing disappears silently.
+- [ ] A vignette running from the expert panel to `nomo_screen()` and on to the
+      nomological network.
+- [ ] No new dependency on either side. The handoff is plain data with a
+      documented shape, so each package builds and tests independently.
+- [ ] Output states that content evidence supports relevance and coverage, not
+      that an item will behave well empirically.
+
+***
+
 ## Future research
 
 **Milestone:** [Future research](https://github.com/JUhalt/contentvalidR/milestone/3)
@@ -474,15 +511,18 @@ is parked and what would move it into a release.
       implemented.
 - [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
       aggregating group ratings; no content-validity application was verified.
-- [ ] **95th-percentile criterion for parallel analysis** (Glorfeld, 1995). A
-      refinement of Horn's mean criterion, which can retain an extra factor or
-      two by chance on noisy data. Kept out of v0.3 so `qfactor_content()` ships
-      the approved rule; the citation needs verifying before it is offered as a
-      selectable, non-default criterion.
-- [ ] Stronger `nomologR` handoffs, interactive teaching applications, a
-      methodological package paper, and research on whether guided output
-      improves applied decisions. These are not methods questions and are
-      scoped separately.
+- [ ] **95th-percentile criterion for parallel analysis**
+      ([#26](https://github.com/JUhalt/contentvalidR/issues/26)). Glorfeld
+      (1995) compares each observed eigenvalue against an upper percentile of
+      the simulated null distribution instead of its mean, because Horn's
+      procedure still tends to indicate the retention of one or two more factors
+      than is warranted. Citation verified: *Educational and Psychological
+      Measurement, 55*(3), 377-393. It would stay a never-default option, since
+      Horn's mean criterion is what Zwick & Velicer (1986) evaluated and what
+      v0.3.0 ships.
+- [ ] Interactive teaching applications, a methodological package paper, and
+      research on whether guided output improves applied decisions. These are
+      not methods questions and are scoped separately.
 
 ***
 
