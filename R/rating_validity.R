@@ -405,6 +405,18 @@ print.summary.contentvalid_rating <- function(x, digits = 3, ...) {
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #'
 #' @return The input object invisibly.
+#' @examples
+#' set.seed(12)
+#' d <- expand.grid(item = c("A1", "A2", "B1"), rater = 1:20,
+#'                  construct = c("A", "B", "C"))
+#' d$target_construct <- ifelse(d$item == "B1", "B", "A")
+#' d$rating <- ifelse(d$construct == d$target_construct,
+#'                    pmin(5, pmax(1, round(rnorm(nrow(d), 4.5, .6)))),
+#'                    pmin(5, pmax(1, round(rnorm(nrow(d), 2.0, .7)))))
+#' fit <- rating_validity(d, scale_min = 1, scale_max = 5)
+#' plot(fit)
+#' plot(fit, type = "map")
+#' plot(fit, type = "profile")
 #' @export
 plot.contentvalid_rating <- function(x,
                                      metric = c("htc", "htd"),

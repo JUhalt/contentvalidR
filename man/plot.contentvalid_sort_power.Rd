@@ -35,3 +35,8 @@ count in the displayed range, reflecting the discrete exact-binomial rule.
 Multiple assumed true target-assignment probabilities are distinguished
 by line type and plotting symbol rather than color.
 }
+\examples{
+plan <- sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
+plot(plan)
+plot(plan, type = "critical")
+}

@@ -2,7 +2,20 @@
 #'
 #' @description Computes Fleiss' kappa via 'irr' if available. This is an auxiliary compatibility helper, not part of the recommended contentvalidR workflows.
 #' @param ratings matrix/data.frame: rows = items, cols = raters (nominal categories)
-#' @return list with results, or a message if 'irr' is not installed
+#' @return When 'irr' is installed, the result of `irr::kappam.fleiss()`.
+#'   Otherwise a list with `ok = FALSE` and a `message`, after a message
+#'   explaining how to install 'irr'.
+#' @seealso [panel_agreement()] for panel-level agreement with an evidence-based
+#'   default coefficient and a bootstrap interval.
+#' @examples
+#' ratings <- data.frame(
+#'   rater1 = c("A", "B", "A", "C"),
+#'   rater2 = c("A", "B", "B", "C"),
+#'   rater3 = c("A", "B", "A", "C")
+#' )
+#' if (requireNamespace("irr", quietly = TRUE)) {
+#'   agreement_summary(ratings)
+#' }
 #' @export
 agreement_summary <- function(ratings) {
   X <- as.data.frame(ratings)

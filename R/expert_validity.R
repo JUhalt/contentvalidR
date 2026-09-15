@@ -551,6 +551,15 @@ print.summary.contentvalid_expert <- function(x, digits = 3, ...) {
 #' @param show_legend Logical; draw the compact plot key. Default `TRUE`.
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #' @return The input object invisibly.
+#' @examples
+#' relevance <- matrix(
+#'   c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
+#'   nrow = 4,
+#'   dimnames = list(NULL, paste0("Item", 1:4))
+#' )
+#' plot(expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
+#'                      agreement = "none"))
+#' plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 #' @export
 plot.contentvalid_expert <- function(x, show_legend = TRUE, ...) {
   .validate_flag(show_legend, "show_legend")

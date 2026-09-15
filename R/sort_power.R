@@ -74,6 +74,10 @@ print.contentvalid_sort_power <- function(x, digits = 3, ...) {
 #' @param show_legend Logical; draw the compact power-series key. Default `TRUE`.
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #' @return The input object invisibly.
+#' @examples
+#' plan <- sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
+#' plot(plan)
+#' plot(plan, type = "critical")
 #' @export
 plot.contentvalid_sort_power <- function(x,
                                          type = c("power", "critical"),
