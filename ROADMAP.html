@@ -38,7 +38,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>contentvalidR development roadmap</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.3.1/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
     </div>
 
 <div id="contentvalidr-development-roadmap" class="section level1">
@@ -256,10 +256,10 @@
 <div class="section level3">
 <h3 id="selectable-score-intervals-for-i-cvi-and-psa">Selectable score intervals for I-CVI and Psa<a class="anchor" aria-label="anchor" href="#selectable-score-intervals-for-i-cvi-and-psa"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/17" class="external-link">#17</a>.</p>
-<ul class="task-list"><li><label><input type="checkbox">Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).</label></li>
-<li><label><input type="checkbox">Agresti-Coull adjusted Wald interval (Agresti &amp; Coull, 1998).</label></li>
-<li><label><input type="checkbox">Clopper-Pearson exact interval (Clopper &amp; Pearson, 1934), documented as conservative.</label></li>
-<li><label><input type="checkbox">Verification against <code>prop.test(correct = FALSE)</code> and <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>Wilson score interval as the default (Wilson, 1927; Newcombe, 1998).</label></li>
+<li><label><input type="checkbox" checked>Agresti-Coull adjusted Wald interval (Agresti &amp; Coull, 1998).</label></li>
+<li><label><input type="checkbox" checked>Clopper-Pearson exact interval (Clopper &amp; Pearson, 1934), documented as conservative.</label></li>
+<li><label><input type="checkbox" checked>Verification against <code>prop.test(correct = FALSE)</code> and <code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="panel-level-agreement-coefficients-for-expert-panels">Panel-level agreement coefficients for expert panels<a class="anchor" aria-label="anchor" href="#panel-level-agreement-coefficients-for-expert-panels"></a></h3>
@@ -283,7 +283,8 @@
 <ul class="task-list"><li><label><input type="checkbox" checked>Populate <code>cran-comments.md</code> with actual final check results, including a sentence distinguishing contentvalidR from the <code>contentValidity</code> package.</label></li>
 <li><label><input type="checkbox" checked>Confirm no stray <code>LICENSE</code> file reaches the built tarball, and that the source carries <code>License: GPL-3</code> with <code>inst/NOTICE</code> preserving the historical MIT attribution for v0.1.0.</label></li>
 <li><label><input type="checkbox" checked>Check the built tarball with <code>--as-cran</code>, not only the source directory.</label></li>
-<li><label><input type="checkbox">Submit, respond to maintainer feedback, and confirm acceptance.</label></li>
+<li><label><input type="checkbox" checked>Submit. 0.3.0 was uploaded on 2026-09-15 at 15:56 UTC and confirmed by the maintainer; it entered CRAN’s <code>pretest</code> queue the same day.</label></li>
+<li><label><input type="checkbox">Respond to maintainer feedback and confirm acceptance. Win-builder’s R-devel check of 0.3.0 flagged relative README links to build-ignored files as invalid file URIs. 0.3.1 fixes them and checks clean on the same R-devel, so it is ready to resubmit when CRAN replies.</label></li>
 <li><label><input type="checkbox">Update README installation guidance once CRAN is live.</label></li>
 </ul></div>
 <div class="section level3">
@@ -303,6 +304,21 @@
 </ul><hr></div>
 </div>
 <div class="section level2">
+<h2 id="v040---handoff-to-empirical-validation">v0.4.0 - Handoff to empirical validation<a class="anchor" aria-label="anchor" href="#v040---handoff-to-empirical-validation"></a></h2>
+<p><strong>Status:</strong> Planning <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/4" class="external-link">v0.4.0</a></p>
+<div class="section level3">
+<h3 id="handoff-to-nomologr">Handoff to nomologR<a class="anchor" aria-label="anchor" href="#handoff-to-nomologr"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>, with the downstream companion in <a href="https://github.com/JUhalt/nomologR/issues/45" class="external-link">JUhalt/nomologR#45</a>.</p>
+<p>contentvalidR ends where empirical data begin, and <code>nomologR</code> starts there: <code>nomo_screen(data, items = &lt;names&gt;)</code> already takes the item set as a character vector. Today a researcher retypes the surviving item names, and the reasons behind each decision do not travel with them.</p>
+<ul class="task-list"><li><label><input type="checkbox"><code>content_handoff()</code> returning the retained item names, a per-item evidence table, and provenance (workflow, settings, design, version, date).</label></li>
+<li><label><input type="checkbox">Item-level workflows only. <code><a href="reference/judge_validity.html">judge_validity()</a></code> and <code><a href="reference/domain_validity.html">domain_validity()</a></code> refuse with a message naming the reason, since their rows are judges and blueprint cells rather than items.</label></li>
+<li><label><input type="checkbox">Items held back stay listed with <code>carried = FALSE</code>. Review is not deletion, and nothing disappears silently.</label></li>
+<li><label><input type="checkbox">A vignette running from the expert panel to <code>nomo_screen()</code> and on to the nomological network.</label></li>
+<li><label><input type="checkbox">No new dependency on either side. The handoff is plain data with a documented shape, so each package builds and tests independently.</label></li>
+<li><label><input type="checkbox">Output states that content evidence supports relevance and coverage, not that an item will behave well empirically.</label></li>
+</ul><hr></div>
+</div>
+<div class="section level2">
 <h2 id="future-research">Future research<a class="anchor" aria-label="anchor" href="#future-research"></a></h2>
 <p><strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/3" class="external-link">Future research</a></p>
 <p>Evidence-reviewed items that are not release commitments. Each records why it is parked and what would move it into a release.</p>
@@ -312,8 +328,8 @@
 <li><label><input type="checkbox"><strong>Marginal-ML many-facet Rasch estimation.</strong> An established method, but it needs a compiled estimation engine, which the dependency policy rules out.</label></li>
 <li><label><input type="checkbox"><strong>Hernández-Nieto’s content validity coefficient.</strong> Published in a book with a fixed 0.80 cutoff, and close to Aiken’s V, which is already implemented.</label></li>
 <li><label><input type="checkbox"><strong>rWG within-group agreement</strong> (James, Demaree &amp; Wolf, 1984). Designed for aggregating group ratings; no content-validity application was verified.</label></li>
-<li><label><input type="checkbox"><strong>95th-percentile criterion for parallel analysis</strong> (Glorfeld, 1995). A refinement of Horn’s mean criterion, which can retain an extra factor or two by chance on noisy data. Kept out of v0.3 so <code><a href="reference/qfactor_content.html">qfactor_content()</a></code> ships the approved rule; the citation needs verifying before it is offered as a selectable, non-default criterion.</label></li>
-<li><label><input type="checkbox">Stronger <code>nomologR</code> handoffs, interactive teaching applications, a methodological package paper, and research on whether guided output improves applied decisions. These are not methods questions and are scoped separately.</label></li>
+<li><label><input type="checkbox"><strong>95th-percentile criterion for parallel analysis</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/26" class="external-link">#26</a>). Glorfeld (1995) compares each observed eigenvalue against an upper percentile of the simulated null distribution instead of its mean, because Horn’s procedure still tends to indicate the retention of one or two more factors than is warranted. Citation verified: <em>Educational and Psychological Measurement, 55</em>(3), 377-393. It would stay a never-default option, since Horn’s mean criterion is what Zwick &amp; Velicer (1986) evaluated and what v0.3.0 ships.</label></li>
+<li><label><input type="checkbox">Interactive teaching applications, a methodological package paper, and research on whether guided output improves applied decisions. These are not methods questions and are scoped separately.</label></li>
 </ul><hr></div>
 <div class="section level2">
 <h2 id="development-principle">Development principle<a class="anchor" aria-label="anchor" href="#development-principle"></a></h2>
