@@ -1,6 +1,6 @@
 # contentvalidR
 
-**Current stable release: 0.3.1.**
+**Current stable release: 0.4.0.**
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)

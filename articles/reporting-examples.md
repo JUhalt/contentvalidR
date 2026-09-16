@@ -383,7 +383,7 @@ a fitted workflow:
 ``` r
 
 packageVersion("contentvalidR")
-#> [1] '0.3.1.9000'
+#> [1] '0.4.0'
 sort_fit$settings
 #> $method
 #> [1] "Anderson-Gerbing Psa/Csv with Howard-Melloy exact inference"

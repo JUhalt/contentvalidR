@@ -1,8 +1,25 @@
 # Changelog
 
-## contentvalidR 0.3.1.9000 (development version)
+## contentvalidR 0.4.0
 
-### Handoff to empirical validation (in development)
+Fourth public release. v0.4.0 connects content validation to what comes
+after it: a documented handoff carries the items that survived content
+review, and the evidence behind each decision, into empirical scale
+development. It also adds a stricter, selectable criterion for parallel
+analysis, and fixes the two packaging problems that returned the 0.3.x
+CRAN submissions.
+
+The package continues to declare `Imports: stats` only.
+
+No default changes. Existing calls return the same values as in 0.3.1;
+[`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+results gain two fields recording the parallel analysis criterion that
+ran.
+
+New function:
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md).
+
+### Handoff to empirical validation
 
 - Added
   [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md),
@@ -23,16 +40,7 @@
 - New vignette, *From Content Validity to Empirical Validation*, running
   from an expert panel through the handoff into an empirical workflow.
 
-### Packaging (in development)
-
-- `.Rbuildignore` now excludes `.git`, `.gitignore`, and
-  `.gitattributes`. Building a release tarball from a `git worktree`
-  checkout writes `.git` as a *file* rather than a directory, which
-  `R CMD build` does not drop, and CRAN’s incoming pretest reported it
-  as a hidden file included in error
-  ([\#14](https://github.com/JUhalt/contentvalidR/issues/14)).
-
-### Selectable parallel analysis criterion (in development)
+### Selectable parallel analysis criterion
 
 - [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
   gains `parallel_criterion`, choosing what parallel analysis compares
@@ -48,6 +56,15 @@
   comparable from one seeded run, and the result records
   `parallel_criterion` and `percentile` alongside the comparison values
   in `parallel_eigen`.
+
+### Packaging
+
+- `.Rbuildignore` now excludes `.git`, `.gitignore`, and
+  `.gitattributes`. Building a release tarball from a `git worktree`
+  checkout writes `.git` as a *file* rather than a directory, which
+  `R CMD build` does not drop, and CRAN’s incoming pretest reported it
+  as a hidden file included in error
+  ([\#14](https://github.com/JUhalt/contentvalidR/issues/14)).
 
 ## contentvalidR 0.3.1
 

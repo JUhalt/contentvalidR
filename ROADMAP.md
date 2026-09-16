@@ -630,8 +630,9 @@ replaces them with full URLs.
 
 ## v0.4.0 - Handoff to empirical validation
 
-**Status:** Planning **Milestone:**
+**Status:** Release candidate **Milestone:**
 [v0.4.0](https://github.com/JUhalt/contentvalidR/milestone/4)
+**Version:** `0.4.0`
 
 ### Handoff to nomologR
 
