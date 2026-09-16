@@ -23,6 +23,32 @@
 - New vignette, *From Content Validity to Empirical Validation*, running
   from an expert panel through the handoff into an empirical workflow.
 
+### Packaging (in development)
+
+- `.Rbuildignore` now excludes `.git`, `.gitignore`, and
+  `.gitattributes`. Building a release tarball from a `git worktree`
+  checkout writes `.git` as a *file* rather than a directory, which
+  `R CMD build` does not drop, and CRAN’s incoming pretest reported it
+  as a hidden file included in error
+  ([\#14](https://github.com/JUhalt/contentvalidR/issues/14)).
+
+### Selectable parallel analysis criterion (in development)
+
+- [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
+  gains `parallel_criterion`, choosing what parallel analysis compares
+  observed eigenvalues against
+  ([\#26](https://github.com/JUhalt/contentvalidR/issues/26)). `"mean"`
+  stays the default, the rule Horn (1965) described and Zwick and
+  Velicer (1986) evaluated. `"percentile"` compares against an upper
+  percentile of the simulated eigenvalue distribution, following
+  Glorfeld (1995), who found that Horn’s procedure still tends to retain
+  one or two factors too many.
+- The percentile level is selectable through `percentile`, defaulting
+  to 95. Both criteria read the same simulation, so they are directly
+  comparable from one seeded run, and the result records
+  `parallel_criterion` and `percentile` alongside the comparison values
+  in `parallel_eigen`.
+
 ## contentvalidR 0.3.1
 
 Patch release for the CRAN submission. Package code, documentation of

@@ -82,6 +82,8 @@ expert-panel workflows.</p>
 <span>  k_factors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"pca"</span>, <span class="st">"pa"</span><span class="op">)</span>,</span>
 <span>  retention <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"parallel"</span>, <span class="st">"kaiser"</span><span class="op">)</span>,</span>
+<span>  parallel_criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"percentile"</span><span class="op">)</span>,</span>
+<span>  percentile <span class="op">=</span> <span class="fl">95</span>,</span>
 <span>  n_iter <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -125,6 +127,16 @@ supplied, <code>retention</code> is ignored.</p></dd>
 <code>NULL</code>: <code>"parallel"</code> (default) or <code>"kaiser"</code>. See the section below.</p></dd>
 
 
+<dt id="arg-parallel-criterion">parallel_criterion<a class="anchor" aria-label="anchor" href="#arg-parallel-criterion"></a></dt>
+<dd><p>What parallel analysis compares against:
+<code>"mean"</code> (default, Horn) or <code>"percentile"</code> (Glorfeld).</p></dd>
+
+
+<dt id="arg-percentile">percentile<a class="anchor" aria-label="anchor" href="#arg-percentile"></a></dt>
+<dd><p>Upper percentile used when
+<code>parallel_criterion = "percentile"</code>. Default 95, as in Glorfeld (1995).</p></dd>
+
+
 <dt id="arg-n-iter">n_iter<a class="anchor" aria-label="anchor" href="#arg-n-iter"></a></dt>
 <dd><p>Number of random data sets for parallel analysis.</p></dd>
 
@@ -144,16 +156,19 @@ supplied, <code>retention</code> is ignored.</p></dd>
 supplied,</p></li>
 <li><p><code>k_suggested</code>: the number of factors the retention rule suggested, which
 can be 0,</p></li>
-<li><p><code>parallel_eigen</code>: mean random-data eigenvalues from parallel analysis, or
-<code>NULL</code> when parallel analysis was not run.</p></li>
+<li><p><code>parallel_eigen</code>: the comparison eigenvalues parallel analysis used, or
+<code>NULL</code> when parallel analysis was not run,</p></li>
+<li><p><code>parallel_criterion</code>: <code>"mean"</code> or <code>"percentile"</code>, or <code>NA</code> when parallel
+analysis was not run,</p></li>
+<li><p><code>percentile</code>: the percentile used, or <code>NA</code> for the mean criterion.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="number-of-factors">Number of factors<a class="anchor" aria-label="anchor" href="#number-of-factors"></a></h2>
 
 
 <p>Unless <code>k_factors</code> is supplied, <code>retention</code> sets the number of factors:</p><ul><li><p><code>"parallel"</code> (default): Horn's (1965) parallel analysis. The eigenvalues of
-the Q-correlation matrix are compared, in order, with the mean eigenvalues
-from random normal data of the same size and with the same missing cells.
+the Q-correlation matrix are compared, in order, with eigenvalues from
+random normal data of the same size and with the same missing cells.
 Factors are retained while the observed eigenvalue is larger. Zwick and
 Velicer (1986) found parallel analysis among the most accurate rules.
 Results vary slightly between runs unless <code>seed</code> is set.</p></li>
@@ -162,13 +177,27 @@ contentvalidR 0.3.0 and remains available so earlier results can be
 reproduced. It is never the default: Zwick and Velicer (1986) found that it
 severely overestimates the number of components, and choosing it prints a
 message saying so.</p></li>
+</ul><p><code>parallel_criterion</code> chooses what the observed eigenvalues are compared
+against:</p><ul><li><p><code>"mean"</code> (default): the mean simulated eigenvalue, as in Horn (1965). This
+is the rule Zwick and Velicer (1986) evaluated and the one contentvalidR
+0.3.0 shipped.</p></li>
+<li><p><code>"percentile"</code>: the upper <code>percentile</code> of the simulated eigenvalue
+distribution, following Glorfeld (1995). Glorfeld noted that Horn's
+procedure, while relatively accurate, still tends to indicate the retention
+of one or two more factors than is warranted, and proposed comparing
+against a chosen upper percentile instead. It is the stricter rule and
+retains no more factors than the mean criterion on the same simulation.</p></li>
 </ul><p>Both rules use the eigenvalues of the full Q-correlation matrix, with 1s on
-the diagonal, whichever extraction <code>method</code> is used. At least one factor is always
-extracted; <code>k_suggested</code> shows when a rule suggested none.</p>
+the diagonal, whichever extraction <code>method</code> is used. At least one factor is
+always extracted; <code>k_suggested</code> shows when a rule suggested none.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Horn, J. L. (1965). A rationale and test for the number of factors in factor
+    <p>Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
+methodology for selecting the correct number of factors to retain.
+<em>Educational and Psychological Measurement, 55</em>(3), 377-393.
+<a href="https://doi.org/10.1177/0013164495055003002" class="external-link">doi:10.1177/0013164495055003002</a></p>
+<p>Horn, J. L. (1965). A rationale and test for the number of factors in factor
 analysis. <em>Psychometrika, 30</em>(2), 179-185. <a href="https://doi.org/10.1007/BF02289447" class="external-link">doi:10.1007/BF02289447</a></p>
 <p>Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., &amp;
 Lankau, M. J. (1993). Improving construct measurement in management research:
@@ -202,6 +231,10 @@ determining the number of components to retain. <em>Psychological Bulletin,
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "dimnames")=List of 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : chr [1:6] "I1" "I2" "I3" "I4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : chr "PC1"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Glorfeld's stricter comparison, on the same simulation.</span></span></span>
+<span class="r-in"><span><span class="fu">qfactor_content</span><span class="op">(</span><span class="va">df</span>, parallel_criterion <span class="op">=</span> <span class="st">"percentile"</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">k_suggested</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

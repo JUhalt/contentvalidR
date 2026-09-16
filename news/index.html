@@ -51,6 +51,17 @@
 <li>Items that do not meet <code>keep</code> stay in the evidence table with <code>carried = FALSE</code> rather than disappearing, and the printed output says plainly that surviving content review does not establish how an item will behave empirically.</li>
 <li>New vignette, <em>From Content Validity to Empirical Validation</em>, running from an expert panel through the handoff into an empirical workflow.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="packaging-in-development-0-3-1-9000">Packaging (in development)<a class="anchor" aria-label="anchor" href="#packaging-in-development-0-3-1-9000"></a></h3>
+<ul><li>
+<code>.Rbuildignore</code> now excludes <code>.git</code>, <code>.gitignore</code>, and <code>.gitattributes</code>. Building a release tarball from a <code>git worktree</code> checkout writes <code>.git</code> as a <em>file</em> rather than a directory, which <code>R CMD build</code> does not drop, and CRAN’s incoming pretest reported it as a hidden file included in error (<a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="selectable-parallel-analysis-criterion-in-development-0-3-1-9000">Selectable parallel analysis criterion (in development)<a class="anchor" aria-label="anchor" href="#selectable-parallel-analysis-criterion-in-development-0-3-1-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/qfactor_content.html">qfactor_content()</a></code> gains <code>parallel_criterion</code>, choosing what parallel analysis compares observed eigenvalues against (<a href="https://github.com/JUhalt/contentvalidR/issues/26" class="external-link">#26</a>). <code>"mean"</code> stays the default, the rule Horn (1965) described and Zwick and Velicer (1986) evaluated. <code>"percentile"</code> compares against an upper percentile of the simulated eigenvalue distribution, following Glorfeld (1995), who found that Horn’s procedure still tends to retain one or two factors too many.</li>
+<li>The percentile level is selectable through <code>percentile</code>, defaulting to 95. Both criteria read the same simulation, so they are directly comparable from one seeded run, and the result records <code>parallel_criterion</code> and <code>percentile</code> alongside the comparison values in <code>parallel_eigen</code>.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="contentvalidr-031">contentvalidR 0.3.1<a class="anchor" aria-label="anchor" href="#contentvalidr-031"></a></h2>

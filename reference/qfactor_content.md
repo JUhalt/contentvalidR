@@ -22,6 +22,8 @@ qfactor_content(
   k_factors = NULL,
   method = c("pca", "pa"),
   retention = c("parallel", "kaiser"),
+  parallel_criterion = c("mean", "percentile"),
+  percentile = 95,
   n_iter = 100,
   seed = NULL
 )
@@ -64,6 +66,16 @@ qfactor_content(
   How to choose the number of factors when `k_factors` is `NULL`:
   `"parallel"` (default) or `"kaiser"`. See the section below.
 
+- parallel_criterion:
+
+  What parallel analysis compares against: `"mean"` (default, Horn) or
+  `"percentile"` (Glorfeld).
+
+- percentile:
+
+  Upper percentile used when `parallel_criterion = "percentile"`.
+  Default 95, as in Glorfeld (1995).
+
 - n_iter:
 
   Number of random data sets for parallel analysis.
@@ -92,8 +104,13 @@ A list with components:
 - `k_suggested`: the number of factors the retention rule suggested,
   which can be 0,
 
-- `parallel_eigen`: mean random-data eigenvalues from parallel analysis,
-  or `NULL` when parallel analysis was not run.
+- `parallel_eigen`: the comparison eigenvalues parallel analysis used,
+  or `NULL` when parallel analysis was not run,
+
+- `parallel_criterion`: `"mean"` or `"percentile"`, or `NA` when
+  parallel analysis was not run,
+
+- `percentile`: the percentile used, or `NA` for the mean criterion.
 
 ## Number of factors
 
@@ -101,11 +118,11 @@ Unless `k_factors` is supplied, `retention` sets the number of factors:
 
 - `"parallel"` (default): Horn's (1965) parallel analysis. The
   eigenvalues of the Q-correlation matrix are compared, in order, with
-  the mean eigenvalues from random normal data of the same size and with
-  the same missing cells. Factors are retained while the observed
-  eigenvalue is larger. Zwick and Velicer (1986) found parallel analysis
-  among the most accurate rules. Results vary slightly between runs
-  unless `seed` is set.
+  eigenvalues from random normal data of the same size and with the same
+  missing cells. Factors are retained while the observed eigenvalue is
+  larger. Zwick and Velicer (1986) found parallel analysis among the
+  most accurate rules. Results vary slightly between runs unless `seed`
+  is set.
 
 - `"kaiser"`: retain eigenvalues greater than 1. This was the default
   before contentvalidR 0.3.0 and remains available so earlier results
@@ -113,12 +130,32 @@ Unless `k_factors` is supplied, `retention` sets the number of factors:
   found that it severely overestimates the number of components, and
   choosing it prints a message saying so.
 
+`parallel_criterion` chooses what the observed eigenvalues are compared
+against:
+
+- `"mean"` (default): the mean simulated eigenvalue, as in Horn (1965).
+  This is the rule Zwick and Velicer (1986) evaluated and the one
+  contentvalidR 0.3.0 shipped.
+
+- `"percentile"`: the upper `percentile` of the simulated eigenvalue
+  distribution, following Glorfeld (1995). Glorfeld noted that Horn's
+  procedure, while relatively accurate, still tends to indicate the
+  retention of one or two more factors than is warranted, and proposed
+  comparing against a chosen upper percentile instead. It is the
+  stricter rule and retains no more factors than the mean criterion on
+  the same simulation.
+
 Both rules use the eigenvalues of the full Q-correlation matrix, with 1s
 on the diagonal, whichever extraction `method` is used. At least one
 factor is always extracted; `k_suggested` shows when a rule suggested
 none.
 
 ## References
+
+Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
+methodology for selecting the correct number of factors to retain.
+*Educational and Psychological Measurement, 55*(3), 377-393.
+[doi:10.1177/0013164495055003002](https://doi.org/10.1177/0013164495055003002)
 
 Horn, J. L. (1965). A rationale and test for the number of factors in
 factor analysis. *Psychometrika, 30*(2), 179-185.
@@ -161,4 +198,8 @@ str(qf$loadings)
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ : chr [1:6] "I1" "I2" "I3" "I4" ...
 #>   ..$ : chr "PC1"
+
+# Glorfeld's stricter comparison, on the same simulation.
+qfactor_content(df, parallel_criterion = "percentile", seed = 1)$k_suggested
+#> [1] 0
 ```
