@@ -481,6 +481,34 @@ behind each decision do not travel with them.
 - [x] Output states that content evidence supports relevance and coverage, not
       that an item will behave well empirically.
 
+### Selectable parallel analysis criterion
+
+Tracking: [#26](https://github.com/JUhalt/contentvalidR/issues/26).
+
+Horn's mean criterion, which v0.3.0 made the default, still tends to retain a
+factor or two by chance on noisy data. Glorfeld (1995) compares each observed
+eigenvalue against an upper percentile of the simulated null distribution
+instead, and reports that Horn's procedure, while relatively accurate, errs
+toward retaining one or two more factors than is warranted.
+
+- [x] `parallel_criterion` selects `"mean"` (the default, Horn) or
+      `"percentile"` (Glorfeld), with `percentile` defaulting to 95.
+- [x] Both criteria read the same simulation, so a single seeded run compares
+      them directly, and the result records which criterion ran.
+- [x] The default is unchanged. The mean criterion is what Zwick & Velicer
+      (1986) evaluated and what v0.3.0 shipped.
+
+### Packaging fixes for the CRAN submission
+
+Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
+
+- [x] `.Rbuildignore` excludes `.git`, `.gitignore`, and `.gitattributes`.
+      CRAN's incoming pretest returned 0.3.1 because a tarball built from a
+      `git worktree` checkout carried a `.git` **file**, which `R CMD build`
+      drops only in its directory form.
+- [ ] Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball's
+      contents to confirm no dotfiles before upload.
+
 ***
 
 ## Future research
@@ -494,8 +522,16 @@ is parked and what would move it into a release.
       ([#2](https://github.com/JUhalt/contentvalidR/issues/2)). The one
       content-validity-specific method found, Bayesian Instrument Development
       (Gajewski et al., 2013; Jiang et al., 2014), needs participant response
-      data and MCMC. That places it at the handoff to `nomologR`, and it
-      conflicts with the dependency policy.
+      data and MCMC. **Benched on 2026-09-16, with a recommendation to move it
+      to `nomologR`.** The method sits on the far side of the handoff
+      ([#27](https://github.com/JUhalt/contentvalidR/issues/27)): it models
+      responses, while this package analyzes judgments made before responses
+      exist. MCMC also needs a compiled sampler, which the `Imports: stats`
+      profile rules out, and a base-R approximation would carry the word
+      "Bayesian" without the estimation that defines the method. The move is
+      being coordinated with the nomologR maintainers rather than transferred
+      unilaterally. The interesting version there is using content-validity
+      evidence as informative priors, not re-implementing the method.
 - [ ] **COSMIN content-validity appraisal**
       ([#16](https://github.com/JUhalt/contentvalidR/issues/16)). Strong evidence
       (Terwee et al., 2018), but it is a qualitative appraisal framework, and it
@@ -511,15 +547,6 @@ is parked and what would move it into a release.
       implemented.
 - [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
       aggregating group ratings; no content-validity application was verified.
-- [ ] **95th-percentile criterion for parallel analysis**
-      ([#26](https://github.com/JUhalt/contentvalidR/issues/26)). Glorfeld
-      (1995) compares each observed eigenvalue against an upper percentile of
-      the simulated null distribution instead of its mean, because Horn's
-      procedure still tends to indicate the retention of one or two more factors
-      than is warranted. Citation verified: *Educational and Psychological
-      Measurement, 55*(3), 377-393. It would stay a never-default option, since
-      Horn's mean criterion is what Zwick & Velicer (1986) evaluated and what
-      v0.3.0 ships.
 - [ ] Interactive teaching applications, a methodological package paper, and
       research on whether guided output improves applied decisions. These are
       not methods questions and are scoped separately.

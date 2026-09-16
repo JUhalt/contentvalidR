@@ -183,7 +183,8 @@ test_that("Q-factor PCA retains a stable auxiliary return contract", {
     as.numeric(factor(interaction(d$rater, d$construct))) * c(.03, -.02, .01)[match(d$item, paste0("I",1:3))]
   out <- qfactor_content(d, k_factors = 1, method = "pca")
   expect_named(out, c("cor_Q", "eigen", "k", "loadings", "method",
-                      "retention", "k_suggested", "parallel_eigen"))
+                      "retention", "k_suggested", "parallel_eigen",
+                      "parallel_criterion", "percentile"))
   expect_equal(out$retention, "fixed")
   expect_equal(dim(out$cor_Q), c(3L, 3L))
   expect_equal(dim(out$loadings), c(3L, 1L))

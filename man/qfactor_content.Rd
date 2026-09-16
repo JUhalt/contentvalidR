@@ -13,6 +13,8 @@ qfactor_content(
   k_factors = NULL,
   method = c("pca", "pa"),
   retention = c("parallel", "kaiser"),
+  parallel_criterion = c("mean", "percentile"),
+  percentile = 95,
   n_iter = 100,
   seed = NULL
 )
@@ -36,6 +38,12 @@ supplied, \code{retention} is ignored.}
 \item{retention}{How to choose the number of factors when \code{k_factors} is
 \code{NULL}: \code{"parallel"} (default) or \code{"kaiser"}. See the section below.}
 
+\item{parallel_criterion}{What parallel analysis compares against:
+\code{"mean"} (default, Horn) or \code{"percentile"} (Glorfeld).}
+
+\item{percentile}{Upper percentile used when
+\code{parallel_criterion = "percentile"}. Default 95, as in Glorfeld (1995).}
+
 \item{n_iter}{Number of random data sets for parallel analysis.}
 
 \item{seed}{Optional seed that makes parallel analysis reproducible.}
@@ -52,8 +60,11 @@ A list with components:
 supplied,
 \item \code{k_suggested}: the number of factors the retention rule suggested, which
 can be 0,
-\item \code{parallel_eigen}: mean random-data eigenvalues from parallel analysis, or
-\code{NULL} when parallel analysis was not run.
+\item \code{parallel_eigen}: the comparison eigenvalues parallel analysis used, or
+\code{NULL} when parallel analysis was not run,
+\item \code{parallel_criterion}: \code{"mean"} or \code{"percentile"}, or \code{NA} when parallel
+analysis was not run,
+\item \code{percentile}: the percentile used, or \code{NA} for the mean criterion.
 }
 }
 \description{
@@ -72,8 +83,8 @@ expert-panel workflows.
 Unless \code{k_factors} is supplied, \code{retention} sets the number of factors:
 \itemize{
 \item \code{"parallel"} (default): Horn's (1965) parallel analysis. The eigenvalues of
-the Q-correlation matrix are compared, in order, with the mean eigenvalues
-from random normal data of the same size and with the same missing cells.
+the Q-correlation matrix are compared, in order, with eigenvalues from
+random normal data of the same size and with the same missing cells.
 Factors are retained while the observed eigenvalue is larger. Zwick and
 Velicer (1986) found parallel analysis among the most accurate rules.
 Results vary slightly between runs unless \code{seed} is set.
@@ -84,9 +95,23 @@ severely overestimates the number of components, and choosing it prints a
 message saying so.
 }
 
+\code{parallel_criterion} chooses what the observed eigenvalues are compared
+against:
+\itemize{
+\item \code{"mean"} (default): the mean simulated eigenvalue, as in Horn (1965). This
+is the rule Zwick and Velicer (1986) evaluated and the one contentvalidR
+0.3.0 shipped.
+\item \code{"percentile"}: the upper \code{percentile} of the simulated eigenvalue
+distribution, following Glorfeld (1995). Glorfeld noted that Horn's
+procedure, while relatively accurate, still tends to indicate the retention
+of one or two more factors than is warranted, and proposed comparing
+against a chosen upper percentile instead. It is the stricter rule and
+retains no more factors than the mean criterion on the same simulation.
+}
+
 Both rules use the eigenvalues of the full Q-correlation matrix, with 1s on
-the diagonal, whichever extraction \code{method} is used. At least one factor is always
-extracted; \code{k_suggested} shows when a rule suggested none.
+the diagonal, whichever extraction \code{method} is used. At least one factor is
+always extracted; \code{k_suggested} shows when a rule suggested none.
 }
 
 \examples{
@@ -100,8 +125,16 @@ df <- data.frame(
 qf <- qfactor_content(df, seed = 1)
 qf$k
 str(qf$loadings)
+
+# Glorfeld's stricter comparison, on the same simulation.
+qfactor_content(df, parallel_criterion = "percentile", seed = 1)$k_suggested
 }
 \references{
+Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
+methodology for selecting the correct number of factors to retain.
+\emph{Educational and Psychological Measurement, 55}(3), 377-393.
+\doi{10.1177/0013164495055003002}
+
 Horn, J. L. (1965). A rationale and test for the number of factors in factor
 analysis. \emph{Psychometrika, 30}(2), 179-185. \doi{10.1007/BF02289447}
 
