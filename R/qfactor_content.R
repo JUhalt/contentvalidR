@@ -1,6 +1,8 @@
-# Horn's (1965) parallel analysis: mean eigenvalues of correlation matrices from
-# random normal data with the same dimensions and missing cells as the ratings.
-.parallel_eigen <- function(mat, n_iter, seed = NULL) {
+# Parallel analysis comparison values: eigenvalues of correlation matrices from
+# random normal data with the same dimensions and missing cells as the ratings,
+# summarized by Horn's (1965) mean or Glorfeld's (1995) upper percentile.
+.parallel_eigen <- function(mat, n_iter, seed = NULL, criterion = "mean",
+                            percentile = 95) {
   if (!is.null(seed)) set.seed(seed)
   missing <- is.na(mat)
   sims <- matrix(NA_real_, nrow = n_iter, ncol = ncol(mat))
@@ -17,7 +19,11 @@
     stop("Parallel analysis could not simulate usable correlation matrices; ",
          "supply `k_factors` or provide more complete ratings.", call. = FALSE)
   }
-  colMeans(sims[usable, , drop = FALSE])
+  sims <- sims[usable, , drop = FALSE]
+  if (identical(criterion, "mean")) {
+    return(colMeans(sims))
+  }
+  apply(sims, 2, stats::quantile, probs = percentile / 100, names = FALSE)
 }
 
 .kaiser_critique <- function() {
@@ -45,8 +51,8 @@
 #' Unless `k_factors` is supplied, `retention` sets the number of factors:
 #'
 #' * `"parallel"` (default): Horn's (1965) parallel analysis. The eigenvalues of
-#'   the Q-correlation matrix are compared, in order, with the mean eigenvalues
-#'   from random normal data of the same size and with the same missing cells.
+#'   the Q-correlation matrix are compared, in order, with eigenvalues from
+#'   random normal data of the same size and with the same missing cells.
 #'   Factors are retained while the observed eigenvalue is larger. Zwick and
 #'   Velicer (1986) found parallel analysis among the most accurate rules.
 #'   Results vary slightly between runs unless `seed` is set.
@@ -56,9 +62,22 @@
 #'   severely overestimates the number of components, and choosing it prints a
 #'   message saying so.
 #'
+#' `parallel_criterion` chooses what the observed eigenvalues are compared
+#' against:
+#'
+#' * `"mean"` (default): the mean simulated eigenvalue, as in Horn (1965). This
+#'   is the rule Zwick and Velicer (1986) evaluated and the one contentvalidR
+#'   0.3.0 shipped.
+#' * `"percentile"`: the upper `percentile` of the simulated eigenvalue
+#'   distribution, following Glorfeld (1995). Glorfeld noted that Horn's
+#'   procedure, while relatively accurate, still tends to indicate the retention
+#'   of one or two more factors than is warranted, and proposed comparing
+#'   against a chosen upper percentile instead. It is the stricter rule and
+#'   retains no more factors than the mean criterion on the same simulation.
+#'
 #' Both rules use the eigenvalues of the full Q-correlation matrix, with 1s on
-#' the diagonal, whichever extraction `method` is used. At least one factor is always
-#' extracted; `k_suggested` shows when a rule suggested none.
+#' the diagonal, whichever extraction `method` is used. At least one factor is
+#' always extracted; `k_suggested` shows when a rule suggested none.
 #'
 #' @param ratings A data.frame with columns for item, rater, construct, rating.
 #' @param item_col Name of the item column. Default "item".
@@ -70,6 +89,10 @@
 #' @param method `"pca"` (default) or `"pa"` (principal axis; uses SMCs as initial communalities).
 #' @param retention How to choose the number of factors when `k_factors` is
 #'   `NULL`: `"parallel"` (default) or `"kaiser"`. See the section below.
+#' @param parallel_criterion What parallel analysis compares against:
+#'   `"mean"` (default, Horn) or `"percentile"` (Glorfeld).
+#' @param percentile Upper percentile used when
+#'   `parallel_criterion = "percentile"`. Default 95, as in Glorfeld (1995).
 #' @param n_iter Number of random data sets for parallel analysis.
 #' @param seed Optional seed that makes parallel analysis reproducible.
 #'
@@ -83,10 +106,18 @@
 #'     supplied,
 #'   - `k_suggested`: the number of factors the retention rule suggested, which
 #'     can be 0,
-#'   - `parallel_eigen`: mean random-data eigenvalues from parallel analysis, or
-#'     `NULL` when parallel analysis was not run.
+#'   - `parallel_eigen`: the comparison eigenvalues parallel analysis used, or
+#'     `NULL` when parallel analysis was not run,
+#'   - `parallel_criterion`: `"mean"` or `"percentile"`, or `NA` when parallel
+#'     analysis was not run,
+#'   - `percentile`: the percentile used, or `NA` for the mean criterion.
 #'
 #' @references
+#' Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
+#' methodology for selecting the correct number of factors to retain.
+#' *Educational and Psychological Measurement, 55*(3), 377-393.
+#' \doi{10.1177/0013164495055003002}
+#'
 #' Horn, J. L. (1965). A rationale and test for the number of factors in factor
 #' analysis. *Psychometrika, 30*(2), 179-185. \doi{10.1007/BF02289447}
 #'
@@ -117,6 +148,9 @@
 #' qf <- qfactor_content(df, seed = 1)
 #' qf$k
 #' str(qf$loadings)
+#'
+#' # Glorfeld's stricter comparison, on the same simulation.
+#' qfactor_content(df, parallel_criterion = "percentile", seed = 1)$k_suggested
 #' @export
 qfactor_content <- function(ratings,
                             item_col = "item",
@@ -126,14 +160,22 @@ qfactor_content <- function(ratings,
                             k_factors = NULL,
                             method = c("pca","pa"),
                             retention = c("parallel", "kaiser"),
+                            parallel_criterion = c("mean", "percentile"),
+                            percentile = 95,
                             n_iter = 100,
                             seed = NULL) {
   method <- match.arg(method)
   retention <- match.arg(retention)
+  parallel_criterion <- match.arg(parallel_criterion)
   .validate_column_names(item_col, rater_col, construct_col, rating_col)
   if (!is.numeric(n_iter) || length(n_iter) != 1L || !is.finite(n_iter) ||
       n_iter < 1 || n_iter != floor(n_iter)) {
     stop("`n_iter` must be one positive integer.", call. = FALSE)
+  }
+  if (!is.numeric(percentile) || length(percentile) != 1L ||
+      !is.finite(percentile) || percentile <= 0 || percentile >= 100) {
+    stop("`percentile` must be one number between 0 and 100, exclusive.",
+         call. = FALSE)
   }
   if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed))) {
     stop("`seed` must be NULL or one number.", call. = FALSE)
@@ -184,10 +226,16 @@ qfactor_content <- function(ratings,
 
   eg <- eigen(cor_Q, symmetric = TRUE, only.values = TRUE)$values
   parallel_eigen <- NULL
+  criterion_used <- NA_character_
+  percentile_used <- NA_real_
   k <- k_factors
   if (is.null(k)) {
     if (retention == "parallel") {
-      parallel_eigen <- .parallel_eigen(mat, as.integer(n_iter), seed)
+      parallel_eigen <- .parallel_eigen(mat, as.integer(n_iter), seed,
+                                        criterion = parallel_criterion,
+                                        percentile = percentile)
+      criterion_used <- parallel_criterion
+      if (identical(parallel_criterion, "percentile")) percentile_used <- percentile
       above <- eg > parallel_eigen
       k_suggested <- if (all(above)) length(eg) else which.min(above) - 1L
     } else {
@@ -228,5 +276,6 @@ qfactor_content <- function(ratings,
 
   list(cor_Q = cor_Q, eigen = eg, k = k, loadings = load, method = method,
        retention = retention, k_suggested = k_suggested,
-       parallel_eigen = parallel_eigen)
+       parallel_eigen = parallel_eigen, parallel_criterion = criterion_used,
+       percentile = percentile_used)
 }

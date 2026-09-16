@@ -1,5 +1,8 @@
 ^contentvalidR\.Rproj$
 ^\.Rproj\.user$
+^\.git$
+^\.gitignore$
+^\.gitattributes$
 ^README\.Rmd$
 ^LICENSE\.md$
 ^\.github$

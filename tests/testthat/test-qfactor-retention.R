@@ -93,6 +93,57 @@ test_that("a rule that suggests no factors still extracts one", {
   expect_equal(fit$k, max(1L, fit$k_suggested))
 })
 
+test_that("the percentile criterion is stricter than Horn's mean", {
+  d <- two_factor_data()
+  mean_fit <- qfactor_content(d, seed = 4)
+  pct_fit <- qfactor_content(d, parallel_criterion = "percentile", seed = 4)
+
+  expect_equal(mean_fit$parallel_criterion, "mean")
+  expect_equal(pct_fit$parallel_criterion, "percentile")
+  expect_equal(pct_fit$percentile, 95)
+
+  # Same seed, so the same simulated data with a stricter comparison value.
+  expect_true(all(pct_fit$parallel_eigen >= mean_fit$parallel_eigen))
+  expect_lte(pct_fit$k_suggested, mean_fit$k_suggested)
+
+  # The known two-factor structure survives the stricter rule.
+  expect_equal(pct_fit$k, 2L)
+})
+
+test_that("on noise the percentile criterion retains no more than the mean", {
+  reps <- vapply(1:8, function(s) {
+    d <- noise_data(seed = 200 + s)
+    c(mean = qfactor_content(d, n_iter = 50, seed = s)$k_suggested,
+      pct = qfactor_content(d, parallel_criterion = "percentile",
+                            n_iter = 50, seed = s)$k_suggested)
+  }, numeric(2))
+
+  expect_true(all(reps["pct", ] <= reps["mean", ]))
+  expect_lt(mean(reps["pct", ]), 1)
+})
+
+test_that("the percentile level is selectable", {
+  d <- two_factor_data()
+  p95 <- qfactor_content(d, parallel_criterion = "percentile", seed = 4)
+  p99 <- qfactor_content(d, parallel_criterion = "percentile", percentile = 99,
+                         seed = 4)
+
+  expect_equal(p99$percentile, 99)
+  expect_true(all(p99$parallel_eigen >= p95$parallel_eigen))
+  expect_lte(p99$k_suggested, p95$k_suggested)
+})
+
+test_that("criterion fields are NA when parallel analysis did not run", {
+  d <- two_factor_data()
+  k <- suppressMessages(qfactor_content(d, retention = "kaiser"))
+  expect_true(is.na(k$parallel_criterion))
+  expect_true(is.na(k$percentile))
+
+  fixed <- qfactor_content(d, k_factors = 2)
+  expect_true(is.na(fixed$parallel_criterion))
+  expect_null(fixed$parallel_eigen)
+})
+
 test_that("retention arguments are validated", {
   d <- two_factor_data()
   expect_error(qfactor_content(d, n_iter = 0), "positive integer")
