@@ -29,6 +29,7 @@ reference:
   - contentvalid_glossary
   - as.data.frame.contentvalid_workflow
   - content_report
+  - content_handoff
   - compare_rounds
 
 - title: Item-sort components and planning
@@ -88,6 +89,7 @@ articles:
   - reading-output
   - design-and-reporting
   - reporting-examples
+  - handoff-to-empirical-validation
 
 - title: Workflow guides
   contents:

@@ -1,3 +1,20 @@
+# contentvalidR 0.3.1.9000 (development version)
+
+## Handoff to empirical validation (in development)
+
+* Added `content_handoff()`, which packages a finished workflow's item
+  decisions for the next stage of scale development: the item names that
+  survived content review, a per-item evidence table, and the provenance of the
+  analysis that produced them ([#27](https://github.com/JUhalt/contentvalidR/issues/27)).
+  The result is plain data, so a downstream package can read it without
+  contentvalidR installed.
+* Items that do not meet `keep` stay in the evidence table with
+  `carried = FALSE` rather than disappearing, and the printed output says
+  plainly that surviving content review does not establish how an item will
+  behave empirically.
+* New vignette, *From Content Validity to Empirical Validation*, running from
+  an expert panel through the handoff into an empirical workflow.
+
 # contentvalidR 0.3.1
 
 Patch release for the CRAN submission. Package code, documentation of methods,

@@ -909,6 +909,39 @@ ioc(ioc_dat[c("item", "judge", "objective", "score")])
 #> 4   I2         B       4        4         0   1
 ```
 
+## From content validity to empirical validation
+
+Content-validity evidence ends where response data begin.
+`content_handoff()` packages a finished workflow’s item decisions — the
+items that survived review, a per-item evidence table, and the
+provenance of the analysis — so the item set and its reasons travel
+together instead of being retyped:
+
+``` r
+handoff <- content_handoff(efit)
+handoff$items
+#> [1] "Item1" "Item2" "Item3"
+handoff$item_evidence[, c("item", "status", "recommendation", "carried")]
+#>    item    status recommendation carried
+#> 1 Item1 Supported Strong support    TRUE
+#> 2 Item2 Supported Strong support    TRUE
+#> 3 Item3 Supported Strong support    TRUE
+```
+
+Only items with a `Supported` status travel by default; `keep` widens
+that when a protocol carries items flagged for review. Items held back
+stay in the table with `carried = FALSE`, because review is not
+deletion.
+
+Once responses are collected, the item names carry into the empirical
+stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion
+package for that stage, that is
+`nomo_screen(responses, items = handoff$items)`. Carrying an item
+forward is not a prediction that it will perform: a clearly relevant
+item can still correlate poorly with its construct or load on an
+unintended factor, which is what the empirical analysis tests. See
+`vignette("handoff-to-empirical-validation")`.
+
 ## Recommended judge-heterogeneity workflow
 
 Aggregate indices average heterogeneity away. `judge_validity()` asks
