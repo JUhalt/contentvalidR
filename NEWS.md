@@ -1,3 +1,24 @@
+# contentvalidR 0.3.1.9000 (development version)
+
+## Handoff to empirical validation (in development)
+
+* Added `content_handoff()`, which packages a finished workflow's item
+  decisions for the next stage of scale development
+  ([#27](https://github.com/JUhalt/contentvalidR/issues/27)). It carries the
+  item names that survived content review, the construct each belongs to where
+  the design defines one, a per-item evidence table with the decision rule that
+  was applied, the statistics behind each decision, and the provenance of the
+  analysis.
+* The object shape is schema version 1, agreed with the `nomologR` package,
+  which consumes it in `nomo_screen()` and `nomo_run()`. Every field is a base
+  type, so neither package depends on the other.
+* Items that do not meet `keep` stay in the evidence table with
+  `carried = FALSE` rather than disappearing, and the printed output says
+  plainly that surviving content review does not establish how an item will
+  behave empirically.
+* New vignette, *From Content Validity to Empirical Validation*, running from
+  an expert panel through the handoff into an empirical workflow.
+
 # contentvalidR 0.3.1
 
 Patch release for the CRAN submission. Package code, documentation of methods,

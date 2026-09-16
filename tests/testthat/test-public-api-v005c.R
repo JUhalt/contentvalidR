@@ -7,6 +7,7 @@ test_that("the intended public API is exported from a clean namespace", {
     "compare_rounds",
     "compute_csv",
     "compute_psa",
+    "content_handoff",
     "content_report",
     "content_structure",
     "contentvalid_glossary",
@@ -73,6 +74,7 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("print", "contentvalid_expert_power"),
     c("plot", "contentvalid_expert_power"),
     c("print", "contentvalid_agreement"),
+    c("print", "contentvalid_handoff"),
     c("as.data.frame", "contentvalid_workflow")
   )
 
