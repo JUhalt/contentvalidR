@@ -4,7 +4,7 @@
 \alias{content_handoff}
 \title{Carry content-validity decisions into empirical validation}
 \usage{
-content_handoff(fit, keep = "Supported")
+content_handoff(fit, keep = "Supported", round = 1)
 }
 \arguments{
 \item{fit}{A fitted \code{contentvalid_sort}, \code{contentvalid_rating}, or
@@ -12,27 +12,24 @@ content_handoff(fit, keep = "Supported")
 
 \item{keep}{Statuses that travel forward, defaulting to \code{"Supported"}. Any of
 \code{"Supported"}, \code{"Review"}, \code{"Insufficient data"}, or \code{"Descriptive only"}.}
+
+\item{round}{Pretest round this analysis represents. One fit is one round, so
+this defaults to \code{1} and matters only when stacking rounds by hand.}
 }
 \value{
-An object of class \code{contentvalid_handoff}: a list with
-\describe{
-\item{\code{items}}{character vector of unique item names that survived
-content review, in the order they appear in \code{fit$results}.}
-\item{\code{item_evidence}}{data frame with one row per result row: \code{item},
-\code{status}, \code{recommendation}, \code{carried}, and the workflow's key indices.}
-\item{\code{provenance}}{list recording the workflow, mode, the \code{keep} rule,
-settings, design, the contentvalidR version, and the date.}
-}
+An object of class \code{contentvalid_handoff}, \code{cv_handoff}, and \code{list},
+as described under "Object shape".
 }
 \description{
 Packages the item decisions from a finished content-validity workflow so they
 can be carried into an empirical scale-development workflow without retyping
 item names or losing the record of why each item was kept.
 
-The result holds three things: the item names that survived content review,
-a per-item evidence table, and the provenance of the analysis that produced
-them. It is plain data, so a downstream package can read it without
-contentvalidR being installed.
+The result holds the item names that survived content review, the construct
+each belongs to where the design defines one, a per-item evidence table, the
+statistics behind each decision, and the provenance of the analysis. It is
+plain data, so a downstream package can read it without contentvalidR being
+installed.
 }
 \details{
 Item-level workflows are accepted: \code{\link[=sort_validity]{sort_validity()}}, \code{\link[=rating_validity]{rating_validity()}},
@@ -43,11 +40,34 @@ so there is no item set to carry forward.
 Items that do not meet \code{keep} are not dropped from the record. They stay in
 \code{item_evidence} with \code{carried = FALSE}, so a reader can see what was held
 back and why. Review is not deletion.
-
-In congruence mode without a target mapping, \code{expert_validity()} returns one
-row per item-objective cell, so an item can appear in \code{item_evidence} more
-than once. \code{items} is always unique.
 }
+\section{Object shape (schema version 1)}{
+
+The object has class \code{c("contentvalid_handoff", "cv_handoff", "list")}. A
+consumer matches on \code{"cv_handoff"} and reads these fields:
+
+\describe{
+\item{\code{items}}{character vector of the carried item names, that is
+\code{item_evidence$item[item_evidence$carried]}, unique and in results order.}
+\item{\code{scales}}{named list mapping each construct to its carried items, or
+\code{NULL} when the design has no construct mapping. Expert relevance and
+essentiality rate a single item set with no construct column, so they
+produce \code{NULL}. Membership is one to one.}
+\item{\code{item_evidence}}{data frame with one row per reviewed item: \code{item},
+\code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
+\code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}.}
+\item{\code{item_statistics}}{data frame, one row per item per statistic:
+\code{item}, \code{statistic}, \code{value}, and \code{criterion} (\code{NA} when the method sets
+no explicit criterion).}
+\item{\code{provenance}}{list with \code{schema_version}, \code{package},
+\code{package_version}, \code{workflow}, \code{mode}, \code{keep}, \code{method}, \code{citation},
+\code{settings}, \code{design}, and \code{created}.}
+}
+
+This shape is agreed with the \code{nomologR} package, which consumes it in
+\code{nomo_screen()} and \code{nomo_run()}. Neither package depends on the other.
+}
+
 \section{What a handoff does and does not establish}{
 
 Surviving content review is evidence about relevance, representation, and
@@ -70,6 +90,7 @@ handoff <- content_handoff(fit)
 handoff
 handoff$items
 handoff$item_evidence
+handoff$item_statistics
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items

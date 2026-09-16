@@ -3,11 +3,15 @@
 ## Handoff to empirical validation (in development)
 
 * Added `content_handoff()`, which packages a finished workflow's item
-  decisions for the next stage of scale development: the item names that
-  survived content review, a per-item evidence table, and the provenance of the
-  analysis that produced them ([#27](https://github.com/JUhalt/contentvalidR/issues/27)).
-  The result is plain data, so a downstream package can read it without
-  contentvalidR installed.
+  decisions for the next stage of scale development
+  ([#27](https://github.com/JUhalt/contentvalidR/issues/27)). It carries the
+  item names that survived content review, the construct each belongs to where
+  the design defines one, a per-item evidence table with the decision rule that
+  was applied, the statistics behind each decision, and the provenance of the
+  analysis.
+* The object shape is schema version 1, agreed with the `nomologR` package,
+  which consumes it in `nomo_screen()` and `nomo_run()`. Every field is a base
+  type, so neither package depends on the other.
 * Items that do not meet `keep` stay in the evidence table with
   `carried = FALSE` rather than disappearing, and the printed output says
   plainly that surviving content review does not establish how an item will

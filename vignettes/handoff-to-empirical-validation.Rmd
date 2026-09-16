@@ -48,19 +48,25 @@ handoff <- content_handoff(fit)
 handoff
 ```
 
-Three components are available:
+## What the object holds
 
 ```{r components}
 handoff$items
 handoff$item_evidence
-names(handoff$provenance)
+head(handoff$item_statistics)
 ```
 
-`items` is what the next stage consumes. `item_evidence` keeps every item,
-including those held back, with the indices behind each decision, so a
-manuscript can report what was carried forward and why. `provenance` records
-the workflow, the settings, the panel design, the package version, and the
-date.
+`items` is what the next stage consumes: the carried items only, so what you
+read here is exactly what you pass along. `item_evidence` keeps every reviewed
+item, including those held back, with the decision rule that was applied and
+the effective number of judges behind it. `item_statistics` stacks the
+statistics long, one row per item per statistic, with the criterion each was
+compared against where the method sets one.
+
+```{r provenance}
+str(handoff$provenance[c("schema_version", "workflow", "mode", "keep",
+                         "method", "citation")])
+```
 
 By default only items with a `Supported` status travel. Some protocols carry
 items flagged for review, on the grounds that a weak content-validity result
@@ -77,11 +83,33 @@ handoff$item_evidence[!handoff$item_evidence$carried,
                       c("item", "status", "recommendation")]
 ```
 
+## Constructs
+
+Item-sort and construct-rating designs map each item to a target construct, so
+the handoff carries that mapping as `scales`, ready for a workflow that models
+several scales at once:
+
+```{r scales}
+sort_dat <- data.frame(
+  item = rep(c("A1", "A2", "B1"), each = 12),
+  rater = rep(1:12, 3),
+  target_construct = c(rep("A", 24), rep("B", 12)),
+  assigned_construct = c(rep("A", 11), "B", rep("A", 9), rep("B", 3),
+                         rep("B", 10), rep("A", 2))
+)
+content_handoff(sort_validity(sort_dat), keep = c("Supported", "Review"))$scales
+```
+
+An expert panel rating one item set for relevance has no construct column, so
+`scales` is `NULL`. That is a real difference, not a gap to paper over: nothing
+in that design says which construct each item belongs to, so a downstream
+workflow should screen those items rather than invent membership for them.
+
 ## Into an empirical workflow
 
-Once responses are collected, the item names carry straight into the empirical
-stage. [nomologR](https://github.com/JUhalt/nomologR) is the companion package
-for that stage: it begins where item-level data exist and follows the measure
+Once responses are collected, the item set carries into the empirical stage.
+[nomologR](https://github.com/JUhalt/nomologR) is the companion package for
+that stage: it begins where item-level data exist and follows the measure
 through screening, dimensionality, measurement models, reliability, invariance,
 and nomological networks.
 
@@ -90,20 +118,21 @@ and nomological networks.
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.
-scr <- nomo_screen(responses, items = handoff$items)
+scr <- nomo_screen(responses, items = handoff)
 scr$item_summary
-
-fac <- nomo_factors(responses[handoff$items], seed = 2026)
-efa <- nomo_efa(responses[handoff$items], factors = fac)
 ```
 
-That chunk is not evaluated here, because this vignette builds without
-nomologR installed and because there are no responses to screen in a
-content-validity pretest.
+That chunk is not evaluated here, because this vignette builds without nomologR
+installed and because a content-validity pretest has no responses to screen.
 
-The handoff is plain data: a character vector, a data frame, and a list. Any
-downstream workflow can read it, including one you write yourself, without
-depending on contentvalidR.
+The object shape is agreed between the two packages as schema version 1, and
+every field is a base type: character, logical, numeric, integer, data frame,
+list, and Date. Neither package depends on the other, so any downstream
+workflow can read the handoff, including one you write yourself:
+
+```{r plain}
+class(handoff)
+```
 
 ## What the handoff does not claim
 
@@ -122,8 +151,8 @@ the empirical stage is free to flag an item that content review supported.
 
 A methods section can state, in one or two sentences, how many items entered
 the pretest, how many were carried forward and under which rule, and where the
-held-back items went. `handoff$item_evidence` is the table behind that
-sentence, and `handoff$provenance` records the analysis that produced it:
+held-back items went. `item_evidence` is the table behind that sentence, and
+`provenance` records the analysis that produced it:
 
 ```{r reporting}
 ev <- handoff$item_evidence

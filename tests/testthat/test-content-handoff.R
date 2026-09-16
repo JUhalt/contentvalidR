@@ -10,14 +10,12 @@ expert_fit <- function(...) {
 
 sort_fit <- function() {
   sort_dat <- data.frame(
-    item = rep(c("A1", "A2", "A3"), each = 20),
-    rater = rep(1:20, 3),
-    target_construct = "A",
-    assigned_construct = c(
-      rep("A", 18), rep("B", 2),
-      rep("A", 16), rep("B", 4),
-      rep("A", 8), rep("B", 12)
-    ),
+    item = rep(c("A1", "A2", "B1"), each = 12),
+    rater = rep(1:12, 3),
+    target_construct = c(rep("A", 24), rep("B", 12)),
+    assigned_construct = c(rep("A", 11), "B",
+                           rep("A", 9), rep("B", 3),
+                           rep("B", 10), rep("A", 2)),
     stringsAsFactors = FALSE
   )
   sort_validity(sort_dat)
@@ -34,74 +32,169 @@ rating_fit <- function() {
   rating_validity(d, scale_min = 1, scale_max = 5)
 }
 
-test_that("the handoff carries supported items and keeps the full record", {
-  fit <- expert_fit()
-  h <- content_handoff(fit)
+congruence_fit <- function(target = TRUE) {
+  d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"),
+                   KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+  d$score <- ifelse(d$objective == ifelse(d$item == "I1", "A", "B"), 1, -1)
+  if (target) d$target_objective <- ifelse(d$item == "I1", "A", "B")
+  expert_validity(d, mode = "congruence")
+}
 
-  expect_s3_class(h, "contentvalid_handoff")
-  expect_type(h$items, "character")
-  expect_equal(nrow(h$item_evidence), nrow(fit$results))
-  expect_true(all(c("item", "status", "recommendation", "carried") %in%
-                    names(h$item_evidence)))
+test_that("the object matches schema version 1", {
+  h <- content_handoff(expert_fit())
 
-  supported <- fit$results$item[fit$results$status == "Supported"]
-  expect_equal(h$items, as.character(supported))
-  expect_equal(h$item_evidence$carried, h$item_evidence$status == "Supported")
+  expect_identical(class(h), c("contentvalid_handoff", "cv_handoff", "list"))
+  expect_named(h, c("items", "scales", "item_evidence", "item_statistics",
+                    "provenance"))
+  expect_identical(h$provenance$schema_version, 1L)
 
-  # Items that did not qualify are still listed, not dropped.
-  expect_setequal(h$item_evidence$item, as.character(fit$results$item))
+  expect_named(h$item_evidence, c("item", "scale", "carried", "status",
+                                  "recommendation", "n_judges", "rule", "round"))
+  expect_named(h$item_statistics, c("item", "statistic", "value", "criterion",
+                                    "round"))
 })
 
-test_that("keep selects which statuses travel", {
+test_that("items are the carried items only", {
+  fit <- expert_fit()
+  h <- content_handoff(fit)
+  ev <- h$item_evidence
+
+  expect_identical(h$items, unique(ev$item[ev$carried]))
+  expect_false(any(ev$item[!ev$carried] %in% h$items))
+  expect_setequal(ev$item, as.character(fit$results$item))
+  expect_equal(ev$carried, ev$status == "Supported")
+})
+
+test_that("every field is a base type, so a consumer needs no dependency", {
+  h <- content_handoff(sort_fit())
+
+  expect_type(h$items, "character")
+  expect_true(is.data.frame(h$item_evidence))
+  expect_true(is.data.frame(h$item_statistics))
+  expect_false(inherits(h$item_evidence, "tbl_df"))
+  expect_type(h$item_evidence$carried, "logical")
+  expect_type(h$item_evidence$n_judges, "integer")
+  expect_type(h$item_statistics$value, "double")
+  expect_s3_class(h$provenance$created, "Date")
+  expect_true(is.list(h$scales))
+})
+
+test_that("scales map constructs to carried items, and are NULL without a mapping", {
+  s <- content_handoff(sort_fit(), keep = c("Supported", "Review"))
+  expect_named(s$scales, c("A", "B"))
+  expect_setequal(unlist(s$scales, use.names = FALSE), s$items)
+  # One-to-one membership: no item appears under two constructs.
+  expect_equal(anyDuplicated(unlist(s$scales, use.names = FALSE)), 0L)
+
+  r <- content_handoff(rating_fit(), keep = c("Supported", "Review"))
+  expect_setequal(names(r$scales), c("A", "B"))
+
+  # Expert relevance rates one item set with no construct column.
+  expect_null(content_handoff(expert_fit())$scales)
+  expect_true(all(is.na(content_handoff(expert_fit())$item_evidence$scale)))
+})
+
+test_that("scales hold carried items only", {
+  fit <- sort_fit()
+  h <- content_handoff(fit)
+  held <- h$item_evidence$item[!h$item_evidence$carried]
+  expect_true(length(held) > 0)
+  expect_false(any(held %in% unlist(h$scales, use.names = FALSE)))
+})
+
+test_that("n_judges is the effective per-item count for each workflow", {
+  s <- sort_fit()
+  expect_equal(content_handoff(s)$item_evidence$n_judges, as.integer(s$results$n))
+
+  r <- rating_fit()
+  expect_equal(content_handoff(r)$item_evidence$n_judges,
+               as.integer(r$results$n_complete))
+
+  e <- expert_fit()
+  expect_equal(content_handoff(e)$item_evidence$n_judges, as.integer(e$results$N))
+})
+
+test_that("the rule states the decision criterion each workflow applied", {
+  expect_match(content_handoff(sort_fit())$item_evidence$rule[1],
+               "exact binomial target-count test; Howard & Melloy, 2016")
+  expect_match(content_handoff(rating_fit())$item_evidence$rule[1],
+               "Greenhouse-Geisser corrected omnibus test")
+  expect_match(content_handoff(expert_fit())$item_evidence$rule[1],
+               "I-CVI >= .+ modified kappa > 0.74")
+})
+
+test_that("statistics stack long with their criteria", {
+  fit <- expert_fit()
+  st <- content_handoff(fit)$item_statistics
+
+  expect_setequal(unique(st$statistic), c("Aiken's V", "I-CVI", "modified kappa"))
+  expect_equal(nrow(st), 3L * nrow(fit$results))
+
+  icvi <- st[st$statistic == "I-CVI", ]
+  expect_equal(icvi$value, fit$results$I_CVI)
+  expect_equal(icvi$criterion, fit$results$cvi_criterion)
+  expect_true(all(st$criterion[st$statistic == "modified kappa"] == 0.74))
+  expect_true(all(is.na(st$criterion[st$statistic == "Aiken's V"])))
+
+  # Held-back items keep their statistics, so a report can show the numbers.
+  expect_setequal(unique(st$item), as.character(fit$results$item))
+})
+
+test_that("essentiality and congruence modes hand off", {
+  ess <- content_handoff(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12),
+                         keep = c("Supported", "Review"))
+  expect_equal(ess$provenance$mode, "essentiality")
+  expect_null(ess$scales)
+  expect_match(ess$item_evidence$rule[1], "Ayre & Scally, 2014")
+  expect_true("CVR" %in% ess$item_statistics$statistic)
+
+  con <- content_handoff(congruence_fit(), keep = c("Supported", "Review"))
+  expect_named(con$scales, c("A", "B"))
+  expect_match(con$item_evidence$rule[1], "target-objective IOC exceeds")
+
+  desc <- content_handoff(congruence_fit(target = FALSE),
+                          keep = "Descriptive only")
+  expect_null(desc$scales)
+  expect_match(desc$item_evidence$rule[1], "no target-objective mapping")
+  expect_true(all(desc$item_statistics$statistic == "IOC"))
+})
+
+test_that("keep widens what travels and round is recorded", {
   fit <- expert_fit()
   strict <- content_handoff(fit)
-  wider <- content_handoff(fit, keep = c("Supported", "Review"))
+  wider <- content_handoff(fit, keep = c("Supported", "Review"), round = 2)
 
   expect_true(all(strict$items %in% wider$items))
   expect_gt(length(wider$items), length(strict$items))
   expect_equal(wider$provenance$keep, c("Supported", "Review"))
-})
-
-test_that("the evidence table carries the workflow's own indices", {
-  ev <- content_handoff(expert_fit())$item_evidence
-  expect_true(all(c("V", "I_CVI", "kappa_mod") %in% names(ev)))
-
-  sort_ev <- content_handoff(sort_fit())$item_evidence
-  expect_true(all(c("psa", "csv") %in% names(sort_ev)))
-
-  rating_ev <- content_handoff(rating_fit())$item_evidence
-  expect_true(all(c("htc", "htd") %in% names(rating_ev)))
-})
-
-test_that("item-sort and construct-rating workflows hand off too", {
-  s <- content_handoff(sort_fit())
-  expect_equal(s$provenance$workflow, "item-sort")
-  expect_true(length(s$items) >= 1L)
-  expect_true(all(s$items %in% c("A1", "A2", "A3")))
-
-  r <- content_handoff(rating_fit())
-  expect_equal(r$provenance$workflow, "construct-rating")
-  expect_true(all(r$items %in% c("A1", "A2", "B1")))
+  expect_true(all(wider$item_evidence$round == 2L))
+  expect_true(all(wider$item_statistics$round == 2L))
 })
 
 test_that("provenance records what produced the item set", {
   p <- content_handoff(expert_fit())$provenance
+
   expect_equal(p$package, "contentvalidR")
-  expect_equal(p$version, as.character(utils::packageVersion("contentvalidR")))
+  expect_equal(p$package_version, as.character(utils::packageVersion("contentvalidR")))
   expect_equal(p$workflow, "expert-panel")
   expect_equal(p$mode, "relevance")
+  expect_equal(p$method, "Aiken V with score intervals plus CVI/modified kappa")
+  expect_true(any(grepl("Penfield", p$citation)))
   expect_equal(p$settings$lo, 1)
   expect_true(is.list(p$design))
-  expect_match(p$created, "^[0-9]{4}-[0-9]{2}-[0-9]{2}$")
 })
 
 test_that("the printed handoff names the next step and the limits of the evidence", {
   out <- paste(capture.output(print(content_handoff(expert_fit()))), collapse = " ")
+  expect_match(out, "schema version 1")
   expect_match(out, "Items carried forward")
+  expect_match(out, "Constructs: none in this design")
   expect_match(out, "Held back")
   expect_match(out, "nomo_screen")
   expect_match(out, "does not establish that an item will behave well")
-  expect_match(out, "listed above rather than deleted")
+
+  sorted <- paste(capture.output(print(content_handoff(sort_fit()))), collapse = " ")
+  expect_match(sorted, "Constructs: A \\(")
 })
 
 test_that("workflows without an item set are refused", {
@@ -117,9 +210,11 @@ test_that("workflows without an item set are refused", {
                "must be a sort, rating, or expert-panel workflow")
 })
 
-test_that("keep is validated against the workflow status labels", {
+test_that("keep and round are validated", {
   fit <- expert_fit()
   expect_error(content_handoff(fit, keep = "Retain"), "must be one or more of")
   expect_error(content_handoff(fit, keep = character(0)), "must be one or more of")
   expect_error(content_handoff(fit, keep = NA_character_), "must be one or more of")
+  expect_error(content_handoff(fit, round = 0), "positive integer")
+  expect_error(content_handoff(fit, round = 1.5), "positive integer")
 })
