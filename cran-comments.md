@@ -1,16 +1,27 @@
 ## Resubmission
 
-This is a resubmission. In this version I have:
+This is a resubmission. Both earlier versions were returned by the incoming
+checks, and this version fixes each problem:
 
-* Replaced the relative links to `LICENSE.md` and `ROADMAP.md` in README.md
-  with full URLs. Those files are not part of the built package, so the
-  incoming checks for 0.3.0 reported them as invalid file URIs. Nothing else
-  changed.
+* 0.3.0 was returned for "Found the following (possibly) invalid file URIs:
+  LICENSE.md, ROADMAP.md (from README.md)". README.md now links to both files
+  with full URLs.
+* 0.3.1 was returned for "Found the following hidden files and directories:
+  .git". That tarball had been built from a git worktree checkout, where `.git`
+  is a file rather than a directory, and `R CMD build` did not drop it.
+  `.Rbuildignore` now excludes `.git`, `.gitignore`, and `.gitattributes`, and
+  the contents of the built tarball were listed to confirm it contains no
+  hidden files.
+
+The version is 0.4.0 rather than a further patch because it also adds new
+functionality: a documented handoff of content-reviewed items to downstream
+empirical workflows, and a selectable criterion for parallel analysis.
 
 ## Test environments
 
 * Local: Windows 11, R 4.6.1, `R CMD check --as-cran` on the built source
   tarball
+* win-builder: R-devel
 * GitHub Actions:
   * Windows, R release
   * macOS, R release
@@ -21,12 +32,13 @@ This is a resubmission. In this version I have:
 
 ## R CMD check results
 
-0 errors | 0 warnings | 3 notes
+0 errors | 0 warnings | 2 notes
 
 * checking CRAN incoming feasibility ... NOTE
   New submission
 
-  This is the first submission of contentvalidR.
+  No version of contentvalidR is on CRAN yet. On win-builder the same NOTE
+  also lists possibly misspelled words in DESCRIPTION, explained below.
 
 * checking HTML version of manual ... NOTE
   Skipping checking math rendering: package 'V8' unavailable
@@ -34,19 +46,14 @@ This is a resubmission. In this version I have:
   This comes from the local Windows check machine, where the optional V8
   package is not installed. It does not concern the package.
 
-* checking for detritus in the temp directory ... NOTE
-  Found the following files/directories: 'lastMiKTeXException'
-
-  MiKTeX on the local Windows check machine writes this file while building
-  the PDF manual. The package's code, examples, tests, and vignettes do not
-  create it.
-
-The built tarball was also installed into an empty library, where the examples
-for every help topic, all seven vignettes, and the citation ran successfully.
+The built tarball contains no hidden files. Installed into an empty library,
+it ran the examples for all 40 help topics, all eight vignettes, and the
+citation.
 
 ## Submission notes
 
-* This is the first CRAN submission of contentvalidR.
+* No version of contentvalidR is on CRAN yet, so the incoming checks report a
+  new submission.
 * The words flagged as possibly misspelled in DESCRIPTION are spelled
   correctly. Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
   Lawshe, Llabre, Melloy, and Sireci are author surnames. HTC and HTD are the

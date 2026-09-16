@@ -453,8 +453,9 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 
 ## v0.4.0 - Handoff to empirical validation
 
-**Status:** Planning
+**Status:** Release candidate
 **Milestone:** [v0.4.0](https://github.com/JUhalt/contentvalidR/milestone/4)
+**Version:** `0.4.0`
 
 ### Handoff to nomologR
 
