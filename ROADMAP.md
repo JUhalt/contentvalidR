@@ -453,7 +453,7 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 
 ## v0.4.0 - Handoff to empirical validation
 
-**Status:** Release candidate
+**Status:** Released (0.4.0 on 2026-09-16; submitted to CRAN the same day)
 **Milestone:** [v0.4.0](https://github.com/JUhalt/contentvalidR/milestone/4)
 **Version:** `0.4.0`
 
@@ -507,7 +507,7 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
       CRAN's incoming pretest returned 0.3.1 because a tarball built from a
       `git worktree` checkout carried a `.git` **file**, which `R CMD build`
       drops only in its directory form.
-- [ ] Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball's
+- [x] Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball's
       contents to confirm no dotfiles before upload.
 
 ***
