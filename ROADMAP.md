@@ -467,18 +467,18 @@ contentvalidR ends where empirical data begin, and `nomologR` starts there:
 vector. Today a researcher retypes the surviving item names, and the reasons
 behind each decision do not travel with them.
 
-- [ ] `content_handoff()` returning the retained item names, a per-item evidence
+- [x] `content_handoff()` returning the retained item names, a per-item evidence
       table, and provenance (workflow, settings, design, version, date).
-- [ ] Item-level workflows only. `judge_validity()` and `domain_validity()`
+- [x] Item-level workflows only. `judge_validity()` and `domain_validity()`
       refuse with a message naming the reason, since their rows are judges and
       blueprint cells rather than items.
-- [ ] Items held back stay listed with `carried = FALSE`. Review is not
+- [x] Items held back stay listed with `carried = FALSE`. Review is not
       deletion, and nothing disappears silently.
-- [ ] A vignette running from the expert panel to `nomo_screen()` and on to the
+- [x] A vignette running from the expert panel to `nomo_screen()` and on to the
       nomological network.
-- [ ] No new dependency on either side. The handoff is plain data with a
+- [x] No new dependency on either side. The handoff is plain data with a
       documented shape, so each package builds and tests independently.
-- [ ] Output states that content evidence supports relevance and coverage, not
+- [x] Output states that content evidence supports relevance and coverage, not
       that an item will behave well empirically.
 
 ***
