@@ -6,10 +6,11 @@ articles:
   design-and-reporting: design-and-reporting.html
   expert-panel-validity: expert-panel-validity.html
   getting-started: getting-started.html
+  handoff-to-empirical-validation: handoff-to-empirical-validation.html
   item-sort-validity: item-sort-validity.html
   reading-output: reading-output.html
   reporting-examples: reporting-examples.html
-last_built: 2026-09-15T23:46Z
+last_built: 2026-09-16T10:45Z
 urls:
   reference: https://juhalt.github.io/contentvalidR/reference
   article: https://juhalt.github.io/contentvalidR/articles

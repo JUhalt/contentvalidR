@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><a class="dropdown-item" href="articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
   </ul></li>
@@ -310,12 +311,12 @@
 <h3 id="handoff-to-nomologr">Handoff to nomologR<a class="anchor" aria-label="anchor" href="#handoff-to-nomologr"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>, with the downstream companion in <a href="https://github.com/JUhalt/nomologR/issues/45" class="external-link">JUhalt/nomologR#45</a>.</p>
 <p>contentvalidR ends where empirical data begin, and <code>nomologR</code> starts there: <code>nomo_screen(data, items = &lt;names&gt;)</code> already takes the item set as a character vector. Today a researcher retypes the surviving item names, and the reasons behind each decision do not travel with them.</p>
-<ul class="task-list"><li><label><input type="checkbox"><code>content_handoff()</code> returning the retained item names, a per-item evidence table, and provenance (workflow, settings, design, version, date).</label></li>
-<li><label><input type="checkbox">Item-level workflows only. <code><a href="reference/judge_validity.html">judge_validity()</a></code> and <code><a href="reference/domain_validity.html">domain_validity()</a></code> refuse with a message naming the reason, since their rows are judges and blueprint cells rather than items.</label></li>
-<li><label><input type="checkbox">Items held back stay listed with <code>carried = FALSE</code>. Review is not deletion, and nothing disappears silently.</label></li>
-<li><label><input type="checkbox">A vignette running from the expert panel to <code>nomo_screen()</code> and on to the nomological network.</label></li>
-<li><label><input type="checkbox">No new dependency on either side. The handoff is plain data with a documented shape, so each package builds and tests independently.</label></li>
-<li><label><input type="checkbox">Output states that content evidence supports relevance and coverage, not that an item will behave well empirically.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked><code><a href="reference/content_handoff.html">content_handoff()</a></code> returning the retained item names, a per-item evidence table, and provenance (workflow, settings, design, version, date).</label></li>
+<li><label><input type="checkbox" checked>Item-level workflows only. <code><a href="reference/judge_validity.html">judge_validity()</a></code> and <code><a href="reference/domain_validity.html">domain_validity()</a></code> refuse with a message naming the reason, since their rows are judges and blueprint cells rather than items.</label></li>
+<li><label><input type="checkbox" checked>Items held back stay listed with <code>carried = FALSE</code>. Review is not deletion, and nothing disappears silently.</label></li>
+<li><label><input type="checkbox" checked>A vignette running from the expert panel to <code>nomo_screen()</code> and on to the nomological network.</label></li>
+<li><label><input type="checkbox" checked>No new dependency on either side. The handoff is plain data with a documented shape, so each package builds and tests independently.</label></li>
+<li><label><input type="checkbox" checked>Output states that content evidence supports relevance and coverage, not that an item will behave well empirically.</label></li>
 </ul><hr></div>
 </div>
 <div class="section level2">

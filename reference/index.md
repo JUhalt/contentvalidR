@@ -44,6 +44,8 @@ reports and downstream workflows.
   : Extract workflow results as a plain data frame
 - [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
   : Build a manuscript-ready results table
+- [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+  : Carry content-validity decisions into empirical validation
 - [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
   : Compare content-validity evidence across pretest rounds
 

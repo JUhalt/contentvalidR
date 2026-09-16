@@ -931,6 +931,50 @@ ioc(ioc_dat[c("item", "judge", "objective", "score")])
 #> 4   I2         B       4        4         0   1
 ```
 
+## From content validity to empirical validation
+
+Content-validity evidence ends where response data begin.
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+packages a finished workflow’s item decisions — the items that survived
+review, a per-item evidence table, and the provenance of the analysis —
+so the item set and its reasons travel together instead of being
+retyped:
+
+``` r
+
+handoff <- content_handoff(efit)
+handoff$items
+#> [1] "Item1" "Item2" "Item3"
+handoff$item_evidence[, c("item", "carried", "status", "n_judges", "rule")]
+#>    item carried    status n_judges
+#> 1 Item1    TRUE Supported        6
+#> 2 Item2    TRUE Supported        6
+#> 3 Item3    TRUE Supported        6
+#>                                                                                                  rule
+#> 1 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+#> 2 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+#> 3 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+```
+
+The object carries the carried item names, a construct mapping
+(`scales`, when the design has one), a per-item evidence table, the
+statistics behind each decision, and the provenance of the analysis.
+Only items with a `Supported` status travel by default; `keep` widens
+that when a protocol carries items flagged for review. Items held back
+stay in the table with `carried = FALSE`, because review is not
+deletion.
+
+Once responses are collected, the item set carries into the empirical
+stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion
+package for that stage, that is
+`nomo_screen(responses, items = handoff)`. The object shape is agreed
+between the two packages as schema version 1, and every field is a base
+type, so neither package depends on the other. Carrying an item forward
+is not a prediction that it will perform: a clearly relevant item can
+still correlate poorly with its construct or load on an unintended
+factor, which is what the empirical analysis tests. See
+[`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md).
+
 ## Recommended judge-heterogeneity workflow
 
 Aggregate indices average heterogeneity away.

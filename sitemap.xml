@@ -11,6 +11,7 @@
 <url><loc>https://juhalt.github.io/contentvalidR/articles/design-and-reporting.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/articles/getting-started.html</loc></url>
+<url><loc>https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/articles/index.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/articles/item-sort-validity.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/articles/reading-output.html</loc></url>
@@ -26,6 +27,7 @@
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compare_rounds.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compute_csv.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compute_psa.html</loc></url>
+<url><loc>https://juhalt.github.io/contentvalidR/reference/content_handoff.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/content_report.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/content_structure.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.html</loc></url>

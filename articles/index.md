@@ -10,6 +10,8 @@
   Guide](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md):
 - [Manuscript-Ready Reporting
   Examples](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md):
+- [From Content Validity to Empirical
+  Validation](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md):
 
 ### Workflow guides
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,6 +22,7 @@
     <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><a class="dropdown-item" href="../articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -41,6 +42,16 @@
       <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.1.9000" id="contentvalidr-0319000-development-version">contentvalidR 0.3.1.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0319000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="handoff-to-empirical-validation-in-development-0-3-1-9000">Handoff to empirical validation (in development)<a class="anchor" aria-label="anchor" href="#handoff-to-empirical-validation-in-development-0-3-1-9000"></a></h3>
+<ul><li>Added <code><a href="../reference/content_handoff.html">content_handoff()</a></code>, which packages a finished workflow’s item decisions for the next stage of scale development (<a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>). It carries the item names that survived content review, the construct each belongs to where the design defines one, a per-item evidence table with the decision rule that was applied, the statistics behind each decision, and the provenance of the analysis.</li>
+<li>The object shape is schema version 1, agreed with the <code>nomologR</code> package, which consumes it in <code>nomo_screen()</code> and <code>nomo_run()</code>. Every field is a base type, so neither package depends on the other.</li>
+<li>Items that do not meet <code>keep</code> stay in the evidence table with <code>carried = FALSE</code> rather than disappearing, and the printed output says plainly that surviving content review does not establish how an item will behave empirically.</li>
+<li>New vignette, <em>From Content Validity to Empirical Validation</em>, running from an expert panel through the handoff into an empirical workflow.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="contentvalidr-031">contentvalidR 0.3.1<a class="anchor" aria-label="anchor" href="#contentvalidr-031"></a></h2>
 <p>Patch release for the CRAN submission. Package code, documentation of methods, and results are unchanged from 0.3.0.</p>

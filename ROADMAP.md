@@ -644,9 +644,9 @@ there: `nomo_screen(data, items = <names>)` already takes the item set
 as a character vector. Today a researcher retypes the surviving item
 names, and the reasons behind each decision do not travel with them.
 
-`content_handoff()` returning the retained item names, a per-item
-evidence table, and provenance (workflow, settings, design, version,
-date).
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+returning the retained item names, a per-item evidence table, and
+provenance (workflow, settings, design, version, date).
 
 Item-level workflows only.
 [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
