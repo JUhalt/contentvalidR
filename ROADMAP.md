@@ -585,14 +585,20 @@ has a Wilson 95% lower limit near 0.51.
       there: existing fields keep their names, types, and meaning; `NA` means
       "this statistic has no interval", never missing data; and each addition
       is listed on #46 with the contentvalidR version that introduced it.
-- [ ] Carry `lower`, `upper`, `interval_method`, and `interval_level` for every
+- [x] Carry `lower`, `upper`, `interval_method`, and `interval_level` for every
       statistic that has an interval, and the panel-level agreement interval
-      outside the per-item table.
-- [ ] Report intervals only. No mapping from content-validity statistics to
+      outside the per-item table. Merged in
+      [#36](https://github.com/JUhalt/contentvalidR/pull/36): the interval
+      columns follow `round` in `item_statistics`, and panel agreement travels
+      in a new top-level `panel_statistics` table. Fixtures regenerated for
+      nomologR.
+- [x] Report intervals only. No mapping from content-validity statistics to
       priors; that question belongs to
       [nomologR#49](https://github.com/JUhalt/nomologR/issues/49).
 - [ ] Keep the additions table on nomologR#46 accurate, listing the version
-      that actually ships these columns.
+      that actually ships these columns. Updated on 2026-09-18 with the exact
+      method labels and the `panel_statistics` row; confirm the version at
+      release.
 
 ***
 
