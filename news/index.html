@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -42,6 +42,25 @@
       <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0.9000" id="contentvalidr-0409000-development-version">contentvalidR 0.4.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0409000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="interval-bounds-in-the-handoff-in-development-0-4-0-9000">Interval bounds in the handoff (in development)<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff-in-development-0-4-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/content_handoff.html">content_handoff()</a></code> now carries each statistic’s interval (<a href="https://github.com/JUhalt/contentvalidR/issues/33" class="external-link">#33</a>), so a reader can tell a unanimous four-judge panel from a unanimous twenty-judge one. A unanimous I-CVI from four experts has a Wilson 95% lower limit near 0.51.
+<ul><li>
+<code>item_statistics</code> gains <code>lower</code>, <code>upper</code>, <code>interval_method</code>, and <code>interval_level</code>. They hold the Penfield-Giacobbi score interval for Aiken’s V, and whichever <code>proportion_ci</code> method was chosen for I-CVI and Psa.</li>
+<li>A new <code>panel_statistics</code> table carries the panel agreement coefficient and its bootstrap interval, which are not per item.</li>
+<li>
+<code>NA</code> in all four columns means the statistic has no interval, never missing data.</li>
+</ul></li>
+<li>These additions stay within schema version 1, as agreed with nomologR on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>.
+<ul><li>Existing fields keep their names, types, meaning, and column positions.</li>
+<li>A reader should check that the new columns are present before using them.</li>
+</ul></li>
+<li>The handoff reports intervals only. It does not turn them into priors or weights.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="contentvalidr-040">contentvalidR 0.4.0<a class="anchor" aria-label="anchor" href="#contentvalidr-040"></a></h2>
 <p>Fourth public release. v0.4.0 connects content validation to what comes after it: a documented handoff carries the items that survived content review, and the evidence behind each decision, into empirical scale development. It also adds a stricter, selectable criterion for parallel analysis, and fixes the two packaging problems that returned the 0.3.x CRAN submissions.</p>

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,10 +115,13 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="va">handoff</span></span>
 <span><span class="co">#&gt; contentvalidR handoff (schema version 1)</span></span>
 <span><span class="co">#&gt; --------------------------------------</span></span>
-<span><span class="co">#&gt; Workflow: expert-panel (relevance)   contentvalidR 0.4.0   2026-09-18</span></span>
+<span><span class="co">#&gt; Workflow: expert-panel (relevance)   contentvalidR 0.4.0.9000   2026-09-18</span></span>
 <span><span class="co">#&gt; Items carried forward: 3 of 5</span></span>
 <span><span class="co">#&gt; Carried when status is: Supported</span></span>
 <span><span class="co">#&gt; Constructs: none in this design; the panel rated one item set.</span></span>
+<span><span class="co">#&gt; Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson</span></span>
+<span><span class="co">#&gt;   score, 95%)</span></span>
+<span><span class="co">#&gt; Panel: Krippendorff's alpha (ordinal) = 0.69 (95% interval -0.27 to 0.77)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Held back:</span></span>
 <span><span class="co">#&gt;   item status recommendation</span></span>
@@ -161,13 +164,20 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt; 4     1</span></span>
 <span><span class="co">#&gt; 5     1</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    item statistic     value criterion round</span></span>
-<span><span class="co">#&gt; 1 Item1 Aiken's V 0.9166667        NA     1</span></span>
-<span><span class="co">#&gt; 2 Item2 Aiken's V 0.9166667        NA     1</span></span>
-<span><span class="co">#&gt; 3 Item3 Aiken's V 0.9166667        NA     1</span></span>
-<span><span class="co">#&gt; 4 Item4 Aiken's V 0.5000000        NA     1</span></span>
-<span><span class="co">#&gt; 5 Item5 Aiken's V 0.2500000        NA     1</span></span>
-<span><span class="co">#&gt; 6 Item1     I-CVI 1.0000000         1     1</span></span></code></pre></div>
+<span><span class="co">#&gt;    item statistic     value criterion round      lower     upper</span></span>
+<span><span class="co">#&gt; 1 Item1 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
+<span><span class="co">#&gt; 2 Item2 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
+<span><span class="co">#&gt; 3 Item3 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
+<span><span class="co">#&gt; 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184</span></span>
+<span><span class="co">#&gt; 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053</span></span>
+<span><span class="co">#&gt; 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000</span></span>
+<span><span class="co">#&gt;           interval_method interval_level</span></span>
+<span><span class="co">#&gt; 1 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt; 2 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt; 3 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt; 4 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt; 5 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt; 6            Wilson score           0.95</span></span></code></pre></div>
 <p><code>items</code> is what the next stage consumes: the carried items
 only, so what you read here is exactly what you pass along.
 <code>item_evidence</code> keeps every reviewed item, including those
@@ -201,12 +211,46 @@ deletion. Say so explicitly:</p>
 <span><span class="co">#&gt; 5 Item5 Review         Review</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="how-much-evidence-is-behind-each-number">How much evidence is behind each number<a class="anchor" aria-label="anchor" href="#how-much-evidence-is-behind-each-number"></a>
+</h2>
+<p>A statistic from four experts is less certain than the same value
+from twenty. Each statistic therefore travels with its interval, so the
+next stage can see how much panel evidence stands behind it:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span>
+<span><span class="va">st</span><span class="op">[</span><span class="va">st</span><span class="op">$</span><span class="va">statistic</span> <span class="op">==</span> <span class="st">"I-CVI"</span>,</span>
+<span>   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"value"</span>, <span class="st">"lower"</span>, <span class="st">"upper"</span>, <span class="st">"interval_method"</span>, <span class="st">"interval_level"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;     item value     lower     upper interval_method interval_level</span></span>
+<span><span class="co">#&gt; 6  Item1   1.0 0.5101092 1.0000000    Wilson score           0.95</span></span>
+<span><span class="co">#&gt; 7  Item2   1.0 0.5101092 1.0000000    Wilson score           0.95</span></span>
+<span><span class="co">#&gt; 8  Item3   1.0 0.5101092 1.0000000    Wilson score           0.95</span></span>
+<span><span class="co">#&gt; 9  Item4   0.5 0.1500390 0.8499610    Wilson score           0.95</span></span>
+<span><span class="co">#&gt; 10 Item5   0.0 0.0000000 0.4898908    Wilson score           0.95</span></span></code></pre></div>
+<p>All four experts rated Items 1 to 3 relevant, so each has an I-CVI of
+1. With only four experts, though, the Wilson interval still reaches
+down to about 0.51. A statistic with no interval, such as modified
+kappa, has <code>NA</code> in all four interval columns. There,
+<code>NA</code> means the method defines no interval; it does not mean a
+value is missing.</p>
+<p>The agreement coefficient describes the whole panel rather than any
+one item, so it travels in its own table:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">handoff</span><span class="op">$</span><span class="va">panel_statistics</span></span>
+<span><span class="co">#&gt;                        statistic     value criterion round      lower     upper</span></span>
+<span><span class="co">#&gt; 1 Krippendorff's alpha (ordinal) 0.6925356        NA     1 -0.2666667 0.7726496</span></span>
+<span><span class="co">#&gt;                        interval_method interval_level</span></span>
+<span><span class="co">#&gt; 1 item-resampling percentile bootstrap           0.95</span></span></code></pre></div>
+<p>The handoff reports these intervals and stops there. Whether a later
+analysis should weight items by them, and how, is a question for that
+analysis.</p>
+</div>
+<div class="section level2">
 <h2 id="constructs">Constructs<a class="anchor" aria-label="anchor" href="#constructs"></a>
 </h2>
 <p>Item-sort and construct-rating designs map each item to a target
 construct, so the handoff carries that mapping as <code>scales</code>,
 ready for a workflow that models several scales at once:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sort_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A1"</span>, <span class="st">"A2"</span>, <span class="st">"B1"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  rater <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span><span class="op">)</span>,</span>
@@ -234,7 +278,7 @@ stage. <a href="https://github.com/JUhalt/nomologR" class="external-link">nomolo
 companion package for that stage: it begins where item-level data exist
 and follows the measure through screening, dimensionality, measurement
 models, reliability, invariance, and nomological networks.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("nomologR", repos = "https://juhalt.r-universe.dev")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nomologR</span><span class="op">)</span></span>
 <span></span>
@@ -249,7 +293,7 @@ responses to screen.</p>
 data frame, list, and Date. Neither package depends on the other, so any
 downstream workflow can read the handoff, including one you write
 yourself:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "contentvalid_handoff" "cv_handoff"           "list"</span></span></code></pre></div>
 </div>
@@ -276,7 +320,7 @@ entered the pretest, how many were carried forward and under which rule,
 and where the held-back items went. <code>item_evidence</code> is the
 table behind that sentence, and <code>provenance</code> records the
 analysis that produced it:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%d of %d items were carried forward (%s); %d were held back."</span>,</span>
 <span>        <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">items</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">item</span><span class="op">)</span><span class="op">)</span>,</span>

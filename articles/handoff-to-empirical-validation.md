@@ -47,10 +47,13 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.4.0   2026-09-18
+#> Workflow: expert-panel (relevance)   contentvalidR 0.4.0.9000   2026-09-18
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
+#> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson
+#>   score, 95%)
+#> Panel: Krippendorff's alpha (ordinal) = 0.69 (95% interval -0.27 to 0.77)
 #> 
 #> Held back:
 #>   item status recommendation
@@ -94,13 +97,20 @@ handoff$item_evidence
 #> 4     1
 #> 5     1
 head(handoff$item_statistics)
-#>    item statistic     value criterion round
-#> 1 Item1 Aiken's V 0.9166667        NA     1
-#> 2 Item2 Aiken's V 0.9166667        NA     1
-#> 3 Item3 Aiken's V 0.9166667        NA     1
-#> 4 Item4 Aiken's V 0.5000000        NA     1
-#> 5 Item5 Aiken's V 0.2500000        NA     1
-#> 6 Item1     I-CVI 1.0000000         1     1
+#>    item statistic     value criterion round      lower     upper
+#> 1 Item1 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
+#> 2 Item2 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
+#> 3 Item3 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
+#> 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184
+#> 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053
+#> 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000
+#>           interval_method interval_level
+#> 1 Penfield-Giacobbi score           0.95
+#> 2 Penfield-Giacobbi score           0.95
+#> 3 Penfield-Giacobbi score           0.95
+#> 4 Penfield-Giacobbi score           0.95
+#> 5 Penfield-Giacobbi score           0.95
+#> 6            Wilson score           0.95
 ```
 
 `items` is what the next stage consumes: the carried items only, so what
@@ -145,6 +155,47 @@ handoff$item_evidence[!handoff$item_evidence$carried,
 #> 4 Item4 Review         Review
 #> 5 Item5 Review         Review
 ```
+
+## How much evidence is behind each number
+
+A statistic from four experts is less certain than the same value from
+twenty. Each statistic therefore travels with its interval, so the next
+stage can see how much panel evidence stands behind it:
+
+``` r
+
+st <- handoff$item_statistics
+st[st$statistic == "I-CVI",
+   c("item", "value", "lower", "upper", "interval_method", "interval_level")]
+#>     item value     lower     upper interval_method interval_level
+#> 6  Item1   1.0 0.5101092 1.0000000    Wilson score           0.95
+#> 7  Item2   1.0 0.5101092 1.0000000    Wilson score           0.95
+#> 8  Item3   1.0 0.5101092 1.0000000    Wilson score           0.95
+#> 9  Item4   0.5 0.1500390 0.8499610    Wilson score           0.95
+#> 10 Item5   0.0 0.0000000 0.4898908    Wilson score           0.95
+```
+
+All four experts rated Items 1 to 3 relevant, so each has an I-CVI of 1.
+With only four experts, though, the Wilson interval still reaches down
+to about 0.51. A statistic with no interval, such as modified kappa, has
+`NA` in all four interval columns. There, `NA` means the method defines
+no interval; it does not mean a value is missing.
+
+The agreement coefficient describes the whole panel rather than any one
+item, so it travels in its own table:
+
+``` r
+
+handoff$panel_statistics
+#>                        statistic     value criterion round      lower     upper
+#> 1 Krippendorff's alpha (ordinal) 0.6925356        NA     1 -0.2666667 0.7726496
+#>                        interval_method interval_level
+#> 1 item-resampling percentile bootstrap           0.95
+```
+
+The handoff reports these intervals and stops there. Whether a later
+analysis should weight items by them, and how, is a question for that
+analysis.
 
 ## Constructs
 

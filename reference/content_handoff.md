@@ -83,8 +83,10 @@ A consumer matches on `"cv_handoff"` and reads these fields:
 - `item_statistics`:
 
   data frame, one row per item per statistic: `item`, `statistic`,
-  `value`, and `criterion` (`NA` when the method sets no explicit
-  criterion).
+  `value`, `criterion` (`NA` when the method sets no explicit
+  criterion), and `round`. From contentvalidR 0.5.0 it also carries
+  `lower`, `upper`, `interval_method`, and `interval_level`, described
+  under "Intervals".
 
 - `provenance`:
 
@@ -92,8 +94,43 @@ A consumer matches on `"cv_handoff"` and reads these fields:
   `mode`, `keep`, `method`, `citation`, `settings`, `design`, and
   `created`.
 
+- `panel_statistics`:
+
+  added in contentvalidR 0.5.0. Data frame of panel-level statistics,
+  with the same columns as `item_statistics` less `item`. It holds the
+  panel agreement coefficient when
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  computed one, and has zero rows otherwise.
+
 This shape is agreed with the `nomologR` package, which consumes it in
 `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
+Fields and columns added within schema version 1 are optional for a
+reader, which should check that they are present rather than assume it.
+
+## Intervals
+
+Each statistic's interval travels with it, so a reader can tell a
+unanimous four-judge panel from a unanimous twenty-judge one. `lower`
+and `upper` are the bounds, `interval_method` names the method, and
+`interval_level` is the confidence level, for example `0.95`.
+
+- Aiken's V: the Penfield-Giacobbi score interval.
+
+- I-CVI and Psa: the method chosen with `proportion_ci`, the Wilson
+  score interval by default.
+
+- Panel agreement: the item-resampling percentile bootstrap of
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
+
+The four columns are `NA` together when a statistic has no interval.
+That happens when the method defines none (Csv, HTC, HTD, CVR, the
+essential count, modified kappa, IOC, and p-values), when intervals were
+switched off with `proportion_ci = "none"`, or when the statistic itself
+could not be computed. `NA` there never stands for missing data.
+
+The handoff reports intervals only. It does not turn them into priors or
+weights for a later analysis; that is a question for the consuming
+package.
 
 ## What a handoff does and does not establish
 
@@ -125,10 +162,12 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.4.0   2026-09-18
+#> Workflow: expert-panel (relevance)   contentvalidR 0.4.0.9000   2026-09-18
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
+#> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson
+#>   score, 95%)
 #> 
 #> Held back:
 #>   item status recommendation
@@ -163,19 +202,32 @@ handoff$item_evidence
 #> 3     1
 #> 4     1
 handoff$item_statistics
-#>     item      statistic       value criterion round
-#> 1  Item1      Aiken's V  0.91666667        NA     1
-#> 2  Item2      Aiken's V  0.91666667        NA     1
-#> 3  Item3      Aiken's V  0.91666667        NA     1
-#> 4  Item4      Aiken's V  0.25000000        NA     1
-#> 5  Item1          I-CVI  1.00000000      1.00     1
-#> 6  Item2          I-CVI  1.00000000      1.00     1
-#> 7  Item3          I-CVI  1.00000000      1.00     1
-#> 8  Item4          I-CVI  0.00000000      1.00     1
-#> 9  Item1 modified kappa  1.00000000      0.74     1
-#> 10 Item2 modified kappa  1.00000000      0.74     1
-#> 11 Item3 modified kappa  1.00000000      0.74     1
-#> 12 Item4 modified kappa -0.06666667      0.74     1
+#>     item      statistic       value criterion round      lower     upper
+#> 1  Item1      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349
+#> 2  Item2      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349
+#> 3  Item3      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349
+#> 4  Item4      Aiken's V  0.25000000        NA     1 0.08894167 0.5323053
+#> 5  Item1          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000
+#> 6  Item2          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000
+#> 7  Item3          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000
+#> 8  Item4          I-CVI  0.00000000      1.00     1 0.00000000 0.4898908
+#> 9  Item1 modified kappa  1.00000000      0.74     1         NA        NA
+#> 10 Item2 modified kappa  1.00000000      0.74     1         NA        NA
+#> 11 Item3 modified kappa  1.00000000      0.74     1         NA        NA
+#> 12 Item4 modified kappa -0.06666667      0.74     1         NA        NA
+#>            interval_method interval_level
+#> 1  Penfield-Giacobbi score           0.95
+#> 2  Penfield-Giacobbi score           0.95
+#> 3  Penfield-Giacobbi score           0.95
+#> 4  Penfield-Giacobbi score           0.95
+#> 5             Wilson score           0.95
+#> 6             Wilson score           0.95
+#> 7             Wilson score           0.95
+#> 8             Wilson score           0.95
+#> 9                     <NA>             NA
+#> 10                    <NA>             NA
+#> 11                    <NA>             NA
+#> 12                    <NA>             NA
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items

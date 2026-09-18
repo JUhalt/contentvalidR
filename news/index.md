@@ -1,5 +1,32 @@
 # Changelog
 
+## contentvalidR 0.4.0.9000 (development version)
+
+### Interval bounds in the handoff (in development)
+
+- [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+  now carries each statistic’s interval
+  ([\#33](https://github.com/JUhalt/contentvalidR/issues/33)), so a
+  reader can tell a unanimous four-judge panel from a unanimous
+  twenty-judge one. A unanimous I-CVI from four experts has a Wilson 95%
+  lower limit near 0.51.
+  - `item_statistics` gains `lower`, `upper`, `interval_method`, and
+    `interval_level`. They hold the Penfield-Giacobbi score interval for
+    Aiken’s V, and whichever `proportion_ci` method was chosen for I-CVI
+    and Psa.
+  - A new `panel_statistics` table carries the panel agreement
+    coefficient and its bootstrap interval, which are not per item.
+  - `NA` in all four columns means the statistic has no interval, never
+    missing data.
+- These additions stay within schema version 1, as agreed with nomologR
+  on [nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
+  - Existing fields keep their names, types, meaning, and column
+    positions.
+  - A reader should check that the new columns are present before using
+    them.
+- The handoff reports intervals only. It does not turn them into priors
+  or weights.
+
 ## contentvalidR 0.4.0
 
 Fourth public release. v0.4.0 connects content validation to what comes

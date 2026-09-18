@@ -21,7 +21,7 @@ installed."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,17 +130,47 @@ produce <code>NULL</code>. Membership is one to one.</p></dd>
 
 <dt><code>item_statistics</code></dt>
 <dd><p>data frame, one row per item per statistic:
-<code>item</code>, <code>statistic</code>, <code>value</code>, and <code>criterion</code> (<code>NA</code> when the method sets
-no explicit criterion).</p></dd>
+<code>item</code>, <code>statistic</code>, <code>value</code>, <code>criterion</code> (<code>NA</code> when the method sets
+no explicit criterion), and <code>round</code>. From contentvalidR 0.5.0 it also
+carries <code>lower</code>, <code>upper</code>, <code>interval_method</code>, and <code>interval_level</code>,
+described under "Intervals".</p></dd>
 
 <dt><code>provenance</code></dt>
 <dd><p>list with <code>schema_version</code>, <code>package</code>,
 <code>package_version</code>, <code>workflow</code>, <code>mode</code>, <code>keep</code>, <code>method</code>, <code>citation</code>,
 <code>settings</code>, <code>design</code>, and <code>created</code>.</p></dd>
 
+<dt><code>panel_statistics</code></dt>
+<dd><p>added in contentvalidR 0.5.0. Data frame of
+panel-level statistics, with the same columns as <code>item_statistics</code> less
+<code>item</code>. It holds the panel agreement coefficient when
+<code><a href="expert_validity.html">expert_validity()</a></code> computed one, and has zero rows otherwise.</p></dd>
+
 
 </dl><p>This shape is agreed with the <code>nomologR</code> package, which consumes it in
-<code>nomo_screen()</code> and <code>nomo_run()</code>. Neither package depends on the other.</p>
+<code>nomo_screen()</code> and <code>nomo_run()</code>. Neither package depends on the other.
+Fields and columns added within schema version 1 are optional for a reader,
+which should check that they are present rather than assume it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="intervals">Intervals<a class="anchor" aria-label="anchor" href="#intervals"></a></h2>
+
+
+<p>Each statistic's interval travels with it, so a reader can tell a unanimous
+four-judge panel from a unanimous twenty-judge one. <code>lower</code> and <code>upper</code> are
+the bounds, <code>interval_method</code> names the method, and <code>interval_level</code> is the
+confidence level, for example <code>0.95</code>.</p><ul><li><p>Aiken's V: the Penfield-Giacobbi score interval.</p></li>
+<li><p>I-CVI and Psa: the method chosen with <code>proportion_ci</code>, the Wilson score
+interval by default.</p></li>
+<li><p>Panel agreement: the item-resampling percentile bootstrap of
+<code><a href="panel_agreement.html">panel_agreement()</a></code>.</p></li>
+</ul><p>The four columns are <code>NA</code> together when a statistic has no interval. That
+happens when the method defines none (Csv, HTC, HTD, CVR, the essential
+count, modified kappa, IOC, and p-values), when intervals were switched off
+with <code>proportion_ci = "none"</code>, or when the statistic itself could not be
+computed. <code>NA</code> there never stands for missing data.</p>
+<p>The handoff reports intervals only. It does not turn them into priors or
+weights for a later analysis; that is a question for the consuming package.</p>
     </div>
     <div class="section level2">
     <h2 id="what-a-handoff-does-and-does-not-establish">What a handoff does and does not establish<a class="anchor" aria-label="anchor" href="#what-a-handoff-does-and-does-not-establish"></a></h2>
@@ -172,10 +202,12 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-in"><span><span class="va">handoff</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR handoff (schema version 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.4.0   2026-09-18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.4.0.9000   2026-09-18</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   score, 95%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Held back:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   item status recommendation</span>
@@ -210,19 +242,32 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3     1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4     1</span>
 <span class="r-in"><span><span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     item      statistic       value criterion round</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Item1      Aiken's V  0.91666667        NA     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Item2      Aiken's V  0.91666667        NA     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Item3      Aiken's V  0.91666667        NA     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Item4      Aiken's V  0.25000000        NA     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Item1          I-CVI  1.00000000      1.00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Item2          I-CVI  1.00000000      1.00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Item3          I-CVI  1.00000000      1.00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Item4          I-CVI  0.00000000      1.00     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Item1 modified kappa  1.00000000      0.74     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Item2 modified kappa  1.00000000      0.74     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Item3 modified kappa  1.00000000      0.74     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Item4 modified kappa -0.06666667      0.74     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     item      statistic       value criterion round      lower     upper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Item1      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Item2      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Item3      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Item4      Aiken's V  0.25000000        NA     1 0.08894167 0.5323053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  Item1          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  Item2          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  Item3          I-CVI  1.00000000      1.00     1 0.51010916 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  Item4          I-CVI  0.00000000      1.00     1 0.00000000 0.4898908</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  Item1 modified kappa  1.00000000      0.74     1         NA        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 Item2 modified kappa  1.00000000      0.74     1         NA        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 Item3 modified kappa  1.00000000      0.74     1         NA        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 Item4 modified kappa -0.06666667      0.74     1         NA        NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            interval_method interval_level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  Penfield-Giacobbi score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  Penfield-Giacobbi score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  Penfield-Giacobbi score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  Penfield-Giacobbi score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5             Wilson score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6             Wilson score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7             Wilson score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8             Wilson score           0.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                     &lt;NA&gt;             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                    &lt;NA&gt;             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                    &lt;NA&gt;             NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                    &lt;NA&gt;             NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Carry items flagged for review as well, when the study protocol says so.</span></span></span>
 <span class="r-in"><span><span class="fu">content_handoff</span><span class="op">(</span><span class="va">fit</span>, keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Supported"</span>, <span class="st">"Review"</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">items</span></span></span>
