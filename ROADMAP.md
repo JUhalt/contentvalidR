@@ -735,12 +735,29 @@ participants’ responses in successive rounds, read as a trend with no
 threshold. The individual-level approach rests on Chaffin & Talley
 (1980).
 
-Verify the primary stability sources Holey et al. rest on: Dajani,
-Sincoff & Talley (1979) and Chaffin & Talley (1980).
+Verify the primary stability sources Holey et al. rest on, from their
+full texts, reproducing every printed statistic in R. Dajani, Sincoff &
+Talley (1979) test *group* stability with a χ² on round by response
+category, reading a failure to reject as stability. Chaffin & Talley
+(1980) show that group stability does not imply individual stability,
+test *individual* stability with a χ² on each respondent’s category in
+one round against the next, reading a rejection as stability, and
+propose Goodman & Kruskal’s λ when expected counts are small.
 
-Verify or drop the “15% change” stability rule. Holey et al. do not
-state it, so its attribution to Scheibe, Skutsch & Schofer (1975)
-remains unconfirmed.
+Verify the “15% change” stability rule. It is Scheibe, Skutsch &
+Schofer’s (1975), verified in the editors’ web edition of the book. It
+is a group measure by the authors’ choice: net person-changes between
+the two rounds’ histograms, divided by the number of participants. The
+authors say it has no statistical theory; the 15% cut-off was set from
+about 13% oscillation at the mode in one classroom Delphi.
+
+Offer every published stability method, with Holey et al.’s weighted
+kappa as the default (maintainer decision, 2026-09-18). Chaffin &
+Talley’s λ and individual χ², Dajani et al.’s group χ², and Scheibe et
+al.’s percent change are selectable, each with its critique printed. The
+output states which way each test reads, since the two χ² tests point in
+opposite directions, and flags expected counts below 5 rather than
+pooling silently.
 
 Consensus as percent agreement against a threshold the researcher sets a
 priori. Diamond et al. (2014) report a median of 75% across studies,
