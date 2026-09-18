@@ -275,7 +275,9 @@ test_that("a unanimous small panel shows how wide its interval is", {
   st <- content_handoff(expert_fit())$item_statistics
   unanimous <- st[st$statistic == "I-CVI" & st$value == 1, , drop = FALSE]
   expect_gt(nrow(unanimous), 0L)
-  expect_true(all(unanimous$upper == 1))
+  # Tolerance, not ==: on some platforms the Wilson upper limit at unanimity
+  # computes to 1 minus one unit of floating-point rounding.
+  expect_equal(unanimous$upper, rep(1, nrow(unanimous)))
   expect_true(all(unanimous$lower < 0.55))
 })
 
