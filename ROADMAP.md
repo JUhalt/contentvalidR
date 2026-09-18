@@ -630,7 +630,8 @@ replaces them with full URLs.
 
 ## v0.4.0 - Handoff to empirical validation
 
-**Status:** Release candidate **Milestone:**
+**Status:** Released (0.4.0 on 2026-09-16; submitted to CRAN the same
+day) **Milestone:**
 [v0.4.0](https://github.com/JUhalt/contentvalidR/milestone/4)
 **Version:** `0.4.0`
 

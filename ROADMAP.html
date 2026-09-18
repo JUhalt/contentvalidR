@@ -39,7 +39,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>contentvalidR development roadmap</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.4.0/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
     </div>
 
 <div id="contentvalidr-development-roadmap" class="section level1">
@@ -306,7 +306,7 @@
 </div>
 <div class="section level2">
 <h2 id="v040---handoff-to-empirical-validation">v0.4.0 - Handoff to empirical validation<a class="anchor" aria-label="anchor" href="#v040---handoff-to-empirical-validation"></a></h2>
-<p><strong>Status:</strong> Release candidate <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/4" class="external-link">v0.4.0</a> <strong>Version:</strong> <code>0.4.0</code></p>
+<p><strong>Status:</strong> Released (0.4.0 on 2026-09-16; submitted to CRAN the same day) <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/4" class="external-link">v0.4.0</a> <strong>Version:</strong> <code>0.4.0</code></p>
 <div class="section level3">
 <h3 id="handoff-to-nomologr">Handoff to nomologR<a class="anchor" aria-label="anchor" href="#handoff-to-nomologr"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>, with the downstream companion in <a href="https://github.com/JUhalt/nomologR/issues/45" class="external-link">JUhalt/nomologR#45</a>.</p>
@@ -330,7 +330,7 @@
 <h3 id="packaging-fixes-for-the-cran-submission">Packaging fixes for the CRAN submission<a class="anchor" aria-label="anchor" href="#packaging-fixes-for-the-cran-submission"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>.</p>
 <ul class="task-list"><li><label><input type="checkbox" checked><code>.Rbuildignore</code> excludes <code>.git</code>, <code>.gitignore</code>, and <code>.gitattributes</code>. CRAN’s incoming pretest returned 0.3.1 because a tarball built from a <code>git worktree</code> checkout carried a <code>.git</code> <strong>file</strong>, which <code>R CMD build</code> drops only in its directory form.</label></li>
-<li><label><input type="checkbox">Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball’s contents to confirm no dotfiles before upload.</label></li>
+<li><label><input type="checkbox" checked>Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball’s contents to confirm no dotfiles before upload.</label></li>
 </ul><hr></div>
 </div>
 <div class="section level2">
