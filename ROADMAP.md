@@ -563,15 +563,20 @@ Schema version 1 carries each statistic's value and criterion but not its
 interval. Small panels make the interval matter: a unanimous four-judge I-CVI
 has a Wilson 95% lower limit near 0.51.
 
-- [ ] Agree with nomologR, on
-      [nomologR#46](https://github.com/JUhalt/nomologR/issues/46), whether
-      additive columns stay schema version 1 or need version 2.
+- [x] Agree the schema version with nomologR on
+      [nomologR#46](https://github.com/JUhalt/nomologR/issues/46). The new
+      columns are additive within version 1, under three conditions recorded
+      there: existing fields keep their names, types, and meaning; `NA` means
+      "this statistic has no interval", never missing data; and each addition
+      is listed on #46 with the contentvalidR version that introduced it.
 - [ ] Carry `lower`, `upper`, `interval_method`, and `interval_level` for every
       statistic that has an interval, and the panel-level agreement interval
       outside the per-item table.
 - [ ] Report intervals only. No mapping from content-validity statistics to
       priors; that question belongs to
       [nomologR#49](https://github.com/JUhalt/nomologR/issues/49).
+- [ ] Keep the additions table on nomologR#46 accurate, listing the version
+      that actually ships these columns.
 
 ***
 
