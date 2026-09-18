@@ -285,8 +285,8 @@
 <li><label><input type="checkbox" checked>Confirm no stray <code>LICENSE</code> file reaches the built tarball, and that the source carries <code>License: GPL-3</code> with <code>inst/NOTICE</code> preserving the historical MIT attribution for v0.1.0.</label></li>
 <li><label><input type="checkbox" checked>Check the built tarball with <code>--as-cran</code>, not only the source directory.</label></li>
 <li><label><input type="checkbox" checked>Submit. 0.3.0 was uploaded on 2026-09-15 at 15:56 UTC and confirmed by the maintainer; it entered CRAN’s <code>pretest</code> queue the same day.</label></li>
-<li><label><input type="checkbox">Respond to maintainer feedback and confirm acceptance. Win-builder’s R-devel check of 0.3.0 flagged relative README links to build-ignored files as invalid file URIs. 0.3.1 fixes them and checks clean on the same R-devel, so it is ready to resubmit when CRAN replies.</label></li>
-<li><label><input type="checkbox">Update README installation guidance once CRAN is live.</label></li>
+<li><label><input type="checkbox" checked>Respond to maintainer feedback. CRAN returned 0.3.0 for relative README links to build-ignored files, reported as invalid file URIs, and its automated pretest returned 0.3.1 for a hidden <code>.git</code> file left by a worktree build. Both fixes ship in 0.4.0.</label></li>
+<li><label><input type="checkbox" checked>Carried forward: acceptance and the README installation update are tracked under v0.4.0, since 0.4.0 is the version in CRAN review.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="v030-exit-gate">v0.3.0 exit gate<a class="anchor" aria-label="anchor" href="#v030-exit-gate"></a></h3>
@@ -309,7 +309,7 @@
 <p><strong>Status:</strong> Released (0.4.0 on 2026-09-16; submitted to CRAN the same day) <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/4" class="external-link">v0.4.0</a> <strong>Version:</strong> <code>0.4.0</code></p>
 <div class="section level3">
 <h3 id="handoff-to-nomologr">Handoff to nomologR<a class="anchor" aria-label="anchor" href="#handoff-to-nomologr"></a></h3>
-<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>, with the downstream companion in <a href="https://github.com/JUhalt/nomologR/issues/45" class="external-link">JUhalt/nomologR#45</a>.</p>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>, with the downstream companion in <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">JUhalt/nomologR#46</a>, which holds the agreed exchange schema.</p>
 <p>contentvalidR ends where empirical data begin, and <code>nomologR</code> starts there: <code>nomo_screen(data, items = &lt;names&gt;)</code> already takes the item set as a character vector. Today a researcher retypes the surviving item names, and the reasons behind each decision do not travel with them.</p>
 <ul class="task-list"><li><label><input type="checkbox" checked><code><a href="reference/content_handoff.html">content_handoff()</a></code> returning the retained item names, a per-item evidence table, and provenance (workflow, settings, design, version, date).</label></li>
 <li><label><input type="checkbox" checked>Item-level workflows only. <code><a href="reference/judge_validity.html">judge_validity()</a></code> and <code><a href="reference/domain_validity.html">domain_validity()</a></code> refuse with a message naming the reason, since their rows are judges and blueprint cells rather than items.</label></li>
@@ -330,16 +330,42 @@
 <h3 id="packaging-fixes-for-the-cran-submission">Packaging fixes for the CRAN submission<a class="anchor" aria-label="anchor" href="#packaging-fixes-for-the-cran-submission"></a></h3>
 <p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>.</p>
 <ul class="task-list"><li><label><input type="checkbox" checked><code>.Rbuildignore</code> excludes <code>.git</code>, <code>.gitignore</code>, and <code>.gitattributes</code>. CRAN’s incoming pretest returned 0.3.1 because a tarball built from a <code>git worktree</code> checkout carried a <code>.git</code> <strong>file</strong>, which <code>R CMD build</code> drops only in its directory form.</label></li>
-<li><label><input type="checkbox" checked>Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball’s contents to confirm no dotfiles before upload.</label></li>
+<li><label><input type="checkbox" checked>Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball’s contents to confirm no dotfiles before upload. The first upload, on 2026-09-16, expired unconfirmed. The 2026-09-18 resubmission passed the automated pretest and entered CRAN’s <code>newbies</code> queue for manual review.</label></li>
+<li><label><input type="checkbox">Confirm acceptance, verify the CRAN package page, and verify a clean <code>install.packages("contentvalidR")</code>.</label></li>
+<li><label><input type="checkbox">Update the README installation guidance once CRAN is live.</label></li>
+</ul><hr></div>
+</div>
+<div class="section level2">
+<h2 id="v050---delphi-rounds-and-a-richer-handoff">v0.5.0 - Delphi rounds and a richer handoff<a class="anchor" aria-label="anchor" href="#v050---delphi-rounds-and-a-richer-handoff"></a></h2>
+<p><strong>Status:</strong> Planning <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/5" class="external-link">v0.5.0</a></p>
+<p>Opened on 2026-09-18, while 0.4.0 is in CRAN review. Any fix CRAN requests for 0.4.0 branches from the <code>v0.4.0</code> tag, so work here cannot reach that submission.</p>
+<div class="section level3">
+<h3 id="delphi-consensus-and-stability">Delphi consensus and stability<a class="anchor" aria-label="anchor" href="#delphi-consensus-and-stability"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/20" class="external-link">#20</a>.</p>
+<p>A workflow for successive expert rounds, building on <code><a href="reference/compare_rounds.html">compare_rounds()</a></code>. The evidence steps come first.</p>
+<ul class="task-list"><li><label><input type="checkbox" checked>Verify the stability statistic from the full text of Holey et al. (2007). Stability is measured per statement as weighted kappa between participants’ responses in successive rounds, read as a trend with no threshold. The individual-level approach rests on Chaffin &amp; Talley (1980).</label></li>
+<li><label><input type="checkbox">Verify the primary stability sources Holey et al. rest on: Dajani, Sincoff &amp; Talley (1979) and Chaffin &amp; Talley (1980).</label></li>
+<li><label><input type="checkbox">Verify or drop the “15% change” stability rule. Holey et al. do not state it, so its attribution to Scheibe, Skutsch &amp; Schofer (1975) remains unconfirmed.</label></li>
+<li><label><input type="checkbox">Consensus as percent agreement against a threshold the researcher sets a priori. Diamond et al. (2014) report a median of 75% across studies, which describes practice rather than validating a cutoff.</label></li>
+<li><label><input type="checkbox">Report stability as a trend and leave the stopping decision to the researcher’s a priori criteria. Holey et al. is a single exploratory study and does not validate kappa as a stopping rule.</label></li>
+<li><label><input type="checkbox">Settle whether verbal kappa labels belong in the output, against the evidence, before implementing. Holey et al. use a benchmark table adapted from Anthony (1999).</label></li>
+</ul></div>
+<div class="section level3">
+<h3 id="interval-bounds-in-the-handoff">Interval bounds in the handoff<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff"></a></h3>
+<p>Tracking: <a href="https://github.com/JUhalt/contentvalidR/issues/33" class="external-link">#33</a>.</p>
+<p>Schema version 1 carries each statistic’s value and criterion but not its interval. Small panels make the interval matter: a unanimous four-judge I-CVI has a Wilson 95% lower limit near 0.51.</p>
+<ul class="task-list"><li><label><input type="checkbox" checked>Agree the schema version with nomologR on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The new columns are additive within version 1, under three conditions recorded there: existing fields keep their names, types, and meaning; <code>NA</code> means “this statistic has no interval”, never missing data; and each addition is listed on #46 with the contentvalidR version that introduced it.</label></li>
+<li><label><input type="checkbox">Carry <code>lower</code>, <code>upper</code>, <code>interval_method</code>, and <code>interval_level</code> for every statistic that has an interval, and the panel-level agreement interval outside the per-item table.</label></li>
+<li><label><input type="checkbox">Report intervals only. No mapping from content-validity statistics to priors; that question belongs to <a href="https://github.com/JUhalt/nomologR/issues/49" class="external-link">nomologR#49</a>.</label></li>
+<li><label><input type="checkbox">Keep the additions table on nomologR#46 accurate, listing the version that actually ships these columns.</label></li>
 </ul><hr></div>
 </div>
 <div class="section level2">
 <h2 id="future-research">Future research<a class="anchor" aria-label="anchor" href="#future-research"></a></h2>
 <p><strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/3" class="external-link">Future research</a></p>
 <p>Evidence-reviewed items that are not release commitments. Each records why it is parked and what would move it into a release.</p>
-<ul class="task-list"><li><label><input type="checkbox"><strong>Bayesian content-validity extensions</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/2" class="external-link">#2</a>). The one content-validity-specific method found, Bayesian Instrument Development (Gajewski et al., 2013; Jiang et al., 2014), needs participant response data and MCMC. <strong>Benched on 2026-09-16, with a recommendation to move it to <code>nomologR</code>.</strong> The method sits on the far side of the handoff (<a href="https://github.com/JUhalt/contentvalidR/issues/27" class="external-link">#27</a>): it models responses, while this package analyzes judgments made before responses exist. MCMC also needs a compiled sampler, which the <code>Imports: stats</code> profile rules out, and a base-R approximation would carry the word “Bayesian” without the estimation that defines the method. The move is being coordinated with the nomologR maintainers rather than transferred unilaterally. The interesting version there is using content-validity evidence as informative priors, not re-implementing the method.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked><strong>Bayesian content-validity extensions</strong>: moved to nomologR as <a href="https://github.com/JUhalt/nomologR/issues/49" class="external-link">nomologR#49</a>, and <a href="https://github.com/JUhalt/contentvalidR/issues/2" class="external-link">#2</a> closed on 2026-09-16. Bayesian Instrument Development (Gajewski et al., 2012, 2013; Jiang et al., 2014) models responses and needs MCMC, which puts it past the handoff and outside the <code>Imports: stats</code> profile. nomologR records it as a v0.3 candidate, framed as priors on simple structure (which items belong to which construct) whose strength is earned by panel evidence, rather than priors on loading size.</label></li>
 <li><label><input type="checkbox"><strong>COSMIN content-validity appraisal</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/16" class="external-link">#16</a>). Strong evidence (Terwee et al., 2018), but it is a qualitative appraisal framework, and it was developed for patient-reported outcome measures.</label></li>
-<li><label><input type="checkbox"><strong>Delphi consensus and stability</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/20" class="external-link">#20</a>). Supported by Diamond et al. (2014) and Schifano &amp; Niederberger (2025). The stability statistic still needs verifying from Holey et al. (2007).</label></li>
 <li><label><input type="checkbox"><strong>Marginal-ML many-facet Rasch estimation.</strong> An established method, but it needs a compiled estimation engine, which the dependency policy rules out.</label></li>
 <li><label><input type="checkbox"><strong>Hernández-Nieto’s content validity coefficient.</strong> Published in a book with a fixed 0.80 cutoff, and close to Aiken’s V, which is already implemented.</label></li>
 <li><label><input type="checkbox"><strong>rWG within-group agreement</strong> (James, Demaree &amp; Wolf, 1984). Designed for aggregating group ratings; no content-validity application was verified.</label></li>
