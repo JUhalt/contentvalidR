@@ -4,14 +4,74 @@
 # minor release if needed; only `schema_version` gates a reader.
 .handoff_schema_version <- 1L
 
-.handoff_stat <- function(items, statistic, value, criterion = NA_real_) {
-  data.frame(
+.handoff_stat <- function(items, statistic, value, criterion = NA_real_,
+                          lower = NA_real_, upper = NA_real_,
+                          interval_method = NA_character_,
+                          interval_level = NA_real_) {
+  out <- data.frame(
     item = as.character(items),
     statistic = statistic,
     value = as.numeric(value),
     criterion = as.numeric(criterion),
+    lower = as.numeric(lower),
+    upper = as.numeric(upper),
+    interval_method = as.character(interval_method),
+    interval_level = as.numeric(interval_level),
     stringsAsFactors = FALSE
   )
+  .handoff_no_interval(out)
+}
+
+# Agreed with nomologR (#46): NA in the four interval columns means "this
+# statistic has no interval", never missing data. A row whose bounds could not
+# be computed therefore carries no method or level either, so the four columns
+# are NA together or not at all.
+.handoff_no_interval <- function(stats) {
+  none <- !is.finite(stats$lower) | !is.finite(stats$upper) |
+    is.na(stats$interval_method)
+  stats$lower[none] <- NA_real_
+  stats$upper[none] <- NA_real_
+  stats$interval_method[none] <- NA_character_
+  stats$interval_level[none] <- NA_real_
+  stats
+}
+
+.handoff_interval_label <- function(method) {
+  if (!is.character(method) || length(method) != 1L) return(NA_character_)
+  switch(method,
+         wilson = "Wilson score",
+         agresti_coull = "Agresti-Coull",
+         exact = "Clopper-Pearson exact",
+         NA_character_)
+}
+
+.handoff_column <- function(results, name) {
+  if (name %in% names(results)) results[[name]] else NA_real_
+}
+
+# The panel-level agreement interval is not per item, so it travels in its own
+# table with the same columns as `item_statistics`, less `item`.
+.handoff_panel_statistics <- function(fit, round) {
+  out <- data.frame(statistic = character(0), value = numeric(0),
+                    criterion = numeric(0), round = integer(0),
+                    lower = numeric(0), upper = numeric(0),
+                    interval_method = character(0), interval_level = numeric(0),
+                    stringsAsFactors = FALSE)
+  ag <- if (is.list(fit$details)) fit$details$agreement else NULL
+  if (!inherits(ag, "contentvalid_agreement")) return(out)
+
+  row <- .handoff_no_interval(data.frame(
+    statistic = .agreement_label(ag$method, ag$level),
+    value = as.numeric(ag$estimate),
+    criterion = NA_real_,
+    round = as.integer(round),
+    lower = as.numeric(ag$ci_low),
+    upper = as.numeric(ag$ci_high),
+    interval_method = "item-resampling percentile bootstrap",
+    interval_level = 1 - ag$alpha,
+    stringsAsFactors = FALSE
+  ))
+  rbind(out, row)
 }
 
 # Per-workflow evidence: the construct each item belongs to, the effective judge
@@ -19,10 +79,11 @@
 # the statistics that rule was applied to.
 .handoff_spec <- function(fit, results) {
   alpha <- if (is.null(fit$settings$alpha)) NA_real_ else fit$settings$alpha
+  level <- 1 - alpha
+  proportion_label <- .handoff_interval_label(fit$settings$proportion_ci)
   n <- nrow(results)
-  blank <- data.frame(item = character(0), statistic = character(0),
-                      value = numeric(0), criterion = numeric(0),
-                      stringsAsFactors = FALSE)
+  blank <- .handoff_stat(character(0), character(0), numeric(0), numeric(0),
+                         numeric(0), numeric(0), character(0), numeric(0))
 
   if (inherits(fit, "contentvalid_sort")) {
     return(list(
@@ -37,7 +98,11 @@
                    "Colquitt et al. (2019)"),
       statistics = rbind(
         .handoff_stat(results$item, "Psa", results$psa,
-                      results$critical_n_target / results$n),
+                      results$critical_n_target / results$n,
+                      lower = .handoff_column(results, "psa_low"),
+                      upper = .handoff_column(results, "psa_high"),
+                      interval_method = proportion_label,
+                      interval_level = level),
         .handoff_stat(results$item, "Csv", results$csv),
         .handoff_stat(results$item, "p_value", results$p_value, alpha)
       )
@@ -78,8 +143,20 @@
       citation = c("Aiken (1980)", "Penfield & Giacobbi (2004)",
                    "Polit, Beck & Owen (2007)"),
       statistics = rbind(
-        .handoff_stat(results$item, "Aiken's V", results$V),
-        .handoff_stat(results$item, "I-CVI", results$I_CVI, results$cvi_criterion),
+        .handoff_stat(results$item, "Aiken's V", results$V,
+                      lower = .handoff_column(results, "ci_low"),
+                      upper = .handoff_column(results, "ci_high"),
+                      interval_method = if (is.null(fit$settings$aiken_ci)) {
+                        NA_character_
+                      } else {
+                        fit$settings$aiken_ci
+                      },
+                      interval_level = level),
+        .handoff_stat(results$item, "I-CVI", results$I_CVI, results$cvi_criterion,
+                      lower = .handoff_column(results, "I_CVI_low"),
+                      upper = .handoff_column(results, "I_CVI_high"),
+                      interval_method = proportion_label,
+                      interval_level = level),
         .handoff_stat(results$item, "modified kappa", results$kappa_mod, 0.74)
       )
     ))
@@ -180,15 +257,44 @@
 #'     `scale` (`NA` without a construct mapping), `carried`, `status`,
 #'     `recommendation`, `n_judges`, `rule`, and `round`.}
 #'   \item{`item_statistics`}{data frame, one row per item per statistic:
-#'     `item`, `statistic`, `value`, and `criterion` (`NA` when the method sets
-#'     no explicit criterion).}
+#'     `item`, `statistic`, `value`, `criterion` (`NA` when the method sets
+#'     no explicit criterion), and `round`. From contentvalidR 0.5.0 it also
+#'     carries `lower`, `upper`, `interval_method`, and `interval_level`,
+#'     described under "Intervals".}
 #'   \item{`provenance`}{list with `schema_version`, `package`,
 #'     `package_version`, `workflow`, `mode`, `keep`, `method`, `citation`,
 #'     `settings`, `design`, and `created`.}
+#'   \item{`panel_statistics`}{added in contentvalidR 0.5.0. Data frame of
+#'     panel-level statistics, with the same columns as `item_statistics` less
+#'     `item`. It holds the panel agreement coefficient when
+#'     [expert_validity()] computed one, and has zero rows otherwise.}
 #' }
 #'
 #' This shape is agreed with the `nomologR` package, which consumes it in
 #' `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
+#' Fields and columns added within schema version 1 are optional for a reader,
+#' which should check that they are present rather than assume it.
+#'
+#' @section Intervals:
+#' Each statistic's interval travels with it, so a reader can tell a unanimous
+#' four-judge panel from a unanimous twenty-judge one. `lower` and `upper` are
+#' the bounds, `interval_method` names the method, and `interval_level` is the
+#' confidence level, for example `0.95`.
+#'
+#' * Aiken's V: the Penfield-Giacobbi score interval.
+#' * I-CVI and Psa: the method chosen with `proportion_ci`, the Wilson score
+#'   interval by default.
+#' * Panel agreement: the item-resampling percentile bootstrap of
+#'   [panel_agreement()].
+#'
+#' The four columns are `NA` together when a statistic has no interval. That
+#' happens when the method defines none (Csv, HTC, HTD, CVR, the essential
+#' count, modified kappa, IOC, and p-values), when intervals were switched off
+#' with `proportion_ci = "none"`, or when the statistic itself could not be
+#' computed. `NA` there never stands for missing data.
+#'
+#' The handoff reports intervals only. It does not turn them into priors or
+#' weights for a later analysis; that is a question for the consuming package.
 #'
 #' @section What a handoff does and does not establish:
 #' Surviving content review is evidence about relevance, representation, and
@@ -273,8 +379,13 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
 
   # Statistics cover every reviewed item, carried or not, so a held-back item
   # can be reported with the numbers behind its status.
+  # The interval columns follow `round`, so the schema version 1 columns keep
+  # their positions as well as their names.
   statistics <- spec$statistics
-  statistics$round <- as.integer(round)
+  statistics$round <- rep(as.integer(round), nrow(statistics))
+  statistics <- statistics[c("item", "statistic", "value", "criterion", "round",
+                             "lower", "upper", "interval_method",
+                             "interval_level")]
   rownames(statistics) <- NULL
 
   items <- unique(evidence$item[evidence$carried])
@@ -301,7 +412,8 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
       settings = fit$settings,
       design = .workflow_design(fit),
       created = Sys.Date()
-    )
+    ),
+    panel_statistics = .handoff_panel_statistics(fit, round)
   )
   class(out) <- c("contentvalid_handoff", "cv_handoff", "list")
   out
@@ -325,6 +437,31 @@ print.contentvalid_handoff <- function(x, ...) {
     cat("Constructs: ", paste(sprintf("%s (%d)", names(x$scales),
                                       lengths(x$scales)), collapse = ", "),
         "\n", sep = "")
+  }
+
+  st <- x$item_statistics
+  if (!is.null(st$interval_method) && any(!is.na(st$interval_method))) {
+    carried <- unique(st[!is.na(st$interval_method),
+                         c("statistic", "interval_method", "interval_level")])
+    cat(strwrap(paste0("Intervals carried: ", paste(sprintf(
+      "%s (%s, %s%%)", carried$statistic, carried$interval_method,
+      format(100 * carried$interval_level)
+    ), collapse = "; ")), width = 76, exdent = 2), sep = "\n")
+  }
+
+  ps <- x$panel_statistics
+  if (is.data.frame(ps) && nrow(ps)) {
+    for (i in seq_len(nrow(ps))) {
+      line <- sprintf("Panel: %s = %s", ps$statistic[i],
+                      format(round(ps$value[i], 2), nsmall = 2))
+      if (!is.na(ps$interval_method[i])) {
+        line <- sprintf("%s (%s%% interval %s to %s)", line,
+                        format(100 * ps$interval_level[i]),
+                        format(round(ps$lower[i], 2), nsmall = 2),
+                        format(round(ps$upper[i], 2), nsmall = 2))
+      }
+      cat(line, "\n", sep = "")
+    }
   }
 
   held <- x$item_evidence[!x$item_evidence$carried, , drop = FALSE]

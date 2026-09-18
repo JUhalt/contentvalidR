@@ -1,14 +1,14 @@
-expert_fit <- function(...) {
+expert_fit <- function(agreement = "none", ...) {
   relevance <- matrix(
     c(4, 4, 4, 3,  4, 4, 3, 4,  3, 4, 4, 4,  2, 2, 1, 2),
     nrow = 4,
     dimnames = list(NULL, paste0("Item", 1:4))
   )
   expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
-                  agreement = "none", ...)
+                  agreement = agreement, ...)
 }
 
-sort_fit <- function() {
+sort_fit <- function(...) {
   sort_dat <- data.frame(
     item = rep(c("A1", "A2", "B1"), each = 12),
     rater = rep(1:12, 3),
@@ -18,7 +18,7 @@ sort_fit <- function() {
                            rep("B", 10), rep("A", 2)),
     stringsAsFactors = FALSE
   )
-  sort_validity(sort_dat)
+  sort_validity(sort_dat, ...)
 }
 
 rating_fit <- function() {
@@ -45,13 +45,16 @@ test_that("the object matches schema version 1", {
 
   expect_identical(class(h), c("contentvalid_handoff", "cv_handoff", "list"))
   expect_named(h, c("items", "scales", "item_evidence", "item_statistics",
-                    "provenance"))
+                    "provenance", "panel_statistics"))
   expect_identical(h$provenance$schema_version, 1L)
 
   expect_named(h$item_evidence, c("item", "scale", "carried", "status",
                                   "recommendation", "n_judges", "rule", "round"))
+  # Columns added within version 1 follow the original ones, so a reader that
+  # indexes by position still finds them where they were.
   expect_named(h$item_statistics, c("item", "statistic", "value", "criterion",
-                                    "round"))
+                                    "round", "lower", "upper",
+                                    "interval_method", "interval_level"))
 })
 
 test_that("items are the carried items only", {
@@ -217,4 +220,148 @@ test_that("keep and round are validated", {
   expect_error(content_handoff(fit, keep = NA_character_), "must be one or more of")
   expect_error(content_handoff(fit, round = 0), "positive integer")
   expect_error(content_handoff(fit, round = 1.5), "positive integer")
+})
+
+# Interval bounds (#33), additive within schema version 1 (nomologR#46).
+
+interval_cols <- c("lower", "upper", "interval_method", "interval_level")
+
+rows_for <- function(st, statistic, results) {
+  s <- st[st$statistic == statistic, , drop = FALSE]
+  s[match(as.character(results$item), s$item), , drop = FALSE]
+}
+
+test_that("interval bounds are the workflow's own interval columns", {
+  fit <- expert_fit()
+  st <- content_handoff(fit)$item_statistics
+
+  v <- rows_for(st, "Aiken's V", fit$results)
+  expect_equal(v$lower, fit$results$ci_low)
+  expect_equal(v$upper, fit$results$ci_high)
+  expect_true(all(v$interval_method == "Penfield-Giacobbi score"))
+  expect_true(all(v$interval_level == 0.95))
+
+  icvi <- rows_for(st, "I-CVI", fit$results)
+  expect_equal(icvi$lower, fit$results$I_CVI_low)
+  expect_equal(icvi$upper, fit$results$I_CVI_high)
+  expect_true(all(icvi$interval_method == "Wilson score"))
+
+  s <- sort_fit()
+  psa <- rows_for(content_handoff(s)$item_statistics, "Psa", s$results)
+  expect_equal(psa$lower, s$results$psa_low)
+  expect_equal(psa$upper, s$results$psa_high)
+  expect_true(all(psa$interval_method == "Wilson score"))
+})
+
+test_that("a non-default interval method and level travel with the bounds", {
+  fit <- expert_fit(proportion_ci = "exact", alpha = 0.10)
+  st <- content_handoff(fit)$item_statistics
+  icvi <- rows_for(st, "I-CVI", fit$results)
+  expect_equal(icvi$lower, fit$results$I_CVI_low)
+  expect_equal(icvi$upper, fit$results$I_CVI_high)
+  expect_true(all(icvi$interval_method == "Clopper-Pearson exact"))
+  expect_true(all(icvi$interval_level == 0.90))
+  # Aiken's V keeps its own method but follows the workflow's level.
+  expect_true(all(st$interval_level[st$statistic == "Aiken's V"] == 0.90))
+
+  s <- sort_fit(proportion_ci = "agresti_coull")
+  psa <- rows_for(content_handoff(s)$item_statistics, "Psa", s$results)
+  expect_equal(psa$lower, s$results$psa_low)
+  expect_true(all(psa$interval_method == "Agresti-Coull"))
+})
+
+test_that("a unanimous small panel shows how wide its interval is", {
+  # The case #33 was opened for: I-CVI = 1 from four experts.
+  st <- content_handoff(expert_fit())$item_statistics
+  unanimous <- st[st$statistic == "I-CVI" & st$value == 1, , drop = FALSE]
+  expect_gt(nrow(unanimous), 0L)
+  # Tolerance, not ==: on some platforms the Wilson upper limit at unanimity
+  # computes to 1 minus one unit of floating-point rounding.
+  expect_equal(unanimous$upper, rep(1, nrow(unanimous)))
+  expect_true(all(unanimous$lower < 0.55))
+})
+
+test_that("statistics without an interval carry NA in all four columns", {
+  sorted <- content_handoff(sort_fit())$item_statistics
+  rated <- content_handoff(rating_fit())$item_statistics
+  ess <- content_handoff(expert_validity(c(10, 8, 6), mode = "essentiality",
+                                         N = 12))$item_statistics
+  con <- content_handoff(congruence_fit())$item_statistics
+  off <- content_handoff(expert_fit(proportion_ci = "none"))$item_statistics
+
+  none <- rbind(sorted[sorted$statistic %in% c("Csv", "p_value"), ],
+                rated, ess, con,
+                off[off$statistic %in% c("I-CVI", "modified kappa"), ])
+  expect_gt(nrow(none), 0L)
+  expect_true(all(is.na(as.matrix(none[interval_cols]))))
+
+  # With proportion intervals switched off, Aiken's V keeps its own.
+  expect_false(anyNA(off$interval_method[off$statistic == "Aiken's V"]))
+
+  # NA together or not at all, in every workflow.
+  for (st in list(sorted, rated, ess, con, off,
+                  content_handoff(expert_fit())$item_statistics)) {
+    expect_identical(is.na(st$lower), is.na(st$interval_method))
+    expect_identical(is.na(st$upper), is.na(st$interval_level))
+  }
+})
+
+test_that("interval columns are base types", {
+  st <- content_handoff(sort_fit())$item_statistics
+  expect_type(st$lower, "double")
+  expect_type(st$upper, "double")
+  expect_type(st$interval_method, "character")
+  expect_type(st$interval_level, "double")
+})
+
+test_that("the panel agreement interval travels outside the per-item table", {
+  fit <- expert_fit(agreement = "krippendorff", agreement_B = 200, seed = 11)
+  h <- content_handoff(fit, round = 2)
+  ps <- h$panel_statistics
+
+  expect_true(is.data.frame(ps))
+  expect_named(ps, c("statistic", "value", "criterion", "round",
+                     interval_cols))
+  expect_identical(nrow(ps), 1L)
+  expect_identical(ps$statistic, "Krippendorff's alpha (ordinal)")
+  expect_equal(ps$value, fit$scale_summary$agreement)
+  expect_equal(ps$lower, fit$scale_summary$agreement_low)
+  expect_equal(ps$upper, fit$scale_summary$agreement_high)
+  expect_identical(ps$interval_method, "item-resampling percentile bootstrap")
+  expect_equal(ps$interval_level, 0.95)
+  expect_identical(ps$round, 2L)
+
+  expect_false(any(grepl("Krippendorff", h$item_statistics$statistic)))
+
+  ac1 <- content_handoff(expert_fit(agreement = "ac1", agreement_B = 200,
+                                    seed = 11))$panel_statistics
+  expect_identical(ac1$statistic, "Gwet's AC1")
+})
+
+test_that("workflows without panel statistics carry a zero-row table", {
+  fits <- list(expert_fit(), sort_fit(), rating_fit(), congruence_fit())
+  for (fit in fits) {
+    ps <- content_handoff(fit)$panel_statistics
+    expect_true(is.data.frame(ps))
+    expect_identical(nrow(ps), 0L)
+    expect_named(ps, c("statistic", "value", "criterion", "round",
+                       interval_cols))
+  }
+})
+
+test_that("the printed handoff names the intervals and the panel statistic", {
+  out <- paste(capture.output(print(content_handoff(expert_fit(
+    agreement = "krippendorff", agreement_B = 200, seed = 11
+  )))), collapse = " ")
+  # The intervals line wraps, so compare with whitespace collapsed.
+  out <- gsub("[[:space:]]+", " ", out)
+  expect_match(out, "Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%)",
+               fixed = TRUE)
+  expect_match(out, "I-CVI (Wilson score, 95%)", fixed = TRUE)
+  expect_match(out, "Panel: Krippendorff's alpha (ordinal) = ", fixed = TRUE)
+  expect_match(out, "95% interval", fixed = TRUE)
+
+  rated <- paste(capture.output(print(content_handoff(rating_fit()))),
+                 collapse = " ")
+  expect_false(grepl("Intervals carried", rated, fixed = TRUE))
 })

@@ -57,15 +57,47 @@ produce \code{NULL}. Membership is one to one.}
 \code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
 \code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}.}
 \item{\code{item_statistics}}{data frame, one row per item per statistic:
-\code{item}, \code{statistic}, \code{value}, and \code{criterion} (\code{NA} when the method sets
-no explicit criterion).}
+\code{item}, \code{statistic}, \code{value}, \code{criterion} (\code{NA} when the method sets
+no explicit criterion), and \code{round}. From contentvalidR 0.5.0 it also
+carries \code{lower}, \code{upper}, \code{interval_method}, and \code{interval_level},
+described under "Intervals".}
 \item{\code{provenance}}{list with \code{schema_version}, \code{package},
 \code{package_version}, \code{workflow}, \code{mode}, \code{keep}, \code{method}, \code{citation},
 \code{settings}, \code{design}, and \code{created}.}
+\item{\code{panel_statistics}}{added in contentvalidR 0.5.0. Data frame of
+panel-level statistics, with the same columns as \code{item_statistics} less
+\code{item}. It holds the panel agreement coefficient when
+\code{\link[=expert_validity]{expert_validity()}} computed one, and has zero rows otherwise.}
 }
 
 This shape is agreed with the \code{nomologR} package, which consumes it in
 \code{nomo_screen()} and \code{nomo_run()}. Neither package depends on the other.
+Fields and columns added within schema version 1 are optional for a reader,
+which should check that they are present rather than assume it.
+}
+
+\section{Intervals}{
+
+Each statistic's interval travels with it, so a reader can tell a unanimous
+four-judge panel from a unanimous twenty-judge one. \code{lower} and \code{upper} are
+the bounds, \code{interval_method} names the method, and \code{interval_level} is the
+confidence level, for example \code{0.95}.
+\itemize{
+\item Aiken's V: the Penfield-Giacobbi score interval.
+\item I-CVI and Psa: the method chosen with \code{proportion_ci}, the Wilson score
+interval by default.
+\item Panel agreement: the item-resampling percentile bootstrap of
+\code{\link[=panel_agreement]{panel_agreement()}}.
+}
+
+The four columns are \code{NA} together when a statistic has no interval. That
+happens when the method defines none (Csv, HTC, HTD, CVR, the essential
+count, modified kappa, IOC, and p-values), when intervals were switched off
+with \code{proportion_ci = "none"}, or when the statistic itself could not be
+computed. \code{NA} there never stands for missing data.
+
+The handoff reports intervals only. It does not turn them into priors or
+weights for a later analysis; that is a question for the consuming package.
 }
 
 \section{What a handoff does and does not establish}{
