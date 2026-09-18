@@ -788,14 +788,21 @@ is listed on \#46 with the contentvalidR version that introduced it.
 
 Carry `lower`, `upper`, `interval_method`, and `interval_level` for
 every statistic that has an interval, and the panel-level agreement
-interval outside the per-item table.
+interval outside the per-item table. Merged in
+[\#36](https://github.com/JUhalt/contentvalidR/pull/36): the interval
+columns follow `round` in `item_statistics`, and panel agreement travels
+in a new top-level `panel_statistics` table. Fixtures regenerated for
+nomologR.
 
 Report intervals only. No mapping from content-validity statistics to
 priors; that question belongs to
 [nomologR#49](https://github.com/JUhalt/nomologR/issues/49).
 
 Keep the additions table on nomologR#46 accurate, listing the version
-that actually ships these columns.
+that actually ships these columns. Updated on 2026-09-18 with the exact
+method labels and the `panel_statistics` row. At release, replace
+“merged, not yet released” with the shipping version and its release
+date, so the table records what shipped (requested on \#46).
 
 ------------------------------------------------------------------------
 
