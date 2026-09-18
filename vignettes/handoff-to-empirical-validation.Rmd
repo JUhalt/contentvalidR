@@ -83,6 +83,34 @@ handoff$item_evidence[!handoff$item_evidence$carried,
                       c("item", "status", "recommendation")]
 ```
 
+## How much evidence is behind each number
+
+A statistic from four experts is less certain than the same value from twenty.
+Each statistic therefore travels with its interval, so the next stage can see
+how much panel evidence stands behind it:
+
+```{r intervals}
+st <- handoff$item_statistics
+st[st$statistic == "I-CVI",
+   c("item", "value", "lower", "upper", "interval_method", "interval_level")]
+```
+
+All four experts rated Items 1 to 3 relevant, so each has an I-CVI of 1. With
+only four experts, though, the Wilson interval still reaches down to about 0.51.
+A statistic with no interval, such as modified kappa, has `NA` in all four
+interval columns. There, `NA` means the method defines no interval; it does not
+mean a value is missing.
+
+The agreement coefficient describes the whole panel rather than any one item,
+so it travels in its own table:
+
+```{r panel-statistics}
+handoff$panel_statistics
+```
+
+The handoff reports these intervals and stops there. Whether a later analysis
+should weight items by them, and how, is a question for that analysis.
+
 ## Constructs
 
 Item-sort and construct-rating designs map each item to a target construct, so
