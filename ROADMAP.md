@@ -416,11 +416,12 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 - [x] Check the built tarball with `--as-cran`, not only the source directory.
 - [x] Submit. 0.3.0 was uploaded on 2026-09-15 at 15:56 UTC and confirmed by the
       maintainer; it entered CRAN's `pretest` queue the same day.
-- [ ] Respond to maintainer feedback and confirm acceptance. Win-builder's
-      R-devel check of 0.3.0 flagged relative README links to build-ignored
-      files as invalid file URIs. 0.3.1 fixes them and checks clean on the same
-      R-devel, so it is ready to resubmit when CRAN replies.
-- [ ] Update README installation guidance once CRAN is live.
+- [x] Respond to maintainer feedback. CRAN returned 0.3.0 for relative README
+      links to build-ignored files, reported as invalid file URIs, and its
+      automated pretest returned 0.3.1 for a hidden `.git` file left by a
+      worktree build. Both fixes ship in 0.4.0.
+- [x] Carried forward: acceptance and the README installation update are
+      tracked under v0.4.0, since 0.4.0 is the version in CRAN review.
 
 ### v0.3.0 exit gate
 
@@ -461,7 +462,8 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 
 Tracking: [#27](https://github.com/JUhalt/contentvalidR/issues/27), with the
 downstream companion in
-[JUhalt/nomologR#45](https://github.com/JUhalt/nomologR/issues/45).
+[JUhalt/nomologR#46](https://github.com/JUhalt/nomologR/issues/46), which holds
+the agreed exchange schema.
 
 contentvalidR ends where empirical data begin, and `nomologR` starts there:
 `nomo_screen(data, items = <names>)` already takes the item set as a character
@@ -508,7 +510,68 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
       `git worktree` checkout carried a `.git` **file**, which `R CMD build`
       drops only in its directory form.
 - [x] Submit 0.4.0 to CRAN carrying these fixes, listing the built tarball's
-      contents to confirm no dotfiles before upload.
+      contents to confirm no dotfiles before upload. The first upload, on
+      2026-09-16, expired unconfirmed. The 2026-09-18 resubmission passed the
+      automated pretest and entered CRAN's `newbies` queue for manual review.
+- [ ] Confirm acceptance, verify the CRAN package page, and verify a clean
+      `install.packages("contentvalidR")`.
+- [ ] Update the README installation guidance once CRAN is live.
+
+***
+
+## v0.5.0 - Delphi rounds and a richer handoff
+
+**Status:** Planning
+**Milestone:** [v0.5.0](https://github.com/JUhalt/contentvalidR/milestone/5)
+
+Opened on 2026-09-18, while 0.4.0 is in CRAN review. Any fix CRAN requests for
+0.4.0 branches from the `v0.4.0` tag, so work here cannot reach that
+submission.
+
+### Delphi consensus and stability
+
+Tracking: [#20](https://github.com/JUhalt/contentvalidR/issues/20).
+
+A workflow for successive expert rounds, building on `compare_rounds()`. The
+evidence steps come first.
+
+- [x] Verify the stability statistic from the full text of Holey et al.
+      (2007). Stability is measured per statement as weighted kappa between
+      participants' responses in successive rounds, read as a trend with no
+      threshold. The individual-level approach rests on Chaffin & Talley
+      (1980).
+- [ ] Verify the primary stability sources Holey et al. rest on: Dajani,
+      Sincoff & Talley (1979) and Chaffin & Talley (1980).
+- [ ] Verify or drop the "15% change" stability rule. Holey et al. do not
+      state it, so its attribution to Scheibe, Skutsch & Schofer (1975)
+      remains unconfirmed.
+- [ ] Consensus as percent agreement against a threshold the researcher sets a
+      priori. Diamond et al. (2014) report a median of 75% across studies,
+      which describes practice rather than validating a cutoff.
+- [ ] Report stability as a trend and leave the stopping decision to the
+      researcher's a priori criteria. Holey et al. is a single exploratory
+      study and does not validate kappa as a stopping rule.
+- [ ] Settle whether verbal kappa labels belong in the output, against the
+      evidence, before implementing. Holey et al. use a benchmark table adapted
+      from Anthony (1999).
+
+### Interval bounds in the handoff
+
+Tracking: [#33](https://github.com/JUhalt/contentvalidR/issues/33).
+
+Schema version 1 carries each statistic's value and criterion but not its
+interval. Small panels make the interval matter: a unanimous four-judge I-CVI
+has a Wilson 95% lower limit near 0.51.
+
+- [ ] Agree with nomologR, on
+      [nomologR#46](https://github.com/JUhalt/nomologR/issues/46), whether
+      additive columns stay schema version 1 or need version 2.
+- [ ] Carry `lower`, `upper`, `interval_method`, and `interval_level` for every
+      statistic that has an interval, and the panel-level agreement interval
+      outside the per-item table.
+- [ ] Report intervals only. No mapping from content-validity statistics to
+      priors; that question belongs to
+      [nomologR#49](https://github.com/JUhalt/nomologR/issues/49).
 
 ***
 
@@ -519,28 +582,19 @@ Tracking: [#14](https://github.com/JUhalt/contentvalidR/issues/14).
 Evidence-reviewed items that are not release commitments. Each records why it
 is parked and what would move it into a release.
 
-- [ ] **Bayesian content-validity extensions**
-      ([#2](https://github.com/JUhalt/contentvalidR/issues/2)). The one
-      content-validity-specific method found, Bayesian Instrument Development
-      (Gajewski et al., 2013; Jiang et al., 2014), needs participant response
-      data and MCMC. **Benched on 2026-09-16, with a recommendation to move it
-      to `nomologR`.** The method sits on the far side of the handoff
-      ([#27](https://github.com/JUhalt/contentvalidR/issues/27)): it models
-      responses, while this package analyzes judgments made before responses
-      exist. MCMC also needs a compiled sampler, which the `Imports: stats`
-      profile rules out, and a base-R approximation would carry the word
-      "Bayesian" without the estimation that defines the method. The move is
-      being coordinated with the nomologR maintainers rather than transferred
-      unilaterally. The interesting version there is using content-validity
-      evidence as informative priors, not re-implementing the method.
+- [x] **Bayesian content-validity extensions**: moved to nomologR as
+      [nomologR#49](https://github.com/JUhalt/nomologR/issues/49), and
+      [#2](https://github.com/JUhalt/contentvalidR/issues/2) closed on
+      2026-09-16. Bayesian Instrument Development (Gajewski et al., 2012, 2013;
+      Jiang et al., 2014) models responses and needs MCMC, which puts it past
+      the handoff and outside the `Imports: stats` profile. nomologR records it
+      as a v0.3 candidate, framed as priors on simple structure (which items
+      belong to which construct) whose strength is earned by panel evidence,
+      rather than priors on loading size.
 - [ ] **COSMIN content-validity appraisal**
       ([#16](https://github.com/JUhalt/contentvalidR/issues/16)). Strong evidence
       (Terwee et al., 2018), but it is a qualitative appraisal framework, and it
       was developed for patient-reported outcome measures.
-- [ ] **Delphi consensus and stability**
-      ([#20](https://github.com/JUhalt/contentvalidR/issues/20)). Supported by
-      Diamond et al. (2014) and Schifano & Niederberger (2025). The stability
-      statistic still needs verifying from Holey et al. (2007).
 - [ ] **Marginal-ML many-facet Rasch estimation.** An established method, but it
       needs a compiled estimation engine, which the dependency policy rules out.
 - [ ] **Hernández-Nieto's content validity coefficient.** Published in a book
