@@ -597,8 +597,9 @@ has a Wilson 95% lower limit near 0.51.
       [nomologR#49](https://github.com/JUhalt/nomologR/issues/49).
 - [ ] Keep the additions table on nomologR#46 accurate, listing the version
       that actually ships these columns. Updated on 2026-09-18 with the exact
-      method labels and the `panel_statistics` row; confirm the version at
-      release.
+      method labels and the `panel_statistics` row. At release, replace
+      "merged, not yet released" with the shipping version and its release
+      date, so the table records what shipped (requested on #46).
 
 ***
 
