@@ -66,9 +66,10 @@ papers; see
 
 ## One workflow API
 
-All five recommended workflows share a stable object contract. A fitted
+All six recommended workflows share a stable object contract. A fitted
 `sort_validity()`, `rating_validity()`, `expert_validity()`,
-`judge_validity()`, or `domain_validity()` object always contains:
+`delphi_validity()`, `judge_validity()`, or `domain_validity()` object
+always contains:
 
 - `results` — evidence at the workflow’s unit of analysis;
 - `scale_summary` — target-scale or panel-level evidence;
@@ -78,9 +79,9 @@ All five recommended workflows share a stable object contract. A fitted
 
 The unit of analysis in `results` differs by workflow, which matters
 when writing code against them: `sort_validity()`, `rating_validity()`,
-and `expert_validity()` return one row per **item**, `judge_validity()`
-one row per **judge**, and `domain_validity()` one row per **blueprint
-cell**.
+`expert_validity()`, and `delphi_validity()` return one row per
+**item**, `judge_validity()` one row per **judge**, and
+`domain_validity()` one row per **blueprint cell**.
 
 Every `results` table also includes a common `status` field with the
 restrained categories **Supported**, **Review**, **Insufficient data**,
@@ -1080,6 +1081,16 @@ rather than smoothing it away.
 checks whether the analysis settings changed between them — so a relaxed
 criterion cannot read as item improvement.
 
+For a Delphi study, where the same panel rates items over several rounds
+with feedback in between, `delphi_validity()` reports two questions
+separately. Consensus is the share of experts agreeing, judged against a
+threshold you fix before the study. Stability is the share of experts
+who kept their rating, shown beside weighted kappa between rounds. Kappa
+carries no verbal labels, because it falls as a panel converges. The
+published alternatives are selectable, each with its limits printed:
+Chaffin and Talley’s lambda and chi-square, Dajani et al.’s chi-square,
+and Scheibe et al.’s 15% rule. See `vignette("delphi-rounds")`.
+
 `content_report()` builds manuscript-ready tables as a data frame or as
 Markdown for Quarto and R Markdown, with no reporting dependency added
 to the package.
@@ -1166,9 +1177,10 @@ bibliography is installed as `REFERENCES.bib`.
 ## Auxiliary modules
 
 The diagnostic, simulation, and Q-factor helpers remain available as
-auxiliary functions, but they are not recommended workflows. The five
+auxiliary functions, but they are not recommended workflows. The six
 recommended workflows are `sort_validity()`, `rating_validity()`,
-`expert_validity()`, `judge_validity()`, and `domain_validity()`.
+`expert_validity()`, `delphi_validity()`, `judge_validity()`, and
+`domain_validity()`.
 
 ## Core methodological references
 

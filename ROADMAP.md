@@ -576,7 +576,8 @@ evidence steps come first.
       (maintainer decision, 2026-09-18). Landis & Koch (1977), p. 165, call
       their divisions clearly arbitrary, and kappa falls as a panel converges.
       Holey et al.'s most-agreed statement had their lowest kappa.
-- [ ] A vignette that walks a graduate student through a Delphi analysis.
+- [x] A vignette that walks a graduate student through a Delphi analysis:
+      `vignette("delphi-rounds")`.
 
 ### Interval bounds in the handoff
 
@@ -607,6 +608,34 @@ has a Wilson 95% lower limit near 0.51.
       method labels and the `panel_statistics` row. At release, replace
       "merged, not yet released" with the shipping version and its release
       date, so the table records what shipped (requested on #46).
+
+***
+
+## v1.0.0 - Joint stable release with nomologR (proposed)
+
+**Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.
+**Criteria:** drafted jointly on
+[nomologR#53](https://github.com/JUhalt/nomologR/issues/53), which is the
+single list. This section only mirrors it.
+
+contentvalidR and nomologR are the two halves of scale development: content
+review, then empirical validation. They are joined by the handoff schema on
+[nomologR#46](https://github.com/JUhalt/nomologR/issues/46). The target is for
+both to release 1.0.0 together, so the version number tells users the pair is
+stable together.
+
+- Converge, don't move in lockstep. Minor versions stay independent until
+  1.0.0, and neither package tags 1.0.0 on its own.
+- After 1.0.0, major versions move together whenever the shared contract
+  breaks. Minor versions and patches stay independent.
+- The draft criteria on nomologR#53 are:
+  - the handoff is implemented on both sides, tested against real fixtures
+    from more than one producer version;
+  - schema version 1 is frozen and becomes a compatibility promise;
+  - both packages are on CRAN;
+  - both public APIs are stable, under a written deprecation policy;
+  - there is a joint walkthrough from content review to empirical validation;
+  - the two releases go out on the same day, each linking the other.
 
 ***
 
