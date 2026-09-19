@@ -141,11 +141,13 @@ test_that("kappa in the workflow is the Fleiss & Cohen intraclass form", {
 test_that("a unanimous round gives kappa 0, flagged, however many kept their rating", {
   d <- data.frame(expert = rep(1:10, 2), item = "Q", round = rep(1:2, each = 10),
                   rating = c(rep(4, 9), 3, rep(4, 10)))
-  fit <- delphi_validity(d, lo = 1, hi = 4, B = 0)
+  fit <- delphi_validity(d, lo = 1, hi = 4, B = 50, seed = 1)
   st <- fit$details$stability
   expect_equal(st$prop_unchanged, 0.9)
   expect_equal(st$value, 0)
   expect_match(st$note, "kappa is 0 however many kept their rating")
+  # Kappa is 0 by construction here, so no interval is reported.
+  expect_true(is.na(st$lower) && is.na(st$upper))
 
   both <- data.frame(expert = rep(1:5, 2), item = "Q", round = rep(1:2, each = 5),
                      rating = 4)

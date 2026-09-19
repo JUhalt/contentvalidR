@@ -32,6 +32,15 @@
     package's extension.
   * **Round-by-round relevance evidence.** Each round is also fitted with
     `expert_validity()`, so `compare_rounds()` can read the whole process.
+* New vignette, `vignette("delphi-rounds")`, walks through a three-round
+  panel for a graduate reader. Its worked example covers:
+  * a statement set aside after reaching consensus;
+  * an expert leaving the panel;
+  * consensus against a statement;
+  * a stable split;
+  * a panel converging to unanimity, where kappa drops to 0;
+  * experts swapping ratings while the overall distribution stays still,
+    which only individual stability detects.
 * `contentvalid_glossary("delphi")` defines the new columns.
 * Every published value used to design the workflow is a test: Cohen's
   (1968) Table 1, Fleiss & Cohen's equivalence, and the worked examples of

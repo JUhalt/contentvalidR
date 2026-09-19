@@ -92,10 +92,12 @@
     }
     if (length(unique(x1)) == 1L || length(unique(x2)) == 1L) {
       # A unanimous round leaves no room above chance, so kappa is 0 however
-      # many experts kept their rating (the restricted-range case).
+      # many experts kept their rating (the restricted-range case). It is 0 in
+      # every resample too, so an interval would only restate that.
       row$note <- paste("Every expert gave the same rating in one of the two",
                         "rounds, so kappa is 0 however many kept their",
                         "rating. Read prop_unchanged instead.")
+      return(row)
     }
     if (B > 0L && n >= 2L) {
       boot <- .unit_bootstrap(
