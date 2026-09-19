@@ -2,6 +2,50 @@
 
 ## contentvalidR 0.4.0.9000 (development version)
 
+### Delphi consensus and stability (in development)
+
+- New workflow
+  [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  for an expert panel rated over successive Delphi rounds
+  ([\#20](https://github.com/JUhalt/contentvalidR/issues/20)). It
+  reports two questions separately. **Consensus**: whether enough
+  experts agree now. **Stability**: whether experts are still changing
+  their ratings.
+  - **Consensus** is the share of experts rating an item at or above
+    `agree_cut`, which on a relevance scale is the I-CVI. It is judged
+    against a `consensus_threshold` fixed before the study. There is
+    deliberately no default: without a threshold, results are
+    descriptive (Diamond et al., 2014).
+  - **Stability** always reports the share of experts who kept their
+    rating. Beside it goes one statistic:
+    - the default, weighted kappa between rounds (Holey et al., 2007),
+      read as a trend. Quadratic weights, the default, make it the
+      intraclass correlation of the two rounds (Fleiss & Cohen, 1973);
+      linear weights are available (Cohen, 1968);
+    - Chaffin & Talley’s (1980) lambda;
+    - Chaffin & Talley’s individual chi-square;
+    - Dajani, Sincoff & Talley’s (1979) group chi-square;
+    - Scheibe, Skutsch & Schofer’s (1975) 15% net-change rule.
+
+    Each alternative’s limits are printed. The two chi-square tests read
+    in opposite directions, and the printout says which is which.
+  - **No verbal kappa labels.** Landis & Koch (1977) call their
+    divisions arbitrary, and kappa falls as a panel converges. When a
+    round is unanimous, kappa is 0 however many experts kept their
+    rating; the output flags this and points to the share unchanged.
+  - **A bootstrap interval for kappa**, resampling experts, marked as
+    this package’s extension.
+  - **Round-by-round relevance evidence.** Each round is also fitted
+    with
+    [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+    so
+    [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+    can read the whole process.
+- `contentvalid_glossary("delphi")` defines the new columns.
+- Every published value used to design the workflow is a test: Cohen’s
+  1968. Table 1, Fleiss & Cohen’s equivalence, and the worked examples
+        of Dajani et al. and Chaffin & Talley.
+
 ### Interval bounds in the handoff (in development)
 
 - [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)

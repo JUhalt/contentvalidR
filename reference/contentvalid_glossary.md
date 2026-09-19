@@ -19,8 +19,8 @@ contentvalid_glossary(workflow = NULL)
 - workflow:
 
   Optionally restrict to one workflow: `"item-sort"`,
-  `"construct-rating"`, `"expert-panel"`, `"judge-heterogeneity"`, or
-  `"domain-coverage"`.
+  `"construct-rating"`, `"expert-panel"`, `"judge-heterogeneity"`,
+  `"domain-coverage"`, or `"delphi"`.
 
 ## Value
 
@@ -147,6 +147,42 @@ contentvalid_glossary()
 #>       squeezing the similarity data into the chosen number of dimensions.
 #>       Lower is a closer fit. (0 is perfect; below 0.10 is conventionally
 #>       called fair or better)
+#> 
+#> delphi
+#>   prop_agree -- Share of experts agreeing. Share of the experts rating an
+#>       item in a round whose rating was at or above the agreement cut. On a
+#>       relevance scale this is the I-CVI. Consensus means it reached the
+#>       threshold set before the study. (0 to 1; higher is broader agreement)
+#>   prop_unchanged -- Share of experts keeping their rating. Among experts
+#>       who rated the item in both of two consecutive rounds, the share who
+#>       gave exactly the same rating again. It is the plainest reading of
+#>       stability, and it stays meaningful when kappa does not. (0 to 1; 1
+#>       means no expert changed their rating)
+#>   kappa_w -- Weighted kappa between rounds. Agreement between each expert's
+#>       ratings in two consecutive rounds, corrected for chance, with larger
+#>       changes counting more. Read it as a trend across rounds. It falls
+#>       when ratings bunch in one category, so a converged panel can show a
+#>       low kappa even when almost no one changed their rating. (-1 to 1; 1
+#>       is perfect stability, 0 is no better than chance)
+#>   lambda -- Index of predictive association. How much knowing an expert's
+#>       earlier rating improves a guess at their later one. It measures
+#>       predictability, not agreement: experts who all moved up one category
+#>       would still score 1. (0 to 1; undefined when the later round is
+#>       unanimous)
+#>   chi_sq_individual -- Individual stability chi-square. Tests whether
+#>       experts' later ratings depend on their earlier ones. A significant
+#>       result is read as stability. It needs expected counts of at least 5,
+#>       which small panels rarely have. (0 or more; read with its p-value)
+#>   chi_sq_group -- Group stability chi-square. Tests whether the two rounds'
+#>       rating distributions differ. A non-significant result is read as
+#>       stability, so small panels often look stable because the test has
+#>       little power, and experts swapping ratings go unseen. (0 or more;
+#>       read with its p-value)
+#>   percent_change -- Net change in the rating distribution. How far the
+#>       panel's rating distribution moved between two rounds, as a share of
+#>       the experts compared. Change below 15% is read as stable, a cut-off
+#>       its authors set from one study without statistical theory. (0 to 1;
+#>       stable below 0.15)
 #> 
 #> status labels
 #>   Supported -- The evidence met the criteria set for this analysis.

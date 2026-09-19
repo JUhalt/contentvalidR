@@ -73,8 +73,8 @@ the terms are familiar.</p>
 
 <dl><dt id="arg-workflow">workflow<a class="anchor" aria-label="anchor" href="#arg-workflow"></a></dt>
 <dd><p>Optionally restrict to one workflow: <code>"item-sort"</code>,
-<code>"construct-rating"</code>, <code>"expert-panel"</code>, <code>"judge-heterogeneity"</code>, or
-<code>"domain-coverage"</code>.</p></dd>
+<code>"construct-rating"</code>, <code>"expert-panel"</code>, <code>"judge-heterogeneity"</code>,
+<code>"domain-coverage"</code>, or <code>"delphi"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -202,6 +202,42 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       squeezing the similarity data into the chosen number of dimensions.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Lower is a closer fit. (0 is perfect; below 0.10 is conventionally</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       called fair or better)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> delphi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   prop_agree -- Share of experts agreeing. Share of the experts rating an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item in a round whose rating was at or above the agreement cut. On a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       relevance scale this is the I-CVI. Consensus means it reached the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold set before the study. (0 to 1; higher is broader agreement)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   prop_unchanged -- Share of experts keeping their rating. Among experts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       who rated the item in both of two consecutive rounds, the share who</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       gave exactly the same rating again. It is the plainest reading of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       stability, and it stays meaningful when kappa does not. (0 to 1; 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       means no expert changed their rating)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_w -- Weighted kappa between rounds. Agreement between each expert's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ratings in two consecutive rounds, corrected for chance, with larger</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       changes counting more. Read it as a trend across rounds. It falls</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       when ratings bunch in one category, so a converged panel can show a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       low kappa even when almost no one changed their rating. (-1 to 1; 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       is perfect stability, 0 is no better than chance)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   lambda -- Index of predictive association. How much knowing an expert's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       earlier rating improves a guess at their later one. It measures</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       predictability, not agreement: experts who all moved up one category</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       would still score 1. (0 to 1; undefined when the later round is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       unanimous)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   chi_sq_individual -- Individual stability chi-square. Tests whether</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       experts' later ratings depend on their earlier ones. A significant</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       result is read as stability. It needs expected counts of at least 5,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       which small panels rarely have. (0 or more; read with its p-value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   chi_sq_group -- Group stability chi-square. Tests whether the two rounds'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rating distributions differ. A non-significant result is read as</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       stability, so small panels often look stable because the test has</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       little power, and experts swapping ratings go unseen. (0 or more;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       read with its p-value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   percent_change -- Net change in the rating distribution. How far the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       panel's rating distribution moved between two rounds, as a share of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the experts compared. Change below 15% is read as stable, a cut-off</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       its authors set from one study without statistical theory. (0 to 1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       stable below 0.15)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> status labels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>

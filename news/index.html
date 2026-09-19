@@ -45,6 +45,33 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0.9000" id="contentvalidr-0409000-development-version">contentvalidR 0.4.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0409000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="delphi-consensus-and-stability-in-development-0-4-0-9000">Delphi consensus and stability (in development)<a class="anchor" aria-label="anchor" href="#delphi-consensus-and-stability-in-development-0-4-0-9000"></a></h3>
+<ul><li>New workflow <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> for an expert panel rated over successive Delphi rounds (<a href="https://github.com/JUhalt/contentvalidR/issues/20" class="external-link">#20</a>). It reports two questions separately. <strong>Consensus</strong>: whether enough experts agree now. <strong>Stability</strong>: whether experts are still changing their ratings.
+<ul><li>
+<strong>Consensus</strong> is the share of experts rating an item at or above <code>agree_cut</code>, which on a relevance scale is the I-CVI. It is judged against a <code>consensus_threshold</code> fixed before the study. There is deliberately no default: without a threshold, results are descriptive (Diamond et al., 2014).</li>
+<li>
+<strong>Stability</strong> always reports the share of experts who kept their rating. Beside it goes one statistic:
+<ul><li>the default, weighted kappa between rounds (Holey et al., 2007), read as a trend. Quadratic weights, the default, make it the intraclass correlation of the two rounds (Fleiss &amp; Cohen, 1973); linear weights are available (Cohen, 1968);</li>
+<li>Chaffin &amp; Talley’s (1980) lambda;</li>
+<li>Chaffin &amp; Talley’s individual chi-square;</li>
+<li>Dajani, Sincoff &amp; Talley’s (1979) group chi-square;</li>
+<li>Scheibe, Skutsch &amp; Schofer’s (1975) 15% net-change rule.</li>
+</ul>
+Each alternative’s limits are printed. The two chi-square tests read in opposite directions, and the printout says which is which.</li>
+<li>
+<strong>No verbal kappa labels.</strong> Landis &amp; Koch (1977) call their divisions arbitrary, and kappa falls as a panel converges. When a round is unanimous, kappa is 0 however many experts kept their rating; the output flags this and points to the share unchanged.</li>
+<li>
+<strong>A bootstrap interval for kappa</strong>, resampling experts, marked as this package’s extension.</li>
+<li>
+<strong>Round-by-round relevance evidence.</strong> Each round is also fitted with <code><a href="../reference/expert_validity.html">expert_validity()</a></code>, so <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> can read the whole process.</li>
+</ul></li>
+<li>
+<code>contentvalid_glossary("delphi")</code> defines the new columns.</li>
+<li>Every published value used to design the workflow is a test: Cohen’s
+<ol start="1968" style="list-style-type: decimal"><li>Table 1, Fleiss &amp; Cohen’s equivalence, and the worked examples of Dajani et al. and Chaffin &amp; Talley.</li>
+</ol></li>
+</ul></div>
+<div class="section level3">
 <h3 id="interval-bounds-in-the-handoff-in-development-0-4-0-9000">Interval bounds in the handoff (in development)<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff-in-development-0-4-0-9000"></a></h3>
 <ul><li>
 <code><a href="../reference/content_handoff.html">content_handoff()</a></code> now carries each statistic’s interval (<a href="https://github.com/JUhalt/contentvalidR/issues/33" class="external-link">#33</a>), so a reader can tell a unanimous four-judge panel from a unanimous twenty-judge one. A unanimous I-CVI from four experts has a Wilson 95% lower limit near 0.51.

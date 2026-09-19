@@ -1342,6 +1342,8 @@ Recommended user-facing analyses for scale content pretesting.
   : Analyze a Hinkin-Tracey construct-rating content-validity pretest
 - [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   : Analyze expert-panel content-validity evidence
+- [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  : Delphi consensus and stability across rounds
 - [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
   : Analyze judge and rater heterogeneity in content-validity ratings
 - [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
