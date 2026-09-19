@@ -6,8 +6,9 @@
   rec <- as.character(recommendation)
   out <- rep(NA_character_, length(rec))
 
-  out[rec %in% c("Retain", "Strong support", "Support", "Supported", "Target favored")] <- "Supported"
-  out[rec %in% c("Review", "Tie / review")] <- "Review"
+  out[rec %in% c("Retain", "Strong support", "Support", "Supported", "Target favored",
+                 "Consensus")] <- "Supported"
+  out[rec %in% c("Review", "Tie / review", "No consensus")] <- "Review"
   out[rec %in% c("Insufficient data", "Insufficient panel")] <- "Insufficient data"
   out[rec %in% c("Descriptive only", "Target described")] <- "Descriptive only"
 

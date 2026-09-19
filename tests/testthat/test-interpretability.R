@@ -58,7 +58,7 @@ test_that("the glossary covers every workflow and defines the shared statuses", 
   expect_setequal(
     unique(g$workflow),
     c("item-sort", "construct-rating", "expert-panel",
-      "judge-heterogeneity", "domain-coverage")
+      "judge-heterogeneity", "domain-coverage", "delphi")
   )
 
   statuses <- attr(g, "statuses")

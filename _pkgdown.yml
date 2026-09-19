@@ -10,6 +10,7 @@ reference:
   - sort_validity
   - rating_validity
   - expert_validity
+  - delphi_validity
   - judge_validity
   - domain_validity
 
