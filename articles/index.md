@@ -21,3 +21,5 @@
   Colquitt](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.md):
 - [Expert-Panel Content Validation: Relevance, Essentiality, and
   Congruence](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.md):
+- [Delphi Rounds: Consensus and
+  Stability](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.md):

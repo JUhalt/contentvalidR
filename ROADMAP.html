@@ -351,7 +351,7 @@
 <li><label><input type="checkbox" checked>Consensus as percent agreement against a threshold the researcher sets a priori, with no default. Diamond et al. (2014) report a median of 75% across studies, which describes practice rather than validating a cutoff.</label></li>
 <li><label><input type="checkbox" checked>Report stability as a trend and leave the stopping decision to the researcher’s a priori criteria. Stability never changes an item’s status. Holey et al. is a single exploratory study and does not validate kappa as a stopping rule.</label></li>
 <li><label><input type="checkbox" checked>Settle whether verbal kappa labels belong in the output. They do not (maintainer decision, 2026-09-18). Landis &amp; Koch (1977), p. 165, call their divisions clearly arbitrary, and kappa falls as a panel converges. Holey et al.’s most-agreed statement had their lowest kappa.</label></li>
-<li><label><input type="checkbox">A vignette that walks a graduate student through a Delphi analysis.</label></li>
+<li><label><input type="checkbox" checked>A vignette that walks a graduate student through a Delphi analysis: <code><a href="articles/delphi-rounds.html">vignette("delphi-rounds")</a></code>.</label></li>
 </ul></div>
 <div class="section level3">
 <h3 id="interval-bounds-in-the-handoff">Interval bounds in the handoff<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff"></a></h3>
@@ -363,6 +363,21 @@
 <li><label><input type="checkbox">Keep the additions table on nomologR#46 accurate, listing the version that actually ships these columns. Updated on 2026-09-18 with the exact method labels and the <code>panel_statistics</code> row. At release, replace “merged, not yet released” with the shipping version and its release date, so the table records what shipped (requested on #46).</label></li>
 </ul><hr></div>
 </div>
+<div class="section level2">
+<h2 id="v100---joint-stable-release-with-nomologr-proposed">v1.0.0 - Joint stable release with nomologR (proposed)<a class="anchor" aria-label="anchor" href="#v100---joint-stable-release-with-nomologr-proposed"></a></h2>
+<p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> drafted jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it.</p>
+<p>contentvalidR and nomologR are the two halves of scale development: content review, then empirical validation. They are joined by the handoff schema on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The target is for both to release 1.0.0 together, so the version number tells users the pair is stable together.</p>
+<ul><li>Converge, don’t move in lockstep. Minor versions stay independent until 1.0.0, and neither package tags 1.0.0 on its own.</li>
+<li>After 1.0.0, major versions move together whenever the shared contract breaks. Minor versions and patches stay independent.</li>
+<li>The draft criteria on nomologR#53 are:
+<ul><li>the handoff is implemented on both sides, tested against real fixtures from more than one producer version;</li>
+<li>schema version 1 is frozen and becomes a compatibility promise;</li>
+<li>both packages are on CRAN;</li>
+<li>both public APIs are stable, under a written deprecation policy;</li>
+<li>there is a joint walkthrough from content review to empirical validation;</li>
+<li>the two releases go out on the same day, each linking the other.</li>
+</ul></li>
+</ul><hr></div>
 <div class="section level2">
 <h2 id="future-research">Future research<a class="anchor" aria-label="anchor" href="#future-research"></a></h2>
 <p><strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/3" class="external-link">Future research</a></p>
