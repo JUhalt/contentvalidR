@@ -8,8 +8,8 @@ contentvalid_glossary(workflow = NULL)
 }
 \arguments{
 \item{workflow}{Optionally restrict to one workflow: \code{"item-sort"},
-\code{"construct-rating"}, \code{"expert-panel"}, \code{"judge-heterogeneity"}, or
-\code{"domain-coverage"}.}
+\code{"construct-rating"}, \code{"expert-panel"}, \code{"judge-heterogeneity"},
+\code{"domain-coverage"}, or \code{"delphi"}.}
 }
 \value{
 An object of class \code{contentvalid_glossary}: a data frame of \code{term},

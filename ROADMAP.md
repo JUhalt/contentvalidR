@@ -554,22 +554,29 @@ evidence steps come first.
       the two rounds' histograms, divided by the number of participants. The
       authors say it has no statistical theory; the 15% cut-off was set from
       about 13% oscillation at the mode in one classroom Delphi.
-- [ ] Offer every published stability method, with Holey et al.'s weighted
+- [x] Offer every published stability method, with Holey et al.'s weighted
       kappa as the default (maintainer decision, 2026-09-18). Chaffin &
       Talley's λ and individual χ², Dajani et al.'s group χ², and Scheibe et
       al.'s percent change are selectable, each with its critique printed.
       The output states which way each test reads, since the two χ² tests
       point in opposite directions, and flags expected counts below 5 rather
-      than pooling silently.
-- [ ] Consensus as percent agreement against a threshold the researcher sets a
-      priori. Diamond et al. (2014) report a median of 75% across studies,
-      which describes practice rather than validating a cutoff.
-- [ ] Report stability as a trend and leave the stopping decision to the
-      researcher's a priori criteria. Holey et al. is a single exploratory
-      study and does not validate kappa as a stopping rule.
-- [ ] Settle whether verbal kappa labels belong in the output, against the
-      evidence, before implementing. Holey et al. use a benchmark table adapted
-      from Anthony (1999).
+      than pooling silently. Implemented in `delphi_validity()`.
+- [x] Settle the kappa weights against Cohen (1968) and Fleiss & Cohen
+      (1973), both read in full. Quadratic weights are the default because
+      they make kappa the intraclass correlation of the two rounds; linear
+      weights are available under Cohen's general framework.
+- [x] Consensus as percent agreement against a threshold the researcher sets a
+      priori, with no default. Diamond et al. (2014) report a median of 75%
+      across studies, which describes practice rather than validating a cutoff.
+- [x] Report stability as a trend and leave the stopping decision to the
+      researcher's a priori criteria. Stability never changes an item's
+      status. Holey et al. is a single exploratory study and does not
+      validate kappa as a stopping rule.
+- [x] Settle whether verbal kappa labels belong in the output. They do not
+      (maintainer decision, 2026-09-18). Landis & Koch (1977), p. 165, call
+      their divisions clearly arbitrary, and kappa falls as a panel converges.
+      Holey et al.'s most-agreed statement had their lowest kappa.
+- [ ] A vignette that walks a graduate student through a Delphi analysis.
 
 ### Interval bounds in the handoff
 

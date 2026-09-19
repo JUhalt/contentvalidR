@@ -14,6 +14,7 @@ test_that("the intended public API is exported from a clean namespace", {
     "csv_binom_test",
     "cvi",
     "cvr",
+    "delphi_validity",
     "domain_validity",
     "expert_power",
     "expert_validity",
@@ -75,6 +76,9 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("plot", "contentvalid_expert_power"),
     c("print", "contentvalid_agreement"),
     c("print", "contentvalid_handoff"),
+    c("print", "contentvalid_delphi"),
+    c("summary", "contentvalid_delphi"),
+    c("print", "summary.contentvalid_delphi"),
     c("as.data.frame", "contentvalid_workflow")
   )
 

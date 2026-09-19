@@ -226,6 +226,86 @@
       ),
       range = "0 is perfect; below 0.10 is conventionally called fair or better",
       stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "prop_agree", workflow = "delphi",
+      label = "Share of experts agreeing",
+      definition = paste(
+        "Share of the experts rating an item in a round whose rating was at",
+        "or above the agreement cut. On a relevance scale this is the I-CVI.",
+        "Consensus means it reached the threshold set before the study."
+      ),
+      range = "0 to 1; higher is broader agreement",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "prop_unchanged", workflow = "delphi",
+      label = "Share of experts keeping their rating",
+      definition = paste(
+        "Among experts who rated the item in both of two consecutive rounds,",
+        "the share who gave exactly the same rating again. It is the plainest",
+        "reading of stability, and it stays meaningful when kappa does not."
+      ),
+      range = "0 to 1; 1 means no expert changed their rating",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "kappa_w", workflow = "delphi",
+      label = "Weighted kappa between rounds",
+      definition = paste(
+        "Agreement between each expert's ratings in two consecutive rounds,",
+        "corrected for chance, with larger changes counting more. Read it as",
+        "a trend across rounds. It falls when ratings bunch in one category,",
+        "so a converged panel can show a low kappa even when almost no one",
+        "changed their rating."
+      ),
+      range = "-1 to 1; 1 is perfect stability, 0 is no better than chance",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "lambda", workflow = "delphi",
+      label = "Index of predictive association",
+      definition = paste(
+        "How much knowing an expert's earlier rating improves a guess at their",
+        "later one. It measures predictability, not agreement: experts who all",
+        "moved up one category would still score 1."
+      ),
+      range = "0 to 1; undefined when the later round is unanimous",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "chi_sq_individual", workflow = "delphi",
+      label = "Individual stability chi-square",
+      definition = paste(
+        "Tests whether experts' later ratings depend on their earlier ones.",
+        "A significant result is read as stability. It needs expected counts",
+        "of at least 5, which small panels rarely have."
+      ),
+      range = "0 or more; read with its p-value",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "chi_sq_group", workflow = "delphi",
+      label = "Group stability chi-square",
+      definition = paste(
+        "Tests whether the two rounds' rating distributions differ. A",
+        "non-significant result is read as stability, so small panels often",
+        "look stable because the test has little power, and experts swapping",
+        "ratings go unseen."
+      ),
+      range = "0 or more; read with its p-value",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "percent_change", workflow = "delphi",
+      label = "Net change in the rating distribution",
+      definition = paste(
+        "How far the panel's rating distribution moved between two rounds, as",
+        "a share of the experts compared. Change below 15% is read as stable,",
+        "a cut-off its authors set from one study without statistical theory."
+      ),
+      range = "0 to 1; stable below 0.15",
+      stringsAsFactors = FALSE
     )
   )
 }
@@ -294,8 +374,8 @@
 #' the terms are familiar.
 #'
 #' @param workflow Optionally restrict to one workflow: `"item-sort"`,
-#'   `"construct-rating"`, `"expert-panel"`, `"judge-heterogeneity"`, or
-#'   `"domain-coverage"`.
+#'   `"construct-rating"`, `"expert-panel"`, `"judge-heterogeneity"`,
+#'   `"domain-coverage"`, or `"delphi"`.
 #'
 #' @return An object of class `contentvalid_glossary`: a data frame of `term`,
 #'   `workflow`, `label`, `definition`, and `range`, carrying the status

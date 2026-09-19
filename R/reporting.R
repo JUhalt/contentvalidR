@@ -15,6 +15,9 @@
                            "severity", "outfit", "differentiation",
                            "n_items_flipped"),
     contentvalid_domain = c("cell", "n_items", "share"),
+    contentvalid_delphi = c("item", "last_round", "n_experts", "prop_agree",
+                            "prop_unchanged", "stability", "stability_low",
+                            "stability_high", "stability_p", "stable"),
     character(0)
   )
   intersect(cols, names(x$results))
