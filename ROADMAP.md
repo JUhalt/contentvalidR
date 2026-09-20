@@ -714,8 +714,16 @@ Update the README installation guidance once CRAN is live.
 
 ## v0.5.0 - Delphi rounds and a richer handoff
 
-**Status:** Planning **Milestone:**
+**Status:** Released (0.5.0 on 2026-09-19, on GitHub and R-universe)
+**Milestone:**
 [v0.5.0](https://github.com/JUhalt/contentvalidR/milestone/5)
+**Version:** `0.5.0`
+
+CRAN: 0.4.0 is still in CRAN’s review queue. CRAN policy asks that no
+further submission be made while one is pending, and that established
+packages update no more than every one to two months. 0.5.0 will
+therefore be submitted as an update once 0.4.0 is resolved, from the
+`v0.5.0` tag, with the win-builder log read before upload.
 
 Opened on 2026-09-18, while 0.4.0 is in CRAN review. Any fix CRAN
 requests for 0.4.0 branches from the `v0.4.0` tag, so work here cannot

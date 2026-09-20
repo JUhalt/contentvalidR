@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,9 +43,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0.9000" id="contentvalidr-0409000-development-version">contentvalidR 0.4.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0409000-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.5.0" id="contentvalidr-050">contentvalidR 0.5.0<a class="anchor" aria-label="anchor" href="#contentvalidr-050"></a></h2>
+<p>Fifth public release. v0.5.0 adds a workflow for Delphi studies, where the same expert panel rates items over successive rounds. It reports consensus and stability as separate questions, and every published stability method is available with its limits printed. The handoff to empirical validation now carries each statistic’s interval, so a downstream analysis can see how much panel evidence stands behind a number.</p>
+<p>The package continues to declare <code>Imports: stats</code> only.</p>
+<p>No default changes. Existing calls return the same values as in 0.4.0. <code><a href="../reference/content_handoff.html">content_handoff()</a></code> objects gain four interval columns in <code>item_statistics</code> and a <code>panel_statistics</code> table, within schema version 1.</p>
+<p>New function: <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code>. New article: <code><a href="../articles/delphi-rounds.html">vignette("delphi-rounds")</a></code>.</p>
+<p>This release is published on GitHub and R-universe. 0.4.0 is still in CRAN’s review queue, and CRAN policy asks that no further version be submitted while one is pending, so 0.5.0 will be submitted to CRAN later as an update.</p>
 <div class="section level3">
-<h3 id="delphi-consensus-and-stability-in-development-0-4-0-9000">Delphi consensus and stability (in development)<a class="anchor" aria-label="anchor" href="#delphi-consensus-and-stability-in-development-0-4-0-9000"></a></h3>
+<h3 id="delphi-consensus-and-stability-0-5-0">Delphi consensus and stability<a class="anchor" aria-label="anchor" href="#delphi-consensus-and-stability-0-5-0"></a></h3>
 <ul><li>New workflow <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> for an expert panel rated over successive Delphi rounds (<a href="https://github.com/JUhalt/contentvalidR/issues/20" class="external-link">#20</a>). It reports two questions separately. <strong>Consensus</strong>: whether enough experts agree now. <strong>Stability</strong>: whether experts are still changing their ratings.
 <ul><li>
 <strong>Consensus</strong> is the share of experts rating an item at or above <code>agree_cut</code>, which on a relevance scale is the I-CVI. It is judged against a <code>consensus_threshold</code> fixed before the study. There is deliberately no default: without a threshold, results are descriptive (Diamond et al., 2014).</li>
@@ -80,7 +85,7 @@ Each alternative’s limits are printed. The two chi-square tests read in opposi
 </ol></li>
 </ul></div>
 <div class="section level3">
-<h3 id="interval-bounds-in-the-handoff-in-development-0-4-0-9000">Interval bounds in the handoff (in development)<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff-in-development-0-4-0-9000"></a></h3>
+<h3 id="interval-bounds-in-the-handoff-0-5-0">Interval bounds in the handoff<a class="anchor" aria-label="anchor" href="#interval-bounds-in-the-handoff-0-5-0"></a></h3>
 <ul><li>
 <code><a href="../reference/content_handoff.html">content_handoff()</a></code> now carries each statistic’s interval (<a href="https://github.com/JUhalt/contentvalidR/issues/33" class="external-link">#33</a>), so a reader can tell a unanimous four-judge panel from a unanimous twenty-judge one. A unanimous I-CVI from four experts has a Wilson 95% lower limit near 0.51.
 <ul><li>
