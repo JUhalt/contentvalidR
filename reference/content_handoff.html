@@ -21,7 +21,7 @@ installed."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ installed."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Carry content-validity decisions into empirical validation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.5.0/R/content_handoff.R" class="external-link"><code>R/content_handoff.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/content_handoff.R" class="external-link"><code>R/content_handoff.R</code></a></small>
       <div class="d-none name"><code>content_handoff.Rd</code></div>
     </div>
 
@@ -78,8 +78,8 @@ installed.</p>
 
 
 <dl><dt id="arg-fit">fit<a class="anchor" aria-label="anchor" href="#arg-fit"></a></dt>
-<dd><p>A fitted <code>contentvalid_sort</code>, <code>contentvalid_rating</code>, or
-<code>contentvalid_expert</code> object.</p></dd>
+<dd><p>A fitted <code>contentvalid_sort</code>, <code>contentvalid_rating</code>,
+<code>contentvalid_expert</code>, or <code>contentvalid_delphi</code> object.</p></dd>
 
 
 <dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>
@@ -89,7 +89,9 @@ installed.</p>
 
 <dt id="arg-round">round<a class="anchor" aria-label="anchor" href="#arg-round"></a></dt>
 <dd><p>Pretest round this analysis represents. One fit is one round, so
-this defaults to <code>1</code> and matters only when stacking rounds by hand.</p></dd>
+this defaults to <code>1</code> and matters only when stacking rounds by hand. It
+cannot be set for a Delphi fit, which dates each item by the round it
+settled in.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -100,9 +102,9 @@ as described under "Object shape".</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Item-level workflows are accepted: <code><a href="sort_validity.html">sort_validity()</a></code>, <code><a href="rating_validity.html">rating_validity()</a></code>,
-and <code><a href="expert_validity.html">expert_validity()</a></code>. <code><a href="judge_validity.html">judge_validity()</a></code> and <code><a href="domain_validity.html">domain_validity()</a></code> are
-refused, because their rows are judges and blueprint cells rather than items,
-so there is no item set to carry forward.</p>
+<code><a href="expert_validity.html">expert_validity()</a></code>, and <code><a href="delphi_validity.html">delphi_validity()</a></code>. <code><a href="judge_validity.html">judge_validity()</a></code> and
+<code><a href="domain_validity.html">domain_validity()</a></code> are refused, because their rows are judges and blueprint
+cells rather than items, so there is no item set to carry forward.</p>
 <p>Items that do not meet <code>keep</code> are not dropped from the record. They stay in
 <code>item_evidence</code> with <code>carried = FALSE</code>, so a reader can see what was held
 back and why. Review is not deletion.</p>
@@ -126,12 +128,17 @@ produce <code>NULL</code>. Membership is one to one.</p></dd>
 <dt><code>item_evidence</code></dt>
 <dd><p>data frame with one row per reviewed item: <code>item</code>,
 <code>scale</code> (<code>NA</code> without a construct mapping), <code>carried</code>, <code>status</code>,
-<code>recommendation</code>, <code>n_judges</code>, <code>rule</code>, and <code>round</code>.</p></dd>
+<code>recommendation</code>, <code>n_judges</code>, <code>rule</code>, and <code>round</code>. For a Delphi handoff
+<code>round</code> differs between items; see "A Delphi handoff".</p></dd>
 
 <dt><code>item_statistics</code></dt>
 <dd><p>data frame, one row per item per statistic:
 <code>item</code>, <code>statistic</code>, <code>value</code>, <code>criterion</code> (<code>NA</code> when the method sets
-no explicit criterion), and <code>round</code>. From contentvalidR 0.5.0 it also
+no explicit criterion), and <code>round</code>. Which statistics carry a criterion
+depends on the workflow rather than on the statistic alone: modified
+kappa carries 0.74 from <code><a href="expert_validity.html">expert_validity()</a></code>, and none from a Delphi
+handoff, which decides on the consensus threshold. From
+contentvalidR 0.5.0 it also
 carries <code>lower</code>, <code>upper</code>, <code>interval_method</code>, and <code>interval_level</code>,
 described under "Intervals".</p></dd>
 
@@ -173,6 +180,27 @@ computed. <code>NA</code> there never stands for missing data.</p>
 weights for a later analysis; that is a question for the consuming package.</p>
     </div>
     <div class="section level2">
+    <h2 id="a-delphi-handoff">A Delphi handoff<a class="anchor" aria-label="anchor" href="#a-delphi-handoff"></a></h2>
+
+
+<p>A Delphi study settles one item at a time: an item that reached consensus
+early was set aside, and its last round came before the study's final round.
+A Delphi handoff therefore carries each item's evidence <strong>from its own last
+round</strong>, and <code>round</code> holds that round's index rather than one constant. It is
+the only workflow where <code>round</code> varies within a handoff.</p>
+<p>Each item carries the relevance evidence of its last round, taken from that
+round's <code><a href="expert_validity.html">expert_validity()</a></code> fit, with intervals: <code>I-CVI</code> against the
+consensus threshold, <code>Aiken's V</code>, and <code>modified kappa</code>. Modified kappa
+carries no criterion here, because a Delphi decides on the consensus
+threshold rather than on the 0.74 rule that <code><a href="expert_validity.html">expert_validity()</a></code> applies.</p>
+<p>Two more statistics record whether the panel had stopped moving:
+<code>proportion unchanged</code>, and the stability statistic that ran, named for its
+method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal lambda</code>. The chi-square
+methods add <code>stability p_value</code> against <code>alpha</code>. Stability travels as
+evidence beside the decision; it never decides what is carried, exactly as
+it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="what-a-handoff-does-and-does-not-establish">What a handoff does and does not establish<a class="anchor" aria-label="anchor" href="#what-a-handoff-does-and-does-not-establish"></a></h2>
 
 
@@ -202,7 +230,7 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-in"><span><span class="va">handoff</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR handoff (schema version 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.5.0   2026-09-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.5.0.9000   2026-09-20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>

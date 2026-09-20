@@ -20,8 +20,8 @@ content_handoff(fit, keep = "Supported", round = 1)
 
 - fit:
 
-  A fitted `contentvalid_sort`, `contentvalid_rating`, or
-  `contentvalid_expert` object.
+  A fitted `contentvalid_sort`, `contentvalid_rating`,
+  `contentvalid_expert`, or `contentvalid_delphi` object.
 
 - keep:
 
@@ -32,7 +32,9 @@ content_handoff(fit, keep = "Supported", round = 1)
 - round:
 
   Pretest round this analysis represents. One fit is one round, so this
-  defaults to `1` and matters only when stacking rounds by hand.
+  defaults to `1` and matters only when stacking rounds by hand. It
+  cannot be set for a Delphi fit, which dates each item by the round it
+  settled in.
 
 ## Value
 
@@ -44,8 +46,9 @@ described under "Object shape".
 Item-level workflows are accepted:
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
 [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
 and
-[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md).
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
 [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
 and
 [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
@@ -78,15 +81,20 @@ A consumer matches on `"cv_handoff"` and reads these fields:
 
   data frame with one row per reviewed item: `item`, `scale` (`NA`
   without a construct mapping), `carried`, `status`, `recommendation`,
-  `n_judges`, `rule`, and `round`.
+  `n_judges`, `rule`, and `round`. For a Delphi handoff `round` differs
+  between items; see "A Delphi handoff".
 
 - `item_statistics`:
 
   data frame, one row per item per statistic: `item`, `statistic`,
   `value`, `criterion` (`NA` when the method sets no explicit
-  criterion), and `round`. From contentvalidR 0.5.0 it also carries
-  `lower`, `upper`, `interval_method`, and `interval_level`, described
-  under "Intervals".
+  criterion), and `round`. Which statistics carry a criterion depends on
+  the workflow rather than on the statistic alone: modified kappa
+  carries 0.74 from
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+  and none from a Delphi handoff, which decides on the consensus
+  threshold. From contentvalidR 0.5.0 it also carries `lower`, `upper`,
+  `interval_method`, and `interval_level`, described under "Intervals".
 
 - `provenance`:
 
@@ -132,6 +140,34 @@ The handoff reports intervals only. It does not turn them into priors or
 weights for a later analysis; that is a question for the consuming
 package.
 
+## A Delphi handoff
+
+A Delphi study settles one item at a time: an item that reached
+consensus early was set aside, and its last round came before the
+study's final round. A Delphi handoff therefore carries each item's
+evidence **from its own last round**, and `round` holds that round's
+index rather than one constant. It is the only workflow where `round`
+varies within a handoff.
+
+Each item carries the relevance evidence of its last round, taken from
+that round's
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+fit, with intervals: `I-CVI` against the consensus threshold,
+`Aiken's V`, and `modified kappa`. Modified kappa carries no criterion
+here, because a Delphi decides on the consensus threshold rather than on
+the 0.74 rule that
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+applies.
+
+Two more statistics record whether the panel had stopped moving:
+`proportion unchanged`, and the stability statistic that ran, named for
+its method, such as `weighted kappa (quadratic)` or
+`Goodman-Kruskal lambda`. The chi-square methods add `stability p_value`
+against `alpha`. Stability travels as evidence beside the decision; it
+never decides what is carried, exactly as it never sets an item's status
+in
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
+
 ## What a handoff does and does not establish
 
 Surviving content review is evidence about relevance, representation,
@@ -162,7 +198,7 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.5.0   2026-09-20
+#> Workflow: expert-panel (relevance)   contentvalidR 0.5.0.9000   2026-09-20
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.

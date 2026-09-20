@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,9 +39,27 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.5.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0.9000" id="contentvalidr-0509000-development-version">contentvalidR 0.5.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0509000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="a-delphi-study-can-hand-off-in-development-0-5-0-9000">A Delphi study can hand off (in development)<a class="anchor" aria-label="anchor" href="#a-delphi-study-can-hand-off-in-development-0-5-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/content_handoff.html">content_handoff()</a></code> now accepts a <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> fit (<a href="https://github.com/JUhalt/contentvalidR/issues/42" class="external-link">#42</a>). It used to refuse one, and its message did not even mention Delphi.
+<ul><li>
+<strong>Each item travels with its own last round.</strong> A Delphi settles one item at a time: an item that reached consensus early was set aside before the final round. <code>round</code> now holds that round’s index, so it varies between items. This is the first workflow where it carries real information.</li>
+<li>
+<strong>Relevance evidence comes from the item’s last round,</strong> taken from that round’s <code><a href="../reference/expert_validity.html">expert_validity()</a></code> fit, with intervals: <code>I-CVI</code> against the consensus threshold, <code>Aiken's V</code>, and <code>modified kappa</code>. Modified kappa carries no criterion, because a Delphi decides on the consensus threshold rather than on the 0.74 rule.</li>
+<li>
+<strong>Stability travels as evidence</strong>, never as a carry decision: <code>proportion unchanged</code> plus the statistic that ran, named for its method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal lambda</code>. The chi-square methods add <code>stability p_value</code>. The names are qualified so a downstream report cannot misread them (<a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>).</li>
+<li>
+<code>round</code> cannot be set by hand for a Delphi fit, since the fit supplies it.</li>
+</ul></li>
+<li>No schema change. These are new values in existing columns, so a schema version 1 reader still reads the object.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="contentvalidr-050">contentvalidR 0.5.0<a class="anchor" aria-label="anchor" href="#contentvalidr-050"></a></h2>
 <p>Fifth public release. v0.5.0 adds a workflow for Delphi studies, where the same expert panel rates items over successive rounds. It reports consensus and stability as separate questions, and every published stability method is available with its limits printed. The handoff to empirical validation now carries each statistic’s interval, so a downstream analysis can see how much panel evidence stands behind a number.</p>

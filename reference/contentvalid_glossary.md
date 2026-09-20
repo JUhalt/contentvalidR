@@ -164,11 +164,11 @@ contentvalid_glossary()
 #>       when ratings bunch in one category, so a converged panel can show a
 #>       low kappa even when almost no one changed their rating. (-1 to 1; 1
 #>       is perfect stability, 0 is no better than chance)
-#>   lambda -- Index of predictive association. How much knowing an expert's
-#>       earlier rating improves a guess at their later one. It measures
-#>       predictability, not agreement: experts who all moved up one category
-#>       would still score 1. (0 to 1; undefined when the later round is
-#>       unanimous)
+#>   lambda -- Goodman-Kruskal lambda, an index of predictive association. How
+#>       much knowing an expert's earlier rating improves a guess at their
+#>       later one. It measures predictability, not agreement: experts who all
+#>       moved up one category would still score 1. (0 to 1; undefined when
+#>       the later round is unanimous)
 #>   chi_sq_individual -- Individual stability chi-square. Tests whether
 #>       experts' later ratings depend on their earlier ones. A significant
 #>       result is read as stability. It needs expected counts of at least 5,

@@ -826,6 +826,41 @@ date, so the table records what shipped (requested on \#46).
 
 ------------------------------------------------------------------------
 
+## v0.6.0 - Hand a Delphi study off to empirical validation
+
+**Status:** In development **Milestone:**
+[v0.6.0](https://github.com/JUhalt/contentvalidR/milestone/6)
+
+Tracking: [\#42](https://github.com/JUhalt/contentvalidR/issues/42).
+
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+refused a Delphi fit, although a Delphi study is item-level and ends
+with exactly the evidence the handoff carries.
+
+Accept `contentvalid_delphi` in
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md),
+carrying each item’s evidence from its own last round.
+
+Let `round` hold the round an item settled in, rather than a constant.
+It is the first workflow where the field carries real information, and
+it cannot be set by hand for a Delphi fit.
+
+Carry stability as evidence beside the decision: the share of experts
+who kept their rating, and the statistic that ran, named for its method.
+Stability never decides what travels.
+
+Tell nomologR which new `statistic` values to expect, since names are
+data rather than schema.
+
+Decide whether
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+should gain a [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
+method, and whether the printed-claims audit
+([\#41](https://github.com/JUhalt/contentvalidR/issues/41)) belongs in
+this release.
+
+------------------------------------------------------------------------
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.

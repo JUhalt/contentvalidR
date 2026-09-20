@@ -17,7 +17,7 @@ the terms are familiar."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ the terms are familiar."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Glossary of contentvalidR indices and status terms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.5.0/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
       <div class="d-none name"><code>contentvalid_glossary.Rd</code></div>
     </div>
 
@@ -219,11 +219,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       when ratings bunch in one category, so a converged panel can show a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       low kappa even when almost no one changed their rating. (-1 to 1; 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       is perfect stability, 0 is no better than chance)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   lambda -- Index of predictive association. How much knowing an expert's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       earlier rating improves a guess at their later one. It measures</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       predictability, not agreement: experts who all moved up one category</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       would still score 1. (0 to 1; undefined when the later round is</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       unanimous)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   lambda -- Goodman-Kruskal lambda, an index of predictive association. How</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       much knowing an expert's earlier rating improves a guess at their</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       later one. It measures predictability, not agreement: experts who all</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       moved up one category would still score 1. (0 to 1; undefined when</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the later round is unanimous)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   chi_sq_individual -- Individual stability chi-square. Tests whether</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       experts' later ratings depend on their earlier ones. A significant</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       result is read as stability. It needs expected counts of at least 5,</span>

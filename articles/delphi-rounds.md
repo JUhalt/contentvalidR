@@ -411,6 +411,47 @@ report:
 - the stability statistic, and the weights if it is kappa;
 - the number of bootstrap resamples and the seed.
 
+## Carrying a Delphi forward
+
+When the panel is finished,
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+packages the items that survived, with the evidence behind each
+decision, for the empirical stage:
+
+``` r
+
+handoff <- content_handoff(fit, keep = "Supported")
+handoff$item_evidence[c("item", "carried", "status", "n_judges", "round")]
+#>   item carried    status n_judges round
+#> 1   S1    TRUE Supported       10     2
+#> 2   S2    TRUE Supported        9     3
+#> 3   S3   FALSE    Review        9     3
+#> 4   S4   FALSE    Review        9     3
+#> 5   S5    TRUE Supported        9     3
+#> 6   S6   FALSE    Review        9     3
+```
+
+`round` is the round each item settled in, so S1 carries round 2: it
+reached consensus there and was set aside. Every other workflow writes
+one constant into that column, because one fit is one round.
+
+Each item’s relevance evidence comes from its own last round, with
+intervals, and the stability evidence travels beside it:
+
+``` r
+
+st <- handoff$item_statistics
+unique(st$statistic)
+#> [1] "I-CVI"                      "Aiken's V"                 
+#> [3] "modified kappa"             "proportion unchanged"      
+#> [5] "weighted kappa (quadratic)"
+```
+
+Stability is carried as evidence, not as a reason to keep or drop an
+item, just as it does not set an item’s status above. See
+[`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md)
+for what the object holds and how a downstream package reads it.
+
 ## What this analysis does not establish
 
 Consensus is agreement among these experts. It is not, by itself,

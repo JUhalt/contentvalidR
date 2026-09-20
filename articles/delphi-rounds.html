@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
       <h1>Delphi Rounds: Consensus and Stability</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.5.0/vignettes/delphi-rounds.Rmd" class="external-link"><code>vignettes/delphi-rounds.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/delphi-rounds.Rmd" class="external-link"><code>vignettes/delphi-rounds.Rmd</code></a></small>
       <div class="d-none name"><code>delphi-rounds.Rmd</code></div>
     </div>
 
@@ -510,6 +510,39 @@ report:</p>
 <li>the stability statistic, and the weights if it is kappa;</li>
 <li>the number of bootstrap resamples and the seed.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="carrying-a-delphi-forward">Carrying a Delphi forward<a class="anchor" aria-label="anchor" href="#carrying-a-delphi-forward"></a>
+</h2>
+<p>When the panel is finished, <code><a href="../reference/content_handoff.html">content_handoff()</a></code> packages
+the items that survived, with the evidence behind each decision, for the
+empirical stage:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span>, keep <span class="op">=</span> <span class="st">"Supported"</span><span class="op">)</span></span>
+<span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"carried"</span>, <span class="st">"status"</span>, <span class="st">"n_judges"</span>, <span class="st">"round"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   item carried    status n_judges round</span></span>
+<span><span class="co">#&gt; 1   S1    TRUE Supported       10     2</span></span>
+<span><span class="co">#&gt; 2   S2    TRUE Supported        9     3</span></span>
+<span><span class="co">#&gt; 3   S3   FALSE    Review        9     3</span></span>
+<span><span class="co">#&gt; 4   S4   FALSE    Review        9     3</span></span>
+<span><span class="co">#&gt; 5   S5    TRUE Supported        9     3</span></span>
+<span><span class="co">#&gt; 6   S6   FALSE    Review        9     3</span></span></code></pre></div>
+<p><code>round</code> is the round each item settled in, so S1 carries
+round 2: it reached consensus there and was set aside. Every other
+workflow writes one constant into that column, because one fit is one
+round.</p>
+<p>Each item’s relevance evidence comes from its own last round, with
+intervals, and the stability evidence travels beside it:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">st</span><span class="op">$</span><span class="va">statistic</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "I-CVI"                      "Aiken's V"                 </span></span>
+<span><span class="co">#&gt; [3] "modified kappa"             "proportion unchanged"      </span></span>
+<span><span class="co">#&gt; [5] "weighted kappa (quadratic)"</span></span></code></pre></div>
+<p>Stability is carried as evidence, not as a reason to keep or drop an
+item, just as it does not set an item’s status above. See
+<code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code> for what the
+object holds and how a downstream package reads it.</p>
 </div>
 <div class="section level2">
 <h2 id="what-this-analysis-does-not-establish">What this analysis does not establish<a class="anchor" aria-label="anchor" href="#what-this-analysis-does-not-establish"></a>
