@@ -329,6 +329,13 @@
 
 .print_key <- function(terms, width = 76) {
   defs <- .term_defs()
+  # A term with no definition would otherwise be dropped in silence, so a typo
+  # in a print method's key would quietly stop explaining a column.
+  unknown <- setdiff(terms, defs$term)
+  if (length(unknown)) {
+    stop("Unknown glossary term(s): ", paste(unknown, collapse = ", "), ".",
+         call. = FALSE)
+  }
   defs <- defs[defs$term %in% terms, , drop = FALSE]
   if (!nrow(defs)) return(invisible(NULL))
   defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
