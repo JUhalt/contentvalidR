@@ -12,7 +12,7 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.4.0.**
+**Current stable release: 0.5.0.**
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -23,7 +23,7 @@ website](https://juhalt.github.io/contentvalidR/) ·
 [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
 **contentvalidR** provides quantitative tools for substantive and
-content-oriented scale pretesting. The package provides five
+content-oriented scale pretesting. The package provides six
 complementary workflows:
 
 1.  **Item sorting** — Anderson & Gerbing (1991) Psa/Csv, exact
@@ -35,20 +35,25 @@ complementary workflows:
 3.  **Expert panels** — Aiken’s V, Lawshe CVR, CVI/modified kappa with
     score intervals, item-objective congruence, and panel-level
     agreement.
-4.  **Judge heterogeneity** — generalizability theory for
+4.  **Delphi rounds** — consensus and stability across successive expert
+    rounds: the share of experts agreeing against a threshold fixed
+    before the study, and between-round weighted kappa following Holey
+    et al. (2007), with the published alternatives selectable.
+5.  **Judge heterogeneity** — generalizability theory for
     content-validity ratings following Crocker, Llabre & Miller (1988),
     judge severity and rater effects, and leave-one-judge-out influence
     diagnostics.
-5.  **Domain coverage** — blueprint coverage, and expert-perceived
+6.  **Domain coverage** — blueprint coverage, and expert-perceived
     content structure via the multidimensional scaling and clustering
     procedure of Sireci & Geisinger (1992).
 
-The first three ask whether each **item** behaves as intended. The last
-two ask questions no item-level index can reach: whether your
-conclusions depend on the particular **judges** you recruited, and
-whether your item set actually covers the **domain** you set out to
-measure. An item can only be rated if someone wrote it, so a perfect
-relevance index says nothing about the facet you forgot.
+The first four ask whether each **item** behaves as intended, or, in a
+Delphi study, whether the panel has settled on it. The last two ask
+questions no item-level index can reach: whether your conclusions depend
+on the particular **judges** you recruited, and whether your item set
+actually covers the **domain** you set out to measure. An item can only
+be rated if someone wrote it, so a perfect relevance index says nothing
+about the facet you forgot.
 
 The design goal is **interpretable output rather than coefficient
 dumps**. Recommended workflow functions summarize what the evidence

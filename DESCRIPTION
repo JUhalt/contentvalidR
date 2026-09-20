@@ -1,7 +1,7 @@
 Package: contentvalidR
 Type: Package
 Title: Tools for Substantive and Content Validity Pretesting
-Version: 0.4.0.9000
+Version: 0.5.0
 Authors@R: c(
     person(given = "Joshua", family = "Uhalt", email = "Josh.Uhalt@gmail.com",
            role = c("aut", "cre"))
@@ -23,8 +23,10 @@ Description: Provides quantitative tools for substantive and content-oriented
     content-validity ratings in Crocker, Llabre and Miller (1988)
     <doi:10.1111/j.1745-3984.1988.tb00309.x>, content-domain coverage and
     expert-perceived content structure following Sireci and Geisinger (1992)
-    <doi:10.1177/014662169201600102>, comparison across successive pretest
-    rounds, and exact expert-panel planning. Where published methods compete,
+    <doi:10.1177/014662169201600102>, consensus and stability across Delphi
+    rounds with between-round weighted kappa following Holey et al. (2007)
+    <doi:10.1186/1471-2288-7-52>, comparison across successive pretest rounds,
+    and exact expert-panel planning. Where published methods compete,
     users choose among them through arguments with evidence-based defaults.
     User-facing workflows emphasize interpretable summaries and transparent
     review recommendations rather than isolated coefficients.

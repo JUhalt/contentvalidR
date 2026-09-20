@@ -1,6 +1,25 @@
-# contentvalidR 0.4.0.9000 (development version)
+# contentvalidR 0.5.0
 
-## Delphi consensus and stability (in development)
+Fifth public release. v0.5.0 adds a workflow for Delphi studies, where the same
+expert panel rates items over successive rounds. It reports consensus and
+stability as separate questions, and every published stability method is
+available with its limits printed. The handoff to empirical validation now
+carries each statistic's interval, so a downstream analysis can see how much
+panel evidence stands behind a number.
+
+The package continues to declare `Imports: stats` only.
+
+No default changes. Existing calls return the same values as in 0.4.0.
+`content_handoff()` objects gain four interval columns in `item_statistics`
+and a `panel_statistics` table, within schema version 1.
+
+New function: `delphi_validity()`. New article: `vignette("delphi-rounds")`.
+
+This release is published on GitHub and R-universe. 0.4.0 is still in CRAN's
+review queue, and CRAN policy asks that no further version be submitted while
+one is pending, so 0.5.0 will be submitted to CRAN later as an update.
+
+## Delphi consensus and stability
 
 * New workflow `delphi_validity()` for an expert panel rated over successive
   Delphi rounds ([#20](https://github.com/JUhalt/contentvalidR/issues/20)).
@@ -46,7 +65,7 @@
   (1968) Table 1, Fleiss & Cohen's equivalence, and the worked examples of
   Dajani et al. and Chaffin & Talley.
 
-## Interval bounds in the handoff (in development)
+## Interval bounds in the handoff
 
 * `content_handoff()` now carries each statistic's interval
   ([#33](https://github.com/JUhalt/contentvalidR/issues/33)), so a reader can
