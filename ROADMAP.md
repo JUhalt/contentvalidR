@@ -655,6 +655,28 @@ item-level and ends with exactly the evidence the handoff carries.
 
 ***
 
+## v0.7.0 - Housekeeping
+
+**Status:** In development
+**Milestone:** [v0.7.0](https://github.com/JUhalt/contentvalidR/milestone/7)
+
+- [x] Say what an `NA` stability statistic means in a handoff
+      ([#48](https://github.com/JUhalt/contentvalidR/issues/48)). Documented
+      the two cases, and added a `note` column carrying the producing
+      function's own sentence, so a consumer need not reconstruct
+      method-specific semantics from statistic names.
+- [x] Make the release gate's clean-library smoke test actually run
+      ([#51](https://github.com/JUhalt/contentvalidR/issues/51)). It lives in
+      the repository at `tools/release-gate.R`, runs each stage in its own
+      process, and fails rather than printing findings to read past. The old
+      gate skipped its own smoke test at three consecutive releases.
+- [ ] State the deprecation policy and public API stability, which is the
+      1.0 criterion on
+      [nomologR#53](https://github.com/JUhalt/nomologR/issues/53) that rests
+      entirely with this package.
+
+***
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.

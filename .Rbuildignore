@@ -19,3 +19,4 @@
 ^.*\.Rcheck$
 ^.*\.tar\.gz$
 ^CITATION\.cff$
+^tools$
