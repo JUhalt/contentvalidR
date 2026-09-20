@@ -828,8 +828,14 @@ date, so the table records what shipped (requested on \#46).
 
 ## v0.6.0 - Hand a Delphi study off to empirical validation
 
-**Status:** In development **Milestone:**
+**Status:** Released (0.6.0 on 2026-09-20, on GitHub and R-universe)
+**Milestone:**
 [v0.6.0](https://github.com/JUhalt/contentvalidR/milestone/6)
+**Version:** `0.6.0`
+
+CRAN: unchanged from 0.5.0. 0.4.0 is still in review, so 0.6.0 is not
+submitted; whichever version is current when 0.4.0 resolves goes to CRAN
+as the update, from its own tag.
 
 Tracking: [\#42](https://github.com/JUhalt/contentvalidR/issues/42).
 

@@ -1,8 +1,28 @@
 # Changelog
 
-## contentvalidR 0.5.0.9000 (development version)
+## contentvalidR 0.6.0
 
-### Seeing a Delphi’s trends (in development)
+Sixth public release. v0.6.0 finishes the Delphi workflow: a Delphi
+study can now be handed off to empirical validation, carrying for each
+item the round it settled in, and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) shows the two
+trends a Delphi is about. It also adds a test layer that checks the
+package’s printed claims against what the code actually computes.
+
+The package continues to declare `Imports: stats` only.
+
+No default changes. Existing calls return the same values as in 0.5.0.
+
+New method: [`plot()`](https://rdrr.io/r/graphics/plot.default.html) for
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+accepts a Delphi fit.
+
+Published on GitHub and R-universe. 0.4.0 remains in CRAN’s review
+queue, and CRAN policy asks that no further version be submitted while
+one is pending.
+
+### Seeing a Delphi’s trends
 
 - [`plot()`](https://rdrr.io/r/graphics/plot.default.html) for
   [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
@@ -22,7 +42,7 @@
   - Item labels sit at the end of each line and are nudged apart when
     items finish at the same height.
 
-### Printed claims are tested against what the code computes (in development)
+### Printed claims are tested against what the code computes
 
 - A new test file checks the package’s printed output against the fitted
   objects it describes, rather than against strings copied from the
@@ -48,7 +68,7 @@
   typo in a print method’s key used to remove a column’s explanation in
   silence.
 
-### A Delphi study can hand off (in development)
+### A Delphi study can hand off
 
 - [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
   now accepts a

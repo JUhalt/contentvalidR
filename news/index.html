@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,9 +43,14 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.5.0.9000" id="contentvalidr-0509000-development-version">contentvalidR 0.5.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0509000-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.6.0" id="contentvalidr-060">contentvalidR 0.6.0<a class="anchor" aria-label="anchor" href="#contentvalidr-060"></a></h2>
+<p>Sixth public release. v0.6.0 finishes the Delphi workflow: a Delphi study can now be handed off to empirical validation, carrying for each item the round it settled in, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows the two trends a Delphi is about. It also adds a test layer that checks the package’s printed claims against what the code actually computes.</p>
+<p>The package continues to declare <code>Imports: stats</code> only.</p>
+<p>No default changes. Existing calls return the same values as in 0.5.0.</p>
+<p>New method: <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> for <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code>. <code><a href="../reference/content_handoff.html">content_handoff()</a></code> accepts a Delphi fit.</p>
+<p>Published on GitHub and R-universe. 0.4.0 remains in CRAN’s review queue, and CRAN policy asks that no further version be submitted while one is pending.</p>
 <div class="section level3">
-<h3 id="seeing-a-delphis-trends-in-development-0-5-0-9000">Seeing a Delphi’s trends (in development)<a class="anchor" aria-label="anchor" href="#seeing-a-delphis-trends-in-development-0-5-0-9000"></a></h3>
+<h3 id="seeing-a-delphis-trends-0-6-0">Seeing a Delphi’s trends<a class="anchor" aria-label="anchor" href="#seeing-a-delphis-trends-0-6-0"></a></h3>
 <ul><li>
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> for <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> (<a href="https://github.com/JUhalt/contentvalidR/issues/44" class="external-link">#44</a>), so the Delphi workflow matches the others in having one.
 <ul><li>
@@ -58,7 +63,7 @@
 </ul></li>
 </ul></div>
 <div class="section level3">
-<h3 id="printed-claims-are-tested-against-what-the-code-computes-in-development-0-5-0-9000">Printed claims are tested against what the code computes (in development)<a class="anchor" aria-label="anchor" href="#printed-claims-are-tested-against-what-the-code-computes-in-development-0-5-0-9000"></a></h3>
+<h3 id="printed-claims-are-tested-against-what-the-code-computes-0-6-0">Printed claims are tested against what the code computes<a class="anchor" aria-label="anchor" href="#printed-claims-are-tested-against-what-the-code-computes-0-6-0"></a></h3>
 <ul><li>A new test file checks the package’s printed output against the fitted objects it describes, rather than against strings copied from the print methods (<a href="https://github.com/JUhalt/contentvalidR/issues/41" class="external-link">#41</a>). A test that asserts what the documentation claims can pass while being false. It checks that:
 <ul><li>every number printed for an item is the number the object holds;</li>
 <li>the printed settings are the settings that ran;</li>
@@ -74,7 +79,7 @@
 <code>.print_key()</code> now fails on an unknown term instead of dropping it. A typo in a print method’s key used to remove a column’s explanation in silence.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="a-delphi-study-can-hand-off-in-development-0-5-0-9000">A Delphi study can hand off (in development)<a class="anchor" aria-label="anchor" href="#a-delphi-study-can-hand-off-in-development-0-5-0-9000"></a></h3>
+<h3 id="a-delphi-study-can-hand-off-0-6-0">A Delphi study can hand off<a class="anchor" aria-label="anchor" href="#a-delphi-study-can-hand-off-0-6-0"></a></h3>
 <ul><li>
 <code><a href="../reference/content_handoff.html">content_handoff()</a></code> now accepts a <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> fit (<a href="https://github.com/JUhalt/contentvalidR/issues/42" class="external-link">#42</a>). It used to refuse one, and its message did not even mention Delphi.
 <ul><li>
