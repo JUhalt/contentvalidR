@@ -303,6 +303,45 @@ test_that("stability travels as evidence, named for the method that ran", {
   expect_true(all(chi$criterion[chi$statistic == "stability p_value"] == 0.05))
 })
 
+test_that("the two reasons a stability statistic is NA are distinguishable", {
+  long <- function(m, round) {
+    data.frame(expert = paste0("E", seq_len(nrow(m))),
+               item = rep(colnames(m), each = nrow(m)),
+               round = round, rating = as.vector(m), stringsAsFactors = FALSE)
+  }
+
+  # Case 1: no pair of consecutive rounds. S9 was rated in round 1 only, so
+  # there was nothing to compare; both the statistic and the share unchanged
+  # are NA.
+  # Case 2: a pair exists but kappa is undefined, because every paired rating
+  # in both rounds fell in one category. The share unchanged is 1: the panel
+  # could not have been more stable.
+  r1 <- cbind(S8 = c(4, 4, 3, 4), S9 = c(4, 3, 4, 3))
+  r2 <- cbind(S8 = c(4, 4, 4, 4))
+  r3 <- cbind(S8 = c(4, 4, 4, 4))
+  fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2), long(r3, 3)),
+                         lo = 1, hi = 4, B = 0)
+  st <- content_handoff(fit, keep = "Descriptive only")$item_statistics
+  pick <- function(item, statistic) {
+    st$value[st$item == item & st$statistic == statistic]
+  }
+
+  # Both rows are present: an NA is a statement about the data, not a gap.
+  expect_length(pick("S9", "weighted kappa (quadratic)"), 1L)
+  expect_length(pick("S8", "weighted kappa (quadratic)"), 1L)
+
+  expect_true(is.na(pick("S9", "weighted kappa (quadratic)")))
+  expect_true(is.na(pick("S9", "proportion unchanged")))
+
+  expect_true(is.na(pick("S8", "weighted kappa (quadratic)")))
+  expect_equal(pick("S8", "proportion unchanged"), 1)
+
+  # The fit states why; the handoff does not carry that sentence.
+  note <- fit$details$stability$note[fit$details$stability$item == "S8"]
+  expect_match(note[length(note)], "every rating fell in the same category")
+  expect_false("note" %in% names(st))
+})
+
 test_that("a Delphi handoff records its provenance and refuses `round`", {
   fit <- delphi_fit(B = 0)
   h <- content_handoff(fit, keep = c("Supported", "Review"))

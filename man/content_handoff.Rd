@@ -123,10 +123,38 @@ threshold rather than on the 0.74 rule that \code{\link[=expert_validity]{expert
 
 Two more statistics record whether the panel had stopped moving:
 \verb{proportion unchanged}, and the stability statistic that ran, named for its
-method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambda}. The chi-square
-methods add \verb{stability p_value} against \code{alpha}. Stability travels as
-evidence beside the decision; it never decides what is carried, exactly as
-it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambda}.
+The chi-square methods add \verb{stability p_value} against \code{alpha}. Stability
+travels as evidence beside the decision; it never decides what is carried,
+exactly as it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+}
+
+\section{When a stability statistic is NA}{
+
+A stability row is always present for a carried item, so an \code{NA} there is a
+statement about the data rather than a missing record. There are two cases,
+and they can be told apart from the object alone:
+
+\describe{
+\item{\verb{proportion unchanged} is also \code{NA}}{The item has no pair of
+consecutive rounds: it was rated in one round only, so there was nothing
+to compare.}
+\item{\verb{proportion unchanged} has a value}{A pair exists, but the
+statistic is undefined for that data.}
+}
+
+In the second case, \strong{read \verb{proportion unchanged}}, which is often the more
+informative number. An undefined kappa beside \verb{proportion unchanged} of 1 is
+perfect stability that kappa cannot express: kappa is chance-corrected, and
+when every paired rating in both rounds falls in one category, the
+disagreement expected by chance is zero, so kappa is 0/0. Reporting only
+"not estimable" there would describe a defect that does not exist. Goodman-
+Kruskal lambda is undefined when the later round is unanimous, and the
+chi-square methods are undefined for a table with fewer than two occupied
+rows or columns.
+
+\code{delphi_validity()} states the reason in \code{details$stability$note}, which the
+handoff does not carry.
 }
 
 \section{What a handoff does and does not establish}{
