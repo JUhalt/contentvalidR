@@ -54,7 +54,8 @@ test_that("the object matches schema version 1", {
   # indexes by position still finds them where they were.
   expect_named(h$item_statistics, c("item", "statistic", "value", "criterion",
                                     "round", "lower", "upper",
-                                    "interval_method", "interval_level"))
+                                    "interval_method", "interval_level",
+                                    "note"))
 })
 
 test_that("items are the carried items only", {
@@ -336,10 +337,84 @@ test_that("the two reasons a stability statistic is NA are distinguishable", {
   expect_true(is.na(pick("S8", "weighted kappa (quadratic)")))
   expect_equal(pick("S8", "proportion unchanged"), 1)
 
-  # The fit states why; the handoff does not carry that sentence.
+  # The fit states why, and from 0.7.0 the handoff carries that sentence.
   note <- fit$details$stability$note[fit$details$stability$item == "S8"]
   expect_match(note[length(note)], "every rating fell in the same category")
-  expect_false("note" %in% names(st))
+  expect_identical(st$note[st$item == "S8" &
+                             st$statistic == "weighted kappa (quadratic)"],
+                   note[length(note)])
+})
+
+test_that("the note says why a statistic is undefined, for display only", {
+  long <- function(m, round) {
+    data.frame(expert = paste0("E", seq_len(nrow(m))),
+               item = rep(colnames(m), each = nrow(m)),
+               round = round, rating = as.vector(m), stringsAsFactors = FALSE)
+  }
+  r1 <- cbind(S8 = c(4, 4, 3, 4), S9 = c(4, 3, 4, 3))
+  r2 <- cbind(S8 = c(4, 4, 4, 4))
+  r3 <- cbind(S8 = c(4, 4, 4, 4))
+  fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2), long(r3, 3)),
+                         lo = 1, hi = 4, B = 0)
+  st <- content_handoff(fit, keep = "Descriptive only")$item_statistics
+
+  # Always character, never NA: "" means there is nothing to say.
+  expect_type(st$note, "character")
+  expect_false(anyNA(st$note))
+  expect_identical(names(st)[length(names(st))], "note")
+
+  note_for <- function(item, statistic) {
+    st$note[st$item == item & st$statistic == statistic]
+  }
+  # The producer's own sentence, carried rather than re-derived.
+  expect_identical(note_for("S8", "weighted kappa (quadratic)"),
+                   fit$details$stability$note[nrow(fit$details$stability)])
+  expect_match(note_for("S8", "weighted kappa (quadratic)"),
+               "every rating fell in the same category")
+  # The fit has no row for an item rated once, so the handoff writes this one.
+  expect_match(note_for("S9", "weighted kappa (quadratic)"),
+               "rated in only one round")
+  # A statistic that computed fine says nothing.
+  expect_identical(note_for("S8", "I-CVI"), "")
+
+  # The note never replaces the values: both NA cases stay distinguishable.
+  value_for <- function(item, statistic) {
+    st$value[st$item == item & st$statistic == statistic]
+  }
+  expect_true(is.na(value_for("S9", "proportion unchanged")))
+  expect_equal(value_for("S8", "proportion unchanged"), 1)
+})
+
+test_that("other workflows carry an empty note, and zero-row blocks survive", {
+  for (h in list(content_handoff(expert_fit()),
+                 content_handoff(sort_fit()),
+                 content_handoff(rating_fit()))) {
+    expect_type(h$item_statistics$note, "character")
+    expect_true(all(h$item_statistics$note == ""))
+  }
+  # A congruence fit with no target mapping emits a zero-row statistics block;
+  # the note default must not force it to one row.
+  desc <- content_handoff(congruence_fit(target = FALSE),
+                          keep = "Descriptive only")
+  expect_true(is.data.frame(desc$item_statistics))
+  expect_true("note" %in% names(desc$item_statistics))
+})
+
+test_that("a panel statistic explains an absent coefficient or interval", {
+  tiny <- rbind(c(4, 4), c(4, 4))
+  colnames(tiny) <- c("I1", "I2")
+  fit <- expert_validity(tiny, mode = "relevance", lo = 1, hi = 4,
+                         agreement = "krippendorff", agreement_B = 50, seed = 1)
+  ps <- content_handoff(fit, keep = c("Supported", "Review", "Descriptive only",
+                                      "Insufficient data"))$panel_statistics
+  expect_identical(nrow(ps), 1L)
+  expect_true(is.na(ps$value))
+  expect_match(ps$note, "undefined for these ratings")
+
+  # A panel whose coefficient computes says nothing.
+  ok <- content_handoff(expert_fit(agreement = "krippendorff", agreement_B = 200,
+                                   seed = 11))$panel_statistics
+  expect_identical(ok$note, "")
 })
 
 test_that("a Delphi handoff records its provenance and refuses `round`", {
@@ -484,7 +559,7 @@ test_that("the panel agreement interval travels outside the per-item table", {
 
   expect_true(is.data.frame(ps))
   expect_named(ps, c("statistic", "value", "criterion", "round",
-                     interval_cols))
+                     interval_cols, "note"))
   expect_identical(nrow(ps), 1L)
   expect_identical(ps$statistic, "Krippendorff's alpha (ordinal)")
   expect_equal(ps$value, fit$scale_summary$agreement)
@@ -508,7 +583,7 @@ test_that("workflows without panel statistics carry a zero-row table", {
     expect_true(is.data.frame(ps))
     expect_identical(nrow(ps), 0L)
     expect_named(ps, c("statistic", "value", "criterion", "round",
-                       interval_cols))
+                       interval_cols, "note"))
   }
 })
 

@@ -2,6 +2,24 @@
 
 ## Saying what NA means (in development)
 
+* `item_statistics` and `panel_statistics` gain a `note` column, carrying the
+  producing function's own sentence for why a value or interval is absent or
+  degenerate, such as "Kappa is undefined: every rating fell in the same
+  category in both rounds."
+  * Added so a downstream report can print the reason instead of
+    reconstructing method-specific semantics by switching on statistic names,
+    which would go silently wrong whenever a method is added. The design was
+    argued out with the nomologR maintainers on
+    [nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
+  * **Display text only.** Never match on it, branch on it, or parse it; its
+    wording may change in any minor release.
+  * Always character, never `NA`: `""` means there is nothing to say.
+  * It never replaces the values. Which of the two `NA` cases applies stays
+    readable from `value` and `proportion unchanged`, and that remains the
+    supported way to decide anything.
+  * Additive within schema version 1: it is appended after every existing
+    column, and objects from 0.6.0 and earlier simply have no such column.
+
 * Documented the two reasons a Delphi stability statistic can be `NA`
   ([#48](https://github.com/JUhalt/contentvalidR/issues/48)), which a reader
   can tell apart from the object alone:
