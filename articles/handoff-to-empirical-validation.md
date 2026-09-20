@@ -104,12 +104,12 @@ head(handoff$item_statistics)
 #> 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184
 #> 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053
 #> 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000
-#>           interval_method interval_level
-#> 1 Penfield-Giacobbi score           0.95
-#> 2 Penfield-Giacobbi score           0.95
-#> 3 Penfield-Giacobbi score           0.95
-#> 4 Penfield-Giacobbi score           0.95
-#> 5 Penfield-Giacobbi score           0.95
+#>           interval_method interval_level note
+#> 1 Penfield-Giacobbi score           0.95     
+#> 2 Penfield-Giacobbi score           0.95     
+#> 3 Penfield-Giacobbi score           0.95     
+#> 4 Penfield-Giacobbi score           0.95     
+#> 5 Penfield-Giacobbi score           0.95     
 #> 6            Wilson score           0.95
 ```
 
@@ -189,7 +189,7 @@ item, so it travels in its own table:
 handoff$panel_statistics
 #>                        statistic     value criterion round      lower     upper
 #> 1 Krippendorff's alpha (ordinal) 0.6925356        NA     1 -0.2666667 0.7726496
-#>                        interval_method interval_level
+#>                        interval_method interval_level note
 #> 1 item-resampling percentile bootstrap           0.95
 ```
 

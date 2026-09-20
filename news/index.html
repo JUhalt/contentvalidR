@@ -46,7 +46,16 @@
 <h2 class="pkg-version" data-toc-text="0.6.0.9000" id="contentvalidr-0609000-development-version">contentvalidR 0.6.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0609000-development-version"></a></h2>
 <div class="section level3">
 <h3 id="saying-what-na-means-in-development-0-6-0-9000">Saying what NA means (in development)<a class="anchor" aria-label="anchor" href="#saying-what-na-means-in-development-0-6-0-9000"></a></h3>
-<ul><li>Documented the two reasons a Delphi stability statistic can be <code>NA</code> (<a href="https://github.com/JUhalt/contentvalidR/issues/48" class="external-link">#48</a>), which a reader can tell apart from the object alone:
+<ul><li>
+<code>item_statistics</code> and <code>panel_statistics</code> gain a <code>note</code> column, carrying the producing function’s own sentence for why a value or interval is absent or degenerate, such as “Kappa is undefined: every rating fell in the same category in both rounds.”
+<ul><li>Added so a downstream report can print the reason instead of reconstructing method-specific semantics by switching on statistic names, which would go silently wrong whenever a method is added. The design was argued out with the nomologR maintainers on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>.</li>
+<li>
+<strong>Display text only.</strong> Never match on it, branch on it, or parse it; its wording may change in any minor release.</li>
+<li>Always character, never <code>NA</code>: <code>""</code> means there is nothing to say.</li>
+<li>It never replaces the values. Which of the two <code>NA</code> cases applies stays readable from <code>value</code> and <code>proportion unchanged</code>, and that remains the supported way to decide anything.</li>
+<li>Additive within schema version 1: it is appended after every existing column, and objects from 0.6.0 and earlier simply have no such column.</li>
+</ul></li>
+<li>Documented the two reasons a Delphi stability statistic can be <code>NA</code> (<a href="https://github.com/JUhalt/contentvalidR/issues/48" class="external-link">#48</a>), which a reader can tell apart from the object alone:
 <ul><li>
 <code>proportion unchanged</code> is also <code>NA</code>: the item has no pair of consecutive rounds, because it was rated in one round only;</li>
 <li>

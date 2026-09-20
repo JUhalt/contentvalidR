@@ -171,12 +171,12 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt; 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184</span></span>
 <span><span class="co">#&gt; 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053</span></span>
 <span><span class="co">#&gt; 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000</span></span>
-<span><span class="co">#&gt;           interval_method interval_level</span></span>
-<span><span class="co">#&gt; 1 Penfield-Giacobbi score           0.95</span></span>
-<span><span class="co">#&gt; 2 Penfield-Giacobbi score           0.95</span></span>
-<span><span class="co">#&gt; 3 Penfield-Giacobbi score           0.95</span></span>
-<span><span class="co">#&gt; 4 Penfield-Giacobbi score           0.95</span></span>
-<span><span class="co">#&gt; 5 Penfield-Giacobbi score           0.95</span></span>
+<span><span class="co">#&gt;           interval_method interval_level note</span></span>
+<span><span class="co">#&gt; 1 Penfield-Giacobbi score           0.95     </span></span>
+<span><span class="co">#&gt; 2 Penfield-Giacobbi score           0.95     </span></span>
+<span><span class="co">#&gt; 3 Penfield-Giacobbi score           0.95     </span></span>
+<span><span class="co">#&gt; 4 Penfield-Giacobbi score           0.95     </span></span>
+<span><span class="co">#&gt; 5 Penfield-Giacobbi score           0.95     </span></span>
 <span><span class="co">#&gt; 6            Wilson score           0.95</span></span></code></pre></div>
 <p><code>items</code> is what the next stage consumes: the carried items
 only, so what you read here is exactly what you pass along.
@@ -238,7 +238,7 @@ one item, so it travels in its own table:</p>
 <code class="sourceCode R"><span><span class="va">handoff</span><span class="op">$</span><span class="va">panel_statistics</span></span>
 <span><span class="co">#&gt;                        statistic     value criterion round      lower     upper</span></span>
 <span><span class="co">#&gt; 1 Krippendorff's alpha (ordinal) 0.6925356        NA     1 -0.2666667 0.7726496</span></span>
-<span><span class="co">#&gt;                        interval_method interval_level</span></span>
+<span><span class="co">#&gt;                        interval_method interval_level note</span></span>
 <span><span class="co">#&gt; 1 item-resampling percentile bootstrap           0.95</span></span></code></pre></div>
 <p>The handoff reports these intervals and stops there. Whether a later
 analysis should weight items by them, and how, is a question for that

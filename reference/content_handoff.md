@@ -93,8 +93,10 @@ A consumer matches on `"cv_handoff"` and reads these fields:
   carries 0.74 from
   [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
   and none from a Delphi handoff, which decides on the consensus
-  threshold. From contentvalidR 0.5.0 it also carries `lower`, `upper`,
-  `interval_method`, and `interval_level`, described under "Intervals".
+  threshold. From contentvalidR 0.7.0 it also carries `note`, described
+  under "The note column". From contentvalidR 0.5.0 it also carries
+  `lower`, `upper`, `interval_method`, and `interval_level`, described
+  under "Intervals".
 
 - `provenance`:
 
@@ -105,8 +107,8 @@ A consumer matches on `"cv_handoff"` and reads these fields:
 - `panel_statistics`:
 
   added in contentvalidR 0.5.0. Data frame of panel-level statistics,
-  with the same columns as `item_statistics` less `item`. It holds the
-  panel agreement coefficient when
+  with the same columns as `item_statistics` less `item`, including
+  `note` from 0.7.0. It holds the panel agreement coefficient when
   [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   computed one, and has zero rows otherwise.
 
@@ -114,6 +116,33 @@ This shape is agreed with the `nomologR` package, which consumes it in
 `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a
 reader, which should check that they are present rather than assume it.
+
+## The note column
+
+Added in contentvalidR 0.7.0 to `item_statistics` and
+`panel_statistics`. It says why a value or interval is absent or
+degenerate, in the producing function's own words, so a reader need not
+re-derive method-specific semantics. For example, a Delphi stability row
+may carry "Kappa is undefined: every rating fell in the same category in
+both rounds."
+
+Its contract, agreed with the `nomologR` maintainers:
+
+- It is **display text only**. Never match on it, branch on it, or parse
+  it. Its wording may change in any minor release without a schema
+  change.
+
+- It is always a character vector with **no `NA`**. `""` means there is
+  nothing to say, not that something is missing, so a row can carry a
+  value and an empty note.
+
+- It **never replaces the values**. Whether a statistic is undefined,
+  and which of the two cases applies, stays readable from `value` and
+  `proportion unchanged` as described under "When a stability statistic
+  is NA". That inference is the supported way to decide anything.
+
+- Objects from contentvalidR 0.6.0 and earlier have no such column, and
+  a reader should treat its absence as every note being empty.
 
 ## Intervals
 
@@ -194,8 +223,9 @@ undefined when the later round is unanimous, and the chi-square methods
 are undefined for a table with fewer than two occupied rows or columns.
 
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
-states the reason in `details$stability$note`, which the handoff does
-not carry.
+states the reason in `details$stability$note`, and from contentvalidR
+0.7.0 the handoff carries that sentence in the `note` column of
+`item_statistics`, described under "The note column".
 
 ## What a handoff does and does not establish
 
@@ -280,19 +310,19 @@ handoff$item_statistics
 #> 10 Item2 modified kappa  1.00000000      0.74     1         NA        NA
 #> 11 Item3 modified kappa  1.00000000      0.74     1         NA        NA
 #> 12 Item4 modified kappa -0.06666667      0.74     1         NA        NA
-#>            interval_method interval_level
-#> 1  Penfield-Giacobbi score           0.95
-#> 2  Penfield-Giacobbi score           0.95
-#> 3  Penfield-Giacobbi score           0.95
-#> 4  Penfield-Giacobbi score           0.95
-#> 5             Wilson score           0.95
-#> 6             Wilson score           0.95
-#> 7             Wilson score           0.95
-#> 8             Wilson score           0.95
-#> 9                     <NA>             NA
-#> 10                    <NA>             NA
-#> 11                    <NA>             NA
-#> 12                    <NA>             NA
+#>            interval_method interval_level note
+#> 1  Penfield-Giacobbi score           0.95     
+#> 2  Penfield-Giacobbi score           0.95     
+#> 3  Penfield-Giacobbi score           0.95     
+#> 4  Penfield-Giacobbi score           0.95     
+#> 5             Wilson score           0.95     
+#> 6             Wilson score           0.95     
+#> 7             Wilson score           0.95     
+#> 8             Wilson score           0.95     
+#> 9                     <NA>             NA     
+#> 10                    <NA>             NA     
+#> 11                    <NA>             NA     
+#> 12                    <NA>             NA     
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items
