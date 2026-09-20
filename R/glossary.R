@@ -264,7 +264,7 @@
     ),
     data.frame(
       term = "lambda", workflow = "delphi",
-      label = "Index of predictive association",
+      label = "Goodman-Kruskal lambda, an index of predictive association",
       definition = paste(
         "How much knowing an expert's earlier rating improves a guess at their",
         "later one. It measures predictability, not agreement: experts who all",
