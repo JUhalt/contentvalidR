@@ -852,12 +852,15 @@ Stability never decides what travels.
 Tell nomologR which new `statistic` values to expect, since names are
 data rather than schema.
 
-Decide whether
+Add a [`plot()`](https://rdrr.io/r/graphics/plot.default.html) method
+for
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
-should gain a [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
-method, and whether the printed-claims audit
-([\#41](https://github.com/JUhalt/contentvalidR/issues/41)) belongs in
-this release.
+([\#44](https://github.com/JUhalt/contentvalidR/issues/44)): consensus
+by round, and stability by pair of rounds, drawing no criterion the
+analysis did not apply.
+
+Audit printed claims against what the functions compute
+([\#41](https://github.com/JUhalt/contentvalidR/issues/41)).
 
 ------------------------------------------------------------------------
 

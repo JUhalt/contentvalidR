@@ -45,6 +45,19 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0.9000" id="contentvalidr-0509000-development-version">contentvalidR 0.5.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0509000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="seeing-a-delphis-trends-in-development-0-5-0-9000">Seeing a Delphi’s trends (in development)<a class="anchor" aria-label="anchor" href="#seeing-a-delphis-trends-in-development-0-5-0-9000"></a></h3>
+<ul><li>
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> for <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> (<a href="https://github.com/JUhalt/contentvalidR/issues/44" class="external-link">#44</a>), so the Delphi workflow matches the others in having one.
+<ul><li>
+<code>which = "consensus"</code> (default) draws each item’s share of experts agreeing, round by round. A line that stops early belongs to an item that settled and was set aside, so the picture shows when each item left the study.</li>
+<li>
+<code>which = "stability"</code> draws the stability statistic per pair of rounds, with the share of experts who kept their rating as open circles.</li>
+<li>
+<strong>Nothing is drawn that the analysis did not apply.</strong> The consensus threshold appears only when one was set, and kappa gets no shaded bands, because its verbal benchmarks are arbitrary and it falls as a panel converges.</li>
+<li>Item labels sit at the end of each line and are nudged apart when items finish at the same height.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
 <h3 id="a-delphi-study-can-hand-off-in-development-0-5-0-9000">A Delphi study can hand off (in development)<a class="anchor" aria-label="anchor" href="#a-delphi-study-can-hand-off-in-development-0-5-0-9000"></a></h3>
 <ul><li>
 <code><a href="../reference/content_handoff.html">content_handoff()</a></code> now accepts a <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> fit (<a href="https://github.com/JUhalt/contentvalidR/issues/42" class="external-link">#42</a>). It used to refuse one, and its message did not even mention Delphi.

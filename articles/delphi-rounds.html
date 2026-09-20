@@ -370,12 +370,33 @@ convergence lowers kappa. Read kappa as a trend, next to
 rounds. It drops to 9 in the second pair because E10 left.</p>
 </div>
 <div class="section level2">
+<h2 id="seeing-the-trends">Seeing the trends<a class="anchor" aria-label="anchor" href="#seeing-the-trends"></a>
+</h2>
+<p>Both questions are trends across rounds, which a plot reads better
+than a table of round pairs:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+<p><img src="delphi-rounds_files/figure-html/plot-consensus-1.png" class="r-plt" alt="Share of experts agreeing with each statement, by round, with a dotted line at the 75% consensus threshold." width="672"></p>
+<p>S1’s line stops at round 2, because that is where it settled and was
+set aside. The dotted line is the threshold you fixed in advance; with
+no threshold set, no line is drawn, because the analysis applies
+none.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, which <span class="op">=</span> <span class="st">"stability"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="delphi-rounds_files/figure-html/plot-stability-1.png" class="r-plt" alt="Weighted kappa for each statement across pairs of rounds, with open circles showing the share of experts who kept their rating." width="672"></p>
+<p>Filled points are kappa, open circles the share of experts who kept
+their rating. S6 sits at the bottom on both, and S2’s kappa of 0 sits
+well below its share unchanged, which is the unanimous-round case
+described above. There are no shaded “good” and “poor” bands behind
+kappa, for the same reason there are no verbal labels.</p>
+</div>
+<div class="section level2">
 <h2 id="why-the-default-looks-at-individual-experts">Why the default looks at individual experts<a class="anchor" aria-label="anchor" href="#why-the-default-looks-at-individual-experts"></a>
 </h2>
 <p>S6 is the reason stability is measured expert by expert. Under
 Scheibe, Skutsch and Schofer’s (1975) 15% rule, which compares the two
 rounds’ overall rating distributions, S6 looks perfectly stable:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/delphi_validity.html">delphi_validity</a></span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, consensus_threshold <span class="op">=</span> <span class="fl">0.75</span>,</span>
 <span>                      stability <span class="op">=</span> <span class="st">"percent_change"</span><span class="op">)</span></span>
 <span><span class="va">s6</span> <span class="op">&lt;-</span> <span class="va">pc</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">stability</span><span class="op">[</span><span class="va">pc</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">stability</span><span class="op">$</span><span class="va">item</span> <span class="op">==</span> <span class="st">"S6"</span>, <span class="op">]</span></span>
@@ -450,7 +471,7 @@ printout always says which is which.</p>
 the usual relevance evidence (I-CVI, Aiken’s V, and their intervals) is
 available round by round. <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> reads those fits
 directly:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">compare_rounds</span>, <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">round_fits</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Comparison across pretest rounds</span></span>
 <span><span class="co">#&gt; Workflow: expert-panel   Rounds: 3   Units compared: 6</span></span>
@@ -485,7 +506,7 @@ after reaching consensus. S5 strengthened once experts converged.</p>
 </h2>
 <p><code><a href="../reference/content_report.html">content_report()</a></code> gives a compact table for a
 manuscript:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   item last_round n_experts prop_agree prop_unchanged stability stability_low</span></span>
 <span><span class="co">#&gt; 1   S1          2        10       1.00           0.80      0.71          0.20</span></span>
@@ -517,7 +538,7 @@ report:</p>
 <p>When the panel is finished, <code><a href="../reference/content_handoff.html">content_handoff()</a></code> packages
 the items that survived, with the evidence behind each decision, for the
 empirical stage:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span>, keep <span class="op">=</span> <span class="st">"Supported"</span><span class="op">)</span></span>
 <span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"carried"</span>, <span class="st">"status"</span>, <span class="st">"n_judges"</span>, <span class="st">"round"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   item carried    status n_judges round</span></span>
@@ -533,7 +554,7 @@ workflow writes one constant into that column, because one fit is one
 round.</p>
 <p>Each item’s relevance evidence comes from its own last round, with
 intervals, and the stability evidence travels beside it:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">st</span><span class="op">$</span><span class="va">statistic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "I-CVI"                      "Aiken's V"                 </span></span>

@@ -300,6 +300,39 @@ st[c("item", "from_round", "to_round", "n_paired", cols)]
 `n_paired` counts the experts who rated the item in both rounds. It
 drops to 9 in the second pair because E10 left.
 
+## Seeing the trends
+
+Both questions are trends across rounds, which a plot reads better than
+a table of round pairs:
+
+``` r
+
+plot(fit)
+```
+
+![Share of experts agreeing with each statement, by round, with a dotted
+line at the 75% consensus
+threshold.](delphi-rounds_files/figure-html/plot-consensus-1.png)
+
+S1’s line stops at round 2, because that is where it settled and was set
+aside. The dotted line is the threshold you fixed in advance; with no
+threshold set, no line is drawn, because the analysis applies none.
+
+``` r
+
+plot(fit, which = "stability")
+```
+
+![Weighted kappa for each statement across pairs of rounds, with open
+circles showing the share of experts who kept their
+rating.](delphi-rounds_files/figure-html/plot-stability-1.png)
+
+Filled points are kappa, open circles the share of experts who kept
+their rating. S6 sits at the bottom on both, and S2’s kappa of 0 sits
+well below its share unchanged, which is the unanimous-round case
+described above. There are no shaded “good” and “poor” bands behind
+kappa, for the same reason there are no verbal labels.
+
 ## Why the default looks at individual experts
 
 S6 is the reason stability is measured expert by expert. Under Scheibe,

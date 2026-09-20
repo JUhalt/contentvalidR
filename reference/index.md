@@ -28,6 +28,8 @@ plans.
   : Plot Hinkin-Tracey rating evidence
 - [`plot(`*`<contentvalid_expert>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert.md)
   : Plot expert-panel content-validity results
+- [`plot(`*`<contentvalid_delphi>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_delphi.md)
+  : Plot a Delphi analysis
 - [`plot(`*`<contentvalid_sort_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_sort_power.md)
   : Plot exact item-sort planning evidence
 - [`plot(`*`<contentvalid_structure>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_structure.md)
