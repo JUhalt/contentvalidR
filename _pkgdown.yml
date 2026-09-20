@@ -20,6 +20,7 @@ reference:
   - plot.contentvalid_sort
   - plot.contentvalid_rating
   - plot.contentvalid_expert
+  - plot.contentvalid_delphi
   - plot.contentvalid_sort_power
   - plot.contentvalid_structure
   - plot.contentvalid_expert_power

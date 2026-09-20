@@ -818,6 +818,171 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   invisible(x)
 }
 
+.delphi_item_colours <- function(n) {
+  if (n == 1L) return("black")
+  grDevices::hcl.colors(n, palette = "Dark 3")
+}
+
+# Nudge labels apart so items that end at the same height stay readable.
+.delphi_dodge <- function(y, gap) {
+  o <- order(y)
+  spread <- y[o]
+  for (i in seq_along(spread)[-1]) {
+    if (spread[i] - spread[i - 1] < gap) spread[i] <- spread[i - 1] + gap
+  }
+  out <- numeric(length(y))
+  out[o] <- spread
+  out
+}
+
+# Label each item's line at its last point, which also shows where an item
+# left the study: a line that stops in round 2 settled in round 2.
+.delphi_end_labels <- function(xs, ys, labels, colours, ylim) {
+  last <- vapply(seq_along(labels), function(i) {
+    keep <- is.finite(xs[[i]]) & is.finite(ys[[i]])
+    if (any(keep)) max(which(keep)) else NA_integer_
+  }, integer(1))
+  ok <- !is.na(last)
+  if (!any(ok)) return(invisible(NULL))
+
+  at_x <- vapply(which(ok), function(i) xs[[i]][last[i]], numeric(1))
+  at_y <- vapply(which(ok), function(i) ys[[i]][last[i]], numeric(1))
+  gap <- 0.05 * diff(ylim)
+  for (xx in unique(at_x)) {
+    same <- at_x == xx
+    if (sum(same) > 1L) at_y[same] <- .delphi_dodge(at_y[same], gap)
+  }
+  graphics::text(at_x, at_y, labels = labels[ok], pos = 4, cex = 0.7,
+                 col = colours[ok], xpd = NA)
+  invisible(NULL)
+}
+
+# The axis label says which statistic is plotted, in full.
+.delphi_axis_label <- function(settings) {
+  switch(settings$stability,
+         kappa = paste0("Weighted kappa (", settings$kappa_weights, ")"),
+         lambda = "Goodman-Kruskal lambda",
+         chisq_individual = "Individual chi-square",
+         chisq_group = "Group chi-square",
+         percent_change = "Net change in the distribution")
+}
+
+#' Plot a Delphi analysis
+#'
+#' @description
+#' Draws the two questions a Delphi asks, one at a time: whether the panel
+#' agrees, and whether it has stopped moving. Both are trends across rounds,
+#' which a plot shows better than a table of round pairs.
+#'
+#' @details
+#' `which = "consensus"` draws each item's share of experts agreeing, round by
+#' round. A line that stops early belongs to an item that settled and was set
+#' aside. The consensus threshold is drawn only when one was set, because the
+#' analysis applies no threshold without it.
+#'
+#' `which = "stability"` draws the stability statistic for each pair of
+#' consecutive rounds, with the share of experts who kept their rating as open
+#' circles. No bands or shaded regions are drawn behind kappa: its verbal
+#' benchmarks are arbitrary, and kappa falls as a panel converges, so a shaded
+#' "good" region would mislead exactly when a Delphi is succeeding. See
+#' [delphi_validity()].
+#'
+#' @param x A fitted `contentvalid_delphi` object.
+#' @param which `"consensus"` (default) or `"stability"`.
+#' @param show_legend Draw the legend. Defaults to `TRUE`.
+#' @param ... Passed to [graphics::plot()].
+#'
+#' @return `x`, invisibly. Called for the plot it draws.
+#'
+#' @seealso [delphi_validity()].
+#'
+#' @examples
+#' r1 <- cbind(S1 = c(4, 4, 3, 4, 2, 4), S2 = c(2, 3, 2, 1, 3, 2))
+#' r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(2, 2, 2, 1, 3, 2))
+#' long <- function(m, round) {
+#'   data.frame(expert = paste0("E", seq_len(nrow(m))),
+#'              item = rep(colnames(m), each = nrow(m)),
+#'              round = round, rating = as.vector(m))
+#' }
+#' fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2)), lo = 1, hi = 4,
+#'                        consensus_threshold = 0.75, B = 0)
+#' plot(fit)
+#' plot(fit, which = "stability")
+#' @export
+plot.contentvalid_delphi <- function(x, which = c("consensus", "stability"),
+                                     show_legend = TRUE, ...) {
+  which <- match.arg(which)
+  .validate_flag(show_legend, "show_legend")
+  rounds <- x$design$rounds
+  items <- unique(x$results$item)
+  colours <- .delphi_item_colours(length(items))
+  # Room on the right for the item labels.
+  right_pad <- 1 + 0.35 * max(nchar(items))
+
+  if (which == "consensus") {
+    cons <- x$details$consensus
+    xs <- lapply(items, function(it) match(cons$round[cons$item == it], rounds))
+    ys <- lapply(items, function(it) cons$prop_agree[cons$item == it])
+
+    # Headroom at the top keeps the legend clear of the lines.
+    ylim <- c(0, 1.16)
+    graphics::plot(NA, xlim = c(1, length(rounds) + right_pad * 0.12),
+                   ylim = ylim, yaxt = "n", xaxt = "n",
+                   xlab = "Round", ylab = "Share of experts agreeing", ...)
+    graphics::axis(2, at = seq(0, 1, by = 0.25))
+    graphics::axis(1, at = seq_along(rounds), labels = rounds)
+    threshold <- x$settings$consensus_threshold
+    if (!is.null(threshold)) graphics::abline(h = threshold, lty = 3)
+    for (i in seq_along(items)) {
+      graphics::lines(xs[[i]], ys[[i]], col = colours[i], lwd = 1.5)
+      graphics::points(xs[[i]], ys[[i]], col = colours[i], pch = 19, cex = 0.8)
+    }
+    .delphi_end_labels(xs, ys, items, colours, ylim)
+    if (isTRUE(show_legend) && !is.null(threshold)) {
+      graphics::legend("top",
+                       legend = paste0("Consensus threshold (",
+                                       format(100 * threshold), "%)"),
+                       lty = 3, bty = "n", cex = 0.7, horiz = TRUE)
+    }
+    return(invisible(x))
+  }
+
+  stab <- x$details$stability
+  if (!nrow(stab)) {
+    stop("This analysis has no pair of consecutive rounds to plot.",
+         call. = FALSE)
+  }
+  pair_at <- match(stab$from_round, rounds)
+  xs <- lapply(items, function(it) pair_at[stab$item == it])
+  ys <- lapply(items, function(it) stab$value[stab$item == it])
+  unchanged <- lapply(items, function(it) stab$prop_unchanged[stab$item == it])
+
+  finite <- unlist(c(ys, unchanged))
+  finite <- finite[is.finite(finite)]
+  ylim <- if (!length(finite)) c(0, 1) else range(c(0, 1, finite))
+  ylim[2] <- ylim[2] + 0.16 * diff(ylim)
+  labels <- paste0(stab$from_round[!duplicated(pair_at)], "-",
+                   stab$to_round[!duplicated(pair_at)])
+
+  graphics::plot(NA, xlim = c(1, max(pair_at) + right_pad * 0.12), ylim = ylim,
+                 xaxt = "n", xlab = "Pair of rounds",
+                 ylab = .delphi_axis_label(x$settings), ...)
+  graphics::axis(1, at = sort(unique(pair_at)), labels = labels)
+  for (i in seq_along(items)) {
+    graphics::lines(xs[[i]], ys[[i]], col = colours[i], lwd = 1.5)
+    graphics::points(xs[[i]], ys[[i]], col = colours[i], pch = 19, cex = 0.8)
+    graphics::points(xs[[i]], unchanged[[i]], col = colours[i], pch = 1, cex = 0.8)
+  }
+  .delphi_end_labels(xs, ys, items, colours, ylim)
+  if (isTRUE(show_legend)) {
+    graphics::legend("top",
+                     legend = c(.delphi_axis_label(x$settings),
+                                "Kept their rating"),
+                     pch = c(19, 1), bty = "n", cex = 0.7, horiz = TRUE)
+  }
+  invisible(x)
+}
+
 #' @export
 summary.contentvalid_delphi <- function(object, ...) {
   out <- .workflow_summary_core(object)
