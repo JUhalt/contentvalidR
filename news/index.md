@@ -1,5 +1,26 @@
 # Changelog
 
+## contentvalidR 0.6.0.9000 (development version)
+
+### Saying what NA means (in development)
+
+- Documented the two reasons a Delphi stability statistic can be `NA`
+  ([\#48](https://github.com/JUhalt/contentvalidR/issues/48)), which a
+  reader can tell apart from the object alone:
+  - `proportion unchanged` is also `NA`: the item has no pair of
+    consecutive rounds, because it was rated in one round only;
+  - `proportion unchanged` has a value: a pair exists, but the statistic
+    is undefined for that data.
+- The second case is easy to misreport. An undefined kappa beside
+  `proportion unchanged` of 1 is **perfect stability that kappa cannot
+  express**: kappa is chance-corrected, so when every paired rating in
+  both rounds falls in one category, the disagreement expected by chance
+  is zero and kappa is 0/0. Saying only “not estimable” would describe a
+  defect that does not exist.
+- The row is always present, so an `NA` is a statement about the data
+  rather than a missing record. Raised by the nomologR maintainers from
+  the 0.6.0 fixtures.
+
 ## contentvalidR 0.6.0
 
 Sixth public release. v0.6.0 finishes the Delphi workflow: a Delphi

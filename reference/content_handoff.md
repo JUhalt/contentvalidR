@@ -168,6 +168,35 @@ never decides what is carried, exactly as it never sets an item's status
 in
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
 
+## When a stability statistic is NA
+
+A stability row is always present for a carried item, so an `NA` there
+is a statement about the data rather than a missing record. There are
+two cases, and they can be told apart from the object alone:
+
+- `proportion unchanged` is also `NA`:
+
+  The item has no pair of consecutive rounds: it was rated in one round
+  only, so there was nothing to compare.
+
+- `proportion unchanged` has a value:
+
+  A pair exists, but the statistic is undefined for that data.
+
+In the second case, **read `proportion unchanged`**, which is often the
+more informative number. An undefined kappa beside
+`proportion unchanged` of 1 is perfect stability that kappa cannot
+express: kappa is chance-corrected, and when every paired rating in both
+rounds falls in one category, the disagreement expected by chance is
+zero, so kappa is 0/0. Reporting only "not estimable" there would
+describe a defect that does not exist. Goodman- Kruskal lambda is
+undefined when the later round is unanimous, and the chi-square methods
+are undefined for a table with fewer than two occupied rows or columns.
+
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+states the reason in `details$stability$note`, which the handoff does
+not carry.
+
 ## What a handoff does and does not establish
 
 Surviving content review is evidence about relevance, representation,
@@ -198,7 +227,7 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.6.0   2026-09-20
+#> Workflow: expert-panel (relevance)   contentvalidR 0.6.0.9000   2026-09-20
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,9 +39,23 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.6.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0.9000" id="contentvalidr-0609000-development-version">contentvalidR 0.6.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0609000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="saying-what-na-means-in-development-0-6-0-9000">Saying what NA means (in development)<a class="anchor" aria-label="anchor" href="#saying-what-na-means-in-development-0-6-0-9000"></a></h3>
+<ul><li>Documented the two reasons a Delphi stability statistic can be <code>NA</code> (<a href="https://github.com/JUhalt/contentvalidR/issues/48" class="external-link">#48</a>), which a reader can tell apart from the object alone:
+<ul><li>
+<code>proportion unchanged</code> is also <code>NA</code>: the item has no pair of consecutive rounds, because it was rated in one round only;</li>
+<li>
+<code>proportion unchanged</code> has a value: a pair exists, but the statistic is undefined for that data.</li>
+</ul></li>
+<li>The second case is easy to misreport. An undefined kappa beside <code>proportion unchanged</code> of 1 is <strong>perfect stability that kappa cannot express</strong>: kappa is chance-corrected, so when every paired rating in both rounds falls in one category, the disagreement expected by chance is zero and kappa is 0/0. Saying only “not estimable” would describe a defect that does not exist.</li>
+<li>The row is always present, so an <code>NA</code> is a statement about the data rather than a missing record. Raised by the nomologR maintainers from the 0.6.0 fixtures.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="contentvalidr-060">contentvalidR 0.6.0<a class="anchor" aria-label="anchor" href="#contentvalidr-060"></a></h2>
 <p>Sixth public release. v0.6.0 finishes the Delphi workflow: a Delphi study can now be handed off to empirical validation, carrying for each item the round it settled in, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows the two trends a Delphi is about. It also adds a test layer that checks the package’s printed claims against what the code actually computes.</p>

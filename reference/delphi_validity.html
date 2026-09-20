@@ -19,7 +19,7 @@ their answers. A Delphi can reach one without the other, so both are shown."></h
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,7 @@ their answers. A Delphi can reach one without the other, so both are shown."></h
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Delphi consensus and stability across rounds</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.6.0/R/delphi_validity.R" class="external-link"><code>R/delphi_validity.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/delphi_validity.R" class="external-link"><code>R/delphi_validity.R</code></a></small>
       <div class="d-none name"><code>delphi_validity.Rd</code></div>
     </div>
 
@@ -184,6 +184,23 @@ beside it.</p>
 <p>Items may enter or leave between rounds. An item's last round is the last
 one in which anyone rated it, and stability is computed only between
 consecutive rounds in which it was rated.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="when-a-stability-statistic-is-undefined">When a stability statistic is undefined<a class="anchor" aria-label="anchor" href="#when-a-stability-statistic-is-undefined"></a></h2>
+
+
+<p>A stability statistic can be <code>NA</code> for two different reasons, and
+<code>prop_unchanged</code> tells them apart. When <code>prop_unchanged</code> is also <code>NA</code>, the
+item has no pair of consecutive rounds: it was rated in one round only.
+When <code>prop_unchanged</code> has a value, a pair exists but the statistic is
+undefined for that data, and <code>details$stability$note</code> says why.</p>
+<p>The common case is the one that reads worst if reported bare. Kappa is
+chance-corrected, so when every paired rating in both rounds falls in one
+category the disagreement expected by chance is zero and kappa is 0/0. There
+<code>prop_unchanged</code> is 1: the panel could not have been more stable, and saying
+only "not estimable" would describe a defect that does not exist. Goodman-
+Kruskal lambda is undefined when the later round is unanimous, and the
+chi-square methods when a table has fewer than two occupied rows or columns.</p>
     </div>
     <div class="section level2">
     <h2 id="why-kappa-has-no-verbal-labels">Why kappa has no verbal labels<a class="anchor" aria-label="anchor" href="#why-kappa-has-no-verbal-labels"></a></h2>

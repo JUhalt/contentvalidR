@@ -21,7 +21,7 @@ installed."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,7 @@ installed."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Carry content-validity decisions into empirical validation</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.6.0/R/content_handoff.R" class="external-link"><code>R/content_handoff.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/content_handoff.R" class="external-link"><code>R/content_handoff.R</code></a></small>
       <div class="d-none name"><code>content_handoff.Rd</code></div>
     </div>
 
@@ -195,10 +195,39 @@ carries no criterion here, because a Delphi decides on the consensus
 threshold rather than on the 0.74 rule that <code><a href="expert_validity.html">expert_validity()</a></code> applies.</p>
 <p>Two more statistics record whether the panel had stopped moving:
 <code>proportion unchanged</code>, and the stability statistic that ran, named for its
-method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal lambda</code>. The chi-square
-methods add <code>stability p_value</code> against <code>alpha</code>. Stability travels as
-evidence beside the decision; it never decides what is carried, exactly as
-it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal lambda</code>.
+The chi-square methods add <code>stability p_value</code> against <code>alpha</code>. Stability
+travels as evidence beside the decision; it never decides what is carried,
+exactly as it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="when-a-stability-statistic-is-na">When a stability statistic is NA<a class="anchor" aria-label="anchor" href="#when-a-stability-statistic-is-na"></a></h2>
+
+
+<p>A stability row is always present for a carried item, so an <code>NA</code> there is a
+statement about the data rather than a missing record. There are two cases,
+and they can be told apart from the object alone:</p>
+<dl><dt><code>proportion unchanged</code> is also <code>NA</code></dt>
+<dd><p>The item has no pair of
+consecutive rounds: it was rated in one round only, so there was nothing
+to compare.</p></dd>
+
+<dt><code>proportion unchanged</code> has a value</dt>
+<dd><p>A pair exists, but the
+statistic is undefined for that data.</p></dd>
+
+
+</dl><p>In the second case, <strong>read <code>proportion unchanged</code></strong>, which is often the more
+informative number. An undefined kappa beside <code>proportion unchanged</code> of 1 is
+perfect stability that kappa cannot express: kappa is chance-corrected, and
+when every paired rating in both rounds falls in one category, the
+disagreement expected by chance is zero, so kappa is 0/0. Reporting only
+"not estimable" there would describe a defect that does not exist. Goodman-
+Kruskal lambda is undefined when the later round is unanimous, and the
+chi-square methods are undefined for a table with fewer than two occupied
+rows or columns.</p>
+<p><code><a href="delphi_validity.html">delphi_validity()</a></code> states the reason in <code>details$stability$note</code>, which the
+handoff does not carry.</p>
     </div>
     <div class="section level2">
     <h2 id="what-a-handoff-does-and-does-not-establish">What a handoff does and does not establish<a class="anchor" aria-label="anchor" href="#what-a-handoff-does-and-does-not-establish"></a></h2>
@@ -230,7 +259,7 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-in"><span><span class="va">handoff</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR handoff (schema version 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.6.0   2026-09-20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.6.0.9000   2026-09-20</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>
