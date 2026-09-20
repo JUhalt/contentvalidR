@@ -112,6 +112,23 @@ Items may enter or leave between rounds. An item's last round is the last
 one in which anyone rated it, and stability is computed only between
 consecutive rounds in which it was rated.
 }
+\section{When a stability statistic is undefined}{
+
+A stability statistic can be \code{NA} for two different reasons, and
+\code{prop_unchanged} tells them apart. When \code{prop_unchanged} is also \code{NA}, the
+item has no pair of consecutive rounds: it was rated in one round only.
+When \code{prop_unchanged} has a value, a pair exists but the statistic is
+undefined for that data, and \code{details$stability$note} says why.
+
+The common case is the one that reads worst if reported bare. Kappa is
+chance-corrected, so when every paired rating in both rounds falls in one
+category the disagreement expected by chance is zero and kappa is 0/0. There
+\code{prop_unchanged} is 1: the panel could not have been more stable, and saying
+only "not estimable" would describe a defect that does not exist. Goodman-
+Kruskal lambda is undefined when the later round is unanimous, and the
+chi-square methods when a table has fewer than two occupied rows or columns.
+}
+
 \section{Why kappa has no verbal labels}{
 
 Landis and Koch (1977) introduced the familiar labels (slight, fair,

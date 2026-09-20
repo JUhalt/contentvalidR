@@ -424,10 +424,36 @@
 #'
 #' Two more statistics record whether the panel had stopped moving:
 #' `proportion unchanged`, and the stability statistic that ran, named for its
-#' method, such as `weighted kappa (quadratic)` or `Goodman-Kruskal lambda`. The chi-square
-#' methods add `stability p_value` against `alpha`. Stability travels as
-#' evidence beside the decision; it never decides what is carried, exactly as
-#' it never sets an item's status in [delphi_validity()].
+#' method, such as `weighted kappa (quadratic)` or `Goodman-Kruskal lambda`.
+#' The chi-square methods add `stability p_value` against `alpha`. Stability
+#' travels as evidence beside the decision; it never decides what is carried,
+#' exactly as it never sets an item's status in [delphi_validity()].
+#'
+#' @section When a stability statistic is NA:
+#' A stability row is always present for a carried item, so an `NA` there is a
+#' statement about the data rather than a missing record. There are two cases,
+#' and they can be told apart from the object alone:
+#'
+#' \describe{
+#'   \item{`proportion unchanged` is also `NA`}{The item has no pair of
+#'     consecutive rounds: it was rated in one round only, so there was nothing
+#'     to compare.}
+#'   \item{`proportion unchanged` has a value}{A pair exists, but the
+#'     statistic is undefined for that data.}
+#' }
+#'
+#' In the second case, **read `proportion unchanged`**, which is often the more
+#' informative number. An undefined kappa beside `proportion unchanged` of 1 is
+#' perfect stability that kappa cannot express: kappa is chance-corrected, and
+#' when every paired rating in both rounds falls in one category, the
+#' disagreement expected by chance is zero, so kappa is 0/0. Reporting only
+#' "not estimable" there would describe a defect that does not exist. Goodman-
+#' Kruskal lambda is undefined when the later round is unanimous, and the
+#' chi-square methods are undefined for a table with fewer than two occupied
+#' rows or columns.
+#'
+#' `delphi_validity()` states the reason in `details$stability$note`, which the
+#' handoff does not carry.
 #'
 #' @section What a handoff does and does not establish:
 #' Surviving content review is evidence about relevance, representation, and
