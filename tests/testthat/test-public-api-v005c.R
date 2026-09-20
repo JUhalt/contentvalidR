@@ -79,6 +79,7 @@ test_that("release-defining S3 methods are registered in the installed namespace
     c("print", "contentvalid_delphi"),
     c("summary", "contentvalid_delphi"),
     c("print", "summary.contentvalid_delphi"),
+    c("plot", "contentvalid_delphi"),
     c("as.data.frame", "contentvalid_workflow")
   )
 

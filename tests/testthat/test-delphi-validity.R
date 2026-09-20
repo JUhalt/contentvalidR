@@ -280,6 +280,64 @@ test_that("the printout explains each method, and kappa carries no verbal labels
   expect_match(s, "Consensus: 3 of 4")
 })
 
+test_that("plot() draws consensus and stability without asserting a criterion", {
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+
+  fit <- delphi_validity(small_delphi(), lo = 1, hi = 4,
+                         consensus_threshold = 0.75, B = 0)
+  expect_identical(plot(fit), fit)
+  expect_invisible(plot(fit))
+  expect_silent(plot(fit, which = "stability"))
+  expect_silent(plot(fit, show_legend = FALSE))
+
+  # An item set aside in an earlier round stops there rather than being
+  # carried to the final round.
+  d <- small_delphi()
+  d$round[d$round == 2] <- 3
+  early <- rbind(d, transform(d[d$item == "S1" & d$round == 1, ], round = 2))
+  expect_silent(plot(delphi_validity(early, lo = 1, hi = 4, B = 0)))
+
+  # No threshold set, so nothing is drawn to imply one.
+  expect_silent(plot(delphi_validity(small_delphi(), lo = 1, hi = 4, B = 0)))
+
+  # Every stability method labels its own axis.
+  for (m in c("lambda", "chisq_group", "percent_change")) {
+    f <- delphi_validity(small_delphi(), lo = 1, hi = 4, stability = m, B = 0)
+    expect_silent(plot(f, which = "stability"))
+  }
+  expect_identical(
+    contentvalidR:::.delphi_axis_label(fit$settings),
+    "Weighted kappa (quadratic)"
+  )
+  expect_identical(
+    contentvalidR:::.delphi_axis_label(list(stability = "lambda")),
+    "Goodman-Kruskal lambda"
+  )
+
+  expect_error(plot(fit, which = "trend"))
+  expect_error(plot(fit, show_legend = "yes"), "show_legend")
+})
+
+test_that("labels are nudged apart when items end at the same height", {
+  dodge <- contentvalidR:::.delphi_dodge
+  expect_equal(dodge(c(0.5, 0.5, 0.5), 0.1), c(0.5, 0.6, 0.7))
+  expect_equal(dodge(c(0.9, 0.1), 0.1), c(0.9, 0.1))
+  # Order is preserved: the smallest input keeps the lowest label.
+  expect_equal(dodge(c(0.52, 0.5), 0.1), c(0.6, 0.5))
+})
+
+test_that("plot() refuses when no two consecutive rounds share an item", {
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  d <- data.frame(expert = rep(1:4, 2), item = rep(c("A", "B"), each = 4),
+                  round = rep(1:2, each = 4), rating = c(4, 4, 3, 4, 3, 3, 4, 3))
+  fit <- delphi_validity(d, lo = 1, hi = 4, B = 0)
+  expect_identical(nrow(fit$details$stability), 0L)
+  expect_error(plot(fit, which = "stability"), "no pair of consecutive rounds")
+  expect_silent(plot(fit))
+})
+
 test_that("the round fits feed compare_rounds, and reporting works", {
   fit <- delphi_validity(small_delphi(), lo = 1, hi = 4, B = 0)
   expect_length(fit$details$round_fits, 2L)
