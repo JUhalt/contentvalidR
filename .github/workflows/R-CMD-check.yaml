@@ -50,6 +50,10 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          # CRAN now serves macOS binaries as zstd archives. The stable pak
+          # cannot extract them and fails with "unknown archive type"; the
+          # development pak can. Drop this once the stable pak handles zstd.
+          pak-version: ${{ runner.os == 'macOS' && 'devel' || 'stable' }}
 
       - uses: r-lib/actions/check-r-package@v2
         with:
