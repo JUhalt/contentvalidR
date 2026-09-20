@@ -638,10 +638,15 @@ item-level and ends with exactly the evidence the handoff carries.
       Stability never decides what travels.
 - [x] Tell nomologR which new `statistic` values to expect, since names are
       data rather than schema.
-- [ ] Decide whether `delphi_validity()` should gain a `plot()` method, and
-      whether the printed-claims audit
-      ([#41](https://github.com/JUhalt/contentvalidR/issues/41)) belongs in
-      this release.
+- [x] Add a `plot()` method for `delphi_validity()`
+      ([#44](https://github.com/JUhalt/contentvalidR/issues/44)): consensus by
+      round, and stability by pair of rounds, drawing no criterion the
+      analysis did not apply.
+- [x] Audit printed claims against what the functions compute
+      ([#41](https://github.com/JUhalt/contentvalidR/issues/41)). The checks
+      work from real fitted objects, and `.print_key()` now fails on an
+      unknown term rather than dropping a column's explanation in silence.
+      The first pass found no false claim in the printed output.
 
 ***
 

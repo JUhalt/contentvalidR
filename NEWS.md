@@ -1,5 +1,23 @@
 # contentvalidR 0.5.0.9000 (development version)
 
+## Seeing a Delphi's trends (in development)
+
+* `plot()` for `delphi_validity()`
+  ([#44](https://github.com/JUhalt/contentvalidR/issues/44)), so the Delphi
+  workflow matches the others in having one.
+  * `which = "consensus"` (default) draws each item's share of experts
+    agreeing, round by round. A line that stops early belongs to an item that
+    settled and was set aside, so the picture shows when each item left the
+    study.
+  * `which = "stability"` draws the stability statistic per pair of rounds,
+    with the share of experts who kept their rating as open circles.
+  * **Nothing is drawn that the analysis did not apply.** The consensus
+    threshold appears only when one was set, and kappa gets no shaded bands,
+    because its verbal benchmarks are arbitrary and it falls as a panel
+    converges.
+  * Item labels sit at the end of each line and are nudged apart when items
+    finish at the same height.
+
 ## Printed claims are tested against what the code computes (in development)
 
 * A new test file checks the package's printed output against the fitted
