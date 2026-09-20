@@ -233,6 +233,33 @@ stopping, and the criteria for dropping items. Also report:
 - the stability statistic, and the weights if it is kappa;
 - the number of bootstrap resamples and the seed.
 
+## Carrying a Delphi forward
+
+When the panel is finished, `content_handoff()` packages the items that
+survived, with the evidence behind each decision, for the empirical stage:
+
+```{r handoff}
+handoff <- content_handoff(fit, keep = "Supported")
+handoff$item_evidence[c("item", "carried", "status", "n_judges", "round")]
+```
+
+`round` is the round each item settled in, so S1 carries round 2: it reached
+consensus there and was set aside. Every other workflow writes one constant
+into that column, because one fit is one round.
+
+Each item's relevance evidence comes from its own last round, with intervals,
+and the stability evidence travels beside it:
+
+```{r handoff-statistics}
+st <- handoff$item_statistics
+unique(st$statistic)
+```
+
+Stability is carried as evidence, not as a reason to keep or drop an item, just
+as it does not set an item's status above. See
+`vignette("handoff-to-empirical-validation")` for what the object holds and how
+a downstream package reads it.
+
 ## What this analysis does not establish
 
 Consensus is agreement among these experts. It is not, by itself, evidence

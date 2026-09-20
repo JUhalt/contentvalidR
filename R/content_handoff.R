@@ -74,6 +74,112 @@
   rbind(out, row)
 }
 
+# A Delphi study ends one item at a time: an item settles in the round where it
+# was last rated, which is earlier than the final round when it was set aside.
+# Its evidence therefore comes from its own last round, and `round` carries that
+# round's index rather than a constant.
+.handoff_delphi_spec <- function(fit, results) {
+  s <- fit$settings
+  level <- 1 - s$alpha
+  rounds <- fit$design$rounds
+  round_index <- match(results$last_round, rounds)
+  threshold <- s$consensus_threshold
+
+  rule <- if (is.null(threshold)) {
+    rep(paste("no consensus threshold was set before the study, so agreement",
+              "is descriptive (Diamond et al., 2014)"), nrow(results))
+  } else {
+    sprintf(paste("consensus when at least %s%% of experts rated the item %s or",
+                  "higher on the %s-%s scale, with the threshold fixed before",
+                  "the study (Diamond et al., 2014); settled in round %s of %d"),
+            format(100 * threshold), format(s$agree_cut), format(s$lo),
+            format(s$hi), results$last_round, length(rounds))
+  }
+
+  stability_label <- switch(
+    s$stability,
+    kappa = paste0("weighted kappa (", s$kappa_weights, ")"),
+    lambda = "Goodman-Kruskal lambda",
+    chisq_individual = "individual chi-square",
+    chisq_group = "group chi-square",
+    percent_change = "net percent change"
+  )
+  stability_citation <- switch(
+    s$stability,
+    kappa = c("Holey et al. (2007)", "Cohen (1968)", "Fleiss & Cohen (1973)"),
+    lambda = "Chaffin & Talley (1980)",
+    chisq_individual = "Chaffin & Talley (1980)",
+    chisq_group = "Dajani, Sincoff & Talley (1979)",
+    percent_change = "Scheibe, Skutsch & Schofer (1975)"
+  )
+
+  # Relevance evidence comes from each item's own last round, so the interval
+  # columns are the ones that round's expert_validity() fit already computed.
+  last_fit_stat <- function(column) {
+    out <- rep(NA_real_, nrow(results))
+    for (r in unique(round_index)) {
+      rf <- fit$details$round_fits[[r]]
+      rows <- which(round_index == r)
+      idx <- match(results$item[rows], rf$results$item)
+      if (column %in% names(rf$results)) out[rows] <- rf$results[[column]][idx]
+    }
+    out
+  }
+  proportion_label <- .handoff_interval_label(
+    fit$details$round_fits[[1]]$settings$proportion_ci
+  )
+
+  statistics <- rbind(
+    .handoff_stat(results$item, "I-CVI", results$prop_agree,
+                  if (is.null(threshold)) NA_real_ else threshold,
+                  lower = last_fit_stat("I_CVI_low"),
+                  upper = last_fit_stat("I_CVI_high"),
+                  interval_method = proportion_label,
+                  interval_level = level),
+    .handoff_stat(results$item, "Aiken's V", last_fit_stat("V"),
+                  lower = last_fit_stat("ci_low"),
+                  upper = last_fit_stat("ci_high"),
+                  interval_method = "Penfield-Giacobbi score",
+                  interval_level = level),
+    # No criterion: a Delphi decides on the consensus threshold, not on the
+    # 0.74 kappa rule that expert_validity() applies.
+    .handoff_stat(results$item, "modified kappa", last_fit_stat("kappa_mod")),
+    .handoff_stat(results$item, "proportion unchanged", results$prop_unchanged),
+    .handoff_stat(results$item, stability_label, results$stability,
+                  criterion = if (s$stability == "percent_change") {
+                    .delphi_scheibe_cut
+                  } else {
+                    NA_real_
+                  },
+                  lower = results$stability_low,
+                  upper = results$stability_high,
+                  interval_method = if (s$stability == "kappa") {
+                    "expert-resampling percentile bootstrap"
+                  } else {
+                    NA_character_
+                  },
+                  interval_level = level)
+  )
+  if (s$stability %in% c("chisq_individual", "chisq_group")) {
+    statistics <- rbind(
+      statistics,
+      .handoff_stat(results$item, "stability p_value", results$stability_p,
+                    s$alpha)
+    )
+  }
+
+  list(
+    scale = rep(NA_character_, nrow(results)),
+    n_judges = as.integer(results$n_experts),
+    rule = rule,
+    round = as.integer(round_index),
+    citation = c("Holey et al. (2007)", "Diamond et al. (2014)",
+                 setdiff(stability_citation, "Holey et al. (2007)"),
+                 "Aiken (1980)", "Polit, Beck & Owen (2007)"),
+    statistics = statistics
+  )
+}
+
 # Per-workflow evidence: the construct each item belongs to, the effective judge
 # count, the decision rule in words, the citations for the method that ran, and
 # the statistics that rule was applied to.
@@ -108,6 +214,8 @@
       )
     ))
   }
+
+  if (inherits(fit, "contentvalid_delphi")) return(.handoff_delphi_spec(fit, results))
 
   if (inherits(fit, "contentvalid_rating")) {
     return(list(
@@ -234,9 +342,9 @@
 #'
 #' @details
 #' Item-level workflows are accepted: [sort_validity()], [rating_validity()],
-#' and [expert_validity()]. [judge_validity()] and [domain_validity()] are
-#' refused, because their rows are judges and blueprint cells rather than items,
-#' so there is no item set to carry forward.
+#' [expert_validity()], and [delphi_validity()]. [judge_validity()] and
+#' [domain_validity()] are refused, because their rows are judges and blueprint
+#' cells rather than items, so there is no item set to carry forward.
 #'
 #' Items that do not meet `keep` are not dropped from the record. They stay in
 #' `item_evidence` with `carried = FALSE`, so a reader can see what was held
@@ -255,10 +363,15 @@
 #'     produce `NULL`. Membership is one to one.}
 #'   \item{`item_evidence`}{data frame with one row per reviewed item: `item`,
 #'     `scale` (`NA` without a construct mapping), `carried`, `status`,
-#'     `recommendation`, `n_judges`, `rule`, and `round`.}
+#'     `recommendation`, `n_judges`, `rule`, and `round`. For a Delphi handoff
+#'     `round` differs between items; see "A Delphi handoff".}
 #'   \item{`item_statistics`}{data frame, one row per item per statistic:
 #'     `item`, `statistic`, `value`, `criterion` (`NA` when the method sets
-#'     no explicit criterion), and `round`. From contentvalidR 0.5.0 it also
+#'     no explicit criterion), and `round`. Which statistics carry a criterion
+#'     depends on the workflow rather than on the statistic alone: modified
+#'     kappa carries 0.74 from [expert_validity()], and none from a Delphi
+#'     handoff, which decides on the consensus threshold. From
+#'     contentvalidR 0.5.0 it also
 #'     carries `lower`, `upper`, `interval_method`, and `interval_level`,
 #'     described under "Intervals".}
 #'   \item{`provenance`}{list with `schema_version`, `package`,
@@ -296,6 +409,26 @@
 #' The handoff reports intervals only. It does not turn them into priors or
 #' weights for a later analysis; that is a question for the consuming package.
 #'
+#' @section A Delphi handoff:
+#' A Delphi study settles one item at a time: an item that reached consensus
+#' early was set aside, and its last round came before the study's final round.
+#' A Delphi handoff therefore carries each item's evidence **from its own last
+#' round**, and `round` holds that round's index rather than one constant. It is
+#' the only workflow where `round` varies within a handoff.
+#'
+#' Each item carries the relevance evidence of its last round, taken from that
+#' round's [expert_validity()] fit, with intervals: `I-CVI` against the
+#' consensus threshold, `Aiken's V`, and `modified kappa`. Modified kappa
+#' carries no criterion here, because a Delphi decides on the consensus
+#' threshold rather than on the 0.74 rule that [expert_validity()] applies.
+#'
+#' Two more statistics record whether the panel had stopped moving:
+#' `proportion unchanged`, and the stability statistic that ran, named for its
+#' method, such as `weighted kappa (quadratic)` or `Goodman-Kruskal lambda`. The chi-square
+#' methods add `stability p_value` against `alpha`. Stability travels as
+#' evidence beside the decision; it never decides what is carried, exactly as
+#' it never sets an item's status in [delphi_validity()].
+#'
 #' @section What a handoff does and does not establish:
 #' Surviving content review is evidence about relevance, representation, and
 #' expert judgment. It does not establish that an item will behave well
@@ -304,12 +437,14 @@
 #' empirical analysis tests, which is why the item set travels with its
 #' evidence rather than as a bare list of names.
 #'
-#' @param fit A fitted `contentvalid_sort`, `contentvalid_rating`, or
-#'   `contentvalid_expert` object.
+#' @param fit A fitted `contentvalid_sort`, `contentvalid_rating`,
+#'   `contentvalid_expert`, or `contentvalid_delphi` object.
 #' @param keep Statuses that travel forward, defaulting to `"Supported"`. Any of
 #'   `"Supported"`, `"Review"`, `"Insufficient data"`, or `"Descriptive only"`.
 #' @param round Pretest round this analysis represents. One fit is one round, so
-#'   this defaults to `1` and matters only when stacking rounds by hand.
+#'   this defaults to `1` and matters only when stacking rounds by hand. It
+#'   cannot be set for a Delphi fit, which dates each item by the round it
+#'   settled in.
 #'
 #' @return An object of class `contentvalid_handoff`, `cv_handoff`, and `list`,
 #'   as described under "Object shape".
@@ -335,12 +470,20 @@
 #' content_handoff(fit, keep = c("Supported", "Review"))$items
 #' @export
 content_handoff <- function(fit, keep = "Supported", round = 1) {
-  item_classes <- c("contentvalid_sort", "contentvalid_rating", "contentvalid_expert")
+  item_classes <- c("contentvalid_sort", "contentvalid_rating",
+                    "contentvalid_expert", "contentvalid_delphi")
   if (!inherits(fit, item_classes, which = FALSE)) {
-    stop("`fit` must be a sort, rating, or expert-panel workflow object. ",
-         "judge_validity() and domain_validity() results describe judges and ",
-         "blueprint cells rather than items, so they carry no item set.",
-         call. = FALSE)
+    stop("`fit` must be a sort, rating, expert-panel, or Delphi workflow ",
+         "object. judge_validity() and domain_validity() results describe ",
+         "judges and blueprint cells rather than items, so they carry no item ",
+         "set.", call. = FALSE)
+  }
+
+  # A Delphi fit dates each item by the round it settled in, so `round` is read
+  # from the fit rather than supplied.
+  if (inherits(fit, "contentvalid_delphi") && !missing(round)) {
+    stop("For a Delphi fit, `round` comes from the round each item settled ",
+         "in, so it cannot be set here.", call. = FALSE)
   }
 
   valid <- .status_definitions()$status
@@ -360,6 +503,15 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
   }
 
   spec <- .handoff_spec(fit, results)
+  # One round per item: a constant everywhere except a Delphi handoff, where
+  # each item carries the round it settled in.
+  item_round <- if (is.null(spec$round)) {
+    rep(as.integer(round), nrow(results))
+  } else {
+    as.integer(spec$round)
+  }
+  names(item_round) <- as.character(results$item)
+
   evidence <- data.frame(
     item = as.character(results$item),
     scale = spec$scale,
@@ -372,7 +524,7 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
     },
     n_judges = spec$n_judges,
     rule = spec$rule,
-    round = as.integer(round),
+    round = unname(item_round),
     stringsAsFactors = FALSE
   )
   rownames(evidence) <- NULL
@@ -382,7 +534,7 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
   # The interval columns follow `round`, so the schema version 1 columns keep
   # their positions as well as their names.
   statistics <- spec$statistics
-  statistics$round <- rep(as.integer(round), nrow(statistics))
+  statistics$round <- unname(item_round[as.character(statistics$item)])
   statistics <- statistics[c("item", "statistic", "value", "criterion", "round",
                              "lower", "upper", "interval_method",
                              "interval_level")]

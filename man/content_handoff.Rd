@@ -7,14 +7,16 @@
 content_handoff(fit, keep = "Supported", round = 1)
 }
 \arguments{
-\item{fit}{A fitted \code{contentvalid_sort}, \code{contentvalid_rating}, or
-\code{contentvalid_expert} object.}
+\item{fit}{A fitted \code{contentvalid_sort}, \code{contentvalid_rating},
+\code{contentvalid_expert}, or \code{contentvalid_delphi} object.}
 
 \item{keep}{Statuses that travel forward, defaulting to \code{"Supported"}. Any of
 \code{"Supported"}, \code{"Review"}, \code{"Insufficient data"}, or \code{"Descriptive only"}.}
 
 \item{round}{Pretest round this analysis represents. One fit is one round, so
-this defaults to \code{1} and matters only when stacking rounds by hand.}
+this defaults to \code{1} and matters only when stacking rounds by hand. It
+cannot be set for a Delphi fit, which dates each item by the round it
+settled in.}
 }
 \value{
 An object of class \code{contentvalid_handoff}, \code{cv_handoff}, and \code{list},
@@ -33,9 +35,9 @@ installed.
 }
 \details{
 Item-level workflows are accepted: \code{\link[=sort_validity]{sort_validity()}}, \code{\link[=rating_validity]{rating_validity()}},
-and \code{\link[=expert_validity]{expert_validity()}}. \code{\link[=judge_validity]{judge_validity()}} and \code{\link[=domain_validity]{domain_validity()}} are
-refused, because their rows are judges and blueprint cells rather than items,
-so there is no item set to carry forward.
+\code{\link[=expert_validity]{expert_validity()}}, and \code{\link[=delphi_validity]{delphi_validity()}}. \code{\link[=judge_validity]{judge_validity()}} and
+\code{\link[=domain_validity]{domain_validity()}} are refused, because their rows are judges and blueprint
+cells rather than items, so there is no item set to carry forward.
 
 Items that do not meet \code{keep} are not dropped from the record. They stay in
 \code{item_evidence} with \code{carried = FALSE}, so a reader can see what was held
@@ -55,10 +57,15 @@ essentiality rate a single item set with no construct column, so they
 produce \code{NULL}. Membership is one to one.}
 \item{\code{item_evidence}}{data frame with one row per reviewed item: \code{item},
 \code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
-\code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}.}
+\code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}. For a Delphi handoff
+\code{round} differs between items; see "A Delphi handoff".}
 \item{\code{item_statistics}}{data frame, one row per item per statistic:
 \code{item}, \code{statistic}, \code{value}, \code{criterion} (\code{NA} when the method sets
-no explicit criterion), and \code{round}. From contentvalidR 0.5.0 it also
+no explicit criterion), and \code{round}. Which statistics carry a criterion
+depends on the workflow rather than on the statistic alone: modified
+kappa carries 0.74 from \code{\link[=expert_validity]{expert_validity()}}, and none from a Delphi
+handoff, which decides on the consensus threshold. From
+contentvalidR 0.5.0 it also
 carries \code{lower}, \code{upper}, \code{interval_method}, and \code{interval_level},
 described under "Intervals".}
 \item{\code{provenance}}{list with \code{schema_version}, \code{package},
@@ -98,6 +105,28 @@ computed. \code{NA} there never stands for missing data.
 
 The handoff reports intervals only. It does not turn them into priors or
 weights for a later analysis; that is a question for the consuming package.
+}
+
+\section{A Delphi handoff}{
+
+A Delphi study settles one item at a time: an item that reached consensus
+early was set aside, and its last round came before the study's final round.
+A Delphi handoff therefore carries each item's evidence \strong{from its own last
+round}, and \code{round} holds that round's index rather than one constant. It is
+the only workflow where \code{round} varies within a handoff.
+
+Each item carries the relevance evidence of its last round, taken from that
+round's \code{\link[=expert_validity]{expert_validity()}} fit, with intervals: \code{I-CVI} against the
+consensus threshold, \verb{Aiken's V}, and \verb{modified kappa}. Modified kappa
+carries no criterion here, because a Delphi decides on the consensus
+threshold rather than on the 0.74 rule that \code{\link[=expert_validity]{expert_validity()}} applies.
+
+Two more statistics record whether the panel had stopped moving:
+\verb{proportion unchanged}, and the stability statistic that ran, named for its
+method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambda}. The chi-square
+methods add \verb{stability p_value} against \code{alpha}. Stability travels as
+evidence beside the decision; it never decides what is carried, exactly as
+it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
 }
 
 \section{What a handoff does and does not establish}{

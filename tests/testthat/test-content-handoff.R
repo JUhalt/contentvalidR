@@ -200,6 +200,130 @@ test_that("the printed handoff names the next step and the limits of the evidenc
   expect_match(sorted, "Constructs: A \\(")
 })
 
+# A Delphi handoff (#42): each item travels with its own last round.
+
+delphi_fit <- function(..., threshold = 0.75) {
+  r1 <- cbind(S1 = c(4, 4, 3, 4, 3, 4), S2 = c(3, 4, 3, 2, 4, 3),
+              S3 = c(2, 1, 2, 2, 1, 2))
+  r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(4, 4, 4, 4, 4, 3),
+              S3 = c(2, 1, 2, 2, 1, 2))
+  # S1 reached consensus in round 2 and was set aside; one expert left.
+  r3 <- cbind(S2 = c(4, 4, 4, 4, 4), S3 = c(2, 1, 2, 2, 1))
+  long <- function(m, round) {
+    data.frame(expert = paste0("E", seq_len(nrow(m))),
+               item = rep(colnames(m), each = nrow(m)),
+               round = round, rating = as.vector(m), stringsAsFactors = FALSE)
+  }
+  delphi_validity(rbind(long(r1, 1), long(r2, 2), long(r3, 3)),
+                  lo = 1, hi = 4, consensus_threshold = threshold, ...)
+}
+
+test_that("a Delphi fit hands off, dating each item by the round it settled in", {
+  fit <- delphi_fit(B = 0)
+  h <- content_handoff(fit, keep = c("Supported", "Review"))
+
+  expect_s3_class(h, "cv_handoff")
+  expect_identical(h$provenance$workflow, "delphi")
+  expect_null(h$scales)
+  expect_setequal(h$items, c("S1", "S2", "S3"))
+
+  ev <- h$item_evidence
+  # S1 was set aside after round 2; the others ran to round 3.
+  expect_identical(ev$round[ev$item == "S1"], 2L)
+  expect_identical(ev$round[ev$item != "S1"], c(3L, 3L))
+  expect_identical(ev$n_judges[ev$item == "S1"], 6L)
+  expect_identical(ev$n_judges[ev$item == "S2"], 5L)
+  expect_match(ev$rule[ev$item == "S1"], "at least 75% of experts")
+  expect_match(ev$rule[ev$item == "S1"], "settled in round 2 of 3")
+
+  # Statistics carry the same per-item round.
+  st <- h$item_statistics
+  expect_true(all(st$round[st$item == "S1"] == 2L))
+  expect_true(all(st$round[st$item == "S2"] == 3L))
+})
+
+test_that("Delphi statistics come from each item's own last round", {
+  fit <- delphi_fit(B = 0)
+  st <- content_handoff(fit, keep = c("Supported", "Review"))$item_statistics
+  r <- fit$results
+
+  icvi <- st[st$statistic == "I-CVI", ]
+  expect_equal(icvi$value[match(r$item, icvi$item)], r$prop_agree)
+  expect_true(all(icvi$criterion == 0.75))
+
+  # S1's interval is round 2's, since that is where it settled.
+  round2 <- fit$details$round_fits[["2"]]$results
+  expect_equal(icvi$lower[icvi$item == "S1"], round2$I_CVI_low[round2$item == "S1"])
+  expect_equal(icvi$upper[icvi$item == "S1"], round2$I_CVI_high[round2$item == "S1"])
+  expect_true(all(icvi$interval_method == "Wilson score"))
+
+  aiken <- st[st$statistic == "Aiken's V", ]
+  expect_equal(aiken$value[aiken$item == "S1"], round2$V[round2$item == "S1"])
+  expect_true(all(aiken$interval_method == "Penfield-Giacobbi score"))
+
+  # Modified kappa travels without a criterion: a Delphi decides on the
+  # consensus threshold, not on the 0.74 rule.
+  expect_true(all(is.na(st$criterion[st$statistic == "modified kappa"])))
+})
+
+test_that("stability travels as evidence, named for the method that ran", {
+  fit <- delphi_fit(B = 100, seed = 3)
+  st <- content_handoff(fit, keep = c("Supported", "Review"))$item_statistics
+  r <- fit$results
+
+  unchanged <- st[st$statistic == "proportion unchanged", ]
+  expect_equal(unchanged$value[match(r$item, unchanged$item)], r$prop_unchanged)
+
+  kap <- st[st$statistic == "weighted kappa (quadratic)", ]
+  expect_equal(kap$value[match(r$item, kap$item)], r$stability)
+  expect_equal(kap$lower[match(r$item, kap$item)], r$stability_low)
+  expect_true(any(kap$interval_method == "expert-resampling percentile bootstrap"))
+  expect_true(all(is.na(kap$criterion)))
+
+  lin <- content_handoff(delphi_fit(B = 0, kappa_weights = "linear"),
+                         keep = c("Supported", "Review"))$item_statistics
+  expect_true("weighted kappa (linear)" %in% lin$statistic)
+
+  # Qualified so a downstream report cannot read it as a factor loading or as
+  # one of Guttman's reliability coefficients (nomologR#46).
+  lam <- content_handoff(delphi_fit(B = 0, stability = "lambda"),
+                         keep = c("Supported", "Review"))$item_statistics
+  expect_true("Goodman-Kruskal lambda" %in% lam$statistic)
+  expect_false("lambda" %in% lam$statistic)
+
+  # Scheibe's rule carries its 15% cut-off as the criterion.
+  pc <- content_handoff(delphi_fit(B = 0, stability = "percent_change"),
+                        keep = c("Supported", "Review"))$item_statistics
+  expect_true(all(pc$criterion[pc$statistic == "net percent change"] == 0.15))
+
+  # The chi-square methods add their p-value against alpha.
+  chi <- content_handoff(delphi_fit(B = 0, stability = "chisq_group"),
+                         keep = c("Supported", "Review"))$item_statistics
+  expect_true("group chi-square" %in% chi$statistic)
+  expect_true(all(chi$criterion[chi$statistic == "stability p_value"] == 0.05))
+})
+
+test_that("a Delphi handoff records its provenance and refuses `round`", {
+  fit <- delphi_fit(B = 0)
+  h <- content_handoff(fit, keep = c("Supported", "Review"))
+
+  expect_true(all(c("Holey et al. (2007)", "Diamond et al. (2014)",
+                    "Fleiss & Cohen (1973)") %in% h$provenance$citation))
+  expect_identical(h$provenance$settings$stability, "kappa")
+  expect_identical(nrow(h$panel_statistics), 0L)
+  expect_error(content_handoff(fit, round = 2), "cannot be set here")
+})
+
+test_that("a Delphi study with no consensus threshold hands off descriptively", {
+  fit <- delphi_fit(B = 0, threshold = NULL)
+  h <- content_handoff(fit, keep = "Descriptive only")
+
+  expect_setequal(h$items, c("S1", "S2", "S3"))
+  expect_match(h$item_evidence$rule[1], "no consensus threshold was set")
+  icvi <- h$item_statistics[h$item_statistics$statistic == "I-CVI", ]
+  expect_true(all(is.na(icvi$criterion)))
+})
+
 test_that("workflows without an item set are refused", {
   judge_ratings <- rbind(
     c(4, 4, 4, 3, 2, 2), c(4, 4, 3, 4, 2, 1), c(4, 3, 4, 4, 1, 2),
@@ -210,7 +334,7 @@ test_that("workflows without an item set are refused", {
   expect_error(content_handoff(judge_validity(judge_ratings, lo = 1, hi = 4)),
                "carry no item set")
   expect_error(content_handoff(data.frame(item = "A1")),
-               "must be a sort, rating, or expert-panel workflow")
+               "must be a sort, rating, expert-panel, or Delphi workflow")
 })
 
 test_that("keep and round are validated", {

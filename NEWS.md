@@ -1,3 +1,29 @@
+# contentvalidR 0.5.0.9000 (development version)
+
+## A Delphi study can hand off (in development)
+
+* `content_handoff()` now accepts a `delphi_validity()` fit
+  ([#42](https://github.com/JUhalt/contentvalidR/issues/42)). It used to
+  refuse one, and its message did not even mention Delphi.
+  * **Each item travels with its own last round.** A Delphi settles one item
+    at a time: an item that reached consensus early was set aside before the
+    final round. `round` now holds that round's index, so it varies between
+    items. This is the first workflow where it carries real information.
+  * **Relevance evidence comes from the item's last round,** taken from that
+    round's `expert_validity()` fit, with intervals: `I-CVI` against the
+    consensus threshold, `Aiken's V`, and `modified kappa`. Modified kappa
+    carries no criterion, because a Delphi decides on the consensus
+    threshold rather than on the 0.74 rule.
+  * **Stability travels as evidence**, never as a carry decision:
+    `proportion unchanged` plus the statistic that ran, named for its
+    method, such as `weighted kappa (quadratic)` or `Goodman-Kruskal
+    lambda`. The chi-square methods add `stability p_value`. The names are
+    qualified so a downstream report cannot misread them
+    ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46)).
+  * `round` cannot be set by hand for a Delphi fit, since the fit supplies it.
+* No schema change. These are new values in existing columns, so a schema
+  version 1 reader still reads the object.
+
 # contentvalidR 0.5.0
 
 Fifth public release. v0.5.0 adds a workflow for Delphi studies, where the same
