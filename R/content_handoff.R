@@ -7,7 +7,7 @@
 .handoff_stat <- function(items, statistic, value, criterion = NA_real_,
                           lower = NA_real_, upper = NA_real_,
                           interval_method = NA_character_,
-                          interval_level = NA_real_) {
+                          interval_level = NA_real_, note = "") {
   out <- data.frame(
     item = as.character(items),
     statistic = statistic,
@@ -17,9 +17,19 @@
     upper = as.numeric(upper),
     interval_method = as.character(interval_method),
     interval_level = as.numeric(interval_level),
+    # rep_len keeps a zero-row block zero-row: the default is length 1.
+    note = .handoff_note(rep_len(note, length(items))),
     stringsAsFactors = FALSE
   )
   .handoff_no_interval(out)
+}
+
+# `note` is display text, so it is always a character vector with no NA: empty
+# means there is nothing to say, never that something is missing.
+.handoff_note <- function(note) {
+  note <- as.character(note)
+  note[is.na(note)] <- ""
+  trimws(note)
 }
 
 # Agreed with nomologR (#46): NA in the four interval columns means "this
@@ -56,7 +66,7 @@
                     criterion = numeric(0), round = integer(0),
                     lower = numeric(0), upper = numeric(0),
                     interval_method = character(0), interval_level = numeric(0),
-                    stringsAsFactors = FALSE)
+                    note = character(0), stringsAsFactors = FALSE)
   ag <- if (is.list(fit$details)) fit$details$agreement else NULL
   if (!inherits(ag, "contentvalid_agreement")) return(out)
 
@@ -69,9 +79,33 @@
     upper = as.numeric(ag$ci_high),
     interval_method = "item-resampling percentile bootstrap",
     interval_level = 1 - ag$alpha,
+    note = if (!is.finite(ag$estimate)) {
+      "The coefficient is undefined for these ratings, so it has no interval."
+    } else if (is.finite(ag$ci_low) && is.finite(ag$ci_high)) {
+      ""
+    } else {
+      paste("The bootstrap interval could not be computed: too few resamples",
+            "produced a usable coefficient.")
+    },
     stringsAsFactors = FALSE
   ))
   rbind(out, row)
+}
+
+# delphi_validity() records why a statistic is undefined; the handoff carries
+# that sentence so a reader need not re-derive method-specific semantics. An
+# item rated in a single round has no pair at all, and therefore no row in the
+# fit to take a note from, so that sentence is written here.
+.handoff_delphi_notes <- function(fit, results) {
+  stab <- fit$details$stability
+  vapply(seq_len(nrow(results)), function(i) {
+    rows <- which(stab$item == results$item[i])
+    if (!length(rows)) {
+      return(paste("This item was rated in only one round, so there was no",
+                   "pair of rounds to compare."))
+    }
+    stab$note[rows[length(rows)]]
+  }, character(1))
 }
 
 # A Delphi study ends one item at a time: an item settles in the round where it
@@ -158,7 +192,8 @@
                   } else {
                     NA_character_
                   },
-                  interval_level = level)
+                  interval_level = level,
+                  note = .handoff_delphi_notes(fit, results))
   )
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
     statistics <- rbind(
@@ -370,7 +405,8 @@
 #'     no explicit criterion), and `round`. Which statistics carry a criterion
 #'     depends on the workflow rather than on the statistic alone: modified
 #'     kappa carries 0.74 from [expert_validity()], and none from a Delphi
-#'     handoff, which decides on the consensus threshold. From
+#'     handoff, which decides on the consensus threshold. From contentvalidR
+#'     0.7.0 it also carries `note`, described under "The note column". From
 #'     contentvalidR 0.5.0 it also
 #'     carries `lower`, `upper`, `interval_method`, and `interval_level`,
 #'     described under "Intervals".}
@@ -379,14 +415,36 @@
 #'     `settings`, `design`, and `created`.}
 #'   \item{`panel_statistics`}{added in contentvalidR 0.5.0. Data frame of
 #'     panel-level statistics, with the same columns as `item_statistics` less
-#'     `item`. It holds the panel agreement coefficient when
-#'     [expert_validity()] computed one, and has zero rows otherwise.}
+#'     `item`, including `note` from 0.7.0. It holds the panel agreement
+#'     coefficient when [expert_validity()] computed one, and has zero rows
+#'     otherwise.}
 #' }
 #'
 #' This shape is agreed with the `nomologR` package, which consumes it in
 #' `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 #' Fields and columns added within schema version 1 are optional for a reader,
 #' which should check that they are present rather than assume it.
+#'
+#' @section The note column:
+#' Added in contentvalidR 0.7.0 to `item_statistics` and `panel_statistics`.
+#' It says why a value or interval is absent or degenerate, in the producing
+#' function's own words, so a reader need not re-derive method-specific
+#' semantics. For example, a Delphi stability row may carry "Kappa is
+#' undefined: every rating fell in the same category in both rounds."
+#'
+#' Its contract, agreed with the `nomologR` maintainers:
+#'
+#' * It is **display text only**. Never match on it, branch on it, or parse
+#'   it. Its wording may change in any minor release without a schema change.
+#' * It is always a character vector with **no `NA`**. `""` means there is
+#'   nothing to say, not that something is missing, so a row can carry a value
+#'   and an empty note.
+#' * It **never replaces the values**. Whether a statistic is undefined, and
+#'   which of the two cases applies, stays readable from `value` and
+#'   `proportion unchanged` as described under "When a stability statistic is
+#'   NA". That inference is the supported way to decide anything.
+#' * Objects from contentvalidR 0.6.0 and earlier have no such column, and a
+#'   reader should treat its absence as every note being empty.
 #'
 #' @section Intervals:
 #' Each statistic's interval travels with it, so a reader can tell a unanimous
@@ -452,8 +510,9 @@
 #' chi-square methods are undefined for a table with fewer than two occupied
 #' rows or columns.
 #'
-#' `delphi_validity()` states the reason in `details$stability$note`, which the
-#' handoff does not carry.
+#' `delphi_validity()` states the reason in `details$stability$note`, and from
+#' contentvalidR 0.7.0 the handoff carries that sentence in the `note` column
+#' of `item_statistics`, described under "The note column".
 #'
 #' @section What a handoff does and does not establish:
 #' Surviving content review is evidence about relevance, representation, and
@@ -563,7 +622,7 @@ content_handoff <- function(fit, keep = "Supported", round = 1) {
   statistics$round <- unname(item_round[as.character(statistics$item)])
   statistics <- statistics[c("item", "statistic", "value", "criterion", "round",
                              "lower", "upper", "interval_method",
-                             "interval_level")]
+                             "interval_level", "note")]
   rownames(statistics) <- NULL
 
   items <- unique(evidence$item[evidence$carried])

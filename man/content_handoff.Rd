@@ -64,7 +64,8 @@ produce \code{NULL}. Membership is one to one.}
 no explicit criterion), and \code{round}. Which statistics carry a criterion
 depends on the workflow rather than on the statistic alone: modified
 kappa carries 0.74 from \code{\link[=expert_validity]{expert_validity()}}, and none from a Delphi
-handoff, which decides on the consensus threshold. From
+handoff, which decides on the consensus threshold. From contentvalidR
+0.7.0 it also carries \code{note}, described under "The note column". From
 contentvalidR 0.5.0 it also
 carries \code{lower}, \code{upper}, \code{interval_method}, and \code{interval_level},
 described under "Intervals".}
@@ -73,14 +74,39 @@ described under "Intervals".}
 \code{settings}, \code{design}, and \code{created}.}
 \item{\code{panel_statistics}}{added in contentvalidR 0.5.0. Data frame of
 panel-level statistics, with the same columns as \code{item_statistics} less
-\code{item}. It holds the panel agreement coefficient when
-\code{\link[=expert_validity]{expert_validity()}} computed one, and has zero rows otherwise.}
+\code{item}, including \code{note} from 0.7.0. It holds the panel agreement
+coefficient when \code{\link[=expert_validity]{expert_validity()}} computed one, and has zero rows
+otherwise.}
 }
 
 This shape is agreed with the \code{nomologR} package, which consumes it in
 \code{nomo_screen()} and \code{nomo_run()}. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.
+}
+
+\section{The note column}{
+
+Added in contentvalidR 0.7.0 to \code{item_statistics} and \code{panel_statistics}.
+It says why a value or interval is absent or degenerate, in the producing
+function's own words, so a reader need not re-derive method-specific
+semantics. For example, a Delphi stability row may carry "Kappa is
+undefined: every rating fell in the same category in both rounds."
+
+Its contract, agreed with the \code{nomologR} maintainers:
+\itemize{
+\item It is \strong{display text only}. Never match on it, branch on it, or parse
+it. Its wording may change in any minor release without a schema change.
+\item It is always a character vector with \strong{no \code{NA}}. \code{""} means there is
+nothing to say, not that something is missing, so a row can carry a value
+and an empty note.
+\item It \strong{never replaces the values}. Whether a statistic is undefined, and
+which of the two cases applies, stays readable from \code{value} and
+\verb{proportion unchanged} as described under "When a stability statistic is
+NA". That inference is the supported way to decide anything.
+\item Objects from contentvalidR 0.6.0 and earlier have no such column, and a
+reader should treat its absence as every note being empty.
+}
 }
 
 \section{Intervals}{
@@ -153,8 +179,9 @@ Kruskal lambda is undefined when the later round is unanimous, and the
 chi-square methods are undefined for a table with fewer than two occupied
 rows or columns.
 
-\code{delphi_validity()} states the reason in \code{details$stability$note}, which the
-handoff does not carry.
+\code{delphi_validity()} states the reason in \code{details$stability$note}, and from
+contentvalidR 0.7.0 the handoff carries that sentence in the \code{note} column
+of \code{item_statistics}, described under "The note column".
 }
 
 \section{What a handoff does and does not establish}{
