@@ -22,6 +22,32 @@
   - Item labels sit at the end of each line and are nudged apart when
     items finish at the same height.
 
+### Printed claims are tested against what the code computes (in development)
+
+- A new test file checks the package’s printed output against the fitted
+  objects it describes, rather than against strings copied from the
+  print methods
+  ([\#41](https://github.com/JUhalt/contentvalidR/issues/41)). A test
+  that asserts what the documentation claims can pass while being false.
+  It checks that:
+  - every number printed for an item is the number the object holds;
+  - the printed settings are the settings that ran;
+  - a method’s critique appears when that method ran, and not otherwise;
+  - percentages written into prose match the computed proportions;
+  - a claim about how a statistic was computed holds of the numbers. The
+    note that quadratic weighting makes kappa an intraclass correlation
+    is checked against the intraclass correlation itself, and is absent
+    under linear weights, where it would be false;
+  - [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+    claims comparability only when the settings match;
+  - the status legend’s example words are real recommendation values in
+    some workflow;
+  - statistics stay inside the ranges the glossary claims, under
+    unanimous, rejected, and evenly split panels.
+- `.print_key()` now fails on an unknown term instead of dropping it. A
+  typo in a print method’s key used to remove a column’s explanation in
+  silence.
+
 ### A Delphi study can hand off (in development)
 
 - [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)

@@ -58,6 +58,22 @@
 </ul></li>
 </ul></div>
 <div class="section level3">
+<h3 id="printed-claims-are-tested-against-what-the-code-computes-in-development-0-5-0-9000">Printed claims are tested against what the code computes (in development)<a class="anchor" aria-label="anchor" href="#printed-claims-are-tested-against-what-the-code-computes-in-development-0-5-0-9000"></a></h3>
+<ul><li>A new test file checks the package’s printed output against the fitted objects it describes, rather than against strings copied from the print methods (<a href="https://github.com/JUhalt/contentvalidR/issues/41" class="external-link">#41</a>). A test that asserts what the documentation claims can pass while being false. It checks that:
+<ul><li>every number printed for an item is the number the object holds;</li>
+<li>the printed settings are the settings that ran;</li>
+<li>a method’s critique appears when that method ran, and not otherwise;</li>
+<li>percentages written into prose match the computed proportions;</li>
+<li>a claim about how a statistic was computed holds of the numbers. The note that quadratic weighting makes kappa an intraclass correlation is checked against the intraclass correlation itself, and is absent under linear weights, where it would be false;</li>
+<li>
+<code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> claims comparability only when the settings match;</li>
+<li>the status legend’s example words are real recommendation values in some workflow;</li>
+<li>statistics stay inside the ranges the glossary claims, under unanimous, rejected, and evenly split panels.</li>
+</ul></li>
+<li>
+<code>.print_key()</code> now fails on an unknown term instead of dropping it. A typo in a print method’s key used to remove a column’s explanation in silence.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="a-delphi-study-can-hand-off-in-development-0-5-0-9000">A Delphi study can hand off (in development)<a class="anchor" aria-label="anchor" href="#a-delphi-study-can-hand-off-in-development-0-5-0-9000"></a></h3>
 <ul><li>
 <code><a href="../reference/content_handoff.html">content_handoff()</a></code> now accepts a <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> fit (<a href="https://github.com/JUhalt/contentvalidR/issues/42" class="external-link">#42</a>). It used to refuse one, and its message did not even mention Delphi.
