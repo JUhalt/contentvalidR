@@ -8,13 +8,26 @@
   stages is demonstrated rather than asserted. Every step runs: the second half
   uses `stats` only, and the `nomologR` call is shown but not run, since
   neither package depends on the other.
-* The point of the walkthrough is the disagreement between the stages. Two
-  items fail content review, for opposite reasons. Two others pass it and then
-  misbehave: `EF4` is sorted to effort regulation by eighteen of twenty judges
-  and carries almost no common variance, and `TF4` is sorted to one facet and
-  loads on both. Meanwhile the item that met the content criterion by a single
-  judge behaves perfectly well. A panel cannot see any of this, which is the
-  reason for running the second stage.
+* The point of the walkthrough is the disagreement between the stages, and it
+  runs in **both** directions.
+  * Two items fail content review, for opposite reasons: one keeps its target
+    and misses the criterion, the other loses its target to a competing facet.
+  * Two pass content review and then misbehave. `EF4` is sorted to effort
+    regulation by eighteen of twenty judges and carries almost no common
+    variance; `TF4` is sorted to one facet and loads on both. A panel cannot
+    see either, which is the reason for running the second stage.
+  * `EF3` is the reverse, and the sharper case: an empirical screen flags it
+    and it is worth keeping. Nearly everyone endorses "I finish the assignments
+    that count toward my grade" — 96% answer in the top two categories — so its
+    variance is a third of every other item's and it cannot correlate strongly
+    with anything. Its correlation looks as bad as `EF4`'s, and only the
+    distribution tells them apart. It is also the only item covering the
+    completion of required work, so dropping it would narrow the domain the
+    panel defined. Added at the nomologR maintainers' suggestion, so that both
+    packages' articles make the same point about it.
+  * Meanwhile the item that met the content criterion by a single judge behaves
+    perfectly well, so a borderline content result is not read as a
+    prediction.
 * Three new files in `inst/extdata`: `walkthrough_items.csv` (the items, their
   facet, their stems, and what each one was built to do),
   `walkthrough_sort.csv` (twenty judges), and `walkthrough_responses.csv` (400
@@ -28,8 +41,9 @@
   the two packages cannot drift.
 * A test file holds the vignette to its claims: which two items the panel
   flags, which met the criterion by one judge, that `EF4` is the weak one and
-  `TF4` the ambiguous one, and that `TF6` is the only item that shifts by
-  cohort. If the data are regenerated and a claim stops holding, the suite
+  `TF4` the ambiguous one, that `EF3` is flagged for restricted variance rather
+  than for lacking common variance, and that `TF6` is the only item that shifts
+  by cohort. If the data are regenerated and a claim stops holding, the suite
   fails rather than the vignette quietly becoming wrong.
 
 ## A written stability policy (in development)

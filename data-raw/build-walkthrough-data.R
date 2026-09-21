@@ -38,7 +38,7 @@ items <- data.frame(
   stem = c(
     "When my coursework gets boring, I keep working on it anyway.",
     "I keep studying even when the material stops being interesting.",
-    "I push through readings I find dull.",
+    "I finish the assignments that count toward my grade.",
     "I keep to the study schedule I set for myself.",
     "I get tense when I fall behind on coursework.",
     "I finish assignments even when I would rather do something else.",
@@ -52,7 +52,7 @@ items <- data.frame(
   role = c(
     "ordinary: the panel places it and it behaves as intended",
     "ordinary: the panel places it and it behaves as intended",
-    "ordinary: the panel places it and it behaves as intended",
+    "flagged by an empirical screen and worth keeping anyway",
     "passes content review, then carries almost no common variance",
     "fails content review: the wording pulls judges toward test anxiety",
     "meets the content criterion by one judge, then behaves well",
@@ -72,8 +72,16 @@ items <- data.frame(
 # The walkthrough needs items that behave differently at the two stages,
 # because the claim it is making is that the two stages can disagree.
 #
-#   EF1 EF2 EF3 TF1 TF2 TF3  ordinary items: the panel places them, and they
+#   EF1 EF2 TF1 TF2 TF3      ordinary items: the panel places them, and they
 #                            behave as intended in the response data.
+#   EF3  FLAGGED EMPIRICALLY AND WORTH KEEPING ANYWAY. Finishing graded work is
+#        part of persistence and almost everyone endorses it, so its answers
+#        pile up at the top of the scale. Restricted variance attenuates any
+#        correlation it can have with anything, so a screen keyed on item-total
+#        correlation flags it -- and it is the only item covering the completion
+#        of required work, so dropping it narrows the domain the panel defined.
+#        This is the reverse of EF4 and the sharper of the two cases: the
+#        empirical stage is also not the final word.
 #   EF4  PASSES CONTENT REVIEW AND FAILS EMPIRICALLY. Judges read "keep to the
 #        study schedule I set" as effort regulation and sort it there, 18 of 20.
 #        It is really about planning, so in the response data it carries almost
@@ -108,7 +116,7 @@ items <- data.frame(
 sort_counts <- list(
   EF1 = c(EF = 19, TF =  1, TA =  0),
   EF2 = c(EF = 18, TF =  1, TA =  1),
-  EF3 = c(EF = 17, TF =  2, TA =  1),
+  EF3 = c(EF = 18, TF =  2, TA =  0),
   EF4 = c(EF = 18, TF =  2, TA =  0),
   EF5 = c(EF = 11, TF =  1, TA =  8),
   EF6 = c(EF = 15, TF =  3, TA =  2),
@@ -161,7 +169,7 @@ loadings <- rbind(
   #            EF     TF
   EF1 = c(EF = 0.72, TF = 0.00),
   EF2 = c(0.68, 0.00),
-  EF3 = c(0.65, 0.00),
+  EF3 = c(0.60, 0.00),
   EF4 = c(0.15, 0.00),   # passes content review, empirically near-noise
   EF5 = c(0.55, 0.00),
   EF6 = c(0.60, 0.00),
@@ -182,6 +190,10 @@ thresholds <- stats::qnorm(c(0.10, 0.30, 0.60, 0.85))
 # else. The shift is on the thresholds, not on the loading: the item measures
 # the same thing, respondents just answer it higher.
 cohort_shift <- c(TF6 = 0.35)
+# EF3 is endorsed by almost everyone, so its answers pile up in the top
+# categories. This shifts its location only; its loading is untouched, which is
+# the point -- the item is not measuring less, it just has less room to vary.
+item_shift <- c(EF3 = 1.75)
 
 chol_r <- chol(matrix(c(1, factor_r, factor_r, 1), nrow = 2))
 eta <- matrix(stats::rnorm(n_respondents * 2), ncol = 2) %*% chol_r
@@ -194,9 +206,10 @@ responses <- vapply(items$item, function(id) {
   communality <- sum(lambda^2) + 2 * prod(lambda) * factor_r
   y_star <- as.vector(eta %*% lambda) +
     stats::rnorm(n_respondents, sd = sqrt(max(0, 1 - communality)))
+  if (id %in% names(item_shift)) y_star <- y_star + item_shift[[id]]
   cuts <- thresholds
   shift <- if (id %in% names(cohort_shift)) cohort_shift[[id]] else 0
-  # A positive shift moves the thresholds down, so cohort B answers higher.
+  # A positive shift moves answers up the scale for that cohort.
   y_star <- y_star + ifelse(cohort == "B", shift, 0)
   as.integer(cut(y_star, breaks = c(-Inf, cuts, Inf), labels = FALSE))
 }, integer(n_respondents))

@@ -84,7 +84,41 @@ test_that("EF4 passes content review and still carries almost nothing", {
 
   expect_true("EF4" %in% ef)
   expect_lt(r_ef[["EF4"]], 0.35)
-  expect_gt(min(r_ef[setdiff(ef, "EF4")]), 0.45)
+  # EF3 is also low, but for a different reason (see the next test), so the
+  # well-behaved comparison excludes it.
+  expect_gt(min(r_ef[setdiff(ef, c("EF3", "EF4"))]), 0.45)
+
+  # What makes EF4's low correlation damning is that its spread is ordinary:
+  # nothing about the distribution explains it away.
+  spread <- apply(X, 2, stats::sd)
+  expect_gt(spread[["EF4"]], 0.9 * stats::median(spread))
+})
+
+test_that("EF3 is flagged by a screen for a reason the panel had already answered", {
+  # The reverse case, and the sharper one: an empirical screen flags it, and
+  # keeping it is right. Requested by the nomologR maintainers so that both
+  # packages' articles tell the same story about this item.
+  h <- content_handoff(wt_panel())
+  X <- as.matrix(wt_responses()[h$items])
+  corrected <- function(item, set) {
+    rest <- setdiff(set, item)
+    stats::cor(X[, item], rowSums(X[, rest, drop = FALSE]))
+  }
+
+  # Content review had no problem with it.
+  r <- wt_panel()$results
+  expect_identical(r$recommendation[r$item == "EF3"], "Retain")
+  expect_true("EF3" %in% h$items)
+
+  # A screen keyed on item-total correlation would flag it.
+  expect_lt(corrected("EF3", h$scales$EF), 0.40)
+
+  # And the distribution says why: near-ceiling, so it has almost no room to
+  # correlate with anything. This is the evidence that separates it from EF4.
+  spread <- apply(X, 2, stats::sd)
+  expect_lt(spread[["EF3"]], 0.6 * stats::median(spread))
+  expect_gt(mean(X[, "EF3"] >= 4), 0.9)
+  expect_lt(max(colMeans(X[, setdiff(h$items, "EF3"), drop = FALSE] >= 4)), 0.6)
 })
 
 test_that("TF4 passes content review and belongs to both facets", {
@@ -121,5 +155,6 @@ test_that("the item file says which items were built to misbehave", {
   expect_false(any(is.na(items$role) | !nzchar(items$role)))
 
   designed <- items$item[!startsWith(items$role, "ordinary")]
-  expect_setequal(designed, c("EF4", "EF5", "EF6", "TF4", "TF5", "TF6"))
+  expect_setequal(designed,
+                  c("EF3", "EF4", "EF5", "EF6", "TF4", "TF5", "TF6"))
 })
