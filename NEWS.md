@@ -1,5 +1,37 @@
 # contentvalidR 0.6.0.9000 (development version)
 
+## One item set carried through both stages (in development)
+
+* New `vignette("one-item-set-both-stages")` follows twelve items from an
+  expert panel through the handoff and into response data
+  ([#55](https://github.com/JUhalt/contentvalidR/issues/55)), so the pair of
+  stages is demonstrated rather than asserted. Every step runs: the second half
+  uses `stats` only, and the `nomologR` call is shown but not run, since
+  neither package depends on the other.
+* The point of the walkthrough is the disagreement between the stages. Two
+  items fail content review, for opposite reasons. Two others pass it and then
+  misbehave: `EF4` is sorted to effort regulation by eighteen of twenty judges
+  and carries almost no common variance, and `TF4` is sorted to one facet and
+  loads on both. Meanwhile the item that met the content criterion by a single
+  judge behaves perfectly well. A panel cannot see any of this, which is the
+  reason for running the second stage.
+* Three new files in `inst/extdata`: `walkthrough_items.csv` (the items, their
+  facet, their stems, and what each one was built to do),
+  `walkthrough_sort.csv` (twenty judges), and `walkthrough_responses.csv` (400
+  respondents, twelve items, a two-level `cohort` variable, and the rejected
+  items still present). **They are simulated.** No participant was involved and
+  no real instrument is reproduced.
+* `data-raw/build-walkthrough-data.R` writes all three and states the
+  generating model in full: the two correlated facets, every loading, the
+  response thresholds, and the single cohort shift. It uses base R only and is
+  deterministic. `nomologR` mirrors the response file from the same script, so
+  the two packages cannot drift.
+* A test file holds the vignette to its claims: which two items the panel
+  flags, which met the criterion by one judge, that `EF4` is the weak one and
+  `TF4` the ambiguous one, and that `TF6` is the only item that shifts by
+  cohort. If the data are regenerated and a claim stops holding, the suite
+  fails rather than the vignette quietly becoming wrong.
+
 ## A written stability policy (in development)
 
 * `?contentvalidR` now states what code can rely on across versions

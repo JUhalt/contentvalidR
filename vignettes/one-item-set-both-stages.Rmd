@@ -1,0 +1,224 @@
+---
+title: "One Item Set, Both Stages"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{One Item Set, Both Stages}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(contentvalidR)
+```
+
+## The claim this walkthrough is testing
+
+Content review and empirical screening are usually described as two stages of
+one process, and then demonstrated separately, on different data, in different
+packages. That arrangement hides the only interesting question: what happens
+when the two stages disagree about the same item.
+
+They can disagree in both directions. An item can read badly to a panel and be
+caught before anyone collects a response. An item can read perfectly, be kept
+by every judge, and then carry almost none of the construct when people answer
+it. The second case is the reason a pretest is not a substitute for data.
+
+This vignette follows twelve items through both stages. The data are
+**simulated** and were built so that specific items misbehave in specific ways.
+Nothing here is a real instrument or a real sample. The advantage of simulated
+data is that the right answer is known in advance, so you can check whether
+each stage found what was actually put there.
+
+## The construct and the items
+
+The construct is *Study Persistence*: the tendency to keep working on academic
+tasks when they become difficult or uninteresting. It has two facets, effort
+regulation (`EF`) and task focus (`TF`). A third construct, test anxiety
+(`TA`), is offered to the judges as a distractor and has no items of its own.
+
+```{r items}
+path <- function(f) system.file("extdata", f, package = "contentvalidR")
+items <- read.csv(path("walkthrough_items.csv"), stringsAsFactors = FALSE)
+
+items[c("item", "facet", "stem")]
+```
+
+Each item was also given a job. Four of the twelve are meant to cause trouble,
+and the file records which and why, so you can check the stages against it
+rather than take this vignette's word for anything:
+
+```{r roles}
+subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
+```
+
+## Stage one: the expert panel
+
+Twenty judges sorted each item into `EF`, `TF`, or `TA`. `sort_validity()`
+applies the exact target-count test of Howard and Melloy (2016): with twenty
+judges and two plausible answers, an item needs fifteen assignments to its
+target to meet the criterion.
+
+```{r sort}
+sorted <- read.csv(path("walkthrough_sort.csv"), stringsAsFactors = FALSE)
+panel <- sort_validity(sorted)
+
+panel$results[c("item", "target", "n_target", "competitor", "n_other_max",
+                "csv", "recommendation")]
+```
+
+Two items are flagged, and for different reasons.
+
+`EF5` ("I get tense when I fall behind on coursework") still drew more
+assignments to effort regulation than anywhere else, but eight of twenty judges
+read it as test anxiety. Its target wins and the criterion is not met.
+
+`TF5` ("I work hard to stay on top of my reading") is worse: thirteen judges
+put it under effort regulation and only six under task focus, so a competing
+facet beat the target outright. Its content validity index for sorting is
+negative, which is what a negative `csv` means.
+
+```{r flagged}
+panel$results[panel$results$recommendation == "Review",
+              c("item", "csv", "issue")]
+```
+
+`EF6` is worth a second look for the opposite reason. It met the criterion by
+exactly one judge:
+
+```{r borderline}
+panel$results[panel$results$item == "EF6",
+              c("item", "n_target", "critical_n_target", "p_value",
+                "recommendation")]
+```
+
+A result that close to the line is a reason to look at the item, not a
+prediction that it will fail later. Keep that in mind; `EF6` comes back.
+
+## The handoff
+
+`content_handoff()` packages the decision. By default only items whose status
+is `Supported` travel forward, so `EF5` and `TF5` stop here:
+
+```{r handoff}
+h <- content_handoff(panel)
+
+h$items
+h$scales
+```
+
+Nothing is thrown away. The two flagged items stay in the record, marked as not
+carried, together with the rule that flagged them:
+
+```{r evidence}
+h$item_evidence[c("item", "carried", "status", "recommendation")]
+```
+
+## Stage two: what the responses say
+
+Four hundred people answered all twelve items on a five-point scale. The
+response file keeps the items the panel rejected, because the point of a
+walkthrough is to be able to see what would have happened had they been kept.
+
+```{r responses}
+responses <- read.csv(path("walkthrough_responses.csv"),
+                      stringsAsFactors = FALSE)
+str(responses[1:5])
+```
+
+Take the ten items the panel carried and ask for two factors:
+
+```{r factors}
+carried <- as.matrix(responses[h$items])
+fa <- stats::factanal(carried, factors = 2, rotation = "varimax")
+
+round(unclass(fa$loadings), 2)
+```
+
+Eight of the ten behave as the panel expected. Two do not, and neither could
+have been caught by reading the item.
+
+**`EF4` passed content review and carries almost nothing.** Eighteen of twenty
+judges sorted "I keep to the study schedule I set for myself" under effort
+regulation, which is a fair reading of the words. It is really about planning,
+so it shares little variance with the rest of the facet:
+
+```{r ef4}
+round(unclass(fa$loadings)["EF4", ], 2)
+```
+
+**`TF4` passed content review and belongs to both facets.** "I keep working
+through a task without taking breaks" is as much effort as focus, and the
+response data say so even though the judges saw only one of the two:
+
+```{r tf4}
+round(unclass(fa$loadings)["TF4", ], 2)
+```
+
+And `EF6`, the item that met the content criterion by a single judge, is
+unremarkable here:
+
+```{r ef6}
+round(unclass(fa$loadings)["EF6", ], 2)
+```
+
+A borderline content result and an empirical failure are different things. The
+item the panel worried about is fine; the item eighteen of twenty judges agreed
+on is the one that fails.
+
+## What a second stage adds beyond factors
+
+The response file carries a `cohort` variable, and one item answers differently
+in the two cohorts:
+
+```{r cohort}
+shifts <- vapply(h$items, function(i) {
+  m <- tapply(responses[[i]], responses$cohort, mean)
+  unname(m["B"] - m["A"])
+}, numeric(1))
+
+round(sort(shifts), 2)
+```
+
+`TF6` ("I put my phone away while I study") sits well outside the rest. Nothing
+about the item's wording predicts that, and no panel could have. Whether the
+difference matters is a measurement-invariance question, which belongs to the
+empirical stage.
+
+The handoff is what carries the decision into that stage. Its `items` are the
+item names to screen and its `scales` are the subscales to form, both in the
+shape a downstream package needs. `nomologR` is one such package; it is not a
+dependency of this one, so the call below is shown rather than run:
+
+```{r nomologr, eval=FALSE}
+library(nomologR)
+
+nomo_screen(responses, items = h$items)
+```
+
+Reading the handoff object directly, rather than taking `h$items` out of it, is
+tracked on
+[nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
+
+## The moral, stated plainly
+
+Surviving content review is evidence about relevance, representation, and
+whether experts read an item the way it was meant. It is not evidence that the
+item measures anything. Of the ten items this panel carried forward, one
+carries almost no common variance and one belongs to a facet the judges never
+considered. Both read well. That is not a failure of the panel; it is the
+boundary of what a panel can see.
+
+The two stages are worth running in that order because each catches what the
+other cannot. Content review removes items no amount of data would rescue, and
+it removes them before anyone spends a sample on them. Empirical screening then
+asks the question content review was never able to ask.
+
+## Reproducing the data
+
+Every file used here is generated by `data-raw/build-walkthrough-data.R` in the
+package sources, which uses only base R and is deterministic. It states the
+full generating model: the two-factor structure, every loading, the factor
+correlation, the response thresholds, and the single cohort shift. `nomologR`
+mirrors the response file from the same script, so both packages show the same
+numbers.
