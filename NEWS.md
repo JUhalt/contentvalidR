@@ -30,6 +30,12 @@
   now cites `posthoc` as the completed cycle and `posthoc_pass` as the one in
   progress, and the test suite checks that both are in the state the policy
   claims.
+* **`csv_binom_test()` moves from Tier 3 to Tier 2.** Tier 3 describes helpers
+  "kept for continuity with older analyses", which are "not recommended
+  workflows" and "may be deprecated and removed". That is the wrong description
+  of the Howard and Melloy (2016) exact test that `sort_validity()` runs on
+  every item. The tiers become promises at 1.0, so a load-bearing function had
+  to stop being filed under the one that promises least. No code changes.
 
 ## A written stability policy (in development)
 

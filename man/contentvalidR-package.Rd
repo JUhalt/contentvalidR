@@ -32,16 +32,17 @@ major version, and never without the deprecation cycle below.
 \code{\link[=aikens_v]{aikens_v()}}, \code{\link[=cvi]{cvi()}}, \code{\link[=cvr]{cvr()}}, \code{\link[=ioc]{ioc()}}, \code{\link[=htc]{htc()}}, \code{\link[=htd]{htd()}}, \code{\link[=compute_psa]{compute_psa()}},
 \code{\link[=compute_csv]{compute_csv()}}, \code{\link[=anova_content]{anova_content()}}, \code{\link[=panel_agreement]{panel_agreement()}}, \code{\link[=expert_power]{expert_power()}},
 \code{\link[=sort_power]{sort_power()}}, \code{\link[=colquitt_benchmarks]{colquitt_benchmarks()}}, \code{\link[=interpret_colquitt]{interpret_colquitt()}},
-\code{\link[=content_structure]{content_structure()}}, \code{\link[=gtheory_content]{gtheory_content()}}, and \code{\link[=similarity_from_sort]{similarity_from_sort()}}.
+\code{\link[=content_structure]{content_structure()}}, \code{\link[=gtheory_content]{gtheory_content()}}, \code{\link[=csv_binom_test]{csv_binom_test()}}, and
+\code{\link[=similarity_from_sort]{similarity_from_sort()}}.
 
 These are supported and tested to the same standard. They may gain
 arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.
 
 \strong{Tier 3, auxiliary and compatibility helpers.}
-\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=csv_binom_test]{csv_binom_test()}}, \code{\link[=qfactor_content]{qfactor_content()}},
-\code{\link[=reproducibility_phi]{reproducibility_phi()}}, \code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}},
-and \code{\link[=simulate_csv_power]{simulate_csv_power()}}.
+\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}},
+\code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}}, and
+\code{\link[=simulate_csv_power]{simulate_csv_power()}}.
 
 These are kept for continuity with older analyses and for sensitivity
 checks. They are not recommended workflows, and they may be deprecated and

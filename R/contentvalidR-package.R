@@ -24,16 +24,17 @@
 #' [aikens_v()], [cvi()], [cvr()], [ioc()], [htc()], [htd()], [compute_psa()],
 #' [compute_csv()], [anova_content()], [panel_agreement()], [expert_power()],
 #' [sort_power()], [colquitt_benchmarks()], [interpret_colquitt()],
-#' [content_structure()], [gtheory_content()], and [similarity_from_sort()].
+#' [content_structure()], [gtheory_content()], [csv_binom_test()], and
+#' [similarity_from_sort()].
 #'
 #' These are supported and tested to the same standard. They may gain
 #' arguments, and their return values may gain fields. Anything that would
 #' break working code goes through the deprecation cycle.
 #'
 #' \strong{Tier 3, auxiliary and compatibility helpers.}
-#' [agreement_summary()], [csv_binom_test()], [qfactor_content()],
-#' [reproducibility_phi()], [signal_detection()], [simulate_anova_power()],
-#' and [simulate_csv_power()].
+#' [agreement_summary()], [qfactor_content()], [reproducibility_phi()],
+#' [signal_detection()], [simulate_anova_power()], and
+#' [simulate_csv_power()].
 #'
 #' These are kept for continuity with older analyses and for sensitivity
 #' checks. They are not recommended workflows, and they may be deprecated and
