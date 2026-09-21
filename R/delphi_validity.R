@@ -228,7 +228,7 @@
   list(data = d, rounds = round_levels)
 }
 
-.delphi_method_note <- function(method, weights) {
+.delphi_method_note <- function(method, weights, intervals = TRUE) {
   switch(
     method,
     kappa = paste(
@@ -248,10 +248,18 @@
       "converge on one category, which is what a Delphi aims for, so a panel",
       "whose experts nearly all kept their answer can still show a low kappa.",
       "Holey et al. saw this for their most-agreed statement. Read kappa next",
-      "to prop_unchanged. The intervals are percentile bootstraps that",
-      "resample experts. That is this package's extension: Zapf et al. (2016)",
-      "evaluated resampling items for panel coefficients, not experts for a",
-      "two-round kappa. With few experts the intervals are wide."
+      "to prop_unchanged.",
+      if (intervals) {
+        paste("The intervals are percentile bootstraps that resample the",
+              "experts, which are the units the two rounds cross-classify.",
+              "That is the procedure Klar et al. (2002) describe for kappa,",
+              "but they evaluated it for an unweighted kappa on two",
+              "categories and found a nominal 95% interval covered about 83%",
+              "of the time with 20 units and 91% with 30, reaching 94% only",
+              "from 40 up. Most panels are smaller than that, so the interval",
+              "is narrower than its label claims: read it as indicative of",
+              "precision, not as a test.")
+      }
     ),
     lambda = paste(
       "Stability is lambda, the index of predictive association that Chaffin",
@@ -330,8 +338,9 @@
 #'   two rounds (Holey et al., 2007), read as a trend with no cut-off.
 #'   Quadratic weights (the default) make kappa the intraclass correlation of
 #'   the two rounds' ratings (Fleiss & Cohen, 1973); linear weights count a
-#'   two-point change twice a one-point change (Cohen, 1968). The interval
-#'   resamples experts, which is this package's extension.
+#'   two-point change twice a one-point change (Cohen, 1968). The interval is
+#'   a percentile bootstrap over the experts; see *Reading the kappa interval*
+#'   below.
 #' * `"lambda"`: Chaffin and Talley's (1980) index of predictive association.
 #' * `"chisq_individual"`: Chaffin and Talley's (1980) chi-square test on
 #'   each expert's pair of ratings; a significant result is read as stable.
@@ -372,6 +381,35 @@
 #' what a Delphi aims for: in Holey et al. (2007), the statement experts agreed
 #' on most had the lowest kappa. A label would therefore tend to worsen as a
 #' panel succeeds. Read kappa as a trend, next to `prop_unchanged`.
+#'
+#' @section Reading the kappa interval:
+#' The interval beside kappa is a percentile bootstrap: the experts are
+#' resampled with replacement, each carrying both of their ratings, kappa is
+#' recomputed in every resample, and the interval runs from the `alpha / 2` to
+#' the `1 - alpha / 2` quantile of those values. The experts are the units the
+#' two rounds cross-classify, so this is the same resampling scheme Klar et al.
+#' (2002) describe for kappa, where the subjects each contribute one pair of
+#' ratings.
+#'
+#' Two things about it are worth knowing before the interval is reported.
+#'
+#' First, it is not exact at the sizes Delphi panels run to. Klar et al. (2002)
+#' simulated this interval and found that a nominal 95% interval covered the
+#' true value about 83% of the time with 20 units, 89% with 25, 91% with 30,
+#' and only reached about 94% from 40 up. Panels smaller than 40 therefore get
+#' an interval narrower than its label claims, and the shortfall grows as the
+#' panel shrinks. Report it as a rough indication of precision rather than as a
+#' test of a hypothesis about kappa.
+#'
+#' Second, those simulations used an unweighted kappa on two categories, while
+#' this function computes a weighted kappa on an ordinal scale. The resampling
+#' scheme is the same, and nothing in it depends on the number of categories or
+#' on the weights, but its coverage has not been simulated for that case. Treat
+#' the coverage figures above as the shape of the problem rather than as exact
+#' numbers for a Delphi panel.
+#'
+#' Set `B = 0` to omit the interval and report kappa beside `prop_unchanged`
+#' alone.
 #'
 #' @param ratings A data frame with one row per expert, item, and round.
 #'   Rows with a missing rating are ignored.
@@ -433,17 +471,17 @@
 #' stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52.
 #' \doi{10.1186/1471-2288-7-52}
 #'
+#' Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
+#' bootstrap confidence interval for kappa in small samples. *Journal of the
+#' Royal Statistical Society: Series D (The Statistician), 51*(4), 467-478.
+#' \doi{10.1111/1467-9884.00331}
+#'
 #' Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
 #' for categorical data. *Biometrics, 33*(1), 159-174. \doi{10.2307/2529310}
 #'
 #' Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
 #' methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
 #' Techniques and applications*. Addison-Wesley.
-#'
-#' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
-#' inter-rater reliability for nominal data: Which coefficients and
-#' confidence intervals are appropriate? *BMC Medical Research Methodology,
-#' 16*, 93. \doi{10.1186/s12874-016-0200-9}
 #'
 #' @seealso [expert_validity()] for a single round, and [compare_rounds()],
 #'   which accepts the fits in `details$round_fits`.
@@ -753,7 +791,9 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                     prop_unchanged = round(r$prop_unchanged, digits),
                     stringsAsFactors = FALSE)
   tab[[val]] <- round(r$stability, digits)
-  if (s$stability == "kappa") {
+  # With B = 0, or when no item's kappa could be given an interval, the two
+  # columns would be empty. Leave them out rather than print a blank promise.
+  if (s$stability == "kappa" && any(!is.na(r$stability_low))) {
     tab$low <- round(r$stability_low, digits)
     tab$high <- round(r$stability_high, digits)
   }
@@ -796,7 +836,9 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   }
 
   cat("\n")
-  cat(strwrap(.delphi_method_note(s$stability, s$kappa_weights), width = 76),
+  cat(strwrap(.delphi_method_note(s$stability, s$kappa_weights,
+                                  intervals = any(!is.na(stab$lower))),
+              width = 76),
       sep = "\n")
   if (is.null(s$consensus_threshold)) {
     cat("\n")

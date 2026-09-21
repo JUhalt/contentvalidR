@@ -1,5 +1,33 @@
 # contentvalidR 0.6.0.9000 (development version)
 
+## The kappa interval in a Delphi is a published procedure (in development)
+
+* The bootstrap interval beside a Delphi stability kappa was described in the
+  output and the help page as this package's own extension. That was wrong.
+  Resampling the units that the two raters cross-classify, recomputing kappa,
+  and taking the percentile interval is the procedure Klar, Lipsitz, Parzen and
+  Leong (2002) set out; in a Delphi those units are the experts, each carrying
+  their rating in both rounds.
+* In its place, `?delphi_validity` gains *Reading the kappa interval*, which
+  says what the interval is and gives the two things a reader needs in order to
+  report it honestly: Klar et al.'s measured coverage for a nominal 95%
+  interval was about 83% with 20 units, 89% with 25, 91% with 30, and reached
+  94% only from 40 up, so a panel-sized interval is narrower than its label;
+  and their simulations used an unweighted kappa on two categories, so the
+  ordinal weighted case has not been simulated. The printed output carries the
+  short form of both.
+* `panel_agreement()` keeps its extension warning for Gwet's AC1. Zapf et al.
+  (2016) evaluated the bootstrap for Fleiss' kappa and Krippendorff's alpha
+  only, and do not discuss AC1 at all, so applying their interval to it is an
+  extension. That caveat now travels with the number: an AC1 interval in
+  `content_handoff()` carries it in `panel_statistics$note`, where before it
+  reached only the console. (`content_report()` tabulates item-level evidence
+  and never shows a panel coefficient, so there is nothing to carry there.)
+* Two printed claims fixed. With `B = 0`, `delphi_validity()` still described
+  intervals it had not computed and still printed empty `low` and `high`
+  columns; it now omits both. The printed-claims test that should have caught
+  this used a statistic that has no interval at all, so it passed vacuously.
+
 ## A written stability policy (in development)
 
 * `?contentvalidR` now states what code can rely on across versions
