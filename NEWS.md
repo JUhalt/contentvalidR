@@ -23,6 +23,12 @@
   `content_handoff()` carries it in `panel_statistics$note`, where before it
   reached only the console. (`content_report()` tabulates item-level evidence
   and never shows a panel coefficient, so there is nothing to carry there.)
+* The README's reference list catches up. It had no Delphi sources at all,
+  although the workflow shipped in 0.5.0 and the README's own prose cites Holey
+  et al., Chaffin and Talley, Dajani et al. and Scheibe et al. by name. Nine
+  references are added in APA form with DOIs: those four, plus Cohen (1968),
+  Fleiss and Cohen (1973), Landis and Koch (1977), Diamond et al. (2014), and
+  Klar et al. (2002).
 * Two printed claims fixed. With `B = 0`, `delphi_validity()` still described
   intervals it had not computed and still printed empty `low` and `high`
   columns; it now omits both. The printed-claims test that should have caught
