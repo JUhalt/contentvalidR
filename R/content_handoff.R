@@ -4,6 +4,33 @@
 # minor release if needed; only `schema_version` gates a reader.
 .handoff_schema_version <- 1L
 
+# The frozen contract for version 1, as data rather than prose, so the
+# documentation and the tests read from one source. Adding an optional field
+# means adding it here; changing or removing anything here means version 2.
+.handoff_schema <- function() {
+  statistics <- c(item = "character", statistic = "character",
+                  value = "numeric", criterion = "numeric", round = "integer",
+                  lower = "numeric", upper = "numeric",
+                  interval_method = "character", interval_level = "numeric",
+                  note = "character")
+  list(
+    version = .handoff_schema_version,
+    top_level = c("items", "scales", "item_evidence", "item_statistics",
+                  "provenance", "panel_statistics"),
+    item_evidence = c(item = "character", scale = "character",
+                      carried = "logical", status = "character",
+                      recommendation = "character", n_judges = "integer",
+                      rule = "character", round = "integer"),
+    item_statistics = statistics,
+    panel_statistics = statistics[names(statistics) != "item"],
+    provenance = c(schema_version = "integer", package = "character",
+                   package_version = "character", workflow = "character",
+                   mode = "character", keep = "character",
+                   method = "character", citation = "character",
+                   settings = "list", design = "list", created = "Date")
+  )
+}
+
 .handoff_stat <- function(items, statistic, value, criterion = NA_real_,
                           lower = NA_real_, upper = NA_real_,
                           interval_method = NA_character_,
@@ -435,6 +462,68 @@
 #' `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 #' Fields and columns added within schema version 1 are optional for a reader,
 #' which should check that they are present rather than assume it.
+#'
+#' @section What version 1 freezes:
+#' Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
+#' handoff can rely on all of the following, in every release that reports
+#' `schema_version = 1`:
+#'
+#' * The six top-level fields above, under those names.
+#' * In `item_evidence`: `item`, `scale`, `carried`, `status`,
+#'   `recommendation`, `n_judges`, `rule`, `round`.
+#' * In `item_statistics`: `item`, `statistic`, `value`, `criterion`, `round`,
+#'   `lower`, `upper`, `interval_method`, `interval_level`, `note`.
+#' * In `panel_statistics`: the same columns less `item`.
+#' * In `provenance`: `schema_version`, `package`, `package_version`,
+#'   `workflow`, `mode`, `keep`, `method`, `citation`, `settings`, `design`,
+#'   `created`.
+#'
+#' Each of those columns keeps its name, its position, and its type. Every
+#' handoff carries every column, including when a workflow has nothing to put
+#' in one: a statistic with no interval carries `NA` in the four interval
+#' columns rather than dropping them, and a workflow with no panel coefficient
+#' returns a zero-row `panel_statistics` with the full set of columns. A reader
+#' can therefore bind handoffs from different workflows without reconciling
+#' their columns.
+#'
+#' These are deliberately **not** frozen, and a reader should not depend on
+#' them:
+#'
+#' * The set of rows. Which items, which statistics, and how many of each
+#'   depend on the workflow and on the data.
+#' * The values in the `statistic` column. They are labels for display, and may
+#'   be reworded in a minor release; match on the workflow in `provenance`
+#'   instead.
+#' * The text in `note`, `rule`, `recommendation`, and `citation`, which is
+#'   prose for a human reader.
+#' * The contents of `settings` and `design`, which mirror the fitted object
+#'   and grow with it.
+#'
+#' Neither is the printed output part of the schema. `print()` on a handoff is
+#' written for a person, and its layout and wording may change in any release.
+#' Read the fields.
+#'
+#' New optional fields and columns may still be added within version 1, at the
+#' end of a data frame or list. A reader written against this section keeps
+#' working when that happens, provided it addresses columns by name.
+#'
+#' @section If the schema ever changes:
+#' Renaming a field, removing one, changing a type, or changing what a field
+#' means is a version 2 change, not a minor release. It would raise
+#' `provenance$schema_version` to `2L`, and version 1 would keep being
+#' produced for at least one full release cycle so that readers have a
+#' version to fall back on. The release notes would say what moved.
+#'
+#' A reader should gate on the version rather than on the contentvalidR
+#' version:
+#'
+#' ```r
+#' if (!inherits(h, "cv_handoff") || h$provenance$schema_version != 1L) {
+#'   stop("this reader understands handoff schema version 1 only")
+#' }
+#' ```
+#'
+#' No version 2 is planned.
 #'
 #' @section The note column:
 #' Added in contentvalidR 0.7.0 to `item_statistics` and `panel_statistics`.

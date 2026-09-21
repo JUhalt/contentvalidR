@@ -85,6 +85,73 @@ Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.
 }
 
+\section{What version 1 freezes}{
+
+Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
+handoff can rely on all of the following, in every release that reports
+\code{schema_version = 1}:
+\itemize{
+\item The six top-level fields above, under those names.
+\item In \code{item_evidence}: \code{item}, \code{scale}, \code{carried}, \code{status},
+\code{recommendation}, \code{n_judges}, \code{rule}, \code{round}.
+\item In \code{item_statistics}: \code{item}, \code{statistic}, \code{value}, \code{criterion}, \code{round},
+\code{lower}, \code{upper}, \code{interval_method}, \code{interval_level}, \code{note}.
+\item In \code{panel_statistics}: the same columns less \code{item}.
+\item In \code{provenance}: \code{schema_version}, \code{package}, \code{package_version},
+\code{workflow}, \code{mode}, \code{keep}, \code{method}, \code{citation}, \code{settings}, \code{design},
+\code{created}.
+}
+
+Each of those columns keeps its name, its position, and its type. Every
+handoff carries every column, including when a workflow has nothing to put
+in one: a statistic with no interval carries \code{NA} in the four interval
+columns rather than dropping them, and a workflow with no panel coefficient
+returns a zero-row \code{panel_statistics} with the full set of columns. A reader
+can therefore bind handoffs from different workflows without reconciling
+their columns.
+
+These are deliberately \strong{not} frozen, and a reader should not depend on
+them:
+\itemize{
+\item The set of rows. Which items, which statistics, and how many of each
+depend on the workflow and on the data.
+\item The values in the \code{statistic} column. They are labels for display, and may
+be reworded in a minor release; match on the workflow in \code{provenance}
+instead.
+\item The text in \code{note}, \code{rule}, \code{recommendation}, and \code{citation}, which is
+prose for a human reader.
+\item The contents of \code{settings} and \code{design}, which mirror the fitted object
+and grow with it.
+}
+
+Neither is the printed output part of the schema. \code{print()} on a handoff is
+written for a person, and its layout and wording may change in any release.
+Read the fields.
+
+New optional fields and columns may still be added within version 1, at the
+end of a data frame or list. A reader written against this section keeps
+working when that happens, provided it addresses columns by name.
+}
+
+\section{If the schema ever changes}{
+
+Renaming a field, removing one, changing a type, or changing what a field
+means is a version 2 change, not a minor release. It would raise
+\code{provenance$schema_version} to \code{2L}, and version 1 would keep being
+produced for at least one full release cycle so that readers have a
+version to fall back on. The release notes would say what moved.
+
+A reader should gate on the version rather than on the contentvalidR
+version:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{if (!inherits(h, "cv_handoff") || h$provenance$schema_version != 1L) \{
+  stop("this reader understands handoff schema version 1 only")
+\}
+}\if{html}{\out{</div>}}
+
+No version 2 is planned.
+}
+
 \section{The note column}{
 
 Added in contentvalidR 0.7.0 to \code{item_statistics} and \code{panel_statistics}.

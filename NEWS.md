@@ -1,5 +1,25 @@
 # contentvalidR 0.6.0.9000 (development version)
 
+## Handoff schema version 1 is frozen (in development)
+
+* `?content_handoff` gains two sections. *What version 1 freezes* names every
+  field and column a reader can rely on, states that each keeps its name,
+  position, and type, and lists what is deliberately not frozen: which rows
+  appear, the labels in the `statistic` column, the prose in `note`, `rule`,
+  `recommendation`, and `citation`, the contents of `settings` and `design`,
+  and the printed output. *If the schema ever changes* gives the version-2 path
+  and the two-line version check a reader should gate on.
+* The frozen contract is now data rather than prose, so the tests and the
+  documentation cannot drift apart. Handoffs from all five workflows that can
+  produce one are checked against it, column by column, along with the
+  guarantee that makes the freeze useful: every handoff carries every column,
+  so a statistic with no interval carries `NA` in all four interval columns and
+  a workflow with no panel coefficient returns a zero-row `panel_statistics`
+  with the full column set. Handoffs from different workflows therefore bind
+  without reconciling them first.
+* The freeze itself changes no object. It is documentation and tests: a 0.7.0
+  handoff is a 0.6.0 handoff plus the `note` column described below.
+
 ## The kappa interval in a Delphi is a published procedure (in development)
 
 * The bootstrap interval beside a Delphi stability kappa was described in the
