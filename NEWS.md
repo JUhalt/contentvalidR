@@ -1,5 +1,23 @@
 # contentvalidR 0.6.0.9000 (development version)
 
+## A written stability policy (in development)
+
+* `?contentvalidR` now states what code can rely on across versions
+  (the 1.0 criteria on
+  [nomologR#53](https://github.com/JUhalt/nomologR/issues/53)):
+  * the public API in three tiers, from the recommended workflows through the
+    component indices to the auxiliary helpers, with every exported function
+    placed in one;
+  * the deprecation cycle: a warning that names the replacement, standing for
+    at least one minor release before anything is removed;
+  * a changed default treated as a breaking change, since it can silently
+    change published numbers;
+  * what the handoff schema guarantees a downstream package;
+  * which versions of R are supported.
+* Tests keep the policy honest: a newly exported function fails the suite
+  until it is classified, and the deprecation the policy cites as its worked
+  example is checked to still warn and still work.
+
 ## Saying what NA means (in development)
 
 * `item_statistics` and `panel_statistics` gain a `note` column, carrying the
