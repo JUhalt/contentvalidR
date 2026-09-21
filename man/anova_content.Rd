@@ -11,7 +11,6 @@ anova_content(
   construct_col = "construct",
   rating_col = "rating",
   target_map = NULL,
-  posthoc = NULL,
   alpha = 0.05,
   target_col = "target_construct",
   design = c("auto", "within", "between"),
@@ -27,10 +26,6 @@ numeric rating columns.}
 \item{target_map}{Optional named character vector/list mapping item to target.
 If neither a map nor \code{target_col} is available, omnibus tests are still
 returned but target-versus-orbiting contrasts are \code{NA}.}
-
-\item{posthoc}{Deprecated compatibility argument. Tukey/Duncan post-hoc
-testing is no longer used because the Hinkin-Tracey question is directly
-represented by planned target-versus-orbiting contrasts.}
 
 \item{alpha}{Significance level for the omnibus test and planned contrasts.}
 
@@ -50,8 +45,10 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 The full planned-contrast table is stored in \code{attr(result, "contrasts")}.
-\code{posthoc_pass} is retained as an alias of \code{contrast_pass} for backward
-compatibility.
+\code{posthoc_pass} is a \strong{deprecated} duplicate of \code{contrast_pass} and will
+be removed; read \code{contrast_pass}. It is still returned so that code which
+reads it keeps working, as the deprecation cycle in \link{contentvalidR}
+requires.
 }
 \description{
 For each item, evaluates whether definitional-correspondence ratings differ

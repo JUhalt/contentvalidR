@@ -56,15 +56,22 @@ change in any release.
 
 Nothing exported disappears without warning first.
 \enumerate{
-\item The function or argument keeps working and warns, saying what to use
-instead. \code{anova_content()}'s \code{posthoc} argument is the current example.
-\item The warning stands for \strong{at least one minor release}, so code has a
+\item The function, argument, or returned field keeps working and says what to
+use instead. An argument warns when it is passed; a returned field cannot
+warn when it is read, so its documentation carries the notice instead.
+\item The notice stands for \strong{at least one minor release}, so code has a
 version in which it both runs and tells you what to change.
 \item Removal follows: in a minor release before 1.0, and only in a major
 release from 1.0 onward.
 \item \code{NEWS.md} records both the deprecation and the removal, with the
 replacement.
 }
+
+\code{anova_content()} supplies one example of each state. Its \code{posthoc} argument
+is the completed cycle: deprecated in the first release, warning through
+every release to 0.6.0, removed in 0.7.0, both ends recorded in \code{NEWS.md}.
+Its \code{posthoc_pass} returned column is the cycle in progress: a duplicate of
+\code{contrast_pass}, still returned, and documented as going away.
 }
 
 \section{Changing a default}{

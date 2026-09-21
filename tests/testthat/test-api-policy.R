@@ -5,17 +5,19 @@
 
 # Under R CMD check the help is installed; under devtools::test() it is not,
 # so fall back to the .Rd source in the package tree.
-policy_text <- function() {
+rd_text <- function(name) {
   installed <- tryCatch({
-    rd <- tools::Rd_db("contentvalidR")[["contentvalidR-package.Rd"]]
+    rd <- tools::Rd_db("contentvalidR")[[name]]
     if (is.null(rd)) NULL else paste(as.character(rd), collapse = " ")
   }, error = function(e) NULL)
   if (!is.null(installed)) return(installed)
 
-  source_rd <- testthat::test_path("..", "..", "man", "contentvalidR-package.Rd")
+  source_rd <- testthat::test_path("..", "..", "man", name)
   if (!file.exists(source_rd)) skip("package documentation is not available")
   paste(readLines(source_rd, warn = FALSE), collapse = " ")
 }
+
+policy_text <- function() rd_text("contentvalidR-package.Rd")
 
 test_that("every exported function is placed in a tier", {
   policy <- policy_text()
@@ -42,9 +44,7 @@ test_that("the policy names the three tiers and the deprecation cycle", {
   expect_match(policy, "schema_version", fixed = TRUE)
 })
 
-test_that("the deprecation the policy cites still behaves as described", {
-  # The policy points at anova_content()'s `posthoc` argument as the worked
-  # example of step 1: it still works, and it warns with the replacement.
+test_that("both deprecation examples the policy cites are in the state it claims", {
   d <- expand.grid(item = c("A1", "A2"), rater = 1:8,
                    construct = c("A", "B"), stringsAsFactors = FALSE)
   d$target_construct <- "A"
@@ -52,16 +52,29 @@ test_that("the deprecation the policy cites still behaves as described", {
   d$rating <- ifelse(d$construct == d$target_construct,
                      sample(4:5, nrow(d), replace = TRUE),
                      sample(1:2, nrow(d), replace = TRUE))
+  fit <- anova_content(d, item_col = "item", rater_col = "rater",
+                       construct_col = "construct",
+                       target_col = "target_construct",
+                       rating_col = "rating")
 
-  expect_warning(
-    fit <- anova_content(d, item_col = "item", rater_col = "rater",
-                         construct_col = "construct",
-                         target_col = "target_construct",
-                         rating_col = "rating", posthoc = TRUE),
-    "deprecated"
+  # The completed cycle: `posthoc` is gone from the signature, and the policy
+  # says so rather than still calling it the current example.
+  expect_false("posthoc" %in% names(formals(anova_content)))
+  expect_error(
+    anova_content(d, target_col = "target_construct", posthoc = TRUE),
+    "unused argument"
   )
-  # Deprecated does not mean broken: it still returns its result.
-  expect_true(is.list(fit))
+
+  # The cycle in progress: `posthoc_pass` is still returned and still correct,
+  # because step 1 requires a release in which reading it keeps working.
+  expect_true("posthoc_pass" %in% names(fit))
+  expect_identical(fit$posthoc_pass, fit$contrast_pass)
+
+  # A deprecated field that is not documented as deprecated has not started
+  # its clock, which is the failure this whole section exists to prevent.
+  rd <- rd_text("anova_content.Rd")
+  expect_match(rd, "posthoc_pass")
+  expect_match(rd, "deprecated")
 })
 
 test_that("the status vocabulary the policy promises is what workflows use", {

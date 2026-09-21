@@ -46,10 +46,24 @@ test_that("within-judge ANOVA reports incomplete judge profiles", {
   expect_equal(out$n_complete, 5L)
 })
 
-test_that("deprecated posthoc argument warns rather than silently changing meaning", {
+test_that("the removed posthoc argument is an error, not a silent no-op", {
+  # It warned from the first release through 0.6.0 and was removed in 0.7.0
+  # (#60). An error is the point: a caller who still passes it learns so,
+  # rather than having it absorbed by `...` or matched to another argument.
   d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
   d$rating <- c(5,4,5,4,2,2,1,2)
-  expect_warning(anova_content(d, target_map = c(I1 = "A"), posthoc = "tukey"), "deprecated")
+  expect_error(anova_content(d, target_map = c(I1 = "A"), posthoc = "tukey"),
+               "unused argument")
+  expect_silent(anova_content(d, target_map = c(I1 = "A")))
+})
+
+test_that("posthoc_pass still tracks contrast_pass while it is deprecated", {
+  d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
+  d$rating <- c(5,4,5,4,2,2,1,2)
+  out <- anova_content(d, target_map = c(I1 = "A"))
+  expect_identical(out$posthoc_pass, out$contrast_pass)
+  # It goes last, so removing it cannot shift another column's position.
+  expect_identical(names(out)[length(names(out))], "posthoc_pass")
 })
 
 

@@ -46,14 +46,21 @@
 #' @section How something is deprecated:
 #' Nothing exported disappears without warning first.
 #'
-#' 1. The function or argument keeps working and warns, saying what to use
-#'    instead. `anova_content()`'s `posthoc` argument is the current example.
-#' 2. The warning stands for **at least one minor release**, so code has a
+#' 1. The function, argument, or returned field keeps working and says what to
+#'    use instead. An argument warns when it is passed; a returned field cannot
+#'    warn when it is read, so its documentation carries the notice instead.
+#' 2. The notice stands for **at least one minor release**, so code has a
 #'    version in which it both runs and tells you what to change.
 #' 3. Removal follows: in a minor release before 1.0, and only in a major
 #'    release from 1.0 onward.
 #' 4. `NEWS.md` records both the deprecation and the removal, with the
 #'    replacement.
+#'
+#' `anova_content()` supplies one example of each state. Its `posthoc` argument
+#' is the completed cycle: deprecated in the first release, warning through
+#' every release to 0.6.0, removed in 0.7.0, both ends recorded in `NEWS.md`.
+#' Its `posthoc_pass` returned column is the cycle in progress: a duplicate of
+#' `contrast_pass`, still returned, and documented as going away.
 #'
 #' @section Changing a default:
 #' A changed default can silently change published numbers, so it is treated
