@@ -103,6 +103,21 @@ retain method-appropriate displays. Compatibility aliases such as
 `rating_fit$contrasts` and `expert_fit$scale` remain available for code
 written before v0.0.6.
 
+## What you can rely on
+
+The six recommended workflows, the object contract they share, and the
+handoff to empirical validation are stable: breaking changes wait for a
+major version and never arrive without a deprecation cycle. Component
+indices and planning helpers are supported to the same standard and may
+gain arguments. Auxiliary and compatibility helpers may be deprecated
+with one minor release of warning. A changed default is treated as a
+breaking change, because it can silently change published numbers.
+
+See
+[`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+for the full policy, including how deprecation works and what the
+handoff schema guarantees a downstream package.
+
 ## Installation
 
 Install the current stable release from the JUhalt R-universe:
@@ -1351,6 +1366,14 @@ attribution is preserved in
 [inst/NOTICE](https://github.com/JUhalt/contentvalidR/blob/master/inst/NOTICE).
 
 # Package index
+
+## About the package
+
+What the package promises, and what you can rely on across versions.
+
+- [`contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  [`contentvalidR-package`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  : contentvalidR: Tools for Substantive and Content Validity Pretesting
 
 ## Flagship workflows
 

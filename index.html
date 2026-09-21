@@ -106,6 +106,12 @@
 <p><code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> uses the same common count fields across every workflow, and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>/<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> retain method-appropriate displays. Compatibility aliases such as <code>rating_fit$contrasts</code> and <code>expert_fit$scale</code> remain available for code written before v0.0.6.</p>
 </div>
 <div class="section level2">
+<h2 id="what-you-can-rely-on">What you can rely on<a class="anchor" aria-label="anchor" href="#what-you-can-rely-on"></a>
+</h2>
+<p>The six recommended workflows, the object contract they share, and the handoff to empirical validation are stable: breaking changes wait for a major version and never arrive without a deprecation cycle. Component indices and planning helpers are supported to the same standard and may gain arguments. Auxiliary and compatibility helpers may be deprecated with one minor release of warning. A changed default is treated as a breaking change, because it can silently change published numbers.</p>
+<p>See <code><a href="reference/contentvalidR-package.html">?contentvalidR</a></code> for the full policy, including how deprecation works and what the handoff schema guarantees a downstream package.</p>
+</div>
+<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>Install the current stable release from the JUhalt R-universe:</p>

@@ -1,5 +1,13 @@
 # Package index
 
+## About the package
+
+What the package promises, and what you can rely on across versions.
+
+- [`contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  [`contentvalidR-package`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  : contentvalidR: Tools for Substantive and Content Validity Pretesting
+
 ## Flagship workflows
 
 Recommended user-facing analyses for scale content pretesting.
