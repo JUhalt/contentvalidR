@@ -4,7 +4,13 @@
 \alias{content_handoff}
 \title{Carry content-validity decisions into empirical validation}
 \usage{
-content_handoff(fit, keep = "Supported", round = 1)
+content_handoff(
+  fit,
+  keep = "Supported",
+  round = 1,
+  reverse_keyed = NULL,
+  response_scale = NULL
+)
 }
 \arguments{
 \item{fit}{A fitted \code{contentvalid_sort}, \code{contentvalid_rating},
@@ -17,6 +23,14 @@ content_handoff(fit, keep = "Supported", round = 1)
 this defaults to \code{1} and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
 settled in.}
+
+\item{reverse_keyed}{Names of the reverse-worded items, \code{character(0)} if
+none is, or \code{NULL} (the default) to leave keying unrecorded. See
+"Instrument metadata".}
+
+\item{response_scale}{The lowest and highest answer respondents can give,
+such as \code{c(1, 5)}, or \code{NULL} (the default) to leave it unrecorded. This is
+the scale of the instrument, not the scale the panel rated on.}
 }
 \value{
 An object of class \code{contentvalid_handoff}, \code{cv_handoff}, and \code{list},
@@ -58,7 +72,9 @@ produce \code{NULL}. Membership is one to one.}
 \item{\code{item_evidence}}{data frame with one row per reviewed item: \code{item},
 \code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
 \code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}. For a Delphi handoff
-\code{round} differs between items; see "A Delphi handoff".}
+\code{round} differs between items; see "A Delphi handoff". From
+contentvalidR 0.7.0 it also carries \code{keying}, \code{response_min}, and
+\code{response_max}, described under "Instrument metadata".}
 \item{\code{item_statistics}}{data frame, one row per item per statistic:
 \code{item}, \code{statistic}, \code{value}, \code{criterion} (\code{NA} when the method sets
 no explicit criterion), and \code{round}. Which statistics carry a criterion
@@ -93,7 +109,8 @@ handoff can rely on all of the following, in every release that reports
 \itemize{
 \item The six top-level fields above, under those names.
 \item In \code{item_evidence}: \code{item}, \code{scale}, \code{carried}, \code{status},
-\code{recommendation}, \code{n_judges}, \code{rule}, \code{round}.
+\code{recommendation}, \code{n_judges}, \code{rule}, \code{round}, \code{keying}, \code{response_min},
+\code{response_max}.
 \item In \code{item_statistics}: \code{item}, \code{statistic}, \code{value}, \code{criterion}, \code{round},
 \code{lower}, \code{upper}, \code{interval_method}, \code{interval_level}, \code{note}.
 \item In \code{panel_statistics}: the same columns less \code{item}.
@@ -249,6 +266,39 @@ rows or columns.
 \code{delphi_validity()} states the reason in \code{details$stability$note}, and from
 contentvalidR 0.7.0 the handoff carries that sentence in the \code{note} column
 of \code{item_statistics}, described under "The note column".
+}
+
+\section{Instrument metadata}{
+
+Added in contentvalidR 0.7.0, at the request of the \code{nomologR} maintainers,
+because two empirical computations cannot be done correctly without them.
+\itemize{
+\item \code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+and \code{NA} when nobody said. An even-odd consistency index must recode
+reverse-worded items before splitting the scale, or a perfectly consistent
+respondent looks careless. And a negative corrected item-total correlation
+means opposite things in the two cases: on an item that was never recoded
+it is a coding error, and on a correctly coded item it is evidence against
+the item.
+\item \code{response_min} and \code{response_max} are the lowest and highest answers a
+respondent can give. Screening for out-of-range answers needs the scale's
+limits rather than the observed ones, because a category nobody used is
+still a legal answer, and long-string and within-person variability
+indices mean different things on a two-point and a seven-point scale.
+}
+
+\strong{Both come from the analyst, never from the fit.} A content-validity panel
+rates relevance or correspondence on its own scale, usually 1 to 4, which is
+not the scale respondents will answer the items on. Copying a fit's \code{lo} and
+\code{hi} into \code{response_min} and \code{response_max} would give a downstream reader
+the wrong limits, and it would then reject every legitimate top-category
+answer. So both default to \code{NA}, which means \emph{unknown}, and a reader should
+treat \code{NA} that way rather than assume a forward-worded item or an observed
+range.
+
+Supplying \code{reverse_keyed} is a statement about every item: the ones named
+are reverse-worded and the rest are not. Pass \code{character(0)} to record that
+you checked and none is.
 }
 
 \section{What a handoff does and does not establish}{

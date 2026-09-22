@@ -48,8 +48,11 @@ test_that("the object matches schema version 1", {
                     "provenance", "panel_statistics"))
   expect_identical(h$provenance$schema_version, 1L)
 
+  # keying, response_min and response_max were appended in 0.7.0, after every
+  # original column, which is what the additive rule requires.
   expect_named(h$item_evidence, c("item", "scale", "carried", "status",
-                                  "recommendation", "n_judges", "rule", "round"))
+                                  "recommendation", "n_judges", "rule", "round",
+                                  "keying", "response_min", "response_max"))
   # Columns added within version 1 follow the original ones, so a reader that
   # indexes by position still finds them where they were.
   expect_named(h$item_statistics, c("item", "statistic", "value", "criterion",
@@ -621,4 +624,65 @@ test_that("the printed handoff names the intervals and the panel statistic", {
   rated <- paste(capture.output(print(content_handoff(rating_fit()))),
                  collapse = " ")
   expect_false(grepl("Intervals carried", rated, fixed = TRUE))
+})
+
+test_that("keying and the response scale are unknown unless the analyst says", {
+  ev <- content_handoff(expert_fit())$item_evidence
+  expect_identical(ev$keying, rep(NA_integer_, nrow(ev)))
+  expect_identical(ev$response_min, rep(NA_integer_, nrow(ev)))
+  expect_identical(ev$response_max, rep(NA_integer_, nrow(ev)))
+})
+
+test_that("the panel's rating scale is never passed off as the respondents'", {
+  # The trap this guards: an expert panel rated relevance on 1-4. Respondents
+  # will answer the items on some other scale. If the handoff copied lo and hi
+  # across, a reader screening for out-of-range answers would reject every
+  # legitimate 5. The fit's scale must not leak into these columns.
+  fit <- expert_fit()
+  expect_identical(fit$settings$hi, 4)
+  ev <- content_handoff(fit)$item_evidence
+  expect_true(all(is.na(ev$response_max)))
+
+  ev <- content_handoff(fit, response_scale = c(1, 5))$item_evidence
+  expect_identical(ev$response_min, rep(1L, nrow(ev)))
+  expect_identical(ev$response_max, rep(5L, nrow(ev)))
+})
+
+test_that("naming reverse-worded items is a statement about every item", {
+  items <- as.character(expert_fit()$results$item)
+
+  ev <- content_handoff(expert_fit(), reverse_keyed = "Item2")$item_evidence
+  expect_identical(ev$keying[ev$item == "Item2"], -1L)
+  expect_true(all(ev$keying[ev$item != "Item2"] == 1L))
+
+  # character(0) records that someone checked and none is reversed, which is
+  # different from not having said.
+  ev <- content_handoff(expert_fit(), reverse_keyed = character(0))$item_evidence
+  expect_identical(ev$keying, rep(1L, length(items)))
+})
+
+test_that("keying and the response scale are validated", {
+  fit <- expert_fit()
+  expect_error(content_handoff(fit, reverse_keyed = "NoSuchItem"),
+               "not in this analysis")
+  expect_error(content_handoff(fit, reverse_keyed = 2), "character vector")
+  expect_error(content_handoff(fit, reverse_keyed = NA_character_),
+               "character vector")
+
+  for (bad in list(c(5, 1), c(1, 1), c(1.5, 5), c(1, 5, 7), "1-5",
+                   c(1, Inf), c(NA, 5))) {
+    expect_error(content_handoff(fit, response_scale = bad), "two whole numbers",
+                 info = paste(format(bad), collapse = " "))
+  }
+})
+
+test_that("instrument metadata covers held-back items too", {
+  # A reader recoding responses needs the keying of every item in the response
+  # file, including the ones content review did not carry.
+  h <- content_handoff(sort_fit(), reverse_keyed = "B1",
+                       response_scale = c(1, 7))
+  ev <- h$item_evidence
+  expect_true(any(!ev$carried))
+  expect_false(anyNA(ev$keying))
+  expect_true(all(ev$response_max == 7L))
 })
