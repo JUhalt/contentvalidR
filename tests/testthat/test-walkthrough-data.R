@@ -17,6 +17,20 @@ wt_panel <- function() {
   sort_validity(read.csv(extdata("walkthrough_sort.csv"),
                          stringsAsFactors = FALSE))
 }
+wt_handoff <- function() {
+  items <- wt_items()
+  content_handoff(wt_panel(), reverse_keyed = items$item[items$reverse_worded],
+                  response_scale = c(1, 5))
+}
+# Reverse-worded items recoded with the keying and limits the handoff carries,
+# which is the only correct way for a reader to do it.
+wt_recoded <- function(h = wt_handoff()) {
+  X <- as.matrix(wt_responses()[h$items])
+  ev <- h$item_evidence
+  key <- setNames(ev$keying, ev$item)[h$items]
+  X[, key == -1] <- (ev$response_min[1] + ev$response_max[1]) - X[, key == -1]
+  X
+}
 
 test_that("the three walkthrough files agree on one item set", {
   items <- wt_items()
@@ -72,8 +86,8 @@ test_that("EF4 passes content review and still carries almost nothing", {
   # The headline claim of the vignette. Measured with corrected item-total
   # correlations rather than a factor solution, because factor order and sign
   # are not stable across platforms and these are.
-  h <- content_handoff(wt_panel())
-  X <- as.matrix(wt_responses()[h$items])
+  h <- wt_handoff()
+  X <- wt_recoded(h)
   corrected <- function(item, set) {
     rest <- setdiff(set, item)
     stats::cor(X[, item], rowSums(X[, rest, drop = FALSE]))
@@ -98,8 +112,8 @@ test_that("EF3 is flagged by a screen for a reason the panel had already answere
   # The reverse case, and the sharper one: an empirical screen flags it, and
   # keeping it is right. Requested by the nomologR maintainers so that both
   # packages' articles tell the same story about this item.
-  h <- content_handoff(wt_panel())
-  X <- as.matrix(wt_responses()[h$items])
+  h <- wt_handoff()
+  X <- wt_recoded(h)
   corrected <- function(item, set) {
     rest <- setdiff(set, item)
     stats::cor(X[, item], rowSums(X[, rest, drop = FALSE]))
@@ -122,8 +136,8 @@ test_that("EF3 is flagged by a screen for a reason the panel had already answere
 })
 
 test_that("TF4 passes content review and belongs to both facets", {
-  h <- content_handoff(wt_panel())
-  X <- as.matrix(wt_responses()[h$items])
+  h <- wt_handoff()
+  X <- wt_recoded(h)
   with_set <- function(item, set) {
     stats::cor(X[, item], rowSums(X[, setdiff(set, item), drop = FALSE]))
   }
@@ -151,10 +165,44 @@ test_that("TF6 is the one item that answers differently by cohort", {
 
 test_that("the item file says which items were built to misbehave", {
   items <- wt_items()
-  expect_named(items, c("item", "facet", "stem", "role"))
+  expect_named(items, c("item", "facet", "stem", "role", "reverse_worded"))
   expect_false(any(is.na(items$role) | !nzchar(items$role)))
+  expect_type(items$reverse_worded, "logical")
 
   designed <- items$item[!startsWith(items$role, "ordinary")]
-  expect_setequal(designed,
-                  c("EF3", "EF4", "EF5", "EF6", "TF4", "TF5", "TF6"))
+  expect_setequal(designed, c("EF2", "EF3", "EF4", "EF5", "EF6",
+                              "TF2", "TF4", "TF5", "TF6"))
+  expect_setequal(items$item[items$reverse_worded], c("EF2", "TF2"))
+})
+
+test_that("a reverse-worded item looks damning until it is recoded", {
+  # The case nomologR asked for: the same negative correlation means a coding
+  # error on an item that was never recoded and evidence against the item on
+  # one that was. The handoff's keying is what tells them apart.
+  h <- wt_handoff()
+  ev <- h$item_evidence
+  expect_identical(setNames(ev$keying, ev$item)[c("EF2", "TF2")],
+                   c(EF2 = -1L, TF2 = -1L))
+  expect_true(all(ev$keying[!ev$item %in% c("EF2", "TF2")] == 1L))
+  expect_true(all(ev$response_min == 1L) && all(ev$response_max == 5L))
+
+  corrected <- function(X, item, set) {
+    rest <- setdiff(set, item)
+    stats::cor(X[, item], rowSums(X[, rest, drop = FALSE]))
+  }
+  raw <- as.matrix(wt_responses()[h$items])
+  rec <- wt_recoded(h)
+  for (i in c("EF2", "TF2")) {
+    set <- h$scales[[substr(i, 1, 2)]]
+    expect_lt(corrected(raw, i, set), 0)
+    expect_gt(corrected(rec, i, set), 0.40)
+  }
+})
+
+test_that("recoding restores exactly the data the design describes", {
+  # Reversal draws no random numbers, so a recoded reverse-worded item is the
+  # forward item it was written from. Nothing else in the design moves.
+  rec <- wt_recoded()
+  expect_true(all(rec >= 1L & rec <= 5L))
+  expect_identical(anyNA(rec), FALSE)
 })

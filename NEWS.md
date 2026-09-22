@@ -28,8 +28,18 @@
   * Meanwhile the item that met the content criterion by a single judge behaves
     perfectly well, so a borderline content result is not read as a
     prediction.
+  * `EF2` and `TF2` are written the other way round, and the walkthrough
+    passes that to `content_handoff(reverse_keyed = )` along with the
+    respondents' one-to-five scale. It then shows why the handoff has to carry
+    both: before recoding, `TF2` correlates at -0.51 with its own facet, which
+    looks like the strongest evidence against an item that item analysis
+    produces and is in fact a coding error. Recoded with the keying and the scale limits the
+    handoff carries, it is +0.51. Added together with the keying field, at the
+    nomologR maintainers' request, so that no reader ever receives
+    reverse-worded data without the means to know it.
 * Three new files in `inst/extdata`: `walkthrough_items.csv` (the items, their
-  facet, their stems, and what each one was built to do),
+  facet, their stems, what each one was built to do, and whether it is
+  reverse-worded),
   `walkthrough_sort.csv` (twenty judges), and `walkthrough_responses.csv` (400
   respondents, twelve items, a two-level `cohort` variable, and the rejected
   items still present). **They are simulated.** No participant was involved and

@@ -44,9 +44,10 @@ items <- read.csv(path("walkthrough_items.csv"), stringsAsFactors = FALSE)
 items[c("item", "facet", "stem")]
 ```
 
-Each item was also given a job. Five of the twelve are meant to cause trouble,
-and the file records which and why, so you can check the stages against it
-rather than take this vignette's word for anything:
+Each item was also given a job, and the file records what it is, so you can
+check the stages against the design rather than take this vignette's word for
+anything. Two are simply written the other way round; five more are meant to
+cause trouble:
 
 ```{r roles}
 subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
@@ -98,20 +99,29 @@ prediction that it will fail later. Keep that in mind; `EF6` comes back.
 ## The handoff
 
 `content_handoff()` packages the decision. By default only items whose status
-is `Supported` travel forward, so `EF5` and `TF5` stop here:
+is `Supported` travel forward, so `EF5` and `TF5` stop here.
+
+Two facts about the instrument travel with it as well, and neither is
+something the panel could know. Two items are written the other way round, so
+that agreeing with them means *less* persistence, and respondents will answer
+on a one-to-five scale. The panel sorted items into facets and never saw that
+scale, so both have to come from you:
 
 ```{r handoff}
-h <- content_handoff(panel)
+h <- content_handoff(panel,
+                     reverse_keyed = items$item[items$reverse_worded],
+                     response_scale = c(1, 5))
 
 h$items
 h$scales
 ```
 
 Nothing is thrown away. The two flagged items stay in the record, marked as not
-carried, together with the rule that flagged them:
+carried, and every item carries its keying, the rejected ones included, since a
+reader recoding the response file needs all of them:
 
 ```{r evidence}
-h$item_evidence[c("item", "carried", "status", "recommendation")]
+h$item_evidence[c("item", "carried", "status", "recommendation", "keying")]
 ```
 
 ## Stage two: what the responses say
@@ -126,10 +136,49 @@ responses <- read.csv(path("walkthrough_responses.csv"),
 str(responses[1:5])
 ```
 
-Take the ten items the panel carried and ask for two factors:
+### Recode first, and see why it matters
+
+Before anything is correlated, the reverse-worded items have to be turned
+round. Skip that and look at what happens to `TF2`, "I switch between tasks
+while I study":
+
+```{r unrecoded}
+raw <- as.matrix(responses[h$items])
+corrected <- function(X, item, set) {
+  rest <- setdiff(set, item)
+  stats::cor(X[, item], rowSums(X[, rest, drop = FALSE]))
+}
+round(corrected(raw, "TF2", h$scales$TF), 2)
+```
+
+A negative corrected item-total correlation is about as strong a case against
+an item as item analysis produces, and here it means nothing of the kind. It is
+a coding error.
+The same number on a correctly coded item would be evidence that the item
+measures the opposite of its facet, and the advice in the two cases is
+opposite: fix the scoring, or drop the item. The response data cannot tell you
+which case you are in. The handoff can, because it recorded the keying:
+
+```{r recode}
+ev <- h$item_evidence
+key <- setNames(ev$keying, ev$item)[h$items]
+top <- ev$response_min[1] + ev$response_max[1]
+
+carried <- raw
+carried[, key == -1] <- top - carried[, key == -1]
+
+round(corrected(carried, "TF2", h$scales$TF), 2)
+```
+
+Recoding uses the scale's limits, not the lowest and highest answers anyone
+gave, which is why the handoff carries them: had nobody chosen 5, reversing
+against the observed maximum would shift every recoded answer down a point.
+
+### Two factors
+
+Now take the ten carried items, recoded, and ask for two factors:
 
 ```{r factors}
-carried <- as.matrix(responses[h$items])
 fa <- stats::factanal(carried, factors = 2, rotation = "varimax")
 
 round(unclass(fa$loadings), 2)
@@ -180,12 +229,8 @@ to catch it. Compare it with `EF4`, which we have just thrown out, and the two
 look like the same kind of problem:
 
 ```{r compare}
-corrected <- function(item, set) {
-  rest <- setdiff(set, item)
-  stats::cor(carried[, item], rowSums(carried[, rest, drop = FALSE]))
-}
-round(c(EF3 = corrected("EF3", h$scales$EF),
-        EF4 = corrected("EF4", h$scales$EF)), 2)
+round(c(EF3 = corrected(carried, "EF3", h$scales$EF),
+        EF4 = corrected(carried, "EF4", h$scales$EF)), 2)
 ```
 
 They are not the same problem, and the correlation cannot tell you that. The

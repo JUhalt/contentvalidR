@@ -37,13 +37,13 @@ items <- data.frame(
   facet = c(rep("EF", 6), rep("TF", 6)),
   stem = c(
     "When my coursework gets boring, I keep working on it anyway.",
-    "I keep studying even when the material stops being interesting.",
+    "I stop studying once the material stops being interesting.",
     "I finish the assignments that count toward my grade.",
     "I keep to the study schedule I set for myself.",
     "I get tense when I fall behind on coursework.",
     "I finish assignments even when I would rather do something else.",
     "I stay on one task until it is finished.",
-    "I avoid switching between tasks while I study.",
+    "I switch between tasks while I study.",
     "I keep my attention on the task in front of me.",
     "I keep working through a task without taking breaks.",
     "I work hard to stay on top of my reading.",
@@ -51,13 +51,13 @@ items <- data.frame(
   ),
   role = c(
     "ordinary: the panel places it and it behaves as intended",
-    "ordinary: the panel places it and it behaves as intended",
+    "reverse-worded: behaves as intended once recoded",
     "flagged by an empirical screen and worth keeping anyway",
     "passes content review, then carries almost no common variance",
     "fails content review: the wording pulls judges toward test anxiety",
     "meets the content criterion by one judge, then behaves well",
     "ordinary: the panel places it and it behaves as intended",
-    "ordinary: the panel places it and it behaves as intended",
+    "reverse-worded: behaves as intended once recoded",
     "ordinary: the panel places it and it behaves as intended",
     "passes content review, then loads on both facets",
     "fails content review: a competing facet takes more assignments",
@@ -65,6 +65,11 @@ items <- data.frame(
   ),
   stringsAsFactors = FALSE
 )
+# Written the other way round. Shipped as a column so a reader can pass it
+# straight to content_handoff(reverse_keyed = ...), which is how anything
+# downstream learns to recode.
+reverse_keyed <- c("EF2", "TF2")
+items$reverse_worded <- items$item %in% reverse_keyed
 
 # -----------------------------------------------------------------------------
 # What each item is built to do
@@ -72,8 +77,15 @@ items <- data.frame(
 # The walkthrough needs items that behave differently at the two stages,
 # because the claim it is making is that the two stages can disagree.
 #
-#   EF1 EF2 TF1 TF2 TF3      ordinary items: the panel places them, and they
+#   EF1 TF1 TF3              ordinary items: the panel places them, and they
 #                            behave as intended in the response data.
+#   EF2 TF2  REVERSE-WORDED. Ordinary items written the other way round, so a
+#        high answer means LESS persistence. Judges sort them exactly as they
+#        would the forward version, since sorting is about the construct and
+#        not its direction. Once recoded they behave as intended; before
+#        recoding, each correlates negatively with its own facet. That negative
+#        number is a coding error, not evidence against the item, and telling
+#        the two apart is why the handoff records keying at all.
 #   EF3  FLAGGED EMPIRICALLY AND WORTH KEEPING ANYWAY. Finishing graded work is
 #        part of persistence and almost everyone endorses it, so its answers
 #        pile up at the top of the scale. Restricted variance attenuates any
@@ -211,7 +223,11 @@ responses <- vapply(items$item, function(id) {
   shift <- if (id %in% names(cohort_shift)) cohort_shift[[id]] else 0
   # A positive shift moves answers up the scale for that cohort.
   y_star <- y_star + ifelse(cohort == "B", shift, 0)
-  as.integer(cut(y_star, breaks = c(-Inf, cuts, Inf), labels = FALSE))
+  y <- as.integer(cut(y_star, breaks = c(-Inf, cuts, Inf), labels = FALSE))
+  # A reverse-worded item is answered in the opposite direction: someone high
+  # in persistence disagrees with it. The construct it measures is unchanged.
+  if (id %in% reverse_keyed) y <- 6L - y
+  y
 }, integer(n_respondents))
 
 walkthrough_responses <- data.frame(
