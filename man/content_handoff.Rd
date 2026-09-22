@@ -4,7 +4,13 @@
 \alias{content_handoff}
 \title{Carry content-validity decisions into empirical validation}
 \usage{
-content_handoff(fit, keep = "Supported", round = 1)
+content_handoff(
+  fit,
+  keep = "Supported",
+  round = 1,
+  reverse_keyed = NULL,
+  response_scale = NULL
+)
 }
 \arguments{
 \item{fit}{A fitted \code{contentvalid_sort}, \code{contentvalid_rating},
@@ -17,6 +23,14 @@ content_handoff(fit, keep = "Supported", round = 1)
 this defaults to \code{1} and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
 settled in.}
+
+\item{reverse_keyed}{Names of the reverse-worded items, \code{character(0)} if
+none is, or \code{NULL} (the default) to leave keying unrecorded. See
+"Instrument metadata".}
+
+\item{response_scale}{The lowest and highest answer respondents can give,
+such as \code{c(1, 5)}, or \code{NULL} (the default) to leave it unrecorded. This is
+the scale of the instrument, not the scale the panel rated on.}
 }
 \value{
 An object of class \code{contentvalid_handoff}, \code{cv_handoff}, and \code{list},
@@ -58,7 +72,9 @@ produce \code{NULL}. Membership is one to one.}
 \item{\code{item_evidence}}{data frame with one row per reviewed item: \code{item},
 \code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
 \code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}. For a Delphi handoff
-\code{round} differs between items; see "A Delphi handoff".}
+\code{round} differs between items; see "A Delphi handoff". From
+contentvalidR 0.7.0 it also carries \code{keying}, \code{response_min}, and
+\code{response_max}, described under "Instrument metadata".}
 \item{\code{item_statistics}}{data frame, one row per item per statistic:
 \code{item}, \code{statistic}, \code{value}, \code{criterion} (\code{NA} when the method sets
 no explicit criterion), and \code{round}. Which statistics carry a criterion
@@ -83,6 +99,74 @@ This shape is agreed with the \code{nomologR} package, which consumes it in
 \code{nomo_screen()} and \code{nomo_run()}. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.
+}
+
+\section{What version 1 freezes}{
+
+Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
+handoff can rely on all of the following, in every release that reports
+\code{schema_version = 1}:
+\itemize{
+\item The six top-level fields above, under those names.
+\item In \code{item_evidence}: \code{item}, \code{scale}, \code{carried}, \code{status},
+\code{recommendation}, \code{n_judges}, \code{rule}, \code{round}, \code{keying}, \code{response_min},
+\code{response_max}.
+\item In \code{item_statistics}: \code{item}, \code{statistic}, \code{value}, \code{criterion}, \code{round},
+\code{lower}, \code{upper}, \code{interval_method}, \code{interval_level}, \code{note}.
+\item In \code{panel_statistics}: the same columns less \code{item}.
+\item In \code{provenance}: \code{schema_version}, \code{package}, \code{package_version},
+\code{workflow}, \code{mode}, \code{keep}, \code{method}, \code{citation}, \code{settings}, \code{design},
+\code{created}.
+}
+
+Each of those columns keeps its name, its position, and its type. Every
+handoff carries every column, including when a workflow has nothing to put
+in one: a statistic with no interval carries \code{NA} in the four interval
+columns rather than dropping them, and a workflow with no panel coefficient
+returns a zero-row \code{panel_statistics} with the full set of columns. A reader
+can therefore bind handoffs from different workflows without reconciling
+their columns.
+
+These are deliberately \strong{not} frozen, and a reader should not depend on
+them:
+\itemize{
+\item The set of rows. Which items, which statistics, and how many of each
+depend on the workflow and on the data.
+\item The values in the \code{statistic} column. They are labels for display, and may
+be reworded in a minor release; match on the workflow in \code{provenance}
+instead.
+\item The text in \code{note}, \code{rule}, \code{recommendation}, and \code{citation}, which is
+prose for a human reader.
+\item The contents of \code{settings} and \code{design}, which mirror the fitted object
+and grow with it.
+}
+
+Neither is the printed output part of the schema. \code{print()} on a handoff is
+written for a person, and its layout and wording may change in any release.
+Read the fields.
+
+New optional fields and columns may still be added within version 1, at the
+end of a data frame or list. A reader written against this section keeps
+working when that happens, provided it addresses columns by name.
+}
+
+\section{If the schema ever changes}{
+
+Renaming a field, removing one, changing a type, or changing what a field
+means is a version 2 change, not a minor release. It would raise
+\code{provenance$schema_version} to \code{2L}, and version 1 would keep being
+produced for at least one full release cycle so that readers have a
+version to fall back on. The release notes would say what moved.
+
+A reader should gate on the version rather than on the contentvalidR
+version:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{if (!inherits(h, "cv_handoff") || h$provenance$schema_version != 1L) \{
+  stop("this reader understands handoff schema version 1 only")
+\}
+}\if{html}{\out{</div>}}
+
+No version 2 is planned.
 }
 
 \section{The note column}{
@@ -182,6 +266,39 @@ rows or columns.
 \code{delphi_validity()} states the reason in \code{details$stability$note}, and from
 contentvalidR 0.7.0 the handoff carries that sentence in the \code{note} column
 of \code{item_statistics}, described under "The note column".
+}
+
+\section{Instrument metadata}{
+
+Added in contentvalidR 0.7.0, at the request of the \code{nomologR} maintainers,
+because two empirical computations cannot be done correctly without them.
+\itemize{
+\item \code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+and \code{NA} when nobody said. An even-odd consistency index must recode
+reverse-worded items before splitting the scale, or a perfectly consistent
+respondent looks careless. And a negative corrected item-total correlation
+means opposite things in the two cases: on an item that was never recoded
+it is a coding error, and on a correctly coded item it is evidence against
+the item.
+\item \code{response_min} and \code{response_max} are the lowest and highest answers a
+respondent can give. Screening for out-of-range answers needs the scale's
+limits rather than the observed ones, because a category nobody used is
+still a legal answer, and long-string and within-person variability
+indices mean different things on a two-point and a seven-point scale.
+}
+
+\strong{Both come from the analyst, never from the fit.} A content-validity panel
+rates relevance or correspondence on its own scale, usually 1 to 4, which is
+not the scale respondents will answer the items on. Copying a fit's \code{lo} and
+\code{hi} into \code{response_min} and \code{response_max} would give a downstream reader
+the wrong limits, and it would then reject every legitimate top-category
+answer. So both default to \code{NA}, which means \emph{unknown}, and a reader should
+treat \code{NA} that way rather than assume a forward-worded item or an observed
+range.
+
+Supplying \code{reverse_keyed} is a statement about every item: the ones named
+are reverse-worded and the rest are not. Pass \code{character(0)} to record that
+you checked and none is.
 }
 
 \section{What a handoff does and does not establish}{

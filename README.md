@@ -1297,6 +1297,39 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
 - Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for
   Cohen’s kappa: A comparison of basic properties. *MethodsX, 10*,
   102212.
+- Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
+  for scaled disagreement or partial credit. *Psychological Bulletin,
+  70*(4), 213-220. <https://doi.org/10.1037/h0026256>
+- Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa
+  and the intraclass correlation coefficient as measures of reliability.
+  *Educational and Psychological Measurement, 33*(3), 613-619.
+  <https://doi.org/10.1177/001316447303300309>
+- Landis, J. R., & Koch, G. G. (1977). The measurement of observer
+  agreement for categorical data. *Biometrics, 33*(1), 159-174.
+  <https://doi.org/10.2307/2529310>
+- Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
+  bootstrap confidence interval for kappa in small samples. *Journal of
+  the Royal Statistical Society: Series D (The Statistician), 51*(4),
+  467-478. <https://doi.org/10.1111/1467-9884.00331>
+- Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+  methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
+  Techniques and applications*. Addison-Wesley.
+- Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
+  agreement criteria for the termination of Delphi studies.
+  *Technological Forecasting and Social Change, 13*(1), 83-90.
+  <https://doi.org/10.1016/0040-1625(79)90007-6>
+- Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
+  studies. *Technological Forecasting and Social Change, 16*(1), 67-73.
+  <https://doi.org/10.1016/0040-1625(80)90074-8>
+- Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
+  exploration of the use of simple statistics to measure consensus and
+  stability in Delphi studies. *BMC Medical Research Methodology,
+  7*, 52. <https://doi.org/10.1186/1471-2288-7-52>
+- Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B.,
+  Ling, S. C., Moore, A. M., & Wales, P. W. (2014). Defining consensus:
+  A systematic review recommends methodologic criteria for reporting of
+  Delphi studies. *Journal of Clinical Epidemiology, 67*(4), 401-409.
+  <https://doi.org/10.1016/j.jclinepi.2013.12.002>
 
 ## License
 
