@@ -33,10 +33,10 @@
     respondents' one-to-five scale. It then shows why the handoff has to carry
     both: before recoding, `TF2` correlates at -0.51 with its own facet, which
     looks like the strongest evidence against an item that item analysis
-    produces and is in fact a coding error. Recoded with the keying and the scale limits the
-    handoff carries, it is +0.51. Added together with the keying field, at the
-    nomologR maintainers' request, so that no reader ever receives
-    reverse-worded data without the means to know it.
+    produces and is in fact a coding error. Recoded with the keying and the
+    scale limits the handoff carries, it is +0.51. Added together with the
+    keying field, at the nomologR maintainers' request, so that no reader ever
+    receives reverse-worded data without the means to know it.
 * Three new files in `inst/extdata`: `walkthrough_items.csv` (the items, their
   facet, their stems, what each one was built to do, and whether it is
   reverse-worded),
