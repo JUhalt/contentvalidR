@@ -1,5 +1,58 @@
 # contentvalidR 0.6.0.9000 (development version)
 
+## Handoff schema version 1 is frozen (in development)
+
+* `?content_handoff` gains two sections. *What version 1 freezes* names every
+  field and column a reader can rely on, states that each keeps its name,
+  position, and type, and lists what is deliberately not frozen: which rows
+  appear, the labels in the `statistic` column, the prose in `note`, `rule`,
+  `recommendation`, and `citation`, the contents of `settings` and `design`,
+  and the printed output. *If the schema ever changes* gives the version-2 path
+  and the two-line version check a reader should gate on.
+* The frozen contract is now data rather than prose, so the tests and the
+  documentation cannot drift apart. Handoffs from all five workflows that can
+  produce one are checked against it, column by column, along with the
+  guarantee that makes the freeze useful: every handoff carries every column,
+  so a statistic with no interval carries `NA` in all four interval columns and
+  a workflow with no panel coefficient returns a zero-row `panel_statistics`
+  with the full column set. Handoffs from different workflows therefore bind
+  without reconciling them first.
+* **Before the freeze closed, it was checked against every reader.**
+  * `nomologR` confirmed the frozen list covers everything its reader consumes,
+    and named two gaps, each blocking a specific computation rather than
+    expressing a preference. Both are added.
+  * `solomonR` was asked too
+    ([solomonR#32](https://github.com/JUhalt/solomonR/issues/32)): its
+    `fit_solomon_sem_latent()` takes item names as character vectors, which is
+    exactly what a handoff carries.
+* **`content_handoff()` gains `reverse_keyed` and `response_scale`,** recorded
+  per item in three new `item_evidence` columns: `keying` (`1` forward, `-1`
+  reverse-worded), `response_min`, and `response_max`.
+  * Keying, because an even-odd consistency index must recode reverse-worded
+    items first or a consistent respondent looks careless, and because a
+    negative corrected item-total correlation means a coding error on an item
+    that was never recoded and evidence against the item on one that was.
+  * The response scale, because screening for out-of-range answers needs the
+    scale's limits rather than the observed ones: a category nobody used is
+    still a legal answer.
+  * **Both come from the analyst, never from the fit.** A panel's `lo` and `hi`
+    are the scale the experts rated relevance on, usually 1 to 4, not the scale
+    respondents answer. Copying them across would hand a reader the wrong
+    limits, and it would then reject every legitimate top-category answer. So
+    both default to `NA`, meaning unknown, and a test guards against the fit's
+    scale ever leaking into these columns.
+  * `reverse_keyed = character(0)` records that someone checked and no item is
+    reversed, which is different from not having said.
+  * Naming a reverse-worded item without `response_scale` warns, since the
+    item cannot be recoded without the scale's limits. A reader that recodes
+    would otherwise refuse one step later, where the omission is harder to
+    trace. Suggested by the nomologR maintainers.
+* Item text was considered and left out. It was wanted only if every workflow
+  that can produce a handoff has the wording, and none of them collects it.
+* Apart from those three columns, the freeze changes no object: a 0.7.0 handoff
+  is a 0.6.0 handoff plus them and the `note` column described below. All are
+  appended after the original columns, as the additive rule requires.
+
 ## The kappa interval in a Delphi is a published procedure (in development)
 
 * The bootstrap interval beside a Delphi stability kappa was described in the
