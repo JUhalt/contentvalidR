@@ -651,7 +651,8 @@ test_that("the panel's rating scale is never passed off as the respondents'", {
 test_that("naming reverse-worded items is a statement about every item", {
   items <- as.character(expert_fit()$results$item)
 
-  ev <- content_handoff(expert_fit(), reverse_keyed = "Item2")$item_evidence
+  ev <- content_handoff(expert_fit(), reverse_keyed = "Item2",
+                        response_scale = c(1, 5))$item_evidence
   expect_identical(ev$keying[ev$item == "Item2"], -1L)
   expect_true(all(ev$keying[ev$item != "Item2"] == 1L))
 
@@ -659,6 +660,32 @@ test_that("naming reverse-worded items is a statement about every item", {
   # different from not having said.
   ev <- content_handoff(expert_fit(), reverse_keyed = character(0))$item_evidence
   expect_identical(ev$keying, rep(1L, length(items)))
+})
+
+test_that("declaring a reversed item without the scale warns, and only then", {
+  # A reverse-worded item cannot be recoded without the scale's limits, so this
+  # combination is nearly always an oversight. Raised by the nomologR
+  # maintainers, whose reader would otherwise refuse to recode one step later.
+  expect_warning(content_handoff(expert_fit(), reverse_keyed = "Item2"),
+                 "response_scale")
+  # Nothing reversed needs no scale; both given is complete; neither is simply
+  # unrecorded. None of these should warn.
+  expect_silent(content_handoff(expert_fit(), reverse_keyed = character(0)))
+  expect_silent(content_handoff(expert_fit(), reverse_keyed = "Item2",
+                                response_scale = c(1, 5)))
+  expect_silent(content_handoff(expert_fit()))
+})
+
+test_that("keying is all NA or none NA, and so is the response scale", {
+  # A reader can rely on this, so it is worth pinning: the arguments describe
+  # the whole instrument or nothing.
+  for (args in list(list(), list(reverse_keyed = character(0)),
+                    list(reverse_keyed = "Item3", response_scale = c(1, 7)))) {
+    ev <- do.call(content_handoff, c(list(expert_fit()), args))$item_evidence
+    expect_true(all(is.na(ev$keying)) || !anyNA(ev$keying))
+    expect_true(all(is.na(ev$response_min)) || !anyNA(ev$response_min))
+    expect_identical(is.na(ev$response_min), is.na(ev$response_max))
+  }
 })
 
 test_that("keying and the response scale are validated", {
