@@ -37,6 +37,149 @@
   every item. The tiers become promises at 1.0, so a load-bearing function had
   to stop being filed under the one that promises least. No code changes.
 
+## One item set carried through both stages (in development)
+
+* New `vignette("one-item-set-both-stages")` follows twelve items from an
+  expert panel through the handoff and into response data
+  ([#55](https://github.com/JUhalt/contentvalidR/issues/55)), so the pair of
+  stages is demonstrated rather than asserted. Every step runs: the second half
+  uses `stats` only, and the `nomologR` call is shown but not run, since
+  neither package depends on the other.
+* The point of the walkthrough is the disagreement between the stages, and it
+  runs in **both** directions.
+  * Two items fail content review, for opposite reasons: one keeps its target
+    and misses the criterion, the other loses its target to a competing facet.
+  * Two pass content review and then misbehave. `EF4` is sorted to effort
+    regulation by eighteen of twenty judges and carries almost no common
+    variance; `TF4` is sorted to one facet and loads on both. A panel cannot
+    see either, which is the reason for running the second stage.
+  * `EF3` is the reverse, and the sharper case: an empirical screen flags it
+    and it is worth keeping. Nearly everyone endorses "I finish the assignments
+    that count toward my grade" — 96% answer in the top two categories — so its
+    variance is a third of every other item's and it cannot correlate strongly
+    with anything. Its correlation looks as bad as `EF4`'s, and only the
+    distribution tells them apart. It is also the only item covering the
+    completion of required work, so dropping it would narrow the domain the
+    panel defined. Added at the nomologR maintainers' suggestion, so that both
+    packages' articles make the same point about it.
+  * Meanwhile the item that met the content criterion by a single judge behaves
+    perfectly well, so a borderline content result is not read as a
+    prediction.
+  * `EF2` and `TF2` are written the other way round, and the walkthrough
+    passes that to `content_handoff(reverse_keyed = )` along with the
+    respondents' one-to-five scale. It then shows why the handoff has to carry
+    both: before recoding, `TF2` correlates at -0.51 with its own facet, which
+    looks like the strongest evidence against an item that item analysis
+    produces and is in fact a coding error. Recoded with the keying and the
+    scale limits the handoff carries, it is +0.51. Added together with the
+    keying field, at the nomologR maintainers' request, so that no reader ever
+    receives reverse-worded data without the means to know it.
+* Three new files in `inst/extdata`: `walkthrough_items.csv` (the items, their
+  facet, their stems, what each one was built to do, and whether it is
+  reverse-worded),
+  `walkthrough_sort.csv` (twenty judges), and `walkthrough_responses.csv` (400
+  respondents, twelve items, a two-level `cohort` variable, and the rejected
+  items still present). **They are simulated.** No participant was involved and
+  no real instrument is reproduced.
+* `data-raw/build-walkthrough-data.R` writes all three and states the
+  generating model in full: the two correlated facets, every loading, the
+  response thresholds, and the single cohort shift. It uses base R only and is
+  deterministic. `nomologR` mirrors the response file from the same script, so
+  the two packages cannot drift.
+* A test file holds the vignette to its claims: which two items the panel
+  flags, which met the criterion by one judge, that `EF4` is the weak one and
+  `TF4` the ambiguous one, that `EF3` is flagged for restricted variance rather
+  than for lacking common variance, and that `TF6` is the only item that shifts
+  by cohort. If the data are regenerated and a claim stops holding, the suite
+  fails rather than the vignette quietly becoming wrong.
+
+## Handoff schema version 1 is frozen (in development)
+
+* `?content_handoff` gains two sections. *What version 1 freezes* names every
+  field and column a reader can rely on, states that each keeps its name,
+  position, and type, and lists what is deliberately not frozen: which rows
+  appear, the labels in the `statistic` column, the prose in `note`, `rule`,
+  `recommendation`, and `citation`, the contents of `settings` and `design`,
+  and the printed output. *If the schema ever changes* gives the version-2 path
+  and the two-line version check a reader should gate on.
+* The frozen contract is now data rather than prose, so the tests and the
+  documentation cannot drift apart. Handoffs from all five workflows that can
+  produce one are checked against it, column by column, along with the
+  guarantee that makes the freeze useful: every handoff carries every column,
+  so a statistic with no interval carries `NA` in all four interval columns and
+  a workflow with no panel coefficient returns a zero-row `panel_statistics`
+  with the full column set. Handoffs from different workflows therefore bind
+  without reconciling them first.
+* **Before the freeze closed, it was checked against every reader.**
+  * `nomologR` confirmed the frozen list covers everything its reader consumes,
+    and named two gaps, each blocking a specific computation rather than
+    expressing a preference. Both are added.
+  * `solomonR` was asked too
+    ([solomonR#32](https://github.com/JUhalt/solomonR/issues/32)): its
+    `fit_solomon_sem_latent()` takes item names as character vectors, which is
+    exactly what a handoff carries.
+* **`content_handoff()` gains `reverse_keyed` and `response_scale`,** recorded
+  per item in three new `item_evidence` columns: `keying` (`1` forward, `-1`
+  reverse-worded), `response_min`, and `response_max`.
+  * Keying, because an even-odd consistency index must recode reverse-worded
+    items first or a consistent respondent looks careless, and because a
+    negative corrected item-total correlation means a coding error on an item
+    that was never recoded and evidence against the item on one that was.
+  * The response scale, because screening for out-of-range answers needs the
+    scale's limits rather than the observed ones: a category nobody used is
+    still a legal answer.
+  * **Both come from the analyst, never from the fit.** A panel's `lo` and `hi`
+    are the scale the experts rated relevance on, usually 1 to 4, not the scale
+    respondents answer. Copying them across would hand a reader the wrong
+    limits, and it would then reject every legitimate top-category answer. So
+    both default to `NA`, meaning unknown, and a test guards against the fit's
+    scale ever leaking into these columns.
+  * `reverse_keyed = character(0)` records that someone checked and no item is
+    reversed, which is different from not having said.
+  * Naming a reverse-worded item without `response_scale` warns, since the
+    item cannot be recoded without the scale's limits. A reader that recodes
+    would otherwise refuse one step later, where the omission is harder to
+    trace. Suggested by the nomologR maintainers.
+* Item text was considered and left out. It was wanted only if every workflow
+  that can produce a handoff has the wording, and none of them collects it.
+* Apart from those three columns, the freeze changes no object: a 0.7.0 handoff
+  is a 0.6.0 handoff plus them and the `note` column described below. All are
+  appended after the original columns, as the additive rule requires.
+
+## The kappa interval in a Delphi is a published procedure (in development)
+
+* The bootstrap interval beside a Delphi stability kappa was described in the
+  output and the help page as this package's own extension. That was wrong.
+  Resampling the units that the two raters cross-classify, recomputing kappa,
+  and taking the percentile interval is the procedure Klar, Lipsitz, Parzen and
+  Leong (2002) set out; in a Delphi those units are the experts, each carrying
+  their rating in both rounds.
+* In its place, `?delphi_validity` gains *Reading the kappa interval*, which
+  says what the interval is and gives the two things a reader needs in order to
+  report it honestly: Klar et al.'s measured coverage for a nominal 95%
+  interval was about 83% with 20 units, 89% with 25, 91% with 30, and reached
+  94% only from 40 up, so a panel-sized interval is narrower than its label;
+  and their simulations used an unweighted kappa on two categories, so the
+  ordinal weighted case has not been simulated. The printed output carries the
+  short form of both.
+* `panel_agreement()` keeps its extension warning for Gwet's AC1. Zapf et al.
+  (2016) evaluated the bootstrap for Fleiss' kappa and Krippendorff's alpha
+  only, and do not discuss AC1 at all, so applying their interval to it is an
+  extension. That caveat now travels with the number: an AC1 interval in
+  `content_handoff()` carries it in `panel_statistics$note`, where before it
+  reached only the console. (`content_report()` tabulates item-level evidence
+  and never shows a panel coefficient, so there is nothing to carry there.)
+* The reference list in the README catches up. It had no Delphi sources at
+  all, although the workflow shipped in 0.5.0 and the prose above it cites Holey
+  et al., Chaffin and Talley, Dajani et al. and Scheibe et al. by name. Nine
+  references are added in APA form with DOIs: those four, plus Cohen (1968),
+  Fleiss and Cohen (1973), Landis and Koch (1977), Diamond et al. (2014), and
+  Klar et al. (2002).
+* Two printed claims fixed. With `B = 0`, `delphi_validity()` still described
+  intervals it had not computed and still printed empty `low` and `high`
+  columns; it now omits both. The printed-claims test that should have caught
+  this used a statistic that has no interval at all, so it passed vacuously.
+
 ## A written stability policy (in development)
 
 * `?contentvalidR` now states what code can rely on across versions

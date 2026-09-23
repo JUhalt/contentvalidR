@@ -342,8 +342,17 @@ test_that("nothing printed claims a statistic the analysis did not compute", {
   expect_false(grepl("reached consensus in their last round", no_threshold,
                      fixed = TRUE))
 
-  # The kappa interval note appears only when an interval was computed.
-  expect_false(grepl("percentile bootstraps that resample experts",
+  # The kappa interval note and the interval columns appear only when an
+  # interval was computed, including when kappa itself is the statistic.
+  with_interval <- squashed(fit_delphi(B = 200, seed = 4))
+  no_interval <- squashed(fit_delphi(B = 0))
+  expect_match(with_interval, "The intervals are percentile bootstraps")
+  expect_false(grepl("The intervals are percentile bootstraps", no_interval,
+                     fixed = TRUE))
+  expect_match(with_interval, "low high")
+  expect_false(grepl("low high", no_interval, fixed = TRUE))
+
+  expect_false(grepl("The intervals are percentile bootstraps",
                      squashed(fit_delphi(B = 0, stability = "lambda")),
                      fixed = TRUE))
 })

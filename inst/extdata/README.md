@@ -14,3 +14,25 @@ The deterministic source that generates all five files is
 `data-raw/build-example-data.R`. The examples intentionally include both clearly
 supported and review-worthy items so printed output, summaries, and plots are
 informative.
+
+## The joint walkthrough data
+
+Three further files carry one item set through both stages of pretesting, for
+`vignette("one-item-set-both-stages")`:
+
+- `walkthrough_items.csv`: the twelve items, their intended facet, their stems,
+  what each item was built to do (`role`), and whether it is written the other
+  way round (`reverse_worded`, for `content_handoff(reverse_keyed = )`).
+- `walkthrough_sort.csv`: twenty judges' assignments, for `sort_validity()`.
+- `walkthrough_responses.csv`: 400 respondents by 12 items on a 1-5 scale, plus
+  a two-level `cohort` variable. Items the panel rejected are still present, so
+  a reader can see what keeping them would have cost.
+
+These are simulated. Two items are reverse-worded, so the raw responses must be
+recoded before anything is correlated. Five more misbehave deliberately: two
+fail content review for opposite reasons, one passes and then carries almost no
+common variance, one passes and loads on two facets, and one is flagged by an
+empirical screen for restricted variance while being worth keeping. The generating model
+is stated in full in `data-raw/build-walkthrough-data.R`, which writes all
+three files. `nomologR` mirrors `walkthrough_responses.csv` from that same
+script so the two packages cannot drift.
