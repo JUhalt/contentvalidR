@@ -12,6 +12,14 @@ fail <- function(...) {
   quit(status = 1)
 }
 
+source(file.path(root, "tools", "gate-stamp.R"))
+
+# Remove the previous tarball before anything can fail, so a build that stops
+# early leaves nothing behind for a later stage to mistake for its own output.
+version <- read.dcf(file.path(root, "DESCRIPTION"), fields = "Version")[1, 1]
+old <- file.path(out, paste0("contentvalidR_", version, ".tar.gz"))
+unlink(c(old, gate_stamp_path(old)))
+
 cat("-- document and README\n")
 devtools::document(quiet = TRUE)
 devtools::build_readme(quiet = TRUE)
@@ -34,6 +42,9 @@ cat("all URLs resolve\n")
 
 cat("\n-- build\n")
 tarball <- devtools::build(path = out, manual = TRUE, quiet = TRUE)
+# document() and build_readme() have already run, so this is the tree the
+# tarball was built from.
+writeLines(gate_source_stamp(root), gate_stamp_path(tarball))
 cat("tarball: ", tarball, " (", round(file.size(tarball) / 1024), " KB)\n", sep = "")
 
 files <- utils::untar(tarball, list = TRUE)

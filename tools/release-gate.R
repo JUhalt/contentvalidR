@@ -33,8 +33,15 @@ cat("contentvalidR release gate\n")
 cat("version: ", version, "\n", sep = "")
 cat("workdir: ", out, "\n", sep = "")
 
+# Each stage tests what the previous one produced, so once one fails the rest
+# are skipped rather than run: a later stage reporting PASS after an earlier
+# FAIL has, at best, tested something other than this source.
 status <- integer(0)
 for (stage in stages) {
+  if (any(status != 0, na.rm = TRUE)) {
+    status[stage] <- NA_integer_
+    next
+  }
   cat("\n", strrep("=", 70), "\n== ", stage, "\n", strrep("=", 70), "\n", sep = "")
   script <- file.path(root, "tools", paste0("gate-", stage, ".R"))
   # --vanilla so no user profile can load the package behind our back.
@@ -44,9 +51,12 @@ for (stage in stages) {
 
 cat("\n", strrep("=", 70), "\n== summary\n", strrep("=", 70), "\n", sep = "")
 for (stage in names(status)) {
-  cat(sprintf("%-6s %s\n", stage, if (status[[stage]] == 0) "PASS" else "FAIL"))
+  label <- if (is.na(status[[stage]])) {
+    "SKIP (an earlier stage failed)"
+  } else if (status[[stage]] == 0) "PASS" else "FAIL"
+  cat(sprintf("%-6s %s\n", stage, label))
 }
-if (any(status != 0)) {
+if (any(is.na(status) | status != 0)) {
   cat("\nA stage failed. The gate is the last check before a release, so fix\n",
       "the cause rather than working around it by hand.\n", sep = "")
   quit(status = 1)

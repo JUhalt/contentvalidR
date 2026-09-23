@@ -38,6 +38,27 @@ smoke stage refuses to start if contentvalidR is already loaded, rather than
 warning and continuing. See
 [#51](https://github.com/JUhalt/contentvalidR/issues/51).
 
+## A stage only ever tests this source
+
+`smoke` and `check` test the tarball `build` leaves behind, and every branch's
+tarball has the same name. So the gate makes sure the tarball in front of a
+stage was built from the tree in front of it:
+
+- `build` deletes the previous tarball before anything else, so a build that
+  stops at spelling or URLs leaves nothing for a later stage to pick up;
+- `build` writes a `.source` stamp beside the tarball: the commit plus a hash
+  of every uncommitted change;
+- `smoke` and `check` compare that stamp with the tree they are run from, and
+  fail if a branch switch, a commit, or an edit has come between;
+- the gate stops at the first failed stage and reports the rest as `SKIP`
+  rather than running them.
+
+Before this, a build that failed its spelling check left the previous
+branch's tarball in place, and `smoke` and `check` passed it: `build FAIL`,
+`smoke PASS`, `check PASS`, where the two passes described a different branch.
+The gate as a whole still failed, but the per-stage lines were false, and they
+were believed.
+
 ## What the smoke test checks, and why there
 
 `tools/gate-smoke-run.R` runs against the **installed** package, with only base
