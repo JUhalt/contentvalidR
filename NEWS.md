@@ -1,6 +1,32 @@
-# contentvalidR 0.6.0.9000 (development version)
+# contentvalidR 0.7.0
 
-## The one deprecation in flight is resolved (in development)
+Seventh public release. v0.7.0 is about being safe to depend on. It says in
+writing what code can rely on from one version to the next, freezes the
+handoff object that another package reads, and settles the one deprecation
+that a 1.0 release would otherwise lock in. It also adds a worked example that
+carries a single item set from an expert panel into response data, and it
+corrects the stated basis of the Delphi kappa interval.
+
+The package continues to declare `Imports: stats` only.
+
+**One breaking change.** `anova_content()` no longer accepts `posthoc`, and
+passing it is an error. The argument has had no effect on any result in any
+release, and it has warned in every one since 0.1.0. See below.
+
+No default changes, and no computed value changes. Across all six workflows,
+every Delphi stability method, and the bootstrap intervals, every value 0.6.0
+returns is identical in 0.7.0. Handoff objects gain four columns (`note`,
+`keying`, `response_min`, `response_max`), all appended within schema
+version 1, so a reader written for 0.6.0 still reads them.
+
+New arguments: `content_handoff(reverse_keyed = , response_scale = )`. New
+vignette: `vignette("one-item-set-both-stages")`. New example data: three
+`walkthrough_*.csv` files in `inst/extdata`.
+
+Published on GitHub and R-universe. 0.4.0 remains in CRAN's review queue, and
+CRAN policy asks that no further version be submitted while one is pending.
+
+## The one deprecation in flight is resolved
 
 * **Breaking: `anova_content()`'s `posthoc` argument is removed**
   ([#60](https://github.com/JUhalt/contentvalidR/issues/60)). Passing it is now
@@ -37,7 +63,7 @@
   every item. The tiers become promises at 1.0, so a load-bearing function had
   to stop being filed under the one that promises least. No code changes.
 
-## One item set carried through both stages (in development)
+## One item set carried through both stages
 
 * New `vignette("one-item-set-both-stages")` follows twelve items from an
   expert panel through the handoff and into response data
@@ -93,7 +119,7 @@
   by cohort. If the data are regenerated and a claim stops holding, the suite
   fails rather than the vignette quietly becoming wrong.
 
-## Handoff schema version 1 is frozen (in development)
+## Handoff schema version 1 is frozen
 
 * `?content_handoff` gains two sections. *What version 1 freezes* names every
   field and column a reader can rely on, states that each keeps its name,
@@ -146,7 +172,7 @@
   is a 0.6.0 handoff plus them and the `note` column described below. All are
   appended after the original columns, as the additive rule requires.
 
-## The kappa interval in a Delphi is a published procedure (in development)
+## The kappa interval in a Delphi is a published procedure
 
 * The bootstrap interval beside a Delphi stability kappa was described in the
   output and the help page as this package's own extension. That was wrong.
@@ -180,7 +206,7 @@
   columns; it now omits both. The printed-claims test that should have caught
   this used a statistic that has no interval at all, so it passed vacuously.
 
-## A written stability policy (in development)
+## A written stability policy
 
 * `?contentvalidR` now states what code can rely on across versions
   (the 1.0 criteria on
@@ -198,7 +224,7 @@
   until it is classified, and the deprecation the policy cites as its worked
   example is checked to still warn and still work.
 
-## Saying what NA means (in development)
+## Saying what NA means
 
 * `item_statistics` and `panel_statistics` gain a `note` column, carrying the
   producing function's own sentence for why a value or interval is absent or
