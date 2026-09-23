@@ -158,10 +158,13 @@ fit
 #> which is what a Delphi aims for, so a panel whose experts nearly all kept
 #> their answer can still show a low kappa. Holey et al. saw this for their
 #> most-agreed statement. Read kappa next to prop_unchanged. The intervals are
-#> percentile bootstraps that resample experts. That is this package's
-#> extension: Zapf et al. (2016) evaluated resampling items for panel
-#> coefficients, not experts for a two-round kappa. With few experts the
-#> intervals are wide.
+#> percentile bootstraps that resample the experts, which are the units the
+#> two rounds cross-classify. That is the procedure Klar et al. (2002)
+#> describe for kappa, but they evaluated it for an unweighted kappa on two
+#> categories and found a nominal 95% interval covered about 83% of the time
+#> with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels
+#> are smaller than that, so the interval is narrower than its label claims:
+#> read it as indicative of precision, not as a test.
 #> 
 #> The panel changed size across rounds (10, 10, 9 experts). Stability uses
 #> only the experts who rated an item in both rounds, and a result from fewer

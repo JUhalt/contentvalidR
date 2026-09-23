@@ -233,10 +233,13 @@ study. The seed makes the bootstrap intervals reproducible.</p>
 <span><span class="co">#&gt; which is what a Delphi aims for, so a panel whose experts nearly all kept</span></span>
 <span><span class="co">#&gt; their answer can still show a low kappa. Holey et al. saw this for their</span></span>
 <span><span class="co">#&gt; most-agreed statement. Read kappa next to prop_unchanged. The intervals are</span></span>
-<span><span class="co">#&gt; percentile bootstraps that resample experts. That is this package's</span></span>
-<span><span class="co">#&gt; extension: Zapf et al. (2016) evaluated resampling items for panel</span></span>
-<span><span class="co">#&gt; coefficients, not experts for a two-round kappa. With few experts the</span></span>
-<span><span class="co">#&gt; intervals are wide.</span></span>
+<span><span class="co">#&gt; percentile bootstraps that resample the experts, which are the units the</span></span>
+<span><span class="co">#&gt; two rounds cross-classify. That is the procedure Klar et al. (2002)</span></span>
+<span><span class="co">#&gt; describe for kappa, but they evaluated it for an unweighted kappa on two</span></span>
+<span><span class="co">#&gt; categories and found a nominal 95% interval covered about 83% of the time</span></span>
+<span><span class="co">#&gt; with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels</span></span>
+<span><span class="co">#&gt; are smaller than that, so the interval is narrower than its label claims:</span></span>
+<span><span class="co">#&gt; read it as indicative of precision, not as a test.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The panel changed size across rounds (10, 10, 9 experts). Stability uses</span></span>
 <span><span class="co">#&gt; only the experts who rated an item in both rounds, and a result from fewer</span></span>
