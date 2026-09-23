@@ -70,6 +70,24 @@
   ag <- if (is.list(fit$details)) fit$details$agreement else NULL
   if (!inherits(ag, "contentvalid_agreement")) return(out)
 
+  has_interval <- is.finite(ag$ci_low) && is.finite(ag$ci_high)
+  note <- c(
+    if (!is.finite(ag$estimate)) {
+      "The coefficient is undefined for these ratings, so it has no interval."
+    } else if (!has_interval) {
+      paste("The bootstrap interval could not be computed: too few resamples",
+            "produced a usable coefficient.")
+    },
+    # The console warns that the interval for AC1 is unvalidated. The caveat
+    # belongs with the number wherever it is shown, not only where it was
+    # computed (#56).
+    if (identical(ag$method, "ac1") && has_interval) {
+      paste("Zapf et al. (2016) evaluated this bootstrap for Fleiss' kappa",
+            "and Krippendorff's alpha, not for AC1. Applying it here is this",
+            "package's extension, and its coverage is unknown.")
+    }
+  )
+
   row <- .handoff_no_interval(data.frame(
     statistic = .agreement_label(ag$method, ag$level),
     value = as.numeric(ag$estimate),
@@ -79,14 +97,7 @@
     upper = as.numeric(ag$ci_high),
     interval_method = "item-resampling percentile bootstrap",
     interval_level = 1 - ag$alpha,
-    note = if (!is.finite(ag$estimate)) {
-      "The coefficient is undefined for these ratings, so it has no interval."
-    } else if (is.finite(ag$ci_low) && is.finite(ag$ci_high)) {
-      ""
-    } else {
-      paste("The bootstrap interval could not be computed: too few resamples",
-            "produced a usable coefficient.")
-    },
+    note = paste(note, collapse = " "),
     stringsAsFactors = FALSE
   ))
   rbind(out, row)

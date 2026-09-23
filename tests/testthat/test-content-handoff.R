@@ -417,6 +417,25 @@ test_that("a panel statistic explains an absent coefficient or interval", {
   expect_identical(ok$note, "")
 })
 
+test_that("the AC1 interval carries its extension caveat into the handoff", {
+  # The console warns that Zapf et al. did not evaluate this bootstrap for
+  # AC1. A reader of the handoff sees the same number and must see the same
+  # caveat (#56).
+  ac1 <- content_handoff(expert_fit(agreement = "ac1", agreement_B = 200,
+                                    seed = 11))$panel_statistics
+  expect_identical(nrow(ac1), 1L)
+  expect_false(is.na(ac1$lower))
+  expect_match(ac1$note, "this package's extension")
+  expect_match(ac1$note, "not for AC1")
+
+  # The default coefficient is the one Zapf et al. did evaluate, so it says
+  # nothing extra.
+  alpha <- content_handoff(expert_fit(agreement = "krippendorff",
+                                      agreement_B = 200,
+                                      seed = 11))$panel_statistics
+  expect_identical(alpha$note, "")
+})
+
 test_that("a Delphi handoff records its provenance and refuses `round`", {
   fit <- delphi_fit(B = 0)
   h <- content_handoff(fit, keep = c("Supported", "Review"))
