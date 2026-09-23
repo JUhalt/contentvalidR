@@ -127,6 +127,19 @@
     response_max <- rep(as.integer(response_scale[2]), n)
   }
 
+  # Recoding a reverse-worded item needs the scale's limits, so keying without
+  # them is almost always an oversight. Say so here, where it can still be
+  # fixed, rather than let a reader refuse later. `character(0)` reverses
+  # nothing, so it needs no scale and draws no warning.
+  n_reversed <- sum(keying == -1L, na.rm = TRUE)
+  if (n_reversed > 0L && is.null(response_scale)) {
+    warning(n_reversed, " item(s) are marked reverse-worded, but ",
+            "`response_scale` was not given. A reverse-worded item cannot be ",
+            "recoded without the lowest and highest answer a respondent can ",
+            "give, so add, for example, `response_scale = c(1, 5)`.",
+            call. = FALSE)
+  }
+
   list(keying = as.integer(keying), response_min = response_min,
        response_max = response_max)
 }
@@ -694,7 +707,13 @@
 #'
 #' Supplying `reverse_keyed` is a statement about every item: the ones named
 #' are reverse-worded and the rest are not. Pass `character(0)` to record that
-#' you checked and none is.
+#' you checked and none is. So `keying` is either `NA` for every item or for
+#' none of them, and the same holds for the response scale.
+#'
+#' Naming a reverse-worded item without `response_scale` gives a warning,
+#' because such an item cannot be recoded without the scale's limits. A reader
+#' that recodes would otherwise have to refuse later, where the problem is
+#' harder to fix.
 #'
 #' @section What a handoff does and does not establish:
 #' Surviving content review is evidence about relevance, representation, and

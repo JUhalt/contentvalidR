@@ -298,7 +298,13 @@ range.
 
 Supplying \code{reverse_keyed} is a statement about every item: the ones named
 are reverse-worded and the rest are not. Pass \code{character(0)} to record that
-you checked and none is.
+you checked and none is. So \code{keying} is either \code{NA} for every item or for
+none of them, and the same holds for the response scale.
+
+Naming a reverse-worded item without \code{response_scale} gives a warning,
+because such an item cannot be recoded without the scale's limits. A reader
+that recodes would otherwise have to refuse later, where the problem is
+harder to fix.
 }
 
 \section{What a handoff does and does not establish}{

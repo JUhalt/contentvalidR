@@ -99,6 +99,10 @@
     scale ever leaking into these columns.
   * `reverse_keyed = character(0)` records that someone checked and no item is
     reversed, which is different from not having said.
+  * Naming a reverse-worded item without `response_scale` warns, since the
+    item cannot be recoded without the scale's limits. A reader that recodes
+    would otherwise refuse one step later, where the omission is harder to
+    trace. Suggested by the nomologR maintainers.
 * Item text was considered and left out. It was wanted only if every workflow
   that can produce a handoff has the wording, and none of them collects it.
 * Apart from those three columns, the freeze changes no object: a 0.7.0 handoff
