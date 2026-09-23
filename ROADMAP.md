@@ -655,10 +655,16 @@ item-level and ends with exactly the evidence the handoff carries.
 
 ***
 
-## v0.7.0 - Housekeeping
+## v0.7.0 - Safe to depend on
 
-**Status:** In development
+**Status:** Released (0.7.0 on 2026-09-23, on GitHub and R-universe)
 **Milestone:** [v0.7.0](https://github.com/JUhalt/contentvalidR/milestone/7)
+**Version:** `0.7.0`
+
+Planned as housekeeping, it became the release that met most of this
+package's share of the joint 1.0 criteria: a written stability policy, a
+frozen handoff schema checked against its readers, the last deprecation
+settled, and the joint walkthrough.
 
 - [x] Say what an `NA` stability statistic means in a handoff
       ([#48](https://github.com/JUhalt/contentvalidR/issues/48)). Documented
@@ -677,20 +683,40 @@ item-level and ends with exactly the evidence the handoff carries.
       entirely with this package. Three tiers covering every export, the
       deprecation cycle, a changed default treated as breaking, the handoff
       schema's guarantees, and which versions of R are supported.
-- [ ] Resolve the one deprecation in flight before 1.0 locks it in
+- [x] Resolve the one deprecation in flight before 1.0 locks it in
       ([#60](https://github.com/JUhalt/contentvalidR/issues/60)). The policy
       removes a deprecation in a minor release before 1.0 and only in a major
-      release afterwards, so this is the last release that can settle
-      `anova_content()`'s `posthoc` argument without waiting for 2.0.
+      release afterwards, so this was the last release that could settle
+      `anova_content()`'s `posthoc` argument without waiting for 2.0. It is
+      removed; `posthoc_pass` is documented as deprecated, starting its clock.
+- [x] Freeze handoff schema version 1
+      ([#54](https://github.com/JUhalt/contentvalidR/issues/54)), after
+      checking it against nomologR and solomonR. Adds `keying`,
+      `response_min`, and `response_max`, which come from the analyst and
+      never from the fit.
+- [x] The joint walkthrough on shared teaching data
+      ([#55](https://github.com/JUhalt/contentvalidR/issues/55)):
+      `vignette("one-item-set-both-stages")`, where the two stages disagree in
+      both directions.
+- [x] Settle the two interval extensions
+      ([#56](https://github.com/JUhalt/contentvalidR/issues/56)). The Delphi
+      kappa interval turned out to be a published procedure (Klar et al.,
+      2002) with a measured coverage shortfall at panel sizes, which the output
+      now reports. The AC1 interval remains an extension, labelled wherever
+      its number appears.
+
+CRAN: unchanged. 0.4.0 is still in review, so 0.7.0 is not submitted; whichever
+version is current when 0.4.0 resolves goes to CRAN as the update, from its own
+tag.
 
 ***
 
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.
-**Criteria:** drafted jointly on
+**Criteria:** agreed jointly on
 [nomologR#53](https://github.com/JUhalt/nomologR/issues/53), which is the
-single list. This section only mirrors it.
+single list. This section only mirrors it, with this package's progress.
 
 contentvalidR and nomologR are the two halves of scale development: content
 review, then empirical validation. They are joined by the handoff schema on
@@ -702,14 +728,17 @@ stable together.
   1.0.0, and neither package tags 1.0.0 on its own.
 - After 1.0.0, major versions move together whenever the shared contract
   breaks. Minor versions and patches stay independent.
-- The draft criteria on nomologR#53 are:
-  - the handoff is implemented on both sides, tested against real fixtures
-    from more than one producer version;
-  - schema version 1 is frozen and becomes a compatibility promise;
-  - both packages are on CRAN;
-  - both public APIs are stable, under a written deprecation policy;
-  - there is a joint walkthrough from content review to empirical validation;
-  - the two releases go out on the same day, each linking the other.
+- The criteria on nomologR#53, with where contentvalidR stands after 0.7.0:
+  - [ ] the handoff is implemented on both sides, tested against real fixtures
+        from more than one producer version. The producer is done; the reader
+        is nomologR's to finish.
+  - [x] schema version 1 is frozen and becomes a compatibility promise (0.7.0).
+  - [ ] both packages are on CRAN. Waiting on CRAN's review of 0.4.0.
+  - [x] both public APIs are stable, under a written deprecation policy, as far
+        as this package goes (0.7.0).
+  - [x] there is a joint walkthrough from content review to empirical
+        validation (0.7.0).
+  - [ ] the two releases go out on the same day, each linking the other.
 
 ***
 

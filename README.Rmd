@@ -25,7 +25,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.6.0.**
+**Current stable release: 0.7.0.**
 
 Development plans: [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open issues](https://github.com/JUhalt/contentvalidR/issues).
 Documentation: [Package website](https://juhalt.github.io/contentvalidR/) · [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
