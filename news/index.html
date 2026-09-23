@@ -23,6 +23,7 @@
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
     <li><a class="dropdown-item" href="../articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
+    <li><a class="dropdown-item" href="../articles/one-item-set-both-stages.html">One Item Set, Both Stages</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
@@ -44,6 +45,23 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0.9000" id="contentvalidr-0609000-development-version">contentvalidR 0.6.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0609000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="one-item-set-carried-through-both-stages-in-development-0-6-0-9000">One item set carried through both stages (in development)<a class="anchor" aria-label="anchor" href="#one-item-set-carried-through-both-stages-in-development-0-6-0-9000"></a></h3>
+<ul><li>New <code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> follows twelve items from an expert panel through the handoff and into response data (<a href="https://github.com/JUhalt/contentvalidR/issues/55" class="external-link">#55</a>), so the pair of stages is demonstrated rather than asserted. Every step runs: the second half uses <code>stats</code> only, and the <code>nomologR</code> call is shown but not run, since neither package depends on the other.</li>
+<li>The point of the walkthrough is the disagreement between the stages, and it runs in <strong>both</strong> directions.
+<ul><li>Two items fail content review, for opposite reasons: one keeps its target and misses the criterion, the other loses its target to a competing facet.</li>
+<li>Two pass content review and then misbehave. <code>EF4</code> is sorted to effort regulation by eighteen of twenty judges and carries almost no common variance; <code>TF4</code> is sorted to one facet and loads on both. A panel cannot see either, which is the reason for running the second stage.</li>
+<li>
+<code>EF3</code> is the reverse, and the sharper case: an empirical screen flags it and it is worth keeping. Nearly everyone endorses “I finish the assignments that count toward my grade” — 96% answer in the top two categories — so its variance is a third of every other item’s and it cannot correlate strongly with anything. Its correlation looks as bad as <code>EF4</code>‘s, and only the distribution tells them apart. It is also the only item covering the completion of required work, so dropping it would narrow the domain the panel defined. Added at the nomologR maintainers’ suggestion, so that both packages’ articles make the same point about it.</li>
+<li>Meanwhile the item that met the content criterion by a single judge behaves perfectly well, so a borderline content result is not read as a prediction.</li>
+<li>
+<code>EF2</code> and <code>TF2</code> are written the other way round, and the walkthrough passes that to <code>content_handoff(reverse_keyed = )</code> along with the respondents’ one-to-five scale. It then shows why the handoff has to carry both: before recoding, <code>TF2</code> correlates at -0.51 with its own facet, which looks like the strongest evidence against an item that item analysis produces and is in fact a coding error. Recoded with the keying and the scale limits the handoff carries, it is +0.51. Added together with the keying field, at the nomologR maintainers’ request, so that no reader ever receives reverse-worded data without the means to know it.</li>
+</ul></li>
+<li>Three new files in <code>inst/extdata</code>: <code>walkthrough_items.csv</code> (the items, their facet, their stems, what each one was built to do, and whether it is reverse-worded), <code>walkthrough_sort.csv</code> (twenty judges), and <code>walkthrough_responses.csv</code> (400 respondents, twelve items, a two-level <code>cohort</code> variable, and the rejected items still present). <strong>They are simulated.</strong> No participant was involved and no real instrument is reproduced.</li>
+<li>
+<code>data-raw/build-walkthrough-data.R</code> writes all three and states the generating model in full: the two correlated facets, every loading, the response thresholds, and the single cohort shift. It uses base R only and is deterministic. <code>nomologR</code> mirrors the response file from the same script, so the two packages cannot drift.</li>
+<li>A test file holds the vignette to its claims: which two items the panel flags, which met the criterion by one judge, that <code>EF4</code> is the weak one and <code>TF4</code> the ambiguous one, that <code>EF3</code> is flagged for restricted variance rather than for lacking common variance, and that <code>TF6</code> is the only item that shifts by cohort. If the data are regenerated and a claim stops holding, the suite fails rather than the vignette quietly becoming wrong.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="handoff-schema-version-is-frozen-in-development-0-6-0-9000">Handoff schema version 1 is frozen (in development)<a class="anchor" aria-label="anchor" href="#handoff-schema-version-is-frozen-in-development-0-6-0-9000"></a></h3>
 <ul><li>

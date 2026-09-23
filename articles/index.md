@@ -12,6 +12,8 @@
   Examples](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md):
 - [From Content Validity to Empirical
   Validation](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md):
+- [One Item Set, Both
+  Stages](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md):
 
 ### Workflow guides
 

@@ -2,6 +2,69 @@
 
 ## contentvalidR 0.6.0.9000 (development version)
 
+### One item set carried through both stages (in development)
+
+- New
+  [`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md)
+  follows twelve items from an expert panel through the handoff and into
+  response data
+  ([\#55](https://github.com/JUhalt/contentvalidR/issues/55)), so the
+  pair of stages is demonstrated rather than asserted. Every step runs:
+  the second half uses `stats` only, and the `nomologR` call is shown
+  but not run, since neither package depends on the other.
+- The point of the walkthrough is the disagreement between the stages,
+  and it runs in **both** directions.
+  - Two items fail content review, for opposite reasons: one keeps its
+    target and misses the criterion, the other loses its target to a
+    competing facet.
+  - Two pass content review and then misbehave. `EF4` is sorted to
+    effort regulation by eighteen of twenty judges and carries almost no
+    common variance; `TF4` is sorted to one facet and loads on both. A
+    panel cannot see either, which is the reason for running the second
+    stage.
+  - `EF3` is the reverse, and the sharper case: an empirical screen
+    flags it and it is worth keeping. Nearly everyone endorses “I finish
+    the assignments that count toward my grade” — 96% answer in the top
+    two categories — so its variance is a third of every other item’s
+    and it cannot correlate strongly with anything. Its correlation
+    looks as bad as `EF4`‘s, and only the distribution tells them apart.
+    It is also the only item covering the completion of required work,
+    so dropping it would narrow the domain the panel defined. Added at
+    the nomologR maintainers’ suggestion, so that both packages’
+    articles make the same point about it.
+  - Meanwhile the item that met the content criterion by a single judge
+    behaves perfectly well, so a borderline content result is not read
+    as a prediction.
+  - `EF2` and `TF2` are written the other way round, and the walkthrough
+    passes that to `content_handoff(reverse_keyed = )` along with the
+    respondents’ one-to-five scale. It then shows why the handoff has to
+    carry both: before recoding, `TF2` correlates at -0.51 with its own
+    facet, which looks like the strongest evidence against an item that
+    item analysis produces and is in fact a coding error. Recoded with
+    the keying and the scale limits the handoff carries, it is +0.51.
+    Added together with the keying field, at the nomologR maintainers’
+    request, so that no reader ever receives reverse-worded data without
+    the means to know it.
+- Three new files in `inst/extdata`: `walkthrough_items.csv` (the items,
+  their facet, their stems, what each one was built to do, and whether
+  it is reverse-worded), `walkthrough_sort.csv` (twenty judges), and
+  `walkthrough_responses.csv` (400 respondents, twelve items, a
+  two-level `cohort` variable, and the rejected items still present).
+  **They are simulated.** No participant was involved and no real
+  instrument is reproduced.
+- `data-raw/build-walkthrough-data.R` writes all three and states the
+  generating model in full: the two correlated facets, every loading,
+  the response thresholds, and the single cohort shift. It uses base R
+  only and is deterministic. `nomologR` mirrors the response file from
+  the same script, so the two packages cannot drift.
+- A test file holds the vignette to its claims: which two items the
+  panel flags, which met the criterion by one judge, that `EF4` is the
+  weak one and `TF4` the ambiguous one, that `EF3` is flagged for
+  restricted variance rather than for lacking common variance, and that
+  `TF6` is the only item that shifts by cohort. If the data are
+  regenerated and a claim stops holding, the suite fails rather than the
+  vignette quietly becoming wrong.
+
 ### Handoff schema version 1 is frozen (in development)
 
 - [`?content_handoff`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
