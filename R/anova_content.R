@@ -34,16 +34,14 @@
 #'   contrast p values. Default `"none"` reproduces the planned-comparison
 #'   logic commonly used with the Hinkin-Tracey procedure; `"holm"` is a
 #'   conservative option.
-#' @param posthoc Deprecated compatibility argument. Tukey/Duncan post-hoc
-#'   testing is no longer used because the Hinkin-Tracey question is directly
-#'   represented by planned target-versus-orbiting contrasts.
-#'
 #' @return A data.frame with one row per item, including the omnibus F, raw p,
 #'   Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 #'   within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 #'   The full planned-contrast table is stored in `attr(result, "contrasts")`.
-#'   `posthoc_pass` is retained as an alias of `contrast_pass` for backward
-#'   compatibility.
+#'   `posthoc_pass` is a **deprecated** duplicate of `contrast_pass` and will
+#'   be removed; read `contrast_pass`. It is still returned so that code which
+#'   reads it keeps working, as the deprecation cycle in [contentvalidR]
+#'   requires.
 #'
 #' @references
 #' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
@@ -70,7 +68,6 @@ anova_content <- function(ratings,
                           construct_col = "construct",
                           rating_col = "rating",
                           target_map = NULL,
-                          posthoc = NULL,
                           alpha = 0.05,
                           target_col = "target_construct",
                           design = c("auto", "within", "between"),
@@ -80,11 +77,6 @@ anova_content <- function(ratings,
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one number strictly between 0 and 1.", call. = FALSE)
   }
-  if (!is.null(posthoc)) {
-    warning("`posthoc` is deprecated; `anova_content()` now uses planned target-versus-orbiting contrasts.",
-            call. = FALSE)
-  }
-
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col, require_target = FALSE)
   by_item <- split(d, d$item, drop = TRUE)
@@ -190,6 +182,9 @@ anova_content <- function(ratings,
       min_mean_diff = min_diff,
       max_contrast_p = max_p,
       contrast_pass = contrast_pass,
+      # Deprecated duplicate of contrast_pass, kept because the deprecation
+      # cycle requires a release in which reading it still works (#60). It is
+      # last so that removing it cannot move another column.
       posthoc_pass = contrast_pass,
       stringsAsFactors = FALSE
     )

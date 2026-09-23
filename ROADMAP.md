@@ -670,10 +670,18 @@ item-level and ends with exactly the evidence the handoff carries.
       the repository at `tools/release-gate.R`, runs each stage in its own
       process, and fails rather than printing findings to read past. The old
       gate skipped its own smoke test at three consecutive releases.
-- [ ] State the deprecation policy and public API stability, which is the
+- [x] State the deprecation policy and public API stability
+      ([#53](https://github.com/JUhalt/contentvalidR/pull/53)), which is the
       1.0 criterion on
       [nomologR#53](https://github.com/JUhalt/nomologR/issues/53) that rests
-      entirely with this package.
+      entirely with this package. Three tiers covering every export, the
+      deprecation cycle, a changed default treated as breaking, the handoff
+      schema's guarantees, and which versions of R are supported.
+- [ ] Resolve the one deprecation in flight before 1.0 locks it in
+      ([#60](https://github.com/JUhalt/contentvalidR/issues/60)). The policy
+      removes a deprecation in a minor release before 1.0 and only in a major
+      release afterwards, so this is the last release that can settle
+      `anova_content()`'s `posthoc` argument without waiting for 2.0.
 
 ***
 

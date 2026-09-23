@@ -32,16 +32,17 @@ major version, and never without the deprecation cycle below.
 \code{\link[=aikens_v]{aikens_v()}}, \code{\link[=cvi]{cvi()}}, \code{\link[=cvr]{cvr()}}, \code{\link[=ioc]{ioc()}}, \code{\link[=htc]{htc()}}, \code{\link[=htd]{htd()}}, \code{\link[=compute_psa]{compute_psa()}},
 \code{\link[=compute_csv]{compute_csv()}}, \code{\link[=anova_content]{anova_content()}}, \code{\link[=panel_agreement]{panel_agreement()}}, \code{\link[=expert_power]{expert_power()}},
 \code{\link[=sort_power]{sort_power()}}, \code{\link[=colquitt_benchmarks]{colquitt_benchmarks()}}, \code{\link[=interpret_colquitt]{interpret_colquitt()}},
-\code{\link[=content_structure]{content_structure()}}, \code{\link[=gtheory_content]{gtheory_content()}}, and \code{\link[=similarity_from_sort]{similarity_from_sort()}}.
+\code{\link[=content_structure]{content_structure()}}, \code{\link[=gtheory_content]{gtheory_content()}}, \code{\link[=csv_binom_test]{csv_binom_test()}}, and
+\code{\link[=similarity_from_sort]{similarity_from_sort()}}.
 
 These are supported and tested to the same standard. They may gain
 arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.
 
 \strong{Tier 3, auxiliary and compatibility helpers.}
-\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=csv_binom_test]{csv_binom_test()}}, \code{\link[=qfactor_content]{qfactor_content()}},
-\code{\link[=reproducibility_phi]{reproducibility_phi()}}, \code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}},
-and \code{\link[=simulate_csv_power]{simulate_csv_power()}}.
+\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}},
+\code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}}, and
+\code{\link[=simulate_csv_power]{simulate_csv_power()}}.
 
 These are kept for continuity with older analyses and for sensitivity
 checks. They are not recommended workflows, and they may be deprecated and
@@ -56,15 +57,22 @@ change in any release.
 
 Nothing exported disappears without warning first.
 \enumerate{
-\item The function or argument keeps working and warns, saying what to use
-instead. \code{anova_content()}'s \code{posthoc} argument is the current example.
-\item The warning stands for \strong{at least one minor release}, so code has a
+\item The function, argument, or returned field keeps working and says what to
+use instead. An argument warns when it is passed; a returned field cannot
+warn when it is read, so its documentation carries the notice instead.
+\item The notice stands for \strong{at least one minor release}, so code has a
 version in which it both runs and tells you what to change.
 \item Removal follows: in a minor release before 1.0, and only in a major
 release from 1.0 onward.
 \item \code{NEWS.md} records both the deprecation and the removal, with the
 replacement.
 }
+
+\code{anova_content()} supplies one example of each state. Its \code{posthoc} argument
+is the completed cycle: deprecated in the first release, warning through
+every release to 0.6.0, removed in 0.7.0, both ends recorded in \code{NEWS.md}.
+Its \code{posthoc_pass} returned column is the cycle in progress: a duplicate of
+\code{contrast_pass}, still returned, and documented as going away.
 }
 
 \section{Changing a default}{
