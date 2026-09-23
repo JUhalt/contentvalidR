@@ -95,14 +95,15 @@ major version, and never without the deprecation cycle below.</p>
 <code><a href="aikens_v.html">aikens_v()</a></code>, <code><a href="cvi.html">cvi()</a></code>, <code><a href="cvr.html">cvr()</a></code>, <code><a href="ioc.html">ioc()</a></code>, <code><a href="htc.html">htc()</a></code>, <code><a href="htd.html">htd()</a></code>, <code><a href="compute_psa.html">compute_psa()</a></code>,
 <code><a href="compute_csv.html">compute_csv()</a></code>, <code><a href="anova_content.html">anova_content()</a></code>, <code><a href="panel_agreement.html">panel_agreement()</a></code>, <code><a href="expert_power.html">expert_power()</a></code>,
 <code><a href="sort_power.html">sort_power()</a></code>, <code><a href="colquitt_benchmarks.html">colquitt_benchmarks()</a></code>, <code><a href="interpret_colquitt.html">interpret_colquitt()</a></code>,
-<code><a href="content_structure.html">content_structure()</a></code>, <code><a href="gtheory_content.html">gtheory_content()</a></code>, and <code><a href="similarity_from_sort.html">similarity_from_sort()</a></code>.</p>
+<code><a href="content_structure.html">content_structure()</a></code>, <code><a href="gtheory_content.html">gtheory_content()</a></code>, <code><a href="csv_binom_test.html">csv_binom_test()</a></code>, and
+<code><a href="similarity_from_sort.html">similarity_from_sort()</a></code>.</p>
 <p>These are supported and tested to the same standard. They may gain
 arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.</p>
 <p><strong>Tier 3, auxiliary and compatibility helpers.</strong>
-<code><a href="agreement_summary.html">agreement_summary()</a></code>, <code><a href="csv_binom_test.html">csv_binom_test()</a></code>, <code><a href="qfactor_content.html">qfactor_content()</a></code>,
-<code><a href="reproducibility_phi.html">reproducibility_phi()</a></code>, <code><a href="signal_detection.html">signal_detection()</a></code>, <code><a href="simulate_anova_power.html">simulate_anova_power()</a></code>,
-and <code><a href="simulate_csv_power.html">simulate_csv_power()</a></code>.</p>
+<code><a href="agreement_summary.html">agreement_summary()</a></code>, <code><a href="qfactor_content.html">qfactor_content()</a></code>, <code><a href="reproducibility_phi.html">reproducibility_phi()</a></code>,
+<code><a href="signal_detection.html">signal_detection()</a></code>, <code><a href="simulate_anova_power.html">simulate_anova_power()</a></code>, and
+<code><a href="simulate_csv_power.html">simulate_csv_power()</a></code>.</p>
 <p>These are kept for continuity with older analyses and for sensitivity
 checks. They are not recommended workflows, and they may be deprecated and
 removed with one minor release of warning.</p>
@@ -114,15 +115,21 @@ change in any release.</p>
     <h2 id="how-something-is-deprecated">How something is deprecated<a class="anchor" aria-label="anchor" href="#how-something-is-deprecated"></a></h2>
 
 
-<p>Nothing exported disappears without warning first.</p><ol><li><p>The function or argument keeps working and warns, saying what to use
-instead. <code><a href="anova_content.html">anova_content()</a></code>'s <code>posthoc</code> argument is the current example.</p></li>
-<li><p>The warning stands for <strong>at least one minor release</strong>, so code has a
+<p>Nothing exported disappears without warning first.</p><ol><li><p>The function, argument, or returned field keeps working and says what to
+use instead. An argument warns when it is passed; a returned field cannot
+warn when it is read, so its documentation carries the notice instead.</p></li>
+<li><p>The notice stands for <strong>at least one minor release</strong>, so code has a
 version in which it both runs and tells you what to change.</p></li>
 <li><p>Removal follows: in a minor release before 1.0, and only in a major
 release from 1.0 onward.</p></li>
 <li><p><code>NEWS.md</code> records both the deprecation and the removal, with the
 replacement.</p></li>
-</ol></div>
+</ol><p><code><a href="anova_content.html">anova_content()</a></code> supplies one example of each state. Its <code>posthoc</code> argument
+is the completed cycle: deprecated in the first release, warning through
+every release to 0.6.0, removed in 0.7.0, both ends recorded in <code>NEWS.md</code>.
+Its <code>posthoc_pass</code> returned column is the cycle in progress: a duplicate of
+<code>contrast_pass</code>, still returned, and documented as going away.</p>
+    </div>
     <div class="section level2">
     <h2 id="changing-a-default">Changing a default<a class="anchor" aria-label="anchor" href="#changing-a-default"></a></h2>
 

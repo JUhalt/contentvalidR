@@ -2,6 +2,53 @@
 
 ## contentvalidR 0.6.0.9000 (development version)
 
+### The one deprecation in flight is resolved (in development)
+
+- **Breaking:
+  [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)’s
+  `posthoc` argument is removed**
+  ([\#60](https://github.com/JUhalt/contentvalidR/issues/60)). Passing
+  it is now an error rather than a warning.
+  - **Replacement:** none is needed. Tukey/Duncan post-hoc testing was
+    dropped before the first release because the Hinkin-Tracey question
+    is answered directly by planned target-versus-orbiting contrasts,
+    which
+    [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+    has always run. The argument has had no effect on any result in any
+    version.
+  - **It warned from the beginning.** The deprecation warning was in the
+    initial commit and stood through 0.1.0, 0.2.0, 0.3.0, 0.3.1, 0.4.0,
+    0.5.0, and 0.6.0 — seven releases against the policy’s minimum of
+    one.
+  - **Why now.** The stability policy removes a deprecation in a minor
+    release before 1.0, and only in a major release from 1.0 onward.
+    This is the last release that can do it without waiting for 2.0.
+  - The argument sat seventh in the signature, ahead of `alpha`, so
+    anyone who passes arguments by position past `target_map` should
+    check their call.
+- **`posthoc_pass` is now documented as deprecated.** It is a duplicate
+  of `contrast_pass` and has been returned silently since the first
+  release, without ever being marked. It is **still returned and still
+  correct**, since the policy requires a release in which reading it
+  keeps working; read `contrast_pass` instead. It is the last column, so
+  removing it later cannot move another.
+- **Both events are recorded here, which is the point.** The policy says
+  `NEWS.md` records a deprecation and its removal with the replacement;
+  the `posthoc` deprecation was never recorded at all until now.
+  [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  now cites `posthoc` as the completed cycle and `posthoc_pass` as the
+  one in progress, and the test suite checks that both are in the state
+  the policy claims.
+- **[`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
+  moves from Tier 3 to Tier 2.** Tier 3 describes helpers “kept for
+  continuity with older analyses”, which are “not recommended workflows”
+  and “may be deprecated and removed”. That is the wrong description of
+  the Howard and Melloy (2016) exact test that
+  [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+  runs on every item. The tiers become promises at 1.0, so a
+  load-bearing function had to stop being filed under the one that
+  promises least. No code changes.
+
 ### One item set carried through both stages (in development)
 
 - New

@@ -30,7 +30,6 @@ anova_content(
   construct_col = "construct",
   rating_col = "rating",
   target_map = NULL,
-  posthoc = NULL,
   alpha = 0.05,
   target_col = "target_construct",
   design = c("auto", "within", "between"),
@@ -54,12 +53,6 @@ anova_content(
   Optional named character vector/list mapping item to target. If
   neither a map nor `target_col` is available, omnibus tests are still
   returned but target-versus-orbiting contrasts are `NA`.
-
-- posthoc:
-
-  Deprecated compatibility argument. Tukey/Duncan post-hoc testing is no
-  longer used because the Hinkin-Tracey question is directly represented
-  by planned target-versus-orbiting contrasts.
 
 - alpha:
 
@@ -88,8 +81,12 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast
 diagnostics. The full planned-contrast table is stored in
-`attr(result, "contrasts")`. `posthoc_pass` is retained as an alias of
-`contrast_pass` for backward compatibility.
+`attr(result, "contrasts")`. `posthoc_pass` is a **deprecated**
+duplicate of `contrast_pass` and will be removed; read `contrast_pass`.
+It is still returned so that code which reads it keeps working, as the
+deprecation cycle in
+[contentvalidR](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+requires.
 
 ## References
 

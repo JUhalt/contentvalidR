@@ -99,7 +99,6 @@ the more direct item-level evidence.</p>
 <span>  construct_col <span class="op">=</span> <span class="st">"construct"</span>,</span>
 <span>  rating_col <span class="op">=</span> <span class="st">"rating"</span>,</span>
 <span>  target_map <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  posthoc <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  target_col <span class="op">=</span> <span class="st">"target_construct"</span>,</span>
 <span>  design <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"auto"</span>, <span class="st">"within"</span>, <span class="st">"between"</span><span class="op">)</span>,</span>
@@ -124,12 +123,6 @@ numeric rating columns.</p></dd>
 <dd><p>Optional named character vector/list mapping item to target.
 If neither a map nor <code>target_col</code> is available, omnibus tests are still
 returned but target-versus-orbiting contrasts are <code>NA</code>.</p></dd>
-
-
-<dt id="arg-posthoc">posthoc<a class="anchor" aria-label="anchor" href="#arg-posthoc"></a></dt>
-<dd><p>Deprecated compatibility argument. Tukey/Duncan post-hoc
-testing is no longer used because the Hinkin-Tracey question is directly
-represented by planned target-versus-orbiting contrasts.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
@@ -159,8 +152,10 @@ conservative option.</p></dd>
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 The full planned-contrast table is stored in <code>attr(result, "contrasts")</code>.
-<code>posthoc_pass</code> is retained as an alias of <code>contrast_pass</code> for backward
-compatibility.</p>
+<code>posthoc_pass</code> is a <strong>deprecated</strong> duplicate of <code>contrast_pass</code> and will
+be removed; read <code>contrast_pass</code>. It is still returned so that code which
+reads it keeps working, as the deprecation cycle in <a href="contentvalidR-package.html">contentvalidR</a>
+requires.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

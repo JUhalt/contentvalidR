@@ -83,6 +83,7 @@ major version, and never without the deprecation cycle below.
 [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md),
 [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
 [`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md),
+[`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md),
 and
 [`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md).
 
@@ -92,7 +93,6 @@ break working code goes through the deprecation cycle.
 
 **Tier 3, auxiliary and compatibility helpers.**
 [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
-[`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md),
 [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md),
 [`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md),
 [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md),
@@ -112,12 +112,12 @@ Internals can change in any release.
 
 Nothing exported disappears without warning first.
 
-1.  The function or argument keeps working and warns, saying what to use
-    instead.
-    [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)'s
-    `posthoc` argument is the current example.
+1.  The function, argument, or returned field keeps working and says
+    what to use instead. An argument warns when it is passed; a returned
+    field cannot warn when it is read, so its documentation carries the
+    notice instead.
 
-2.  The warning stands for **at least one minor release**, so code has a
+2.  The notice stands for **at least one minor release**, so code has a
     version in which it both runs and tells you what to change.
 
 3.  Removal follows: in a minor release before 1.0, and only in a major
@@ -125,6 +125,13 @@ Nothing exported disappears without warning first.
 
 4.  `NEWS.md` records both the deprecation and the removal, with the
     replacement.
+
+[`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+supplies one example of each state. Its `posthoc` argument is the
+completed cycle: deprecated in the first release, warning through every
+release to 0.6.0, removed in 0.7.0, both ends recorded in `NEWS.md`. Its
+`posthoc_pass` returned column is the cycle in progress: a duplicate of
+`contrast_pass`, still returned, and documented as going away.
 
 ## Changing a default
 

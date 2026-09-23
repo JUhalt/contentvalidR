@@ -46,6 +46,25 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0.9000" id="contentvalidr-0609000-development-version">contentvalidR 0.6.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0609000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="the-one-deprecation-in-flight-is-resolved-in-development-0-6-0-9000">The one deprecation in flight is resolved (in development)<a class="anchor" aria-label="anchor" href="#the-one-deprecation-in-flight-is-resolved-in-development-0-6-0-9000"></a></h3>
+<ul><li>
+<strong>Breaking: <code><a href="../reference/anova_content.html">anova_content()</a></code>’s <code>posthoc</code> argument is removed</strong> (<a href="https://github.com/JUhalt/contentvalidR/issues/60" class="external-link">#60</a>). Passing it is now an error rather than a warning.
+<ul><li>
+<strong>Replacement:</strong> none is needed. Tukey/Duncan post-hoc testing was dropped before the first release because the Hinkin-Tracey question is answered directly by planned target-versus-orbiting contrasts, which <code><a href="../reference/anova_content.html">anova_content()</a></code> has always run. The argument has had no effect on any result in any version.</li>
+<li>
+<strong>It warned from the beginning.</strong> The deprecation warning was in the initial commit and stood through 0.1.0, 0.2.0, 0.3.0, 0.3.1, 0.4.0, 0.5.0, and 0.6.0 — seven releases against the policy’s minimum of one.</li>
+<li>
+<strong>Why now.</strong> The stability policy removes a deprecation in a minor release before 1.0, and only in a major release from 1.0 onward. This is the last release that can do it without waiting for 2.0.</li>
+<li>The argument sat seventh in the signature, ahead of <code>alpha</code>, so anyone who passes arguments by position past <code>target_map</code> should check their call.</li>
+</ul></li>
+<li>
+<strong><code>posthoc_pass</code> is now documented as deprecated.</strong> It is a duplicate of <code>contrast_pass</code> and has been returned silently since the first release, without ever being marked. It is <strong>still returned and still correct</strong>, since the policy requires a release in which reading it keeps working; read <code>contrast_pass</code> instead. It is the last column, so removing it later cannot move another.</li>
+<li>
+<strong>Both events are recorded here, which is the point.</strong> The policy says <code>NEWS.md</code> records a deprecation and its removal with the replacement; the <code>posthoc</code> deprecation was never recorded at all until now. <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> now cites <code>posthoc</code> as the completed cycle and <code>posthoc_pass</code> as the one in progress, and the test suite checks that both are in the state the policy claims.</li>
+<li>
+<strong><code><a href="../reference/csv_binom_test.html">csv_binom_test()</a></code> moves from Tier 3 to Tier 2.</strong> Tier 3 describes helpers “kept for continuity with older analyses”, which are “not recommended workflows” and “may be deprecated and removed”. That is the wrong description of the Howard and Melloy (2016) exact test that <code><a href="../reference/sort_validity.html">sort_validity()</a></code> runs on every item. The tiers become promises at 1.0, so a load-bearing function had to stop being filed under the one that promises least. No code changes.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="one-item-set-carried-through-both-stages-in-development-0-6-0-9000">One item set carried through both stages (in development)<a class="anchor" aria-label="anchor" href="#one-item-set-carried-through-both-stages-in-development-0-6-0-9000"></a></h3>
 <ul><li>New <code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> follows twelve items from an expert panel through the handoff and into response data (<a href="https://github.com/JUhalt/contentvalidR/issues/55" class="external-link">#55</a>), so the pair of stages is demonstrated rather than asserted. Every step runs: the second half uses <code>stats</code> only, and the <code>nomologR</code> call is shown but not run, since neither package depends on the other.</li>
 <li>The point of the walkthrough is the disagreement between the stages, and it runs in <strong>both</strong> directions.
