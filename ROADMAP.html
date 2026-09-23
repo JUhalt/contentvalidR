@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -379,26 +379,31 @@
 <li><label><input type="checkbox" checked>Audit printed claims against what the functions compute (<a href="https://github.com/JUhalt/contentvalidR/issues/41" class="external-link">#41</a>). The checks work from real fitted objects, and <code>.print_key()</code> now fails on an unknown term rather than dropping a column’s explanation in silence. The first pass found no false claim in the printed output.</label></li>
 </ul><hr></div>
 <div class="section level2">
-<h2 id="v070---housekeeping">v0.7.0 - Housekeeping<a class="anchor" aria-label="anchor" href="#v070---housekeeping"></a></h2>
-<p><strong>Status:</strong> In development <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/7" class="external-link">v0.7.0</a></p>
+<h2 id="v070---safe-to-depend-on">v0.7.0 - Safe to depend on<a class="anchor" aria-label="anchor" href="#v070---safe-to-depend-on"></a></h2>
+<p><strong>Status:</strong> Released (0.7.0 on 2026-09-23, on GitHub and R-universe) <strong>Milestone:</strong> <a href="https://github.com/JUhalt/contentvalidR/milestone/7" class="external-link">v0.7.0</a> <strong>Version:</strong> <code>0.7.0</code></p>
+<p>Planned as housekeeping, it became the release that met most of this package’s share of the joint 1.0 criteria: a written stability policy, a frozen handoff schema checked against its readers, the last deprecation settled, and the joint walkthrough.</p>
 <ul class="task-list"><li><label><input type="checkbox" checked>Say what an <code>NA</code> stability statistic means in a handoff (<a href="https://github.com/JUhalt/contentvalidR/issues/48" class="external-link">#48</a>). Documented the two cases, and added a <code>note</code> column carrying the producing function’s own sentence, so a consumer need not reconstruct method-specific semantics from statistic names.</label></li>
 <li><label><input type="checkbox" checked>Make the release gate’s clean-library smoke test actually run (<a href="https://github.com/JUhalt/contentvalidR/issues/51" class="external-link">#51</a>). It lives in the repository at <code>tools/release-gate.R</code>, runs each stage in its own process, and fails rather than printing findings to read past. The old gate skipped its own smoke test at three consecutive releases.</label></li>
 <li><label><input type="checkbox" checked>State the deprecation policy and public API stability (<a href="https://github.com/JUhalt/contentvalidR/pull/53" class="external-link">#53</a>), which is the 1.0 criterion on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a> that rests entirely with this package. Three tiers covering every export, the deprecation cycle, a changed default treated as breaking, the handoff schema’s guarantees, and which versions of R are supported.</label></li>
-<li><label><input type="checkbox">Resolve the one deprecation in flight before 1.0 locks it in (<a href="https://github.com/JUhalt/contentvalidR/issues/60" class="external-link">#60</a>). The policy removes a deprecation in a minor release before 1.0 and only in a major release afterwards, so this is the last release that can settle <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc</code> argument without waiting for 2.0.</label></li>
-</ul><hr></div>
+<li><label><input type="checkbox" checked>Resolve the one deprecation in flight before 1.0 locks it in (<a href="https://github.com/JUhalt/contentvalidR/issues/60" class="external-link">#60</a>). The policy removes a deprecation in a minor release before 1.0 and only in a major release afterwards, so this was the last release that could settle <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc</code> argument without waiting for 2.0. It is removed; <code>posthoc_pass</code> is documented as deprecated, starting its clock.</label></li>
+<li><label><input type="checkbox" checked>Freeze handoff schema version 1 (<a href="https://github.com/JUhalt/contentvalidR/issues/54" class="external-link">#54</a>), after checking it against nomologR and solomonR. Adds <code>keying</code>, <code>response_min</code>, and <code>response_max</code>, which come from the analyst and never from the fit.</label></li>
+<li><label><input type="checkbox" checked>The joint walkthrough on shared teaching data (<a href="https://github.com/JUhalt/contentvalidR/issues/55" class="external-link">#55</a>): <code><a href="articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code>, where the two stages disagree in both directions.</label></li>
+<li><label><input type="checkbox" checked>Settle the two interval extensions (<a href="https://github.com/JUhalt/contentvalidR/issues/56" class="external-link">#56</a>). The Delphi kappa interval turned out to be a published procedure (Klar et al., 2002) with a measured coverage shortfall at panel sizes, which the output now reports. The AC1 interval remains an extension, labelled wherever its number appears.</label></li>
+</ul><p>CRAN: unchanged. 0.4.0 is still in review, so 0.7.0 is not submitted; whichever version is current when 0.4.0 resolves goes to CRAN as the update, from its own tag.</p>
+<hr></div>
 <div class="section level2">
 <h2 id="v100---joint-stable-release-with-nomologr-proposed">v1.0.0 - Joint stable release with nomologR (proposed)<a class="anchor" aria-label="anchor" href="#v100---joint-stable-release-with-nomologr-proposed"></a></h2>
-<p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> drafted jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it.</p>
+<p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> agreed jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it, with this package’s progress.</p>
 <p>contentvalidR and nomologR are the two halves of scale development: content review, then empirical validation. They are joined by the handoff schema on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The target is for both to release 1.0.0 together, so the version number tells users the pair is stable together.</p>
 <ul><li>Converge, don’t move in lockstep. Minor versions stay independent until 1.0.0, and neither package tags 1.0.0 on its own.</li>
 <li>After 1.0.0, major versions move together whenever the shared contract breaks. Minor versions and patches stay independent.</li>
-<li>The draft criteria on nomologR#53 are:
-<ul><li>the handoff is implemented on both sides, tested against real fixtures from more than one producer version;</li>
-<li>schema version 1 is frozen and becomes a compatibility promise;</li>
-<li>both packages are on CRAN;</li>
-<li>both public APIs are stable, under a written deprecation policy;</li>
-<li>there is a joint walkthrough from content review to empirical validation;</li>
-<li>the two releases go out on the same day, each linking the other.</li>
+<li>The criteria on nomologR#53, with where contentvalidR stands after 0.7.0:
+<ul class="task-list"><li><label><input type="checkbox">the handoff is implemented on both sides, tested against real fixtures from more than one producer version. The producer is done; the reader is nomologR’s to finish.</label></li>
+<li><label><input type="checkbox" checked>schema version 1 is frozen and becomes a compatibility promise (0.7.0).</label></li>
+<li><label><input type="checkbox">both packages are on CRAN. Waiting on CRAN’s review of 0.4.0.</label></li>
+<li><label><input type="checkbox" checked>both public APIs are stable, under a written deprecation policy, as far as this package goes (0.7.0).</label></li>
+<li><label><input type="checkbox" checked>there is a joint walkthrough from content review to empirical validation (0.7.0).</label></li>
+<li><label><input type="checkbox">the two releases go out on the same day, each linking the other.</label></li>
 </ul></li>
 </ul><hr></div>
 <div class="section level2">
