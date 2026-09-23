@@ -1,13 +1,5 @@
-# Smallest number of endorsing experts that clears the criterion for a panel of
-# size n, or NA when no attainable count clears it.
-.cvi_required_count <- function(n) {
-  crit <- .cvi_common_criterion(n)
-  out <- rep(NA_integer_, length(n))
-  ok <- !is.na(crit) & n > 0L
-  out[ok] <- as.integer(ceiling(crit[ok] * n[ok] - 1e-9))
-  out[!is.na(out) & out > n] <- NA_integer_
-  out
-}
+# .cvi_required_count() lives beside .cvi_common_criterion() in
+# expert_validity.R, so the planner and the workflow read one rule.
 
 .cvr_required_count <- function(n, alpha) {
   vapply(n, function(k) {
@@ -46,9 +38,11 @@
 #' @param prob Probability that one expert endorses the item, as relevant
 #'   (`criterion = "cvi"`) or essential (`criterion = "cvr"`). Values well below
 #'   0.5 describe items the panel largely rejects.
-#' @param criterion `"cvi"` uses the common panel-size I-CVI guideline: 1.00 for
-#'   three to five experts, 0.78 for six or more. `"cvr"` uses the exact
-#'   Lawshe critical count at level `alpha`.
+#' @param criterion `"cvi"` uses Lynn's (1986) panel-size criterion for the
+#'   I-CVI: every expert must agree with three to five, one may disagree from
+#'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
+#'   experts, where Lynn's table stops, the package holds her lowest proportion,
+#'   7 of 9. `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 #' @param alpha Significance level for the CVR criterion. Ignored for CVI.
 #' @param response_rate Expected proportion of invited experts who return usable
 #'   ratings. When below 1, `n_experts` is treated as the number invited and the
@@ -60,8 +54,9 @@
 #'   endorsement count and the probability of clearing.
 #'
 #' @section Why the curve is not always smooth:
-#' The I-CVI criterion is a step function of panel size: it is 1.00 up to five
-#' experts and 0.78 from six. Adding a sixth expert relaxes the criterion and
+#' The I-CVI criterion is a step function of panel size: every expert must
+#' agree up to five, and from six one may disagree. Adding a sixth expert
+#' relaxes the criterion and
 #' can raise the clearing probability sharply, while adding a fourth or fifth
 #' expert under unanimity makes clearing *harder*. A planning curve that rose
 #' smoothly with panel size would be hiding this, so it is reported as it is.
@@ -198,9 +193,10 @@ print.contentvalid_expert_power <- function(x, digits = 3, ...) {
     small <- r[r$n_experts %in% 3:5, , drop = FALSE]
     if (nrow(small)) {
       cat(strwrap(paste(
-        "\nNote the step at six experts. The I-CVI guideline requires unanimity",
-        "with three to five experts and 0.78 from six, so a sixth expert",
-        "relaxes the criterion while a fourth or fifth makes unanimity harder.",
+        "\nNote the step at six experts. Lynn's criterion requires unanimity",
+        "with three to five experts and allows one disagreement from six, so a",
+        "sixth expert relaxes the criterion while a fourth or fifth makes",
+        "unanimity harder.",
         "That is a property of the guideline, not of the items."
       ), width = 76), sep = "\n")
     }

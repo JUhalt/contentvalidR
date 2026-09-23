@@ -19,9 +19,11 @@ expert_power(
 (\code{criterion = "cvi"}) or essential (\code{criterion = "cvr"}). Values well below
 0.5 describe items the panel largely rejects.}
 
-\item{criterion}{\code{"cvi"} uses the common panel-size I-CVI guideline: 1.00 for
-three to five experts, 0.78 for six or more. \code{"cvr"} uses the exact
-Lawshe critical count at level \code{alpha}.}
+\item{criterion}{\code{"cvi"} uses Lynn's (1986) panel-size criterion for the
+I-CVI: every expert must agree with three to five, one may disagree from
+six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
+experts, where Lynn's table stops, the package holds her lowest proportion,
+7 of 9. \code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
 
 \item{alpha}{Significance level for the CVR criterion. Ignored for CVI.}
 
@@ -48,8 +50,9 @@ about, so the choice stays yours and stays documented.
 }
 \section{Why the curve is not always smooth}{
 
-The I-CVI criterion is a step function of panel size: it is 1.00 up to five
-experts and 0.78 from six. Adding a sixth expert relaxes the criterion and
+The I-CVI criterion is a step function of panel size: every expert must
+agree up to five, and from six one may disagree. Adding a sixth expert
+relaxes the criterion and
 can raise the clearing probability sharply, while adding a fourth or fifth
 expert under unanimity makes clearing \emph{harder}. A planning curve that rose
 smoothly with panel size would be hiding this, so it is reported as it is.

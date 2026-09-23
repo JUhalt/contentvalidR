@@ -1,5 +1,29 @@
 # contentvalidR 0.7.0.9000 (development version)
 
+## The I-CVI criterion now matches Lynn's table (in development)
+
+* **Changed result, with nine experts only.** An item endorsed by 7 of 9 experts
+  now meets the I-CVI criterion; before, it needed 8. The criterion was stored
+  as ".78", which is Lynn's (1986) 7 of 9 rounded, and 7/9 = .778 fell short of
+  the rounded value. Lynn's Table 2 requires 7 of 9, and Polit and Beck (2006)
+  say the same in words. Every other panel size from three to ten was already
+  right. This affects `expert_validity()` verdicts, `expert_power()` planning
+  probabilities, and `judge_validity()`'s check of whether one judge moves an
+  item.
+* **`cvi_criterion` now shows Lynn's cutoff for each panel size**, such as .833
+  for six experts and .778 for nine, instead of .78 throughout. Verdicts at six,
+  seven, eight and ten experts are unchanged, but the printed criterion now
+  matches the verdict beside it: an item is supported exactly when its I-CVI
+  reaches the number shown. A test checks that for every panel of 3 to 15
+  experts and every count of agreeing experts.
+* **Beyond ten experts, the criterion is now labeled an extension.** Lynn's
+  table stops at ten. The package holds her lowest tabled proportion, 7 of 9,
+  and says so, where before it applied .78 without comment. That also moves
+  the requirement at 18 and 27 experts, where 7/9 falls exactly on a whole
+  count.
+* The rule lives in one place, stored as Lynn's counts. The three functions
+  compare counts of agreeing experts, so no rounding can move an item.
+
 ## Attribution (in development)
 
 * **Every source the package cites is now on its public reference list.** The

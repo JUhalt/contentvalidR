@@ -1,8 +1,30 @@
-.cvi_common_criterion <- function(N) {
-  out <- rep(NA_real_, length(N))
-  out[N >= 3L & N <= 5L] <- 1.00
-  out[N >= 6L] <- 0.78
+# Lynn (1986, Table 2): the fewest experts, out of a panel of n, whose
+# endorsement establishes an item's content validity beyond the .05 level. Up
+# to five experts all must agree; from six, one may disagree, and two from nine.
+# Stored as counts because Lynn published them as counts. The ".78" usually
+# quoted is her 7 of 9 rounded, and comparing an I-CVI against the rounded
+# value demands 8 of 9 -- one expert more than Lynn requires.
+.cvi_lynn_minimum <- c(`3` = 3L, `4` = 4L, `5` = 5L, `6` = 5L, `7` = 6L,
+                       `8` = 7L, `9` = 7L, `10` = 8L)
+
+# Smallest number of endorsing experts that meets the criterion for a panel of
+# size n; NA below three experts, which Lynn considers too few. Lynn's table
+# stops at ten. Beyond it the package holds her lowest tabled proportion, 7 of
+# 9, which extends her rule rather than being part of it.
+.cvi_required_count <- function(n) {
+  out <- rep(NA_integer_, length(n))
+  small <- !is.na(n) & n >= 3L & n <= 10L
+  out[small] <- unname(.cvi_lynn_minimum[as.character(n[small])])
+  large <- !is.na(n) & n > 10L
+  out[large] <- as.integer(ceiling(7 / 9 * n[large] - 1e-9))
   out
+}
+
+# The same criterion as a proportion, for display beside the I-CVI. Decisions
+# compare counts, never this proportion, so no rounding can move an item.
+.cvi_common_criterion <- function(N) {
+  req <- .cvi_required_count(N)
+  ifelse(is.na(req), NA_real_, req / N)
 }
 
 .kappa_quality <- function(k) {
@@ -162,7 +184,7 @@ expert_validity <- function(data,
       item$N < 3L,
       "Insufficient panel",
       ifelse(
-        !is.na(item$cvi_criterion) & item$I_CVI >= item$cvi_criterion,
+        !is.na(item$cvi_criterion) & item$A >= .cvi_required_count(item$N),
         ifelse(item$kappa_mod > 0.74, "Strong support", "Support"),
         "Review"
       )

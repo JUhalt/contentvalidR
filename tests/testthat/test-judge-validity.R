@@ -83,8 +83,8 @@ test_that("the bias correction is applied and reported", {
 })
 
 test_that("leave-one-judge-out influence identifies items resting on one judge", {
-  # Six judges put the CVI criterion at 0.78; an item endorsed by five of six
-  # clears it. Dropping any endorsing judge moves the panel to five judges,
+  # With six judges Lynn's criterion is five endorsements; an item endorsed by
+  # five of six clears it. Dropping any endorsing judge moves the panel to five judges,
   # where the criterion rises to 1.00 and the item no longer clears.
   X <- rbind(
     c(4, 4, 4), c(4, 4, 4), c(4, 4, 4),
