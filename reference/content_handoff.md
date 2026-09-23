@@ -13,7 +13,13 @@ without contentvalidR being installed.
 ## Usage
 
 ``` r
-content_handoff(fit, keep = "Supported", round = 1)
+content_handoff(
+  fit,
+  keep = "Supported",
+  round = 1,
+  reverse_keyed = NULL,
+  response_scale = NULL
+)
 ```
 
 ## Arguments
@@ -35,6 +41,18 @@ content_handoff(fit, keep = "Supported", round = 1)
   defaults to `1` and matters only when stacking rounds by hand. It
   cannot be set for a Delphi fit, which dates each item by the round it
   settled in.
+
+- reverse_keyed:
+
+  Names of the reverse-worded items, `character(0)` if none is, or
+  `NULL` (the default) to leave keying unrecorded. See "Instrument
+  metadata".
+
+- response_scale:
+
+  The lowest and highest answer respondents can give, such as `c(1, 5)`,
+  or `NULL` (the default) to leave it unrecorded. This is the scale of
+  the instrument, not the scale the panel rated on.
 
 ## Value
 
@@ -82,7 +100,9 @@ A consumer matches on `"cv_handoff"` and reads these fields:
   data frame with one row per reviewed item: `item`, `scale` (`NA`
   without a construct mapping), `carried`, `status`, `recommendation`,
   `n_judges`, `rule`, and `round`. For a Delphi handoff `round` differs
-  between items; see "A Delphi handoff".
+  between items; see "A Delphi handoff". From contentvalidR 0.7.0 it
+  also carries `keying`, `response_min`, and `response_max`, described
+  under "Instrument metadata".
 
 - `item_statistics`:
 
@@ -116,6 +136,78 @@ This shape is agreed with the `nomologR` package, which consumes it in
 `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a
 reader, which should check that they are present rather than assume it.
+
+## What version 1 freezes
+
+Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
+handoff can rely on all of the following, in every release that reports
+`schema_version = 1`:
+
+- The six top-level fields above, under those names.
+
+- In `item_evidence`: `item`, `scale`, `carried`, `status`,
+  `recommendation`, `n_judges`, `rule`, `round`, `keying`,
+  `response_min`, `response_max`.
+
+- In `item_statistics`: `item`, `statistic`, `value`, `criterion`,
+  `round`, `lower`, `upper`, `interval_method`, `interval_level`,
+  `note`.
+
+- In `panel_statistics`: the same columns less `item`.
+
+- In `provenance`: `schema_version`, `package`, `package_version`,
+  `workflow`, `mode`, `keep`, `method`, `citation`, `settings`,
+  `design`, `created`.
+
+Each of those columns keeps its name, its position, and its type. Every
+handoff carries every column, including when a workflow has nothing to
+put in one: a statistic with no interval carries `NA` in the four
+interval columns rather than dropping them, and a workflow with no panel
+coefficient returns a zero-row `panel_statistics` with the full set of
+columns. A reader can therefore bind handoffs from different workflows
+without reconciling their columns.
+
+These are deliberately **not** frozen, and a reader should not depend on
+them:
+
+- The set of rows. Which items, which statistics, and how many of each
+  depend on the workflow and on the data.
+
+- The values in the `statistic` column. They are labels for display, and
+  may be reworded in a minor release; match on the workflow in
+  `provenance` instead.
+
+- The text in `note`, `rule`, `recommendation`, and `citation`, which is
+  prose for a human reader.
+
+- The contents of `settings` and `design`, which mirror the fitted
+  object and grow with it.
+
+Neither is the printed output part of the schema.
+[`print()`](https://rdrr.io/r/base/print.html) on a handoff is written
+for a person, and its layout and wording may change in any release. Read
+the fields.
+
+New optional fields and columns may still be added within version 1, at
+the end of a data frame or list. A reader written against this section
+keeps working when that happens, provided it addresses columns by name.
+
+## If the schema ever changes
+
+Renaming a field, removing one, changing a type, or changing what a
+field means is a version 2 change, not a minor release. It would raise
+`provenance$schema_version` to `2L`, and version 1 would keep being
+produced for at least one full release cycle so that readers have a
+version to fall back on. The release notes would say what moved.
+
+A reader should gate on the version rather than on the contentvalidR
+version:
+
+    if (!inherits(h, "cv_handoff") || h$provenance$schema_version != 1L) {
+      stop("this reader understands handoff schema version 1 only")
+    }
+
+No version 2 is planned.
 
 ## The note column
 
@@ -227,6 +319,47 @@ states the reason in `details$stability$note`, and from contentvalidR
 0.7.0 the handoff carries that sentence in the `note` column of
 `item_statistics`, described under "The note column".
 
+## Instrument metadata
+
+Added in contentvalidR 0.7.0, at the request of the `nomologR`
+maintainers, because two empirical computations cannot be done correctly
+without them.
+
+- `keying` is `1` for a forward-worded item, `-1` for a reverse-worded
+  one, and `NA` when nobody said. An even-odd consistency index must
+  recode reverse-worded items before splitting the scale, or a perfectly
+  consistent respondent looks careless. And a negative corrected
+  item-total correlation means opposite things in the two cases: on an
+  item that was never recoded it is a coding error, and on a correctly
+  coded item it is evidence against the item.
+
+- `response_min` and `response_max` are the lowest and highest answers a
+  respondent can give. Screening for out-of-range answers needs the
+  scale's limits rather than the observed ones, because a category
+  nobody used is still a legal answer, and long-string and within-person
+  variability indices mean different things on a two-point and a
+  seven-point scale.
+
+**Both come from the analyst, never from the fit.** A content-validity
+panel rates relevance or correspondence on its own scale, usually 1 to
+4, which is not the scale respondents will answer the items on. Copying
+a fit's `lo` and `hi` into `response_min` and `response_max` would give
+a downstream reader the wrong limits, and it would then reject every
+legitimate top-category answer. So both default to `NA`, which means
+*unknown*, and a reader should treat `NA` that way rather than assume a
+forward-worded item or an observed range.
+
+Supplying `reverse_keyed` is a statement about every item: the ones
+named are reverse-worded and the rest are not. Pass `character(0)` to
+record that you checked and none is. So `keying` is either `NA` for
+every item or for none of them, and the same holds for the response
+scale.
+
+Naming a reverse-worded item without `response_scale` gives a warning,
+because such an item cannot be recoded without the scale's limits. A
+reader that recodes would otherwise have to refuse later, where the
+problem is harder to fix.
+
 ## What a handoff does and does not establish
 
 Surviving content review is evidence about relevance, representation,
@@ -291,11 +424,11 @@ handoff$item_evidence
 #> 2 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
 #> 3 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
 #> 4 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#>   round
-#> 1     1
-#> 2     1
-#> 3     1
-#> 4     1
+#>   round keying response_min response_max
+#> 1     1     NA           NA           NA
+#> 2     1     NA           NA           NA
+#> 3     1     NA           NA           NA
+#> 4     1     NA           NA           NA
 handoff$item_statistics
 #>     item      statistic       value criterion round      lower     upper
 #> 1  Item1      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349

@@ -45,6 +45,31 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0.9000" id="contentvalidr-0609000-development-version">contentvalidR 0.6.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0609000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="handoff-schema-version-is-frozen-in-development-0-6-0-9000">Handoff schema version 1 is frozen (in development)<a class="anchor" aria-label="anchor" href="#handoff-schema-version-is-frozen-in-development-0-6-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/content_handoff.html">?content_handoff</a></code> gains two sections. <em>What version 1 freezes</em> names every field and column a reader can rely on, states that each keeps its name, position, and type, and lists what is deliberately not frozen: which rows appear, the labels in the <code>statistic</code> column, the prose in <code>note</code>, <code>rule</code>, <code>recommendation</code>, and <code>citation</code>, the contents of <code>settings</code> and <code>design</code>, and the printed output. <em>If the schema ever changes</em> gives the version-2 path and the two-line version check a reader should gate on.</li>
+<li>The frozen contract is now data rather than prose, so the tests and the documentation cannot drift apart. Handoffs from all five workflows that can produce one are checked against it, column by column, along with the guarantee that makes the freeze useful: every handoff carries every column, so a statistic with no interval carries <code>NA</code> in all four interval columns and a workflow with no panel coefficient returns a zero-row <code>panel_statistics</code> with the full column set. Handoffs from different workflows therefore bind without reconciling them first.</li>
+<li>
+<strong>Before the freeze closed, it was checked against every reader.</strong>
+<ul><li>
+<code>nomologR</code> confirmed the frozen list covers everything its reader consumes, and named two gaps, each blocking a specific computation rather than expressing a preference. Both are added.</li>
+<li>
+<code>solomonR</code> was asked too (<a href="https://github.com/JUhalt/solomonR/issues/32" class="external-link">solomonR#32</a>): its <code>fit_solomon_sem_latent()</code> takes item names as character vectors, which is exactly what a handoff carries.</li>
+</ul></li>
+<li>
+<strong><code><a href="../reference/content_handoff.html">content_handoff()</a></code> gains <code>reverse_keyed</code> and <code>response_scale</code>,</strong> recorded per item in three new <code>item_evidence</code> columns: <code>keying</code> (<code>1</code> forward, <code>-1</code> reverse-worded), <code>response_min</code>, and <code>response_max</code>.
+<ul><li>Keying, because an even-odd consistency index must recode reverse-worded items first or a consistent respondent looks careless, and because a negative corrected item-total correlation means a coding error on an item that was never recoded and evidence against the item on one that was.</li>
+<li>The response scale, because screening for out-of-range answers needs the scale’s limits rather than the observed ones: a category nobody used is still a legal answer.</li>
+<li>
+<strong>Both come from the analyst, never from the fit.</strong> A panel’s <code>lo</code> and <code>hi</code> are the scale the experts rated relevance on, usually 1 to 4, not the scale respondents answer. Copying them across would hand a reader the wrong limits, and it would then reject every legitimate top-category answer. So both default to <code>NA</code>, meaning unknown, and a test guards against the fit’s scale ever leaking into these columns.</li>
+<li>
+<code>reverse_keyed = character(0)</code> records that someone checked and no item is reversed, which is different from not having said.</li>
+<li>Naming a reverse-worded item without <code>response_scale</code> warns, since the item cannot be recoded without the scale’s limits. A reader that recodes would otherwise refuse one step later, where the omission is harder to trace. Suggested by the nomologR maintainers.</li>
+</ul></li>
+<li>Item text was considered and left out. It was wanted only if every workflow that can produce a handoff has the wording, and none of them collects it.</li>
+<li>Apart from those three columns, the freeze changes no object: a 0.7.0 handoff is a 0.6.0 handoff plus them and the <code>note</code> column described below. All are appended after the original columns, as the additive rule requires.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="the-kappa-interval-in-a-delphi-is-a-published-procedure-in-development-0-6-0-9000">The kappa interval in a Delphi is a published procedure (in development)<a class="anchor" aria-label="anchor" href="#the-kappa-interval-in-a-delphi-is-a-published-procedure-in-development-0-6-0-9000"></a></h3>
 <ul><li>The bootstrap interval beside a Delphi stability kappa was described in the output and the help page as this package’s own extension. That was wrong. Resampling the units that the two raters cross-classify, recomputing kappa, and taking the percentile interval is the procedure Klar, Lipsitz, Parzen and Leong (2002) set out; in a Delphi those units are the experts, each carrying their rating in both rounds.</li>
 <li>In its place, <code><a href="../reference/delphi_validity.html">?delphi_validity</a></code> gains <em>Reading the kappa interval</em>, which says what the interval is and gives the two things a reader needs in order to report it honestly: Klar et al.’s measured coverage for a nominal 95% interval was about 83% with 20 units, 89% with 25, 91% with 30, and reached 94% only from 40 up, so a panel-sized interval is narrower than its label; and their simulations used an unweighted kappa on two categories, so the ordinal weighted case has not been simulated. The printed output carries the short form of both.</li>

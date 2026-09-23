@@ -70,7 +70,13 @@ installed.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">content_handoff</span><span class="op">(</span><span class="va">fit</span>, keep <span class="op">=</span> <span class="st">"Supported"</span>, round <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">content_handoff</span><span class="op">(</span></span>
+<span>  <span class="va">fit</span>,</span>
+<span>  keep <span class="op">=</span> <span class="st">"Supported"</span>,</span>
+<span>  round <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  reverse_keyed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  response_scale <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +98,18 @@ installed.</p>
 this defaults to <code>1</code> and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
 settled in.</p></dd>
+
+
+<dt id="arg-reverse-keyed">reverse_keyed<a class="anchor" aria-label="anchor" href="#arg-reverse-keyed"></a></dt>
+<dd><p>Names of the reverse-worded items, <code>character(0)</code> if
+none is, or <code>NULL</code> (the default) to leave keying unrecorded. See
+"Instrument metadata".</p></dd>
+
+
+<dt id="arg-response-scale">response_scale<a class="anchor" aria-label="anchor" href="#arg-response-scale"></a></dt>
+<dd><p>The lowest and highest answer respondents can give,
+such as <code>c(1, 5)</code>, or <code>NULL</code> (the default) to leave it unrecorded. This is
+the scale of the instrument, not the scale the panel rated on.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,7 +147,9 @@ produce <code>NULL</code>. Membership is one to one.</p></dd>
 <dd><p>data frame with one row per reviewed item: <code>item</code>,
 <code>scale</code> (<code>NA</code> without a construct mapping), <code>carried</code>, <code>status</code>,
 <code>recommendation</code>, <code>n_judges</code>, <code>rule</code>, and <code>round</code>. For a Delphi handoff
-<code>round</code> differs between items; see "A Delphi handoff".</p></dd>
+<code>round</code> differs between items; see "A Delphi handoff". From
+contentvalidR 0.7.0 it also carries <code>keying</code>, <code>response_min</code>, and
+<code>response_max</code>, described under "Instrument metadata".</p></dd>
 
 <dt><code>item_statistics</code></dt>
 <dd><p>data frame, one row per item per statistic:
@@ -160,6 +180,62 @@ otherwise.</p></dd>
 <code>nomo_screen()</code> and <code>nomo_run()</code>. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="what-version-freezes">What version 1 freezes<a class="anchor" aria-label="anchor" href="#what-version-freezes"></a></h2>
+
+
+<p>Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
+handoff can rely on all of the following, in every release that reports
+<code>schema_version = 1</code>:</p><ul><li><p>The six top-level fields above, under those names.</p></li>
+<li><p>In <code>item_evidence</code>: <code>item</code>, <code>scale</code>, <code>carried</code>, <code>status</code>,
+<code>recommendation</code>, <code>n_judges</code>, <code>rule</code>, <code>round</code>, <code>keying</code>, <code>response_min</code>,
+<code>response_max</code>.</p></li>
+<li><p>In <code>item_statistics</code>: <code>item</code>, <code>statistic</code>, <code>value</code>, <code>criterion</code>, <code>round</code>,
+<code>lower</code>, <code>upper</code>, <code>interval_method</code>, <code>interval_level</code>, <code>note</code>.</p></li>
+<li><p>In <code>panel_statistics</code>: the same columns less <code>item</code>.</p></li>
+<li><p>In <code>provenance</code>: <code>schema_version</code>, <code>package</code>, <code>package_version</code>,
+<code>workflow</code>, <code>mode</code>, <code>keep</code>, <code>method</code>, <code>citation</code>, <code>settings</code>, <code>design</code>,
+<code>created</code>.</p></li>
+</ul><p>Each of those columns keeps its name, its position, and its type. Every
+handoff carries every column, including when a workflow has nothing to put
+in one: a statistic with no interval carries <code>NA</code> in the four interval
+columns rather than dropping them, and a workflow with no panel coefficient
+returns a zero-row <code>panel_statistics</code> with the full set of columns. A reader
+can therefore bind handoffs from different workflows without reconciling
+their columns.</p>
+<p>These are deliberately <strong>not</strong> frozen, and a reader should not depend on
+them:</p><ul><li><p>The set of rows. Which items, which statistics, and how many of each
+depend on the workflow and on the data.</p></li>
+<li><p>The values in the <code>statistic</code> column. They are labels for display, and may
+be reworded in a minor release; match on the workflow in <code>provenance</code>
+instead.</p></li>
+<li><p>The text in <code>note</code>, <code>rule</code>, <code>recommendation</code>, and <code>citation</code>, which is
+prose for a human reader.</p></li>
+<li><p>The contents of <code>settings</code> and <code>design</code>, which mirror the fitted object
+and grow with it.</p></li>
+</ul><p>Neither is the printed output part of the schema. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> on a handoff is
+written for a person, and its layout and wording may change in any release.
+Read the fields.</p>
+<p>New optional fields and columns may still be added within version 1, at the
+end of a data frame or list. A reader written against this section keeps
+working when that happens, provided it addresses columns by name.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="if-the-schema-ever-changes">If the schema ever changes<a class="anchor" aria-label="anchor" href="#if-the-schema-ever-changes"></a></h2>
+
+
+<p>Renaming a field, removing one, changing a type, or changing what a field
+means is a version 2 change, not a minor release. It would raise
+<code>provenance$schema_version</code> to <code>2L</code>, and version 1 would keep being
+produced for at least one full release cycle so that readers have a
+version to fall back on. The release notes would say what moved.</p>
+<p>A reader should gate on the version rather than on the contentvalidR
+version:</p>
+<p></p><div class="sourceCode r"><pre><code><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">h</span>, <span class="st">"cv_handoff"</span><span class="op">)</span> <span class="op">||</span> <span class="va">h</span><span class="op">$</span><span class="va">provenance</span><span class="op">$</span><span class="va">schema_version</span> <span class="op">!=</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/stop.html" class="external-link">stop</a></span><span class="op">(</span><span class="st">"this reader understands handoff schema version 1 only"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre><p></p></div>
+<p>No version 2 is planned.</p>
     </div>
     <div class="section level2">
     <h2 id="the-note-column">The note column<a class="anchor" aria-label="anchor" href="#the-note-column"></a></h2>
@@ -254,6 +330,40 @@ contentvalidR 0.7.0 the handoff carries that sentence in the <code>note</code> c
 of <code>item_statistics</code>, described under "The note column".</p>
     </div>
     <div class="section level2">
+    <h2 id="instrument-metadata">Instrument metadata<a class="anchor" aria-label="anchor" href="#instrument-metadata"></a></h2>
+
+
+<p>Added in contentvalidR 0.7.0, at the request of the <code>nomologR</code> maintainers,
+because two empirical computations cannot be done correctly without them.</p><ul><li><p><code>keying</code> is <code>1</code> for a forward-worded item, <code>-1</code> for a reverse-worded one,
+and <code>NA</code> when nobody said. An even-odd consistency index must recode
+reverse-worded items before splitting the scale, or a perfectly consistent
+respondent looks careless. And a negative corrected item-total correlation
+means opposite things in the two cases: on an item that was never recoded
+it is a coding error, and on a correctly coded item it is evidence against
+the item.</p></li>
+<li><p><code>response_min</code> and <code>response_max</code> are the lowest and highest answers a
+respondent can give. Screening for out-of-range answers needs the scale's
+limits rather than the observed ones, because a category nobody used is
+still a legal answer, and long-string and within-person variability
+indices mean different things on a two-point and a seven-point scale.</p></li>
+</ul><p><strong>Both come from the analyst, never from the fit.</strong> A content-validity panel
+rates relevance or correspondence on its own scale, usually 1 to 4, which is
+not the scale respondents will answer the items on. Copying a fit's <code>lo</code> and
+<code>hi</code> into <code>response_min</code> and <code>response_max</code> would give a downstream reader
+the wrong limits, and it would then reject every legitimate top-category
+answer. So both default to <code>NA</code>, which means <em>unknown</em>, and a reader should
+treat <code>NA</code> that way rather than assume a forward-worded item or an observed
+range.</p>
+<p>Supplying <code>reverse_keyed</code> is a statement about every item: the ones named
+are reverse-worded and the rest are not. Pass <code>character(0)</code> to record that
+you checked and none is. So <code>keying</code> is either <code>NA</code> for every item or for
+none of them, and the same holds for the response scale.</p>
+<p>Naming a reverse-worded item without <code>response_scale</code> gives a warning,
+because such an item cannot be recoded without the scale's limits. A reader
+that recodes would otherwise have to refuse later, where the problem is
+harder to fix.</p>
+    </div>
+    <div class="section level2">
     <h2 id="what-a-handoff-does-and-does-not-establish">What a handoff does and does not establish<a class="anchor" aria-label="anchor" href="#what-a-handoff-does-and-does-not-establish"></a></h2>
 
 
@@ -317,11 +427,11 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   round</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   round keying response_min response_max</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2     1     NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     1     NA           NA           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     1     NA           NA           NA</span>
 <span class="r-in"><span><span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     item      statistic       value criterion round      lower     upper</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  Item1      Aiken's V  0.91666667        NA     1 0.64612009 0.9851349</span>

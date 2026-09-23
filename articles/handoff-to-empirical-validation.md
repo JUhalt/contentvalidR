@@ -90,12 +90,12 @@ handoff$item_evidence
 #> 3 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
 #> 4 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
 #> 5 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#>   round
-#> 1     1
-#> 2     1
-#> 3     1
-#> 4     1
-#> 5     1
+#>   round keying response_min response_max
+#> 1     1     NA           NA           NA
+#> 2     1     NA           NA           NA
+#> 3     1     NA           NA           NA
+#> 4     1     NA           NA           NA
+#> 5     1     NA           NA           NA
 head(handoff$item_statistics)
 #>    item statistic     value criterion round      lower     upper
 #> 1 Item1 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
