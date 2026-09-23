@@ -1,3 +1,31 @@
+# contentvalidR 0.7.0.9000 (development version)
+
+## Attribution (in development)
+
+* **Every source the package cites is now on its public reference list.** The
+  reference list in the README was missing eight sources that function help
+  pages cite, including Krippendorff (2011), whose alpha is the default panel
+  coefficient, and Schriesheim et al. (1993, 1999), behind `qfactor_content()`.
+* **Four foundational sources are now cited where their methods are used,** each
+  checked against the full text:
+  * `cvi()` and `expert_validity()` cite Lynn (1986), the source of the I-CVI
+    and of the panel-size criterion `expert_validity()` applies, and Polit and
+    Beck (2006), who named S-CVI/UA and S-CVI/Ave. `?cvi` now explains where
+    each index comes from and why both scale-level versions should be reported.
+  * `cvr()` cites Wilson, Pan and Schumsky (2012) and explains why the exact
+    values replace Lawshe's original table: Wilson et al. found the table
+    unexplained, non-monotonic at eight experts, and closer to a two-tailed
+    than the one-tailed test it was labeled as.
+  * `agreement_summary()` credited nobody. It now cites Fleiss (1971) for the
+    statistic and the irr package's authors for the code it calls.
+* `sort_power()` and `simulate_csv_power()` cite Howard and Melloy (2016), whose
+  test they plan for. Two incomplete entries are completed.
+* **Two instructions that did not work are fixed.** `print()` on a handoff and
+  `vignette("handoff-to-empirical-validation")` both told readers to pass the
+  handoff object to `nomologR::nomo_screen()`, which cannot read it until
+  [nomologR#46](https://github.com/JUhalt/nomologR/issues/46). Both now pass
+  `handoff$items`.
+
 # contentvalidR 0.7.0
 
 Seventh public release. v0.7.0 is about being safe to depend on. It says in

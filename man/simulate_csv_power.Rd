@@ -24,3 +24,9 @@ Auxiliary compatibility helper. For supported exact planning, prefer \code{\link
 \examples{
 simulate_csv_power(N = 20, true_p = 0.65, reps = 100, alpha = 0.05)
 }
+\references{
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
+The presentation of a new statistical significance formula and
+methodological best practices. \emph{Journal of Business and Psychology, 31}(1),
+173-186. \doi{10.1007/s10869-015-9404-y}
+}

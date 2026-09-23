@@ -923,8 +923,8 @@ print.contentvalid_handoff <- function(x, ...) {
   cat("\n")
   cat(strwrap(paste(
     "Carry these items into the empirical workflow once response data are",
-    "collected. In nomologR that is nomo_screen(data, items = <handoff>), which",
-    "screens the same items you retained here."
+    "collected. In nomologR that is nomo_screen(data, items = handoff$items),",
+    "which screens the same items you retained here."
   ), width = 76), sep = "\n")
 
   cat("\n")

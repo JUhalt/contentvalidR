@@ -79,6 +79,14 @@
 #' *Measurement and Evaluation in Counseling and Development, 47*(1), 79-86.
 #' \doi{10.1177/0748175613513808}
 #'
+#' Lynn, M. R. (1986). Determination and quantification of content validity.
+#' *Nursing Research, 35*(6), 382-385.
+#' \doi{10.1097/00006199-198611000-00017}
+#'
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489-497. \doi{10.1002/nur.20147}
+#'
 #' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 #' indicator of content validity? *Research in Nursing & Health, 30*(4),
 #' 459-467. \doi{10.1002/nur.20199}

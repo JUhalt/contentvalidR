@@ -94,6 +94,7 @@ reliability measure for coding data. \emph{Communication Methods and Measures,
 
 Krippendorff, K. (2011). \emph{Computing Krippendorff's alpha-reliability.}
 Annenberg School for Communication, University of Pennsylvania.
+\url{https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20}
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and confidence
@@ -114,8 +115,8 @@ Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
 kappa: A comparison of basic properties. \emph{MethodsX, 10}, 102212.
 
 Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
-I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology, 43},
-543-549.
+I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
+43}(6), 543-549. \doi{10.1016/0895-4356(90)90158-L}
 }
 \seealso{
 \code{\link[=expert_validity]{expert_validity()}} for item-level expert-panel evidence.
