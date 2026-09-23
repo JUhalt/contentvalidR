@@ -17,6 +17,8 @@ if (!file.exists(tarball)) {
   cat("FAIL: no tarball at ", tarball, "; run the build stage first.\n", sep = "")
   quit(status = 1)
 }
+source(file.path(root, "tools", "gate-stamp.R"))
+if (!gate_tarball_matches_source(tarball, root)) quit(status = 1)
 if ("contentvalidR" %in% loadedNamespaces()) {
   cat("FAIL: contentvalidR is loaded in this session, so the install would be",
       " skipped. That is the bug this staging exists to prevent.\n", sep = "")

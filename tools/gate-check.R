@@ -11,6 +11,8 @@ if (!file.exists(tarball)) {
   cat("FAIL: no tarball at ", tarball, "; run the build stage first.\n", sep = "")
   quit(status = 1)
 }
+source(file.path(root, "tools", "gate-stamp.R"))
+if (!gate_tarball_matches_source(tarball, root)) quit(status = 1)
 
 Sys.setenv("_R_CHECK_CRAN_INCOMING_REMOTE_" = "TRUE")
 res <- rcmdcheck::rcmdcheck(tarball, args = "--as-cran", error_on = "never",
