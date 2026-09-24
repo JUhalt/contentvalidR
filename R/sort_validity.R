@@ -112,6 +112,14 @@
 #'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval uses the same
 #'   `alpha` as the exact test. See `ci` in [cvi()] for the methods and the
 #'   evidence for each.
+#' @param legacy Print the earlier published rules beside the decision, for
+#'   comparison. Default `FALSE`. They are computed either way, stored in
+#'   `details$earlier_methods`, and never change the decision; `print(fit,
+#'   legacy = TRUE)` shows them for any fit.
+#' @param n_constructs Optional number of constructs judges could choose among,
+#'   used only by the comparison block's chance-based extension. By default it
+#'   is the number of constructs that appear in the data, which is too few
+#'   when judges were offered a construct none of them chose.
 #'
 #' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
 #'   All flagship workflow objects expose the common components `results`,
@@ -119,6 +127,35 @@
 #'   include a standardized `status` field while retaining the method-specific
 #'   `recommendation` field. `print()`, `summary()`, and `plot()` provide
 #'   user-facing interpretation.
+#'
+#' @section Earlier methods, for comparison:
+#' The decision uses the exact test of Howard and Melloy (2016). Two earlier
+#' published rules, and one labeled package extension, are reported beside it
+#' for teaching, the way a methods text reports eta-squared beside
+#' omega-squared. None of them changes the decision:
+#'
+#' * **Anderson and Gerbing (1991)** judged Csv against a critical value. With
+#'   `N` judges, `m` is the fewest target assignments whose one-tailed binomial
+#'   probability at .5 falls below `alpha` (their Equation 5), and the critical
+#'   Csv is `(2m - N) / N` (Equation 6): .50 for 20 judges at .05. Equation 6
+#'   assumes every judge who misses the target picks the same rival. When those
+#'   judges spread across several constructs, the leading rival's count falls,
+#'   so Csv can reach the critical value with fewer target assignments than
+#'   the exact test requires. That is why it is not used for the decision.
+#' * **Yao, Wu and Yang (2008)** required Psa and Csv both to reach .30, which
+#'   they chose for a four-domain sort, where an item assigned at random lands
+#'   in its domain with probability .25 (p. 486). They give no rule for other
+#'   numbers of domains.
+#' * **A contentvalidR extension, not a published rule.** Yao et al.'s
+#'   reasoning carried to `k` constructs as chance plus .05: Psa and Csv both
+#'   at least `1/k + .05`, which is their .30 when `k = 4`. It is shown in its
+#'   own column, marked as an extension, whenever `k` is not 4. `k` is
+#'   `n_constructs` when given, and otherwise the number of constructs in the
+#'   data.
+#'
+#' Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
+#' 1991, p. 734). Pooling every other construct into that count instead gives
+#' `2 * Psa - 1`, a different index; the printout notes this.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -136,6 +173,11 @@
 #' correspondence and definitional distinctiveness. *Journal of Applied
 #' Psychology, 104*(10), 1243-1265. \doi{10.1037/apl0000406}
 #'
+#' Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity of
+#' the WHOQOL-BREF from respondents' perspective by quantitative methods.
+#' *Social Indicators Research, 85*(3), 483-498.
+#' \doi{10.1007/s11205-007-9112-8}
+#'
 #' @examples
 #' sort_dat <- data.frame(
 #'   item = rep(c("A1", "A2", "A3"), each = 20),
@@ -150,6 +192,9 @@
 #' fit <- sort_validity(sort_dat)
 #' fit
 #' summary(fit)
+#'
+#' # The same result beside the earlier published rules.
+#' print(fit, legacy = TRUE)
 #' @export
 sort_validity <- function(assignments,
                           item_col = "item",
@@ -160,9 +205,19 @@ sort_validity <- function(assignments,
                           alpha = 0.05,
                           orbiting_r = NULL,
                           judge_type = c("naive", "expert"),
-                          proportion_ci = c("wilson", "agresti_coull", "exact", "none")) {
+                          proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
+                          legacy = FALSE,
+                          n_constructs = NULL) {
   judge_type <- match.arg(judge_type)
   proportion_ci <- match.arg(proportion_ci)
+  .validate_flag(legacy, "legacy")
+  if (!is.null(n_constructs) &&
+      (!is.numeric(n_constructs) || length(n_constructs) != 1L ||
+       !is.finite(n_constructs) || n_constructs != floor(n_constructs) ||
+       n_constructs < 2)) {
+    stop("`n_constructs` must be NULL or one whole number of at least 2.",
+         call. = FALSE)
+  }
   invisible(.critical_target_count(1L, p0 = p0, alpha = alpha))
 
   psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
@@ -231,6 +286,11 @@ sort_validity <- function(assignments,
     n_target_scales = length(unique(d$target)),
     n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
   )
+  if (!is.null(n_constructs) && n_constructs < design$n_constructs_observed) {
+    stop("`n_constructs` is ", n_constructs, ", but the data use ",
+         design$n_constructs_observed, " constructs. It should count every ",
+         "construct judges could choose.", call. = FALSE)
+  }
 
   .new_contentvalid_workflow(
     subclass = "contentvalid_sort",
@@ -239,13 +299,22 @@ sort_validity <- function(assignments,
     scale_summary = scale_summary,
     settings = settings,
     design = design,
-    details = list()
+    details = list(
+      earlier_methods = .sort_earlier_methods(
+        results, alpha,
+        if (is.null(n_constructs)) design$n_constructs_observed else
+          as.integer(n_constructs),
+        show = legacy, constructs_given = !is.null(n_constructs)
+      )
+    )
   )
 }
 
 #' @export
-print.contentvalid_sort <- function(x, digits = 2, ...) {
+print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
+  # Checked first, so a bad argument fails before anything is printed.
+  show_earlier <- .show_earlier(x, legacy)
   r <- x$results
   s <- x$settings
   review <- r$item[r$recommendation == "Review"]
@@ -318,6 +387,10 @@ print.contentvalid_sort <- function(x, digits = 2, ...) {
          "scale-retention rules. They place a scale against published scales;",
          "Psa and Csv sit on different scales, so their labels are not",
          "comparable with each other.")
+  }
+
+  if (show_earlier) {
+    .print_sort_earlier(x$details$earlier_methods, digits)
   }
 
   if (.show_key()) {

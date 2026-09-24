@@ -18,7 +18,8 @@ expert_validity(
   agreement = c("krippendorff", "ac1", "none"),
   agreement_level = c("ordinal", "nominal", "interval"),
   agreement_B = 1000,
-  seed = NULL
+  seed = NULL,
+  legacy = FALSE
 )
 }
 \arguments{
@@ -62,6 +63,11 @@ than two experts or two items report no agreement coefficient.}
 the interval.}
 
 \item{seed}{Optional seed that makes the agreement interval reproducible.}
+
+\item{legacy}{Print the earlier published rules beside the decision, for
+comparison, in relevance and essentiality modes. Default \code{FALSE}. They are
+computed either way, stored in \code{details$earlier_methods}, and never change
+the decision; \code{print(fit, legacy = TRUE)} shows them for any fit.}
 }
 \value{
 An object of class \code{contentvalid_expert} and
@@ -88,6 +94,28 @@ Quantitative results are presented as evidence for item review rather than
 as a substitute for expert comments, construct coverage, comprehensibility,
 or other parts of a content-validity argument.
 }
+\section{Earlier methods, for comparison}{
+
+The decisions use Lynn's (1986) criterion in relevance mode and the exact
+binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
+reported beside them for teaching, and none changes a decision:
+\itemize{
+\item \strong{Essentiality.} Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
+panelists, then every fifth panel size to 40; other sizes have no minimum.
+He labeled it a one-tailed test at .05. Wilson, Pan and Schumsky (2012)
+found the table closer to a two-tailed test and recomputed it by the
+normal approximation, \code{z / sqrt(N)} for a one-tailed test at \code{alpha}
+(their Table 2). Lawshe's content validity index for the whole set is the
+mean CVR of the items his table retains (Lawshe, 1975).
+\item \strong{Relevance.} Fleiss' (1971) kappa, his kappa for many raters and nominal
+categories, on the relevant/not-relevant decision. It needs every expert to
+rate every item. The printout also notes that S-CVI/Ave is the average
+congruency percentage, for which Polit and Beck (2006) recommend .90 or
+higher, while calling .80 a reasonable, even strict, criterion for
+S-CVI/UA.
+}
+}
+
 \examples{
 relevance <- matrix(
   c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
@@ -97,6 +125,10 @@ relevance <- matrix(
 fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 summary(fit)
+
+# Essential counts from 12 experts, beside Lawshe's table and Wilson et al.
+expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
+                legacy = TRUE)
 }
 \references{
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
@@ -129,4 +161,16 @@ Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and confidence
 intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
 \doi{10.1186/s12874-016-0200-9}
+
+Lawshe, C. H. (1975). A quantitative approach to content validity.
+\emph{Personnel Psychology, 28}(4), 563-575.
+\doi{10.1111/j.1744-6570.1975.tb01393.x}
+
+Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe's content validity ratio. \emph{Measurement and
+Evaluation in Counseling and Development, 45}(3), 197-210.
+\doi{10.1177/0748175612440286}
+
+Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+\emph{Psychological Bulletin, 76}(5), 378-382. \doi{10.1037/h0031619}
 }

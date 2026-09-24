@@ -79,6 +79,29 @@
 #' @param agreement_B Bootstrap resamples for the agreement interval; `0` skips
 #'   the interval.
 #' @param seed Optional seed that makes the agreement interval reproducible.
+#' @param legacy Print the earlier published rules beside the decision, for
+#'   comparison, in relevance and essentiality modes. Default `FALSE`. They are
+#'   computed either way, stored in `details$earlier_methods`, and never change
+#'   the decision; `print(fit, legacy = TRUE)` shows them for any fit.
+#'
+#' @section Earlier methods, for comparison:
+#' The decisions use Lynn's (1986) criterion in relevance mode and the exact
+#' binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
+#' reported beside them for teaching, and none changes a decision:
+#'
+#' * **Essentiality.** Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
+#'   panelists, then every fifth panel size to 40; other sizes have no minimum.
+#'   He labeled it a one-tailed test at .05. Wilson, Pan and Schumsky (2012)
+#'   found the table closer to a two-tailed test and recomputed it by the
+#'   normal approximation, `z / sqrt(N)` for a one-tailed test at `alpha`
+#'   (their Table 2). Lawshe's content validity index for the whole set is the
+#'   mean CVR of the items his table retains (Lawshe, 1975).
+#' * **Relevance.** Fleiss' (1971) kappa, his kappa for many raters and nominal
+#'   categories, on the relevant/not-relevant decision. It needs every expert to
+#'   rate every item. The printout also notes that S-CVI/Ave is the average
+#'   congruency percentage, for which Polit and Beck (2006) recommend .90 or
+#'   higher, while calling .80 a reasonable, even strict, criterion for
+#'   S-CVI/UA.
 #'
 #' @return An object of class `contentvalid_expert` and
 #'   `contentvalid_workflow`. All flagship workflow objects expose the common
@@ -122,6 +145,18 @@
 #' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
 #' \doi{10.1186/s12874-016-0200-9}
 #'
+#' Lawshe, C. H. (1975). A quantitative approach to content validity.
+#' *Personnel Psychology, 28*(4), 563-575.
+#' \doi{10.1111/j.1744-6570.1975.tb01393.x}
+#'
+#' Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+#' critical values for Lawshe's content validity ratio. *Measurement and
+#' Evaluation in Counseling and Development, 45*(3), 197-210.
+#' \doi{10.1177/0748175612440286}
+#'
+#' Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+#' *Psychological Bulletin, 76*(5), 378-382. \doi{10.1037/h0031619}
+#'
 #' @examples
 #' relevance <- matrix(
 #'   c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
@@ -131,6 +166,10 @@
 #' fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 #' fit
 #' summary(fit)
+#'
+#' # Essential counts from 12 experts, beside Lawshe's table and Wilson et al.
+#' expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
+#'                 legacy = TRUE)
 #' @export
 expert_validity <- function(data,
                             mode = c("relevance", "essentiality", "congruence"),
@@ -145,12 +184,14 @@ expert_validity <- function(data,
                             agreement = c("krippendorff", "ac1", "none"),
                             agreement_level = c("ordinal", "nominal", "interval"),
                             agreement_B = 1000,
-                            seed = NULL) {
+                            seed = NULL,
+                            legacy = FALSE) {
   mode <- match.arg(mode)
   proportion_ci <- match.arg(proportion_ci)
   agreement <- match.arg(agreement)
   agreement_level <- match.arg(agreement_level)
   .validate_flag(na.rm, "na.rm")
+  .validate_flag(legacy, "legacy")
 
   if (mode == "relevance") {
     if (!is.numeric(lo) || length(lo) != 1L || !is.finite(lo) ||
@@ -263,7 +304,10 @@ expert_validity <- function(data,
       scale_summary = scale,
       settings = settings,
       design = design,
-      details = list(cvi = cv, agreement = agree),
+      details = list(
+        cvi = cv, agreement = agree,
+        earlier_methods = .relevance_earlier_methods(B, scale, show = legacy)
+      ),
       legacy = list(scale = scale)
     )
   } else if (mode == "essentiality") {
@@ -311,7 +355,9 @@ expert_validity <- function(data,
       scale_summary = scale,
       settings = settings,
       design = design,
-      details = list(),
+      details = list(
+        earlier_methods = .essentiality_earlier_methods(res, alpha, show = legacy)
+      ),
       legacy = list(scale = scale)
     )
   } else {
@@ -486,8 +532,10 @@ expert_validity <- function(data,
 }
 
 #' @export
-print.contentvalid_expert <- function(x, digits = 2, ...) {
+print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
+  # Checked first, so a bad argument fails before anything is printed.
+  show_earlier <- .show_earlier(x, legacy)
   cat("contentvalidR expert-panel analysis\n")
   cat(strrep("-", 35), "\n", sep = "")
   cat("Mode: ", x$mode, "\n", sep = "")
@@ -576,6 +624,13 @@ print.contentvalid_expert <- function(x, digits = 2, ...) {
       cat("\n")
       .say_grouped(r$item, r$interpretation)
     }
+  }
+
+  # Congruence has no earlier rule to compare, so it never prints a block.
+  em <- if (is.list(x$details)) x$details$earlier_methods else NULL
+  if (!is.null(em) && show_earlier) {
+    if (x$mode == "relevance") .print_relevance_earlier(em, digits)
+    if (x$mode == "essentiality") .print_essentiality_earlier(em, digits)
   }
 
   if (.show_key()) {
