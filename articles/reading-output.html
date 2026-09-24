@@ -367,9 +367,12 @@ the gap between them matters most with small panels, where several
 experts can agree by luck alone. Aiken’s <code>V</code> uses the whole
 rating scale rather than a relevance cut, so it distinguishes items that
 <code>I_CVI</code> rates identically.</p>
-<p>Note that the I-CVI criterion depends on panel size: 1.00 for three
-to five experts, 0.78 for six or more. An item can therefore change
-status simply because a judge was added or dropped.</p>
+<p>Note that the I-CVI criterion depends on panel size. It follows Lynn
+(1986): with three to five experts all must agree, from six one may
+disagree, and from nine two may. <code>cvi_criterion</code> shows the
+proportion that applies to each item’s panel, so 7 of 9 appears as .778.
+An item can therefore change status simply because a judge was added or
+dropped.</p>
 <div class="section level3">
 <h3 id="reading-the-intervals">Reading the intervals<a class="anchor" aria-label="anchor" href="#reading-the-intervals"></a>
 </h3>

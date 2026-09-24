@@ -95,9 +95,11 @@ about, so the choice stays yours and stays documented.</p>
 
 
 <dt id="arg-criterion">criterion<a class="anchor" aria-label="anchor" href="#arg-criterion"></a></dt>
-<dd><p><code>"cvi"</code> uses the common panel-size I-CVI guideline: 1.00 for
-three to five experts, 0.78 for six or more. <code>"cvr"</code> uses the exact
-Lawshe critical count at level <code>alpha</code>.</p></dd>
+<dd><p><code>"cvi"</code> uses Lynn's (1986) panel-size criterion for the
+I-CVI: every expert must agree with three to five, one may disagree from
+six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
+experts, where Lynn's table stops, the package holds her lowest proportion,
+7 of 9. <code>"cvr"</code> uses the exact Lawshe critical count at level <code>alpha</code>.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
@@ -121,8 +123,9 @@ endorsement count and the probability of clearing.</p>
     <h2 id="why-the-curve-is-not-always-smooth">Why the curve is not always smooth<a class="anchor" aria-label="anchor" href="#why-the-curve-is-not-always-smooth"></a></h2>
 
 
-<p>The I-CVI criterion is a step function of panel size: it is 1.00 up to five
-experts and 0.78 from six. Adding a sixth expert relaxes the criterion and
+<p>The I-CVI criterion is a step function of panel size: every expert must
+agree up to five, and from six one may disagree. Adding a sixth expert
+relaxes the criterion and
 can raise the clearing probability sharply, while adding a fourth or fifth
 expert under unanimity makes clearing <em>harder</em>. A planning curve that rose
 smoothly with panel size would be hiding this, so it is reported as it is.</p>
@@ -157,7 +160,7 @@ decision study plans panel size against a generalizability target.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          6  0.8                     5 0.655</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          7  0.8                     6 0.577</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          8  0.8                     7 0.503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.8                     8 0.436</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.8                     7 0.738</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         10  0.8                     8 0.678</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          3  0.9                     3 0.729</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          4  0.9                     4 0.656</span>
@@ -165,12 +168,12 @@ decision study plans panel size against a generalizability target.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          6  0.9                     5 0.886</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          7  0.9                     6 0.850</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          8  0.9                     7 0.813</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.9                     8 0.775</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.9                     7 0.947</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         10  0.9                     8 0.930</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note the step at six experts. The I-CVI guideline requires unanimity with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> three to five experts and 0.78 from six, so a sixth expert relaxes the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> criterion while a fourth or fifth makes unanimity harder. That is a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> property of the guideline, not of the items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note the step at six experts. Lynn's criterion requires unanimity with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> three to five experts and allows one disagreement from six, so a sixth</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expert relaxes the criterion while a fourth or fifth makes unanimity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> harder. That is a property of the guideline, not of the items.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This table reports the consequences of the panel sizes you asked about. It</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> does not recommend one. `prob` is an assumption you supply, so treat the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> result as conditional on it and report the value you assumed.</span>

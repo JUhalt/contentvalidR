@@ -36,9 +36,11 @@ expert_power(
 
 - criterion:
 
-  `"cvi"` uses the common panel-size I-CVI guideline: 1.00 for three to
-  five experts, 0.78 for six or more. `"cvr"` uses the exact Lawshe
-  critical count at level `alpha`.
+  `"cvi"` uses Lynn's (1986) panel-size criterion for the I-CVI: every
+  expert must agree with three to five, one may disagree from six, and
+  two from nine (7 of 9, the .78 usually quoted). Beyond ten experts,
+  where Lynn's table stops, the package holds her lowest proportion, 7
+  of 9. `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 
 - alpha:
 
@@ -59,12 +61,12 @@ required endorsement count and the probability of clearing.
 
 ## Why the curve is not always smooth
 
-The I-CVI criterion is a step function of panel size: it is 1.00 up to
-five experts and 0.78 from six. Adding a sixth expert relaxes the
-criterion and can raise the clearing probability sharply, while adding a
-fourth or fifth expert under unanimity makes clearing *harder*. A
-planning curve that rose smoothly with panel size would be hiding this,
-so it is reported as it is.
+The I-CVI criterion is a step function of panel size: every expert must
+agree up to five, and from six one may disagree. Adding a sixth expert
+relaxes the criterion and can raise the clearing probability sharply,
+while adding a fourth or fifth expert under unanimity makes clearing
+*harder*. A planning curve that rose smoothly with panel size would be
+hiding this, so it is reported as it is.
 
 ## References
 
@@ -102,7 +104,7 @@ expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
 #>          6  0.8                     5 0.655
 #>          7  0.8                     6 0.577
 #>          8  0.8                     7 0.503
-#>          9  0.8                     8 0.436
+#>          9  0.8                     7 0.738
 #>         10  0.8                     8 0.678
 #>          3  0.9                     3 0.729
 #>          4  0.9                     4 0.656
@@ -110,12 +112,12 @@ expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
 #>          6  0.9                     5 0.886
 #>          7  0.9                     6 0.850
 #>          8  0.9                     7 0.813
-#>          9  0.9                     8 0.775
+#>          9  0.9                     7 0.947
 #>         10  0.9                     8 0.930
-#> Note the step at six experts. The I-CVI guideline requires unanimity with
-#> three to five experts and 0.78 from six, so a sixth expert relaxes the
-#> criterion while a fourth or fifth makes unanimity harder. That is a
-#> property of the guideline, not of the items.
+#> Note the step at six experts. Lynn's criterion requires unanimity with
+#> three to five experts and allows one disagreement from six, so a sixth
+#> expert relaxes the criterion while a fourth or fifth makes unanimity
+#> harder. That is a property of the guideline, not of the items.
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.

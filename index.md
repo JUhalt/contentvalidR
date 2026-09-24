@@ -972,10 +972,10 @@ handoff$item_evidence[, c("item", "carried", "status", "n_judges", "rule")]
 #> 1 Item1    TRUE Supported        6
 #> 2 Item2    TRUE Supported        6
 #> 3 Item3    TRUE Supported        6
-#>                                                                                                  rule
-#> 1 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
-#> 2 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
-#> 3 I-CVI >= 0.78 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+#>                                                                                                       rule
+#> 1 I-CVI >= 0.8333333 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+#> 2 I-CVI >= 0.8333333 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
+#> 3 I-CVI >= 0.8333333 (common panel-size guideline for 6 experts); modified kappa > 0.74 for strong support
 ```
 
 The object carries the carried item names, a construct mapping
@@ -1124,11 +1124,11 @@ expert_power(n_experts = 3:8, prob = 0.9)$results
 #> 6         8  0.9                     7 0.8131047
 ```
 
-Note the step. The common I-CVI guideline requires unanimity up to five
-experts and 0.78 from six, so a fourth or fifth expert **lowers** the
-probability of clearing while a sixth raises it sharply. That is a
-property of the guideline, not of the items, and the package reports it
-rather than smoothing it away.
+Note the step. Lynn’s (1986) I-CVI criterion requires unanimity up to
+five experts and allows one disagreement from six, so a fourth or fifth
+expert **lowers** the probability of clearing while a sixth raises it
+sharply. That is a property of the guideline, not of the items, and the
+package reports it rather than smoothing it away.
 
 [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
 compares successive pretest rounds and, critically, checks whether the
