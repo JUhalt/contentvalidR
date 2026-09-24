@@ -104,83 +104,89 @@ fit <- delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 fit
 #> contentvalidR Delphi analysis
 #> -----------------------------
-#> Items: 6 | Experts: 10 | Rounds: 3 (1, 2, 3) 
-#> Experts per round: 10, 10, 9 
+#> Items: 6 | Experts: 10 | Rounds: 3 (1, 2, 3)
+#> Experts per round: 10, 10, 9
 #> Agreement: a rating of 3 or higher on the 1-4 scale. Consensus threshold:
 #> 75%, fixed before the study.
 #> Stability: weighted kappa (quadratic weights) between consecutive rounds
 #> 
-#> 3 item(s) reached consensus in their last round; 3 did not.
-#> No consensus: S3, S4, S6 
+#> 3 of 6 items reached consensus in their last round.
+#> No consensus: S3, S4, S6
 #> 
-#> Item-level evidence (last round, and the last pair of rounds):
-#>  item last_round  n prop_agree prop_unchanged kappa   low high recommendation
-#>    S1          2 10       1.00           0.80  0.71  0.20  1.0      Consensus
-#>    S2          3  9       1.00           0.89  0.00    NA   NA      Consensus
-#>    S3          3  9       0.00           1.00  1.00  1.00  1.0   No consensus
-#>    S4          3  9       0.56           0.89  0.96  0.84  1.0   No consensus
-#>    S5          3  9       1.00           0.78  0.53  0.00  1.0      Consensus
-#>    S6          3  9       0.56           0.00 -0.99 -1.00 -0.3   No consensus
+#> Item-level evidence (last round, and the last pair of rounds)
+#>  item     decision last round  n agree unchanged kappa        95% CI
+#>    S1    Consensus          2 10  1.00       .80   .71   [.20, 1.00]
+#>    S2    Consensus          3  9  1.00       .89   .00            NA
+#>    S3 No consensus          3  9   .00      1.00  1.00  [1.00, 1.00]
+#>    S4 No consensus          3  9   .56       .89   .96   [.84, 1.00]
+#>    S5    Consensus          3  9  1.00       .78   .53   [.00, 1.00]
+#>    S6 No consensus          3  9   .56       .00  -.99 [-1.00, -.30]
 #> 
-#> Stability trend (kappa) by pair of rounds:
-#>  item  1->2  2->3
-#>    S1  0.71    NA
-#>    S2  0.04  0.00
-#>    S3  0.83  1.00
-#>    S4  0.92  0.96
-#>    S5  0.63  0.53
-#>    S6 -1.00 -0.99
+#> agree: share of experts agreeing in the item's last round. unchanged: share
+#> who kept their rating between the last two rounds.
 #> 
-#> Share of experts who kept their rating, by pair of rounds:
+#> Stability trend (kappa) by pair of rounds
+#>  item  1->2 2->3
+#>    S1   .71   NA
+#>    S2   .04  .00
+#>    S3   .83 1.00
+#>    S4   .92  .96
+#>    S5   .63  .53
+#>    S6 -1.00 -.99
+#> 
+#> Share of experts who kept their rating, by pair of rounds
 #>  item 1->2 2->3
-#>    S1  0.8   NA
-#>    S2  0.5 0.89
-#>    S3  0.9 1.00
-#>    S4  0.8 0.89
-#>    S5  0.7 0.78
-#>    S6  0.0 0.00
+#>    S1  .80   NA
+#>    S2  .50  .89
+#>    S3  .90 1.00
+#>    S4  .80  .89
+#>    S5  .70  .78
+#>    S6  .00  .00
 #> 
-#> Notes:
+#> Notes
 #>   S2 (2->3): Every expert gave the same rating in one of the two rounds, so
-#>     kappa is 0 however many kept their rating. Read prop_unchanged instead.
+#>     kappa is 0 however many kept their rating. Read the share who kept their
+#>     rating instead.
 #> 
-#> In some resamples kappa was undefined because every resampled rating fell
-#> in one category. Those intervals use the remaining resamples (n_boot_usable
-#> in details$stability), so treat them as rough.
+#> In some resamples kappa was undefined because every resampled rating fell in
+#> one category. Those intervals use the remaining resamples (n_boot_usable in
+#> details$stability), so treat them as rough.
 #> 
 #> Stability is weighted kappa between each expert's ratings in consecutive
 #> rounds (Holey et al., 2007), with quadratic weights. A change of two scale
-#> points counts four times a change of one. With these weights kappa equals
-#> the intraclass correlation of the two rounds' ratings, so a shift of the
-#> whole panel counts as instability (Fleiss & Cohen, 1973). Read kappa as a
-#> trend across rounds, not against a cut-off. No verbal labels such as
-#> 'substantial' are shown: kappa falls when ratings converge on one category,
-#> which is what a Delphi aims for, so a panel whose experts nearly all kept
-#> their answer can still show a low kappa. Holey et al. saw this for their
-#> most-agreed statement. Read kappa next to prop_unchanged. The intervals are
-#> percentile bootstraps that resample the experts, which are the units the
-#> two rounds cross-classify. That is the procedure Klar et al. (2002)
-#> describe for kappa, but they evaluated it for an unweighted kappa on two
-#> categories and found a nominal 95% interval covered about 83% of the time
-#> with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels
-#> are smaller than that, so the interval is narrower than its label claims:
-#> read it as indicative of precision, not as a test.
+#> points counts four times a change of one. With these weights kappa equals the
+#> intraclass correlation of the two rounds' ratings, so a shift of the whole
+#> panel counts as instability (Fleiss & Cohen, 1973). Read kappa as a trend
+#> across rounds, not against a cut-off. No verbal labels such as 'substantial'
+#> are shown: kappa falls when ratings converge on one category, which is what a
+#> Delphi aims for, so a panel whose experts nearly all kept their answer can
+#> still show a low kappa. Holey et al. saw this for their most-agreed
+#> statement. Read kappa next to the share of experts who kept their rating
+#> (unchanged).
 #> 
-#> The panel changed size across rounds (10, 10, 9 experts). Stability uses
-#> only the experts who rated an item in both rounds, and a result from fewer
-#> experts is weaker evidence.
+#> The intervals are percentile bootstraps that resample the experts, which are
+#> the units the two rounds cross-classify. That is the procedure Klar et al.
+#> (2002) describe for kappa, but they evaluated it for an unweighted kappa on
+#> two categories and found a nominal 95% interval covered about 83% of the time
+#> with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels are
+#> smaller than that, so the interval is narrower than its label claims: read it
+#> as indicative of precision, not as a test.
+#> 
+#> The panel changed size across rounds (10, 10, 9 experts). Stability uses only
+#> the experts who rated an item in both rounds, and a result from fewer experts
+#> is weaker evidence.
 #> 
 #> What these columns mean
-#>   prop_agree -- Share of experts agreeing. Share of the experts rating an
-#>       item in a round whose rating was at or above the agreement cut. On a
+#>   agree -- Share of experts agreeing. Share of the experts rating an item
+#>       in a round whose rating was at or above the agreement cut. On a
 #>       relevance scale this is the I-CVI. Consensus means it reached the
 #>       threshold set before the study. (0 to 1; higher is broader agreement)
-#>   prop_unchanged -- Share of experts keeping their rating. Among experts
-#>       who rated the item in both of two consecutive rounds, the share who
-#>       gave exactly the same rating again. It is the plainest reading of
+#>   unchanged -- Share of experts keeping their rating. Among experts who
+#>       rated the item in both of two consecutive rounds, the share who gave
+#>       exactly the same rating again. It is the plainest reading of
 #>       stability, and it stays meaningful when kappa does not. (0 to 1; 1
 #>       means no expert changed their rating)
-#>   kappa_w -- Weighted kappa between rounds. Agreement between each expert's
+#>   kappa -- Weighted kappa between rounds. Agreement between each expert's
 #>       ratings in two consecutive rounds, corrected for chance, with larger
 #>       changes counting more. Read it as a trend across rounds. It falls
 #>       when ratings bunch in one category, so a converged panel can show a
@@ -194,11 +200,11 @@ fit
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
-#>   Each workflow also uses its own wording in the recommendation column
-#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
-#>   onto the shared statuses above.
+#>   Each workflow also uses its own wording in the decision column (Retain,
+#>   Strong support, Typical, Covered, and so on). Those words map onto the
+#>   shared statuses above.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
 #> Consensus is not correctness, and 'No consensus' is not an instruction to
@@ -215,11 +221,11 @@ options(contentvalidR.show_key = FALSE)
 
 ## Reading consensus
 
-`prop_agree` is the share of experts who rated the item at or above
-`agree_cut` in its last round. On a relevance scale this is the item’s
-I-CVI. Three statements (S1, S2, and S5) reached the 75% threshold. S1’s
-last round is round 2, because it was set aside once it reached
-consensus.
+The `agree` column (`prop_agree` in `fit$results`) is the share of
+experts who rated the item at or above `agree_cut` in its last round. On
+a relevance scale this is the item’s I-CVI. Three statements (S1, S2,
+and S5) reached the 75% threshold. S1’s last round is round 2, because
+it was set aside once it reached consensus.
 
 Look at S3. Nobody rated it relevant, which looks like “no consensus”.
 But the panel does agree: every expert rated it below the cut. The
@@ -243,18 +249,19 @@ writeLines(strwrap(paste0(shown$item, ": ", shown$interpretation),
 
 ## Reading stability
 
-Read `prop_unchanged` first. It is the plainest measure: the share of
-experts who gave exactly the same rating again. Then read the kappa
-trend beside it. Kappa is weighted kappa between each expert’s ratings
-in two consecutive rounds (Holey et al., 2007). With the default
-quadratic weights, it equals the intraclass correlation of the two
-rounds’ ratings (Fleiss & Cohen, 1973). A shift of the whole panel after
-feedback therefore counts as instability.
+Read the `unchanged` column (`prop_unchanged` in `fit$results`) first.
+It is the plainest measure: the share of experts who gave exactly the
+same rating again. Then read the kappa trend beside it. Kappa is
+weighted kappa between each expert’s ratings in two consecutive rounds
+(Holey et al., 2007). With the default quadratic weights, it equals the
+intraclass correlation of the two rounds’ ratings (Fleiss & Cohen,
+1973). A shift of the whole panel after feedback therefore counts as
+instability.
 
 The six statements show the main patterns:
 
 - **S3 and S4 are stable.** Almost every expert kept their rating, and
-  kappa is high: between 0.83 and 1 in every pair of rounds. But S4 is
+  kappa is high: between .83 and 1 in every pair of rounds. But S4 is
   stable *without* consensus: the panel is split (56% agreeing) and
   staying split. Another round is unlikely to change that. Dajani et
   al. (1979) treat a stable split as a result in its own right, to be
@@ -263,12 +270,13 @@ The six statements show the main patterns:
   the experts who rated it in both rounds, 89% kept their rating, yet
   kappa is 0. When every rating in a round is the same, there is no room
   left above chance, so kappa is 0 no matter how many experts held
-  steady. The output flags this and points you to `prop_unchanged`.
-- **S5 formed consensus while kappa fell,** from 0.63 to 0.53. As
-  ratings bunch near 3, kappa has less room to show agreement. This is
-  the same pattern Holey et al. (2007) reported: their most-agreed
-  statement had their lowest kappa. With nine or ten experts, the
-  intervals run from about 0 to 1.
+  steady. The output flags this and points you to the share who kept
+  their rating.
+- **S5 formed consensus while kappa fell,** from .63 to .53. As ratings
+  bunch near 3, kappa has less room to show agreement. This is the same
+  pattern Holey et al. (2007) reported: their most-agreed statement had
+  their lowest kappa. With nine or ten experts, the intervals run from
+  about 0 to 1.
 - **S6 is unstable.** No expert kept their rating, and kappa is negative
   because experts swapped positions.
 
@@ -276,7 +284,7 @@ These patterns are why the output gives kappa no verbal labels such as
 “moderate” or “substantial”. Landis and Koch (1977), who introduced
 those labels, called their divisions clearly arbitrary. And a label
 would tend to get *worse* as a Delphi succeeds, because convergence
-lowers kappa. Read kappa as a trend, next to `prop_unchanged`.
+lowers kappa. Read kappa as a trend, next to the `unchanged` column.
 
 The full table, with every pair of rounds, is in `details$stability`:
 
@@ -384,8 +392,9 @@ reads those fits directly:
 ``` r
 
 do.call(compare_rounds, unname(fit$details$round_fits))
-#> Comparison across pretest rounds
-#> Workflow: expert-panel   Rounds: 3   Units compared: 6
+#> contentvalidR comparison across pretest rounds
+#> ----------------------------------------------
+#> Workflow: expert-panel | Rounds: 3 | Units compared: 6
 #> 
 #> Status by round
 #>  item   Round 1   Round 2   Round 3       change
@@ -397,18 +406,16 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 #>    S6    Review    Review    Review    Unchanged
 #> 
 #> Round-to-round summary
-#>     from      to n_compared n_unchanged n_strengthened n_weakened n_added
-#>  Round 1 Round 2          6           5              1          0       0
-#>  Round 2 Round 3          5           5              0          0       0
-#>  n_removed settings_changed
-#>          0            FALSE
-#>          1            FALSE
+#>     from      to compared unchanged stronger weaker added removed same settings
+#>  Round 1 Round 2        6         5        1      0     0       0           yes
+#>  Round 2 Round 3        5         5        0      0     0       1           yes
+#> 
 #> Settings were identical across rounds, so these transitions can be read as
 #> changes in evidence.
+#> 
 #> A status change means the evidence crossed a criterion, not that an item
-#> improved by a measurable amount. An item sitting near a boundary can move
-#> on a very small change. Read transitions alongside each round's index
-#> values.
+#> improved by a measurable amount. An item sitting near a boundary can move on
+#> a very small change. Read transitions alongside each round's index values.
 ```
 
 S1 shows as `Removed` in round 3 because it was set aside after reaching

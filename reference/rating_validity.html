@@ -187,43 +187,45 @@ Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406
 <span class="r-in"><span><span class="va">fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR construct-rating analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 3 | Raters: 20 | Target scales: 2 | Constructs: 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Design: within-judge ratings | Scale: 1 to 5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Item inference: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p) plus planned paired target-versus-orbiting contrasts </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Planned-contrast adjustment: none </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: naive </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 3 | Judges: 20 | Target constructs: 2 | Constructs rated: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Design: within-judge ratings on a 1 to 5 scale</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p) plus planned paired target-versus-orbiting contrasts; planned-contrast</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adjustment: none.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: naive, meaning drawn from the kind of people who will answer the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> items.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 item(s) meet the full item-level screening criterion; 0 item(s) are flagged for review.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 of 3 items meet the full item-level screening criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item target n_complete strongest_competitor  htc   htd p_value max_contrast_p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    A1      A         20                    B 0.89 0.650       0              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    A2      A         20                    B 0.88 0.600       0              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    B1      B         20                    C 0.93 0.694       0              0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  recommendation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Retain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target decision  n HTC HTD omnibus p contrast p competitor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A1      A   Retain 20 .89 .65    &lt; .001     &lt; .001          B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A2      A   Retain 20 .88 .60    &lt; .001     &lt; .001          B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    B1      B   Retain 20 .93 .69    &lt; .001     &lt; .001          C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Target-scale Colquitt benchmark summary:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  target n_items n_htc n_htd mean_htc htc_strength mean_htd htd_strength</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       A       2     2     2    0.885       Strong    0.625  Very Strong</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       B       1     1     1    0.930  Very Strong    0.694  Very Strong</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  benchmark_set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        overall</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        overall</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> n: judges who rated the item against every construct. omnibus p: do the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> item's ratings differ across constructs (Greenhouse-Geisser corrected).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contrast p: the largest p among the planned target-versus-orbiting contrasts,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> so every contrast is at or below it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> HTC is an average rating and HTD is a difference between ratings, so they sit on</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> different scales with different typical values. A high HTC can be labeled Weak in</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> the same analysis where a much smaller HTD is labeled Very Strong. Compare each</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> index against its own benchmark, never against the other index's number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target-scale Colquitt benchmarks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  target items mean HTC   HTC level mean HTD   HTD level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       A     2      .89      Strong      .62 Very Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       B     1      .93 Very Strong      .69 Very Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Benchmark set: overall</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> averages, not universal cutoffs. HTC is an average rating and HTD is a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> difference between ratings, so they sit on different scales with different</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> typical values. A high HTC can be labeled Weak in the same analysis where a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> much smaller HTD is labeled Very Strong. Compare each index against its own</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> benchmark, never against the other index's number.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       its intended construct definition, expressed as a proportion of the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rating scale. (0 to 1; higher is stronger)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       average rating exceeds the best competing construct's, as a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       proportion of the rating scale. It is a difference, so its typical</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       values are far smaller than HTC's. (usually a small positive number;</span>
@@ -236,36 +238,39 @@ Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the recommendation column</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   (Retain, Strong support, Typical, Covered, and so on). Those words map</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   onto the shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> orbiting-construct choice, domain coverage, and qualitative judge feedback.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'Review' is not an automatic deletion decision. Consider construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> definitions, item wording, orbiting-construct choice, domain coverage, and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> qualitative judge feedback.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Summary of construct-rating content-validity evidence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Summary: construct-rating content-validity evidence</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Retain: 3 of 3 item(s)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Review: 0 of 3 item(s)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Retain: 3 of 3 | Review: 0 of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Target-scale evidence:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  target n_items n_htc n_htd n_retain n_review mean_htc htc_strength mean_htd</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       A       2     2     2        2        0    0.885       Strong    0.625</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       B       1     1     1        1        0    0.930  Very Strong    0.694</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  htd_strength overall_strength</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Very Strong           Strong</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Very Strong      Very Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Scale-level evidence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  target items retain review mean HTC   HTC level mean HTD   HTD level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       A     2      2      0      .89      Strong      .62 Very Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       B     1      1      0      .93 Very Strong      .69 Very Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      overall</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Very Strong</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A: Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B: Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A: Strong normative standing on the weaker of definitional correspondence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (HTC) and distinctiveness (HTD).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B: Very Strong normative standing on the weaker of definitional</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   correspondence (HTC) and distinctiveness (HTD).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> All analyzed items met the item-level inferential screening criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Interpret these results alongside theory, domain coverage, and qualitative feedback.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The analysis does not by itself establish comprehensiveness or the full content-validity argument.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Interpret these results alongside theory, domain coverage, and qualitative</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> feedback. The analysis does not by itself establish comprehensiveness or the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> full content-validity argument.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

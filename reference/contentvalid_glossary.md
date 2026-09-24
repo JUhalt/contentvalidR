@@ -35,8 +35,8 @@ Strength labels such as `Strong` or `Weak` from
 are percentile positions relative to scales published in the measurement
 literature. They are not absolute judgments, and they are not comparable
 across indices: HTC and HTD sit on different scales with different
-typical values, so an HTC of 0.83 can be labeled `Weak` in the same
-analysis where an HTD of 0.44 is labeled `Very Strong`. Compare each
+typical values, so an HTC of .83 can be labeled `Weak` in the same
+analysis where an HTD of .44 is labeled `Very Strong`. Compare each
 index against its own benchmark, never against another index's number.
 
 ## See also
@@ -145,7 +145,7 @@ contentvalid_glossary()
 #>       slightly negative)
 #>   stress -- Kruskal stress-1. How much distortion was introduced by
 #>       squeezing the similarity data into the chosen number of dimensions.
-#>       Lower is a closer fit. (0 is perfect; below 0.10 is conventionally
+#>       Lower is a closer fit. (0 is perfect; below .10 is conventionally
 #>       called fair or better)
 #> 
 #> delphi
@@ -182,7 +182,7 @@ contentvalid_glossary()
 #>       panel's rating distribution moved between two rounds, as a share of
 #>       the experts compared. Change below 15% is read as stable, a cut-off
 #>       its authors set from one study without statistical theory. (0 to 1;
-#>       stable below 0.15)
+#>       stable below .15)
 #> 
 #> status labels
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -192,9 +192,9 @@ contentvalid_glossary()
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #> 
-#> Strength labels such as Strong or Weak are percentile positions 
-#> relative to published scales, not absolute judgments, and are not 
-#> comparable across different indices.
+#> Strength labels such as Strong or Weak are percentile positions relative to
+#> published scales, not absolute judgments, and are not comparable across
+#> different indices.
 contentvalid_glossary("item-sort")
 #> contentvalidR glossary
 #> 
@@ -228,7 +228,7 @@ contentvalid_glossary("item-sort")
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
 #> 
-#> Strength labels such as Strong or Weak are percentile positions 
-#> relative to published scales, not absolute judgments, and are not 
-#> comparable across different indices.
+#> Strength labels such as Strong or Weak are percentile positions relative to
+#> published scales, not absolute judgments, and are not comparable across
+#> different indices.
 ```

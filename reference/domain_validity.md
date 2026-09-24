@@ -135,16 +135,22 @@ domain_validity(
   cell_col = "construct",
   domain = c("Autonomy", "Competence", "Relatedness", "Belonging")
 )
-#> Content-domain coverage
-#> Items: 7   Blueprint cells: 4
-#> Covered: 1   Not covered: 1   Thin: 1   Over-represented: 1
+#> contentvalidR content-domain coverage
+#> -------------------------------------
+#> Items: 7 | Blueprint cells: 4
+#> Criteria: at least 2 items per cell, and no cell above 2 times its expected
+#> share (an equal share when no `targets` are given).
+#> 
+#> 1 of 4 cells meet the coverage criteria.
+#> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly
+#> covered), Belonging (Not covered)
 #> 
 #> Cells
-#>         cell n_items share   recommendation
-#>     Autonomy       4   57% Over-represented
-#>   Competence       2   29%          Covered
-#>  Relatedness       1   14%   Thinly covered
-#>    Belonging       0    0%      Not covered
+#>         cell         decision items share expected
+#>     Autonomy Over-represented     4   57%      25%
+#>   Competence          Covered     2   29%      25%
+#>  Relatedness   Thinly covered     1   14%      25%
+#>    Belonging      Not covered     0    0%      25%
 #> 
 #> What these columns mean
 #>   share -- Share of items. Percentage of all items that fall in this
@@ -152,14 +158,14 @@ domain_validity(
 #> 
 #> What the cell labels mean
 #>   Covered -- the cell met the coverage criteria set for this analysis.
-#>   Thinly covered -- fewer items than the minimum you set. Over-represented
-#>   -- a larger share of the instrument than expected. Not covered -- the
-#>   blueprint intends this cell but no item addresses it.
+#>   Thinly covered -- fewer items than the minimum you set.
+#>   Over-represented -- a larger share of the instrument than expected.
+#>   Not covered -- the blueprint intends this cell but no item addresses it.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
-#> Coverage shows that items exist for each cell. It does not show that 
-#> those items are good ones, or that the blueprint is the right 
-#> description of the domain.
+#> Coverage shows that items exist for each cell. It does not show that those
+#> items are good ones, or that the blueprint is the right description of the
+#> domain.
 ```

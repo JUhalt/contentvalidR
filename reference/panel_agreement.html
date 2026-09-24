@@ -212,10 +212,11 @@ I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology,
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">panel_agreement</span><span class="op">(</span><span class="va">ratings</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel-level agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5   Raters: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha (ordinal): 0.561   95% interval: -0.267 to 0.782</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 50%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR panel agreement</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5 | Raters: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha (ordinal) = .56, 95% CI [-.27, .78]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 50.0%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Alpha compares the disagreement observed within items with the disagreement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected if these same ratings were assigned to items at random: 1 means</span>
@@ -226,20 +227,20 @@ I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology,
 <span class="r-out co"><span class="r-pr">#&gt;</span> rated relevant, and is not by itself evidence of a poor panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha is the default because it handles ordinal ratings and</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> missing ratings (Zapf et al., 2016). It is a general reliability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coefficient; no publication applying it specifically to content-validity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> panels was found.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> missing ratings (Zapf et al., 2016). It is a general reliability coefficient;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> no publication applying it specifically to content-validity panels was found.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The interval resamples items with all of their ratings, following Zapf et</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> al. (2016), and varies slightly between runs unless `seed` is set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The interval resamples items with all of their ratings, following Zapf et al.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (2016), and varies slightly between runs unless `seed` is set.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It does not show that the items are relevant or that the domain is covered.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. It does</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> not show that the items are relevant or that the domain is covered.</span>
 <span class="r-in"><span><span class="fu">panel_agreement</span><span class="op">(</span><span class="va">ratings</span>, level <span class="op">=</span> <span class="st">"interval"</span>, B <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel-level agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5   Raters: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha (interval): 0.698</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 50%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR panel agreement</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5 | Raters: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha (interval) = .70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 50.0%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Alpha compares the disagreement observed within items with the disagreement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expected if these same ratings were assigned to items at random: 1 means</span>
@@ -250,17 +251,17 @@ I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology,
 <span class="r-out co"><span class="r-pr">#&gt;</span> rated relevant, and is not by itself evidence of a poor panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Krippendorff's alpha is the default because it handles ordinal ratings and</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> missing ratings (Zapf et al., 2016). It is a general reliability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> coefficient; no publication applying it specifically to content-validity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> panels was found.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> missing ratings (Zapf et al., 2016). It is a general reliability coefficient;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> no publication applying it specifically to content-validity panels was found.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It does not show that the items are relevant or that the domain is covered.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. It does</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> not show that the items are relevant or that the domain is covered.</span>
 <span class="r-in"><span><span class="fu">panel_agreement</span><span class="op">(</span><span class="va">ratings</span> <span class="op">&gt;=</span> <span class="fl">3</span>, method <span class="op">=</span> <span class="st">"ac1"</span>, B <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel-level agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5   Raters: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Gwet's AC1: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 100%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR panel agreement</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items rated by two or more raters: 5 | Raters: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Gwet's AC1 = 1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Identical rating pairs: 100.0%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> AC1 compares observed agreement with the agreement expected by chance,</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> estimated so that it stays high when nearly every rating falls in one</span>
@@ -269,11 +270,11 @@ I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology,
 <span class="r-out co"><span class="r-pr">#&gt;</span> Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> that it rises as ratings concentrate in one category even when agreement is</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unchanged, that it can be non-zero when raters are independent, and that</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> benchmark labels developed for kappa, such as Landis and Koch's, must not</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> be applied to it.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> benchmark labels developed for kappa, such as Landis and Koch's, must not be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> applied to it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> It does not show that the items are relevant or that the domain is covered.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement describes how consistently raters rated these items. It does</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> not show that the items are relevant or that the domain is covered.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -145,28 +145,37 @@ ratings <- rbind(
 dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 fit <- judge_validity(ratings, lo = 1, hi = 4)
 fit
-#> Judge and rater heterogeneity
-#> Judges: 8   Items: 6
-#> Dependability (Phi): 0.94   Judge share of variance: 15.6%
+#> contentvalidR judge heterogeneity
+#> ---------------------------------
+#> Judges: 8 | Items: 6
+#> Dependability (Phi): .94 | Judge share of variance: 15.6%
+#> 
+#> 7 of 8 judges are consistent with the panel.
+#> Flagged for review: Judge8 (Severe)
 #> 
 #> Judges
-#>   judge mean_rating severity(pts) differentiation n_items_flipped    status
-#>  Judge1        3.17         -0.27            0.91               0 Supported
-#>  Judge2        3.00         -0.10            1.18               0 Supported
-#>  Judge3        3.00         -0.10            1.18               0 Supported
-#>  Judge4        3.17         -0.27            0.91               0 Supported
-#>  Judge5        3.17         -0.27            1.24               0 Supported
-#>  Judge6        2.83          0.06            1.09               0 Supported
-#>  Judge7        3.17         -0.27            0.91               0 Supported
-#>  Judge8        1.67          1.23            0.48               0    Review
-#> Positive severity means the judge rates lower than the panel.
+#>   judge decision mean severity scale use flipped
+#>  Judge1  Typical 3.17    -0.27      0.91       0
+#>  Judge2  Typical 3.00    -0.10      1.18       0
+#>  Judge3  Typical 3.00    -0.10      1.18       0
+#>  Judge4  Typical 3.17    -0.27      0.91       0
+#>  Judge5  Typical 3.17    -0.27      1.24       0
+#>  Judge6  Typical 2.83     0.06      1.09       0
+#>  Judge7  Typical 3.17    -0.27      0.91       0
+#>  Judge8   Severe 1.67     1.23      0.48       0
 #> 
-#> Logit severity not estimated:
+#> mean: the judge's mean rating. severity: how far the judge rates below the
+#> panel, in rating points (negative is more lenient). flipped: items whose
+#> review status changes if this judge is removed.
+#> A judge is flagged when severity exceeds 0.75 rating points in either
+#> direction, scale use is below 0.50, or any item's status depends on them.
+#> 
+#> Logit severity not estimated
 #> Judge severity could not be estimated. After removing judges and items with
 #> no variation in endorsement, fewer than two judges and two items remained.
-#> This usually means the panel agreed almost completely, which is a
-#> substantive finding rather than an estimation failure: with near total
-#> agreement there are no severity differences to recover.
+#> This usually means the panel agreed almost completely, which is a substantive
+#> finding rather than an estimation failure: with near total agreement there
+#> are no severity differences to recover.
 #> Severity in rating points is reported instead and is used for flagging.
 #> 
 #> No item's review status depends on any single judge.
@@ -177,55 +186,52 @@ fit
 #>       panel. Reported in logits from the facets model when it can be
 #>       estimated, otherwise in rating points. (0 means typical of this
 #>       panel)
-#>   differentiation -- Scale use. How widely a judge spread their ratings
-#>       compared with a typical judge on this panel. Values well below 1 mean
-#>       the judge distinguished less among items. (1.0 is typical of this
-#>       panel)
-#>   phi_coefficient -- Dependability coefficient. How dependably the absolute
-#>       level of the ratings would reproduce with a different panel of the
-#>       same size. Penalized by judge severity differences, and usually the
-#>       relevant one for content validity, where items are judged against a
-#>       fixed standard. (0 to 1; never exceeds the generalizability
-#>       coefficient)
+#>   scale use -- Scale use. How widely a judge spread their ratings compared
+#>       with a typical judge on this panel. Values well below 1 mean the
+#>       judge distinguished less among items. (1.0 is typical of this panel)
+#>   Phi -- Dependability coefficient. How dependably the absolute level of
+#>       the ratings would reproduce with a different panel of the same size.
+#>       Penalized by judge severity differences, and usually the relevant one
+#>       for content validity, where items are judged against a fixed
+#>       standard. (0 to 1; never exceeds the generalizability coefficient)
 #> 
 #> What the status labels mean
 #>   Supported -- The evidence met the criteria set for this analysis.
 #>   Review -- Something here needs a closer look. This is not an instruction
 #>       to delete anything.
 #>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Each workflow also uses its own wording in the recommendation column
-#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
-#>   onto the shared statuses above.
+#>   Each workflow also uses its own wording in the decision column (Retain,
+#>   Strong support, Typical, Covered, and so on). Those words map onto the
+#>   shared statuses above.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
-#> A `Review` judge is not a judge to remove. Disagreement can be 
-#> substantive expertise; the flag marks where a conclusion rests on 
-#> one person's ratings.
+#> A 'Review' judge is not a judge to remove. Disagreement can be substantive
+#> expertise; the flag marks where a conclusion rests on one person's ratings.
 summary(fit)
 #> Summary: judge and rater heterogeneity
-#> Judges: 8   Items: 6
-#> Consistent with panel: 7   Flagged for review: 1   Insufficient: 0
+#> Judges: 8 | Items: 6
+#> Consistent with panel: 7 | Flagged for review: 1 | Insufficient: 0
 #> 
 #> Generalizability
-#>   Dependability (absolute decisions): 0.942
-#>   Generalizability (rank ordering):   0.968
-#>   Judges needed by target:
-#>  target n_judges_relative n_judges_absolute
-#>     0.7                 1                 2
-#>     0.8                 2                 2
-#>     0.9                 3                 5
+#>   Dependability (absolute decisions): .94
+#>   Generalizability (rank ordering):   .97
+#> 
+#> Judges needed to reach each coefficient
+#>  target relative (G) absolute (Phi)
+#>     .70            1              2
+#>     .80            2              2
+#>     .90            3              5
 #> 
 #> Judges flagged for review
 #> 
-#>   Judge8  (Severe)
-#>     This judge is markedly more severe than the panel (1.23 rating
-#>     points relative to the panel mean). Consistent severity does not
-#>     invalidate their ratings, but it shifts absolute indices such as
-#>     CVI, which is why the dependability coefficient is penalized by
-#>     judge differences.
+#>   Judge8 (Severe)
+#>     This judge is markedly more severe than the panel (1.23 rating points
+#>     relative to the panel mean). Consistent severity does not invalidate
+#>     their ratings, but it shifts absolute indices such as CVI, which is why
+#>     the dependability coefficient is penalized by judge differences.
 #> 
-#> This analysis describes how much conclusions depend on these judges. 
-#> It does not establish that the items cover the intended content domain.
+#> This analysis describes how much conclusions depend on these judges. It does
+#> not establish that the items cover the intended content domain.
 ```

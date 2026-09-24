@@ -46,6 +46,32 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0.9000" id="contentvalidr-0709000-development-version">contentvalidR 0.7.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0709000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000">Printed output reads as a report, in APA style (in development)<a class="anchor" aria-label="anchor" href="#printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000"></a></h3>
+<p>No statistic changes. Only printed output changes, and <code>results</code> still holds every value at full precision.</p>
+<ul><li>
+<strong>Numbers follow the APA Publication Manual, seventh edition.</strong> A statistic that cannot exceed 1 prints without a leading zero (Psa = .90, <em>p</em> = .021, kappa = -.13). One that can exceed 1 keeps it (a chi-square of 0.31, a severity of -0.27 rating points). Values have two decimals, and <em>p</em> values have three, with anything below .001 printed as &lt; .001 rather than 0.000 (Section 6.36). Intervals print as <code>95% CI [.70, .97]</code> in a column headed with their level (Section 6.43). <code>digits</code> now defaults to 2 in every print method.</li>
+<li>
+<strong>Every print opens with its verdict.</strong> A sentence says how many items met the criterion and names the ones flagged, before any table. The decision appears beside each item. Anything that is the same on every row, such as the I-CVI criterion for a panel of one size, is stated once in a sentence instead of repeated down a column.</li>
+<li>
+<strong>No more walls of numbers.</strong> Tables are laid out to fit an 80-column console (long item names can still widen them), and prose wraps to the console width. The <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> methods show flagged items in the same columns as <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, where the expert-panel summary used to print its whole results table. An explanation shared by several items, such as a Delphi note or a judge’s flag, is printed once with every item it applies to.</li>
+<li>
+<strong>Planning tables have one row per panel size.</strong> <code><a href="../reference/expert_power.html">expert_power()</a></code> and <code><a href="../reference/sort_power.html">sort_power()</a></code> put each assumed probability in its own column, so ten panel sizes take ten rows instead of thirty.</li>
+<li>
+<strong>The key names columns by the heading you see</strong> (Psa, 95% CI, kappa), not by the name of the column in <code>results</code>.</li>
+<li>
+<strong>Headings are words.</strong> <code>n_target</code> and <code>n</code> print together as judges (18/20), <code>severity(pts)</code> as severity, <code>differentiation</code> as scale use, and the recommendation column as decision.</li>
+<li>
+<code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> prints the degrees of freedom beside a chi-square, as APA reports it. <code><a href="../reference/judge_validity.html">judge_validity()</a></code> prints infit beside outfit, since either can flag a judge, and states the rules that flag one.</li>
+<li>The README and vignettes follow the same rules, and the vignette on reading output explains them.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="two-labels-now-say-what-they-mean-in-development-0-7-0-9000">Two labels now say what they mean (in development)<a class="anchor" aria-label="anchor" href="#two-labels-now-say-what-they-mean-in-development-0-7-0-9000"></a></h3>
+<ul><li>
+<strong><code><a href="../reference/judge_validity.html">judge_validity()</a></code> no longer calls a too-predictable judge “Erratic”.</strong> A fit mean square above the range means ratings noisier than the model expects; one below it means ratings more predictable than it expects, the opposite problem. Both were labeled <code>Erratic</code>. The second is now <code>Too predictable</code>, with its own interpretation. The status is <code>Review</code> either way, and which judges are flagged does not change. Code that matched <code>recommendation == "Erratic"</code> to find every misfitting judge should also match <code>"Too predictable"</code>, or use <code>status</code>.</li>
+<li>
+<strong>The handoff states the I-CVI criterion as a count.</strong> Its <code>rule</code> text read <code>I-CVI &gt;= 0.8333333</code>. It now reads <code>at least 5 of 6 experts rate the item relevant (I-CVI &gt;= .83; Lynn, 1986)</code>, since the decision compares counts, and the handoff now cites Lynn (1986). Rule text is prose for a person and outside the frozen schema, which is unchanged.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="the-i-cvi-criterion-now-matches-lynns-table-in-development-0-7-0-9000">The I-CVI criterion now matches Lynn’s table (in development)<a class="anchor" aria-label="anchor" href="#the-i-cvi-criterion-now-matches-lynns-table-in-development-0-7-0-9000"></a></h3>
 <ul><li>
 <strong>Changed result, with nine experts only.</strong> An item endorsed by 7 of 9 experts now meets the I-CVI criterion; before, it needed 8. The criterion was stored as “.78”, which is Lynn’s (1986) 7 of 9 rounded, and 7/9 = .778 fell short of the rounded value. Lynn’s Table 2 requires 7 of 9, and Polit and Beck (2006) say the same in words. Every other panel size from three to ten was already right. This affects <code><a href="../reference/expert_validity.html">expert_validity()</a></code> verdicts, <code><a href="../reference/expert_power.html">expert_power()</a></code> planning probabilities, and <code><a href="../reference/judge_validity.html">judge_validity()</a></code>’s check of whether one judge moves an item.</li>

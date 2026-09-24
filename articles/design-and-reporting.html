@@ -321,23 +321,19 @@ required parts of the flagship workflows.</p>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Exact item-sort planning analysis</span></span>
-<span><span class="co">#&gt; ---------------------------------</span></span>
-<span><span class="co">#&gt; Retention rule: p0 = 0.50, alpha = 0.050</span></span>
+<span><span class="co">#&gt; contentvalidR item-sort planning</span></span>
+<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   N true_p critical_n_target minimum_observed_psa power</span></span>
-<span><span class="co">#&gt;  20    0.6                15                0.750 0.126</span></span>
-<span><span class="co">#&gt;  30    0.6                20                0.667 0.291</span></span>
-<span><span class="co">#&gt;  40    0.6                26                0.650 0.317</span></span>
-<span><span class="co">#&gt;  20    0.7                15                0.750 0.416</span></span>
-<span><span class="co">#&gt;  30    0.7                20                0.667 0.730</span></span>
-<span><span class="co">#&gt;  40    0.7                26                0.650 0.807</span></span>
-<span><span class="co">#&gt;  20    0.8                15                0.750 0.804</span></span>
-<span><span class="co">#&gt;  30    0.8                20                0.667 0.974</span></span>
-<span><span class="co">#&gt;  40    0.8                26                0.650 0.992</span></span>
+<span><span class="co">#&gt;  judges required minimum Psa power at .60 power at .70 power at .80</span></span>
+<span><span class="co">#&gt;      20    15/20         .75          .13          .42          .80</span></span>
+<span><span class="co">#&gt;      30    20/30         .67          .29          .73          .97</span></span>
+<span><span class="co">#&gt;      40    26/40         .65          .32          .81          .99</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Power is the exact probability of reaching the required target-assignment count</span></span>
-<span><span class="co">#&gt; under the assumed true target-assignment probability.</span></span></code></pre></div>
+<span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
+<span><span class="co">#&gt; same as a proportion. power at p: the exact probability of reaching the</span></span>
+<span><span class="co">#&gt; required count if each judge assigns the item to its target with probability</span></span>
+<span><span class="co">#&gt; p.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="good-practices">Good practices<a class="anchor" aria-label="anchor" href="#good-practices"></a>

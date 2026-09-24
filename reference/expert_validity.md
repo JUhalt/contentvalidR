@@ -172,57 +172,56 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 #> contentvalidR expert-panel analysis
 #> -----------------------------------
-#> Mode: relevance 
-#> Items: 4 | Experts/item: 4 
-#> Mean Aiken V: 0.917 | S-CVI/Ave: 1 | S-CVI/UA: 1 
-#> Strong support: 4 | Support: 0 | Review: 0 
-#> Panel agreement, Krippendorff's alpha (ordinal): -0.25 (95% interval -0.25
-#>   to -0.25). Identical rating pairs: 50%
+#> Mode: relevance
+#> Items: 4 | Experts/item: 4
+#> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
+#> Strong support: 4 | Support: 0 | Review: 0
+#> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].
+#>   Identical rating pairs: 50.0%.
 #> 
-#>   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod
-#>  Item1 4 0.917  0.646   0.985     1      0.51          1         1
-#>  Item2 4 0.917  0.646   0.985     1      0.51          1         1
-#>  Item3 4 0.917  0.646   0.985     1      0.51          1         1
-#>  Item4 4 0.917  0.646   0.985     1      0.51          1         1
-#>  recommendation
-#>  Strong support
-#>  Strong support
-#>  Strong support
-#>  Strong support
+#>   item       decision N   V     95% CI I-CVI      95% CI kappa
+#>  Item1 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00
+#>  Item2 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00
+#>  Item3 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00
+#>  Item4 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00
 #> 
-#> ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);
-#> I_CVI_low and I_CVI_high bound I-CVI.
+#> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
+#> interval, and I-CVI the proportion interval named below.
+#> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986);
+#> kappa is modified kappa, with values above .74 read as excellent (Polit,
+#> Beck, & Owen, 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald
-#> interval. An interval reflects how few ratings an item received, not
-#> whether the right judges were chosen.
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
 #> 
-#> Panel agreement is one coefficient for the whole panel, whereas kappa_mod
-#> describes each item. Alpha can be low when nearly every rating is the same
-#> value, even on a panel that agrees closely, so read it beside the share of
-#> identical rating pairs. A low alpha with many identical pairs is not by
-#> itself evidence of a poor panel. Print `details$agreement` for the full
-#> explanation and interval details.
+#> Panel agreement is one coefficient for the whole panel, whereas modified
+#> kappa (the kappa column) describes each item. Alpha can be low when nearly
+#> every rating is the same value, even on a panel that agrees closely, so read
+#> it beside the share of identical rating pairs. A low alpha with many
+#> identical pairs is not by itself evidence of a poor panel. Print
+#> `details$agreement` for the full explanation and interval details.
 #> 
-#> CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.
+#> CVI criteria are published panel-size guidelines, not universal validity
+#> cutoffs.
 #> 
 #> What these columns mean
 #>   V -- Aiken's V. Relevance index that rescales the experts' average rating
 #>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
 #>       1; higher is stronger)
-#>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
+#>   I-CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
 #>       1; compared against a panel-size guideline)
-#>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
+#>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an
 #>       interval around I-CVI. Expert panels are usually small, so these
 #>       intervals are often wide: a single I-CVI value can look more settled
 #>       than the number of experts behind it supports. (between 0 and 1; the
 #>       method and level are named in the output)
-#>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
-#>       would have agreed even if rating at random. With small panels, chance
+#>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
+#>       have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
 #>       overstate consensus. (0 to 1; higher is stronger)
-#>   agreement -- Panel-level agreement. One coefficient describing how
+#>   Panel agreement -- Panel-level agreement. One coefficient describing how
 #>       consistently the whole panel rated the item set: Krippendorff's alpha
 #>       by default, or Gwet's AC1 if chosen. It is separate from modified
 #>       kappa, which describes one item at a time. (1 is perfect agreement
@@ -236,21 +235,23 @@ fit
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
-#>   Each workflow also uses its own wording in the recommendation column
-#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
-#>   onto the shared statuses above.
+#>   Each workflow also uses its own wording in the decision column (Retain,
+#>   Strong support, Typical, Covered, and so on). Those words map onto the
+#>   shared statuses above.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
-#> Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.
+#> Use quantitative indices alongside expert comments, construct coverage, and
+#> comprehensibility review.
 summary(fit)
-#> Summary of expert-panel content-validity evidence
-#> ---------------------------------------------
-#> Mode: relevance 
+#> Summary: expert-panel content-validity evidence
+#> -----------------------------------------------
+#> Mode: relevance
 #> Supported: 4 | Review: 0
-#> Panel agreement, Krippendorff's alpha (ordinal): -0.25 (95% interval -0.25
-#>   to -0.25). Identical rating pairs: 50%
+#> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].
+#>   Identical rating pairs: 50.0%.
+#> 
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.

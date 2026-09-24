@@ -115,29 +115,31 @@ item is rated poorly, and one is borderline:</p>
 <code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="va">handoff</span></span>
 <span><span class="co">#&gt; contentvalidR handoff (schema version 1)</span></span>
-<span><span class="co">#&gt; --------------------------------------</span></span>
-<span><span class="co">#&gt; Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24</span></span>
+<span><span class="co">#&gt; ----------------------------------------</span></span>
+<span><span class="co">#&gt; Workflow: expert-panel (relevance) | contentvalidR 0.7.0.9000 | 2026-09-24</span></span>
 <span><span class="co">#&gt; Items carried forward: 3 of 5</span></span>
 <span><span class="co">#&gt; Carried when status is: Supported</span></span>
 <span><span class="co">#&gt; Constructs: none in this design; the panel rated one item set.</span></span>
 <span><span class="co">#&gt; Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson</span></span>
 <span><span class="co">#&gt;   score, 95%)</span></span>
-<span><span class="co">#&gt; Panel: Krippendorff's alpha (ordinal) = 0.69 (95% interval -0.27 to 0.77)</span></span>
+<span><span class="co">#&gt; Panel: Krippendorff's alpha (ordinal) = .69, 95% interval [-.27, .77]</span></span>
+<span><span class="co">#&gt;   (item-resampling percentile bootstrap)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Held back:</span></span>
-<span><span class="co">#&gt;   item status recommendation</span></span>
-<span><span class="co">#&gt;  Item4 Review         Review</span></span>
-<span><span class="co">#&gt;  Item5 Review         Review</span></span>
+<span><span class="co">#&gt; Held back</span></span>
+<span><span class="co">#&gt;   item decision</span></span>
+<span><span class="co">#&gt;  Item4   Review</span></span>
+<span><span class="co">#&gt;  Item5   Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Carry these items into the empirical workflow once response data are</span></span>
-<span><span class="co">#&gt; collected. In nomologR that is nomo_screen(data, items = handoff$items),</span></span>
+<span><span class="co">#&gt; collected. In nomologR that is</span></span>
+<span><span class="co">#&gt;   nomo_screen(data, items = handoff$items)</span></span>
 <span><span class="co">#&gt; which screens the same items you retained here.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Surviving content review is evidence about relevance, representation, and</span></span>
 <span><span class="co">#&gt; expert judgment. It does not establish that an item will behave well</span></span>
-<span><span class="co">#&gt; empirically: an item can be clearly relevant and still correlate poorly</span></span>
-<span><span class="co">#&gt; with its construct or load on an unintended factor. Items held back are</span></span>
-<span><span class="co">#&gt; listed above rather than deleted, so the record stays complete.</span></span></code></pre></div>
+<span><span class="co">#&gt; empirically: an item can be clearly relevant and still correlate poorly with</span></span>
+<span><span class="co">#&gt; its construct or load on an unintended factor. Items held back are listed</span></span>
+<span><span class="co">#&gt; above rather than deleted, so the record stays complete.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-the-object-holds">What the object holds<a class="anchor" aria-label="anchor" href="#what-the-object-holds"></a>
@@ -152,12 +154,12 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt; 3 Item3  &lt;NA&gt;    TRUE Supported Strong support        4</span></span>
 <span><span class="co">#&gt; 4 Item4  &lt;NA&gt;   FALSE    Review         Review        4</span></span>
 <span><span class="co">#&gt; 5 Item5  &lt;NA&gt;   FALSE    Review         Review        4</span></span>
-<span><span class="co">#&gt;                                                                                               rule</span></span>
-<span><span class="co">#&gt; 1 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span></span>
-<span><span class="co">#&gt; 2 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span></span>
-<span><span class="co">#&gt; 3 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span></span>
-<span><span class="co">#&gt; 4 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span></span>
-<span><span class="co">#&gt; 5 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span></span>
+<span><span class="co">#&gt;                                                                                                                                             rule</span></span>
+<span><span class="co">#&gt; 1 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span></span>
+<span><span class="co">#&gt; 2 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span></span>
+<span><span class="co">#&gt; 3 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span></span>
+<span><span class="co">#&gt; 4 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span></span>
+<span><span class="co">#&gt; 5 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span></span>
 <span><span class="co">#&gt;   round keying response_min response_max</span></span>
 <span><span class="co">#&gt; 1     1     NA           NA           NA</span></span>
 <span><span class="co">#&gt; 2     1     NA           NA           NA</span></span>
@@ -195,7 +197,7 @@ was compared against where the method sets one.</p>
 <span><span class="co">#&gt;  $ mode          : chr "relevance"</span></span>
 <span><span class="co">#&gt;  $ keep          : chr "Supported"</span></span>
 <span><span class="co">#&gt;  $ method        : chr "Aiken V with score intervals plus CVI/modified kappa"</span></span>
-<span><span class="co">#&gt;  $ citation      : chr [1:3] "Aiken (1980)" "Penfield &amp; Giacobbi (2004)" "Polit, Beck &amp; Owen (2007)"</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ citation      : chr [1:4] "Aiken (1980)" "Penfield &amp; Giacobbi (2004)" "Lynn (1986)" "Polit, Beck &amp; Owen (2007)"</span></span></code></pre></div>
 <p>By default only items with a <code>Supported</code> status travel.
 Some protocols carry items flagged for review, on the grounds that a
 weak content-validity result deserves an empirical test rather than
@@ -229,10 +231,10 @@ next stage can see how much panel evidence stands behind it:</p>
 <span><span class="co">#&gt; 10 Item5   0.0 0.0000000 0.4898908    Wilson score           0.95</span></span></code></pre></div>
 <p>All four experts rated Items 1 to 3 relevant, so each has an I-CVI of
 1. With only four experts, though, the Wilson interval still reaches
-down to about 0.51. A statistic with no interval, such as modified
-kappa, has <code>NA</code> in all four interval columns. There,
-<code>NA</code> means the method defines no interval; it does not mean a
-value is missing.</p>
+down to about .51. A statistic with no interval, such as modified kappa,
+has <code>NA</code> in all four interval columns. There, <code>NA</code>
+means the method defines no interval; it does not mean a value is
+missing.</p>
 <p>The agreement coefficient describes the whole panel rather than any
 one item, so it travels in its own table:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">

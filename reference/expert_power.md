@@ -94,45 +94,48 @@ whose decision study plans panel size against a generalizability target.
 
 ``` r
 expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
-#> Expert-panel planning
+#> contentvalidR expert-panel planning
+#> -----------------------------------
 #> Criterion: Exact binomial planning against the panel-size I-CVI guideline
 #> 
-#>  n_experts prob required_endorsements power
-#>          3  0.8                     3 0.512
-#>          4  0.8                     4 0.410
-#>          5  0.8                     5 0.328
-#>          6  0.8                     5 0.655
-#>          7  0.8                     6 0.577
-#>          8  0.8                     7 0.503
-#>          9  0.8                     7 0.738
-#>         10  0.8                     8 0.678
-#>          3  0.9                     3 0.729
-#>          4  0.9                     4 0.656
-#>          5  0.9                     5 0.590
-#>          6  0.9                     5 0.886
-#>          7  0.9                     6 0.850
-#>          8  0.9                     7 0.813
-#>          9  0.9                     7 0.947
-#>         10  0.9                     8 0.930
-#> Note the step at six experts. Lynn's criterion requires unanimity with
-#> three to five experts and allows one disagreement from six, so a sixth
-#> expert relaxes the criterion while a fourth or fifth makes unanimity
-#> harder. That is a property of the guideline, not of the items.
+#> Probability that an item clears the criterion
+#>  experts required prob = .80 prob = .90
+#>        3      3/3        .51        .73
+#>        4      4/4        .41        .66
+#>        5      5/5        .33        .59
+#>        6      5/6        .66        .89
+#>        7      6/7        .58        .85
+#>        8      7/8        .50        .81
+#>        9      7/9        .74        .95
+#>       10     8/10        .68        .93
+#> 
+#> required: endorsements the criterion needs from the panel. prob: the
+#> probability you assume that one expert endorses the item.
+#> 
+#> Note the step at six experts. Lynn's criterion requires unanimity with three
+#> to five experts and allows one disagreement from six, so a sixth expert
+#> relaxes the criterion while a fourth or fifth makes unanimity harder. That is
+#> a property of the guideline, not of the items.
+#> 
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.
-#> 
 expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
-#> Expert-panel planning
+#> contentvalidR expert-panel planning
+#> -----------------------------------
 #> Criterion: Exact binomial planning against the Lawshe CVR critical count
-#> Alpha: 0.05
+#> Alpha: .05
 #> 
-#>  n_experts prob required_endorsements power
-#>          5 0.75                     5 0.237
-#>         10 0.75                     9 0.244
-#>         15 0.75                    12 0.461
+#> Probability that an item clears the criterion
+#>  experts required prob = .75
+#>        5      5/5        .24
+#>       10     9/10        .24
+#>       15    12/15        .46
+#> 
+#> required: endorsements the criterion needs from the panel. prob: the
+#> probability you assume that one expert endorses the item.
+#> 
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.
-#> 
 ```

@@ -140,10 +140,11 @@ ratings <- rbind(
   c(4, 4, 3, 2, 4), c(4, 3, 3, 2, 4), c(3, 4, 4, 1, 4), c(4, 4, 3, 2, 3)
 )
 panel_agreement(ratings, seed = 1)
-#> Panel-level agreement
-#> Items rated by two or more raters: 5   Raters: 4
-#> Krippendorff's alpha (ordinal): 0.561   95% interval: -0.267 to 0.782
-#> Identical rating pairs: 50%
+#> contentvalidR panel agreement
+#> -----------------------------
+#> Items rated by two or more raters: 5 | Raters: 4
+#> Krippendorff's alpha (ordinal) = .56, 95% CI [-.27, .78]
+#> Identical rating pairs: 50.0%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
 #> expected if these same ratings were assigned to items at random: 1 means
@@ -154,20 +155,20 @@ panel_agreement(ratings, seed = 1)
 #> rated relevant, and is not by itself evidence of a poor panel.
 #> 
 #> Krippendorff's alpha is the default because it handles ordinal ratings and
-#> missing ratings (Zapf et al., 2016). It is a general reliability
-#> coefficient; no publication applying it specifically to content-validity
-#> panels was found.
+#> missing ratings (Zapf et al., 2016). It is a general reliability coefficient;
+#> no publication applying it specifically to content-validity panels was found.
 #> 
-#> The interval resamples items with all of their ratings, following Zapf et
-#> al. (2016), and varies slightly between runs unless `seed` is set.
+#> The interval resamples items with all of their ratings, following Zapf et al.
+#> (2016), and varies slightly between runs unless `seed` is set.
 #> 
-#> Panel agreement describes how consistently raters rated these items. 
-#> It does not show that the items are relevant or that the domain is covered.
+#> Panel agreement describes how consistently raters rated these items. It does
+#> not show that the items are relevant or that the domain is covered.
 panel_agreement(ratings, level = "interval", B = 0)
-#> Panel-level agreement
-#> Items rated by two or more raters: 5   Raters: 4
-#> Krippendorff's alpha (interval): 0.698
-#> Identical rating pairs: 50%
+#> contentvalidR panel agreement
+#> -----------------------------
+#> Items rated by two or more raters: 5 | Raters: 4
+#> Krippendorff's alpha (interval) = .70
+#> Identical rating pairs: 50.0%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
 #> expected if these same ratings were assigned to items at random: 1 means
@@ -178,17 +179,17 @@ panel_agreement(ratings, level = "interval", B = 0)
 #> rated relevant, and is not by itself evidence of a poor panel.
 #> 
 #> Krippendorff's alpha is the default because it handles ordinal ratings and
-#> missing ratings (Zapf et al., 2016). It is a general reliability
-#> coefficient; no publication applying it specifically to content-validity
-#> panels was found.
+#> missing ratings (Zapf et al., 2016). It is a general reliability coefficient;
+#> no publication applying it specifically to content-validity panels was found.
 #> 
-#> Panel agreement describes how consistently raters rated these items. 
-#> It does not show that the items are relevant or that the domain is covered.
+#> Panel agreement describes how consistently raters rated these items. It does
+#> not show that the items are relevant or that the domain is covered.
 panel_agreement(ratings >= 3, method = "ac1", B = 0)
-#> Panel-level agreement
-#> Items rated by two or more raters: 5   Raters: 4
-#> Gwet's AC1: 1
-#> Identical rating pairs: 100%
+#> contentvalidR panel agreement
+#> -----------------------------
+#> Items rated by two or more raters: 5 | Raters: 4
+#> Gwet's AC1 = 1.00
+#> Identical rating pairs: 100.0%
 #> 
 #> AC1 compares observed agreement with the agreement expected by chance,
 #> estimated so that it stays high when nearly every rating falls in one
@@ -197,9 +198,9 @@ panel_agreement(ratings >= 3, method = "ac1", B = 0)
 #> Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show
 #> that it rises as ratings concentrate in one category even when agreement is
 #> unchanged, that it can be non-zero when raters are independent, and that
-#> benchmark labels developed for kappa, such as Landis and Koch's, must not
-#> be applied to it.
+#> benchmark labels developed for kappa, such as Landis and Koch's, must not be
+#> applied to it.
 #> 
-#> Panel agreement describes how consistently raters rated these items. 
-#> It does not show that the items are relevant or that the domain is covered.
+#> Panel agreement describes how consistently raters rated these items. It does
+#> not show that the items are relevant or that the domain is covered.
 ```

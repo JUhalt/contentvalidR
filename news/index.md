@@ -2,6 +2,69 @@
 
 ## contentvalidR 0.7.0.9000 (development version)
 
+### Printed output reads as a report, in APA style (in development)
+
+No statistic changes. Only printed output changes, and `results` still
+holds every value at full precision.
+
+- **Numbers follow the APA Publication Manual, seventh edition.** A
+  statistic that cannot exceed 1 prints without a leading zero (Psa =
+  .90, *p* = .021, kappa = -.13). One that can exceed 1 keeps it (a
+  chi-square of 0.31, a severity of -0.27 rating points). Values have
+  two decimals, and *p* values have three, with anything below .001
+  printed as \< .001 rather than 0.000 (Section 6.36). Intervals print
+  as `95% CI [.70, .97]` in a column headed with their level (Section
+  6.43). `digits` now defaults to 2 in every print method.
+- **Every print opens with its verdict.** A sentence says how many items
+  met the criterion and names the ones flagged, before any table. The
+  decision appears beside each item. Anything that is the same on every
+  row, such as the I-CVI criterion for a panel of one size, is stated
+  once in a sentence instead of repeated down a column.
+- **No more walls of numbers.** Tables are laid out to fit an 80-column
+  console (long item names can still widen them), and prose wraps to the
+  console width. The [`summary()`](https://rdrr.io/r/base/summary.html)
+  methods show flagged items in the same columns as
+  [`print()`](https://rdrr.io/r/base/print.html), where the expert-panel
+  summary used to print its whole results table. An explanation shared
+  by several items, such as a Delphi note or a judge’s flag, is printed
+  once with every item it applies to.
+- **Planning tables have one row per panel size.**
+  [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  and
+  [`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+  put each assumed probability in its own column, so ten panel sizes
+  take ten rows instead of thirty.
+- **The key names columns by the heading you see** (Psa, 95% CI, kappa),
+  not by the name of the column in `results`.
+- **Headings are words.** `n_target` and `n` print together as judges
+  (18/20), `severity(pts)` as severity, `differentiation` as scale use,
+  and the recommendation column as decision.
+- [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  prints the degrees of freedom beside a chi-square, as APA reports it.
+  [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  prints infit beside outfit, since either can flag a judge, and states
+  the rules that flag one.
+- The README and vignettes follow the same rules, and the vignette on
+  reading output explains them.
+
+### Two labels now say what they mean (in development)
+
+- **[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  no longer calls a too-predictable judge “Erratic”.** A fit mean square
+  above the range means ratings noisier than the model expects; one
+  below it means ratings more predictable than it expects, the opposite
+  problem. Both were labeled `Erratic`. The second is now
+  `Too predictable`, with its own interpretation. The status is `Review`
+  either way, and which judges are flagged does not change. Code that
+  matched `recommendation == "Erratic"` to find every misfitting judge
+  should also match `"Too predictable"`, or use `status`.
+- **The handoff states the I-CVI criterion as a count.** Its `rule` text
+  read `I-CVI >= 0.8333333`. It now reads
+  `at least 5 of 6 experts rate the item relevant (I-CVI >= .83; Lynn, 1986)`,
+  since the decision compares counts, and the handoff now cites Lynn
+  (1986). Rule text is prose for a person and outside the frozen schema,
+  which is unchanged.
+
 ### The I-CVI criterion now matches Lynn’s table (in development)
 
 - **Changed result, with nine experts only.** An item endorsed by 7 of 9

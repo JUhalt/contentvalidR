@@ -99,29 +99,31 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sort_power</span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fl">.70</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exact item-sort planning analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: p0 = 0.50, alpha = 0.050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   N true_p critical_n_target minimum_observed_psa power</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  20    0.7                15                0.750 0.416</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  30    0.7                20                0.667 0.730</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  40    0.7                26                0.650 0.807</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  judges required minimum Psa power at .70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      20    15/20         .75          .42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      30    20/30         .67          .73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      40    26/40         .65          .81</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Power is the exact probability of reaching the required target-assignment count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> under the assumed true target-assignment probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at p: the exact probability of reaching the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p.</span>
 <span class="r-in"><span><span class="fu">sort_power</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">30</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Exact item-sort planning analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: p0 = 0.50, alpha = 0.050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   N true_p critical_n_target minimum_observed_psa power</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  30    0.6                20                0.667 0.291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  30    0.7                20                0.667 0.730</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  30    0.8                20                0.667 0.974</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  judges required minimum Psa power at .60 power at .70 power at .80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      30    20/30         .67          .29          .73          .97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Power is the exact probability of reaching the required target-assignment count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> under the assumed true target-assignment probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at p: the exact probability of reaching the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with probability</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

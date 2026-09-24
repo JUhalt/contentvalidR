@@ -77,69 +77,61 @@ fit_sort <- sort_validity(sorts)
 fit_sort
 #> contentvalidR item-sort analysis
 #> --------------------------------
-#> Items: 6 | Raters: 20 | Target scales: 3 
-#> Item inference: Howard-Melloy exact target-count test (p0 = 0.50, alpha = 0.050) 
-#> Judges: naive 
+#> Items: 6 | Judges: 20 | Target constructs: 3
+#> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
+#> Judges: naive, meaning drawn from the kind of people who will answer the
+#> items.
 #> 
-#> 4 item(s) meet the exact target-assignment criterion; 2 item(s) are flagged for review.
-#> Review: B2, C2 
+#> 4 of 6 items meet the exact target-assignment criterion.
+#> Flagged for review: B2, C2
 #> 
-#> Item-level evidence:
-#>  item target  n n_target competitor  psa psa_low psa_high  csv p_value
-#>    A1      A 20       18       B; C 0.90   0.699    0.972 0.85   0.000
-#>    A2      A 20       15          B 0.75   0.531    0.888 0.60   0.021
-#>    B1      B 20       17          A 0.85   0.640    0.948 0.75   0.001
-#>    B2      B 20       13          A 0.65   0.433    0.819 0.40   0.132
-#>    C1      C 20       18       A; B 0.90   0.699    0.972 0.85   0.000
-#>    C2      C 20       14          B 0.70   0.481    0.855 0.50   0.058
-#>  recommendation
-#>          Retain
-#>          Retain
-#>          Retain
-#>          Review
-#>          Retain
-#>          Review
+#> Item-level evidence
+#>  item target decision judges Psa     95% CI Csv competitor      p
+#>    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C < .001
+#>    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021
+#>    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001
+#>    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132
+#>    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B < .001
+#>    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058
 #> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald
-#> interval. An interval reflects how few ratings an item received, not
-#> whether the right judges were chosen.
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
 #> 
-#> Scale-level Colquitt benchmark summary:
-#>  target n_items mean_psa psa_strength mean_csv csv_strength
-#>       A       2    0.825       Strong    0.725       Strong
-#>       B       2    0.750     Moderate    0.575     Moderate
-#>       C       2    0.800     Moderate    0.675       Strong
-#>                     benchmark_set
-#>  Overall (not correlation-normed)
-#>  Overall (not correlation-normed)
-#>  Overall (not correlation-normed)
+#> Scale-level Colquitt benchmarks
+#>  target items mean Psa Psa level mean Csv Csv level
+#>       A     2      .82    Strong      .72    Strong
+#>       B     2      .75  Moderate      .57  Moderate
+#>       C     2      .80  Moderate      .68    Strong
+#> Benchmark set: Overall (not correlation-normed)
 #> 
-#> Colquitt labels are empirical percentile norms derived from scale-level averages,
-#> not universal cutoffs or automatic scale-retention rules. They place a scale
-#> against published scales; Psa and Csv sit on different scales, so their labels
-#> are not comparable with each other.
+#> Colquitt labels are empirical percentile norms derived from scale-level
+#> averages, not universal cutoffs or automatic scale-retention rules. They
+#> place a scale against published scales; Psa and Csv sit on different scales,
+#> so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   psa -- Proportion of Substantive Agreement. Share of judges who assigned
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned
 #>       the item to the construct it was written for. Higher means judges
 #>       recognized the item as belonging where you intended. (0 to 1; higher
 #>       is stronger)
-#>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
-#>       interval around Psa. A wide interval means few judges sorted the
-#>       item, so a different sample of judges could plausibly give a quite
-#>       different Psa. (between 0 and 1; the method and level are named in
-#>       the output)
-#>   csv -- Coefficient of Substantive Validity. How much more often the item
+#>   95% CI -- Interval for Psa. Lower and upper limits of an interval around
+#>       Psa. A wide interval means few judges sorted the item, so a different
+#>       sample of judges could plausibly give a quite different Psa. (between
+#>       0 and 1; the method and level are named in the output)
+#>   Csv -- Coefficient of Substantive Validity. How much more often the item
 #>       went to its intended construct than to the alternative construct
 #>       judges chose most. It rewards being distinctly right, not merely
 #>       often right. (-1 to 1; 0 means the intended construct and its closest
 #>       rival were chosen equally often)
 #>   competitor -- Strongest competing construct. The construct, other than
 #>       the intended one, that judges chose most often for this item.
-#>   p_value -- Howard-Melloy exact test. Probability of seeing at least this
-#>       many target assignments if judges were assigning at the chance rate
-#>       p0. Small values mean the item's assignment pattern is unlikely to be
+#>   p -- Howard-Melloy exact test. Probability of seeing at least this many
+#>       target assignments if judges were assigning at the chance rate p0.
+#>       Small values mean the item's assignment pattern is unlikely to be
 #>       chance. (0 to 1; compared against alpha)
 #> 
 #> What the status labels mean
@@ -149,36 +141,48 @@ fit_sort
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
-#>   Each workflow also uses its own wording in the recommendation column
-#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
-#>   onto the shared statuses above.
+#>   Each workflow also uses its own wording in the decision column (Retain,
+#>   Strong support, Typical, Covered, and so on). Those words map onto the
+#>   shared statuses above.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,
-#> item wording, and qualitative judge feedback alongside these statistics.
+#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
+#> coverage, item wording, and qualitative judge feedback alongside these
+#> statistics.
 ```
 
-Working across the item table:
+The printout opens with a one-line verdict (how many items met the
+criterion, and which were flagged), then one row per item. Working
+across the item table:
 
-- **`n_target` / `n`** — how many judges put the item where you
-  intended, out of how many judged it. Always read these before the
-  coefficients: an impressive `psa` computed from four judges is not
-  impressive.
-- **`psa`** — the proportion of judges who assigned the item to its
+- **decision** — the workflow’s verdict for the item, stated first so
+  the numbers after it read as the reasons.
+- **judges** — how many judges put the item where you intended, out of
+  how many judged it (`n_target` and `n` in `results`). Always read this
+  before the coefficients: an impressive Psa computed from four judges
+  is not impressive.
+- **Psa** — the proportion of judges who assigned the item to its
   intended construct. It answers “did judges recognize what this item is
-  about?”
-- **`competitor`** — the construct judges picked most often *instead*.
+  about?” The **95% CI** beside it shows how precisely that proportion
+  is known.
+- **Csv** — how much more often the item went to its target than to its
+  competitor. An item can have a decent Psa and a poor Csv if one rival
+  construct keeps attracting it. That pattern means your two construct
+  definitions overlap, which is a definitional problem rather than a
+  wording problem.
+- **competitor** — the construct judges picked most often *instead*.
   This is the single most useful diagnostic column in the table, because
   it tells you *where* a weak item drifted, which points at the fix.
-- **`csv`** — how much more often the item went to its target than to
-  that competitor. An item can have a decent `psa` and a poor `csv` if
-  one rival construct keeps attracting it. That pattern means your two
-  construct definitions overlap, which is a definitional problem rather
-  than a wording problem.
-- **`p_value`** — the Howard-Melloy exact test against chance
-  assignment.
+- **p** — the Howard-Melloy exact test against chance assignment
+  (`p_value` in `results`).
+
+Numbers follow the APA style rules (seventh edition, Section 6.36). A
+statistic that cannot exceed 1, such as a proportion or a *p* value, is
+printed without a leading zero (.90). One that can exceed 1 keeps it
+(0.57). A *p* value below .001 is printed as \< .001. The `results`
+table keeps every value at full precision.
 
 The scale-level table adds Colquitt strength labels. These are
 **percentile positions relative to scales published in the literature**,
@@ -204,20 +208,19 @@ fit_rating$scale_summary[, c("target", "mean_htc", "htc_strength",
 #> 3      C 0.8333333         Weak   0.4375  Very Strong
 ```
 
-An HTC of about 0.83 is labeled `Weak`, while an HTD of about 0.44 in
-the same row is labeled `Very Strong`. Read as raw numbers this looks
+An HTC of about .83 is labeled `Weak`, while an HTD of about .44 in the
+same row is labeled `Very Strong`. Read as raw numbers this looks
 backwards, and it is a common source of confusion.
 
 The two indices are not on the same scale and their numbers are not
 comparable:
 
 - **HTC is an average rating** expressed as a proportion of the scale.
-  Across published scales the Moderate band starts at 0.84 and Very
-  Strong at 0.91, so 0.83 genuinely sits low *against that
-  distribution*.
+  Across published scales the Moderate band starts at .84 and Very
+  Strong at .91, so .83 genuinely sits low *against that distribution*.
 - **HTD is a difference** between the target rating and the best
   competitor’s, so it is much smaller by construction. Its Moderate band
-  starts at 0.18 and Very Strong at 0.35, so 0.44 genuinely sits high.
+  starts at .18 and Very Strong at .35, so .44 genuinely sits high.
 
 Compare each index against its own benchmark. Never compare an HTC
 number with an HTD number, and never treat a benchmark label as a cutoff
@@ -326,9 +329,10 @@ produces the same result directly:
 ``` r
 
 panel_agreement(panel, seed = 1)
-#> Panel-level agreement
-#> Items rated by two or more raters: 5   Raters: 8
-#> Krippendorff's alpha (ordinal): 0.693   95% interval: 0.071 to 0.86
+#> contentvalidR panel agreement
+#> -----------------------------
+#> Items rated by two or more raters: 5 | Raters: 8
+#> Krippendorff's alpha (ordinal) = .69, 95% CI [.07, .86]
 #> Identical rating pairs: 62.9%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
@@ -340,15 +344,14 @@ panel_agreement(panel, seed = 1)
 #> rated relevant, and is not by itself evidence of a poor panel.
 #> 
 #> Krippendorff's alpha is the default because it handles ordinal ratings and
-#> missing ratings (Zapf et al., 2016). It is a general reliability
-#> coefficient; no publication applying it specifically to content-validity
-#> panels was found.
+#> missing ratings (Zapf et al., 2016). It is a general reliability coefficient;
+#> no publication applying it specifically to content-validity panels was found.
 #> 
-#> The interval resamples items with all of their ratings, following Zapf et
-#> al. (2016), and varies slightly between runs unless `seed` is set.
+#> The interval resamples items with all of their ratings, following Zapf et al.
+#> (2016), and varies slightly between runs unless `seed` is set.
 #> 
-#> Panel agreement describes how consistently raters rated these items. 
-#> It does not show that the items are relevant or that the domain is covered.
+#> Panel agreement describes how consistently raters rated these items. It does
+#> not show that the items are relevant or that the domain is covered.
 ```
 
 Read two numbers together: the coefficient and the share of identical
@@ -491,7 +494,7 @@ made the decision:
 
 > Six items were sorted by 20 naive judges. Four items met the
 > Howard-Melloy exact target-assignment criterion (*p* \< .05). Items B2
-> and C2 did not (*psa* = .65 and .70), and in both cases the competing
+> and C2 did not (*Psa* = .65 and .70), and in both cases the competing
 > construct was the adjacent scale. Rather than removing them, we
 > revised their wording to sharpen the distinction from that scale and
 > re-sorted.

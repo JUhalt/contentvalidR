@@ -120,31 +120,34 @@ ratings <- rbind(
 )
 dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 gtheory_content(ratings)
-#> Generalizability analysis of content-validity ratings
+#> contentvalidR generalizability analysis
+#> ---------------------------------------
 #> Design: items x judges, crossed, one rating per cell
-#> Items: 6   Judges: 8
-#> 
-#> Variance components
-#>    source df    ms variance_raw variance percent
-#>      item  5 8.583        1.044    1.044    77.1
-#>     judge  7 0.702        0.079    0.079     5.8
-#>  residual 35 0.231        0.231    0.231    17.1
+#> Items: 6 | Judges: 8
 #> 
 #> Observed design
-#>   Generalizability coefficient (relative, rank ordering): 0.973
-#>   Dependability coefficient (absolute, fixed standard):   0.964
-#> 
-#> Judges required to reach each target
-#>  target n_judges_relative n_judges_absolute
-#>     0.7                 1                 1
-#>     0.8                 1                 2
-#>     0.9                 2                 3
-#> 
+#>   Generalizability coefficient (relative, rank ordering): .97
+#>   Dependability coefficient (absolute, fixed standard):   .96
 #> Status: Supported
 #> With 8 judges, absolute decisions about these items would generalize
-#> dependably to another panel of the same size (Phi = 0.96). Judge
-#> differences account for 5.8% of total variance.
+#> dependably to another panel of the same size (Phi = .96). Judge differences
+#> account for 5.8% of total variance.
 #> 
-#> A dependability coefficient describes generalization over judges only. 
-#> It is not evidence that the items cover the intended content domain.
+#> Variance components
+#>    source df   MS estimate used % of total
+#>      item  5 8.58     1.04 1.04       77.1
+#>     judge  7 0.70     0.08 0.08        5.8
+#>  residual 35 0.23     0.23 0.23       17.1
+#> 
+#> estimate: the ANOVA estimate of each variance component. used: the same with
+#> a negative estimate set to 0, which the coefficients use (Brennan, 2001).
+#> 
+#> Judges needed to reach each coefficient
+#>  target relative (G) absolute (Phi)
+#>     .70            1              1
+#>     .80            1              2
+#>     .90            2              3
+#> 
+#> A dependability coefficient describes generalization over judges only. It is
+#> not evidence that the items cover the intended content domain.
 ```

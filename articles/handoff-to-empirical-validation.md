@@ -46,29 +46,31 @@ fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "status")]
 handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
-#> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24
+#> ----------------------------------------
+#> Workflow: expert-panel (relevance) | contentvalidR 0.7.0.9000 | 2026-09-24
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
 #> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson
 #>   score, 95%)
-#> Panel: Krippendorff's alpha (ordinal) = 0.69 (95% interval -0.27 to 0.77)
+#> Panel: Krippendorff's alpha (ordinal) = .69, 95% interval [-.27, .77]
+#>   (item-resampling percentile bootstrap)
 #> 
-#> Held back:
-#>   item status recommendation
-#>  Item4 Review         Review
-#>  Item5 Review         Review
+#> Held back
+#>   item decision
+#>  Item4   Review
+#>  Item5   Review
 #> 
 #> Carry these items into the empirical workflow once response data are
-#> collected. In nomologR that is nomo_screen(data, items = handoff$items),
+#> collected. In nomologR that is
+#>   nomo_screen(data, items = handoff$items)
 #> which screens the same items you retained here.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well
-#> empirically: an item can be clearly relevant and still correlate poorly
-#> with its construct or load on an unintended factor. Items held back are
-#> listed above rather than deleted, so the record stays complete.
+#> empirically: an item can be clearly relevant and still correlate poorly with
+#> its construct or load on an unintended factor. Items held back are listed
+#> above rather than deleted, so the record stays complete.
 ```
 
 ## What the object holds
@@ -84,12 +86,12 @@ handoff$item_evidence
 #> 3 Item3  <NA>    TRUE Supported Strong support        4
 #> 4 Item4  <NA>   FALSE    Review         Review        4
 #> 5 Item5  <NA>   FALSE    Review         Review        4
-#>                                                                                               rule
-#> 1 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 2 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 3 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 4 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 5 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
+#>                                                                                                                                             rule
+#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 5 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
 #>   round keying response_min response_max
 #> 1     1     NA           NA           NA
 #> 2     1     NA           NA           NA
@@ -131,7 +133,7 @@ str(handoff$provenance[c("schema_version", "workflow", "mode", "keep",
 #>  $ mode          : chr "relevance"
 #>  $ keep          : chr "Supported"
 #>  $ method        : chr "Aiken V with score intervals plus CVI/modified kappa"
-#>  $ citation      : chr [1:3] "Aiken (1980)" "Penfield & Giacobbi (2004)" "Polit, Beck & Owen (2007)"
+#>  $ citation      : chr [1:4] "Aiken (1980)" "Penfield & Giacobbi (2004)" "Lynn (1986)" "Polit, Beck & Owen (2007)"
 ```
 
 By default only items with a `Supported` status travel. Some protocols
@@ -177,7 +179,7 @@ st[st$statistic == "I-CVI",
 
 All four experts rated Items 1 to 3 relevant, so each has an I-CVI of 1.
 With only four experts, though, the Wilson interval still reaches down
-to about 0.51. A statistic with no interval, such as modified kappa, has
+to about .51. A statistic with no interval, such as modified kappa, has
 `NA` in all four interval columns. There, `NA` means the method defines
 no interval; it does not mean a value is missing.
 

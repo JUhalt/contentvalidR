@@ -172,32 +172,35 @@ workflow.</p></div>
 <span class="r-in"><span><span class="va">sim</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">4</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="fu">content_structure</span><span class="op">(</span><span class="va">sim</span>, membership <span class="op">=</span> <span class="va">blueprint</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expert item-similarity content structure</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 6   Dimensions retained: 1   Clusters: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Requested 2 dimensions, but these similarities support only 1.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The solution uses 1.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Stress (Kruskal-1): 0 (excellent)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR content structure (expert item similarity)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 6 | Dimensions retained: 1 | Clusters: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Requested 2 dimensions, but these similarities support only 1. The solution</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> uses 1.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stress (Kruskal-1): .00 (excellent)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expert-perceived item groupings correspond closely to the blueprint (adjusted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Rand index 1.00, where 0 is chance agreement and 1 is exact). This supports</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the claim that the blueprint describes the domain as subject-matter experts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> see it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fit by dimensionality</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dims stress gof fit_label</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1      0   1 excellent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions stress  GOF       fit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           1    .00 1.00 excellent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Blueprint cell by recovered cluster</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> GOF: goodness of fit from classical scaling, the share of the eigenvalue</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> total that the retained dimensions account for.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Blueprint cell by recovered cluster (counts of items)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             cluster</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> blueprint    1 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Autonomy   3 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Competence 0 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusted Rand index: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusted Rand index: 1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expert-perceived item groupings correspond closely to the blueprint</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (adjusted Rand index 1.00, where 0 is chance agreement and 1 is exact).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This supports the claim that the blueprint describes the domain as</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> subject-matter experts see it.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Stress labels are descriptive conventions, not rules for deciding </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> how many dimensions a content domain has.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stress labels are descriptive conventions, not rules for deciding how many</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> dimensions a content domain has.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

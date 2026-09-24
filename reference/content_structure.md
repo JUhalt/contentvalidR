@@ -117,30 +117,33 @@ sim[1:3, 1:3] <- 5
 sim[4:6, 4:6] <- 5
 diag(sim) <- 5
 content_structure(sim, membership = blueprint)
-#> Expert item-similarity content structure
-#> Items: 6   Dimensions retained: 1   Clusters: 2
-#> Requested 2 dimensions, but these similarities support only 1.
-#> The solution uses 1.
-#> Stress (Kruskal-1): 0 (excellent)
+#> contentvalidR content structure (expert item similarity)
+#> --------------------------------------------------------
+#> Items: 6 | Dimensions retained: 1 | Clusters: 2
+#> Requested 2 dimensions, but these similarities support only 1. The solution
+#> uses 1.
+#> Stress (Kruskal-1): .00 (excellent)
+#> Status: Supported
+#> Expert-perceived item groupings correspond closely to the blueprint (adjusted
+#> Rand index 1.00, where 0 is chance agreement and 1 is exact). This supports
+#> the claim that the blueprint describes the domain as subject-matter experts
+#> see it.
 #> 
 #> Fit by dimensionality
-#>  dims stress gof fit_label
-#>     1      0   1 excellent
+#>  dimensions stress  GOF       fit
+#>           1    .00 1.00 excellent
 #> 
-#> Blueprint cell by recovered cluster
+#> GOF: goodness of fit from classical scaling, the share of the eigenvalue
+#> total that the retained dimensions account for.
+#> 
+#> Blueprint cell by recovered cluster (counts of items)
 #>             cluster
 #> blueprint    1 2
 #>   Autonomy   3 0
 #>   Competence 0 3
 #> 
-#> Adjusted Rand index: 1
+#> Adjusted Rand index: 1.00
 #> 
-#> Status: Supported
-#> Expert-perceived item groupings correspond closely to the blueprint
-#> (adjusted Rand index 1.00, where 0 is chance agreement and 1 is exact).
-#> This supports the claim that the blueprint describes the domain as
-#> subject-matter experts see it.
-#> 
-#> Stress labels are descriptive conventions, not rules for deciding 
-#> how many dimensions a content domain has.
+#> Stress labels are descriptive conventions, not rules for deciding how many
+#> dimensions a content domain has.
 ```

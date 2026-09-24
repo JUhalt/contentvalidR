@@ -85,8 +85,9 @@ round1 <- data.frame(
 round2 <- round1
 round2$assigned_construct <- c(rep("A", 6), rep("A", 5), "B")
 compare_rounds(sort_validity(round1), sort_validity(round2))
-#> Comparison across pretest rounds
-#> Workflow: item-sort   Rounds: 2   Units compared: 2
+#> contentvalidR comparison across pretest rounds
+#> ----------------------------------------------
+#> Workflow: item-sort | Rounds: 2 | Units compared: 2
 #> 
 #> Status by round
 #>  item Round 1   Round 2       change
@@ -94,15 +95,13 @@ compare_rounds(sort_validity(round1), sort_validity(round2))
 #>    I2  Review    Review    Unchanged
 #> 
 #> Round-to-round summary
-#>     from      to n_compared n_unchanged n_strengthened n_weakened n_added
-#>  Round 1 Round 2          2           1              1          0       0
-#>  n_removed settings_changed
-#>          0            FALSE
+#>     from      to compared unchanged stronger weaker added removed same settings
+#>  Round 1 Round 2        2         1        1      0     0       0           yes
+#> 
 #> Settings were identical across rounds, so these transitions can be read as
 #> changes in evidence.
-#> A status change means the evidence crossed a criterion, not that an item
-#> improved by a measurable amount. An item sitting near a boundary can move
-#> on a very small change. Read transitions alongside each round's index
-#> values.
 #> 
+#> A status change means the evidence crossed a criterion, not that an item
+#> improved by a measurable amount. An item sitting near a boundary can move on
+#> a very small change. Read transitions alongside each round's index values.
 ```

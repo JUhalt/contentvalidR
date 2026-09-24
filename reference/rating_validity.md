@@ -122,43 +122,45 @@ fit <- rating_validity(d, scale_min = 1, scale_max = 5)
 fit
 #> contentvalidR construct-rating analysis
 #> ---------------------------------------
-#> Items: 3 | Raters: 20 | Target scales: 2 | Constructs: 3 
-#> Design: within-judge ratings | Scale: 1 to 5 
-#> Item inference: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p) plus planned paired target-versus-orbiting contrasts 
-#> Planned-contrast adjustment: none 
-#> Judges: naive 
+#> Items: 3 | Judges: 20 | Target constructs: 2 | Constructs rated: 3
+#> Design: within-judge ratings on a 1 to 5 scale
+#> Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus
+#> p) plus planned paired target-versus-orbiting contrasts; planned-contrast
+#> adjustment: none.
+#> Judges: naive, meaning drawn from the kind of people who will answer the
+#> items.
 #> 
-#> 3 item(s) meet the full item-level screening criterion; 0 item(s) are flagged for review.
+#> 3 of 3 items meet the full item-level screening criterion.
 #> 
-#> Item-level evidence:
-#>  item target n_complete strongest_competitor  htc   htd p_value max_contrast_p
-#>    A1      A         20                    B 0.89 0.650       0              0
-#>    A2      A         20                    B 0.88 0.600       0              0
-#>    B1      B         20                    C 0.93 0.694       0              0
-#>  recommendation
-#>          Retain
-#>          Retain
-#>          Retain
+#> Item-level evidence
+#>  item target decision  n HTC HTD omnibus p contrast p competitor
+#>    A1      A   Retain 20 .89 .65    < .001     < .001          B
+#>    A2      A   Retain 20 .88 .60    < .001     < .001          B
+#>    B1      B   Retain 20 .93 .69    < .001     < .001          C
 #> 
-#> Target-scale Colquitt benchmark summary:
-#>  target n_items n_htc n_htd mean_htc htc_strength mean_htd htd_strength
-#>       A       2     2     2    0.885       Strong    0.625  Very Strong
-#>       B       1     1     1    0.930  Very Strong    0.694  Very Strong
-#>  benchmark_set
-#>        overall
-#>        overall
+#> n: judges who rated the item against every construct. omnibus p: do the
+#> item's ratings differ across constructs (Greenhouse-Geisser corrected).
+#> contrast p: the largest p among the planned target-versus-orbiting contrasts,
+#> so every contrast is at or below it.
 #> 
-#> Colquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.
-#> HTC is an average rating and HTD is a difference between ratings, so they sit on
-#> different scales with different typical values. A high HTC can be labeled Weak in
-#> the same analysis where a much smaller HTD is labeled Very Strong. Compare each
-#> index against its own benchmark, never against the other index's number.
+#> Target-scale Colquitt benchmarks
+#>  target items mean HTC   HTC level mean HTD   HTD level
+#>       A     2      .89      Strong      .62 Very Strong
+#>       B     1      .93 Very Strong      .69 Very Strong
+#> Benchmark set: overall
+#> 
+#> Colquitt labels are empirical percentile norms for scale-level HTC and HTD
+#> averages, not universal cutoffs. HTC is an average rating and HTD is a
+#> difference between ratings, so they sit on different scales with different
+#> typical values. A high HTC can be labeled Weak in the same analysis where a
+#> much smaller HTD is labeled Very Strong. Compare each index against its own
+#> benchmark, never against the other index's number.
 #> 
 #> What these columns mean
-#>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
+#>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against
 #>       its intended construct definition, expressed as a proportion of the
 #>       rating scale. (0 to 1; higher is stronger)
-#>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's
 #>       average rating exceeds the best competing construct's, as a
 #>       proportion of the rating scale. It is a difference, so its typical
 #>       values are far smaller than HTC's. (usually a small positive number;
@@ -171,34 +173,37 @@ fit
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
-#>   Each workflow also uses its own wording in the recommendation column
-#>   (Retain, Strong support, Typical, Covered, and so on). Those words map
-#>   onto the shared statuses above.
+#>   Each workflow also uses its own wording in the decision column (Retain,
+#>   Strong support, Typical, Covered, and so on). Those words map onto the
+#>   shared statuses above.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set 
+#> See `contentvalid_glossary()` for all terms, or set
 #> `options(contentvalidR.show_key = FALSE)` to hide this key.
 #> 
-#> 'Review' is not an automatic deletion decision. Consider construct definitions, item wording,
-#> orbiting-construct choice, domain coverage, and qualitative judge feedback.
+#> 'Review' is not an automatic deletion decision. Consider construct
+#> definitions, item wording, orbiting-construct choice, domain coverage, and
+#> qualitative judge feedback.
 summary(fit)
-#> Summary of construct-rating content-validity evidence
+#> Summary: construct-rating content-validity evidence
 #> ---------------------------------------------------
-#> Retain: 3 of 3 item(s)
-#> Review: 0 of 3 item(s)
+#> Retain: 3 of 3 | Review: 0 of 3
 #> 
-#> Target-scale evidence:
-#>  target n_items n_htc n_htd n_retain n_review mean_htc htc_strength mean_htd
-#>       A       2     2     2        2        0    0.885       Strong    0.625
-#>       B       1     1     1        1        0    0.930  Very Strong    0.694
-#>  htd_strength overall_strength
-#>   Very Strong           Strong
-#>   Very Strong      Very Strong
+#> Scale-level evidence
+#>  target items retain review mean HTC   HTC level mean HTD   HTD level
+#>       A     2      2      0      .89      Strong      .62 Very Strong
+#>       B     1      1      0      .93 Very Strong      .69 Very Strong
+#>      overall
+#>       Strong
+#>  Very Strong
 #> 
-#> A: Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
-#> B: Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
+#> A: Strong normative standing on the weaker of definitional correspondence
+#>   (HTC) and distinctiveness (HTD).
+#> B: Very Strong normative standing on the weaker of definitional
+#>   correspondence (HTC) and distinctiveness (HTD).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
 #> 
-#> Interpret these results alongside theory, domain coverage, and qualitative feedback.
-#> The analysis does not by itself establish comprehensiveness or the full content-validity argument.
+#> Interpret these results alongside theory, domain coverage, and qualitative
+#> feedback. The analysis does not by itself establish comprehensiveness or the
+#> full content-validity argument.
 ```

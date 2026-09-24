@@ -150,47 +150,50 @@ decision study plans panel size against a generalizability target.</p></div>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">expert_power</span><span class="op">(</span>n_experts <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">10</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expert-panel planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR expert-panel planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Criterion: Exact binomial planning against the panel-size I-CVI guideline</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  n_experts prob required_endorsements power</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          3  0.8                     3 0.512</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          4  0.8                     4 0.410</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          5  0.8                     5 0.328</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          6  0.8                     5 0.655</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          7  0.8                     6 0.577</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          8  0.8                     7 0.503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.8                     7 0.738</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         10  0.8                     8 0.678</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          3  0.9                     3 0.729</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          4  0.9                     4 0.656</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          5  0.9                     5 0.590</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          6  0.9                     5 0.886</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          7  0.9                     6 0.850</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          8  0.9                     7 0.813</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          9  0.9                     7 0.947</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         10  0.9                     8 0.930</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Note the step at six experts. Lynn's criterion requires unanimity with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> three to five experts and allows one disagreement from six, so a sixth</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> expert relaxes the criterion while a fourth or fifth makes unanimity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> harder. That is a property of the guideline, not of the items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Probability that an item clears the criterion</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  experts required prob = .80 prob = .90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        3      3/3        .51        .73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        4      4/4        .41        .66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5      5/5        .33        .59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        6      5/6        .66        .89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        7      6/7        .58        .85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        8      7/8        .50        .81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        9      7/9        .74        .95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       10     8/10        .68        .93</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required: endorsements the criterion needs from the panel. prob: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability you assume that one expert endorses the item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note the step at six experts. Lynn's criterion requires unanimity with three</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> to five experts and allows one disagreement from six, so a sixth expert</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> relaxes the criterion while a fourth or fifth makes unanimity harder. That is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> a property of the guideline, not of the items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This table reports the consequences of the panel sizes you asked about. It</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> does not recommend one. `prob` is an assumption you supply, so treat the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> result as conditional on it and report the value you assumed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">expert_power</span><span class="op">(</span>n_experts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>, prob <span class="op">=</span> <span class="fl">0.75</span>, criterion <span class="op">=</span> <span class="st">"cvr"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expert-panel planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR expert-panel planning</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Criterion: Exact binomial planning against the Lawshe CVR critical count</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Alpha: 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Alpha: .05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  n_experts prob required_endorsements power</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          5 0.75                     5 0.237</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         10 0.75                     9 0.244</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         15 0.75                    12 0.461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Probability that an item clears the criterion</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  experts required prob = .75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        5      5/5        .24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       10     9/10        .24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       15    12/15        .46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required: endorsements the criterion needs from the panel. prob: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability you assume that one expert endorses the item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This table reports the consequences of the panel sizes you asked about. It</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> does not recommend one. `prob` is an assumption you supply, so treat the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> result as conditional on it and report the value you assumed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

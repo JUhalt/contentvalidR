@@ -393,27 +393,28 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-in"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu">content_handoff</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">handoff</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR handoff (schema version 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance) | contentvalidR 0.7.0.9000 | 2026-09-24</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   score, 95%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Held back:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item status recommendation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4 Review         Review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Held back</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item decision</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4   Review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carry these items into the empirical workflow once response data are</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> collected. In nomologR that is nomo_screen(data, items = handoff$items),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> collected. In nomologR that is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   nomo_screen(data, items = handoff$items)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> which screens the same items you retained here.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Surviving content review is evidence about relevance, representation, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expert judgment. It does not establish that an item will behave well</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> empirically: an item can be clearly relevant and still correlate poorly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> with its construct or load on an unintended factor. Items held back are</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> listed above rather than deleted, so the record stays complete.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> empirically: an item can be clearly relevant and still correlate poorly with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> its construct or load on an unintended factor. Items held back are listed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> above rather than deleted, so the record stays complete.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">handoff</span><span class="op">$</span><span class="va">items</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Item1" "Item2" "Item3"</span>
@@ -423,11 +424,11 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 Item2  &lt;NA&gt;    TRUE Supported Strong support        4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 Item3  &lt;NA&gt;    TRUE Supported Strong support        4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 Item4  &lt;NA&gt;   FALSE    Review         Review        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                               rule</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 I-CVI &gt;= 1 (common panel-size guideline for 4 experts); modified kappa &gt; 0.74 for strong support</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                             rule</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   round keying response_min response_max</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     NA           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     1     NA           NA           NA</span>

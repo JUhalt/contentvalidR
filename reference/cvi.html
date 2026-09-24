@@ -178,47 +178,55 @@ limits illustrated in the case of the binomial. <em>Biometrika, 26</em>(4),
 <span class="r-in"><span>  dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="cn">NULL</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Item1"</span>, <span class="st">"Item2"</span>, <span class="st">"Item3"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">cvi</span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content Validity Index (CVI)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items analyzed: 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judges per item: 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/Ave: 0.750 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/UA : 0.333 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR content validity index (CVI)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 3 | Judges per item: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/Ave: .75 | S-CVI/UA: .33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results (modified kappa is chance-corrected):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 4  1.00     0.510      1.000 0.062     1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 3 4  0.75     0.301      0.954 0.250     0.667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 2 4  0.50     0.150      0.850 0.375     0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item agree I-CVI      95% CI   Pc kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1   4/4  1.00 [.51, 1.00] .062  1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2   3/4   .75  [.30, .95] .250   .67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3   2/4   .50  [.15, .85] .375   .20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agree: judges rating the item relevant, out of those who rated it. Pc: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability that this many judges would agree by chance. kappa: the modified</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> kappa of Polit, Beck and Owen (2007), the I-CVI chance-corrected by Pc.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> interval. An interval reflects how few ratings an item received, not</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> whether the right judges were chosen.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald interval.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An interval reflects how few ratings an item received, not whether the right</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges were chosen.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative expert feedback;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> CVI statistics alone do not establish comprehensive content validity.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expert feedback; CVI statistics alone do not establish comprehensive content</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> validity.</span>
 <span class="r-in"><span><span class="fu">cvi</span><span class="op">(</span><span class="va">M</span>, ci <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content Validity Index (CVI)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Items analyzed: 3 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judges per item: 4 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/Ave: 0.750 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/UA : 0.333 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR content validity index (CVI)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 3 | Judges per item: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S-CVI/Ave: .75 | S-CVI/UA: .33</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results (modified kappa is chance-corrected):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item A N I_CVI I_CVI_low I_CVI_high    Pc kappa_mod</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 4 4  1.00     0.398      1.000 0.062     1.000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 3 4  0.75     0.194      0.994 0.250     0.667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 2 4  0.50     0.068      0.932 0.375     0.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level results</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item agree I-CVI      95% CI   Pc kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1   4/4  1.00 [.40, 1.00] .062  1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2   3/4   .75  [.19, .99] .250   .67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3   2/4   .50  [.07, .93] .375   .20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agree: judges rating the item relevant, out of those who rated it. Pc: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability that this many judges would agree by chance. kappa: the modified</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> kappa of Polit, Beck and Owen (2007), the I-CVI chance-corrected by Pc.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Agresti and Coull (1998) show its coverage runs above the nominal level, so</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> intervals are wider than they need to be. An interval reflects how few</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ratings an item received, not whether the right judges were chosen.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative expert feedback;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> CVI statistics alone do not establish comprehensive content validity.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Interpretation should consider panel size, item purpose, and qualitative</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expert feedback; CVI statistics alone do not establish comprehensive content</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> validity.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

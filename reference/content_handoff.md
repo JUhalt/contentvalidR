@@ -389,27 +389,28 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
 handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
-#> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24
+#> ----------------------------------------
+#> Workflow: expert-panel (relevance) | contentvalidR 0.7.0.9000 | 2026-09-24
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
 #> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson
 #>   score, 95%)
 #> 
-#> Held back:
-#>   item status recommendation
-#>  Item4 Review         Review
+#> Held back
+#>   item decision
+#>  Item4   Review
 #> 
 #> Carry these items into the empirical workflow once response data are
-#> collected. In nomologR that is nomo_screen(data, items = handoff$items),
+#> collected. In nomologR that is
+#>   nomo_screen(data, items = handoff$items)
 #> which screens the same items you retained here.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well
-#> empirically: an item can be clearly relevant and still correlate poorly
-#> with its construct or load on an unintended factor. Items held back are
-#> listed above rather than deleted, so the record stays complete.
+#> empirically: an item can be clearly relevant and still correlate poorly with
+#> its construct or load on an unintended factor. Items held back are listed
+#> above rather than deleted, so the record stays complete.
 #> 
 handoff$items
 #> [1] "Item1" "Item2" "Item3"
@@ -419,11 +420,11 @@ handoff$item_evidence
 #> 2 Item2  <NA>    TRUE Supported Strong support        4
 #> 3 Item3  <NA>    TRUE Supported Strong support        4
 #> 4 Item4  <NA>   FALSE    Review         Review        4
-#>                                                                                               rule
-#> 1 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 2 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 3 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
-#> 4 I-CVI >= 1 (common panel-size guideline for 4 experts); modified kappa > 0.74 for strong support
+#>                                                                                                                                             rule
+#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
 #>   round keying response_min response_max
 #> 1     1     NA           NA           NA
 #> 2     1     NA           NA           NA

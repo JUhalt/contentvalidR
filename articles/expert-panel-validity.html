@@ -115,57 +115,56 @@ of the content-validity argument.</p>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Mode: relevance </span></span>
-<span><span class="co">#&gt; Items: 4 | Experts/item: 6 </span></span>
-<span><span class="co">#&gt; Mean Aiken V: 0.875 | S-CVI/Ave: 0.958 | S-CVI/UA: 0.75 </span></span>
-<span><span class="co">#&gt; Strong support: 4 | Support: 0 | Review: 0 </span></span>
-<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121</span></span>
-<span><span class="co">#&gt;   to 0.634). Identical rating pairs: 63.3%</span></span>
+<span><span class="co">#&gt; Mode: relevance</span></span>
+<span><span class="co">#&gt; Items: 4 | Experts/item: 6</span></span>
+<span><span class="co">#&gt; Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75</span></span>
+<span><span class="co">#&gt; Strong support: 4 | Support: 0 | Review: 0</span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
+<span><span class="co">#&gt;   Identical rating pairs: 63.3%.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item N     V ci_low ci_high I_CVI I_CVI_low I_CVI_high kappa_mod</span></span>
-<span><span class="co">#&gt;  Item1 6 1.000  0.824   1.000 1.000     0.610       1.00     1.000</span></span>
-<span><span class="co">#&gt;  Item2 6 0.944  0.742   0.990 1.000     0.610       1.00     1.000</span></span>
-<span><span class="co">#&gt;  Item3 6 0.889  0.672   0.969 1.000     0.610       1.00     1.000</span></span>
-<span><span class="co">#&gt;  Item4 6 0.667  0.437   0.837 0.833     0.436       0.97     0.816</span></span>
-<span><span class="co">#&gt;  recommendation</span></span>
-<span><span class="co">#&gt;  Strong support</span></span>
-<span><span class="co">#&gt;  Strong support</span></span>
-<span><span class="co">#&gt;  Strong support</span></span>
-<span><span class="co">#&gt;  Strong support</span></span>
+<span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
+<span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
+<span><span class="co">#&gt;  Item2 Strong support 6  .94  [.74, .99]  1.00 [.61, 1.00]  1.00</span></span>
+<span><span class="co">#&gt;  Item3 Strong support 6  .89  [.67, .97]  1.00 [.61, 1.00]  1.00</span></span>
+<span><span class="co">#&gt;  Item4 Strong support 6  .67  [.44, .84]   .83  [.44, .97]   .82</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);</span></span>
-<span><span class="co">#&gt; I_CVI_low and I_CVI_high bound I-CVI.</span></span>
+<span><span class="co">#&gt; Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; interval, and I-CVI the proportion interval named below.</span></span>
+<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa</span></span>
+<span><span class="co">#&gt; is modified kappa, with values above .74 read as excellent (Polit, Beck, &amp;</span></span>
+<span><span class="co">#&gt; Owen, 2007).</span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald</span></span>
-<span><span class="co">#&gt; interval. An interval reflects how few ratings an item received, not</span></span>
-<span><span class="co">#&gt; whether the right judges were chosen.</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
+<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
+<span><span class="co">#&gt; judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas kappa_mod</span></span>
-<span><span class="co">#&gt; describes each item. Alpha can be low when nearly every rating is the same</span></span>
-<span><span class="co">#&gt; value, even on a panel that agrees closely, so read it beside the share of</span></span>
-<span><span class="co">#&gt; identical rating pairs. A low alpha with many identical pairs is not by</span></span>
-<span><span class="co">#&gt; itself evidence of a poor panel. Print `details$agreement` for the full</span></span>
-<span><span class="co">#&gt; explanation and interval details.</span></span>
+<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas modified</span></span>
+<span><span class="co">#&gt; kappa (the kappa column) describes each item. Alpha can be low when nearly</span></span>
+<span><span class="co">#&gt; every rating is the same value, even on a panel that agrees closely, so read</span></span>
+<span><span class="co">#&gt; it beside the share of identical rating pairs. A low alpha with many</span></span>
+<span><span class="co">#&gt; identical pairs is not by itself evidence of a poor panel. Print</span></span>
+<span><span class="co">#&gt; `details$agreement` for the full explanation and interval details.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; CVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.</span></span>
+<span><span class="co">#&gt; CVI criteria are published panel-size guidelines, not universal validity</span></span>
+<span><span class="co">#&gt; cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   V -- Aiken's V. Relevance index that rescales the experts' average rating</span></span>
 <span><span class="co">#&gt;       to run from 0 to 1 given the bounds of the rating scale used. (0 to</span></span>
 <span><span class="co">#&gt;       1; higher is stronger)</span></span>
-<span><span class="co">#&gt;   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span></span>
+<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Proportion of experts who</span></span>
 <span><span class="co">#&gt;       rated the item as relevant, after applying the relevance cut. (0 to</span></span>
 <span><span class="co">#&gt;       1; compared against a panel-size guideline)</span></span>
-<span><span class="co">#&gt;   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span></span>
+<span><span class="co">#&gt;   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an</span></span>
 <span><span class="co">#&gt;       interval around I-CVI. Expert panels are usually small, so these</span></span>
 <span><span class="co">#&gt;       intervals are often wide: a single I-CVI value can look more settled</span></span>
 <span><span class="co">#&gt;       than the number of experts behind it supports. (between 0 and 1; the</span></span>
 <span><span class="co">#&gt;       method and level are named in the output)</span></span>
-<span><span class="co">#&gt;   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span></span>
-<span><span class="co">#&gt;       would have agreed even if rating at random. With small panels, chance</span></span>
+<span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span></span>
+<span><span class="co">#&gt;       have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
 <span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
-<span><span class="co">#&gt;   agreement -- Panel-level agreement. One coefficient describing how</span></span>
+<span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient describing how</span></span>
 <span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
 <span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
 <span><span class="co">#&gt;       kappa, which describes one item at a time. (1 is perfect agreement</span></span>
@@ -179,21 +178,23 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgment.</span></span>
 <span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
 <span><span class="co">#&gt;       applied.</span></span>
-<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
-<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
-<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the decision column (Retain,</span></span>
+<span><span class="co">#&gt;   Strong support, Typical, Covered, and so on). Those words map onto the</span></span>
+<span><span class="co">#&gt;   shared statuses above.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set</span></span>
 <span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span>
+<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
+<span><span class="co">#&gt; comprehensibility review.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary of expert-panel content-validity evidence</span></span>
-<span><span class="co">#&gt; ---------------------------------------------</span></span>
-<span><span class="co">#&gt; Mode: relevance </span></span>
+<span><span class="co">#&gt; Summary: expert-panel content-validity evidence</span></span>
+<span><span class="co">#&gt; -----------------------------------------------</span></span>
+<span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Supported: 4 | Review: 0</span></span>
-<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): 0.374 (95% interval -0.121</span></span>
-<span><span class="co">#&gt;   to 0.634). Identical rating pairs: 63.3%</span></span>
+<span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
+<span><span class="co">#&gt;   Identical rating pairs: 63.3%.</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; No items were flagged by the workflow's quantitative review rules.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span></code></pre></div>
@@ -236,9 +237,10 @@ coefficient with a bootstrap interval:</p>
 <span><span class="co">#&gt;   agreement agreement_low agreement_high</span></span>
 <span><span class="co">#&gt; 1 0.3743873    -0.1210084      0.6340909</span></span>
 <span><span class="va">fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">agreement</span></span>
-<span><span class="co">#&gt; Panel-level agreement</span></span>
-<span><span class="co">#&gt; Items rated by two or more raters: 4   Raters: 6</span></span>
-<span><span class="co">#&gt; Krippendorff's alpha (ordinal): 0.374   95% interval: -0.121 to 0.634</span></span>
+<span><span class="co">#&gt; contentvalidR panel agreement</span></span>
+<span><span class="co">#&gt; -----------------------------</span></span>
+<span><span class="co">#&gt; Items rated by two or more raters: 4 | Raters: 6</span></span>
+<span><span class="co">#&gt; Krippendorff's alpha (ordinal) = .37, 95% CI [-.12, .63]</span></span>
 <span><span class="co">#&gt; Identical rating pairs: 63.3%</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Alpha compares the disagreement observed within items with the disagreement</span></span>
@@ -250,18 +252,17 @@ coefficient with a bootstrap interval:</p>
 <span><span class="co">#&gt; rated relevant, and is not by itself evidence of a poor panel.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Krippendorff's alpha is the default because it handles ordinal ratings and</span></span>
-<span><span class="co">#&gt; missing ratings (Zapf et al., 2016). It is a general reliability</span></span>
-<span><span class="co">#&gt; coefficient; no publication applying it specifically to content-validity</span></span>
-<span><span class="co">#&gt; panels was found.</span></span>
+<span><span class="co">#&gt; missing ratings (Zapf et al., 2016). It is a general reliability coefficient;</span></span>
+<span><span class="co">#&gt; no publication applying it specifically to content-validity panels was found.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The interval resamples items with all of their ratings, following Zapf et</span></span>
-<span><span class="co">#&gt; al. (2016), and varies slightly between runs unless `seed` is set. In 5 of</span></span>
-<span><span class="co">#&gt; 1000 resamples the coefficient could not be computed, usually because every</span></span>
+<span><span class="co">#&gt; The interval resamples items with all of their ratings, following Zapf et al.</span></span>
+<span><span class="co">#&gt; (2016), and varies slightly between runs unless `seed` is set. In 5 of 1000</span></span>
+<span><span class="co">#&gt; resamples the coefficient could not be computed, usually because every</span></span>
 <span><span class="co">#&gt; resampled rating was identical; the interval uses the rest. With few items</span></span>
 <span><span class="co">#&gt; this interval is imprecise and can be misleading.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. </span></span>
-<span><span class="co">#&gt; It does not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. It does</span></span>
+<span><span class="co">#&gt; not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
 <p>The default coefficient is Krippendorff’s alpha. It accepts any
 number of experts and missing ratings, and Zapf et al. (2016) recommend
 it when ratings are ordinal or incomplete, which describes most expert
@@ -304,9 +305,10 @@ relevant/not-relevant decision at <code>relevance_cut</code>:</p>
 <code class="sourceCode R"><span><span class="va">ac1_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>                           agreement <span class="op">=</span> <span class="st">"ac1"</span>, agreement_B <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">ac1_fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">agreement</span></span>
-<span><span class="co">#&gt; Panel-level agreement</span></span>
-<span><span class="co">#&gt; Items rated by two or more raters: 4   Raters: 6</span></span>
-<span><span class="co">#&gt; Gwet's AC1: 0.909</span></span>
+<span><span class="co">#&gt; contentvalidR panel agreement</span></span>
+<span><span class="co">#&gt; -----------------------------</span></span>
+<span><span class="co">#&gt; Items rated by two or more raters: 4 | Raters: 6</span></span>
+<span><span class="co">#&gt; Gwet's AC1 = .91</span></span>
 <span><span class="co">#&gt; Identical rating pairs: 91.7%</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; AC1 compares observed agreement with the agreement expected by chance,</span></span>
@@ -316,11 +318,11 @@ relevant/not-relevant decision at <code>relevance_cut</code>:</p>
 <span><span class="co">#&gt; Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show</span></span>
 <span><span class="co">#&gt; that it rises as ratings concentrate in one category even when agreement is</span></span>
 <span><span class="co">#&gt; unchanged, that it can be non-zero when raters are independent, and that</span></span>
-<span><span class="co">#&gt; benchmark labels developed for kappa, such as Landis and Koch's, must not</span></span>
-<span><span class="co">#&gt; be applied to it.</span></span>
+<span><span class="co">#&gt; benchmark labels developed for kappa, such as Landis and Koch's, must not be</span></span>
+<span><span class="co">#&gt; applied to it.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. </span></span>
-<span><span class="co">#&gt; It does not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+<span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. It does</span></span>
+<span><span class="co">#&gt; not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="the-interval">The interval<a class="anchor" aria-label="anchor" href="#the-interval"></a>
@@ -343,17 +345,21 @@ experts:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Mode: essentiality </span></span>
-<span><span class="co">#&gt; Items: 3 | Experts/item: 12 </span></span>
-<span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values </span></span>
+<span><span class="co">#&gt; Mode: essentiality</span></span>
+<span><span class="co">#&gt; Items: 3 | Experts/item: 12</span></span>
+<span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item ne  N   cvr p_value critical_ne recommendation</span></span>
-<span><span class="co">#&gt;  Item1 10 12 0.667   0.019          10      Supported</span></span>
-<span><span class="co">#&gt;  Item2  8 12 0.333   0.194          10         Review</span></span>
-<span><span class="co">#&gt;  Item3  6 12 0.000   0.613          10         Review</span></span>
+<span><span class="co">#&gt;   item  decision essential CVR    p</span></span>
+<span><span class="co">#&gt;  Item1 Supported     10/12 .67 .019</span></span>
+<span><span class="co">#&gt;  Item2    Review      8/12 .33 .194</span></span>
+<span><span class="co">#&gt;  Item3    Review      6/12 .00 .613</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; essential: experts rating the item essential, out of those who rated it.</span></span>
+<span><span class="co">#&gt; With 12 experts, an item needs at least 10 rating it essential for the exact</span></span>
+<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
+<span><span class="co">#&gt;   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
 <span><span class="co">#&gt;       calling the item essential rather than merely useful. (-1 to 1; above</span></span>
 <span><span class="co">#&gt;       0 means more than half the panel called it essential)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -364,14 +370,15 @@ experts:</p>
 <span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgment.</span></span>
 <span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
 <span><span class="co">#&gt;       applied.</span></span>
-<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
-<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
-<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the decision column (Retain,</span></span>
+<span><span class="co">#&gt;   Strong support, Typical, Covered, and so on). Those words map onto the</span></span>
+<span><span class="co">#&gt;   shared statuses above.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set</span></span>
 <span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
+<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
+<span><span class="co">#&gt; comprehensibility review.</span></span></code></pre></div>
 <p><code><a href="../reference/cvr.html">cvr()</a></code> derives the smallest essential count whose
 one-sided binomial upper-tail probability is no greater than
 <code>alpha</code>. This makes the panel-size dependency explicit and
@@ -386,16 +393,20 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">E</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Mode: essentiality </span></span>
-<span><span class="co">#&gt; Items: 2 | Experts/item: 8 </span></span>
-<span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values </span></span>
+<span><span class="co">#&gt; Mode: essentiality</span></span>
+<span><span class="co">#&gt; Items: 2 | Experts/item: 8</span></span>
+<span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item ne N  cvr p_value critical_ne recommendation</span></span>
-<span><span class="co">#&gt;  Item1  8 8 1.00   0.004           7      Supported</span></span>
-<span><span class="co">#&gt;  Item2  5 8 0.25   0.363           7         Review</span></span>
+<span><span class="co">#&gt;   item  decision essential  CVR    p</span></span>
+<span><span class="co">#&gt;  Item1 Supported       8/8 1.00 .004</span></span>
+<span><span class="co">#&gt;  Item2    Review       5/8  .25 .363</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; essential: experts rating the item essential, out of those who rated it.</span></span>
+<span><span class="co">#&gt; With 8 experts, an item needs at least 7 rating it essential for the exact</span></span>
+<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
+<span><span class="co">#&gt;   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward</span></span>
 <span><span class="co">#&gt;       calling the item essential rather than merely useful. (-1 to 1; above</span></span>
 <span><span class="co">#&gt;       0 means more than half the panel called it essential)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -406,14 +417,15 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgment.</span></span>
 <span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
 <span><span class="co">#&gt;       applied.</span></span>
-<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
-<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
-<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the decision column (Retain,</span></span>
+<span><span class="co">#&gt;   Strong support, Typical, Covered, and so on). Those words map onto the</span></span>
+<span><span class="co">#&gt;   shared statuses above.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set</span></span>
 <span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
+<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
+<span><span class="co">#&gt; comprehensibility review.</span></span></code></pre></div>
 <p>A failure to clear the exact criterion is labeled
 <code>Review</code>, not automatic deletion. Expert rationales and
 domain coverage matter when deciding whether an item should be
@@ -437,25 +449,19 @@ competing objectives:</p>
 <span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
 <span><span class="co">#&gt; -----------------------------------</span></span>
-<span><span class="co">#&gt; Mode: congruence </span></span>
-<span><span class="co">#&gt; Items: 2 | Experts/cell: 4 | Objectives: 2 </span></span>
-<span><span class="co">#&gt; Method: Rovinelli-Hambleton item-objective congruence </span></span>
+<span><span class="co">#&gt; Mode: congruence</span></span>
+<span><span class="co">#&gt; Items: 2 | Experts/cell: 4 | Objectives: 2</span></span>
+<span><span class="co">#&gt; Method: Rovinelli-Hambleton item-objective congruence</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target target_ioc strongest_competitor competitor_ioc margin</span></span>
-<span><span class="co">#&gt;    I1      A          1                    B             -1      2</span></span>
-<span><span class="co">#&gt;    I2      B          1                    A             -1      2</span></span>
-<span><span class="co">#&gt;  recommendation</span></span>
-<span><span class="co">#&gt;  Target favored</span></span>
-<span><span class="co">#&gt;  Target favored</span></span>
-<span><span class="co">#&gt;                                                                                                      interpretation</span></span>
-<span><span class="co">#&gt;  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.</span></span>
-<span><span class="co">#&gt;  The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.</span></span>
-<span><span class="co">#&gt;     status</span></span>
-<span><span class="co">#&gt;  Supported</span></span>
-<span><span class="co">#&gt;  Supported</span></span>
+<span><span class="co">#&gt;  item target       decision target IOC competitor competitor IOC margin</span></span>
+<span><span class="co">#&gt;    I1      A Target favored       1.00          B          -1.00   2.00</span></span>
+<span><span class="co">#&gt;    I2      B Target favored       1.00          A          -1.00   2.00</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; I1, I2: The intended objective has the highest IOC; use the margin and expert</span></span>
+<span><span class="co">#&gt;   comments to judge practical distinctiveness.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   ioc -- Item-Objective Congruence. How consistently experts linked the</span></span>
+<span><span class="co">#&gt;   IOC -- Item-Objective Congruence. How consistently experts linked the</span></span>
 <span><span class="co">#&gt;       item to the objective it was written for rather than to another</span></span>
 <span><span class="co">#&gt;       objective. (-1 to 1; higher is stronger)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -466,14 +472,15 @@ competing objectives:</p>
 <span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgment.</span></span>
 <span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
 <span><span class="co">#&gt;       applied.</span></span>
-<span><span class="co">#&gt;   Each workflow also uses its own wording in the recommendation column</span></span>
-<span><span class="co">#&gt;   (Retain, Strong support, Typical, Covered, and so on). Those words map</span></span>
-<span><span class="co">#&gt;   onto the shared statuses above.</span></span>
+<span><span class="co">#&gt;   Each workflow also uses its own wording in the decision column (Retain,</span></span>
+<span><span class="co">#&gt;   Strong support, Typical, Covered, and so on). Those words map onto the</span></span>
+<span><span class="co">#&gt;   shared statuses above.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set </span></span>
+<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set</span></span>
 <span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and comprehensibility review.</span></span></code></pre></div>
+<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
+<span><span class="co">#&gt; comprehensibility review.</span></span></code></pre></div>
 <p>The workflow reports target IOC, the strongest competitor, and their
 margin. This is a diagnostic comparison, not a manufactured significance
 test. If no target mapping is provided, all IOC cells are returned

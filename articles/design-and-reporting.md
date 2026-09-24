@@ -251,23 +251,19 @@ reproducibility_phi(pretest_supported, replication_supported)
 ``` r
 
 sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
-#> Exact item-sort planning analysis
-#> ---------------------------------
-#> Retention rule: p0 = 0.50, alpha = 0.050
+#> contentvalidR item-sort planning
+#> --------------------------------
+#> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)
 #> 
-#>   N true_p critical_n_target minimum_observed_psa power
-#>  20    0.6                15                0.750 0.126
-#>  30    0.6                20                0.667 0.291
-#>  40    0.6                26                0.650 0.317
-#>  20    0.7                15                0.750 0.416
-#>  30    0.7                20                0.667 0.730
-#>  40    0.7                26                0.650 0.807
-#>  20    0.8                15                0.750 0.804
-#>  30    0.8                20                0.667 0.974
-#>  40    0.8                26                0.650 0.992
+#>  judges required minimum Psa power at .60 power at .70 power at .80
+#>      20    15/20         .75          .13          .42          .80
+#>      30    20/30         .67          .29          .73          .97
+#>      40    26/40         .65          .32          .81          .99
 #> 
-#> Power is the exact probability of reaching the required target-assignment count
-#> under the assumed true target-assignment probability.
+#> required: target assignments an item needs to be retained. minimum Psa: the
+#> same as a proportion. power at p: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with probability
+#> p.
 ```
 
 ## Good practices
