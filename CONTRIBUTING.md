@@ -76,7 +76,10 @@ accepted; update the roadmap and NEWS when work ships or is deferred.
 
 Edit `README.Rmd` before regenerating `README.md`. The root roadmap,
 NEWS, DESCRIPTION, and citation metadata are authoritative for the
-current source. Refresh tracked `docs/` output with pkgdown; the
-existing workflow also rebuilds and publishes the site. Review
+current source. Do not commit the pkgdown site: the pkgdown workflow
+builds it for every pull request and publishes the default branch to
+`gh-pages`. Run
+[`pkgdown::build_site()`](https://pkgdown.r-lib.org/reference/build_site.html)
+locally only to preview; `docs/` is ignored by git. Review
 license/version links and the visible homepage status after publication.
 Historical release tags retain their original metadata.
