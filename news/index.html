@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,9 +40,30 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.7.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.0.9000" id="contentvalidr-0709000-development-version">contentvalidR 0.7.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0709000-development-version"></a></h2>
+<div class="section level3">
+<h3 id="attribution-in-development-0-7-0-9000">Attribution (in development)<a class="anchor" aria-label="anchor" href="#attribution-in-development-0-7-0-9000"></a></h3>
+<ul><li>
+<strong>Every source the package cites is now on its public reference list.</strong> The reference list in the README was missing eight sources that function help pages cite, including Krippendorff (2011), whose alpha is the default panel coefficient, and Schriesheim et al. (1993, 1999), behind <code><a href="../reference/qfactor_content.html">qfactor_content()</a></code>.</li>
+<li>
+<strong>Four foundational sources are now cited where their methods are used,</strong> each checked against the full text:
+<ul><li>
+<code><a href="../reference/cvi.html">cvi()</a></code> and <code><a href="../reference/expert_validity.html">expert_validity()</a></code> cite Lynn (1986), the source of the I-CVI and of the panel-size criterion <code><a href="../reference/expert_validity.html">expert_validity()</a></code> applies, and Polit and Beck (2006), who named S-CVI/UA and S-CVI/Ave. <code><a href="../reference/cvi.html">?cvi</a></code> now explains where each index comes from and why both scale-level versions should be reported.</li>
+<li>
+<code><a href="../reference/cvr.html">cvr()</a></code> cites Wilson, Pan and Schumsky (2012) and explains why the exact values replace Lawshe’s original table: Wilson et al. found the table unexplained, non-monotonic at eight experts, and closer to a two-tailed than the one-tailed test it was labeled as.</li>
+<li>
+<code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> credited nobody. It now cites Fleiss (1971) for the statistic and the irr package’s authors for the code it calls.</li>
+</ul></li>
+<li>
+<code><a href="../reference/sort_power.html">sort_power()</a></code> and <code><a href="../reference/simulate_csv_power.html">simulate_csv_power()</a></code> cite Howard and Melloy (2016), whose test they plan for. Two incomplete entries are completed.</li>
+<li>
+<strong>Three instructions that did not work are fixed.</strong> <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> on a handoff, <code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code>, and the README all told readers to pass the handoff object to <code>nomologR::nomo_screen()</code>, which cannot read it until <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. All three now pass <code>handoff$items</code>.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="contentvalidr-070">contentvalidR 0.7.0<a class="anchor" aria-label="anchor" href="#contentvalidr-070"></a></h2>
 <p>Seventh public release. v0.7.0 is about being safe to depend on. It says in writing what code can rely on from one version to the next, freezes the handoff object that another package reads, and settles the one deprecation that a 1.0 release would otherwise lock in. It also adds a worked example that carries a single item set from an expert panel into response data, and it corrects the stated basis of the Delphi kappa interval.</p>

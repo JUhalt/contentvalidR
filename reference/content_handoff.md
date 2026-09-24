@@ -390,7 +390,7 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0   2026-09-23
+#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
@@ -402,8 +402,8 @@ handoff
 #>  Item4 Review         Review
 #> 
 #> Carry these items into the empirical workflow once response data are
-#> collected. In nomologR that is nomo_screen(data, items = <handoff>), which
-#> screens the same items you retained here.
+#> collected. In nomologR that is nomo_screen(data, items = handoff$items),
+#> which screens the same items you retained here.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well

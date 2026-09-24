@@ -5,6 +5,13 @@ the critical-value logic revisited by Ayre and Scally (2014). Input may
 be either counts of experts marking each item essential or a
 judge-by-item 0/1 matrix.
 
+Lawshe (1975) published a table of critical values computed by a
+colleague, Lowell Schipper, without saying how. Wilson, Pan and Schumsky
+(2012) found the table dips at eight experts where it should rise, and
+that it matches a normal approximation at a two-tailed .05 level rather
+than the one-tailed .05 it was labeled with. Ayre and Scally (2014) then
+derived exact binomial values, which are the ones used here.
+
 ## Usage
 
 ``` r
@@ -53,6 +60,11 @@ validity ratio: Revisiting the original methods of calculation.
 *Measurement and Evaluation in Counseling and Development, 47*(1),
 79-86.
 [doi:10.1177/0748175613513808](https://doi.org/10.1177/0748175613513808)
+
+Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe's content validity ratio. *Measurement and
+Evaluation in Counseling and Development, 45*(3), 197-210.
+[doi:10.1177/0748175612440286](https://doi.org/10.1177/0748175612440286)
 
 ## Examples
 

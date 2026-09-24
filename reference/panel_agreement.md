@@ -101,6 +101,7 @@ Measures, 1*(1), 77-89.
 
 Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability.*
 Annenberg School for Communication, University of Pennsylvania.
+<https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20>
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and
@@ -124,7 +125,8 @@ kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
 
 Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
 kappa: I. The problems of two paradoxes. *Journal of Clinical
-Epidemiology, 43*, 543-549.
+Epidemiology, 43*(6), 543-549.
+[doi:10.1016/0895-4356(90)90158-L](https://doi.org/10.1016/0895-4356%2890%2990158-L)
 
 ## See also
 

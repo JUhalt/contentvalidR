@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
       <h1>From Content Validity to Empirical Validation</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.7.0/vignettes/handoff-to-empirical-validation.Rmd" class="external-link"><code>vignettes/handoff-to-empirical-validation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/handoff-to-empirical-validation.Rmd" class="external-link"><code>vignettes/handoff-to-empirical-validation.Rmd</code></a></small>
       <div class="d-none name"><code>handoff-to-empirical-validation.Rmd</code></div>
     </div>
 
@@ -116,7 +116,7 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="va">handoff</span></span>
 <span><span class="co">#&gt; contentvalidR handoff (schema version 1)</span></span>
 <span><span class="co">#&gt; --------------------------------------</span></span>
-<span><span class="co">#&gt; Workflow: expert-panel (relevance)   contentvalidR 0.7.0   2026-09-23</span></span>
+<span><span class="co">#&gt; Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24</span></span>
 <span><span class="co">#&gt; Items carried forward: 3 of 5</span></span>
 <span><span class="co">#&gt; Carried when status is: Supported</span></span>
 <span><span class="co">#&gt; Constructs: none in this design; the panel rated one item set.</span></span>
@@ -130,8 +130,8 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt;  Item5 Review         Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Carry these items into the empirical workflow once response data are</span></span>
-<span><span class="co">#&gt; collected. In nomologR that is nomo_screen(data, items = &lt;handoff&gt;), which</span></span>
-<span><span class="co">#&gt; screens the same items you retained here.</span></span>
+<span><span class="co">#&gt; collected. In nomologR that is nomo_screen(data, items = handoff$items),</span></span>
+<span><span class="co">#&gt; which screens the same items you retained here.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Surviving content review is evidence about relevance, representation, and</span></span>
 <span><span class="co">#&gt; expert judgment. It does not establish that an item will behave well</span></span>
@@ -284,11 +284,13 @@ models, reliability, invariance, and nomological networks.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nomologR</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># `responses` is your collected data: one row per respondent, one column per item.</span></span>
-<span><span class="va">scr</span> <span class="op">&lt;-</span> <span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">handoff</span><span class="op">)</span></span>
+<span><span class="va">scr</span> <span class="op">&lt;-</span> <span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">handoff</span><span class="op">$</span><span class="va">items</span><span class="op">)</span></span>
 <span><span class="va">scr</span><span class="op">$</span><span class="va">item_summary</span></span></code></pre></div>
 <p>That chunk is not evaluated here, because this vignette builds
 without nomologR installed and because a content-validity pretest has no
-responses to screen.</p>
+responses to screen. It passes the carried item names. Reading the
+handoff object itself, so that nomologR also receives the evidence and
+each item’s keying, is tracked on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>.</p>
 <p>The object shape is agreed between the two packages as schema version
 1, and every field is a base type: character, logical, numeric, integer,
 data frame, list, and Date. Neither package depends on the other, so any

@@ -47,7 +47,7 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> --------------------------------------
-#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0   2026-09-23
+#> Workflow: expert-panel (relevance)   contentvalidR 0.7.0.9000   2026-09-24
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
@@ -61,8 +61,8 @@ handoff
 #>  Item5 Review         Review
 #> 
 #> Carry these items into the empirical workflow once response data are
-#> collected. In nomologR that is nomo_screen(data, items = <handoff>), which
-#> screens the same items you retained here.
+#> collected. In nomologR that is nomo_screen(data, items = handoff$items),
+#> which screens the same items you retained here.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well
@@ -240,13 +240,16 @@ models, reliability, invariance, and nomological networks.
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.
-scr <- nomo_screen(responses, items = handoff)
+scr <- nomo_screen(responses, items = handoff$items)
 scr$item_summary
 ```
 
 That chunk is not evaluated here, because this vignette builds without
 nomologR installed and because a content-validity pretest has no
-responses to screen.
+responses to screen. It passes the carried item names. Reading the
+handoff object itself, so that nomologR also receives the evidence and
+each item’s keying, is tracked on
+[nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
 
 The object shape is agreed between the two packages as schema version 1,
 and every field is a base type: character, logical, numeric, integer,

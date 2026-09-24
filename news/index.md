@@ -1,5 +1,49 @@
 # Changelog
 
+## contentvalidR 0.7.0.9000 (development version)
+
+### Attribution (in development)
+
+- **Every source the package cites is now on its public reference
+  list.** The reference list in the README was missing eight sources
+  that function help pages cite, including Krippendorff (2011), whose
+  alpha is the default panel coefficient, and Schriesheim et al. (1993,
+  1999), behind
+  [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md).
+- **Four foundational sources are now cited where their methods are
+  used,** each checked against the full text:
+  - [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md)
+    and
+    [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+    cite Lynn (1986), the source of the I-CVI and of the panel-size
+    criterion
+    [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+    applies, and Polit and Beck (2006), who named S-CVI/UA and
+    S-CVI/Ave.
+    [`?cvi`](https://juhalt.github.io/contentvalidR/reference/cvi.md)
+    now explains where each index comes from and why both scale-level
+    versions should be reported.
+  - [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md)
+    cites Wilson, Pan and Schumsky (2012) and explains why the exact
+    values replace Lawshe’s original table: Wilson et al. found the
+    table unexplained, non-monotonic at eight experts, and closer to a
+    two-tailed than the one-tailed test it was labeled as.
+  - [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+    credited nobody. It now cites Fleiss (1971) for the statistic and
+    the irr package’s authors for the code it calls.
+- [`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+  and
+  [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md)
+  cite Howard and Melloy (2016), whose test they plan for. Two
+  incomplete entries are completed.
+- **Three instructions that did not work are fixed.**
+  [`print()`](https://rdrr.io/r/base/print.html) on a handoff,
+  [`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md),
+  and the README all told readers to pass the handoff object to
+  `nomologR::nomo_screen()`, which cannot read it until
+  [nomologR#46](https://github.com/JUhalt/nomologR/issues/46). All three
+  now pass `handoff$items`.
+
 ## contentvalidR 0.7.0
 
 Seventh public release. v0.7.0 is about being safe to depend on. It says
