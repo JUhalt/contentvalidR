@@ -786,9 +786,10 @@ process, or reproducibility of the workflow.
 
 Root `README.Rmd`, `ROADMAP.md`, `NEWS.md`, `DESCRIPTION`, and `CITATION.cff`
 are the sources of current project information. Regenerate `README.md` from
-`README.Rmd` and refresh the tracked `docs/` output after documentation changes;
-do not edit generated HTML independently. The pkgdown workflow rebuilds the site
-for pull requests and publishes default-branch changes to GitHub Pages.
+`README.Rmd` after documentation changes. The website is not committed: the
+pkgdown workflow builds it for every pull request and publishes default-branch
+changes to the `gh-pages` branch, which GitHub Pages serves. A local
+`pkgdown::build_site()` is only a preview, and `docs/` is ignored by git.
 
 Record findings or proposals in an issue with evidence and an observable outcome.
 Link the issue here, assign a milestone when its scope is accepted, and update

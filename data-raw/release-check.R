@@ -34,6 +34,8 @@ if (requireNamespace("spelling", quietly = TRUE)) {
 
 message("7/7: pkgdown site")
 if (requireNamespace("pkgdown", quietly = TRUE)) {
+  # A local preview that the site builds. The published site is built by the
+  # pkgdown workflow and deployed to gh-pages; docs/ is not committed.
   pkgdown::build_site()
 } else {
   message("  pkgdown not installed; run install.packages('pkgdown') and build the site before release.")
