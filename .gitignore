@@ -8,5 +8,8 @@ inst/doc
 /doc/
 /Meta/
 
+# The pkgdown site is built by CI and published to the gh-pages branch.
+/docs/
+
 # editor backups
 *.bak
