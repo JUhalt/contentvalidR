@@ -962,12 +962,12 @@ deletion.
 Once responses are collected, the item set carries into the empirical
 stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion
 package for that stage, that is
-`nomo_screen(responses, items = handoff)`. The object shape is agreed
-between the two packages as schema version 1, and every field is a base
-type, so neither package depends on the other. Carrying an item forward
-is not a prediction that it will perform: a clearly relevant item can
-still correlate poorly with its construct or load on an unintended
-factor, which is what the empirical analysis tests. See
+`nomo_screen(responses, items = handoff$items)`. The object shape is
+agreed between the two packages as schema version 1, and every field is
+a base type, so neither package depends on the other. Carrying an item
+forward is not a prediction that it will perform: a clearly relevant
+item can still correlate poorly with its construct or load on an
+unintended factor, which is what the empirical analysis tests. See
 `vignette("handoff-to-empirical-validation")`.
 
 ## Recommended judge-heterogeneity workflow

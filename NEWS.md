@@ -44,11 +44,11 @@
     statistic and the irr package's authors for the code it calls.
 * `sort_power()` and `simulate_csv_power()` cite Howard and Melloy (2016), whose
   test they plan for. Two incomplete entries are completed.
-* **Two instructions that did not work are fixed.** `print()` on a handoff and
-  `vignette("handoff-to-empirical-validation")` both told readers to pass the
-  handoff object to `nomologR::nomo_screen()`, which cannot read it until
-  [nomologR#46](https://github.com/JUhalt/nomologR/issues/46). Both now pass
-  `handoff$items`.
+* **Three instructions that did not work are fixed.** `print()` on a handoff,
+  `vignette("handoff-to-empirical-validation")`, and the README all told
+  readers to pass the handoff object to `nomologR::nomo_screen()`, which cannot
+  read it until [nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
+  All three now pass `handoff$items`.
 
 # contentvalidR 0.7.0
 
