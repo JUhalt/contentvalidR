@@ -87,7 +87,9 @@ descriptive benchmarks rather than pass/fail rules.</p>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  orbiting_r <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  judge_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"naive"</span>, <span class="st">"expert"</span><span class="op">)</span>,</span>
-<span>  proportion_ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span></span>
+<span>  proportion_ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  legacy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  n_constructs <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -131,6 +133,19 @@ If omitted, the overall Colquitt et al. norms are used.</p></dd>
 <code>alpha</code> as the exact test. See <code>ci</code> in <code><a href="cvi.html">cvi()</a></code> for the methods and the
 evidence for each.</p></dd>
 
+
+<dt id="arg-legacy">legacy<a class="anchor" aria-label="anchor" href="#arg-legacy"></a></dt>
+<dd><p>Print the earlier published rules beside the decision, for
+comparison. Default <code>FALSE</code>. They are computed either way, stored in
+<code>details$earlier_methods</code>, and never change the decision; <code>print(fit, legacy = TRUE)</code> shows them for any fit.</p></dd>
+
+
+<dt id="arg-n-constructs">n_constructs<a class="anchor" aria-label="anchor" href="#arg-n-constructs"></a></dt>
+<dd><p>Optional number of constructs judges could choose among,
+used only by the comparison block's chance-based extension. By default it
+is the number of constructs that appear in the data, which is too few
+when judges were offered a construct none of them chose.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -140,6 +155,35 @@ All flagship workflow objects expose the common components <code>results</code>,
 include a standardized <code>status</code> field while retaining the method-specific
 <code>recommendation</code> field. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> provide
 user-facing interpretation.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="earlier-methods-for-comparison">Earlier methods, for comparison<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison"></a></h2>
+
+
+<p>The decision uses the exact test of Howard and Melloy (2016). Two earlier
+published rules, and one labeled package extension, are reported beside it
+for teaching, the way a methods text reports eta-squared beside
+omega-squared. None of them changes the decision:</p><ul><li><p><strong>Anderson and Gerbing (1991)</strong> judged Csv against a critical value. With
+<code>N</code> judges, <code>m</code> is the fewest target assignments whose one-tailed binomial
+probability at .5 falls below <code>alpha</code> (their Equation 5), and the critical
+Csv is <code>(2m - N) / N</code> (Equation 6): .50 for 20 judges at .05. Equation 6
+assumes every judge who misses the target picks the same rival. When those
+judges spread across several constructs, the leading rival's count falls,
+so Csv can reach the critical value with fewer target assignments than
+the exact test requires. That is why it is not used for the decision.</p></li>
+<li><p><strong>Yao, Wu and Yang (2008)</strong> required Psa and Csv both to reach .30, which
+they chose for a four-domain sort, where an item assigned at random lands
+in its domain with probability .25 (p. 486). They give no rule for other
+numbers of domains.</p></li>
+<li><p><strong>A contentvalidR extension, not a published rule.</strong> Yao et al.'s
+reasoning carried to <code>k</code> constructs as chance plus .05: Psa and Csv both
+at least <code>1/k + .05</code>, which is their .30 when <code>k = 4</code>. It is shown in its
+own column, marked as an extension, whenever <code>k</code> is not 4. <code>k</code> is
+<code>n_constructs</code> when given, and otherwise the number of constructs in the
+data.</p></li>
+</ul><p>Csv counts only the single most-chosen rival construct (Anderson &amp; Gerbing,
+1991, p. 734). Pooling every other construct into that count instead gives
+<code>2 * Psa - 1</code>, a different index; the printout notes this.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -155,6 +199,10 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. <em>Journal of Applied
 Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link">doi:10.1037/apl0000406</a></p>
+<p>Yao, G., Wu, C.-H., &amp; Yang, C.-T. (2008). Examining the content validity of
+the WHOQOL-BREF from respondents' perspective by quantitative methods.
+<em>Social Indicators Research, 85</em>(3), 483-498.
+<a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link">doi:10.1007/s11205-007-9112-8</a></p>
     </div>
 
     <div class="section level2">
@@ -263,6 +311,104 @@ Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406
 <span class="r-out co"><span class="r-pr">#&gt;</span> Interpret scale norms and item flags alongside theory, domain coverage, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> qualitative feedback. This analysis does not by itself establish</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> comprehensiveness or the full content-validity argument.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The same result beside the earlier published rules.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit</span>, legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort analysis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 3 | Judges: 20 | Target constructs: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: naive, meaning drawn from the kind of people who will answer the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 of 3 items meet the exact target-assignment criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Flagged for review: A3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target decision judges Psa     95% CI Csv competitor      p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A1      A   Retain  18/20 .90 [.70, .97] .80          B &lt; .001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A2      A   Retain  16/20 .80 [.58, .92] .60          B   .006</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A3      A   Review  12/20 .60 [.39, .78] .20          B   .252</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges: assignments to the target construct, out of the judges who sorted the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald interval.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An interval reflects how few ratings an item received, not whether the right</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges were chosen.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Scale-level Colquitt benchmarks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  target items mean Psa Psa level mean Csv Csv level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       A     3      .77  Moderate      .53  Moderate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Benchmark set: Overall (not correlation-normed)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms derived from scale-level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> averages, not universal cutoffs or automatic scale-retention rules. They</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> place a scale against published scales; Psa and Csv sit on different scales,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> so their labels are not comparable with each other.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Earlier methods, for comparison (not used for the decision)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item decision Psa Csv A&amp;G (1991) Yao et al. (2008) extension*</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A1   Retain .90 .80      meets             meets      meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A2   Retain .80 .60      meets             meets      meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    A3   Review .60 .20      below             below      below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Anderson and Gerbing (1991): Csv of at least .50, their critical value for 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges at alpha = .05 (Equations 5 and 6). Their critical value assumes every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judge who misses the target picks the same rival. When those judges spread</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> across several constructs, Csv can reach it with fewer target assignments</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> than the exact test needs.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a four-domain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sort where chance assignment is .25.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> * extension: a contentvalidR extension, not a published rule. It carries Yao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   et al.'s reasoning to this sort's 2 constructs as chance plus .05, so Psa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   and Csv both at least .55 (1/2 + .05).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The 2 constructs are the ones judges used. If more were offered, set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `n_constructs`, since chance depends on the number offered.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Agreement with the decision above: Anderson and Gerbing on 3 of 3 items, Yao</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> et al. on 3 of 3, the extension on 3 of 3.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Csv counts only the single most-chosen rival construct (Anderson &amp; Gerbing,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1991, p. 734). Pooling every other construct into it instead gives twice Psa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> minus one, a different index.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the item to the construct it was written for. Higher means judges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       recognized the item as belonging where you intended. (0 to 1; higher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   95% CI -- Interval for Psa. Lower and upper limits of an interval around</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Psa. A wide interval means few judges sorted the item, so a different</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       sample of judges could plausibly give a quite different Psa. (between</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       0 and 1; the method and level are named in the output)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Csv -- Coefficient of Substantive Validity. How much more often the item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       went to its intended construct than to the alternative construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       judges chose most. It rewards being distinctly right, not merely</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       often right. (-1 to 1; 0 means the intended construct and its closest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rival were chosen equally often)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   competitor -- Strongest competing construct. The construct, other than</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the intended one, that judges chose most often for this item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   p -- Howard-Melloy exact test. Probability of seeing at least this many</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       target assignments if judges were assigning at the chance rate p0.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Small values mean the item's assignment pattern is unlikely to be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       chance. (0 to 1; compared against alpha)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'Review' is not an automatic deletion decision. Use theory, construct-domain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> coverage, item wording, and qualitative judge feedback alongside these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> statistics.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1263,6 +1263,10 @@ and
   Content validation guidelines: Evaluation criteria for definitional
   correspondence and definitional distinctiveness. *Journal of Applied
   Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
+- Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content
+  validity of the WHOQOL-BREF from respondents’ perspective by
+  quantitative methods. *Social Indicators Research, 85*(3), 483–498.
+  <https://doi.org/10.1007/s11205-007-9112-8>
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance
   approach to content validation. *Organizational Research Methods,
   2*(2), 175–186. <https://doi.org/10.1177/109442819922004>

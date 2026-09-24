@@ -409,18 +409,117 @@ plot(plan, type = "critical")
 No conventional target-power line is imposed unless the analyst supplies
 one.
 
-## Why the Anderson-Gerbing legacy critical-Csv rule is not exposed
+## Earlier rules, for comparison only
 
 `contentvalidR` retains Anderson and Gerbing’s Psa and Csv indices but
-does not provide their legacy critical-Csv decision rule as a
-user-selectable alternative. Howard and Melloy (2016) showed that the
-older rule is appropriate for the original two-choice case but becomes
-miscalibrated when it is applied to sorts with more than two construct
-choices. Their revised target-count procedure agrees with the legacy
-logic in the two-choice case and is applicable to the broader designs
-now used in practice. Exposing the obsolete rule would therefore add a
-reproducibility option that is easy to misuse without adding a
-recommended analysis path.
+does not offer their critical-Csv rule as a way to decide. Howard and
+Melloy (2016) showed that the older rule is appropriate for the original
+two-choice case but becomes miscalibrated when it is applied to sorts
+with more than two construct choices. Their revised target-count
+procedure agrees with the older logic in the two-choice case and is
+applicable to the broader designs now used in practice.
+
+The earlier rules are still worth seeing, the way a methods course
+reports eta-squared beside omega-squared. `legacy = TRUE` prints them
+beside the decision, without changing it. In the two-construct sort
+above, every judge who misses the target picks the one other construct,
+and the two rules agree on every item. The package’s shipped example has
+three constructs:
+
+``` r
+
+three <- read.csv(
+  system.file("extdata", "sort_example.csv", package = "contentvalidR"),
+  stringsAsFactors = FALSE
+)
+old <- options(contentvalidR.show_key = FALSE)
+sort_validity(three, legacy = TRUE)
+#> contentvalidR item-sort analysis
+#> --------------------------------
+#> Items: 6 | Judges: 20 | Target constructs: 3
+#> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
+#> Judges: naive, meaning drawn from the kind of people who will answer the
+#> items.
+#> 
+#> 4 of 6 items meet the exact target-assignment criterion.
+#> Flagged for review: B2, C2
+#> 
+#> Item-level evidence
+#>  item target decision judges Psa     95% CI Csv competitor      p
+#>    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C < .001
+#>    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021
+#>    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001
+#>    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132
+#>    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B < .001
+#>    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058
+#> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
+#> 
+#> Scale-level Colquitt benchmarks
+#>  target items mean Psa Psa level mean Csv Csv level
+#>       A     2      .82    Strong      .72    Strong
+#>       B     2      .75  Moderate      .57  Moderate
+#>       C     2      .80  Moderate      .68    Strong
+#> Benchmark set: Overall (not correlation-normed)
+#> 
+#> Colquitt labels are empirical percentile norms derived from scale-level
+#> averages, not universal cutoffs or automatic scale-retention rules. They
+#> place a scale against published scales; Psa and Csv sit on different scales,
+#> so their labels are not comparable with each other.
+#> 
+#> Earlier methods, for comparison (not used for the decision)
+#>  item decision Psa Csv A&G (1991) Yao et al. (2008) extension*
+#>    A1   Retain .90 .85      meets             meets      meets
+#>    A2   Retain .75 .60      meets             meets      meets
+#>    B1   Retain .85 .75      meets             meets      meets
+#>    B2   Review .65 .40      below             meets      meets
+#>    C1   Retain .90 .85      meets             meets      meets
+#>    C2   Review .70 .50      meets             meets      meets
+#> 
+#> Anderson and Gerbing (1991): Csv of at least .50, their critical value for 20
+#> judges at alpha = .05 (Equations 5 and 6). Their critical value assumes every
+#> judge who misses the target picks the same rival. When those judges spread
+#> across several constructs, Csv can reach it with fewer target assignments
+#> than the exact test needs.
+#> Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a four-domain
+#> sort where chance assignment is .25.
+#> * extension: a contentvalidR extension, not a published rule. It carries Yao
+#>   et al.'s reasoning to this sort's 3 constructs as chance plus .05, so Psa
+#>   and Csv both at least .38 (1/3 + .05).
+#> The 3 constructs are the ones judges used. If more were offered, set
+#> `n_constructs`, since chance depends on the number offered.
+#> Agreement with the decision above: Anderson and Gerbing on 5 of 6 items, Yao
+#> et al. on 4 of 6, the extension on 4 of 6.
+#> Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
+#> 1991, p. 734). Pooling every other construct into it instead gives twice Psa
+#> minus one, a different index.
+#> 
+#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
+#> coverage, item wording, and qualitative judge feedback alongside these
+#> statistics.
+options(old)
+```
+
+Look at C2. Fourteen of 20 judges chose its target, one short of the 15
+the exact test needs, so the decision is Review. Anderson and Gerbing’s
+rule passes it: their critical Csv of .50 assumes the six judges who
+missed the target all chose one rival, but here they split, so Csv
+reaches .50 anyway. That is the miscalibration in miniature. Yao, Wu and
+Yang’s (2008) .30 cutoffs pass every item, because they were set for
+four domains, where chance is .25; with three constructs, chance is
+already above .30.
+
+The column marked `extension*` is not a published rule. It is this
+package’s extension of Yao et al.’s reasoning to any number of
+constructs, chance plus .05, which gives their .30 for four constructs
+and .38 for these three, and the printout labels it that way. Chance
+depends on how many constructs judges were offered, not how many they
+used, so give `n_constructs` when some construct drew no assignments.
 
 ## Reporting
 
@@ -451,3 +550,8 @@ Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
 Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>
+
+Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity
+of the WHOQOL-BREF from respondents’ perspective by quantitative
+methods. *Social Indicators Research, 85*(3), 483-498.
+<https://doi.org/10.1007/s11205-007-9112-8>

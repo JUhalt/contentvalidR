@@ -454,3 +454,10 @@ sort_power(N = c(20, 30), true_p = c(.65, .75))
 #> required count if each judge assigns the item to its target with probability
 #> p.
 ```
+
+## References
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. *Journal of Applied
+Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>

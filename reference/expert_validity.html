@@ -91,7 +91,8 @@ or other parts of a content-validity argument.</p>
 <span>  agreement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"krippendorff"</span>, <span class="st">"ac1"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  agreement_level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ordinal"</span>, <span class="st">"nominal"</span>, <span class="st">"interval"</span><span class="op">)</span>,</span>
 <span>  agreement_B <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  seed <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  seed <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  legacy <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -165,6 +166,13 @@ the interval.</p></dd>
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
 <dd><p>Optional seed that makes the agreement interval reproducible.</p></dd>
 
+
+<dt id="arg-legacy">legacy<a class="anchor" aria-label="anchor" href="#arg-legacy"></a></dt>
+<dd><p>Print the earlier published rules beside the decision, for
+comparison, in relevance and essentiality modes. Default <code>FALSE</code>. They are
+computed either way, stored in <code>details$earlier_methods</code>, and never change
+the decision; <code>print(fit, legacy = TRUE)</code> shows them for any fit.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -178,6 +186,26 @@ while retaining mode-specific <code>recommendation</code> wording. In relevance 
 <code>agreement_high</code>, and <code>details$agreement</code> holds the full
 <code><a href="panel_agreement.html">panel_agreement()</a></code> result.</p>
     </div>
+    <div class="section level2">
+    <h2 id="earlier-methods-for-comparison">Earlier methods, for comparison<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison"></a></h2>
+
+
+<p>The decisions use Lynn's (1986) criterion in relevance mode and the exact
+binomial test (Ayre &amp; Scally, 2014) in essentiality mode. Earlier rules are
+reported beside them for teaching, and none changes a decision:</p><ul><li><p><strong>Essentiality.</strong> Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
+panelists, then every fifth panel size to 40; other sizes have no minimum.
+He labeled it a one-tailed test at .05. Wilson, Pan and Schumsky (2012)
+found the table closer to a two-tailed test and recomputed it by the
+normal approximation, <code>z / sqrt(N)</code> for a one-tailed test at <code>alpha</code>
+(their Table 2). Lawshe's content validity index for the whole set is the
+mean CVR of the items his table retains (Lawshe, 1975).</p></li>
+<li><p><strong>Relevance.</strong> Fleiss' (1971) kappa, his kappa for many raters and nominal
+categories, on the relevant/not-relevant decision. It needs every expert to
+rate every item. The printout also notes that S-CVI/Ave is the average
+congruency percentage, for which Polit and Beck (2006) recommend .90 or
+higher, while calling .80 a reasonable, even strict, criterion for
+S-CVI/UA.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score confidence
@@ -204,6 +232,15 @@ reliability measure for coding data. <em>Communication Methods and Measures,
 inter-rater reliability for nominal data: Which coefficients and confidence
 intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link">doi:10.1186/s12874-016-0200-9</a></p>
+<p>Lawshe, C. H. (1975). A quantitative approach to content validity.
+<em>Personnel Psychology, 28</em>(4), 563-575.
+<a href="https://doi.org/10.1111/j.1744-6570.1975.tb01393.x" class="external-link">doi:10.1111/j.1744-6570.1975.tb01393.x</a></p>
+<p>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe's content validity ratio. <em>Measurement and
+Evaluation in Counseling and Development, 45</em>(3), 197-210.
+<a href="https://doi.org/10.1177/0748175612440286" class="external-link">doi:10.1177/0748175612440286</a></p>
+<p>Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+<em>Psychological Bulletin, 76</em>(5), 378-382. <a href="https://doi.org/10.1037/h0031619" class="external-link">doi:10.1037/h0031619</a></p>
     </div>
 
     <div class="section level2">
@@ -300,6 +337,63 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span> No items were flagged by the workflow's quantitative review rules.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> These summaries support, but do not replace, qualitative content review.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Essential counts from 12 experts, beside Lawshe's table and Wilson et al.</span></span></span>
+<span class="r-in"><span><span class="fu">expert_validity</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span>,</span></span>
+<span class="r-in"><span>                legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR expert-panel analysis</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mode: essentiality</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts/item: 12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Method: Lawshe CVR with exact binomial critical values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item  decision essential  CVR      p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 Supported     12/12 1.00 &lt; .001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 Supported     10/12  .67   .019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3    Review      8/12  .33   .194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4    Review      6/12  .00   .613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> essential: experts rating the item essential, out of those who rated it.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> With 12 experts, an item needs at least 10 rating it essential for the exact</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Earlier methods, for comparison (not used for the decision)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 Supported     12/12 1.00         meets                meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 Supported     10/12  .67         meets                meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3    Review      8/12  .33         below                below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4    Review      6/12  .00         below                below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe (1975, Table 1): minimum CVR .56 for 12 panelists, labeled a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> one-tailed test at .05. Wilson, Pan and Schumsky (2012) found the table</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> closer to a two-tailed test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Wilson et al. (2012, Table 2): minimum CVR .47, the normal approximation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> z/sqrt(N) at one-tailed alpha = .05.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The decision above uses the exact binomial test (Ayre &amp; Scally, 2014).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe's content validity index, the mean CVR of the items his table retains:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> .83 (2 items).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       calling the item essential rather than merely useful. (-1 to 1; above</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       0 means more than half the panel called it essential)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> comprehensibility review.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

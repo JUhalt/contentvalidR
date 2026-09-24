@@ -446,19 +446,112 @@ norms were constructed from scale-level averages.</p>
 supplies one.</p>
 </div>
 <div class="section level2">
-<h2 id="why-the-anderson-gerbing-legacy-critical-csv-rule-is-not-exposed">Why the Anderson-Gerbing legacy critical-Csv rule is not
-exposed<a class="anchor" aria-label="anchor" href="#why-the-anderson-gerbing-legacy-critical-csv-rule-is-not-exposed"></a>
+<h2 id="earlier-rules-for-comparison-only">Earlier rules, for comparison only<a class="anchor" aria-label="anchor" href="#earlier-rules-for-comparison-only"></a>
 </h2>
 <p><code>contentvalidR</code> retains Anderson and Gerbing’s Psa and Csv
-indices but does not provide their legacy critical-Csv decision rule as
-a user-selectable alternative. Howard and Melloy (2016) showed that the
-older rule is appropriate for the original two-choice case but becomes
-miscalibrated when it is applied to sorts with more than two construct
-choices. Their revised target-count procedure agrees with the legacy
-logic in the two-choice case and is applicable to the broader designs
-now used in practice. Exposing the obsolete rule would therefore add a
-reproducibility option that is easy to misuse without adding a
-recommended analysis path.</p>
+indices but does not offer their critical-Csv rule as a way to decide.
+Howard and Melloy (2016) showed that the older rule is appropriate for
+the original two-choice case but becomes miscalibrated when it is
+applied to sorts with more than two construct choices. Their revised
+target-count procedure agrees with the older logic in the two-choice
+case and is applicable to the broader designs now used in practice.</p>
+<p>The earlier rules are still worth seeing, the way a methods course
+reports eta-squared beside omega-squared. <code>legacy = TRUE</code>
+prints them beside the decision, without changing it. In the
+two-construct sort above, every judge who misses the target picks the
+one other construct, and the two rules agree on every item. The
+package’s shipped example has three constructs:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">three</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sort_example.csv"</span>, package <span class="op">=</span> <span class="st">"contentvalidR"</span><span class="op">)</span>,</span>
+<span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">three</span>, legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; contentvalidR item-sort analysis</span></span>
+<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; Items: 6 | Judges: 20 | Target constructs: 3</span></span>
+<span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
+<span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
+<span><span class="co">#&gt; items.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 4 of 6 items meet the exact target-assignment criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: B2, C2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Item-level evidence</span></span>
+<span><span class="co">#&gt;  item target decision judges Psa     95% CI Csv competitor      p</span></span>
+<span><span class="co">#&gt;    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C &lt; .001</span></span>
+<span><span class="co">#&gt;    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021</span></span>
+<span><span class="co">#&gt;    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001</span></span>
+<span><span class="co">#&gt;    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132</span></span>
+<span><span class="co">#&gt;    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B &lt; .001</span></span>
+<span><span class="co">#&gt;    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
+<span><span class="co">#&gt; item.</span></span>
+<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
+<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
+<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
+<span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
+<span><span class="co">#&gt;       A     2      .82    Strong      .72    Strong</span></span>
+<span><span class="co">#&gt;       B     2      .75  Moderate      .57  Moderate</span></span>
+<span><span class="co">#&gt;       C     2      .80  Moderate      .68    Strong</span></span>
+<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt; place a scale against published scales; Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt; so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Earlier methods, for comparison (not used for the decision)</span></span>
+<span><span class="co">#&gt;  item decision Psa Csv A&amp;G (1991) Yao et al. (2008) extension*</span></span>
+<span><span class="co">#&gt;    A1   Retain .90 .85      meets             meets      meets</span></span>
+<span><span class="co">#&gt;    A2   Retain .75 .60      meets             meets      meets</span></span>
+<span><span class="co">#&gt;    B1   Retain .85 .75      meets             meets      meets</span></span>
+<span><span class="co">#&gt;    B2   Review .65 .40      below             meets      meets</span></span>
+<span><span class="co">#&gt;    C1   Retain .90 .85      meets             meets      meets</span></span>
+<span><span class="co">#&gt;    C2   Review .70 .50      meets             meets      meets</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Anderson and Gerbing (1991): Csv of at least .50, their critical value for 20</span></span>
+<span><span class="co">#&gt; judges at alpha = .05 (Equations 5 and 6). Their critical value assumes every</span></span>
+<span><span class="co">#&gt; judge who misses the target picks the same rival. When those judges spread</span></span>
+<span><span class="co">#&gt; across several constructs, Csv can reach it with fewer target assignments</span></span>
+<span><span class="co">#&gt; than the exact test needs.</span></span>
+<span><span class="co">#&gt; Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a four-domain</span></span>
+<span><span class="co">#&gt; sort where chance assignment is .25.</span></span>
+<span><span class="co">#&gt; * extension: a contentvalidR extension, not a published rule. It carries Yao</span></span>
+<span><span class="co">#&gt;   et al.'s reasoning to this sort's 3 constructs as chance plus .05, so Psa</span></span>
+<span><span class="co">#&gt;   and Csv both at least .38 (1/3 + .05).</span></span>
+<span><span class="co">#&gt; The 3 constructs are the ones judges used. If more were offered, set</span></span>
+<span><span class="co">#&gt; `n_constructs`, since chance depends on the number offered.</span></span>
+<span><span class="co">#&gt; Agreement with the decision above: Anderson and Gerbing on 5 of 6 items, Yao</span></span>
+<span><span class="co">#&gt; et al. on 4 of 6, the extension on 4 of 6.</span></span>
+<span><span class="co">#&gt; Csv counts only the single most-chosen rival construct (Anderson &amp; Gerbing,</span></span>
+<span><span class="co">#&gt; 1991, p. 734). Pooling every other construct into it instead gives twice Psa</span></span>
+<span><span class="co">#&gt; minus one, a different index.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
+<span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
+<span><span class="co">#&gt; statistics.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
+<p>Look at C2. Fourteen of 20 judges chose its target, one short of the
+15 the exact test needs, so the decision is Review. Anderson and
+Gerbing’s rule passes it: their critical Csv of .50 assumes the six
+judges who missed the target all chose one rival, but here they split,
+so Csv reaches .50 anyway. That is the miscalibration in miniature. Yao,
+Wu and Yang’s (2008) .30 cutoffs pass every item, because they were set
+for four domains, where chance is .25; with three constructs, chance is
+already above .30.</p>
+<p>The column marked <code>extension*</code> is not a published rule. It
+is this package’s extension of Yao et al.’s reasoning to any number of
+constructs, chance plus .05, which gives their .30 for four constructs
+and .38 for these three, and the printout labels it that way. Chance
+depends on how many constructs judges were offered, not how many they
+used, so give <code>n_constructs</code> when some construct drew no
+assignments.</p>
 </div>
 <div class="section level2">
 <h2 id="reporting">Reporting<a class="anchor" aria-label="anchor" href="#reporting"></a>
@@ -490,6 +583,10 @@ methodological best practices. <em>Journal of Business and Psychology,
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
 <em>Journal of Applied Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Yao, G., Wu, C.-H., &amp; Yang, C.-T. (2008). Examining the content
+validity of the WHOQOL-BREF from respondents’ perspective by
+quantitative methods. <em>Social Indicators Research, 85</em>(3),
+483-498. <a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link uri">https://doi.org/10.1007/s11205-007-9112-8</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

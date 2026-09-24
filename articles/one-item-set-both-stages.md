@@ -448,3 +448,10 @@ states the full generating model: the two-factor structure, every
 loading, the factor correlation, the response thresholds, and the single
 cohort shift. `nomologR` mirrors the response file from the same script,
 so both packages show the same numbers.
+
+## References
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. *Journal of Business and Psychology,
+31*(1), 173-186. <https://doi.org/10.1007/s10869-015-9404-y>

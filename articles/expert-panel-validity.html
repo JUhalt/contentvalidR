@@ -430,6 +430,59 @@ follows the exact-probability logic revisited by Ayre and Scally
 <code>Review</code>, not automatic deletion. Expert rationales and
 domain coverage matter when deciding whether an item should be
 rewritten, retained for breadth, or removed.</p>
+<div class="section level3">
+<h3 id="lawshes-table-and-its-recalculation-for-comparison">Lawshe’s table and its recalculation, for comparison<a class="anchor" aria-label="anchor" href="#lawshes-table-and-its-recalculation-for-comparison"></a>
+</h3>
+<p>Lawshe (1975) published a table of minimum CVR values, and Wilson,
+Pan and Schumsky (2012) recalculated it. <code>legacy = TRUE</code>
+prints both beside the exact decision, without changing it:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">8</span>, <span class="fl">7</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">9</span>, legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
+<span><span class="co">#&gt; -----------------------------------</span></span>
+<span><span class="co">#&gt; Mode: essentiality</span></span>
+<span><span class="co">#&gt; Items: 3 | Experts/item: 9</span></span>
+<span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   item  decision essential  CVR    p</span></span>
+<span><span class="co">#&gt;  Item1 Supported       9/9 1.00 .002</span></span>
+<span><span class="co">#&gt;  Item2 Supported       8/9  .78 .020</span></span>
+<span><span class="co">#&gt;  Item3    Review       7/9  .56 .090</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; essential: experts rating the item essential, out of those who rated it.</span></span>
+<span><span class="co">#&gt; With 9 experts, an item needs at least 8 rating it essential for the exact</span></span>
+<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Earlier methods, for comparison (not used for the decision)</span></span>
+<span><span class="co">#&gt;   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)</span></span>
+<span><span class="co">#&gt;  Item1 Supported       9/9 1.00         meets                meets</span></span>
+<span><span class="co">#&gt;  Item2 Supported       8/9  .78         below                meets</span></span>
+<span><span class="co">#&gt;  Item3    Review       7/9  .56         below                meets</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists, labeled a one-tailed</span></span>
+<span><span class="co">#&gt; test at .05. Wilson, Pan and Schumsky (2012) found the table closer to a</span></span>
+<span><span class="co">#&gt; two-tailed test.</span></span>
+<span><span class="co">#&gt; Wilson et al. (2012, Table 2): minimum CVR .55, the normal approximation</span></span>
+<span><span class="co">#&gt; z/sqrt(N) at one-tailed alpha = .05.</span></span>
+<span><span class="co">#&gt; Item2 (.778) prints at the Lawshe cutoff of .78 but falls short of it before</span></span>
+<span><span class="co">#&gt; rounding.</span></span>
+<span><span class="co">#&gt; The decision above uses the exact binomial test (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; Lawshe's content validity index, the mean CVR of the items his table retains:</span></span>
+<span><span class="co">#&gt; 1.00 (1 item).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
+<span><span class="co">#&gt; comprehensibility review.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
+<p>Nine experts show why the table was questioned. Eight of nine gives a
+CVR of .778, just under Lawshe’s .78, so his table asks for all nine,
+while with eight experts it accepts seven. Wilson et al. describe the
+anomaly: the minimum rises steadily from 40 experts down to nine, then
+drops at eight. The exact test needs eight of nine.</p>
+<p>In relevance mode, <code>legacy = TRUE</code> adds Fleiss’ (1971)
+kappa on the relevant/not-relevant decision and the Polit and Beck
+(2006) benchmarks for S-CVI/Ave and S-CVI/UA.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="congruence-item-objective-alignment">Congruence: item-objective alignment<a class="anchor" aria-label="anchor" href="#congruence-item-objective-alignment"></a>
@@ -437,7 +490,7 @@ rewritten, retained for breadth, or removed.</p>
 <p>IOC uses expert ratings of -1, 0, and +1 for item-objective
 congruence. A target mapping lets the workflow compare intended and
 competing objectives:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I1"</span>, <span class="st">"I2"</span><span class="op">)</span>,</span>
 <span>  judge <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
@@ -499,13 +552,13 @@ reported so downstream interpretation uses the actual panel size.</p>
 </h2>
 <p>Each mode uses a plot matched to the expert task rather than forcing
 unlike indices into one generic chart.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-1.png" class="r-plt" alt="" width="672"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-2.png" class="r-plt" alt="" width="672"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="" width="672"></p>
 <p>Relevance mode displays Aiken’s V with its score interval and
@@ -546,7 +599,9 @@ content validity ratio: Revisiting the original methods of calculation.
 47</em>(1), 79-86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a></p>
 <p>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but
 low kappa: I. The problems of two paradoxes. <em>Journal of Clinical
-Epidemiology, 43</em>(6), 543-549.</p>
+Epidemiology, 43</em>(6), 543-549. <a href="https://doi.org/10.1016/0895-4356(90)90158-L" class="external-link uri">https://doi.org/10.1016/0895-4356(90)90158-L</a></p>
+<p>Fleiss, J. L. (1971). Measuring nominal scale agreement among many
+raters. <em>Psychological Bulletin, 76</em>(5), 378-382. <a href="https://doi.org/10.1037/h0031619" class="external-link uri">https://doi.org/10.1037/h0031619</a></p>
 <p>Gwet, K. L. (2008). Computing inter-rater reliability and its
 variance in the presence of high agreement. <em>British Journal of
 Mathematical and Statistical Psychology, 61</em>(1), 29-48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a></p>
@@ -556,10 +611,16 @@ and Measures, 1</em>(1), 77-89. <a href="https://doi.org/10.1080/193124507093366
 <p>Krippendorff, K. (2011). <em>Computing Krippendorff’s
 alpha-reliability.</em> Annenberg School for Communication, University
 of Pennsylvania.</p>
+<p>Lynn, M. R. (1986). Determination and quantification of content
+validity. <em>Nursing Research, 35</em>(6), 382-385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
 <p>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken’s item content-relevance index.
 <em>Measurement in Physical Education and Exercise Science, 8</em>(4),
 213-225. <a href="https://doi.org/10.1207/S15327841MPEE0804_3" class="external-link uri">https://doi.org/10.1207/S15327841MPEE0804_3</a></p>
+<p>Polit, D. F., &amp; Beck, C. T. (2006). The content validity index:
+Are you sure you know what’s being reported? Critique and
+recommendations. <em>Research in Nursing &amp; Health, 29</em>(5),
+489-497. <a href="https://doi.org/10.1002/nur.20147" class="external-link uri">https://doi.org/10.1002/nur.20147</a></p>
 <p>Polit, D. F., Beck, C. T., &amp; Owen, S. V. (2007). Is the CVI an
 acceptable indicator of content validity? Appraisal and recommendations.
 <em>Research in Nursing &amp; Health, 30</em>(4), 459-467. <a href="https://doi.org/10.1002/nur.20199" class="external-link uri">https://doi.org/10.1002/nur.20199</a></p>
@@ -572,6 +633,10 @@ Testing, 3</em>(2), 163-171. <a href="https://doi.org/10.1207/S15327574IJT0302_5
 <p>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for
 Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>,
 102212.</p>
+<p>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation
+of the critical values for Lawshe’s content validity ratio.
+<em>Measurement and Evaluation in Counseling and Development,
+45</em>(3), 197-210. <a href="https://doi.org/10.1177/0748175612440286" class="external-link uri">https://doi.org/10.1177/0748175612440286</a></p>
 <p>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016).
 Measuring inter-rater reliability for nominal data: Which coefficients
 and confidence intervals are appropriate? <em>BMC Medical Research

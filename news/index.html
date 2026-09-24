@@ -46,6 +46,27 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0.9000" id="contentvalidr-0709000-development-version">contentvalidR 0.7.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0709000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="earlier-methods-for-comparison-in-development-0-7-0-9000">Earlier methods, for comparison (in development)<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison-in-development-0-7-0-9000"></a></h3>
+<p>For teaching, the way a methods text reports eta-squared beside omega-squared, <code><a href="../reference/sort_validity.html">sort_validity()</a></code> and <code><a href="../reference/expert_validity.html">expert_validity()</a></code> now compute the earlier published rules beside their own. <code>legacy = TRUE</code> prints them under “Earlier methods, for comparison (not used for the decision)”, and <code>print(fit, legacy = TRUE)</code> shows them for any fit. They are stored in <code>details$earlier_methods</code> and never change a decision. Each follows its source as published, and the tests check each against the numbers its source prints.</p>
+<ul><li>
+<strong>Item sort.</strong>
+<ul><li>Anderson and Gerbing’s (1991) critical Csv, from their Equations 5 and 6: .50 for 20 judges at .05. The printout explains why it is not used to decide: it assumes every judge who misses the target picks the same rival, so when they spread across several constructs it can pass an item the exact test does not.</li>
+<li>Yao, Wu and Yang’s (2008) cutoffs, Psa and Csv both at least .30, set for a four-domain sort.</li>
+<li>
+<strong>A labeled package extension</strong> of Yao et al.’s rule to other numbers of constructs: chance plus .05, so Psa and Csv both at least <code>1/k + .05</code>, which is their .30 at four. It prints in its own column marked <code>*</code> and is described as “a contentvalidR extension, not a published rule”. The new <code>n_constructs</code> argument states how many constructs judges were offered; by default the package counts the ones they used, and says so.</li>
+<li>A count of how often each earlier rule agrees with the decision, and a note that pooling every rival into Csv gives a different index.</li>
+</ul></li>
+<li>
+<strong>Expert essentiality.</strong> Lawshe’s (1975) Table 1 minimum CVR, the recalculation by Wilson, Pan and Schumsky (2012), <code>z / sqrt(N)</code>, and Lawshe’s content validity index, the mean CVR of the items his table retains. A panel size Lawshe did not tabulate gets no minimum rather than an interpolated one. When a CVR prints equal to a cutoff it misses, such as 8 of 9 (.778) against Lawshe’s .78, the printout says so.</li>
+<li>
+<strong>Expert relevance.</strong> Fleiss’ (1971) kappa on the relevant/not-relevant decision, computed by the package and checked against the irr package, and the benchmarks of Polit and Beck (2006): .90 for S-CVI/Ave, which is the average congruency percentage, and .80 for S-CVI/UA.</li>
+<li>The item-sort vignette section that explained why Anderson and Gerbing’s rule was “not exposed” now shows it for comparison, using the shipped example where it and the exact test disagree. The expert-panel vignette shows Lawshe’s anomaly at nine experts.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="every-vignette-lists-what-it-cites-in-development-0-7-0-9000">Every vignette lists what it cites (in development)<a class="anchor" aria-label="anchor" href="#every-vignette-lists-what-it-cites-in-development-0-7-0-9000"></a></h3>
+<ul><li>Four vignettes cited works without a reference list, and the expert-panel vignette cited Lynn (1986) without listing it. Each now has an APA reference list, and <code><a href="../articles/reading-output.html">vignette("reading-output")</a></code>, which explains the APA number rules, cites the Publication Manual. Yao et al. (2008) joins the README references.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000">Printed output reads as a report, in APA style (in development)<a class="anchor" aria-label="anchor" href="#printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000"></a></h3>
 <p>No statistic changes. Only printed output changes, and <code>results</code> still holds every value at full precision.</p>
 <ul><li>

@@ -376,6 +376,63 @@ automatic deletion. Expert rationales and domain coverage matter when
 deciding whether an item should be rewritten, retained for breadth, or
 removed.
 
+### Lawshe’s table and its recalculation, for comparison
+
+Lawshe (1975) published a table of minimum CVR values, and Wilson, Pan
+and Schumsky (2012) recalculated it. `legacy = TRUE` prints both beside
+the exact decision, without changing it:
+
+``` r
+
+old <- options(contentvalidR.show_key = FALSE)
+expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
+#> contentvalidR expert-panel analysis
+#> -----------------------------------
+#> Mode: essentiality
+#> Items: 3 | Experts/item: 9
+#> Method: Lawshe CVR with exact binomial critical values
+#> 
+#>   item  decision essential  CVR    p
+#>  Item1 Supported       9/9 1.00 .002
+#>  Item2 Supported       8/9  .78 .020
+#>  Item3    Review       7/9  .56 .090
+#> 
+#> essential: experts rating the item essential, out of those who rated it.
+#> With 9 experts, an item needs at least 8 rating it essential for the exact
+#> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
+#> 
+#> Earlier methods, for comparison (not used for the decision)
+#>   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)
+#>  Item1 Supported       9/9 1.00         meets                meets
+#>  Item2 Supported       8/9  .78         below                meets
+#>  Item3    Review       7/9  .56         below                meets
+#> 
+#> Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists, labeled a one-tailed
+#> test at .05. Wilson, Pan and Schumsky (2012) found the table closer to a
+#> two-tailed test.
+#> Wilson et al. (2012, Table 2): minimum CVR .55, the normal approximation
+#> z/sqrt(N) at one-tailed alpha = .05.
+#> Item2 (.778) prints at the Lawshe cutoff of .78 but falls short of it before
+#> rounding.
+#> The decision above uses the exact binomial test (Ayre & Scally, 2014).
+#> Lawshe's content validity index, the mean CVR of the items his table retains:
+#> 1.00 (1 item).
+#> 
+#> Use quantitative indices alongside expert comments, construct coverage, and
+#> comprehensibility review.
+options(old)
+```
+
+Nine experts show why the table was questioned. Eight of nine gives a
+CVR of .778, just under Lawshe’s .78, so his table asks for all nine,
+while with eight experts it accepts seven. Wilson et al. describe the
+anomaly: the minimum rises steadily from 40 experts down to nine, then
+drops at eight. The exact test needs eight of nine.
+
+In relevance mode, `legacy = TRUE` adds Fleiss’ (1971) kappa on the
+relevant/not-relevant decision and the Polit and Beck (2006) benchmarks
+for S-CVI/Ave and S-CVI/UA.
+
 ## Congruence: item-objective alignment
 
 IOC uses expert ratings of -1, 0, and +1 for item-objective congruence.
@@ -508,6 +565,11 @@ validity ratio: Revisiting the original methods of calculation.
 Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
 kappa: I. The problems of two paradoxes. *Journal of Clinical
 Epidemiology, 43*(6), 543-549.
+<https://doi.org/10.1016/0895-4356(90)90158-L>
+
+Fleiss, J. L. (1971). Measuring nominal scale agreement among many
+raters. *Psychological Bulletin, 76*(5), 378-382.
+<https://doi.org/10.1037/h0031619>
 
 Gwet, K. L. (2008). Computing inter-rater reliability and its variance
 in the presence of high agreement. *British Journal of Mathematical and
@@ -521,10 +583,19 @@ Measures, 1*(1), 77-89. <https://doi.org/10.1080/19312450709336664>
 Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability.*
 Annenberg School for Communication, University of Pennsylvania.
 
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382-385.
+<https://doi.org/10.1097/00006199-198611000-00017>
+
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken’s item content-relevance index.
 *Measurement in Physical Education and Exercise Science, 8*(4), 213-225.
 <https://doi.org/10.1207/S15327841MPEE0804_3>
+
+Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+sure you know what’s being reported? Critique and recommendations.
+*Research in Nursing & Health, 29*(5), 489-497.
+<https://doi.org/10.1002/nur.20147>
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
 acceptable indicator of content validity? Appraisal and recommendations.
@@ -541,6 +612,11 @@ Testing, 3*(2), 163-171. <https://doi.org/10.1207/S15327574IJT0302_5>
 
 Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for Cohen’s
 kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+
+Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe’s content validity ratio. *Measurement and
+Evaluation in Counseling and Development, 45*(3), 197-210.
+<https://doi.org/10.1177/0748175612440286>
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and
