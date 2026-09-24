@@ -19,8 +19,45 @@ test_that("relevance workflow uses panel-size CVI guidelines", {
 
   x6 <- cbind(I1 = c(4,4,4,4,4,3))
   f6 <- expert_validity(x6, mode = "relevance", lo = 1, hi = 4)
-  expect_equal(f6$results$cvi_criterion, .78)
-  expect_true(f6$results$I_CVI >= .78)
+  expect_equal(f6$results$cvi_criterion, 5 / 6)
+  expect_true(f6$results$I_CVI >= 5 / 6)
+})
+
+test_that("the I-CVI criterion is Lynn's table, in counts", {
+  # Lynn (1986), Table 2: the fewest experts of n whose endorsement is needed.
+  lynn <- c(`3` = 3, `4` = 4, `5` = 5, `6` = 5, `7` = 6, `8` = 7, `9` = 7,
+            `10` = 8)
+  n <- as.integer(names(lynn))
+  expect_equal(contentvalidR:::.cvi_required_count(n), unname(as.integer(lynn)))
+  expect_true(is.na(contentvalidR:::.cvi_required_count(2L)))
+  # Beyond ten, Lynn's lowest tabled proportion (7 of 9) is held.
+  expect_equal(contentvalidR:::.cvi_required_count(c(11L, 18L, 27L)),
+               c(9L, 14L, 21L))
+})
+
+test_that("seven of nine experts meet the criterion, as Lynn's table says", {
+  # The regression: the rule was stored as .78, and 7/9 = .778 fell short, so
+  # the package demanded 8 of 9. Polit and Beck (2006) state the same case in
+  # words: with nine raters there could be two not-relevant ratings.
+  seven <- cbind(I1 = c(rep(4, 7), 2, 2))
+  six <- cbind(I1 = c(rep(4, 6), 2, 2, 2))
+  f7 <- expert_validity(seven, mode = "relevance", lo = 1, hi = 4)
+  f6 <- expert_validity(six, mode = "relevance", lo = 1, hi = 4)
+  expect_equal(f7$results$cvi_criterion, 7 / 9)
+  expect_false(f7$results$recommendation == "Review")
+  expect_identical(f6$results$recommendation, "Review")
+})
+
+test_that("an item's verdict never contradicts the criterion printed beside it", {
+  for (n in 3:15) {
+    for (k in 0:n) {
+      x <- cbind(I1 = c(rep(4, k), rep(1, n - k)))
+      r <- expert_validity(x, mode = "relevance", lo = 1, hi = 4)$results
+      meets <- r$I_CVI >= r$cvi_criterion - 1e-12
+      expect_identical(r$recommendation != "Review", meets,
+                       info = sprintf("n = %d, k = %d", n, k))
+    }
+  }
 })
 
 test_that("relevance workflow does not use Aiken V as a universal deletion cutoff", {

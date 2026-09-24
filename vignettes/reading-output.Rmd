@@ -141,8 +141,10 @@ small panels, where several experts can agree by luck alone. Aiken's `V` uses
 the whole rating scale rather than a relevance cut, so it distinguishes items
 that `I_CVI` rates identically.
 
-Note that the I-CVI criterion depends on panel size: 1.00 for three to five
-experts, 0.78 for six or more. An item can therefore change status simply
+Note that the I-CVI criterion depends on panel size. It follows Lynn (1986):
+with three to five experts all must agree, from six one may disagree, and from
+nine two may. `cvi_criterion` shows the proportion that applies to each item's
+panel, so 7 of 9 appears as .778. An item can therefore change status simply
 because a judge was added or dropped.
 
 ### Reading the intervals

@@ -3,10 +3,9 @@
   # decision that a panel of this size would support.
   n <- colSums(!is.na(B))
   agree <- colSums(B, na.rm = TRUE)
-  icvi <- ifelse(n > 0L, agree / n, NA_real_)
-  crit <- .cvi_common_criterion(n)
-  ifelse(is.na(crit) | is.na(icvi), NA_character_,
-         ifelse(icvi >= crit, "Support", "Review"))
+  req <- .cvi_required_count(n)
+  ifelse(is.na(req) | n == 0L, NA_character_,
+         ifelse(agree >= req, "Support", "Review"))
 }
 
 .judge_influence <- function(B) {

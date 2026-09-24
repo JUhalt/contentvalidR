@@ -310,8 +310,8 @@ communicated, not a documentation gap.
 - [x] Document common misreadings, including treating benchmarks as universal cut
       scores and treating a single index as sufficient validity evidence.
 - [x] State that benchmark labels are not comparable across indices. A scale-level
-      HTC of 0.83 is labelled `Weak` in the same row where an HTD of 0.44 is
-      labelled `Very Strong`, because HTC is an average rating and HTD is a
+      HTC of 0.83 is labeled `Weak` in the same row where an HTD of 0.44 is
+      labeled `Very Strong`, because HTC is an average rating and HTD is a
       difference. Output that leaves this unexplained reads as an error.
 - [x] Verify new output from #3 and #4 meets the same interpretive standard
       before those features are considered complete.
@@ -702,7 +702,7 @@ settled, and the joint walkthrough.
       ([#56](https://github.com/JUhalt/contentvalidR/issues/56)). The Delphi
       kappa interval turned out to be a published procedure (Klar et al.,
       2002) with a measured coverage shortfall at panel sizes, which the output
-      now reports. The AC1 interval remains an extension, labelled wherever
+      now reports. The AC1 interval remains an extension, labeled wherever
       its number appears.
 
 CRAN: unchanged. 0.4.0 is still in review, so 0.7.0 is not submitted; whichever
