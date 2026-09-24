@@ -15,7 +15,10 @@ Otherwise a list with \code{ok = FALSE} and a \code{message}, after a message
 explaining how to install 'irr'.
 }
 \description{
-Computes Fleiss' kappa via 'irr' if available. This is an auxiliary compatibility helper, not part of the recommended contentvalidR workflows.
+Computes Fleiss' (1971) kappa, the extension of Cohen's kappa to many
+raters, by calling \code{irr::kappam.fleiss()} from the irr package (Gamer,
+Lemon, Fellows, & Singh, 2026) when it is installed. This is an auxiliary
+compatibility helper, not part of the recommended contentvalidR workflows.
 }
 \examples{
 ratings <- data.frame(
@@ -26,6 +29,14 @@ ratings <- data.frame(
 if (requireNamespace("irr", quietly = TRUE)) {
   agreement_summary(ratings)
 }
+}
+\references{
+Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+\emph{Psychological Bulletin, 76}(5), 378-382. \doi{10.1037/h0031619}
+
+Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). \emph{irr: Various
+coefficients of interrater reliability and agreement} (R package version
+0.85). \doi{10.32614/CRAN.package.irr}
 }
 \seealso{
 \code{\link[=panel_agreement]{panel_agreement()}} for panel-level agreement with an evidence-based

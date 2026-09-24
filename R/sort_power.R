@@ -15,6 +15,12 @@
 #' @return An object of class `contentvalid_sort_power` containing an exact
 #'   planning table.
 #'
+#' @references
+#' Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
+#' The presentation of a new statistical significance formula and
+#' methodological best practices. *Journal of Business and Psychology, 31*(1),
+#' 173-186. \doi{10.1007/s10869-015-9404-y}
+#'
 #' @examples
 #' sort_power(N = c(20, 30, 40), true_p = .70)
 #' sort_power(N = 30, true_p = c(.60, .70, .80))

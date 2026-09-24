@@ -5,6 +5,14 @@
 #' (S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
 #' described by Polit, Beck, and Owen (2007).
 #'
+#' The I-CVI is the proportion of experts rating an item 3 or 4 on a 4-point
+#' relevance scale (Lynn, 1986). Polit and Beck (2006) named the two
+#' scale-level versions after finding that published studies used both without
+#' saying which: S-CVI/UA is the share of items every expert rated relevant,
+#' and S-CVI/Ave is the average of the I-CVIs, the same quantity as the average
+#' congruency percentage. The two can differ sharply, since S-CVI/UA falls as
+#' experts are added, so Polit and Beck recommend reporting both.
+#'
 #' For each item, modified kappa adjusts I-CVI for chance agreement using the
 #' probability of observing exactly `A` agreements among `N` judges:
 #'
@@ -41,6 +49,14 @@
 #'   - `ci` and `alpha`: the interval settings used
 #'
 #' @references
+#' Lynn, M. R. (1986). Determination and quantification of content validity.
+#' *Nursing Research, 35*(6), 382-385.
+#' \doi{10.1097/00006199-198611000-00017}
+#'
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489-497. \doi{10.1002/nur.20147}
+#'
 #' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 #' indicator of content validity? Appraisal and recommendations. *Research in
 #' Nursing & Health, 30*(4), 459-467. \doi{10.1002/nur.20199}

@@ -962,12 +962,12 @@ deletion.
 Once responses are collected, the item set carries into the empirical
 stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion
 package for that stage, that is
-`nomo_screen(responses, items = handoff)`. The object shape is agreed
-between the two packages as schema version 1, and every field is a base
-type, so neither package depends on the other. Carrying an item forward
-is not a prediction that it will perform: a clearly relevant item can
-still correlate poorly with its construct or load on an unintended
-factor, which is what the empirical analysis tests. See
+`nomo_screen(responses, items = handoff$items)`. The object shape is
+agreed between the two packages as schema version 1, and every field is
+a base type, so neither package depends on the other. Carrying an item
+forward is not a prediction that it will perform: a clearly relevant
+item can still correlate poorly with its construct or load on an
+unintended factor, which is what the empirical analysis tests. See
 `vignette("handoff-to-empirical-validation")`.
 
 ## Recommended judge-heterogeneity workflow
@@ -1219,6 +1219,10 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance
   approach to content validation. *Organizational Research Methods,
   2*(2), 175–186. <https://doi.org/10.1177/109442819922004>
+- Polit, D. F., & Beck, C. T. (2006). The content validity index: Are
+  you sure you know what’s being reported? Critique and recommendations.
+  *Research in Nursing & Health, 29*(5), 489–497.
+  <https://doi.org/10.1002/nur.20147>
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
   acceptable indicator of content validity? Appraisal and
   recommendations. *Research in Nursing & Health, 30*(4), 459–467.
@@ -1237,6 +1241,10 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   validity ratio: Revisiting the original methods of calculation.
   *Measurement and Evaluation in Counseling and Development, 47*(1),
   79–86. <https://doi.org/10.1177/0748175613513808>
+- Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+  critical values for Lawshe’s content validity ratio. *Measurement and
+  Evaluation in Counseling and Development, 45*(3), 197–210.
+  <https://doi.org/10.1177/0748175612440286>
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
   specialists in the assessment of criterion-referenced test item
   validity. *Dutch Journal of Educational Research, 2*, 49–60.
@@ -1246,6 +1254,7 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
 - Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability
   of content validity ratings. *Journal of Educational Measurement,
   25*(4), 287–299. <https://doi.org/10.1111/j.1745-3984.1988.tb00309.x>
+- Brennan, R. L. (2001). *Generalizability Theory.* Springer.
 - Engelhard, G. (1994). Examining rater errors in the assessment of
   written composition with a many-faceted Rasch model. *Journal of
   Educational Measurement, 31*(2), 93–112.
@@ -1266,8 +1275,31 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   <https://doi.org/10.1023/A:1006985528729>
 - Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of
   Classification, 2*(1), 193–218. <https://doi.org/10.1007/BF01908075>
+- Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., &
+  Lankau, M. J. (1993). Improving construct measurement in management
+  research: Comments and a quantitative approach for assessing the
+  theoretical content adequacy of paper-and-pencil survey-type
+  instruments. *Journal of Management, 19*(2), 385–417.
+  <https://doi.org/10.1177/014920639301900208>
+- Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &
+  Powers, K. J. (1999). An empirical comparison of approaches for
+  quantitatively assessing the content adequacy of paper-and-pencil
+  measurement instruments. *Organizational Research Methods, 2*(2),
+  140–156. <https://doi.org/10.1177/109442819922002>
+- Horn, J. L. (1965). A rationale and test for the number of factors in
+  factor analysis. *Psychometrika, 30*(2), 179–185.
+  <https://doi.org/10.1007/BF02289447>
+- Glorfeld, L. W. (1995). An improvement on Horn’s parallel analysis
+  methodology for selecting the correct number of factors to retain.
+  *Educational and Psychological Measurement, 55*(3), 377–393.
+  <https://doi.org/10.1177/0013164495055003002>
+- Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for
+  determining the number of components to retain. *Psychological
+  Bulletin, 99*(3), 432–442.
+  <https://doi.org/10.1037/0033-2909.99.3.432>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
+  <https://doi.org/10.1097/00006199-198611000-00017>
 - Wilson, E. B. (1927). Probable inference, the law of succession, and
   statistical inference. *Journal of the American Statistical
   Association, 22*(158), 209–212.
@@ -1286,6 +1318,9 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   standard reliability measure for coding data. *Communication Methods
   and Measures, 1*(1), 77–89.
   <https://doi.org/10.1080/19312450709336664>
+- Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability.*
+  Annenberg School for Communication, University of Pennsylvania.
+  <https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20>
 - Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
   inter-rater reliability for nominal data: Which coefficients and
   confidence intervals are appropriate? *BMC Medical Research
@@ -1297,6 +1332,18 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
 - Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for
   Cohen’s kappa: A comparison of basic properties. *MethodsX, 10*,
   102212.
+- Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
+  kappa: I. The problems of two paradoxes. *Journal of Clinical
+  Epidemiology, 43*(6), 543–549.
+  <https://doi.org/10.1016/0895-4356(90)90158-L>
+- Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
+  comparison of Cohen’s kappa and Gwet’s AC1 when calculating
+  inter-rater reliability coefficients: A study conducted with
+  personality disorder samples. *BMC Medical Research Methodology,
+  13*, 61. <https://doi.org/10.1186/1471-2288-13-61>
+- Fleiss, J. L. (1971). Measuring nominal scale agreement among many
+  raters. *Psychological Bulletin, 76*(5), 378–382.
+  <https://doi.org/10.1037/h0031619>
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
   for scaled disagreement or partial credit. *Psychological Bulletin,
   70*(4), 213-220. <https://doi.org/10.1037/h0026256>

@@ -307,7 +307,7 @@ handoff$item_evidence[, c("item", "carried", "status", "n_judges", "rule")]
 
 The object carries the carried item names, a construct mapping (`scales`, when the design has one), a per-item evidence table, the statistics behind each decision, and the provenance of the analysis. Only items with a `Supported` status travel by default; `keep` widens that when a protocol carries items flagged for review. Items held back stay in the table with `carried = FALSE`, because review is not deletion.
 
-Once responses are collected, the item set carries into the empirical stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion package for that stage, that is `nomo_screen(responses, items = handoff)`. The object shape is agreed between the two packages as schema version 1, and every field is a base type, so neither package depends on the other. Carrying an item forward is not a prediction that it will perform: a clearly relevant item can still correlate poorly with its construct or load on an unintended factor, which is what the empirical analysis tests. See `vignette("handoff-to-empirical-validation")`.
+Once responses are collected, the item set carries into the empirical stage. In [nomologR](https://github.com/JUhalt/nomologR), the companion package for that stage, that is `nomo_screen(responses, items = handoff$items)`. The object shape is agreed between the two packages as schema version 1, and every field is a base type, so neither package depends on the other. Carrying an item forward is not a prediction that it will perform: a clearly relevant item can still correlate poorly with its construct or load on an unintended factor, which is what the empirical analysis tests. See `vignette("handoff-to-empirical-validation")`.
 
 ## Recommended judge-heterogeneity workflow
 
@@ -440,14 +440,17 @@ The diagnostic, simulation, and Q-factor helpers remain available as auxiliary f
 - Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. *Journal of Business and Psychology, 31*(1), 173–186. https://doi.org/10.1007/s10869-015-9404-y
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
+- Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you sure you know what's being reported? Critique and recommendations. *Research in Nursing & Health, 29*(5), 489–497. https://doi.org/10.1002/nur.20147
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
 - Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. *Educational and Psychological Measurement, 40*(4), 955–959. https://doi.org/10.1177/001316448004000419
 - Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence interval to Aiken's item content-relevance index. *Measurement in Physical Education and Exercise Science, 8*(4), 213–225. https://doi.org/10.1207/S15327841MPEE0804_3
 - Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*(4), 563–575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
 - Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity ratio: Revisiting the original methods of calculation. *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86. https://doi.org/10.1177/0748175613513808
+- Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the critical values for Lawshe's content validity ratio. *Measurement and Evaluation in Counseling and Development, 45*(3), 197–210. https://doi.org/10.1177/0748175612440286
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. *Dutch Journal of Educational Research, 2*, 49–60.
 - Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence for multidimensional items. *International Journal of Testing, 3*(2), 163–171. https://doi.org/10.1207/S15327574IJT0302_5
 - Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of content validity ratings. *Journal of Educational Measurement, 25*(4), 287–299. https://doi.org/10.1111/j.1745-3984.1988.tb00309.x
+- Brennan, R. L. (2001). *Generalizability Theory.* Springer.
 - Engelhard, G. (1994). Examining rater errors in the assessment of written composition with a many-faceted Rasch model. *Journal of Educational Measurement, 31*(2), 93–112. https://doi.org/10.1111/j.1745-3984.1994.tb00436.x
 - Linacre, J. M. (1989). *Many-Facet Rasch Measurement.* MESA Press.
 - de Boeck, P., & Wilson, M. (2004). *Explanatory Item Response Models: A Generalized Linear and Nonlinear Approach.* Springer.
@@ -455,15 +458,24 @@ The diagnostic, simulation, and Q-factor helpers remain available as auxiliary f
 - Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to assess content representation: An MDS analysis. *Applied Psychological Measurement, 19*(3), 241–255. https://doi.org/10.1177/014662169501900303
 - Sireci, S. G. (1998). The construct of content validity. *Social Indicators Research, 45*(1–3), 83–117. https://doi.org/10.1023/A:1006985528729
 - Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of Classification, 2*(1), 193–218. https://doi.org/10.1007/BF01908075
-- Lynn, M. R. (1986). Determination and quantification of content validity. *Nursing Research, 35*(6), 382–385.
+- Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., & Lankau, M. J. (1993). Improving construct measurement in management research: Comments and a quantitative approach for assessing the theoretical content adequacy of paper-and-pencil survey-type instruments. *Journal of Management, 19*(2), 385–417. https://doi.org/10.1177/014920639301900208
+- Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., & Powers, K. J. (1999). An empirical comparison of approaches for quantitatively assessing the content adequacy of paper-and-pencil measurement instruments. *Organizational Research Methods, 2*(2), 140–156. https://doi.org/10.1177/109442819922002
+- Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. *Psychometrika, 30*(2), 179–185. https://doi.org/10.1007/BF02289447
+- Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis methodology for selecting the correct number of factors to retain. *Educational and Psychological Measurement, 55*(3), 377–393. https://doi.org/10.1177/0013164495055003002
+- Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for determining the number of components to retain. *Psychological Bulletin, 99*(3), 432–442. https://doi.org/10.1037/0033-2909.99.3.432
+- Lynn, M. R. (1986). Determination and quantification of content validity. *Nursing Research, 35*(6), 382–385. https://doi.org/10.1097/00006199-198611000-00017
 - Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association, 22*(158), 209–212. https://doi.org/10.1080/01621459.1927.10502953
 - Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. *Biometrika, 26*(4), 404–413. https://doi.org/10.1093/biomet/26.4.404
 - Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. *The American Statistician, 52*(2), 119–126. https://doi.org/10.1080/00031305.1998.10480550
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8), 857–872.
 - Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard reliability measure for coding data. *Communication Methods and Measures, 1*(1), 77–89. https://doi.org/10.1080/19312450709336664
+- Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability.* Annenberg School for Communication, University of Pennsylvania. https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20
 - Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? *BMC Medical Research Methodology, 16*, 93. https://doi.org/10.1186/s12874-016-0200-9
 - Gwet, K. L. (2008). Computing inter-rater reliability and its variance in the presence of high agreement. *British Journal of Mathematical and Statistical Psychology, 61*(1), 29–48. https://doi.org/10.1348/000711006X126600
 - Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+- Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa: I. The problems of two paradoxes. *Journal of Clinical Epidemiology, 43*(6), 543–549. https://doi.org/10.1016/0895-4356(90)90158-L
+- Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater reliability coefficients: A study conducted with personality disorder samples. *BMC Medical Research Methodology, 13*, 61. https://doi.org/10.1186/1471-2288-13-61
+- Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters. *Psychological Bulletin, 76*(5), 378–382. https://doi.org/10.1037/h0031619
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. *Psychological Bulletin, 70*(4), 213-220. https://doi.org/10.1037/h0026256
 - Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and the intraclass correlation coefficient as measures of reliability. *Educational and Psychological Measurement, 33*(3), 613-619. https://doi.org/10.1177/001316447303300309
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. *Biometrics, 33*(1), 159-174. https://doi.org/10.2307/2529310

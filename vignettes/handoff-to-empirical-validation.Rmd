@@ -146,12 +146,15 @@ and nomological networks.
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.
-scr <- nomo_screen(responses, items = handoff)
+scr <- nomo_screen(responses, items = handoff$items)
 scr$item_summary
 ```
 
 That chunk is not evaluated here, because this vignette builds without nomologR
 installed and because a content-validity pretest has no responses to screen.
+It passes the carried item names. Reading the handoff object itself, so that
+nomologR also receives the evidence and each item's keying, is tracked on
+[nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
 
 The object shape is agreed between the two packages as schema version 1, and
 every field is a base type: character, logical, numeric, integer, data frame,
