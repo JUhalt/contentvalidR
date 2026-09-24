@@ -14,7 +14,8 @@ sort_validity(
   alpha = 0.05,
   orbiting_r = NULL,
   judge_type = c("naive", "expert"),
-  proportion_ci = c("wilson", "agresti_coull", "exact", "none")
+  proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
+  legacy = FALSE
 )
 }
 \arguments{
@@ -40,6 +41,10 @@ If omitted, the overall Colquitt et al. norms are used.}
 \code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The interval uses the same
 \code{alpha} as the exact test. See \code{ci} in \code{\link[=cvi]{cvi()}} for the methods and the
 evidence for each.}
+
+\item{legacy}{Print the earlier published rules beside the decision, for
+comparison. Default \code{FALSE}. They are computed either way, stored in
+\code{details$earlier_methods}, and never change the decision; \code{print(fit, legacy = TRUE)} shows them for any fit.}
 }
 \value{
 An object of class \code{contentvalid_sort} and \code{contentvalid_workflow}.
@@ -62,6 +67,31 @@ interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
 descriptive benchmarks rather than pass/fail rules.
 }
+\section{Earlier methods, for comparison}{
+
+The decision uses the exact test of Howard and Melloy (2016). Two earlier rules
+are reported beside it for teaching, the way a methods text reports
+eta-squared beside omega-squared, and neither changes the decision:
+\itemize{
+\item \strong{Anderson and Gerbing (1991)} judged Csv against a critical value. With
+\code{N} judges, \code{m} is the fewest target assignments whose one-tailed binomial
+probability at .5 falls below \code{alpha} (their Equation 5), and the critical
+Csv is \verb{(2m - N) / N} (Equation 6): .50 for 20 judges at .05. Equation 6
+assumes every judge who misses the target picks the same rival. When those
+judges spread across several constructs, the leading rival's count falls,
+so Csv can reach the critical value with fewer target assignments than
+the exact test requires. That is why it is not used for the decision.
+\item \strong{Yao, Wu and Yang (2008)} required Psa and Csv both to reach .30, which
+they chose for a four-domain sort, where an item assigned at random lands
+in its domain with probability .25 (p. 486). They give no rule for other
+numbers of domains, and none is applied here.
+}
+
+Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
+1991, p. 734). Pooling every other construct into that count instead gives
+\code{2 * Psa - 1}, a different index; the printout notes this.
+}
+
 \examples{
 sort_dat <- data.frame(
   item = rep(c("A1", "A2", "A3"), each = 20),
@@ -76,6 +106,9 @@ sort_dat <- data.frame(
 fit <- sort_validity(sort_dat)
 fit
 summary(fit)
+
+# The same result beside the earlier published rules.
+print(fit, legacy = TRUE)
 }
 \references{
 Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -92,4 +125,9 @@ Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. \emph{Journal of Applied
 Psychology, 104}(10), 1243-1265. \doi{10.1037/apl0000406}
+
+Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity of
+the WHOQOL-BREF from respondents' perspective by quantitative methods.
+\emph{Social Indicators Research, 85}(3), 483-498.
+\doi{10.1007/s11205-007-9112-8}
 }

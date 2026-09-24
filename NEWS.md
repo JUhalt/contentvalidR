@@ -1,5 +1,48 @@
 # contentvalidR 0.7.0.9000 (development version)
 
+## Earlier methods, for comparison (in development)
+
+For teaching, the way a methods text reports eta-squared beside omega-squared,
+`sort_validity()` and `expert_validity()` now compute the earlier published
+rules beside their own. `legacy = TRUE` prints them under "Earlier methods, for
+comparison (not used for the decision)", and `print(fit, legacy = TRUE)` shows
+them for any fit. They are stored in `details$earlier_methods` and never change
+a decision. Each follows its source as published, and the tests check each
+against the numbers its source prints.
+
+* **Item sort.**
+  * Anderson and Gerbing's (1991) critical Csv, from their Equations 5 and 6:
+    .50 for 20 judges at .05. The printout explains why it is not used to
+    decide: it assumes every judge who misses the target picks the same rival,
+    so when they spread across several constructs it can pass an item the
+    exact test does not.
+  * Yao, Wu and Yang's (2008) cutoffs, Psa and Csv both at least .30, set for a
+    four-domain sort, with the number of constructs in your sort stated beside
+    them. No rule for other numbers of domains is invented.
+  * A count of how often each earlier rule agrees with the decision, and a
+    note that pooling every rival into Csv gives a different index.
+* **Expert essentiality.** Lawshe's (1975) Table 1 minimum CVR, the
+  recalculation by Wilson, Pan and Schumsky (2012), `z / sqrt(N)`, and Lawshe's
+  content validity index, the mean CVR of the items his table retains. A panel
+  size Lawshe did not tabulate gets no minimum rather than an interpolated one.
+  When a CVR prints equal to a cutoff it misses, such as 8 of 9 (.778) against
+  Lawshe's .78, the printout says so.
+* **Expert relevance.** Fleiss' (1971) kappa on the relevant/not-relevant
+  decision, computed by the package and checked against the irr package, and
+  the benchmarks of Polit and Beck (2006): .90 for S-CVI/Ave, which is the
+  average congruency percentage, and .80 for S-CVI/UA.
+* The item-sort vignette section that explained why Anderson and Gerbing's rule
+  was "not exposed" now shows it for comparison, using the shipped example
+  where it and the exact test disagree. The expert-panel vignette shows
+  Lawshe's anomaly at nine experts.
+
+## Every vignette lists what it cites (in development)
+
+* Four vignettes cited works without a reference list, and the expert-panel
+  vignette cited Lynn (1986) without listing it. Each now has an APA reference
+  list, and `vignette("reading-output")`, which explains the APA number rules,
+  cites the Publication Manual. Yao et al. (2008) joins the README references.
+
 ## Printed output reads as a report, in APA style (in development)
 
 No statistic changes. Only printed output changes, and `results` still holds

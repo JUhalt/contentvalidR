@@ -112,6 +112,10 @@
 #'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval uses the same
 #'   `alpha` as the exact test. See `ci` in [cvi()] for the methods and the
 #'   evidence for each.
+#' @param legacy Print the earlier published rules beside the decision, for
+#'   comparison. Default `FALSE`. They are computed either way, stored in
+#'   `details$earlier_methods`, and never change the decision; `print(fit,
+#'   legacy = TRUE)` shows them for any fit.
 #'
 #' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
 #'   All flagship workflow objects expose the common components `results`,
@@ -119,6 +123,28 @@
 #'   include a standardized `status` field while retaining the method-specific
 #'   `recommendation` field. `print()`, `summary()`, and `plot()` provide
 #'   user-facing interpretation.
+#'
+#' @section Earlier methods, for comparison:
+#' The decision uses the exact test of Howard and Melloy (2016). Two earlier rules
+#' are reported beside it for teaching, the way a methods text reports
+#' eta-squared beside omega-squared, and neither changes the decision:
+#'
+#' * **Anderson and Gerbing (1991)** judged Csv against a critical value. With
+#'   `N` judges, `m` is the fewest target assignments whose one-tailed binomial
+#'   probability at .5 falls below `alpha` (their Equation 5), and the critical
+#'   Csv is `(2m - N) / N` (Equation 6): .50 for 20 judges at .05. Equation 6
+#'   assumes every judge who misses the target picks the same rival. When those
+#'   judges spread across several constructs, the leading rival's count falls,
+#'   so Csv can reach the critical value with fewer target assignments than
+#'   the exact test requires. That is why it is not used for the decision.
+#' * **Yao, Wu and Yang (2008)** required Psa and Csv both to reach .30, which
+#'   they chose for a four-domain sort, where an item assigned at random lands
+#'   in its domain with probability .25 (p. 486). They give no rule for other
+#'   numbers of domains, and none is applied here.
+#'
+#' Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
+#' 1991, p. 734). Pooling every other construct into that count instead gives
+#' `2 * Psa - 1`, a different index; the printout notes this.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -136,6 +162,11 @@
 #' correspondence and definitional distinctiveness. *Journal of Applied
 #' Psychology, 104*(10), 1243-1265. \doi{10.1037/apl0000406}
 #'
+#' Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity of
+#' the WHOQOL-BREF from respondents' perspective by quantitative methods.
+#' *Social Indicators Research, 85*(3), 483-498.
+#' \doi{10.1007/s11205-007-9112-8}
+#'
 #' @examples
 #' sort_dat <- data.frame(
 #'   item = rep(c("A1", "A2", "A3"), each = 20),
@@ -150,6 +181,9 @@
 #' fit <- sort_validity(sort_dat)
 #' fit
 #' summary(fit)
+#'
+#' # The same result beside the earlier published rules.
+#' print(fit, legacy = TRUE)
 #' @export
 sort_validity <- function(assignments,
                           item_col = "item",
@@ -160,9 +194,11 @@ sort_validity <- function(assignments,
                           alpha = 0.05,
                           orbiting_r = NULL,
                           judge_type = c("naive", "expert"),
-                          proportion_ci = c("wilson", "agresti_coull", "exact", "none")) {
+                          proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
+                          legacy = FALSE) {
   judge_type <- match.arg(judge_type)
   proportion_ci <- match.arg(proportion_ci)
+  .validate_flag(legacy, "legacy")
   invisible(.critical_target_count(1L, p0 = p0, alpha = alpha))
 
   psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
@@ -239,12 +275,16 @@ sort_validity <- function(assignments,
     scale_summary = scale_summary,
     settings = settings,
     design = design,
-    details = list()
+    details = list(
+      earlier_methods = .sort_earlier_methods(
+        results, alpha, design$n_constructs_observed, show = legacy
+      )
+    )
   )
 }
 
 #' @export
-print.contentvalid_sort <- function(x, digits = 2, ...) {
+print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
   r <- x$results
   s <- x$settings
@@ -318,6 +358,10 @@ print.contentvalid_sort <- function(x, digits = 2, ...) {
          "scale-retention rules. They place a scale against published scales;",
          "Psa and Csv sit on different scales, so their labels are not",
          "comparable with each other.")
+  }
+
+  if (.show_earlier(x, legacy)) {
+    .print_sort_earlier(x$details$earlier_methods, digits)
   }
 
   if (.show_key()) {
