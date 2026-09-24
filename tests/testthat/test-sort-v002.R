@@ -75,8 +75,8 @@ test_that("v0.0.2 print and plot methods surface scale-level evidence", {
     assigned_construct = c(rep("A", 17), rep("B", 3), rep("A", 16), rep("B", 4))
   )
   fit <- sort_validity(d)
-  expect_output(print(fit), "Scale-level Colquitt benchmark summary")
-  expect_output(print(summary(fit)), "Target-scale evidence")
+  expect_output(print(fit), "Scale-level Colquitt benchmarks")
+  expect_output(print(summary(fit)), "Scale-level evidence")
 
   tf <- tempfile(fileext = ".pdf")
   grDevices::pdf(tf)

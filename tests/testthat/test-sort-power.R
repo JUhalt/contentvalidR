@@ -10,7 +10,7 @@ test_that("sort_power expands N and true probability combinations", {
   out <- sort_power(N = c(20, 30), true_p = c(.60, .80))
   expect_equal(nrow(out$table), 4L)
   expect_true(all(out$table$power >= 0 & out$table$power <= 1))
-  expect_output(print(out), "Exact item-sort planning analysis")
+  expect_output(print(out), "item-sort planning")
 })
 
 test_that("sort_power validates planning inputs", {

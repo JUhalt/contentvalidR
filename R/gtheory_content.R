@@ -308,17 +308,17 @@ gtheory_content <- function(ratings,
   } else if (obs$phi >= 0.80) {
     sprintf(paste(
       "With %d judges, absolute decisions about these items would generalize",
-      "dependably to another panel of the same size (Phi = %.2f). Judge",
+      "dependably to another panel of the same size (Phi = %s). Judge",
       "differences account for %.1f%% of total variance."
-    ), n_judges, obs$phi, judge_share)
+    ), n_judges, .fmt(obs$phi), judge_share)
   } else {
     sprintf(paste(
       "With %d judges, absolute decisions about these items generalize only",
-      "moderately to another panel of the same size (Phi = %.2f). Judge",
+      "moderately to another panel of the same size (Phi = %s). Judge",
       "differences account for %.1f%% of total variance. See `judges_needed`",
       "for the panel size implied by a higher target, and review judge-level",
       "severity before treating borderline items as settled."
-    ), n_judges, obs$phi, judge_share)
+    ), n_judges, .fmt(obs$phi), judge_share)
   }
 
   out <- list(
@@ -335,39 +335,66 @@ gtheory_content <- function(ratings,
   out
 }
 
+# The D-study targets as a printable table. A target no realistic panel can
+# reach is `NA` in the data; the print says so in words.
+.judges_needed_table <- function(jn, digits = 2) {
+  words <- function(n) ifelse(is.na(n), "unreachable", as.character(n))
+  data.frame(target = .fmt(jn$target, digits),
+             `relative (G)` = words(jn$n_judges_relative),
+             `absolute (Phi)` = words(jn$n_judges_absolute),
+             stringsAsFactors = FALSE, check.names = FALSE)
+}
+
 #' @export
-print.contentvalid_gtheory <- function(x, digits = 3, ...) {
+print.contentvalid_gtheory <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Generalizability analysis of content-validity ratings\n")
+  cat("contentvalidR generalizability analysis\n")
+  cat(strrep("-", 39), "\n", sep = "")
   cat("Design: items x judges, crossed, one rating per cell\n")
-  cat(sprintf("Items: %d   Judges: %d\n", x$design$n_items, x$design$n_judges))
+  cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_judges, "\n",
+      sep = "")
   if (isTRUE(x$design$n_judges_dropped > 0L)) {
-    cat(sprintf("Judges dropped for incomplete ratings: %d of %d\n",
-                x$design$n_judges_dropped, x$design$n_judges_input))
+    cat("Judges dropped for incomplete ratings: ", x$design$n_judges_dropped,
+        " of ", x$design$n_judges_input, "\n", sep = "")
   }
-  cat("\nVariance components\n")
-  vc <- x$variance_components
-  vc$ms <- round(vc$ms, digits)
-  vc$variance_raw <- round(vc$variance_raw, digits)
-  vc$variance <- round(vc$variance, digits)
-  vc$percent <- round(vc$percent, 1)
-  print(vc, row.names = FALSE)
 
   cf <- x$coefficients
   cat("\nObserved design\n")
-  cat(sprintf("  Generalizability coefficient (relative, rank ordering): %s\n",
-              format(round(cf$g_coefficient, digits))))
-  cat(sprintf("  Dependability coefficient (absolute, fixed standard):   %s\n",
-              format(round(cf$phi_coefficient, digits))))
+  cat("  Generalizability coefficient (relative, rank ordering): ",
+      .fmt(cf$g_coefficient, digits), "\n", sep = "")
+  cat("  Dependability coefficient (absolute, fixed standard):   ",
+      .fmt(cf$phi_coefficient, digits), "\n", sep = "")
+  cat("Status: ", x$status, "\n", sep = "")
+  .say(x$interpretation)
+
+  cat("\nVariance components\n")
+  vc <- x$variance_components
+  show <- data.frame(source = vc$source, df = vc$df,
+                     MS = .fmt(vc$ms, digits, bounded = FALSE),
+                     estimate = .fmt(vc$variance_raw, digits, bounded = FALSE),
+                     used = .fmt(vc$variance, digits, bounded = FALSE),
+                     `% of total` = formatC(vc$percent, format = "f",
+                                            digits = 1),
+                     stringsAsFactors = FALSE, check.names = FALSE)
+  .print_table(show)
+  cat("\n")
+  .say("estimate: the ANOVA estimate of each variance component. used: the",
+       "same with a negative estimate set to 0, which the coefficients use",
+       "(Brennan, 2001).")
 
   if (nrow(x$judges_needed)) {
-    cat("\nJudges required to reach each target\n")
-    print(x$judges_needed, row.names = FALSE)
+    cat("\nJudges needed to reach each coefficient\n")
+    .print_table(.judges_needed_table(x$judges_needed, digits))
+    if (anyNA(unlist(x$judges_needed[c("n_judges_relative",
+                                       "n_judges_absolute")]))) {
+      .say("unreachable: no realistic panel reaches this target, because the",
+           "judges barely distinguish the items from one another.")
+    }
   }
 
-  cat("\nStatus: ", x$status, "\n", sep = "")
-  cat(strwrap(x$interpretation, width = 76), sep = "\n")
-  cat("\nA dependability coefficient describes generalization over judges only.",
-      "\nIt is not evidence that the items cover the intended content domain.\n")
+  cat("\n")
+  .say("A dependability coefficient describes generalization over judges",
+       "only. It is not evidence that the items cover the intended content",
+       "domain.")
   invisible(x)
 }

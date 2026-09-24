@@ -96,7 +96,7 @@ st[st$statistic == "I-CVI",
 ```
 
 All four experts rated Items 1 to 3 relevant, so each has an I-CVI of 1. With
-only four experts, though, the Wilson interval still reaches down to about 0.51.
+only four experts, though, the Wilson interval still reaches down to about .51.
 A statistic with no interval, such as modified kappa, has `NA` in all four
 interval columns. There, `NA` means the method defines no interval; it does not
 mean a value is missing.

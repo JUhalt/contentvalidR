@@ -333,7 +333,7 @@
       rule = sprintf(
         paste("target assignments >= %d of %d (exact binomial target-count",
               "test; Howard & Melloy, 2016), alpha = %s"),
-        as.integer(results$critical_n_target), as.integer(results$n), format(alpha)
+        as.integer(results$critical_n_target), as.integer(results$n), .fmt(alpha)
       ),
       citation = c("Anderson & Gerbing (1991)", "Howard & Melloy (2016)",
                    "Colquitt et al. (2019)"),
@@ -359,7 +359,7 @@
       rule = rep(sprintf(
         paste("Greenhouse-Geisser corrected omnibus test plus planned",
               "target-versus-orbiting contrasts (Hinkin & Tracey, 1999),",
-              "alpha = %s"), format(alpha)), n),
+              "alpha = %s"), .fmt(alpha)), n),
       citation = c("Hinkin & Tracey (1999)", "Colquitt et al. (2019)"),
       statistics = rbind(
         .handoff_stat(results$item, "HTC", results$htc),
@@ -372,18 +372,21 @@
   mode <- if (is.null(fit$mode)) NA_character_ else fit$mode
 
   if (identical(mode, "relevance")) {
+    # Stated as counts, because the decision compares counts (Lynn, 1986).
+    required <- .cvi_required_count(results$N)
     rule <- ifelse(
       is.na(results$cvi_criterion),
       "fewer than three usable expert ratings; treated as insufficient",
-      sprintf(paste("I-CVI >= %s (common panel-size guideline for %d experts);",
-                    "modified kappa > 0.74 for strong support"),
-              format(results$cvi_criterion), as.integer(results$N))
+      sprintf(paste("at least %d of %d experts rate the item relevant (I-CVI",
+                    ">= %s; Lynn, 1986); modified kappa > .74 for strong",
+                    "support (Polit, Beck & Owen, 2007)"),
+              required, as.integer(results$N), .fmt(results$cvi_criterion))
     )
     return(list(
       scale = rep(NA_character_, n),
       n_judges = as.integer(results$N),
       rule = rule,
-      citation = c("Aiken (1980)", "Penfield & Giacobbi (2004)",
+      citation = c("Aiken (1980)", "Penfield & Giacobbi (2004)", "Lynn (1986)",
                    "Polit, Beck & Owen (2007)"),
       statistics = rbind(
         .handoff_stat(results$item, "Aiken's V", results$V,
@@ -412,8 +415,8 @@
       rule = sprintf(
         paste("CVR >= %s, i.e. at least %d of %d judges rating the item",
               "essential (exact binomial; Ayre & Scally, 2014), alpha = %s"),
-        format(round(results$critical_cvr, 3)), as.integer(results$critical_ne),
-        as.integer(results$N), format(alpha)
+        .fmt(results$critical_cvr), as.integer(results$critical_ne),
+        as.integer(results$N), .fmt(alpha)
       ),
       citation = c("Lawshe (1975)", "Ayre & Scally (2014)"),
       statistics = rbind(
@@ -872,11 +875,13 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
 #' @export
 print.contentvalid_handoff <- function(x, ...) {
   p <- x$provenance
-  cat("contentvalidR handoff (schema version ", p$schema_version, ")\n", sep = "")
-  cat(strrep("-", 38), "\n", sep = "")
+  title <- paste0("contentvalidR handoff (schema version ", p$schema_version,
+                  ")")
+  cat(title, "\n", strrep("-", nchar(title)), "\n", sep = "")
   cat("Workflow: ", p$workflow, sep = "")
   if (!is.na(p$mode)) cat(" (", p$mode, ")", sep = "")
-  cat("   contentvalidR ", p$package_version, "   ", format(p$created), "\n", sep = "")
+  cat(" | contentvalidR ", p$package_version, " | ", format(p$created), "\n",
+      sep = "")
   cat("Items carried forward: ", length(x$items), " of ",
       length(unique(x$item_evidence$item)), "\n", sep = "")
   cat("Carried when status is: ", paste(p$keep, collapse = ", "), "\n", sep = "")
@@ -893,48 +898,49 @@ print.contentvalid_handoff <- function(x, ...) {
   if (!is.null(st$interval_method) && any(!is.na(st$interval_method))) {
     carried <- unique(st[!is.na(st$interval_method),
                          c("statistic", "interval_method", "interval_level")])
-    cat(strwrap(paste0("Intervals carried: ", paste(sprintf(
+    .say(paste0("Intervals carried: ", paste(sprintf(
       "%s (%s, %s%%)", carried$statistic, carried$interval_method,
       format(100 * carried$interval_level)
-    ), collapse = "; ")), width = 76, exdent = 2), sep = "\n")
+    ), collapse = "; ")), exdent = 2L)
   }
 
   ps <- x$panel_statistics
   if (is.data.frame(ps) && nrow(ps)) {
     for (i in seq_len(nrow(ps))) {
-      line <- sprintf("Panel: %s = %s", ps$statistic[i],
-                      format(round(ps$value[i], 2), nsmall = 2))
+      line <- sprintf("Panel: %s = %s", ps$statistic[i], .fmt(ps$value[i]))
       if (!is.na(ps$interval_method[i])) {
-        line <- sprintf("%s (%s%% interval %s to %s)", line,
+        line <- sprintf("%s, %s%% interval [%s, %s] (%s)", line,
                         format(100 * ps$interval_level[i]),
-                        format(round(ps$lower[i], 2), nsmall = 2),
-                        format(round(ps$upper[i], 2), nsmall = 2))
+                        .fmt(ps$lower[i]), .fmt(ps$upper[i]),
+                        ps$interval_method[i])
       }
-      cat(line, "\n", sep = "")
+      .say(line, exdent = 2L)
     }
   }
 
   held <- x$item_evidence[!x$item_evidence$carried, , drop = FALSE]
   if (nrow(held)) {
-    cat("\nHeld back:\n")
-    print(held[c("item", "status", "recommendation")], row.names = FALSE)
+    cat("\nHeld back\n")
+    show <- data.frame(item = held$item, decision = held$recommendation,
+                       stringsAsFactors = FALSE)
+    # The shared status adds nothing when it repeats the workflow's own word.
+    if (any(held$recommendation != held$status)) show$status <- held$status
+    .print_table(show)
   }
 
   cat("\n")
-  cat(strwrap(paste(
-    "Carry these items into the empirical workflow once response data are",
-    "collected. In nomologR that is nomo_screen(data, items = handoff$items),",
-    "which screens the same items you retained here."
-  ), width = 76), sep = "\n")
+  .say("Carry these items into the empirical workflow once response data are",
+       "collected. In nomologR that is")
+  cat("  nomo_screen(data, items = handoff$items)\n")
+  .say("which screens the same items you retained here.")
 
   cat("\n")
-  cat(strwrap(paste(
-    "Surviving content review is evidence about relevance, representation, and",
-    "expert judgment. It does not establish that an item will behave well",
-    "empirically: an item can be clearly relevant and still correlate poorly",
-    "with its construct or load on an unintended factor. Items held back are",
-    "listed above rather than deleted, so the record stays complete."
-  ), width = 76), sep = "\n")
+  .say("Surviving content review is evidence about relevance, representation,",
+       "and expert judgment. It does not establish that an item will behave",
+       "well empirically: an item can be clearly relevant and still correlate",
+       "poorly with its construct or load on an unintended factor. Items held",
+       "back are listed above rather than deleted, so the record stays",
+       "complete.")
   cat("\n")
   invisible(x)
 }

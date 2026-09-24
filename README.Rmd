@@ -140,14 +140,17 @@ The workflow deliberately separates two levels of evidence:
 If substantive data provide the average correlation between a focal scale and its orbiting scales, the workflow can select Colquitt et al.'s correlation-conditional norm set:
 
 ```{r colquitt-norms}
-sort_validity(sort_dat, orbiting_r = .42)$scale_summary
+normed <- sort_validity(sort_dat, orbiting_r = .42)$scale_summary
+normed[c("target", "orbiting_r", "benchmark_set", "overall_strength")]
 colquitt_benchmarks("csv", orbiting_r = .42)
 ```
 
 The published norms were developed with **naive judges representative of the target population**. If the sort used expert judges, declare that explicitly; the package will suppress Colquitt labels rather than apply an unsupported benchmark:
 
 ```{r expert-sort}
-sort_validity(sort_dat, judge_type = "expert")$scale_summary
+experts <- sort_validity(sort_dat, judge_type = "expert")$scale_summary
+experts[c("target", "psa_strength", "csv_strength", "benchmark_applicable")]
+experts$evidence
 ```
 
 ### Exact planning rather than a judge-count rule of thumb

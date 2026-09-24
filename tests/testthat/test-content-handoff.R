@@ -126,8 +126,16 @@ test_that("the rule states the decision criterion each workflow applied", {
                "exact binomial target-count test; Howard & Melloy, 2016")
   expect_match(content_handoff(rating_fit())$item_evidence$rule[1],
                "Greenhouse-Geisser corrected omnibus test")
-  expect_match(content_handoff(expert_fit())$item_evidence$rule[1],
-               "I-CVI >= .+ modified kappa > 0.74")
+  # The relevance rule states Lynn's criterion as the count the decision
+  # compares, and cites her for it.
+  e <- expert_fit()
+  h <- content_handoff(e)
+  N <- e$results$N[1]
+  expect_match(h$item_evidence$rule[1],
+               sprintf("at least %d of %d experts rate the item relevant",
+                       contentvalidR:::.cvi_required_count(N), N), fixed = TRUE)
+  expect_match(h$item_evidence$rule[1], "modified kappa > .74", fixed = TRUE)
+  expect_true("Lynn (1986)" %in% h$provenance$citation)
 })
 
 test_that("statistics stack long with their criteria", {

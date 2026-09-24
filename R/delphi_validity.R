@@ -96,7 +96,8 @@
       # every resample too, so an interval would only restate that.
       row$note <- paste("Every expert gave the same rating in one of the two",
                         "rounds, so kappa is 0 however many kept their",
-                        "rating. Read prop_unchanged instead.")
+                        "rating. Read the share who kept their rating",
+                        "instead.")
       return(row)
     }
     if (B > 0L && n >= 2L) {
@@ -231,24 +232,27 @@
 .delphi_method_note <- function(method, weights, intervals = TRUE) {
   switch(
     method,
-    kappa = paste(
-      "Stability is weighted kappa between each expert's ratings in",
-      "consecutive rounds (Holey et al., 2007), with", weights, "weights.",
-      if (weights == "quadratic") {
-        paste("A change of two scale points counts four times a change of one.",
-              "With these weights kappa equals the intraclass correlation of",
-              "the two rounds' ratings, so a shift of the whole panel counts",
-              "as instability (Fleiss & Cohen, 1973).")
-      } else {
-        paste("A change of two scale points counts twice a change of one",
-              "(Cohen, 1968).")
-      },
-      "Read kappa as a trend across rounds, not against a cut-off. No verbal",
-      "labels such as 'substantial' are shown: kappa falls when ratings",
-      "converge on one category, which is what a Delphi aims for, so a panel",
-      "whose experts nearly all kept their answer can still show a low kappa.",
-      "Holey et al. saw this for their most-agreed statement. Read kappa next",
-      "to prop_unchanged.",
+    # Each element is a paragraph; the print method separates them.
+    kappa = c(
+      paste(
+        "Stability is weighted kappa between each expert's ratings in",
+        "consecutive rounds (Holey et al., 2007), with", weights, "weights.",
+        if (weights == "quadratic") {
+          paste("A change of two scale points counts four times a change of",
+                "one. With these weights kappa equals the intraclass",
+                "correlation of the two rounds' ratings, so a shift of the",
+                "whole panel counts as instability (Fleiss & Cohen, 1973).")
+        } else {
+          paste("A change of two scale points counts twice a change of one",
+                "(Cohen, 1968).")
+        },
+        "Read kappa as a trend across rounds, not against a cut-off. No verbal",
+        "labels such as 'substantial' are shown: kappa falls when ratings",
+        "converge on one category, which is what a Delphi aims for, so a panel",
+        "whose experts nearly all kept their answer can still show a low",
+        "kappa. Holey et al. saw this for their most-agreed statement. Read",
+        "kappa next to the share of experts who kept their rating (unchanged)."
+      ),
       if (intervals) {
         paste("The intervals are percentile bootstraps that resample the",
               "experts, which are the units the two rounds cross-classify.",
@@ -276,8 +280,8 @@
       "significant result (p < alpha) is read as stability. Dependence is",
       "association, not agreement: a panel that moved together one category",
       "up would also pass. The test needs expected counts of at least 5,",
-      "which a small panel's table rarely has; min_expected shows how far",
-      "short each table falls."
+      "which a small panel's table rarely has; min_expected in",
+      "details$stability shows how far short each table falls."
     ),
     chisq_group = paste(
       "Stability is Dajani, Sincoff and Talley's (1979) chi-square test",
@@ -725,19 +729,25 @@ delphi_validity <- function(ratings,
 
 .delphi_pair_label <- function(from, to) paste0(from, "->", to)
 
-.delphi_wide <- function(stab, column, digits) {
+.delphi_wide <- function(stab, column, digits, bounded = TRUE) {
   if (!nrow(stab)) return(NULL)
   lab <- .delphi_pair_label(stab$from_round, stab$to_round)
   pairs <- unique(lab)
   items <- unique(stab$item)
-  out <- data.frame(item = items, stringsAsFactors = FALSE)
+  out <- data.frame(item = items, stringsAsFactors = FALSE, check.names = FALSE)
   for (p in pairs) {
     v <- rep(NA_real_, length(items))
     sel <- lab == p
     v[match(stab$item[sel], items)] <- stab[[column]][sel]
-    out[[p]] <- round(v, digits)
+    out[[p]] <- .fmt(v, digits, bounded)
   }
   out
+}
+
+# Whether a stability statistic can exceed 1, which decides its leading zero
+# (APA 7, Section 6.36). Only the chi-square statistic can.
+.delphi_bounded <- function(method) {
+  !method %in% c("chisq_individual", "chisq_group")
 }
 
 #' @export
@@ -750,16 +760,17 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 
   cat("contentvalidR Delphi analysis\n")
   cat(strrep("-", 29), "\n", sep = "")
-  cat("Items:", x$design$n_items, "| Experts:", x$design$n_judges,
-      "| Rounds:", x$design$n_rounds,
-      paste0("(", paste(x$design$rounds, collapse = ", "), ")"), "\n")
-  cat("Experts per round:", paste(panel$n_experts, collapse = ", "), "\n")
-  cat(strwrap(paste0(
+  cat("Items: ", x$design$n_items, " | Experts: ", x$design$n_judges,
+      " | Rounds: ", x$design$n_rounds, " (",
+      paste(x$design$rounds, collapse = ", "), ")\n", sep = "")
+  cat("Experts per round: ", paste(panel$n_experts, collapse = ", "), "\n",
+      sep = "")
+  .say(paste0(
     "Agreement: a rating of ", format(s$agree_cut), " or higher on the ",
     format(s$lo), "-", format(s$hi), " scale. Consensus threshold: ",
     if (is.null(s$consensus_threshold)) "none set, so agreement is descriptive." else
       paste0(format(100 * s$consensus_threshold), "%, fixed before the study.")
-  ), width = 76), sep = "\n")
+  ))
   method_label <- switch(
     s$stability,
     kappa = paste0("weighted kappa (", s$kappa_weights, " weights)"),
@@ -768,7 +779,11 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     chisq_group = "group chi-square (Dajani et al., 1979)",
     percent_change = "net percent change (Scheibe et al., 1975)"
   )
-  cat("Stability:", method_label, "between consecutive rounds\n\n")
+  .say("Stability:", method_label, "between consecutive rounds")
+  if (s$stability %in% c("chisq_individual", "chisq_group")) {
+    cat("Test: alpha = ", .fmt(s$alpha, 2), "\n", sep = "")
+  }
+  cat("\n")
 
   n_c <- sum(r$recommendation == "Consensus")
   n_n <- sum(r$recommendation == "No consensus")
@@ -776,86 +791,97 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (is.null(s$consensus_threshold)) {
     cat("No consensus threshold was set; agreement is reported descriptively.\n")
   } else {
-    cat(n_c, "item(s) reached consensus in their last round;", n_n,
-        "did not")
-    if (n_i) cat(";", n_i, "had too few experts")
-    cat(".\n")
-    if (n_n) cat("No consensus:", paste(r$item[r$recommendation == "No consensus"],
-                                        collapse = ", "), "\n")
+    .say(paste0(n_c, " of ", nrow(r), " items reached consensus in their last ",
+                "round", if (n_i) paste0("; ", n_i, " had too few experts"),
+                "."))
+    if (n_n) .say("No consensus:", paste(r$item[r$recommendation == "No consensus"],
+                                         collapse = ", "))
   }
 
-  cat("\nItem-level evidence (last round, and the last pair of rounds):\n")
+  cat("\nItem-level evidence (last round, and the last pair of rounds)\n")
   val <- .delphi_value_label(s$stability)
-  tab <- data.frame(item = r$item, last_round = r$last_round,
-                    n = r$n_experts, prop_agree = round(r$prop_agree, digits),
-                    prop_unchanged = round(r$prop_unchanged, digits),
-                    stringsAsFactors = FALSE)
-  tab[[val]] <- round(r$stability, digits)
-  # With B = 0, or when no item's kappa could be given an interval, the two
-  # columns would be empty. Leave them out rather than print a blank promise.
+  bounded <- .delphi_bounded(s$stability)
+  tab <- data.frame(item = r$item, decision = r$recommendation,
+                    `last round` = r$last_round, n = r$n_experts,
+                    agree = .fmt(r$prop_agree, digits),
+                    unchanged = .fmt(r$prop_unchanged, digits),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  if (val == "chi_sq") {
+    # APA reports a chi-square with its degrees of freedom, which vary by item
+    # with the categories the experts used.
+    last <- stab[!duplicated(stab$item, fromLast = TRUE), , drop = FALSE]
+    tab$df <- last$df[match(r$item, last$item)]
+  }
+  tab[[if (val == "chi_sq") "chi-square" else val]] <-
+    .fmt(r$stability, digits, bounded)
+  # With B = 0, or when no item's kappa could be given an interval, the column
+  # would be empty. Leave it out rather than print a blank promise.
   if (s$stability == "kappa" && any(!is.na(r$stability_low))) {
-    tab$low <- round(r$stability_low, digits)
-    tab$high <- round(r$stability_high, digits)
+    tab[[.ci_label(s$alpha)]] <- .fmt_ci(r$stability_low, r$stability_high,
+                                         digits)
   }
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
-    tab$p_value <- round(r$stability_p, 3)
+    tab$p <- .fmt_p(r$stability_p)
   }
   if (s$stability %in% c("chisq_individual", "chisq_group", "percent_change")) {
-    tab$stable <- r$stable
+    tab$stable <- ifelse(is.na(r$stable), "NA", ifelse(r$stable, "yes", "no"))
   }
-  tab$recommendation <- r$recommendation
-  print(tab, row.names = FALSE)
+  .print_table(tab)
+  cat("\n")
+  .say("agree: share of experts agreeing in the item's last round. unchanged:",
+       "share who kept their rating between the last two rounds.")
 
   if (nrow(stab) && length(unique(paste(stab$from_round, stab$to_round))) > 1L) {
-    cat("\nStability trend (", val, ") by pair of rounds:\n", sep = "")
-    print(.delphi_wide(stab, "value", digits), row.names = FALSE)
-    cat("\nShare of experts who kept their rating, by pair of rounds:\n")
-    print(.delphi_wide(stab, "prop_unchanged", digits), row.names = FALSE)
+    cat("\nStability trend (", if (val == "chi_sq") "chi-square" else val,
+        ") by pair of rounds\n", sep = "")
+    .print_table(.delphi_wide(stab, "value", digits, bounded))
+    cat("\nShare of experts who kept their rating, by pair of rounds\n")
+    .print_table(.delphi_wide(stab, "prop_unchanged", digits))
   }
 
   flagged <- stab[nzchar(stab$note), , drop = FALSE]
   if (nrow(flagged)) {
-    cat("\nNotes:\n")
-    for (i in seq_len(nrow(flagged))) {
-      cat(strwrap(paste0(flagged$item[i], " (",
-                         .delphi_pair_label(flagged$from_round[i],
-                                            flagged$to_round[i]), "): ",
-                         flagged$note[i]),
-                  width = 76, initial = "  ", prefix = "    "), sep = "\n")
+    # One line per distinct note, naming every item and pair it applies to,
+    # so a warning that fits the whole panel is read once rather than per row.
+    cat("\nNotes\n")
+    where <- paste0(flagged$item, " (",
+                    .delphi_pair_label(flagged$from_round, flagged$to_round),
+                    ")")
+    for (nt in unique(flagged$note)) {
+      .say(paste0(paste(where[flagged$note == nt], collapse = ", "), ": ", nt),
+           indent = 2L, exdent = 4L)
     }
   }
 
   if (identical(s$stability, "kappa") &&
       any(!is.na(stab$n_boot_usable) & stab$n_boot_usable < s$B)) {
     cat("\n")
-    cat(strwrap(paste(
-      "In some resamples kappa was undefined because every resampled rating",
-      "fell in one category. Those intervals use the remaining resamples",
-      "(n_boot_usable in details$stability), so treat them as rough."
-    ), width = 76), sep = "\n")
+    .say("In some resamples kappa was undefined because every resampled rating",
+         "fell in one category. Those intervals use the remaining resamples",
+         "(n_boot_usable in details$stability), so treat them as rough.")
   }
 
   cat("\n")
-  cat(strwrap(.delphi_method_note(s$stability, s$kappa_weights,
-                                  intervals = any(!is.na(stab$lower))),
-              width = 76),
-      sep = "\n")
+  note <- .delphi_method_note(s$stability, s$kappa_weights,
+                              intervals = any(!is.na(stab$lower)))
+  for (i in seq_along(note)) {
+    if (i > 1L) cat("\n")
+    .say(note[[i]])
+  }
   if (is.null(s$consensus_threshold)) {
     cat("\n")
-    cat(strwrap(paste(
-      "Diamond et al. (2014) recommend defining consensus before the study.",
-      "Their review found a median threshold of 75%, which describes common",
-      "practice rather than a validated cut-off."
-    ), width = 76), sep = "\n")
+    .say("Diamond et al. (2014) recommend defining consensus before the study.",
+         "Their review found a median threshold of 75%, which describes common",
+         "practice rather than a validated cut-off.")
   }
   if (length(unique(panel$n_experts)) > 1L) {
     cat("\n")
-    cat(strwrap(paste0(
+    .say(paste0(
       "The panel changed size across rounds (", paste(panel$n_experts,
                                                         collapse = ", "),
       " experts). Stability uses only the experts who rated an item in both ",
       "rounds, and a result from fewer experts is weaker evidence."
-    ), width = 76), sep = "\n")
+    ))
   }
 
   if (.show_key()) {
@@ -864,10 +890,10 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                     chisq_individual = "chi_sq_individual",
                     chisq_group = "chi_sq_group",
                     percent_change = "percent_change"))
-    .print_key(key)
+    .print_key(key, headings = c("agree", "unchanged",
+                                 if (val == "chi_sq") "chi-square" else val))
     .print_status_legend()
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    .print_key_footer()
   }
 
   cat("\nConsensus is not correctness, and 'No consensus' is not an instruction to\n")
@@ -1050,12 +1076,12 @@ summary.contentvalid_delphi <- function(object, ...) {
 }
 
 #' @export
-print.summary.contentvalid_delphi <- function(x, digits = 3, ...) {
+print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("Summary of Delphi consensus and stability\n")
   cat(strrep("-", 41), "\n", sep = "")
-  cat("Rounds:", nrow(x$panel), "| Experts per round:",
-      paste(x$panel$n_experts, collapse = ", "), "\n")
+  cat("Rounds: ", nrow(x$panel), " | Experts per round: ",
+      paste(x$panel$n_experts, collapse = ", "), "\n", sep = "")
   if (x$n_descriptive > 0L) {
     cat("Descriptive only:", x$n_descriptive, "of", x$n_items,
         "item(s); no consensus threshold was set.\n")
@@ -1066,11 +1092,11 @@ print.summary.contentvalid_delphi <- function(x, digits = 3, ...) {
   if (x$n_insufficient > 0L) {
     cat("Too few experts:", x$n_insufficient, "item(s)\n")
   }
-  cat("Stability statistic:", x$stability_method, "\n")
+  cat("Stability statistic: ", x$stability_method, "\n", sep = "")
   med <- x$scale_summary$median_prop_unchanged
   if (length(med) && !is.na(med)) {
     cat("Median share of experts keeping their rating (last pair):",
-        format(round(med, digits)), "\n")
+        .fmt(med, digits), "\n")
   }
   invisible(x)
 }

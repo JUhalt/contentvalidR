@@ -223,8 +223,13 @@ judge_validity <- function(ratings,
   )
   severity_shown <- ifelse(!is.na(res$severity), res$severity, res$severity_raw)
   severity_units <- ifelse(!is.na(res$severity), "logit", "rating points")
-  misfit <- (!is.na(res$outfit) & (res$outfit < fit_range[1] | res$outfit > fit_range[2])) |
-    (!is.na(res$infit) & (res$infit < fit_range[1] | res$infit > fit_range[2]))
+  # Above the range the ratings are noisier than the model expects; below it
+  # they are more predictable. Both are flagged, under different names.
+  over_fit_range <- (!is.na(res$outfit) & res$outfit > fit_range[2]) |
+    (!is.na(res$infit) & res$infit > fit_range[2])
+  under_fit_range <- (!is.na(res$outfit) & res$outfit < fit_range[1]) |
+    (!is.na(res$infit) & res$infit < fit_range[1])
+  misfit <- over_fit_range | under_fit_range
   influential <- !is.na(res$n_items_flipped) & res$n_items_flipped > 0L
   low_diff <- !is.na(res$differentiation) & res$differentiation < 0.5
   insufficient <- res$n_ratings < 2L
@@ -232,7 +237,8 @@ judge_validity <- function(ratings,
   res$recommendation <- ifelse(
     insufficient, "Insufficient data",
     ifelse(influential, "Influential",
-           ifelse(misfit, "Erratic",
+           ifelse(misfit,
+                  ifelse(over_fit_range, "Erratic", "Too predictable"),
                   ifelse(too_severe,
                          ifelse(severity_shown > 0, "Severe", "Lenient"),
                          ifelse(low_diff, "Low differentiation", "Typical")))))
@@ -255,13 +261,21 @@ judge_validity <- function(ratings,
         "size, which can itself change the CVI criterion."
       ), res$n_items_flipped[i], res$flipped_items[i]))
     }
-    if (misfit[i]) {
-      return(paste(
-        "This judge's endorsement pattern fits the model poorly. High values",
-        "indicate ratings that are erratic given the rest of the panel; low",
-        "values indicate ratings that are more predictable than expected.",
-        "Check whether they interpreted the construct definition differently."
-      ))
+    if (over_fit_range[i]) {
+      return(sprintf(paste(
+        "This judge's endorsements fit the model poorly (infit or outfit",
+        "above %s): they depart from the panel's ordering of the items more",
+        "than random variation would. Check whether they interpreted the",
+        "construct definition differently."
+      ), format(fit_range[2])))
+    }
+    if (under_fit_range[i]) {
+      return(sprintf(paste(
+        "This judge's endorsements are more predictable than the model",
+        "expects (infit or outfit below %s): they follow the panel's ordering",
+        "of the items with less variation than random rating would produce.",
+        "Check whether they rated by a fixed rule rather than item by item."
+      ), format(fit_range[1])))
     }
     if (too_severe[i]) {
       return(sprintf(paste(
@@ -314,6 +328,7 @@ judge_validity <- function(ratings,
     bias_correct = isTRUE(bias_correct),
     bias_correction = facets$bias_correction,
     severity_cut = severity_cut,
+    severity_raw_cut = severity_raw_cut,
     fit_range = fit_range,
     severity_scale = "logit (dichotomized relevance decision)"
   )
@@ -350,54 +365,96 @@ judge_validity <- function(ratings,
 print.contentvalid_judge <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   s <- x$scale_summary
-  cat("Judge and rater heterogeneity\n")
-  cat(sprintf("Judges: %d   Items: %d\n", s$n_judges, s$n_items))
-  cat(sprintf("Dependability (Phi): %s   Judge share of variance: %s%%\n",
-              format(round(s$phi_coefficient, digits)),
-              format(round(s$judge_variance_pct, 1))))
+  st <- x$settings
+  r <- x$results
+  cat("contentvalidR judge heterogeneity\n")
+  cat(strrep("-", 33), "\n", sep = "")
+  cat("Judges: ", s$n_judges, " | Items: ", s$n_items, "\n", sep = "")
+  cat("Dependability (Phi): ", .fmt(s$phi_coefficient, digits),
+      " | Judge share of variance: ",
+      formatC(s$judge_variance_pct, format = "f", digits = 1), "%\n", sep = "")
+  cat("\n")
+  n_ok <- sum(r$status == "Supported")
+  .say(paste0(n_ok, " of ", nrow(r), " judges are consistent with the panel."))
+  flagged <- r$status == "Review"
+  if (any(flagged)) {
+    .say("Flagged for review:",
+         paste0(r$judge[flagged], " (", r$recommendation[flagged], ")",
+                collapse = ", "))
+  }
 
   cat("\nJudges\n")
   estimable <- isTRUE(s$severity_estimable)
-  cols <- c("judge", "mean_rating", "severity_raw")
-  if (estimable) cols <- c(cols, "severity", "outfit")
-  cols <- c(cols, "differentiation", "n_items_flipped", "status")
-  show <- x$results[cols]
-  names(show)[names(show) == "severity_raw"] <- "severity(pts)"
-  if (estimable) names(show)[names(show) == "severity"] <- "severity(logit)"
-  num <- vapply(show, is.numeric, logical(1))
-  show[num] <- lapply(show[num], round, digits)
-  print(show, row.names = FALSE)
-  cat("Positive severity means the judge rates lower than the panel.\n")
+  show <- data.frame(judge = r$judge, decision = r$recommendation,
+                     mean = .fmt(r$mean_rating, digits, bounded = FALSE),
+                     severity = .fmt(r$severity_raw, digits, bounded = FALSE),
+                     stringsAsFactors = FALSE, check.names = FALSE)
+  if (estimable) {
+    show$logit <- .fmt(r$severity, digits, bounded = FALSE)
+    show$infit <- .fmt(r$infit, digits, bounded = FALSE)
+    show$outfit <- .fmt(r$outfit, digits, bounded = FALSE)
+  }
+  show$`scale use` <- .fmt(r$differentiation, digits, bounded = FALSE)
+  show$flipped <- r$n_items_flipped
+  .print_table(show)
+  cat("\n")
+  .say(paste0(
+    "mean: the judge's mean rating. severity: how far the judge rates below ",
+    "the panel, in rating points (negative is more lenient)",
+    if (estimable) paste0("; logit: the same from the facets model, which ",
+                          "the flags use") else "",
+    ". flipped: items whose review status changes if this judge is removed."
+  ))
+  points_rule <- paste0(.fmt(st$severity_raw_cut, digits, bounded = FALSE),
+                        " rating points")
+  .say(paste0(
+    "A judge is flagged when severity exceeds ",
+    if (estimable) paste0(format(st$severity_cut), " logit") else points_rule,
+    " in either direction",
+    if (estimable && anyNA(r$severity)) {
+      paste0(" (", points_rule, " for a judge the model could not place)")
+    },
+    ", ",
+    if (estimable) paste0("infit or outfit falls outside ",
+                          format(st$fit_range[1]), " to ",
+                          format(st$fit_range[2]), ", "),
+    "scale use is below 0.50, or any item's status depends on them."
+  ))
 
   if (!estimable) {
-    cat("\nLogit severity not estimated:\n")
-    cat(strwrap(x$details$severity_note, width = 76), sep = "\n")
-    cat(strwrap(paste(
-      "Severity in rating points is reported instead and is used for flagging."
-    ), width = 76), sep = "\n")
+    cat("\nLogit severity not estimated\n")
+    .say(x$details$severity_note)
+    .say("Severity in rating points is reported instead and is used for",
+         "flagging.")
   }
 
   if (isTRUE(s$n_fragile_items > 0L)) {
     fragile <- x$details$influence_items
-    cat(sprintf("\n%d item(s) change review status if a single judge is removed: %s\n",
-                s$n_fragile_items,
-                paste(fragile$item[fragile$fragile %in% TRUE], collapse = ", ")))
+    cat("\n")
+    .say(paste0(s$n_fragile_items, " of ", nrow(fragile), " items change ",
+                "review status if a single judge is removed: ",
+                paste(fragile$item[fragile$fragile %in% TRUE],
+                      collapse = ", ")))
   } else if (s$n_judges >= 3L) {
     cat("\nNo item's review status depends on any single judge.\n")
   }
 
   if (.show_key()) {
     terms <- c("severity", "differentiation", "phi_coefficient")
-    if (estimable) terms <- append(terms, "infit/outfit", after = 1L)
-    .print_key(terms)
+    headings <- c("severity", "scale use", "Phi")
+    if (estimable) {
+      terms <- append(terms, "infit/outfit", after = 1L)
+      headings <- append(headings, "outfit", after = 1L)
+    }
+    .print_key(terms, headings = headings)
     .print_status_legend(statuses = c("Supported", "Review", "Insufficient data"))
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    .print_key_footer()
   }
 
-  cat("\nA `Review` judge is not a judge to remove. Disagreement can be",
-      "\nsubstantive expertise; the flag marks where a conclusion rests on",
-      "\none person's ratings.\n")
+  cat("\n")
+  .say("A 'Review' judge is not a judge to remove. Disagreement can be",
+       "substantive expertise; the flag marks where a conclusion rests on one",
+       "person's ratings.")
   invisible(x)
 }
 
@@ -418,27 +475,30 @@ summary.contentvalid_judge <- function(object, ...) {
 print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("Summary: judge and rater heterogeneity\n")
-  cat(sprintf("Judges: %d   Items: %d\n", x$n_judges, x$n_items))
-  cat(sprintf("Consistent with panel: %d   Flagged for review: %d   Insufficient: %d\n",
-              x$n_supported, x$n_review, x$n_insufficient))
+  cat("Judges: ", x$n_judges, " | Items: ", x$n_items, "\n", sep = "")
+  cat("Consistent with panel: ", x$n_supported, " | Flagged for review: ",
+      x$n_review, " | Insufficient: ", x$n_insufficient, "\n", sep = "")
 
   cat("\nGeneralizability\n")
   gt <- x$gtheory
-  cat(sprintf("  Dependability (absolute decisions): %s\n",
-              format(round(gt$coefficients$phi_coefficient, 3))))
-  cat(sprintf("  Generalizability (rank ordering):   %s\n",
-              format(round(gt$coefficients$g_coefficient, 3))))
+  cat("  Dependability (absolute decisions): ",
+      .fmt(gt$coefficients$phi_coefficient, digits), "\n", sep = "")
+  cat("  Generalizability (rank ordering):   ",
+      .fmt(gt$coefficients$g_coefficient, digits), "\n", sep = "")
   if (nrow(gt$judges_needed)) {
-    cat("  Judges needed by target:\n")
-    print(gt$judges_needed, row.names = FALSE)
+    cat("\nJudges needed to reach each coefficient\n")
+    .print_table(.judges_needed_table(gt$judges_needed, digits))
   }
 
   if (nrow(x$reviewed_judges)) {
     cat("\nJudges flagged for review\n")
-    for (i in seq_len(nrow(x$reviewed_judges))) {
-      row <- x$reviewed_judges[i, ]
-      cat(sprintf("\n  %s  (%s)\n", row$judge, row$recommendation))
-      cat(strwrap(row$interpretation, width = 72, prefix = "    "), sep = "\n")
+    # Judges flagged for the same reason share one explanation.
+    rj <- x$reviewed_judges
+    for (txt in unique(rj$interpretation)) {
+      same <- rj$interpretation == txt
+      cat("\n  ", paste0(rj$judge[same], collapse = ", "), " (",
+          rj$recommendation[same][1], ")\n", sep = "")
+      .say(txt, indent = 4L)
     }
   } else {
     cat("\nNo judge was flagged for review.\n")
@@ -447,11 +507,14 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   fragile <- x$influence_items
   if (is.data.frame(fragile) && any(fragile$fragile %in% TRUE)) {
     cat("\nItems whose review status depends on a single judge\n")
-    print(fragile[fragile$fragile %in% TRUE, c("item", "status_full_panel")],
-          row.names = FALSE)
+    show <- fragile[fragile$fragile %in% TRUE, c("item", "status_full_panel")]
+    names(show) <- c("item", "status with the full panel")
+    .print_table(show)
   }
 
-  cat("\nThis analysis describes how much conclusions depend on these judges.",
-      "\nIt does not establish that the items cover the intended content domain.\n")
+  cat("\n")
+  .say("This analysis describes how much conclusions depend on these judges.",
+       "It does not establish that the items cover the intended content",
+       "domain.")
   invisible(x)
 }

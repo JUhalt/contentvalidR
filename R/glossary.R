@@ -224,7 +224,7 @@
         "How much distortion was introduced by squeezing the similarity data",
         "into the chosen number of dimensions. Lower is a closer fit."
       ),
-      range = "0 is perfect; below 0.10 is conventionally called fair or better",
+      range = "0 is perfect; below .10 is conventionally called fair or better",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -304,7 +304,7 @@
         "a share of the experts compared. Change below 15% is read as stable,",
         "a cut-off its authors set from one study without statistical theory."
       ),
-      range = "0 to 1; stable below 0.15",
+      range = "0 to 1; stable below .15",
       stringsAsFactors = FALSE
     )
   )
@@ -327,7 +327,12 @@
   isTRUE(getOption("contentvalidR.show_key", TRUE))
 }
 
-.print_key <- function(terms, width = 76) {
+# `terms` are glossary ids. When a table prints a column under a different
+# heading, pass `headings` (same length as `terms`) so the key names the column
+# the reader can see, not the id behind it.
+.print_key <- function(terms, width = 76, headings = terms) {
+  stopifnot(length(headings) == length(terms))
+  shown <- stats::setNames(headings, terms)
   defs <- .term_defs()
   # A term with no definition would otherwise be dropped in silence, so a typo
   # in a print method's key would quietly stop explaining a column.
@@ -344,10 +349,16 @@
   for (i in seq_len(nrow(defs))) {
     body <- defs$definition[i]
     if (nzchar(defs$range[i])) body <- paste0(body, " (", defs$range[i], ")")
-    cat(strwrap(paste0(defs$term[i], " -- ", defs$label[i], ". ", body),
+    cat(strwrap(paste0(shown[[defs$term[i]]], " -- ", defs$label[i], ". ", body),
                 width = width, initial = "  ", prefix = "      "), sep = "\n")
   }
   invisible(NULL)
+}
+
+.print_key_footer <- function() {
+  cat("\nSee `contentvalid_glossary()` for all terms, or set\n",
+      "`options(contentvalidR.show_key = FALSE)` to hide this key.\n",
+      sep = "")
 }
 
 .print_status_legend <- function(width = 76, statuses = NULL) {
@@ -362,7 +373,7 @@
                 width = width, initial = "  ", prefix = "      "), sep = "\n")
   }
   cat(strwrap(paste(
-    "Each workflow also uses its own wording in the recommendation column",
+    "Each workflow also uses its own wording in the decision column",
     "(Retain, Strong support, Typical, Covered, and so on). Those words map",
     "onto the shared statuses above."
   ), width = width, initial = "  ", prefix = "  "), sep = "\n")
@@ -393,8 +404,8 @@
 #' percentile positions relative to scales published in the measurement
 #' literature. They are not absolute judgments, and they are not comparable
 #' across indices: HTC and HTD sit on different scales with different typical
-#' values, so an HTC of 0.83 can be labeled `Weak` in the same analysis where
-#' an HTD of 0.44 is labeled `Very Strong`. Compare each index against its own
+#' values, so an HTC of .83 can be labeled `Weak` in the same analysis where
+#' an HTD of .44 is labeled `Very Strong`. Compare each index against its own
 #' benchmark, never against another index's number.
 #'
 #' @seealso [interpret_colquitt()] for the benchmark bands themselves.
@@ -444,8 +455,9 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
                   width = width, initial = "  ", prefix = "      "), sep = "\n")
     }
   }
-  cat("\nStrength labels such as Strong or Weak are percentile positions",
-      "\nrelative to published scales, not absolute judgments, and are not",
-      "\ncomparable across different indices.\n")
+  cat("\n")
+  .say("Strength labels such as Strong or Weak are percentile positions",
+       "relative to published scales, not absolute judgments, and are not",
+       "comparable across different indices.")
   invisible(x)
 }

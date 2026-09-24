@@ -268,19 +268,19 @@ content_structure <- function(similarity,
   } else if (ari >= 0.60) {
     sprintf(paste(
       "Expert-perceived item groupings correspond closely to the blueprint",
-      "(adjusted Rand index %.2f, where 0 is chance agreement and 1 is exact).",
+      "(adjusted Rand index %s, where 0 is chance agreement and 1 is exact).",
       "This supports the claim that the blueprint describes the domain as",
       "subject-matter experts see it."
-    ), ari)
+    ), .fmt(ari))
   } else {
     sprintf(paste(
       "Expert-perceived item groupings correspond only weakly to the blueprint",
-      "(adjusted Rand index %.2f, where 0 is chance agreement and 1 is exact).",
+      "(adjusted Rand index %s, where 0 is chance agreement and 1 is exact).",
       "Inspect the cross-tabulation to see which cells experts merged or split.",
       "This is a reason to re-examine the blueprint or the item wording, not by",
       "itself a reason to delete items: experts may be responding to surface",
       "features such as shared vocabulary rather than the intended facets."
-    ), ari)
+    ), .fmt(ari))
   }
 
   out <- list(
@@ -315,36 +315,41 @@ content_structure <- function(similarity,
 }
 
 #' @export
-print.contentvalid_structure <- function(x, digits = 3, ...) {
+print.contentvalid_structure <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Expert item-similarity content structure\n")
-  cat(sprintf("Items: %d   Dimensions retained: %d   Clusters: %d\n",
-              x$design$n_items, x$settings$dims, x$settings$k))
+  cat("contentvalidR content structure (expert item similarity)\n")
+  cat(strrep("-", 56), "\n", sep = "")
+  cat("Items: ", x$design$n_items, " | Dimensions retained: ", x$settings$dims,
+      " | Clusters: ", x$settings$k, "\n", sep = "")
   if (x$settings$dims < x$settings$dims_requested) {
-    cat(sprintf(paste0(
-      "Requested %d dimensions, but these similarities support only %d.\n",
-      "The solution uses %d.\n"),
-      x$settings$dims_requested, x$design$n_dimensions_available, x$settings$dims))
+    .say(paste0(
+      "Requested ", x$settings$dims_requested, " dimensions, but these ",
+      "similarities support only ", x$design$n_dimensions_available,
+      ". The solution uses ", x$settings$dims, "."))
   }
-  cat(sprintf("Stress (Kruskal-1): %s (%s)\n",
-              format(round(x$stress, digits)), x$fit$fit_label[x$fit$dims == x$settings$dims]))
+  cat("Stress (Kruskal-1): ", .fmt(x$stress, digits), " (",
+      x$fit$fit_label[x$fit$dims == x$settings$dims], ")\n", sep = "")
+  cat("Status: ", x$status, "\n", sep = "")
+  .say(x$interpretation)
 
   cat("\nFit by dimensionality\n")
   f <- x$fit
-  f$stress <- round(f$stress, digits)
-  f$gof <- round(f$gof, digits)
-  print(f, row.names = FALSE)
+  .print_table(data.frame(dimensions = f$dims, stress = .fmt(f$stress, digits),
+                          GOF = .fmt(f$gof, digits), fit = f$fit_label,
+                          stringsAsFactors = FALSE))
+  cat("\n")
+  .say("GOF: goodness of fit from classical scaling, the share of the",
+       "eigenvalue total that the retained dimensions account for.")
 
   if (!is.null(x$cross_tab)) {
-    cat("\nBlueprint cell by recovered cluster\n")
+    cat("\nBlueprint cell by recovered cluster (counts of items)\n")
     print(x$cross_tab)
-    cat(sprintf("\nAdjusted Rand index: %s\n", format(round(x$adjusted_rand, digits))))
+    cat("\nAdjusted Rand index: ", .fmt(x$adjusted_rand, digits), "\n", sep = "")
   }
 
-  cat("\nStatus: ", x$status, "\n", sep = "")
-  cat(strwrap(x$interpretation, width = 76), sep = "\n")
-  cat("\nStress labels are descriptive conventions, not rules for deciding",
-      "\nhow many dimensions a content domain has.\n")
+  cat("\n")
+  .say("Stress labels are descriptive conventions, not rules for deciding how",
+       "many dimensions a content domain has.")
   invisible(x)
 }
 

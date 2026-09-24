@@ -244,70 +244,93 @@ sort_validity <- function(assignments,
 }
 
 #' @export
-print.contentvalid_sort <- function(x, digits = 3, ...) {
+print.contentvalid_sort <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   r <- x$results
-  n_retain <- sum(r$recommendation == "Retain")
-  n_review <- sum(r$recommendation == "Review")
-  n_insufficient <- sum(r$recommendation == "Insufficient data")
+  s <- x$settings
+  review <- r$item[r$recommendation == "Review"]
+  insufficient <- r$item[r$recommendation == "Insufficient data"]
 
   cat("contentvalidR item-sort analysis\n")
   cat(strrep("-", 32), "\n", sep = "")
-  cat("Items:", x$design$n_items, "| Raters:", x$design$n_raters,
-      "| Target scales:", x$design$n_target_scales, "\n")
-  cat("Item inference:", x$settings$item_inference,
-      sprintf("(p0 = %.2f, alpha = %.3f)", x$settings$p0, x$settings$alpha), "\n")
-  cat("Judges:", x$settings$judge_type, "\n\n")
-
-  cat(n_retain, "item(s) meet the exact target-assignment criterion;",
-      n_review, "item(s) are flagged for review")
-  if (n_insufficient > 0L) cat(";", n_insufficient, "item(s) have insufficient data")
-  cat(".\n")
-  if (n_review > 0L) cat("Review:", paste(r$item[r$recommendation == "Review"], collapse = ", "), "\n")
-  if (n_insufficient > 0L) cat("Insufficient data:", paste(r$item[r$recommendation == "Insufficient data"], collapse = ", "), "\n")
-  if (any(r$n_missing > 0L)) {
-    cat("Missing assignments:", sum(r$n_missing), "across", sum(r$n_missing > 0L),
-        "item(s); effective N is used itemwise.\n")
-  }
-
-  cat("\nItem-level evidence:\n")
-  # intersect() keeps objects saved before the interval columns existed printable.
-  cols <- intersect(c("item", "target", "n", "n_target", "competitor", "psa",
-                      "psa_low", "psa_high", "csv", "p_value", "recommendation"),
-                    names(r))
-  tab <- r[cols]
-  num <- intersect(c("psa", "psa_low", "psa_high", "csv", "p_value"), names(tab))
-  tab[num] <- lapply(tab[num], round, digits = digits)
-  print(tab, row.names = FALSE)
-  if (!is.null(x$settings$proportion_ci)) {
-    cat("\n")
-    cat(strwrap(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha),
-                width = 76), sep = "\n")
-  }
-
-  cat("\nScale-level Colquitt benchmark summary:\n")
-  s <- x$scale_summary[c("target", "n_items", "mean_psa", "psa_strength", "mean_csv", "csv_strength", "benchmark_set")]
-  s[c("mean_psa", "mean_csv")] <- lapply(s[c("mean_psa", "mean_csv")], round, digits = digits)
-  print(s, row.names = FALSE)
-
-  if (x$settings$judge_type == "expert") {
-    cat("\nColquitt benchmark labels are not applied because the analysis was marked as using expert judges.\n")
+  cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
+      " | Target constructs: ", x$design$n_target_scales, "\n", sep = "")
+  .say("Test: ", s$item_inference, " (p0 = ", .fmt(s$p0), ", alpha = ",
+       .fmt(s$alpha), ")", sep = "")
+  .say(if (identical(s$judge_type, "expert")) {
+    "Judges: content experts."
   } else {
-    cat("\nColquitt labels are empirical percentile norms derived from scale-level averages,\n")
-    cat("not universal cutoffs or automatic scale-retention rules. They place a scale\n")
-    cat("against published scales; Psa and Csv sit on different scales, so their labels\n")
-    cat("are not comparable with each other.\n")
+    "Judges: naive, meaning drawn from the kind of people who will answer the items."
+  })
+  cat("\n")
+
+  .say(sum(r$recommendation == "Retain"), "of", nrow(r),
+       "items meet the exact target-assignment criterion.")
+  if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
+  if (length(insufficient)) {
+    .say("Insufficient data:", paste(insufficient, collapse = ", "))
+  }
+  if (any(r$n_missing > 0L)) {
+    .say("Missing assignments:", sum(r$n_missing), "across",
+         sum(r$n_missing > 0L), "items; each item uses the judges who sorted it.")
+  }
+
+  # The decision sits beside the item so a row reads left to right; each
+  # interval gets its own column after its estimate, as APA tables do.
+  cat("\nItem-level evidence\n")
+  ci <- .ci_label(s$alpha)
+  tab <- data.frame(item = r$item, target = r$target,
+                    decision = r$recommendation,
+                    judges = paste0(r$n_target, "/", r$n),
+                    Psa = .fmt(r$psa, digits),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  # Objects saved before the interval columns existed still print.
+  has_ci <- all(c("psa_low", "psa_high") %in% names(r)) && any(!is.na(r$psa_low))
+  if (has_ci) tab[[ci]] <- .fmt_ci(r$psa_low, r$psa_high, digits)
+  tab$Csv <- .fmt(r$csv, digits)
+  tab$competitor <- r$competitor
+  tab$p <- .fmt_p(r$p_value)
+  .print_table(tab)
+  cat("\n")
+  .say("judges: assignments to the target construct, out of the judges who",
+       "sorted the item.")
+  if (!is.null(s$proportion_ci)) .say(.proportion_ci_note(s$proportion_ci, s$alpha))
+
+  sc <- x$scale_summary
+  cat("\nScale-level Colquitt benchmarks\n")
+  sets <- unique(sc$benchmark_set)
+  st <- data.frame(target = sc$target, items = sc$n_items,
+                   `mean Psa` = .fmt(sc$mean_psa, digits), `Psa level` = sc$psa_strength,
+                   `mean Csv` = .fmt(sc$mean_csv, digits), `Csv level` = sc$csv_strength,
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  # A benchmark set shared by every scale is stated once, not on every row.
+  if (length(sets) > 1L) st$benchmarks <- sc$benchmark_set
+  .print_table(st)
+  if (length(sets) == 1L) .say("Benchmark set:", sets)
+
+  cat("\n")
+  if (identical(s$judge_type, "expert")) {
+    .say("Colquitt benchmark labels are not applied because the analysis was",
+         "marked as using expert judges.")
+  } else {
+    .say("Colquitt labels are empirical percentile norms derived from",
+         "scale-level averages, not universal cutoffs or automatic",
+         "scale-retention rules. They place a scale against published scales;",
+         "Psa and Csv sit on different scales, so their labels are not",
+         "comparable with each other.")
   }
 
   if (.show_key()) {
-    .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"))
+    .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"),
+               headings = c("Psa", ci, "Csv", "competitor", "p"))
     .print_status_legend()
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    .print_key_footer()
   }
 
-  cat("\n'Review' is not an automatic deletion decision. Use theory, construct-domain coverage,\n")
-  cat("item wording, and qualitative judge feedback alongside these statistics.\n")
+  cat("\n")
+  .say("'Review' is not an automatic deletion decision. Use theory,",
+       "construct-domain coverage, item wording, and qualitative judge",
+       "feedback alongside these statistics.")
   invisible(x)
 }
 
@@ -321,34 +344,48 @@ summary.contentvalid_sort <- function(object, ...) {
 }
 
 #' @export
-print.summary.contentvalid_sort <- function(x, digits = 3, ...) {
+print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary of item-sort content-validity evidence\n")
-  cat(strrep("-", 43), "\n", sep = "")
-  cat("Retain:", x$n_retain, "of", x$n_items, "item(s)\n")
-  cat("Review:", x$n_review, "of", x$n_items, "item(s)\n")
-  if (x$n_insufficient > 0L) cat("Insufficient data:", x$n_insufficient, "item(s)\n")
-
-  cat("\nTarget-scale evidence:\n")
-  s <- x$scale_summary[c("target", "n_items", "n_retain", "n_review", "mean_psa", "psa_strength", "mean_csv", "csv_strength", "overall_strength")]
-  s[c("mean_psa", "mean_csv")] <- lapply(s[c("mean_psa", "mean_csv")], round, digits = digits)
-  print(s, row.names = FALSE)
-  for (i in seq_len(nrow(x$scale_summary))) {
-    cat("\n", x$scale_summary$target[i], ": ", x$scale_summary$evidence[i], sep = "")
+  cat("Summary: item-sort content-validity evidence\n")
+  cat(strrep("-", 44), "\n", sep = "")
+  cat("Retain: ", x$n_retain, " of ", x$n_items, " | Review: ", x$n_review,
+      " of ", x$n_items, sep = "")
+  if (x$n_insufficient > 0L) {
+    cat(" | Insufficient data: ", x$n_insufficient, sep = "")
   }
   cat("\n")
 
-  if (nrow(x$reviewed_items) > 0L) {
-    cat("\nItems needing attention:\n")
-    show <- x$reviewed_items[c("item", "target", "competitor", "psa", "csv", "p_value", "issue", "recommendation")]
-    show[c("psa", "csv", "p_value")] <- lapply(show[c("psa", "csv", "p_value")], round, digits = digits)
-    print(show, row.names = FALSE)
+  cat("\nScale-level evidence\n")
+  s <- x$scale_summary
+  .print_table(data.frame(
+    target = s$target, items = s$n_items, retain = s$n_retain,
+    review = s$n_review, `mean Psa` = .fmt(s$mean_psa, digits),
+    `Psa level` = s$psa_strength, `mean Csv` = .fmt(s$mean_csv, digits),
+    `Csv level` = s$csv_strength, overall = s$overall_strength,
+    stringsAsFactors = FALSE, check.names = FALSE
+  ))
+  cat("\n")
+  .say_grouped(s$target, s$evidence)
+
+  f <- x$reviewed_items
+  if (nrow(f) > 0L) {
+    cat("\nItems needing attention\n")
+    .print_table(data.frame(
+      item = f$item, target = f$target, decision = f$recommendation,
+      Psa = .fmt(f$psa, digits), Csv = .fmt(f$csv, digits),
+      competitor = f$competitor, p = .fmt_p(f$p_value),
+      stringsAsFactors = FALSE, check.names = FALSE
+    ))
+    cat("\n")
+    .say_grouped(f$item, f$issue)
   } else {
     cat("\nAll analyzed items met the exact target-assignment criterion.\n")
   }
 
-  cat("\nInterpret scale norms and item flags alongside theory, domain coverage, and qualitative feedback.\n")
-  cat("This analysis does not by itself establish comprehensiveness or the full content-validity argument.\n")
+  cat("\n")
+  .say("Interpret scale norms and item flags alongside theory, domain",
+       "coverage, and qualitative feedback. This analysis does not by itself",
+       "establish comprehensiveness or the full content-validity argument.")
   invisible(x)
 }
 
