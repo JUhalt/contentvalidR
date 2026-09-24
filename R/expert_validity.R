@@ -436,98 +436,167 @@ expert_validity <- function(data,
   out
 }
 
+# The printed item table for one expert-panel mode, from any subset of the
+# results rows. print() shows every item; summary() shows the flagged ones.
+.expert_item_table <- function(r, mode, digits, alpha) {
+  if (mode == "relevance") {
+    ci <- .ci_label(alpha)
+    tab <- data.frame(item = r$item, decision = r$recommendation, N = r$N,
+                      V = .fmt(r$V, digits),
+                      stringsAsFactors = FALSE, check.names = FALSE)
+    # Objects saved before the interval columns existed still print.
+    if (all(c("ci_low", "ci_high") %in% names(r))) {
+      tab[[ci]] <- .fmt_ci(r$ci_low, r$ci_high, digits)
+    }
+    tab$`I-CVI` <- .fmt(r$I_CVI, digits)
+    if (all(c("I_CVI_low", "I_CVI_high") %in% names(r))) {
+      tab <- cbind(tab, stats::setNames(
+        data.frame(.fmt_ci(r$I_CVI_low, r$I_CVI_high, digits),
+                   stringsAsFactors = FALSE), ci))
+    }
+    tab$kappa <- .fmt(r$kappa_mod, digits)
+    # One panel size means one criterion, stated once rather than on every row.
+    sizes <- unique(r$N[!is.na(r$cvi_criterion)])
+    if (length(sizes) > 1L) tab$`I-CVI needed` <- .fmt(r$cvi_criterion, digits)
+    return(tab)
+  }
+  if (mode == "essentiality") {
+    tab <- data.frame(item = r$item, decision = r$recommendation,
+                      essential = paste0(r$ne, "/", r$N),
+                      CVR = .fmt(r$cvr, digits), p = .fmt_p(r$p_value),
+                      stringsAsFactors = FALSE, check.names = FALSE)
+    if (length(unique(r$N)) > 1L) tab$needed <- r$critical_ne
+    return(tab)
+  }
+  tab <- data.frame(item = r$item, stringsAsFactors = FALSE, check.names = FALSE)
+  if ("target" %in% names(r)) tab$target <- r$target
+  tab$decision <- r$recommendation
+  if ("target_ioc" %in% names(r)) {
+    # IOC lies in [-1, 1]; the margin between two IOCs can reach 2, so it
+    # keeps its leading zero (APA 7, Section 6.36).
+    tab$`target IOC` <- .fmt(r$target_ioc, digits)
+    tab$competitor <- r$strongest_competitor
+    tab$`competitor IOC` <- .fmt(r$competitor_ioc, digits)
+    tab$margin <- .fmt(r$margin, digits, bounded = FALSE)
+  } else {
+    num <- names(r)[vapply(r, is.numeric, logical(1))]
+    for (col in num) tab[[col]] <- .fmt(r[[col]], digits)
+  }
+  tab
+}
+
 #' @export
-print.contentvalid_expert <- function(x, digits = 3, ...) {
+print.contentvalid_expert <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("contentvalidR expert-panel analysis\n")
   cat(strrep("-", 35), "\n", sep = "")
-  cat("Mode:", x$mode, "\n")
+  cat("Mode: ", x$mode, "\n", sep = "")
   d <- .workflow_design(x)
   # Objects saved before panel agreement existed carry no agreement setting.
   show_agreement <- identical(x$mode, "relevance") &&
     is.character(x$settings$agreement) && !identical(x$settings$agreement, "none")
+  missing_line <- function(unit) {
+    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
+      .say(paste0("Missing ratings: ", d$n_missing, "; each ", unit,
+                  " uses the experts who rated it."))
+    }
+  }
 
   if (x$mode == "relevance") {
     s <- x$scale[1, ]
-    cat("Items:", s$n_items,
-        "| Experts/item:", paste0(s$n_experts_min, if (s$n_experts_min != s$n_experts_max) paste0("-", s$n_experts_max) else ""), "\n")
-    cat("Mean Aiken V:", round(s$mean_Aiken_V, digits),
-        "| S-CVI/Ave:", round(s$S_CVI_Ave, digits),
-        "| S-CVI/UA:", round(s$S_CVI_UA, digits), "\n")
-    cat("Strong support:", s$n_strong_support,
-        "| Support:", s$n_support,
-        "| Review:", s$n_review, "\n")
+    cat("Items: ", s$n_items, " | Experts/item: ", s$n_experts_min,
+        if (s$n_experts_min != s$n_experts_max) paste0("-", s$n_experts_max),
+        "\n", sep = "")
+    cat("Mean Aiken V: ", .fmt(s$mean_Aiken_V, digits),
+        " | S-CVI/Ave: ", .fmt(s$S_CVI_Ave, digits),
+        " | S-CVI/UA: ", .fmt(s$S_CVI_UA, digits), "\n", sep = "")
+    cat("Strong support: ", s$n_strong_support, " | Support: ", s$n_support,
+        " | Review: ", s$n_review, "\n", sep = "")
     if (show_agreement) {
-      cat(strwrap(.expert_agreement_line(x$details$agreement, digits),
-                  width = 76, exdent = 2), sep = "\n")
+      .say(.expert_agreement_line(x$details$agreement, digits), exdent = 2)
     }
-    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
-      cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
+    missing_line("item")
+    cat("\n")
+    r <- x$results
+    ci <- .ci_label(x$settings$alpha)
+    sizes <- unique(r$N[!is.na(r$cvi_criterion)])
+    .print_table(.expert_item_table(r, "relevance", digits, x$settings$alpha))
+    cat("\n")
+    .say("Each", ci, "follows its estimate: Aiken's V has a Penfield-Giacobbi",
+         "score interval, and I-CVI the proportion interval named below.")
+    if (length(sizes) == 1L) {
+      need <- .cvi_required_count(sizes)
+      .say(sprintf(paste("I-CVI criterion for %d experts: %d agreeing (%s),",
+                         "following Lynn (1986); kappa is modified kappa,",
+                         "with values above .74 read as excellent (Polit,",
+                         "Beck, & Owen, 2007)."),
+                   sizes, need, .fmt(need / sizes, digits)))
     }
-    cat("\n")
-    # intersect() keeps objects saved before the interval columns existed printable.
-    cols <- intersect(c("item", "N", "V", "ci_low", "ci_high", "I_CVI", "I_CVI_low",
-                        "I_CVI_high", "kappa_mod", "recommendation"), names(x$results))
-    tab <- x$results[cols]
-    num <- intersect(c("V", "ci_low", "ci_high", "I_CVI", "I_CVI_low", "I_CVI_high",
-                       "kappa_mod"), names(tab))
-    tab[num] <- lapply(tab[num], round, digits = digits)
-    print(tab, row.names = FALSE)
-    cat("\n")
-    cat(strwrap(paste(
-      "ci_low and ci_high bound Aiken's V (Penfield-Giacobbi score interval);",
-      "I_CVI_low and I_CVI_high bound I-CVI."
-    ), width = 76), sep = "\n")
     if (!is.null(x$settings$proportion_ci)) {
-      cat(strwrap(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha),
-                  width = 76), sep = "\n")
+      .say(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha))
     }
     if (show_agreement && !is.null(x$details$agreement)) {
       cat("\n")
-      cat(strwrap(.expert_agreement_note(x$details$agreement), width = 76), sep = "\n")
+      .say(.expert_agreement_note(x$details$agreement))
     }
-    cat("\nCVI thresholds shown by the workflow are common panel-size guidelines, not universal validity cutoffs.\n")
+    cat("\n")
+    .say("CVI criteria are published panel-size guidelines, not universal",
+         "validity cutoffs.")
   } else if (x$mode == "essentiality") {
-    cat("Items:", d$n_items,
-        "| Experts/item:", paste0(d$n_judges_min,
-        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max) else ""), "\n")
-    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
-      cat("Missing ratings:", d$n_missing, "; effective expert N is used itemwise.\n")
+    cat("Items: ", d$n_items, " | Experts/item: ", d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max),
+        "\n", sep = "")
+    missing_line("item")
+    .say("Method:", x$settings$method)
+    cat("\n")
+    r <- x$results
+    sizes <- unique(r$N)
+    .print_table(.expert_item_table(r, "essentiality", digits,
+                                    x$settings$alpha))
+    cat("\n")
+    .say("essential: experts rating the item essential, out of those who",
+         "rated it.")
+    if (length(sizes) == 1L) {
+      .say(sprintf(paste("With %d experts, an item needs at least %d rating it",
+                         "essential for the exact one-tailed binomial test at",
+                         "alpha = %s (Ayre & Scally, 2014)."),
+                   sizes, r$critical_ne[1], .fmt(x$settings$alpha)))
     }
-    cat("Method:", x$settings$method, "\n\n")
-    tab <- x$results[c("item", "ne", "N", "cvr", "p_value", "critical_ne", "recommendation")]
-    tab[c("cvr", "p_value")] <- lapply(tab[c("cvr", "p_value")], round, digits = digits)
-    print(tab, row.names = FALSE)
   } else {
-    cat("Items:", d$n_items,
-        "| Experts/cell:", paste0(d$n_judges_min,
-        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max) else ""),
-        "| Objectives:", d$n_objectives, "\n")
-    if (!is.null(d$n_missing) && is.finite(d$n_missing) && d$n_missing > 0L) {
-      cat("Missing ratings:", d$n_missing, "; effective expert N is used cellwise.\n")
+    cat("Items: ", d$n_items, " | Experts/cell: ", d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max),
+        " | Objectives: ", d$n_objectives, "\n", sep = "")
+    missing_line("cell")
+    .say("Method:", x$settings$method)
+    cat("\n")
+    r <- x$results
+    .print_table(.expert_item_table(r, "congruence", digits, x$settings$alpha))
+    # Each distinct interpretation is printed once, with the items it covers.
+    if ("interpretation" %in% names(r)) {
+      cat("\n")
+      .say_grouped(r$item, r$interpretation)
     }
-    cat("Method:", x$settings$method, "\n\n")
-    tab <- x$results
-    numeric_cols <- names(tab)[vapply(tab, is.numeric, logical(1))]
-    tab[numeric_cols] <- lapply(tab[numeric_cols], round, digits = digits)
-    print(tab, row.names = FALSE)
   }
 
   if (.show_key()) {
-    key_terms <- switch(
+    ci <- .ci_label(x$settings$alpha)
+    switch(
       x$mode,
-      relevance = c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod",
-                    if (show_agreement) "agreement"),
-      essentiality = "cvr",
-      "ioc"
+      relevance = .print_key(
+        c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod",
+          if (show_agreement) "agreement"),
+        headings = c("V", "I-CVI", paste(ci, "after I-CVI"), "kappa",
+                     if (show_agreement) "Panel agreement")),
+      essentiality = .print_key("cvr", headings = "CVR"),
+      .print_key("ioc", headings = "IOC")
     )
-    .print_key(key_terms)
     .print_status_legend()
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    .print_key_footer()
   }
 
-  cat("\nUse quantitative indices alongside expert comments, construct coverage, and comprehensibility review.\n")
+  cat("\n")
+  .say("Use quantitative indices alongside expert comments, construct",
+       "coverage, and comprehensibility review.")
   invisible(x)
 }
 
@@ -544,27 +613,33 @@ summary.contentvalid_expert <- function(object, ...) {
 }
 
 #' @export
-print.summary.contentvalid_expert <- function(x, digits = 3, ...) {
+print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary of expert-panel content-validity evidence\n")
-  cat(strrep("-", 45), "\n", sep = "")
-  cat("Mode:", x$mode, "\n")
-  cat("Supported:", x$n_supported, "| Review:", x$n_review)
-  if (x$n_insufficient > 0L) cat(" | Insufficient data:", x$n_insufficient)
-  if (x$n_descriptive > 0L) cat(" | Descriptive only:", x$n_descriptive)
+  cat("Summary: expert-panel content-validity evidence\n")
+  cat(strrep("-", 47), "\n", sep = "")
+  cat("Mode: ", x$mode, "\n", sep = "")
+  cat("Supported: ", x$n_supported, " | Review: ", x$n_review, sep = "")
+  if (x$n_insufficient > 0L) cat(" | Insufficient data: ", x$n_insufficient, sep = "")
+  if (x$n_descriptive > 0L) cat(" | Descriptive only: ", x$n_descriptive, sep = "")
   cat("\n")
   if (identical(x$mode, "relevance") && is.character(x$settings$agreement) &&
       !identical(x$settings$agreement, "none")) {
-    cat(strwrap(.expert_agreement_line(x$agreement, digits), width = 76, exdent = 2),
-        sep = "\n")
+    .say(.expert_agreement_line(x$agreement, digits), exdent = 2L)
   }
-  if (nrow(x$flagged) == 0L) {
-    cat("No items were flagged by the workflow's quantitative review rules.\n")
+  f <- x$flagged
+  if (nrow(f) == 0L) {
+    cat("\nNo items were flagged by the workflow's quantitative review rules.\n")
   } else {
-    cat(nrow(x$flagged), "item/result row(s) need review or additional usable ratings.\n")
-    print(x$flagged, row.names = FALSE)
+    cat("\nItems needing review or more usable ratings\n")
+    .print_table(.expert_item_table(f, x$mode, digits, x$settings$alpha))
+    if ("interpretation" %in% names(f)) {
+      cat("\n")
+      .say_grouped(f$item, f$interpretation)
+    }
   }
-  cat("\nThese summaries support, but do not replace, qualitative content review.\n")
+  cat("\n")
+  .say("These summaries support, but do not replace, qualitative content",
+       "review.")
   invisible(x)
 }
 

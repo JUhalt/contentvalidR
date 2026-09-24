@@ -249,38 +249,39 @@ panel_agreement <- function(ratings,
 }
 
 #' @export
-print.contentvalid_agreement <- function(x, digits = 3, ...) {
+print.contentvalid_agreement <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   label <- .agreement_label(x$method, x$level)
 
-  cat("Panel-level agreement\n")
-  cat(sprintf("Items rated by two or more raters: %d   Raters: %d\n", x$n_items, x$n_raters))
-  cat(label, ": ", format(round(x$estimate, digits)), sep = "")
+  cat("contentvalidR panel agreement\n")
+  cat(strrep("-", 29), "\n", sep = "")
+  cat("Items rated by two or more raters: ", x$n_items, " | Raters: ",
+      x$n_raters, "\n", sep = "")
+  # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
+  line <- paste0(label, " = ", .fmt(x$estimate, digits))
   if (is.finite(x$ci_low) && is.finite(x$ci_high)) {
-    cat(sprintf("   %s%% interval: %s to %s",
-                format(100 * (1 - x$alpha)),
-                format(round(x$ci_low, digits)),
-                format(round(x$ci_high, digits))))
+    line <- paste0(line, ", ", .ci_label(x$alpha), " ",
+                   .fmt_ci(x$ci_low, x$ci_high, digits))
   }
-  cat("\n")
+  .say(line)
   if (is.finite(x$percent_agreement)) {
-    cat("Identical rating pairs: ", format(round(100 * x$percent_agreement, 1)), "%\n", sep = "")
+    cat("Identical rating pairs: ",
+        formatC(100 * x$percent_agreement, format = "f", digits = 1), "%\n",
+        sep = "")
   }
 
   cat("\n")
-  cat(strwrap(x$interpretation, width = 76), sep = "\n")
+  .say(x$interpretation)
 
   if (x$method == "krippendorff") {
     cat("\n")
-    cat(strwrap(paste(
-      "Krippendorff's alpha is the default because it handles ordinal ratings",
-      "and missing ratings (Zapf et al., 2016). It is a general reliability",
-      "coefficient; no publication applying it specifically to content-validity",
-      "panels was found."
-    ), width = 76), sep = "\n")
+    .say("Krippendorff's alpha is the default because it handles ordinal",
+         "ratings and missing ratings (Zapf et al., 2016). It is a general",
+         "reliability coefficient; no publication applying it specifically to",
+         "content-validity panels was found.")
   } else {
     cat("\n")
-    cat(strwrap(x$critique, width = 76), sep = "\n")
+    .say(x$critique)
   }
 
   if (x$B > 0) {
@@ -304,11 +305,13 @@ print.contentvalid_agreement <- function(x, digits = 3, ...) {
         " interval is imprecise and can be misleading."
       )
     }
-    cat(strwrap(note, width = 76), sep = "\n")
+    .say(note)
   }
 
-  cat("\nPanel agreement describes how consistently raters rated these items.",
-      "\nIt does not show that the items are relevant or that the domain is covered.\n")
+  cat("\n")
+  .say("Panel agreement describes how consistently raters rated these items.",
+       "It does not show that the items are relevant or that the domain is",
+       "covered.")
   invisible(x)
 }
 
@@ -321,17 +324,17 @@ print.contentvalid_agreement <- function(x, digits = 3, ...) {
   if (ag$n_items == 0L) return(paste0(head, "not estimable; no item has two ratings."))
   if (is.na(ag$estimate)) return(paste0(head, "undefined; every paired rating was identical."))
 
-  out <- paste0(head, format(round(ag$estimate, digits)))
+  # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
+  out <- paste0(head, .fmt(ag$estimate, digits))
   if (is.finite(ag$ci_low) && is.finite(ag$ci_high)) {
-    out <- paste0(out, " (", format(100 * (1 - ag$alpha)), "% interval ",
-                  format(round(ag$ci_low, digits)), " to ",
-                  format(round(ag$ci_high, digits)), ")")
+    out <- paste0(out, ", ", .ci_label(ag$alpha), " ",
+                  .fmt_ci(ag$ci_low, ag$ci_high, digits))
   }
   if (is.finite(ag$percent_agreement)) {
     out <- paste0(out, ". Identical rating pairs: ",
-                  format(round(100 * ag$percent_agreement, 1)), "%")
+                  format(round(100 * ag$percent_agreement, 1), nsmall = 1), "%")
   }
-  out
+  paste0(out, ".")
 }
 
 .expert_agreement_note <- function(ag) {
@@ -340,9 +343,10 @@ print.contentvalid_agreement <- function(x, digits = 3, ...) {
                  .ac1_critique()))
   }
   paste(
-    "Panel agreement is one coefficient for the whole panel, whereas kappa_mod",
-    "describes each item. Alpha can be low when nearly every rating is the same",
-    "value, even on a panel that agrees closely, so read it beside the share of",
+    "Panel agreement is one coefficient for the whole panel, whereas modified",
+    "kappa (the kappa column) describes each item. Alpha can be low when",
+    "nearly every rating is the same value, even on a panel that agrees",
+    "closely, so read it beside the share of",
     "identical rating pairs. A low alpha with many identical pairs is not by",
     "itself evidence of a poor panel. Print `details$agreement` for the full",
     "explanation and interval details."

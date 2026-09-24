@@ -43,5 +43,6 @@ test_that("CVI print method explains scope", {
   out <- cvi(M)
   expect_s3_class(out, "contentvalid_cvi")
   expect_output(print(out), "chance-corrected")
-  expect_output(print(out), "do not establish comprehensive content validity")
+  # The sentence wraps to the console, so match across line breaks.
+  expect_output(print(out), "do not establish\\s+comprehensive\\s+content\\s+validity")
 })

@@ -285,48 +285,71 @@ domain_validity <- function(assignments,
 print.contentvalid_domain <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   s <- x$scale_summary
-  cat("Content-domain coverage\n")
-  cat(sprintf("Items: %d   Blueprint cells: %d\n", s$n_items, s$n_cells))
-  cat(sprintf("Covered: %d   Not covered: %d   Thin: %d   Over-represented: %d\n",
-              s$n_covered, s$n_empty, s$n_thin, s$n_over))
+  st <- x$settings
+  r <- x$results
+  pct <- function(p) ifelse(is.na(p), "NA",
+                            paste0(formatC(100 * p, format = "f", digits = 0),
+                                   "%"))
+  cat("contentvalidR content-domain coverage\n")
+  cat(strrep("-", 37), "\n", sep = "")
+  cat("Items: ", s$n_items, " | Blueprint cells: ", s$n_cells, "\n", sep = "")
+  .say(paste0(
+    "Criteria: at least ", st$min_items, " item", if (st$min_items != 1L) "s",
+    " per cell, and no cell above ", format(st$over_factor),
+    " times its expected share",
+    if (isTRUE(st$targets_supplied)) " (from `targets`)" else
+      " (an equal share when no `targets` are given)", "."
+  ))
+  cat("\n")
+  .say(paste0(s$n_covered, " of ", s$n_cells,
+              " cells meet the coverage criteria."))
+  flagged <- r$status == "Review"
+  if (any(flagged)) {
+    .say("Flagged for review:",
+         paste0(r$cell[flagged], " (", r$recommendation[flagged], ")",
+                collapse = ", "))
+  }
 
   cat("\nCells\n")
-  show <- x$results[c("cell", "n_items", "share", "recommendation")]
-  show$share <- paste0(round(show$share * 100), "%")
-  print(show, row.names = FALSE)
+  show <- data.frame(cell = r$cell, decision = r$recommendation,
+                     items = r$n_items, share = pct(r$share),
+                     expected = pct(r$expected_share),
+                     stringsAsFactors = FALSE, check.names = FALSE)
+  .print_table(show)
 
   if (!isTRUE(s$domain_supplied)) {
-    cat(strwrap(paste(
-      "\nNo `domain` was supplied, so only cells that already contain items",
-      "could be reported. Cells intended by the blueprint but holding no items",
-      "cannot be detected this way."
-    ), width = 76), sep = "\n")
+    cat("\n")
+    .say("No `domain` was supplied, so only cells that already contain items",
+         "could be reported. Cells intended by the blueprint but holding no",
+         "items cannot be detected this way.")
   }
 
   if (!is.null(x$details$structure)) {
-    st <- x$details$structure
-    cat(sprintf("\nContent structure: adjusted Rand index %s (%s)\n",
-                format(round(st$adjusted_rand, digits)), st$status))
+    cs <- x$details$structure
+    cat("\nContent structure: adjusted Rand index ",
+        .fmt(cs$adjusted_rand, digits), " (", cs$status, ")\n", sep = "")
   }
 
   if (.show_key()) {
     terms <- "share"
     if (!is.null(x$details$structure)) terms <- c(terms, "adjusted_rand", "stress")
-    .print_key(terms)
+    .print_key(terms, headings = c("share", "adjusted Rand", "stress")[
+      seq_along(terms)])
     cat("\nWhat the cell labels mean\n")
-    cat(strwrap(paste(
+    labels <- c(
       "Covered -- the cell met the coverage criteria set for this analysis.",
       "Thinly covered -- fewer items than the minimum you set.",
       "Over-represented -- a larger share of the instrument than expected.",
       "Not covered -- the blueprint intends this cell but no item addresses it."
-    ), width = 76, prefix = "  "), sep = "\n")
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    )
+    for (lab in labels) .say(lab, indent = 2L, exdent = 6L)
+    .print_key_footer()
   }
 
-  cat("\nCoverage shows that items exist for each cell. It does not show that",
-      "\nthose items are good ones, or that the blueprint is the right",
-      "\ndescription of the domain.\n")
+  cat("\n")
+  .say("Coverage shows that items exist for each cell. It does not show that",
+       "those items are good ones, or that the blueprint is the right",
+       "description of the domain.")
   invisible(x)
 }
 
@@ -345,16 +368,17 @@ summary.contentvalid_domain <- function(object, ...) {
 print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("Summary: content-domain coverage\n")
-  cat(sprintf("Items: %d   Blueprint cells: %d\n", x$n_items, x$n_cells))
-  cat(sprintf("Cells meeting coverage criteria: %d   Flagged: %d\n",
-              x$n_supported, x$n_review))
+  cat("Items: ", x$n_items, " | Blueprint cells: ", x$n_cells, "\n", sep = "")
+  cat("Cells meeting coverage criteria: ", x$n_supported, " | Flagged: ",
+      x$n_review, "\n", sep = "")
 
   if (nrow(x$gaps)) {
     cat("\nCells needing attention\n")
     for (i in seq_len(nrow(x$gaps))) {
       row <- x$gaps[i, ]
-      cat(sprintf("\n  %s  (%s, %d item(s))\n", row$cell, row$recommendation, row$n_items))
-      cat(strwrap(row$interpretation, width = 72, prefix = "    "), sep = "\n")
+      cat(sprintf("\n  %s (%s, %d item%s)\n", row$cell, row$recommendation,
+                  row$n_items, if (row$n_items == 1L) "" else "s"))
+      .say(row$interpretation, indent = 4L)
     }
   } else {
     cat("\nEvery blueprint cell met the coverage criteria set for this analysis.\n")
@@ -362,13 +386,13 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 
   if (!is.null(x$structure)) {
     cat("\nContent structure\n")
-    cat(strwrap(x$structure$interpretation, width = 74, prefix = "  "), sep = "\n")
+    .say(x$structure$interpretation, indent = 2L)
   }
 
   if (!isTRUE(x$domain_supplied)) {
-    cat(strwrap(paste(
-      "\nNote: no `domain` was supplied, so empty cells could not be detected."
-    ), width = 76), sep = "\n")
+    cat("\n")
+    .say("Note: no `domain` was supplied, so empty cells could not be",
+         "detected.")
   }
   invisible(x)
 }

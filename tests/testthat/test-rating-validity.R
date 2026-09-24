@@ -31,7 +31,7 @@ test_that("rating_validity returns informative item and scale evidence", {
 test_that("rating_validity print and summary explain the evidence", {
   fit <- rating_validity(.make_rating_v003())
   expect_output(print(fit), "construct-rating analysis")
-  expect_output(print(fit), "Review: A2")
+  expect_output(print(fit), "Flagged for review: A2")
   s <- summary(fit)
   expect_s3_class(s, "summary.contentvalid_rating")
   expect_output(print(s), "Items needing attention")

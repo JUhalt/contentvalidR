@@ -155,29 +155,46 @@ cvi <- function(binary,
 }
 
 #' @export
-print.contentvalid_cvi <- function(x, digits = 3, ...) {
+print.contentvalid_cvi <- function(x, digits = 2, ...) {
+  .validate_digits(digits)
   sl <- x$scale_level
-  cat("Content Validity Index (CVI)\n")
-  cat(strrep("-", 28), "\n", sep = "")
-  cat("Items analyzed:", sl$n_items, "\n")
-  if (length(unique(x$item_level$N)) == 1L) {
-    cat("Judges per item:", unique(x$item_level$N), "\n")
+  it <- x$item_level
+  cat("contentvalidR content validity index (CVI)\n")
+  cat(strrep("-", 42), "\n", sep = "")
+  cat("Items: ", sl$n_items, " | Judges per item: ", sep = "")
+  if (length(unique(it$N)) == 1L) {
+    cat(unique(it$N), "\n", sep = "")
   } else {
-    cat("Judges per item:", min(x$item_level$N), "to", max(x$item_level$N),
-        "(itemwise missingness)\n")
+    cat(min(it$N), " to ", max(it$N), " (itemwise missingness)\n", sep = "")
   }
-  cat("S-CVI/Ave:", format(round(sl$S_CVI_Ave, digits), nsmall = digits), "\n")
-  cat("S-CVI/UA :", format(round(sl$S_CVI_UA, digits), nsmall = digits), "\n\n")
-  cat("Item-level results (modified kappa is chance-corrected):\n")
-  tab <- x$item_level
-  numeric_cols <- intersect(c("I_CVI", "I_CVI_low", "I_CVI_high", "Pc", "kappa_mod"), names(tab))
-  tab[numeric_cols] <- lapply(tab[numeric_cols], round, digits = digits)
-  print(tab, row.names = FALSE)
-  if (!is.null(x$ci)) {
+  cat("S-CVI/Ave: ", .fmt(sl$S_CVI_Ave, digits), " | S-CVI/UA: ",
+      .fmt(sl$S_CVI_UA, digits), "\n", sep = "")
+
+  cat("\nItem-level results\n")
+  tab <- data.frame(item = it$item, agree = paste0(it$A, "/", it$N),
+                    `I-CVI` = .fmt(it$I_CVI, digits),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  has_ci <- !is.null(x$ci) && !identical(x$ci, "none") &&
+    any(!is.na(it$I_CVI_low))
+  if (has_ci) {
+    tab[[.ci_label(x$alpha)]] <- .fmt_ci(it$I_CVI_low, it$I_CVI_high, digits)
+  }
+  tab$Pc <- .fmt_p(it$Pc)
+  tab$kappa <- .fmt(it$kappa_mod, digits)
+  .print_table(tab)
+  cat("\n")
+  .say("agree: judges rating the item relevant, out of those who rated it.",
+       "Pc: the probability that this many judges would agree by chance.",
+       "kappa: the modified kappa of Polit, Beck and Owen (2007), the I-CVI",
+       "chance-corrected by Pc.")
+  if (has_ci) {
     cat("\n")
-    cat(strwrap(.proportion_ci_note(x$ci, x$alpha), width = 76), sep = "\n")
+    .say(.proportion_ci_note(x$ci, x$alpha))
   }
-  cat("\nInterpretation should consider panel size, item purpose, and qualitative expert feedback;\n")
-  cat("CVI statistics alone do not establish comprehensive content validity.\n")
+  cat("\n")
+  .say("Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.",
+       "Interpretation should consider panel size, item purpose, and",
+       "qualitative expert feedback; CVI statistics alone do not establish",
+       "comprehensive content validity.")
   invisible(x)
 }

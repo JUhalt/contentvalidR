@@ -236,41 +236,44 @@ compare_rounds <- function(..., labels = NULL) {
 
 #' @export
 print.contentvalid_rounds <- function(x, ...) {
-  cat("Comparison across pretest rounds\n")
-  cat(sprintf("Workflow: %s   Rounds: %d   Units compared: %d\n",
-              x$workflow, x$n_rounds, nrow(x$transitions)))
+  cat("contentvalidR comparison across pretest rounds\n")
+  cat(strrep("-", 46), "\n", sep = "")
+  cat("Workflow: ", x$workflow, " | Rounds: ", x$n_rounds,
+      " | Units compared: ", nrow(x$transitions), "\n", sep = "")
 
   if (!x$comparable) {
     cat("\n!! Rounds were analyzed under different settings.\n")
-    cat(strwrap(paste(
-      "A change in status may reflect the changed rule rather than changed",
-      "evidence. Re-analyze the earlier round under the current settings",
-      "before reporting any change as progress."
-    ), width = 76), sep = "\n")
+    .say("A change in status may reflect the changed rule rather than changed",
+         "evidence. Re-analyze the earlier round under the current settings",
+         "before reporting any change as progress.")
     cat("\nSettings that differ\n")
-    print(x$settings_changes, row.names = FALSE)
+    .print_table(x$settings_changes)
   }
 
   cat("\nStatus by round\n")
-  print(x$transitions, row.names = FALSE)
+  .print_table(x$transitions)
 
   cat("\nRound-to-round summary\n")
-  print(x$summary, row.names = FALSE)
+  s <- x$summary
+  .print_table(data.frame(
+    from = s$from, to = s$to, compared = s$n_compared,
+    unchanged = s$n_unchanged, stronger = s$n_strengthened,
+    weaker = s$n_weakened, added = s$n_added, removed = s$n_removed,
+    `same settings` = ifelse(s$settings_changed, "no", "yes"),
+    stringsAsFactors = FALSE, check.names = FALSE
+  ))
 
   if (x$comparable) {
-    cat(strwrap(paste(
-      "\nSettings were identical across rounds, so these transitions can be",
-      "read as changes in evidence."
-    ), width = 76), sep = "\n")
+    cat("\n")
+    .say("Settings were identical across rounds, so these transitions can be",
+         "read as changes in evidence.")
   }
 
-  cat(strwrap(paste(
-    "\nA status change means the evidence crossed a criterion, not that an item",
-    "improved by a measurable amount. An item sitting near a boundary can move",
-    "on a very small change. Read transitions alongside each round's index",
-    "values."
-  ), width = 76), sep = "\n")
   cat("\n")
+  .say("A status change means the evidence crossed a criterion, not that an",
+       "item improved by a measurable amount. An item sitting near a boundary",
+       "can move on a very small change. Read transitions alongside each",
+       "round's index values.")
   invisible(x)
 }
 
@@ -294,18 +297,19 @@ summary.contentvalid_rounds <- function(object, ...) {
 #' @export
 print.summary.contentvalid_rounds <- function(x, ...) {
   cat("Summary: comparison across pretest rounds\n")
-  cat(sprintf("Workflow: %s   Rounds: %d   Units: %d\n",
-              x$workflow, x$n_rounds, x$n_units))
-  cat(sprintf("Comparable across rounds: %s\n", if (x$comparable) "yes" else "no"))
+  cat("Workflow: ", x$workflow, " | Rounds: ", x$n_rounds, " | Units: ",
+      x$n_units, "\n", sep = "")
+  cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",
+      sep = "")
 
   if (!x$comparable) {
     cat("\nSettings that differ between rounds\n")
-    print(x$settings_changes, row.names = FALSE)
+    .print_table(x$settings_changes)
   }
 
   if (nrow(x$changed)) {
     cat("\nUnits whose status changed\n")
-    print(x$changed, row.names = FALSE)
+    .print_table(x$changed)
   } else {
     cat("\nNo unit changed status between the first and last round.\n")
   }

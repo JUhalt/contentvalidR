@@ -170,44 +170,62 @@ expert_power <- function(n_experts = 3:12,
 }
 
 #' @export
-print.contentvalid_expert_power <- function(x, digits = 3, ...) {
+print.contentvalid_expert_power <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Expert-panel planning\n")
-  cat("Criterion: ", x$settings$method, "\n", sep = "")
-  if (x$settings$criterion == "cvr") {
-    cat(sprintf("Alpha: %s\n", format(x$settings$alpha)))
-  }
-  if (x$settings$response_rate < 1) {
-    cat(sprintf(paste0(
-      "Response rate: %s. Panel sizes are experts invited; the realized panel\n",
-      "is averaged over, including the criterion a smaller panel triggers.\n"),
-      format(x$settings$response_rate)))
+  st <- x$settings
+  cat("contentvalidR expert-panel planning\n")
+  cat(strrep("-", 35), "\n", sep = "")
+  .say("Criterion:", st$method)
+  if (st$criterion == "cvr") cat("Alpha: ", .fmt(st$alpha), "\n", sep = "")
+  if (st$response_rate < 1) {
+    .say(paste0(
+      "Response rate: ", .fmt(st$response_rate), ". Panel sizes are experts ",
+      "invited; the realized panel is averaged over, including the criterion ",
+      "a smaller panel triggers."))
   }
 
+  # One row per panel size and one column per assumed probability, so a
+  # reader compares panel sizes down a column instead of across a long list.
   r <- x$results
-  r$power <- round(r$power, digits)
+  sizes <- sort(unique(r$n_experts))
+  probs <- sort(unique(r$prob))
+  tab <- data.frame(experts = sizes, stringsAsFactors = FALSE)
+  if (st$response_rate >= 1) {
+    req <- r$required_endorsements[match(sizes, r$n_experts)]
+    tab$required <- ifelse(is.na(req), "none", paste0(req, "/", sizes))
+  }
+  for (p in probs) {
+    sel <- r[r$prob == p, , drop = FALSE]
+    tab[[paste("prob =", .fmt(p, digits))]] <-
+      .fmt(sel$power[match(sizes, sel$n_experts)], digits)
+  }
+  cat("\nProbability that an item clears the criterion\n")
+  .print_table(tab)
   cat("\n")
-  print(r, row.names = FALSE)
+  .say(paste0(
+    if (st$response_rate >= 1) {
+      paste0("required: endorsements the criterion needs from the panel",
+             if (any(tab$required == "none")) {
+               " (none: no count reaches the criterion at this size)"
+             }, ". ")
+    },
+    "prob: the probability you assume that one expert endorses the item."
+  ))
 
-  if (x$settings$criterion == "cvi" && x$settings$response_rate >= 1) {
-    small <- r[r$n_experts %in% 3:5, , drop = FALSE]
-    if (nrow(small)) {
-      cat(strwrap(paste(
-        "\nNote the step at six experts. Lynn's criterion requires unanimity",
-        "with three to five experts and allows one disagreement from six, so a",
-        "sixth expert relaxes the criterion while a fourth or fifth makes",
-        "unanimity harder.",
-        "That is a property of the guideline, not of the items."
-      ), width = 76), sep = "\n")
-    }
+  if (st$criterion == "cvi" && st$response_rate >= 1 && any(sizes %in% 3:5)) {
+    cat("\n")
+    .say("Note the step at six experts. Lynn's criterion requires unanimity",
+         "with three to five experts and allows one disagreement from six, so",
+         "a sixth expert relaxes the criterion while a fourth or fifth makes",
+         "unanimity harder. That is a property of the guideline, not of the",
+         "items.")
   }
 
-  cat(strwrap(paste(
-    "\nThis table reports the consequences of the panel sizes you asked about.",
-    "It does not recommend one. `prob` is an assumption you supply, so treat",
-    "the result as conditional on it and report the value you assumed."
-  ), width = 76), sep = "\n")
   cat("\n")
+  .say("This table reports the consequences of the panel sizes you asked",
+       "about. It does not recommend one. `prob` is an assumption you supply,",
+       "so treat the result as conditional on it and report the value you",
+       "assumed.")
   invisible(x)
 }
 
@@ -240,7 +258,7 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
     graphics::points(sub$n_experts, sub$power, pch = (i - 1L) %% 25L + 1L)
   }
   if (isTRUE(show_legend)) {
-    graphics::legend("bottomright", legend = paste("prob =", probs),
+    graphics::legend("bottomright", legend = paste("prob =", .fmt(probs)),
                      lty = (seq_along(probs) - 1L) %% 5L + 1L,
                      pch = (seq_along(probs) - 1L) %% 25L + 1L,
                      bty = "n", cex = 0.7)

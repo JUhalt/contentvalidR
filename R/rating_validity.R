@@ -281,64 +281,95 @@ rating_validity <- function(ratings,
 }
 
 #' @export
-print.contentvalid_rating <- function(x, digits = 3, ...) {
+print.contentvalid_rating <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   r <- x$results
+  s <- x$settings
   cat("contentvalidR construct-rating analysis\n")
   cat(strrep("-", 39), "\n", sep = "")
-  cat("Items:", x$design$n_items, "| Raters:", x$design$n_raters,
-      "| Target scales:", x$design$n_target_scales,
-      "| Constructs:", x$design$n_constructs_observed, "\n")
-  cat("Design: within-judge ratings | Scale:", x$settings$scale_min, "to", x$settings$scale_max, "\n")
-  cat("Item inference:", x$settings$item_inference, "\n")
-  cat("Planned-contrast adjustment:", x$settings$adjust, "\n")
-  cat("Judges:", x$settings$judge_type, "\n\n")
+  cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
+      " | Target constructs: ", x$design$n_target_scales,
+      " | Constructs rated: ", x$design$n_constructs_observed, "\n", sep = "")
+  cat("Design: within-judge ratings on a ", s$scale_min, " to ", s$scale_max,
+      " scale\n", sep = "")
+  .say(paste0("Test: ", s$item_inference, "; planned-contrast adjustment: ",
+              s$adjust, "."))
+  .say(if (identical(s$judge_type, "expert")) {
+    "Judges: content experts."
+  } else {
+    "Judges: naive, meaning drawn from the kind of people who will answer the items."
+  })
+  cat("\n")
 
-  n_retain <- sum(r$recommendation == "Retain")
-  n_review <- sum(r$recommendation == "Review")
-  n_insufficient <- sum(r$recommendation == "Insufficient data")
-  cat(n_retain, "item(s) meet the full item-level screening criterion;",
-      n_review, "item(s) are flagged for review")
-  if (n_insufficient) cat(";", n_insufficient, "item(s) have insufficient data")
-  cat(".\n")
-  if (n_review) cat("Review:", paste(r$item[r$recommendation == "Review"], collapse = ", "), "\n")
+  review <- r$item[r$recommendation == "Review"]
+  insufficient <- r$item[r$recommendation == "Insufficient data"]
+  .say(sum(r$recommendation == "Retain"), "of", nrow(r),
+       "items meet the full item-level screening criterion.")
+  if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
+  if (length(insufficient)) {
+    .say("Insufficient data:", paste(insufficient, collapse = ", "))
+  }
   if (any(r$n_incomplete > 0L)) {
-    cat("Incomplete judge profiles occurred for", sum(r$n_incomplete),
-        "item-judge profile(s); repeated-measures tests use complete judges itemwise.\n")
+    .say("Incomplete judge profiles occurred for", sum(r$n_incomplete),
+         "item-judge profiles; each item's tests use the judges who rated it",
+         "against every construct.")
   }
 
-  cat("\nItem-level evidence:\n")
-  tab <- r[c("item", "target", "n_complete", "strongest_competitor",
-             "htc", "htd", "p_value", "max_contrast_p", "recommendation")]
-  num <- c("htc", "htd", "p_value", "max_contrast_p")
-  tab[num] <- lapply(tab[num], round, digits = digits)
-  print(tab, row.names = FALSE)
+  cat("\nItem-level evidence\n")
+  tab <- data.frame(item = r$item, target = r$target,
+                    decision = r$recommendation, n = r$n_complete,
+                    HTC = .fmt(r$htc, digits), HTD = .fmt(r$htd, digits),
+                    `omnibus p` = .fmt_p(r$p_value),
+                    `contrast p` = .fmt_p(r$max_contrast_p),
+                    competitor = r$strongest_competitor,
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  .print_table(tab)
+  cat("\n")
+  .say("n: judges who rated the item against every construct. omnibus p: do",
+       "the item's ratings differ across constructs (Greenhouse-Geisser",
+       "corrected). contrast p: the largest p among the planned",
+       "target-versus-orbiting contrasts, so every contrast is at or below it.")
 
-  cat("\nTarget-scale Colquitt benchmark summary:\n")
-  s <- x$scale_summary[c("target", "n_items", "n_htc", "n_htd", "mean_htc", "htc_strength",
-                         "mean_htd", "htd_strength", "benchmark_set")]
-  s[c("mean_htc", "mean_htd")] <- lapply(s[c("mean_htc", "mean_htd")], round, digits = digits)
-  print(s, row.names = FALSE)
+  sc <- x$scale_summary
+  cat("\nTarget-scale Colquitt benchmarks\n")
+  sets <- unique(sc$benchmark_set)
+  st <- data.frame(target = sc$target, items = sc$n_items,
+                   `mean HTC` = .fmt(sc$mean_htc, digits), `HTC level` = sc$htc_strength,
+                   `mean HTD` = .fmt(sc$mean_htd, digits), `HTD level` = sc$htd_strength,
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  # Item counts behind each mean are shown only when some items lacked a value.
+  if (any(sc$n_htc != sc$n_items | sc$n_htd != sc$n_items, na.rm = TRUE)) {
+    st$`items with HTC` <- sc$n_htc
+    st$`items with HTD` <- sc$n_htd
+  }
+  if (length(sets) > 1L) st$benchmarks <- sc$benchmark_set
+  .print_table(st)
+  if (length(sets) == 1L) .say("Benchmark set:", sets)
 
-  if (x$settings$judge_type == "expert") {
-    cat("\nColquitt benchmark labels are suppressed because the analysis was marked as using expert judges.\n")
+  cat("\n")
+  if (identical(s$judge_type, "expert")) {
+    .say("Colquitt benchmark labels are suppressed because the analysis was",
+         "marked as using expert judges.")
   } else {
-    cat("\nColquitt labels are empirical percentile norms for scale-level HTC/HTD averages, not universal cutoffs.\n")
-    cat("HTC is an average rating and HTD is a difference between ratings, so they sit on\n")
-    cat("different scales with different typical values. A high HTC can be labeled Weak in\n")
-    cat("the same analysis where a much smaller HTD is labeled Very Strong. Compare each\n")
-    cat("index against its own benchmark, never against the other index's number.\n")
+    .say("Colquitt labels are empirical percentile norms for scale-level HTC",
+         "and HTD averages, not universal cutoffs. HTC is an average rating",
+         "and HTD is a difference between ratings, so they sit on different",
+         "scales with different typical values. A high HTC can be labeled",
+         "Weak in the same analysis where a much smaller HTD is labeled Very",
+         "Strong. Compare each index against its own benchmark, never against",
+         "the other index's number.")
   }
 
   if (.show_key()) {
-    .print_key(c("htc", "htd"))
+    .print_key(c("htc", "htd"), headings = c("HTC", "HTD"))
     .print_status_legend()
-    cat("\nSee `contentvalid_glossary()` for all terms, or set",
-        "\n`options(contentvalidR.show_key = FALSE)` to hide this key.\n")
+    .print_key_footer()
   }
 
-  cat("\n'Review' is not an automatic deletion decision. Consider construct definitions, item wording,\n")
-  cat("orbiting-construct choice, domain coverage, and qualitative judge feedback.\n")
+  cat("\n")
+  .say("'Review' is not an automatic deletion decision. Consider construct",
+       "definitions, item wording, orbiting-construct choice, domain coverage,",
+       "and qualitative judge feedback.")
   invisible(x)
 }
 
@@ -352,38 +383,55 @@ summary.contentvalid_rating <- function(object, ...) {
 }
 
 #' @export
-print.summary.contentvalid_rating <- function(x, digits = 3, ...) {
+print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary of construct-rating content-validity evidence\n")
+  cat("Summary: construct-rating content-validity evidence\n")
   cat(strrep("-", 51), "\n", sep = "")
-  cat("Retain:", x$n_retain, "of", x$n_items, "item(s)\n")
-  cat("Review:", x$n_review, "of", x$n_items, "item(s)\n")
-  if (x$n_insufficient) cat("Insufficient data:", x$n_insufficient, "item(s)\n")
-
-  cat("\nTarget-scale evidence:\n")
-  s <- x$scale_summary[c("target", "n_items", "n_htc", "n_htd", "n_retain", "n_review",
-                         "mean_htc", "htc_strength", "mean_htd", "htd_strength",
-                         "overall_strength")]
-  s[c("mean_htc", "mean_htd")] <- lapply(s[c("mean_htc", "mean_htd")], round, digits = digits)
-  print(s, row.names = FALSE)
-  for (i in seq_len(nrow(x$scale_summary))) {
-    cat("\n", x$scale_summary$target[i], ": ", x$scale_summary$evidence[i], sep = "")
-  }
+  cat("Retain: ", x$n_retain, " of ", x$n_items, " | Review: ", x$n_review,
+      " of ", x$n_items, sep = "")
+  if (x$n_insufficient) cat(" | Insufficient data: ", x$n_insufficient, sep = "")
   cat("\n")
 
-  if (nrow(x$reviewed_items)) {
-    cat("\nItems needing attention:\n")
-    show <- x$reviewed_items[c("item", "target", "strongest_competitor", "htc", "htd",
-                                "p_value", "max_contrast_p", "issue", "recommendation")]
-    num <- c("htc", "htd", "p_value", "max_contrast_p")
-    show[num] <- lapply(show[num], round, digits = digits)
-    print(show, row.names = FALSE)
+  cat("\nScale-level evidence\n")
+  s <- x$scale_summary
+  tab <- data.frame(target = s$target, items = s$n_items,
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  # Counts of items with an HTC or HTD only matter when some item lacked one.
+  if (any(s$n_htc != s$n_items | s$n_htd != s$n_items, na.rm = TRUE)) {
+    tab$`with HTC` <- s$n_htc
+    tab$`with HTD` <- s$n_htd
+  }
+  tab$retain <- s$n_retain
+  tab$review <- s$n_review
+  tab$`mean HTC` <- .fmt(s$mean_htc, digits)
+  tab$`HTC level` <- s$htc_strength
+  tab$`mean HTD` <- .fmt(s$mean_htd, digits)
+  tab$`HTD level` <- s$htd_strength
+  tab$overall <- s$overall_strength
+  .print_table(tab)
+  cat("\n")
+  .say_grouped(s$target, s$evidence)
+
+  f <- x$reviewed_items
+  if (nrow(f)) {
+    cat("\nItems needing attention\n")
+    .print_table(data.frame(
+      item = f$item, target = f$target, decision = f$recommendation,
+      HTC = .fmt(f$htc, digits), HTD = .fmt(f$htd, digits),
+      `omnibus p` = .fmt_p(f$p_value), `contrast p` = .fmt_p(f$max_contrast_p),
+      competitor = f$strongest_competitor,
+      stringsAsFactors = FALSE, check.names = FALSE
+    ))
+    cat("\n")
+    .say_grouped(f$item, f$issue)
   } else {
     cat("\nAll analyzed items met the item-level inferential screening criterion.\n")
   }
 
-  cat("\nInterpret these results alongside theory, domain coverage, and qualitative feedback.\n")
-  cat("The analysis does not by itself establish comprehensiveness or the full content-validity argument.\n")
+  cat("\n")
+  .say("Interpret these results alongside theory, domain coverage, and",
+       "qualitative feedback. The analysis does not by itself establish",
+       "comprehensiveness or the full content-validity argument.")
   invisible(x)
 }
 

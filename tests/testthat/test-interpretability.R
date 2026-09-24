@@ -115,7 +115,7 @@ test_that("printed output explains the shared status vocabulary", {
     # Wrapping inserts run-on whitespace, so match flexibly on the sentence.
     expect_match(out, "not an instruction\\s+to delete anything")
     # Workflow-specific wording must be connected to the shared vocabulary.
-    expect_match(out, "its own wording in the recommendation column")
+    expect_match(out, "its own wording in the decision column")
   }
 })
 

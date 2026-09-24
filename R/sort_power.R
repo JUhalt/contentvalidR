@@ -47,18 +47,34 @@ sort_power <- function(N, true_p, p0 = .5, alpha = .05) {
 }
 
 #' @export
-print.contentvalid_sort_power <- function(x, digits = 3, ...) {
+print.contentvalid_sort_power <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Exact item-sort planning analysis\n")
-  cat(strrep("-", 33), "\n", sep = "")
-  cat(sprintf("Retention rule: p0 = %.2f, alpha = %.3f\n\n", x$settings$p0, x$settings$alpha))
-  tab <- x$table
-  tab[c("true_p", "minimum_observed_psa", "power")] <- lapply(
-    tab[c("true_p", "minimum_observed_psa", "power")], round, digits = digits
-  )
-  print(tab, row.names = FALSE)
-  cat("\nPower is the exact probability of reaching the required target-assignment count\n")
-  cat("under the assumed true target-assignment probability.\n")
+  cat("contentvalidR item-sort planning\n")
+  cat(strrep("-", 32), "\n", sep = "")
+  cat("Retention rule: Howard-Melloy exact test (p0 = ", .fmt(x$settings$p0),
+      ", alpha = ", .fmt(x$settings$alpha), ")\n", sep = "")
+
+  # The required count depends on the panel size only, so it is one column;
+  # power depends on the assumed probability too, so it spreads across columns.
+  t <- x$table
+  sizes <- sort(unique(t$N))
+  first <- t[match(sizes, t$N), , drop = FALSE]
+  tab <- data.frame(judges = sizes,
+                    required = paste0(first$critical_n_target, "/", sizes),
+                    `minimum Psa` = .fmt(first$minimum_observed_psa, digits),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  for (p in sort(unique(t$true_p))) {
+    sel <- t[t$true_p == p, , drop = FALSE]
+    tab[[paste("power at", .fmt(p, digits))]] <-
+      .fmt(sel$power[match(sizes, sel$N)], digits)
+  }
+  cat("\n")
+  .print_table(tab)
+  cat("\n")
+  .say("required: target assignments an item needs to be retained. minimum",
+       "Psa: the same as a proportion. power at p: the exact probability of",
+       "reaching the required count if each judge assigns the item to its",
+       "target with probability p.")
   invisible(x)
 }
 
@@ -127,7 +143,7 @@ plot.contentvalid_sort_power <- function(x,
     graphics::lines(z$N, z$power, type = "b", lty = i, pch = ((i - 1L) %% 6L) + 1L)
   }
   if (isTRUE(show_legend)) {
-    graphics::legend("topleft", legend = paste0("p = ", format(ps, trim = TRUE)),
+    graphics::legend("topleft", legend = paste0("p = ", .fmt(ps)),
                      lty = seq_along(ps), pch = ((seq_along(ps) - 1L) %% 6L) + 1L,
                      bty = "n", cex = 0.72)
   }

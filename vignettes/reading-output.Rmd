@@ -66,22 +66,33 @@ fit_sort <- sort_validity(sorts)
 fit_sort
 ```
 
-Working across the item table:
+The printout opens with a one-line verdict (how many items met the criterion,
+and which were flagged), then one row per item. Working across the item table:
 
-- **`n_target` / `n`** — how many judges put the item where you intended, out of
-  how many judged it. Always read these before the coefficients: an impressive
-  `psa` computed from four judges is not impressive.
-- **`psa`** — the proportion of judges who assigned the item to its intended
-  construct. It answers "did judges recognize what this item is about?"
-- **`competitor`** — the construct judges picked most often *instead*. This is
-  the single most useful diagnostic column in the table, because it tells you
-  *where* a weak item drifted, which points at the fix.
-- **`csv`** — how much more often the item went to its target than to that
-  competitor. An item can have a decent `psa` and a poor `csv` if one rival
+- **decision** — the workflow's verdict for the item, stated first so the
+  numbers after it read as the reasons.
+- **judges** — how many judges put the item where you intended, out of how many
+  judged it (`n_target` and `n` in `results`). Always read this before the
+  coefficients: an impressive Psa computed from four judges is not impressive.
+- **Psa** — the proportion of judges who assigned the item to its intended
+  construct. It answers "did judges recognize what this item is about?" The
+  **95% CI** beside it shows how precisely that proportion is known.
+- **Csv** — how much more often the item went to its target than to its
+  competitor. An item can have a decent Psa and a poor Csv if one rival
   construct keeps attracting it. That pattern means your two construct
   definitions overlap, which is a definitional problem rather than a wording
   problem.
-- **`p_value`** — the Howard-Melloy exact test against chance assignment.
+- **competitor** — the construct judges picked most often *instead*. This is
+  the single most useful diagnostic column in the table, because it tells you
+  *where* a weak item drifted, which points at the fix.
+- **p** — the Howard-Melloy exact test against chance assignment (`p_value` in
+  `results`).
+
+Numbers follow the APA style rules (seventh edition, Section 6.36). A statistic
+that cannot exceed 1, such as a proportion or a *p* value, is printed without a
+leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
+.001 is printed as < .001. The `results` table keeps every value at full
+precision.
 
 The scale-level table adds Colquitt strength labels. These are **percentile
 positions relative to scales published in the literature**, not absolute
@@ -101,18 +112,18 @@ fit_rating$scale_summary[, c("target", "mean_htc", "htc_strength",
                              "mean_htd", "htd_strength")]
 ```
 
-An HTC of about 0.83 is labeled `Weak`, while an HTD of about 0.44 in the same
+An HTC of about .83 is labeled `Weak`, while an HTD of about .44 in the same
 row is labeled `Very Strong`. Read as raw numbers this looks backwards, and it
 is a common source of confusion.
 
 The two indices are not on the same scale and their numbers are not comparable:
 
 - **HTC is an average rating** expressed as a proportion of the scale. Across
-  published scales the Moderate band starts at 0.84 and Very Strong at 0.91, so
-  0.83 genuinely sits low *against that distribution*.
+  published scales the Moderate band starts at .84 and Very Strong at .91, so
+  .83 genuinely sits low *against that distribution*.
 - **HTD is a difference** between the target rating and the best competitor's,
-  so it is much smaller by construction. Its Moderate band starts at 0.18 and
-  Very Strong at 0.35, so 0.44 genuinely sits high.
+  so it is much smaller by construction. Its Moderate band starts at .18 and
+  Very Strong at .35, so .44 genuinely sits high.
 
 Compare each index against its own benchmark. Never compare an HTC number with
 an HTD number, and never treat a benchmark label as a cutoff for retention.
@@ -282,7 +293,7 @@ decision:
 
 > Six items were sorted by 20 naive judges. Four items met the Howard-Melloy
 > exact target-assignment criterion (*p* < .05). Items B2 and C2 did not
-> (*psa* = .65 and .70), and in both cases the competing construct was the
+> (*Psa* = .65 and .70), and in both cases the competing construct was the
 > adjacent scale. Rather than removing them, we revised their wording to
 > sharpen the distinction from that scale and re-sorted.
 
