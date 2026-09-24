@@ -758,10 +758,17 @@ is parked and what would move it into a release.
       as a v0.3 candidate, framed as priors on simple structure (which items
       belong to which construct) whose strength is earned by panel evidence,
       rather than priors on loading size.
-- [ ] **COSMIN content-validity appraisal**
-      ([#16](https://github.com/JUhalt/contentvalidR/issues/16)). Strong evidence
-      (Terwee et al., 2018), but it is a qualitative appraisal framework, and it
-      was developed for patient-reported outcome measures.
+- [x] **COSMIN content-validity appraisal**: decided not to fit the package, and
+      [#16](https://github.com/JUhalt/contentvalidR/issues/16) closed on
+      2026-09-24. COSMIN (Terwee et al., 2018; guideline version 2.0, Mokkink,
+      Elsman & Terwee, 2024) is a method for systematic reviews of existing
+      instruments: reviewers rate study quality, rate evidence against 10
+      criteria, and grade their certainty, all by judgment that cannot be
+      computed from panel ratings. It prefers qualitative evidence, and
+      comprehensibility must come from cognitive interviews with the target
+      population. Its 2024 guideline extends it to social and behavioral
+      outcomes, so the domain was not the reason. Researchers who need a COSMIN
+      appraisal should use COSMIN's own tools.
 - [ ] **Marginal-ML many-facet Rasch estimation.** An established method, but it
       needs a compiled estimation engine, which the dependency policy rules out.
 - [ ] **Hernández-Nieto's content validity coefficient.** Published in a book
