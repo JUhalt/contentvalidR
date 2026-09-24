@@ -41,6 +41,15 @@
 # probability .25.
 .yao_cut <- .30
 
+# A contentvalidR extension, not a published rule, approved by the maintainer
+# and always labeled as one: Yao et al.'s reasoning carried to k constructs as
+# chance plus .05, which is their .30 when k = 4. Undefined below two
+# constructs, where chance is 1.
+.yao_extension_cut <- function(k) {
+  if (is.null(k) || is.na(k) || k < 2L) return(NA_real_)
+  1 / k + .05
+}
+
 # Fleiss (1971): kappa for many raters assigning subjects to nominal
 # categories. `ratings` has raters in rows and subjects in columns. Fleiss's
 # formula needs the same raters on every subject, so a missing rating gives NA.
@@ -65,15 +74,21 @@
   ifelse(is.na(value) | is.na(cut), NA, value >= cut - 1e-9)
 }
 
-.sort_earlier_methods <- function(results, alpha, n_constructs, show) {
+.sort_earlier_methods <- function(results, alpha, n_constructs, show,
+                                  constructs_given = FALSE) {
   m <- .ag_critical_count(results$n, alpha)
   # Compared as counts, n_c - n_o against 2m - N, so no rounding decides.
   ag <- ifelse(is.na(m) | results$n < 1L, NA,
                results$n_target - results$n_other_max >= 2L * m - results$n)
+  ext_cut <- .yao_extension_cut(n_constructs)
   list(
     show = isTRUE(show),
     alpha = alpha,
     n_constructs = n_constructs,
+    # Whether the analyst stated the number offered, or it was counted from
+    # the constructs judges actually used, which can undercount.
+    constructs_given = isTRUE(constructs_given),
+    extension_cut = ext_cut,
     items = data.frame(
       item = results$item,
       target = results$target,
@@ -82,9 +97,12 @@
       csv = results$csv,
       decision = results$recommendation,
       ag_critical_n = m,
-      ag_critical_csv = ifelse(is.na(m), NA_real_, (2 * m - results$n) / results$n),
+      ag_critical_csv = ifelse(is.na(m), NA_real_,
+                               (2 * m - results$n) / results$n),
       ag_meets = ag,
       yao_meets = .meets(results$psa, .yao_cut) & .meets(results$csv, .yao_cut),
+      extension_meets = .meets(results$psa, ext_cut) &
+        .meets(results$csv, ext_cut),
       stringsAsFactors = FALSE
     )
   )
@@ -159,7 +177,8 @@
   # as Wilson's z/sqrt(N) gets three.
   for (c1 in unique(cut[hit])) {
     h <- hit[cut[hit] == c1]
-    shown_cut <- .fmt(c1, if (abs(round(c1, digits) - c1) < 1e-12) digits else 3)
+    exact <- abs(round(c1, digits) - c1) < 1e-12
+    shown_cut <- .fmt(c1, if (exact) digits else 3)
     .say(paste0(
       paste0(items[h], " (", .fmt(value[h], 3), ")", collapse = ", "),
       if (length(h) == 1L) " prints" else " print",
@@ -188,6 +207,11 @@
   if (length(sizes) > 1L) tab$`A&G critical` <- .fmt(it$ag_critical_csv, digits)
   tab$`A&G (1991)` <- .verdict(it$ag_meets)
   tab$`Yao et al. (2008)` <- .verdict(it$yao_meets)
+  # The extension gets its own column only where it differs from Yao's .30.
+  ext_cut <- em$extension_cut
+  show_ext <- !is.null(ext_cut) && !is.na(ext_cut) &&
+    abs(ext_cut - .yao_cut) > 1e-9
+  if (show_ext) tab$`extension*` <- .verdict(it$extension_meets)
   .print_table(tab)
   cat("\n")
 
@@ -204,9 +228,9 @@
              "reaches significance at alpha = ", alpha, ", so their test ",
              "cannot be applied.")
     } else {
-      paste0("Anderson and Gerbing (1991): Csv of at least ", .fmt(crit, digits),
-             ", their critical value for ", sizes, " judges at alpha = ", alpha,
-             " (Equations 5 and 6).")
+      paste0("Anderson and Gerbing (1991): Csv of at least ",
+             .fmt(crit, digits), ", their critical value for ", sizes,
+             " judges at alpha = ", alpha, " (Equations 5 and 6).")
     }, worst_case)
   } else {
     .say("Anderson and Gerbing (1991): Csv of at least the critical value for",
@@ -214,23 +238,48 @@
          worst_case)
   }
   k <- em$n_constructs
-  .say(paste0(
-    "Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a ",
-    "four-domain sort where chance assignment is .25; judges here chose among ",
-    "at least ", k, " construct", if (k != 1L) "s", "."
-  ))
+  counted <- !isTRUE(em$constructs_given)
+  .say("Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a",
+       "four-domain sort where chance assignment is .25.")
+  if (show_ext) {
+    .say(paste0(
+      "* extension: a contentvalidR extension, not a published rule. It ",
+      "carries Yao et al.'s reasoning to this sort's ", k, " constructs as ",
+      "chance plus .05, so Psa and Csv both at least ", .fmt(ext_cut, digits),
+      " (1/", k, " + .05)."
+    ), exdent = 2L)
+  } else if (!is.null(ext_cut) && !is.na(ext_cut)) {
+    .say("With 4 constructs, the contentvalidR extension of this rule to",
+         "other numbers of constructs (chance plus .05) gives the same .30.")
+  }
+  if (counted && !is.null(ext_cut) && !is.na(ext_cut)) {
+    .say(paste0(
+      "The ", k, " constructs are the ones judges used. If more were offered, ",
+      "set `n_constructs`, since chance depends on the number offered."
+    ))
+  }
   supported <- ifelse(it$decision %in% c("Retain", "Review"),
                       it$decision == "Retain", NA)
   ag <- .agreement_count(it$ag_meets, supported)
   yao <- .agreement_count(it$yao_meets, supported)
+  ext <- .agreement_count(it$extension_meets, supported)
   .say(paste0("Agreement with the decision above: Anderson and Gerbing on ",
               ag[["agree"]], " of ", ag[["of"]], " items, Yao et al. on ",
-              yao[["agree"]], " of ", yao[["of"]], "."))
-  # Yao's cut applies to both indices; name whichever one rounding hides.
+              yao[["agree"]], " of ", yao[["of"]],
+              if (show_ext) paste0(", the extension on ", ext[["agree"]],
+                                   " of ", ext[["of"]]),
+              "."))
+  # Each cut applies to both indices; name whichever one rounding hides.
   .rounding_note(it$item, it$psa, rep(.yao_cut, nrow(it)),
                  .meets(it$psa, .yao_cut), "Yao et al. Psa", digits)
   .rounding_note(it$item, it$csv, rep(.yao_cut, nrow(it)),
                  .meets(it$csv, .yao_cut), "Yao et al. Csv", digits)
+  if (show_ext) {
+    .rounding_note(it$item, it$psa, rep(ext_cut, nrow(it)),
+                   .meets(it$psa, ext_cut), "extension Psa", digits)
+    .rounding_note(it$item, it$csv, rep(ext_cut, nrow(it)),
+                   .meets(it$csv, ext_cut), "extension Csv", digits)
+  }
   .say("Csv counts only the single most-chosen rival construct (Anderson &",
        "Gerbing, 1991, p. 734). Pooling every other construct into it instead",
        "gives twice Psa minus one, a different index.")
@@ -290,9 +339,11 @@
            em$lawshe_n_retained, " item", if (em$lawshe_n_retained != 1L) "s",
            ").")
   } else if (anyNA(it$lawshe_minimum)) {
-    "Lawshe's content validity index needs his table to cover every panel size here, so it is not shown."
+    paste("Lawshe's content validity index needs his table to cover every",
+          "panel size here, so it is not shown.")
   } else {
-    "Lawshe's content validity index is not defined here: no item met his minimum."
+    paste("Lawshe's content validity index is not defined here: no item met",
+          "his minimum.")
   })
   invisible(NULL)
 }

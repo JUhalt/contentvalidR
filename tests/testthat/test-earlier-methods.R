@@ -83,6 +83,75 @@ test_that("Yao et al.'s rule needs Psa and Csv both at .30 or more", {
   expect_identical(it$yao_meets, c(FALSE, TRUE, FALSE))
 })
 
+test_that("the chance-plus-.05 extension reproduces Yao et al. at four constructs", {
+  ext <- contentvalidR:::.yao_extension_cut
+  expect_equal(ext(4L), .30)
+  expect_equal(ext(3L), 1 / 3 + .05)
+  expect_equal(ext(10L), .15)
+  expect_true(is.na(ext(1L)))
+  expect_true(is.na(ext(NULL)))
+
+  # Three constructs used: 12 A, 3 B, 5 C gives Psa .60 and Csv .35, which
+  # pass Yao's .30 but not the extension's .383.
+  d <- data.frame(
+    item = rep("I1", 20), rater = 1:20, target_construct = "A",
+    assigned_construct = c(rep("A", 12), rep("B", 3), rep("C", 5)),
+    stringsAsFactors = FALSE
+  )
+  fit <- sort_validity(d)
+  it <- fit$details$earlier_methods$items
+  expect_equal(fit$details$earlier_methods$n_constructs, 3L)
+  expect_equal(it$psa, .60)
+  expect_equal(it$csv, .35)
+  expect_true(it$yao_meets)
+  expect_false(it$extension_meets)
+
+  # Stating that five were offered lowers chance, and the cut, to .25.
+  five <- sort_validity(d, n_constructs = 5)$details$earlier_methods
+  expect_equal(five$extension_cut, .25)
+  expect_true(five$items$extension_meets)
+  expect_true(five$constructs_given)
+  # The count never changes the decision.
+  expect_identical(sort_validity(d, n_constructs = 5)$results, fit$results)
+})
+
+test_that("n_constructs must count every construct judges could choose", {
+  d <- data.frame(
+    item = rep("I1", 10), rater = 1:10, target_construct = "A",
+    assigned_construct = c(rep("A", 6), rep("B", 2), rep("C", 2)),
+    stringsAsFactors = FALSE
+  )
+  expect_error(sort_validity(d, n_constructs = 2), "data use 3 constructs")
+  expect_error(sort_validity(d, n_constructs = 3.5), "whole number")
+  expect_error(sort_validity(d, n_constructs = 1), "at least 2")
+})
+
+test_that("the extension is labeled as one wherever it is printed", {
+  d <- data.frame(
+    item = rep(c("I1", "I2"), each = 20), rater = rep(1:20, 2),
+    target_construct = "A",
+    assigned_construct = c(rep("A", 12), rep("B", 5), rep("C", 3),
+                           rep("A", 15), rep("C", 5)),
+    stringsAsFactors = FALSE
+  )
+  text <- function(...) {
+    gsub("[[:space:]]+", " ", paste(utils::capture.output(
+      print(sort_validity(d, legacy = TRUE, ...))), collapse = " "))
+  }
+  three <- text()
+  expect_match(three, "extension*", fixed = TRUE)
+  expect_match(three, "a contentvalidR extension, not a published rule",
+               fixed = TRUE)
+  expect_match(three, "(1/3 + .05)", fixed = TRUE)
+  expect_match(three, "If more were offered, set `n_constructs`", fixed = TRUE)
+
+  # With four constructs the extension is Yao's rule, so no second column.
+  four <- text(n_constructs = 4)
+  expect_false(grepl("extension*", four, fixed = TRUE))
+  expect_match(four, "gives the same .30", fixed = TRUE)
+  expect_false(grepl("If more were offered", four, fixed = TRUE))
+})
+
 test_that("Anderson and Gerbing's verdict compares counts, so the cutoff itself meets", {
   d <- data.frame(
     item = rep("I1", 20), rater = 1:20, target_construct = "A",
@@ -148,7 +217,9 @@ test_that("the comparison prints only when asked, and print() can override", {
   expect_true(shown(asked))
   expect_true(shown(quiet, legacy = TRUE))
   expect_false(shown(asked, legacy = FALSE))
-  expect_error(print(quiet, legacy = "yes"), "legacy")
+  # A bad argument is refused before anything prints.
+  expect_error(utils::capture.output(print(quiet, legacy = "yes")), "legacy")
+  expect_output(try(print(quiet, legacy = "yes"), silent = TRUE), NA)
 
   expect_true(shown(expert_validity(c(12, 8), mode = "essentiality", N = 12,
                                     legacy = TRUE)))

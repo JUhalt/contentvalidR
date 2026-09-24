@@ -534,6 +534,8 @@ expert_validity <- function(data,
 #' @export
 print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
+  # Checked first, so a bad argument fails before anything is printed.
+  show_earlier <- .show_earlier(x, legacy)
   cat("contentvalidR expert-panel analysis\n")
   cat(strrep("-", 35), "\n", sep = "")
   cat("Mode: ", x$mode, "\n", sep = "")
@@ -626,7 +628,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
 
   # Congruence has no earlier rule to compare, so it never prints a block.
   em <- if (is.list(x$details)) x$details$earlier_methods else NULL
-  if (!is.null(em) && .show_earlier(x, legacy)) {
+  if (!is.null(em) && show_earlier) {
     if (x$mode == "relevance") .print_relevance_earlier(em, digits)
     if (x$mode == "essentiality") .print_essentiality_earlier(em, digits)
   }

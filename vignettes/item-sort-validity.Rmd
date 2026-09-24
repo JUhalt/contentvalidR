@@ -211,6 +211,13 @@ That is the miscalibration in miniature. Yao, Wu and Yang's (2008) .30 cutoffs
 pass every item, because they were set for four domains, where chance is .25;
 with three constructs, chance is already above .30.
 
+The column marked `extension*` is not a published rule. It is this package's
+extension of Yao et al.'s reasoning to any number of constructs, chance plus
+.05, which gives their .30 for four constructs and .38 for these three, and
+the printout labels it that way. Chance depends on how many constructs judges
+were offered, not how many they used, so give `n_constructs` when some
+construct drew no assignments.
+
 ## Reporting
 
 A useful report should include:

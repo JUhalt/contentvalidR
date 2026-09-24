@@ -17,8 +17,13 @@ against the numbers its source prints.
     so when they spread across several constructs it can pass an item the
     exact test does not.
   * Yao, Wu and Yang's (2008) cutoffs, Psa and Csv both at least .30, set for a
-    four-domain sort, with the number of constructs in your sort stated beside
-    them. No rule for other numbers of domains is invented.
+    four-domain sort.
+  * **A labeled package extension** of Yao et al.'s rule to other numbers of
+    constructs: chance plus .05, so Psa and Csv both at least `1/k + .05`,
+    which is their .30 at four. It prints in its own column marked `*` and is
+    described as "a contentvalidR extension, not a published rule". The new
+    `n_constructs` argument states how many constructs judges were offered;
+    by default the package counts the ones they used, and says so.
   * A count of how often each earlier rule agrees with the decision, and a
     note that pooling every rival into Csv gives a different index.
 * **Expert essentiality.** Lawshe's (1975) Table 1 minimum CVR, the

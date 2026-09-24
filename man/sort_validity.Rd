@@ -15,7 +15,8 @@ sort_validity(
   orbiting_r = NULL,
   judge_type = c("naive", "expert"),
   proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
-  legacy = FALSE
+  legacy = FALSE,
+  n_constructs = NULL
 )
 }
 \arguments{
@@ -45,6 +46,11 @@ evidence for each.}
 \item{legacy}{Print the earlier published rules beside the decision, for
 comparison. Default \code{FALSE}. They are computed either way, stored in
 \code{details$earlier_methods}, and never change the decision; \code{print(fit, legacy = TRUE)} shows them for any fit.}
+
+\item{n_constructs}{Optional number of constructs judges could choose among,
+used only by the comparison block's chance-based extension. By default it
+is the number of constructs that appear in the data, which is too few
+when judges were offered a construct none of them chose.}
 }
 \value{
 An object of class \code{contentvalid_sort} and \code{contentvalid_workflow}.
@@ -69,9 +75,10 @@ descriptive benchmarks rather than pass/fail rules.
 }
 \section{Earlier methods, for comparison}{
 
-The decision uses the exact test of Howard and Melloy (2016). Two earlier rules
-are reported beside it for teaching, the way a methods text reports
-eta-squared beside omega-squared, and neither changes the decision:
+The decision uses the exact test of Howard and Melloy (2016). Two earlier
+published rules, and one labeled package extension, are reported beside it
+for teaching, the way a methods text reports eta-squared beside
+omega-squared. None of them changes the decision:
 \itemize{
 \item \strong{Anderson and Gerbing (1991)} judged Csv against a critical value. With
 \code{N} judges, \code{m} is the fewest target assignments whose one-tailed binomial
@@ -84,7 +91,13 @@ the exact test requires. That is why it is not used for the decision.
 \item \strong{Yao, Wu and Yang (2008)} required Psa and Csv both to reach .30, which
 they chose for a four-domain sort, where an item assigned at random lands
 in its domain with probability .25 (p. 486). They give no rule for other
-numbers of domains, and none is applied here.
+numbers of domains.
+\item \strong{A contentvalidR extension, not a published rule.} Yao et al.'s
+reasoning carried to \code{k} constructs as chance plus .05: Psa and Csv both
+at least \code{1/k + .05}, which is their .30 when \code{k = 4}. It is shown in its
+own column, marked as an extension, whenever \code{k} is not 4. \code{k} is
+\code{n_constructs} when given, and otherwise the number of constructs in the
+data.
 }
 
 Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
