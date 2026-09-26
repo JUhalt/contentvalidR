@@ -127,11 +127,13 @@ Nothing exported disappears without warning first.
     replacement.
 
 [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
-supplies one example of each state. Its `posthoc` argument is the
-completed cycle: deprecated in the first release, warning through every
-release to 0.6.0, removed in 0.7.0, both ends recorded in `NEWS.md`. Its
-`posthoc_pass` returned column is the cycle in progress: a duplicate of
-`contrast_pass`, still returned, and documented as going away.
+supplies an example of each kind. Its `posthoc` argument was deprecated
+in the first release, warned through every release to 0.6.0, and was
+removed in 0.7.0. Its `posthoc_pass` returned column, a duplicate of
+`contrast_pass`, could not warn when read, so it was documented as
+deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded
+in `NEWS.md`. No deprecation is in progress, so nothing is carried into
+1.0.
 
 ## Changing a default
 

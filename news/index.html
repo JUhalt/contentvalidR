@@ -46,6 +46,12 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0.9000" id="contentvalidr-0709000-development-version">contentvalidR 0.7.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0709000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="the-last-deprecation-is-completed-before-in-development-0-7-0-9000">The last deprecation is completed before 1.0 (in development)<a class="anchor" aria-label="anchor" href="#the-last-deprecation-is-completed-before-in-development-0-7-0-9000"></a></h3>
+<ul><li>
+<strong>Breaking change: <code><a href="../reference/anova_content.html">anova_content()</a></code> no longer returns <code>posthoc_pass</code>.</strong> It was a duplicate of <code>contrast_pass</code>, documented as deprecated in 0.7.0. The written policy requires one minor release of notice and allows removal in a minor release only before 1.0, so this is the last release that can remove it without waiting for 2.0. Read <code>contrast_pass</code>, which holds the same value. It was the last column, so no other column moves.</li>
+<li>No deprecation is in progress now, so nothing deprecated is carried into 1.0. <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> records both of <code><a href="../reference/anova_content.html">anova_content()</a></code>’s completed cycles.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="earlier-methods-for-comparison-in-development-0-7-0-9000">Earlier methods, for comparison (in development)<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison-in-development-0-7-0-9000"></a></h3>
 <p>For teaching, the way a methods text reports eta-squared beside omega-squared, <code><a href="../reference/sort_validity.html">sort_validity()</a></code> and <code><a href="../reference/expert_validity.html">expert_validity()</a></code> now compute the earlier published rules beside their own. <code>legacy = TRUE</code> prints them under “Earlier methods, for comparison (not used for the decision)”, and <code>print(fit, legacy = TRUE)</code> shows them for any fit. They are stored in <code>details$earlier_methods</code> and never change a decision. Each follows its source as published, and the tests check each against the numbers its source prints.</p>
 <ul><li>
@@ -60,6 +66,13 @@
 <strong>Expert essentiality.</strong> Lawshe’s (1975) Table 1 minimum CVR, the recalculation by Wilson, Pan and Schumsky (2012), <code>z / sqrt(N)</code>, and Lawshe’s content validity index, the mean CVR of the items his table retains. A panel size Lawshe did not tabulate gets no minimum rather than an interpolated one. When a CVR prints equal to a cutoff it misses, such as 8 of 9 (.778) against Lawshe’s .78, the printout says so.</li>
 <li>
 <strong>Expert relevance.</strong> Fleiss’ (1971) kappa on the relevant/not-relevant decision, computed by the package and checked against the irr package, and the benchmarks of Polit and Beck (2006): .90 for S-CVI/Ave, which is the average congruency percentage, and .80 for S-CVI/UA.</li>
+<li>
+<strong>Expert relevance: the content validity coefficient (Ccv) of Hernández-Nieto (2002),</strong> beside Aiken’s V, read from the full text of the book’s chapter. It is shown because it is widely cited, and never informs a decision, because of shortcomings the printout, <code><a href="../reference/expert_validity.html">?expert_validity</a></code> and the expert-panel vignette all set out:
+<ul><li>It uses only each item’s mean, so it cannot reflect agreement, although the book says it does. The book’s own Table 7 gives ratings of 1, 3, 4, 5, 2 and of 3, 3, 3, 3, 3 the same .60.</li>
+<li>Its chance correction, (1/J)^J, depends only on the number of judges. It is .00032 for five of them.</li>
+<li>On a scale starting at 0 it is Aiken’s V; on a scale starting at 1 it cannot fall below one over the maximum.</li>
+<li>Its .80 and .90 bands are not derived, and the book’s own Example 11 calls .7968 acceptable.</li>
+</ul></li>
 <li>The item-sort vignette section that explained why Anderson and Gerbing’s rule was “not exposed” now shows it for comparison, using the shipped example where it and the exact test disagree. The expert-panel vignette shows Lawshe’s anomaly at nine experts.</li>
 </ul></div>
 <div class="section level3">

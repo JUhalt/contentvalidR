@@ -81,12 +81,9 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast
 diagnostics. The full planned-contrast table is stored in
-`attr(result, "contrasts")`. `posthoc_pass` is a **deprecated**
-duplicate of `contrast_pass` and will be removed; read `contrast_pass`.
-It is still returned so that code which reads it keeps working, as the
-deprecation cycle in
-[contentvalidR](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
-requires.
+`attr(result, "contrasts")`. `posthoc_pass`, a duplicate of
+`contrast_pass` deprecated in 0.7.0, was removed in 0.8.0; read
+`contrast_pass`.
 
 ## References
 
@@ -119,7 +116,7 @@ anova_content(d)
 #>     df1_gg   df2_gg         p_gg     p_screen partial_eta2 min_mean_diff
 #> 1 1.894116 20.83528 5.134046e-14 5.134046e-14    0.9461909      2.442440
 #> 2 1.773616 19.50978 6.346279e-12 6.346279e-12    0.9263999      2.184897
-#>   max_contrast_p contrast_pass posthoc_pass
-#> 1   9.296774e-10          TRUE         TRUE
-#> 2   1.444617e-08          TRUE         TRUE
+#>   max_contrast_p contrast_pass
+#> 1   9.296774e-10          TRUE
+#> 2   1.444617e-08          TRUE
 ```

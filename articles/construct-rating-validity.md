@@ -130,11 +130,11 @@ aov_out
 #> 2  0.8090412 1.618082 37.21590 6.097704e-15 6.097704e-15    0.8214606
 #> 3  0.9992587 1.998517 45.96590 6.595204e-16 6.595204e-16    0.7814626
 #> 4  0.9262517 1.852503 42.60758 5.895899e-17 5.895899e-17    0.8248106
-#>   min_mean_diff max_contrast_p contrast_pass posthoc_pass
-#> 1      2.000000   8.344091e-10          TRUE         TRUE
-#> 2      2.458333   1.372752e-10          TRUE         TRUE
-#> 3      2.166667   5.918580e-11          TRUE         TRUE
-#> 4      2.416667   1.786074e-12          TRUE         TRUE
+#>   min_mean_diff max_contrast_p contrast_pass
+#> 1      2.000000   8.344091e-10          TRUE
+#> 2      2.458333   1.372752e-10          TRUE
+#> 3      2.166667   5.918580e-11          TRUE
+#> 4      2.416667   1.786074e-12          TRUE
 attr(aov_out, "contrasts")
 #>   item design target competitor  n mean_target mean_competitor mean_diff
 #> 1   A1 within      A          B 24    4.375000        2.375000  2.000000

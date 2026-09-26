@@ -431,7 +431,19 @@ drops at eight. The exact test needs eight of nine.
 
 In relevance mode, `legacy = TRUE` adds Fleiss’ (1971) kappa on the
 relevant/not-relevant decision and the Polit and Beck (2006) benchmarks
-for S-CVI/Ave and S-CVI/UA.
+for S-CVI/Ave and S-CVI/UA. It also adds the content validity
+coefficient (Ccv) of Hernández-Nieto (2002), which is widely cited,
+beside Aiken’s V. Read it as a cautionary example rather than evidence.
+Ccv is the mean rating divided by the scale maximum, minus a “chance”
+term, (1/J)^J, that depends only on the number of judges and is .00032
+for five of them. So on a scale starting at 0 it is Aiken’s V, and on a
+scale starting at 1 it cannot fall below one over the scale maximum. It
+uses only the mean, so despite the book’s claim it cannot reflect
+agreement: in the book’s own Table 7, ratings of 1, 3, 4, 5, 2 and of 3,
+3, 3, 3, 3 both score .60. Its .80 cutoff is stated without derivation,
+and the book’s own examples do not keep to it.
+[`?expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+sets out each of these with page references.
 
 ## Congruence: item-objective alignment
 
@@ -579,6 +591,10 @@ Statistical Psychology, 61*(1), 29-48.
 Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a
 standard reliability measure for coding data. *Communication Methods and
 Measures, 1*(1), 77-89. <https://doi.org/10.1080/19312450709336664>
+
+Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
+coefficients of proportional variance, content validity and kappa.*
+Universidad de Los Andes.
 
 Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability.*
 Annenberg School for Communication, University of Pennsylvania.

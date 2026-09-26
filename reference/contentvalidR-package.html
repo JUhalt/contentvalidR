@@ -124,11 +124,12 @@ version in which it both runs and tells you what to change.</p></li>
 release from 1.0 onward.</p></li>
 <li><p><code>NEWS.md</code> records both the deprecation and the removal, with the
 replacement.</p></li>
-</ol><p><code><a href="anova_content.html">anova_content()</a></code> supplies one example of each state. Its <code>posthoc</code> argument
-is the completed cycle: deprecated in the first release, warning through
-every release to 0.6.0, removed in 0.7.0, both ends recorded in <code>NEWS.md</code>.
-Its <code>posthoc_pass</code> returned column is the cycle in progress: a duplicate of
-<code>contrast_pass</code>, still returned, and documented as going away.</p>
+</ol><p><code><a href="anova_content.html">anova_content()</a></code> supplies an example of each kind. Its <code>posthoc</code> argument
+was deprecated in the first release, warned through every release to 0.6.0,
+and was removed in 0.7.0. Its <code>posthoc_pass</code> returned column, a duplicate of
+<code>contrast_pass</code>, could not warn when read, so it was documented as
+deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
+<code>NEWS.md</code>. No deprecation is in progress, so nothing is carried into 1.0.</p>
     </div>
     <div class="section level2">
     <h2 id="changing-a-default">Changing a default<a class="anchor" aria-label="anchor" href="#changing-a-default"></a></h2>
