@@ -16,8 +16,10 @@ The package continues to declare `Imports: stats` only.
   meets the I-CVI criterion, as Lynn's (1986) Table 2 says; 0.7.0 required 8.
   `cvi_criterion` now shows each panel size's exact cutoff, such as .875 for
   eight experts, where it showed .78 throughout. Beyond ten experts, where her
-  table stops, the package holds her 7 of 9, which also lowers the requirement
-  by one expert at 18 and 27. Verdicts at other panel sizes are unchanged.
+  table stops, the package holds her 7 of 9. That lowers the requirement by
+  one expert at every multiple of nine (14 of 18, 21 of 27, 28 of 36, and so
+  on) and at some panels above 58. Verdicts at other panel sizes are
+  unchanged.
 * **`judge_validity()`'s influence check.** It removes one judge at a time, so
   a ten-judge panel was checked at nine, where 0.7.0 applied the wrong
   criterion. On a ten-judge panel this could flag every judge as influential.
@@ -186,9 +188,10 @@ every value at full precision.
   experts and every count of agreeing experts.
 * **Beyond ten experts, the criterion is now labeled an extension.** Lynn's
   table stops at ten. The package holds her lowest tabled proportion, 7 of 9,
-  and says so, where before it applied .78 without comment. That also moves
-  the requirement at 18 and 27 experts, where 7/9 falls exactly on a whole
-  count.
+  and says so, where before it applied .78 without comment. That also lowers
+  the requirement by one expert at every multiple of nine, where 7/9 falls
+  exactly on a whole count (14 of 18, 21 of 27, 28 of 36, and so on), and at
+  some panels above 58, where .78 and 7/9 straddle a whole count.
 * The rule lives in one place, stored as Lynn's counts. The three functions
   compare counts of agreeing experts, so no rounding can move an item.
 

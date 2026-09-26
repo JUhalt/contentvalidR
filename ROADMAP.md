@@ -725,7 +725,8 @@ Work: [#64](https://github.com/JUhalt/contentvalidR/pull/64) to
       instructions that passed the whole handoff object to nomologR.
 - [x] Make the I-CVI criterion match Lynn's (1986) table, in counts
       ([#65](https://github.com/JUhalt/contentvalidR/pull/65)). An item
-      endorsed by 7 of 9 experts now meets it, as do 14 of 18 and 21 of 27.
+      endorsed by 7 of 9 experts now meets it, as does 7/9 of any panel that
+      is a multiple of nine, such as 14 of 18.
 - [x] Print every result as a readable report, in APA style
       ([#66](https://github.com/JUhalt/contentvalidR/pull/66)).
 - [x] Show the earlier published rules beside each decision, for comparison
