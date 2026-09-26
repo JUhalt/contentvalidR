@@ -102,6 +102,36 @@
 #'   congruency percentage, for which Polit and Beck (2006) recommend .90 or
 #'   higher, while calling .80 a reasonable, even strict, criterion for
 #'   S-CVI/UA.
+#' * **Relevance: the content validity coefficient (Ccv) of Hernández-Nieto
+#'   (2002).** For
+#'   each item, the mean rating divided by the scale maximum, minus
+#'   \eqn{(1/J)^J} for the \eqn{J} judges who rated it; the total is the mean
+#'   over items (Hernández-Nieto, 2002, pp. 130-137). The book calls a value
+#'   below .80 unacceptable, .80 to .90 satisfactory, and .90 or higher
+#'   excellent (p. 120). It is shown beside Aiken's V because it is widely
+#'   cited, and it never informs a decision here, because of its shortcomings:
+#'   * It uses only each item's mean rating, so it cannot reflect agreement
+#'     among judges, although the book presents it as measuring agreement as
+#'     well as validity (p. 157). The book's own Table 7 (pp. 148-149) gives
+#'     ratings of 1, 3, 4, 5, 2 and of 3, 3, 3, 3, 3 the same .60.
+#'   * The correction for chance, \eqn{(1/J)^J}, is derived by setting the
+#'     probability that a judge gives a score at random to \eqn{1/J}, one over
+#'     the number of judges (p. 136), so it depends on neither the ratings nor
+#'     the number of scale points. It is .037 for three judges, .0039 for four,
+#'     and .00032 for five, so it barely changes the value.
+#'   * On a scale starting at 0, the book's preferred scale (pp. 119-120), Ccv
+#'     before the correction equals Aiken's V. On a scale starting at 1 it
+#'     cannot fall below 1 divided by the scale maximum (the book notes .33 on
+#'     a 1-3 scale, p. 160), so it does not reach 0 even when every judge gives
+#'     the lowest rating. A scale starting below 0 has no Ccv.
+#'   * The .80 and .90 bands come without derivation, a sampling distribution,
+#'     or a test, and the book does not keep to them: its Example 11 labels
+#'     .7968 acceptable (p. 155). The package applies the bands as stated on
+#'     p. 120.
+#'   * The book's tables mix .0032 and .00032 for the five-judge correction.
+#'     The package uses the formula, \eqn{(1/5)^5 = .00032}, which reproduces
+#'     the book's worked totals where they are consistent (for example,
+#'     .33268 and .99968, pp. 146-148).
 #'
 #' @return An object of class `contentvalid_expert` and
 #'   `contentvalid_workflow`. All flagship workflow objects expose the common
@@ -156,6 +186,10 @@
 #'
 #' Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
 #' *Psychological Bulletin, 76*(5), 378-382. \doi{10.1037/h0031619}
+#'
+#' Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
+#' coefficients of proportional variance, content validity and kappa.*
+#' Universidad de Los Andes.
 #'
 #' @examples
 #' relevance <- matrix(
@@ -306,7 +340,12 @@ expert_validity <- function(data,
       design = design,
       details = list(
         cvi = cv, agreement = agree,
-        earlier_methods = .relevance_earlier_methods(B, scale, show = legacy)
+        # The ratings' columns are the items in `item`'s order, which is how
+        # aikens_v() returns them.
+        earlier_methods = .relevance_earlier_methods(
+          B, scale, show = legacy, R = R, items = item$item, lo = lo, hi = hi,
+          V = item$V
+        )
       ),
       legacy = list(scale = scale)
     )

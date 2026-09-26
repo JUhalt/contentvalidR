@@ -535,10 +535,10 @@ anova_content(rating_dat)
 #> 1  0.8571129 1.714226 32.57029 2.109513e-14 2.109513e-14    0.8510417
 #> 2  0.7606524 1.521305 28.90479 1.544388e-10 1.544388e-10    0.7788793
 #> 3  0.9532879 1.906576 36.22494 7.805392e-15 7.805392e-15    0.8321656
-#>   min_mean_diff max_contrast_p contrast_pass posthoc_pass
-#> 1          2.45   4.238082e-10          TRUE         TRUE
-#> 2          2.10   6.543223e-08          TRUE         TRUE
-#> 3          2.45   2.290289e-10          TRUE         TRUE
+#>   min_mean_diff max_contrast_p contrast_pass
+#> 1          2.45   4.238082e-10          TRUE
+#> 2          2.10   6.543223e-08          TRUE
+#> 3          2.45   2.290289e-10          TRUE
 ```
 
 ## Recommended expert-panel workflow
@@ -1244,6 +1244,10 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   critical values for Lawshe’s content validity ratio. *Measurement and
   Evaluation in Counseling and Development, 45*(3), 197–210.
   <https://doi.org/10.1177/0748175612440286>
+- Hernández-Nieto, R. (2002). *Contributions to statistical analysis:
+  The coefficients of proportional variance, content validity and
+  kappa*. Universidad de Los Andes. Shown for comparison only; see
+  `?expert_validity` for its shortcomings.
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
   specialists in the assessment of criterion-referenced test item
   validity. *Dutch Journal of Educational Research, 2*, 49–60.

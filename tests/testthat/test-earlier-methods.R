@@ -258,3 +258,106 @@ test_that("the printed comparison states each rule's source and agreement", {
                paste(utils::capture.output(print(nine)), collapse = " "))
   expect_match(out9, "Item2 (.778) prints at the Lawshe cutoff of .78", fixed = TRUE)
 })
+
+# Hernandez-Nieto (2002): the book's worked examples are the reference, and
+# the tests also pin the shortcomings the documentation claims.
+
+ccv <- contentvalidR:::.ccv
+
+test_that("the Ccv follows the book's formula and reproduces its worked totals", {
+  # Example 3 (pp. 145-146): ten items, five judges all rating 1 on a 1-3
+  # scale. The book gives Ccv_t = .333, p_e = .00032 and Ccv_tc = .33268,
+  # the last from .333 rounded; the formula gives 1/3 - 1/3125.
+  all1 <- matrix(1, 5, 10, dimnames = list(NULL, paste0("I", 1:10)))
+  r1 <- ccv(all1, colnames(all1), lo = 1, hi = 3)
+  expect_equal(r1$pe, rep(1 / 3125, 10))
+  expect_equal(round(mean(r1$ccv), 3), .333)
+  expect_equal(mean(r1$ccv_corrected), 1 / 3 - 1 / 3125)
+
+  # Example 5 (Table 6, pp. 147-148): all rating 3 on a 1-3 scale, which the
+  # book totals as Ccv_t = 1 and Ccv_tc = .99968.
+  all3 <- matrix(3, 5, 10, dimnames = list(NULL, paste0("I", 1:10)))
+  r3 <- ccv(all3, colnames(all3), lo = 1, hi = 3)
+  expect_equal(mean(r3$ccv), 1)
+  expect_equal(mean(r3$ccv_corrected), .99968)
+})
+
+test_that("the Ccv cannot see agreement, as the book's own Table 7 shows", {
+  # Items 01 and 03 of Table 7 (pp. 148-149): the same mean, so the same .60,
+  # although one panel spreads across the scale and the other is unanimous.
+  t7 <- cbind(I01 = c(1, 3, 4, 5, 2), I03 = c(3, 3, 3, 3, 3))
+  r7 <- ccv(t7, colnames(t7), lo = 1, hi = 5)
+  expect_equal(r7$ccv, c(.60, .60))
+  expect_identical(r7$ccv_corrected[1], r7$ccv_corrected[2])
+})
+
+test_that("the Ccv correction depends only on the judges who rated each item", {
+  # p. 132: the term is item-specific when some judges skip an item.
+  R <- cbind(A = c(4, 4, 4, NA), B = c(4, 4, 4, 4))
+  r <- ccv(R, colnames(R), lo = 1, hi = 4)
+  expect_identical(r$J, c(3L, 4L))
+  expect_equal(r$pe, c((1 / 3)^3, (1 / 4)^4))
+  # The same judges, very different ratings: the same correction.
+  s <- ccv(cbind(A = c(1, 4, 1, 4), B = c(4, 4, 4, 4)), c("A", "B"), 1, 4)
+  expect_identical(s$pe[1], s$pe[2])
+})
+
+test_that("from 0 the Ccv is Aiken's V; from 1 it cannot fall below 1/max", {
+  z <- cbind(A = c(5, 5, 4, 5), B = c(3, 4, 3, 2), C = c(0, 1, 0, 1))
+  fit <- expert_validity(z, mode = "relevance", lo = 0, hi = 5,
+                         agreement = "none")
+  expect_equal(fit$details$earlier_methods$ccv$ccv, fit$results$V)
+
+  lowest <- matrix(1, 4, 2, dimnames = list(NULL, c("A", "B")))
+  low <- expert_validity(lowest, mode = "relevance", lo = 1, hi = 4,
+                         agreement = "none")
+  expect_equal(low$details$earlier_methods$ccv$ccv, c(.25, .25))
+  expect_equal(low$results$V, c(0, 0))
+
+  # A scale below 0 has no Ccv.
+  expect_true(all(is.na(ccv(cbind(A = c(-1, 2)), "A", lo = -2, hi = 2)$ccv)))
+})
+
+test_that("the Ccv uses the book's bands as stated on p. 120", {
+  lab <- contentvalidR:::.ccv_label
+  expect_identical(lab(c(.79968, .80, .8999, .90, 1)),
+                   c("unacceptable", "satisfactory", "satisfactory",
+                     "excellent", "excellent"))
+  # Example 11 (p. 155): every judge rates 4 on a 1-5 scale. The book calls
+  # the result, .7968, acceptable; by its own bands it is not.
+  all4 <- matrix(4, 5, 10, dimnames = list(NULL, paste0("I", 1:10)))
+  expect_identical(unique(ccv(all4, colnames(all4), 1, 5)$label),
+                   "unacceptable")
+})
+
+test_that("every place the Ccv appears states its shortcomings", {
+  t7 <- cbind(I01 = c(1, 3, 4, 5, 2), I03 = c(3, 3, 3, 3, 3))
+  fit <- expert_validity(t7, mode = "relevance", lo = 1, hi = 5,
+                         agreement = "none", legacy = TRUE)
+  out <- gsub("[[:space:]]+", " ",
+              paste(utils::capture.output(print(fit)), collapse = " "))
+  expect_match(out, "cannot reflect agreement", fixed = TRUE)
+  expect_match(out, "depends only on the number of judges", fixed = TRUE)
+  expect_match(out, "cannot fall below .20 (1/5)", fixed = TRUE)
+  expect_match(out, "stated without derivation", fixed = TRUE)
+  expect_match(out, "does not decide anything", fixed = TRUE)
+
+  rd_path <- testthat::test_path("..", "..", "man", "expert_validity.Rd")
+  skip_if_not(file.exists(rd_path), "package documentation is not available")
+  rd <- gsub("[[:space:]]+", " ", paste(readLines(rd_path, warn = FALSE),
+                                        collapse = " "))
+  expect_match(rd, "cannot reflect agreement", fixed = TRUE)
+  expect_match(rd, "depends on neither the ratings nor the number of scale",
+               fixed = TRUE)
+  expect_match(rd, "never informs a decision", fixed = TRUE)
+})
+
+test_that("an object saved before the Ccv existed prints without it", {
+  fit <- expert_validity(cbind(A = c(4, 4, 3), B = c(2, 3, 2)),
+                         mode = "relevance", lo = 1, hi = 4,
+                         agreement = "none")
+  fit$details$earlier_methods$ccv <- NULL
+  out <- paste(utils::capture.output(print(fit, legacy = TRUE)), collapse = " ")
+  expect_false(grepl("Ccv", out, fixed = TRUE))
+  expect_match(out, "Fleiss", fixed = TRUE)
+})

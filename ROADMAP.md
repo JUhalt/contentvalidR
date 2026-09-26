@@ -728,14 +728,21 @@ stable together.
   1.0.0, and neither package tags 1.0.0 on its own.
 - After 1.0.0, major versions move together whenever the shared contract
   breaks. Minor versions and patches stay independent.
-- The criteria on nomologR#53, with where contentvalidR stands after 0.7.0:
-  - [ ] the handoff is implemented on both sides, tested against real fixtures
-        from more than one producer version. The producer is done; the reader
-        is nomologR's to finish.
+- The criteria on nomologR#53, with where contentvalidR stands now:
+  - [x] the handoff is implemented on both sides, tested against real fixtures
+        from more than one producer version. The producer shipped in 0.4.0;
+        nomologR's reader
+        ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46), closed)
+        is tested against stored producer output from contentvalidR 0.6.0 and
+        0.7.0.
   - [x] schema version 1 is frozen and becomes a compatibility promise (0.7.0).
-  - [ ] both packages are on CRAN. Waiting on CRAN's review of 0.4.0.
+  - [ ] both packages are on CRAN. Waiting on CRAN's review of 0.4.0, which
+        has been in the `newbies` queue since 2026-09-18, and on nomologR's
+        first submission.
   - [x] both public APIs are stable, under a written deprecation policy, as far
-        as this package goes (0.7.0).
+        as this package goes (0.7.0). The last deprecation in flight,
+        `anova_content()`'s `posthoc_pass` column, is removed for 0.8.0, so
+        nothing deprecated is carried into 1.0.
   - [x] there is a joint walkthrough from content review to empirical
         validation (0.7.0).
   - [ ] the two releases go out on the same day, each linking the other.
@@ -771,9 +778,15 @@ is parked and what would move it into a release.
       appraisal should use COSMIN's own tools.
 - [ ] **Marginal-ML many-facet Rasch estimation.** An established method, but it
       needs a compiled estimation engine, which the dependency policy rules out.
-- [ ] **Hernández-Nieto's content validity coefficient.** Published in a book
-      with a fixed 0.80 cutoff, and close to Aiken's V, which is already
-      implemented.
+- [x] **Hernández-Nieto's content validity coefficient (Ccv)**: added for
+      comparison only, beside Aiken's V in `expert_validity(legacy = TRUE)`,
+      after reading the full text (Hernández-Nieto, 2002, pp. 111-160). It
+      never decides anything: it uses only the mean rating, so it cannot
+      reflect agreement despite the book's claim; its chance correction,
+      (1/J)^J, ignores the ratings and the number of scale points; on a scale
+      starting at 0 it is Aiken's V; and its .80 and .90 bands are not derived,
+      nor kept to by the book's own examples. `?expert_validity` documents
+      each shortcoming with page references.
 - [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
       aggregating group ratings; no content-validity application was verified.
 - [ ] Interactive teaching applications, a methodological package paper, and
