@@ -12,7 +12,7 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.7.0.**
+**Current stable release: 0.8.0.**
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -1246,8 +1246,8 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   <https://doi.org/10.1177/0748175612440286>
 - Hernández-Nieto, R. (2002). *Contributions to statistical analysis:
   The coefficients of proportional variance, content validity and
-  kappa*. Universidad de Los Andes. Shown for comparison only; see
-  `?expert_validity` for its shortcomings.
+  kappa*. BookSurge. Shown for comparison only; see `?expert_validity`
+  for its shortcomings.
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
   specialists in the assessment of criterion-referenced test item
   validity. *Dutch Journal of Educational Research, 2*, 49–60.
