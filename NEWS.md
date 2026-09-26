@@ -47,6 +47,21 @@ against the numbers its source prints.
   decision, computed by the package and checked against the irr package, and
   the benchmarks of Polit and Beck (2006): .90 for S-CVI/Ave, which is the
   average congruency percentage, and .80 for S-CVI/UA.
+* **Expert relevance: the content validity coefficient (Ccv) of
+  Hernández-Nieto (2002),** beside Aiken's V, read from the full text of the
+  book's chapter.
+  It is shown because it is widely cited, and never informs a decision,
+  because of shortcomings the printout, `?expert_validity` and the
+  expert-panel vignette all set out:
+  * It uses only each item's mean, so it cannot reflect agreement, although
+    the book says it does. The book's own Table 7 gives ratings of 1, 3, 4,
+    5, 2 and of 3, 3, 3, 3, 3 the same .60.
+  * Its chance correction, (1/J)^J, depends only on the number of judges. It
+    is .00032 for five of them.
+  * On a scale starting at 0 it is Aiken's V; on a scale starting at 1 it
+    cannot fall below one over the maximum.
+  * Its .80 and .90 bands are not derived, and the book's own Example 11
+    calls .7968 acceptable.
 * The item-sort vignette section that explained why Anderson and Gerbing's rule
   was "not exposed" now shows it for comparison, using the shipped example
   where it and the exact test disagree. The expert-panel vignette shows

@@ -136,13 +136,51 @@
   )
 }
 
-.relevance_earlier_methods <- function(B, scale, show) {
+# Hernandez-Nieto (2002, pp. 130-137): the content validity coefficient. For
+# each item, the mean rating divided by the scale maximum, minus (1/J)^J for
+# the J judges who rated it (p. 132 makes the term item-specific when judges
+# skip items); the total is the mean over items (p. 130). The bands are the
+# book's (p. 120). It is shown for comparison only, with its shortcomings: it
+# uses only the mean, so it cannot reflect agreement; (1/J)^J ignores the
+# ratings and the number of scale points; and the bands are not derived. It
+# needs a scale that starts at 0 or above, as the book's do.
+.ccv <- function(R, items, lo, hi) {
+  M <- as.matrix(R)
+  J <- colSums(!is.na(M))
+  mean_rating <- ifelse(J > 0, colSums(M, na.rm = TRUE) / pmax(J, 1L), NA_real_)
+  usable <- lo >= 0 && hi > 0
+  ccv <- if (usable) ifelse(J > 0, mean_rating / hi, NA_real_) else
+    rep(NA_real_, ncol(M))
+  pe <- ifelse(J > 0, (1 / J)^J, NA_real_)
+  data.frame(item = items, J = as.integer(J), mean = mean_rating, ccv = ccv,
+             pe = pe, ccv_corrected = ccv - pe,
+             label = .ccv_label(ccv - pe), stringsAsFactors = FALSE)
+}
+
+.ccv_label <- function(x) {
+  ifelse(is.na(x), NA_character_,
+         ifelse(.meets(x, .90), "excellent",
+                ifelse(.meets(x, .80), "satisfactory", "unacceptable")))
+}
+
+.relevance_earlier_methods <- function(B, scale, show, R = NULL,
+                                       items = NULL, lo = NULL, hi = NULL,
+                                       V = NULL) {
+  ccv <- if (!is.null(R)) .ccv(R, items, lo, hi) else NULL
+  if (!is.null(ccv)) ccv$V <- V
+  total <- if (is.null(ccv) || all(is.na(ccv$ccv_corrected))) NA_real_ else
+    mean(ccv$ccv_corrected, na.rm = TRUE)
   list(
     show = isTRUE(show),
     fleiss_kappa = .fleiss_kappa(B),
     complete = !anyNA(B),
     S_CVI_Ave = scale$S_CVI_Ave,
-    S_CVI_UA = scale$S_CVI_UA
+    S_CVI_UA = scale$S_CVI_UA,
+    ccv = ccv,
+    ccv_total = total,
+    ccv_total_label = .ccv_label(total),
+    lo = lo,
+    hi = hi
   )
 }
 
@@ -366,5 +404,75 @@
     "higher for it, and call .80 a reasonable, even strict, criterion for ",
     "S-CVI/UA (", .fmt(em$S_CVI_UA, digits), ")."
   ))
+  .print_ccv(em, digits)
+  invisible(NULL)
+}
+
+# Objects saved before the Ccv existed carry no `ccv`, and print without it.
+.print_ccv <- function(em, digits) {
+  cc <- em$ccv
+  if (is.null(cc) || !nrow(cc)) return(invisible(NULL))
+  author <- "Hernández-Nieto (2002)"
+  cat("\n")
+  if (all(is.na(cc$ccv))) {
+    .say(paste0("The content validity coefficient of ", author, " needs a ",
+                "rating scale that starts at 0 or above; this one starts at ",
+                format(em$lo), ", so it is not shown."))
+    return(invisible(NULL))
+  }
+  .say(paste0("The content validity coefficient (Ccv) of ", author,
+              ", with Aiken's V beside it"))
+  tab <- data.frame(item = cc$item, V = .fmt(cc$V, digits),
+                    Ccv = .fmt(cc$ccv_corrected, digits),
+                    `book label` = ifelse(is.na(cc$label), "NA", cc$label),
+                    stringsAsFactors = FALSE, check.names = FALSE)
+  .print_table(tab)
+  cat("\n")
+  .say(paste0("Total Ccv, the mean over items: ",
+              .fmt(em$ccv_total, digits), " (", em$ccv_total_label, ")."))
+  .say(paste0(
+    "Ccv is the mean rating divided by the scale maximum (", format(em$hi),
+    " here), minus (1/J)^J for the J judges who rated the item. The book ",
+    "calls below .80 unacceptable and .90 or higher excellent."
+  ))
+  .rounding_note(cc$item, cc$ccv_corrected, rep(.80, nrow(cc)),
+                 .meets(cc$ccv_corrected, .80), "Ccv", digits)
+  .rounding_note(cc$item, cc$ccv_corrected, rep(.90, nrow(cc)),
+                 .meets(cc$ccv_corrected, .90), "Ccv", digits)
+
+  # Its shortcomings, printed wherever it is.
+  # Two significant digits, since the term shrinks fast: .037 for three
+  # judges, .0039 for four, .00032 for five.
+  small <- function(x) {
+    ifelse(x < .0001, "below .0001",
+           sub("^0[.]", ".", formatC(x, format = "fg", digits = 2)))
+  }
+  pe <- unique(cc$pe[!is.na(cc$pe)])
+  pe_text <- if (length(pe) == 1L) small(pe) else
+    paste(small(max(pe)), "to", small(min(pe)))
+  .say("Its shortcomings, which is why it does not decide anything here:")
+  .say(paste(
+    "* It uses only the mean rating, so it cannot reflect agreement,",
+    "although the book presents it as measuring agreement too: in its own",
+    "Table 7, ratings of 1, 3, 4, 5, 2 and of 3, 3, 3, 3, 3 both get .60."
+  ), exdent = 2L)
+  .say(paste0(
+    "* The correction for chance, (1/J)^J, depends only on the number of ",
+    "judges, not on the ratings or the number of scale points, and is ",
+    pe_text, " here."
+  ), exdent = 2L)
+  .say(if (isTRUE(em$lo == 0)) {
+    paste("* On a scale starting at 0, as here, Ccv before the correction is",
+          "Aiken's V.")
+  } else {
+    paste0("* On a scale starting at ", format(em$lo), ", as here, it ",
+           "cannot fall below ", .fmt(em$lo / em$hi, digits), " (",
+           format(em$lo), "/", format(em$hi), "), so unlike Aiken's V it does ",
+           "not reach 0 when every judge gives the lowest rating.")
+  }, exdent = 2L)
+  .say(paste(
+    "* The .80 and .90 bands are stated without derivation or a test, and",
+    "the book does not keep to them: its Example 11 calls .7968 acceptable."
+  ), exdent = 2L)
   invisible(NULL)
 }

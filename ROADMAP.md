@@ -778,9 +778,15 @@ is parked and what would move it into a release.
       appraisal should use COSMIN's own tools.
 - [ ] **Marginal-ML many-facet Rasch estimation.** An established method, but it
       needs a compiled estimation engine, which the dependency policy rules out.
-- [ ] **Hernández-Nieto's content validity coefficient.** Published in a book
-      with a fixed 0.80 cutoff, and close to Aiken's V, which is already
-      implemented.
+- [x] **Hernández-Nieto's content validity coefficient (Ccv)**: added for
+      comparison only, beside Aiken's V in `expert_validity(legacy = TRUE)`,
+      after reading the full text (Hernández-Nieto, 2002, pp. 111-160). It
+      never decides anything: it uses only the mean rating, so it cannot
+      reflect agreement despite the book's claim; its chance correction,
+      (1/J)^J, ignores the ratings and the number of scale points; on a scale
+      starting at 0 it is Aiken's V; and its .80 and .90 bands are not derived,
+      nor kept to by the book's own examples. `?expert_validity` documents
+      each shortcoming with page references.
 - [ ] **rWG within-group agreement** (James, Demaree & Wolf, 1984). Designed for
       aggregating group ratings; no content-validity application was verified.
 - [ ] Interactive teaching applications, a methodological package paper, and
