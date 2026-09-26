@@ -412,7 +412,7 @@
 .print_ccv <- function(em, digits) {
   cc <- em$ccv
   if (is.null(cc) || !nrow(cc)) return(invisible(NULL))
-  author <- "Hernández-Nieto (2002)"
+  author <- "Hern\u00e1ndez-Nieto (2002)"
   cat("\n")
   if (all(is.na(cc$ccv))) {
     .say(paste0("The content validity coefficient of ", author, " needs a ",
