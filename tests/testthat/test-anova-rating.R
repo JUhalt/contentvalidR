@@ -8,7 +8,6 @@ test_that("anova_content uses repeated-measures ANOVA for crossed ratings", {
   expect_equal(out$n_complete, 8L)
   expect_true(out$p < .001)
   expect_true(out$contrast_pass)
-  expect_true(out$posthoc_pass)
   expect_true(out$min_mean_diff > 0)
   expect_equal(nrow(attr(out, "contrasts")), 2L)
 })
@@ -57,13 +56,14 @@ test_that("the removed posthoc argument is an error, not a silent no-op", {
   expect_silent(anova_content(d, target_map = c(I1 = "A")))
 })
 
-test_that("posthoc_pass still tracks contrast_pass while it is deprecated", {
+test_that("the removed posthoc_pass column is gone, and contrast_pass remains", {
+  # Documented as deprecated in 0.7.0 and removed in 0.8.0. It was the last
+  # column, so no other column moved when it went.
   d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
   d$rating <- c(5,4,5,4,2,2,1,2)
   out <- anova_content(d, target_map = c(I1 = "A"))
-  expect_identical(out$posthoc_pass, out$contrast_pass)
-  # It goes last, so removing it cannot shift another column's position.
-  expect_identical(names(out)[length(names(out))], "posthoc_pass")
+  expect_false("posthoc_pass" %in% names(out))
+  expect_identical(names(out)[length(names(out))], "contrast_pass")
 })
 
 

@@ -1,5 +1,16 @@
 # contentvalidR 0.7.0.9000 (development version)
 
+## The last deprecation is completed before 1.0 (in development)
+
+* **Breaking change: `anova_content()` no longer returns `posthoc_pass`.** It
+  was a duplicate of `contrast_pass`, documented as deprecated in 0.7.0. The
+  written policy requires one minor release of notice and allows removal in a
+  minor release only before 1.0, so this is the last release that can remove
+  it without waiting for 2.0. Read `contrast_pass`, which holds the same
+  value. It was the last column, so no other column moves.
+* No deprecation is in progress now, so nothing deprecated is carried into
+  1.0. `?contentvalidR` records both of `anova_content()`'s completed cycles.
+
 ## Earlier methods, for comparison (in development)
 
 For teaching, the way a methods text reports eta-squared beside omega-squared,

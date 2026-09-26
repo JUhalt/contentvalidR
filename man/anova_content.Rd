@@ -45,10 +45,8 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 The full planned-contrast table is stored in \code{attr(result, "contrasts")}.
-\code{posthoc_pass} is a \strong{deprecated} duplicate of \code{contrast_pass} and will
-be removed; read \code{contrast_pass}. It is still returned so that code which
-reads it keeps working, as the deprecation cycle in \link{contentvalidR}
-requires.
+\code{posthoc_pass}, a duplicate of \code{contrast_pass} deprecated in 0.7.0, was
+removed in 0.8.0; read \code{contrast_pass}.
 }
 \description{
 For each item, evaluates whether definitional-correspondence ratings differ

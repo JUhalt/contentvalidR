@@ -38,10 +38,8 @@
 #'   Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 #'   within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 #'   The full planned-contrast table is stored in `attr(result, "contrasts")`.
-#'   `posthoc_pass` is a **deprecated** duplicate of `contrast_pass` and will
-#'   be removed; read `contrast_pass`. It is still returned so that code which
-#'   reads it keeps working, as the deprecation cycle in [contentvalidR]
-#'   requires.
+#'   `posthoc_pass`, a duplicate of `contrast_pass` deprecated in 0.7.0, was
+#'   removed in 0.8.0; read `contrast_pass`.
 #'
 #' @references
 #' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
@@ -182,10 +180,6 @@ anova_content <- function(ratings,
       min_mean_diff = min_diff,
       max_contrast_p = max_p,
       contrast_pass = contrast_pass,
-      # Deprecated duplicate of contrast_pass, kept because the deprecation
-      # cycle requires a release in which reading it still works (#60). It is
-      # last so that removing it cannot move another column.
-      posthoc_pass = contrast_pass,
       stringsAsFactors = FALSE
     )
   }

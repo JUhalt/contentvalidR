@@ -65,16 +65,17 @@ test_that("both deprecation examples the policy cites are in the state it claims
     "unused argument"
   )
 
-  # The cycle in progress: `posthoc_pass` is still returned and still correct,
-  # because step 1 requires a release in which reading it keeps working.
-  expect_true("posthoc_pass" %in% names(fit))
-  expect_identical(fit$posthoc_pass, fit$contrast_pass)
-
-  # A deprecated field that is not documented as deprecated has not started
-  # its clock, which is the failure this whole section exists to prevent.
+  # The second completed cycle: `posthoc_pass` was documented as deprecated in
+  # 0.7.0, the one minor release of notice step 2 requires, and removed in
+  # 0.8.0, the last minor release before 1.0 would lock it in until 2.0.
+  expect_false("posthoc_pass" %in% names(fit))
+  expect_true("contrast_pass" %in% names(fit))
   rd <- rd_text("anova_content.Rd")
-  expect_match(rd, "posthoc_pass")
-  expect_match(rd, "deprecated")
+  expect_match(rd, "removed in 0.8.0", fixed = TRUE)
+
+  # With both cycles complete, the policy says nothing is carried into 1.0.
+  expect_match(gsub("[[:space:]]+", " ", policy_text()),
+               "No deprecation is in progress", fixed = TRUE)
 })
 
 test_that("the status vocabulary the policy promises is what workflows use", {

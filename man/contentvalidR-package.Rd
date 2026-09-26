@@ -68,11 +68,12 @@ release from 1.0 onward.
 replacement.
 }
 
-\code{anova_content()} supplies one example of each state. Its \code{posthoc} argument
-is the completed cycle: deprecated in the first release, warning through
-every release to 0.6.0, removed in 0.7.0, both ends recorded in \code{NEWS.md}.
-Its \code{posthoc_pass} returned column is the cycle in progress: a duplicate of
-\code{contrast_pass}, still returned, and documented as going away.
+\code{anova_content()} supplies an example of each kind. Its \code{posthoc} argument
+was deprecated in the first release, warned through every release to 0.6.0,
+and was removed in 0.7.0. Its \code{posthoc_pass} returned column, a duplicate of
+\code{contrast_pass}, could not warn when read, so it was documented as
+deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
+\code{NEWS.md}. No deprecation is in progress, so nothing is carried into 1.0.
 }
 
 \section{Changing a default}{
