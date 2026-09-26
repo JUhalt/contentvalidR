@@ -1,6 +1,6 @@
 # contentvalidR
 
-**Current stable release: 0.7.0.**
+**Current stable release: 0.8.0.**
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -1298,7 +1298,7 @@ and
   <https://doi.org/10.1177/0748175612440286>
 - Hernández-Nieto, R. (2002). *Contributions to statistical analysis:
   The coefficients of proportional variance, content validity and
-  kappa*. Universidad de Los Andes. Shown for comparison only; see
+  kappa*. BookSurge. Shown for comparison only; see
   [`?expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   for its shortcomings.
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content

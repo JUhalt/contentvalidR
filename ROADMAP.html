@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -392,6 +392,19 @@
 </ul><p>CRAN: unchanged. 0.4.0 is still in review, so 0.7.0 is not submitted; whichever version is current when 0.4.0 resolves goes to CRAN as the update, from its own tag.</p>
 <hr></div>
 <div class="section level2">
+<h2 id="v080---reading-the-output-and-the-literature-correctly">v0.8.0 - Reading the output and the literature correctly<a class="anchor" aria-label="anchor" href="#v080---reading-the-output-and-the-literature-correctly"></a></h2>
+<p><strong>Status:</strong> Released (0.8.0 on 2026-09-26, on GitHub and R-universe) <strong>Version:</strong> <code>0.8.0</code></p>
+<p>Work: <a href="https://github.com/JUhalt/contentvalidR/pull/64" class="external-link">#64</a> to <a href="https://github.com/JUhalt/contentvalidR/pull/70" class="external-link">#70</a>.</p>
+<ul class="task-list"><li><label><input type="checkbox" checked>Cite every source where its method is used, and put every cited source on the public reference list (<a href="https://github.com/JUhalt/contentvalidR/pull/64" class="external-link">#64</a>). Fixed three instructions that passed the whole handoff object to nomologR.</label></li>
+<li><label><input type="checkbox" checked>Make the I-CVI criterion match Lynn’s (1986) table, in counts (<a href="https://github.com/JUhalt/contentvalidR/pull/65" class="external-link">#65</a>). An item endorsed by 7 of 9 experts now meets it, as does 7/9 of any panel that is a multiple of nine, such as 14 of 18.</label></li>
+<li><label><input type="checkbox" checked>Print every result as a readable report, in APA style (<a href="https://github.com/JUhalt/contentvalidR/pull/66" class="external-link">#66</a>).</label></li>
+<li><label><input type="checkbox" checked>Show the earlier published rules beside each decision, for comparison (<a href="https://github.com/JUhalt/contentvalidR/pull/67" class="external-link">#67</a>), with one labeled package extension (Yao et al.’s rule generalized as chance plus .05).</label></li>
+<li><label><input type="checkbox" checked>Decide COSMIN (<a href="https://github.com/JUhalt/contentvalidR/pull/68" class="external-link">#68</a>): it does not fit.</label></li>
+<li><label><input type="checkbox" checked>Stop tracking the pkgdown site, which CI builds (<a href="https://github.com/JUhalt/contentvalidR/pull/69" class="external-link">#69</a>).</label></li>
+<li><label><input type="checkbox" checked>Complete the last deprecation, and add Hernández-Nieto’s (2002) Ccv for comparison with its shortcomings documented (<a href="https://github.com/JUhalt/contentvalidR/pull/70" class="external-link">#70</a>).</label></li>
+</ul><p>CRAN: unchanged. 0.4.0 is still in review, so 0.8.0 is not submitted; whichever version is current when 0.4.0 resolves goes to CRAN as the update, from its own tag.</p>
+<hr></div>
+<div class="section level2">
 <h2 id="v100---joint-stable-release-with-nomologr-proposed">v1.0.0 - Joint stable release with nomologR (proposed)<a class="anchor" aria-label="anchor" href="#v100---joint-stable-release-with-nomologr-proposed"></a></h2>
 <p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> agreed jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it, with this package’s progress.</p>
 <p>contentvalidR and nomologR are the two halves of scale development: content review, then empirical validation. They are joined by the handoff schema on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The target is for both to release 1.0.0 together, so the version number tells users the pair is stable together.</p>
@@ -401,7 +414,7 @@
 <ul class="task-list"><li><label><input type="checkbox" checked>the handoff is implemented on both sides, tested against real fixtures from more than one producer version. The producer shipped in 0.4.0; nomologR’s reader (<a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>, closed) is tested against stored producer output from contentvalidR 0.6.0 and 0.7.0.</label></li>
 <li><label><input type="checkbox" checked>schema version 1 is frozen and becomes a compatibility promise (0.7.0).</label></li>
 <li><label><input type="checkbox">both packages are on CRAN. Waiting on CRAN’s review of 0.4.0, which has been in the <code>newbies</code> queue since 2026-09-18, and on nomologR’s first submission.</label></li>
-<li><label><input type="checkbox" checked>both public APIs are stable, under a written deprecation policy, as far as this package goes (0.7.0). The last deprecation in flight, <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc_pass</code> column, is removed for 0.8.0, so nothing deprecated is carried into 1.0.</label></li>
+<li><label><input type="checkbox" checked>both public APIs are stable, under a written deprecation policy, as far as this package goes (0.7.0). The last deprecation in flight, <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc_pass</code> column, was removed in 0.8.0, so nothing deprecated is carried into 1.0.</label></li>
 <li><label><input type="checkbox" checked>there is a joint walkthrough from content review to empirical validation (0.7.0).</label></li>
 <li><label><input type="checkbox">the two releases go out on the same day, each linking the other.</label></li>
 </ul></li>

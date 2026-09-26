@@ -594,7 +594,7 @@ Measures, 1*(1), 77-89. <https://doi.org/10.1080/19312450709336664>
 
 Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
 coefficients of proportional variance, content validity and kappa.*
-Universidad de Los Andes.
+BookSurge.
 
 Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability.*
 Annenberg School for Communication, University of Pennsylvania.

@@ -243,7 +243,7 @@ raters. *Psychological Bulletin, 76*(5), 378-382.
 
 Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
 coefficients of proportional variance, content validity and kappa.*
-Universidad de Los Andes.
+BookSurge.
 
 ## Examples
 

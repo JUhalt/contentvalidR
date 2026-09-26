@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,15 +44,31 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.7.0.9000" id="contentvalidr-0709000-development-version">contentvalidR 0.7.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0709000-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.0" id="contentvalidr-080">contentvalidR 0.8.0<a class="anchor" aria-label="anchor" href="#contentvalidr-080"></a></h2>
+<p>Eighth public release. v0.8.0 is about reading the output and the literature correctly. Every printed result now reads as a report in APA style, every source is cited where its method is used, and the earlier published rules can be shown beside each decision for teaching, each with its shortcomings stated. One criterion now matches its source, and the last deprecation is completed, so nothing deprecated is carried into 1.0.</p>
+<p>The package continues to declare <code>Imports: stats</code> only.</p>
+<p><strong>Results that change.</strong> Values computed by 0.7.0 and 0.8.0 were compared on 25 analyses spanning every workflow. The only differences are these:</p>
+<ul><li>
+<strong>Lynn’s criterion at nine experts.</strong> An item endorsed by 7 of 9 experts now meets the I-CVI criterion, as Lynn’s (1986) Table 2 says; 0.7.0 required 8. <code>cvi_criterion</code> now shows each panel size’s exact cutoff, such as .875 for eight experts, where it showed .78 throughout. Beyond ten experts, where her table stops, the package holds her 7 of 9. That lowers the requirement by one expert at every multiple of nine (14 of 18, 21 of 27, 28 of 36, and so on) and at some panels above 58. Verdicts at other panel sizes are unchanged.</li>
+<li>
+<strong><code><a href="../reference/judge_validity.html">judge_validity()</a></code>’s influence check.</strong> It removes one judge at a time, so a ten-judge panel was checked at nine, where 0.7.0 applied the wrong criterion. On a ten-judge panel this could flag every judge as influential. It now applies Lynn’s.</li>
+<li>
+<strong>A label.</strong> A judge whose fit falls below the range is now <code>Too predictable</code>, not <code>Erratic</code>. The status is <code>Review</code> either way.</li>
+<li>
+<strong>One removed column.</strong> <code><a href="../reference/anova_content.html">anova_content()</a></code> no longer returns <code>posthoc_pass</code>; read <code>contrast_pass</code>, which holds the same value.</li>
+<li>
+<strong>Handoff rule text</strong> reads as counts and APA numbers. The schema is unchanged.</li>
+</ul><p><strong>One display default changes.</strong> Print methods now default to <code>digits = 2</code>, as APA reports statistics; <code>print(x, digits = 3)</code> restores the previous precision. Stored values are unaffected.</p>
+<p>New arguments: <code>sort_validity(legacy = , n_constructs = )</code>, <code>expert_validity(legacy = )</code>, and <code>legacy</code> in their <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods.</p>
+<p>Published on GitHub and R-universe. 0.4.0 is still in CRAN’s review queue, and CRAN policy asks that no further version be submitted while one is pending.</p>
 <div class="section level3">
-<h3 id="the-last-deprecation-is-completed-before-in-development-0-7-0-9000">The last deprecation is completed before 1.0 (in development)<a class="anchor" aria-label="anchor" href="#the-last-deprecation-is-completed-before-in-development-0-7-0-9000"></a></h3>
+<h3 id="the-last-deprecation-is-completed-before-0-8-0">The last deprecation is completed before 1.0<a class="anchor" aria-label="anchor" href="#the-last-deprecation-is-completed-before-0-8-0"></a></h3>
 <ul><li>
 <strong>Breaking change: <code><a href="../reference/anova_content.html">anova_content()</a></code> no longer returns <code>posthoc_pass</code>.</strong> It was a duplicate of <code>contrast_pass</code>, documented as deprecated in 0.7.0. The written policy requires one minor release of notice and allows removal in a minor release only before 1.0, so this is the last release that can remove it without waiting for 2.0. Read <code>contrast_pass</code>, which holds the same value. It was the last column, so no other column moves.</li>
 <li>No deprecation is in progress now, so nothing deprecated is carried into 1.0. <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> records both of <code><a href="../reference/anova_content.html">anova_content()</a></code>’s completed cycles.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="earlier-methods-for-comparison-in-development-0-7-0-9000">Earlier methods, for comparison (in development)<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison-in-development-0-7-0-9000"></a></h3>
+<h3 id="earlier-methods-for-comparison-0-8-0">Earlier methods, for comparison<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison-0-8-0"></a></h3>
 <p>For teaching, the way a methods text reports eta-squared beside omega-squared, <code><a href="../reference/sort_validity.html">sort_validity()</a></code> and <code><a href="../reference/expert_validity.html">expert_validity()</a></code> now compute the earlier published rules beside their own. <code>legacy = TRUE</code> prints them under “Earlier methods, for comparison (not used for the decision)”, and <code>print(fit, legacy = TRUE)</code> shows them for any fit. They are stored in <code>details$earlier_methods</code> and never change a decision. Each follows its source as published, and the tests check each against the numbers its source prints.</p>
 <ul><li>
 <strong>Item sort.</strong>
@@ -76,11 +92,11 @@
 <li>The item-sort vignette section that explained why Anderson and Gerbing’s rule was “not exposed” now shows it for comparison, using the shipped example where it and the exact test disagree. The expert-panel vignette shows Lawshe’s anomaly at nine experts.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="every-vignette-lists-what-it-cites-in-development-0-7-0-9000">Every vignette lists what it cites (in development)<a class="anchor" aria-label="anchor" href="#every-vignette-lists-what-it-cites-in-development-0-7-0-9000"></a></h3>
+<h3 id="every-vignette-lists-what-it-cites-0-8-0">Every vignette lists what it cites<a class="anchor" aria-label="anchor" href="#every-vignette-lists-what-it-cites-0-8-0"></a></h3>
 <ul><li>Four vignettes cited works without a reference list, and the expert-panel vignette cited Lynn (1986) without listing it. Each now has an APA reference list, and <code><a href="../articles/reading-output.html">vignette("reading-output")</a></code>, which explains the APA number rules, cites the Publication Manual. Yao et al. (2008) joins the README references.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000">Printed output reads as a report, in APA style (in development)<a class="anchor" aria-label="anchor" href="#printed-output-reads-as-a-report-in-apa-style-in-development-0-7-0-9000"></a></h3>
+<h3 id="printed-output-reads-as-a-report-in-apa-style-0-8-0">Printed output reads as a report, in APA style<a class="anchor" aria-label="anchor" href="#printed-output-reads-as-a-report-in-apa-style-0-8-0"></a></h3>
 <p>No statistic changes. Only printed output changes, and <code>results</code> still holds every value at full precision.</p>
 <ul><li>
 <strong>Numbers follow the APA Publication Manual, seventh edition.</strong> A statistic that cannot exceed 1 prints without a leading zero (Psa = .90, <em>p</em> = .021, kappa = -.13). One that can exceed 1 keeps it (a chi-square of 0.31, a severity of -0.27 rating points). Values have two decimals, and <em>p</em> values have three, with anything below .001 printed as &lt; .001 rather than 0.000 (Section 6.36). Intervals print as <code>95% CI [.70, .97]</code> in a column headed with their level (Section 6.43). <code>digits</code> now defaults to 2 in every print method.</li>
@@ -99,24 +115,24 @@
 <li>The README and vignettes follow the same rules, and the vignette on reading output explains them.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="two-labels-now-say-what-they-mean-in-development-0-7-0-9000">Two labels now say what they mean (in development)<a class="anchor" aria-label="anchor" href="#two-labels-now-say-what-they-mean-in-development-0-7-0-9000"></a></h3>
+<h3 id="two-labels-now-say-what-they-mean-0-8-0">Two labels now say what they mean<a class="anchor" aria-label="anchor" href="#two-labels-now-say-what-they-mean-0-8-0"></a></h3>
 <ul><li>
 <strong><code><a href="../reference/judge_validity.html">judge_validity()</a></code> no longer calls a too-predictable judge “Erratic”.</strong> A fit mean square above the range means ratings noisier than the model expects; one below it means ratings more predictable than it expects, the opposite problem. Both were labeled <code>Erratic</code>. The second is now <code>Too predictable</code>, with its own interpretation. The status is <code>Review</code> either way, and which judges are flagged does not change. Code that matched <code>recommendation == "Erratic"</code> to find every misfitting judge should also match <code>"Too predictable"</code>, or use <code>status</code>.</li>
 <li>
 <strong>The handoff states the I-CVI criterion as a count.</strong> Its <code>rule</code> text read <code>I-CVI &gt;= 0.8333333</code>. It now reads <code>at least 5 of 6 experts rate the item relevant (I-CVI &gt;= .83; Lynn, 1986)</code>, since the decision compares counts, and the handoff now cites Lynn (1986). Rule text is prose for a person and outside the frozen schema, which is unchanged.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="the-i-cvi-criterion-now-matches-lynns-table-in-development-0-7-0-9000">The I-CVI criterion now matches Lynn’s table (in development)<a class="anchor" aria-label="anchor" href="#the-i-cvi-criterion-now-matches-lynns-table-in-development-0-7-0-9000"></a></h3>
+<h3 id="the-i-cvi-criterion-now-matches-lynns-table-0-8-0">The I-CVI criterion now matches Lynn’s table<a class="anchor" aria-label="anchor" href="#the-i-cvi-criterion-now-matches-lynns-table-0-8-0"></a></h3>
 <ul><li>
 <strong>Changed result, with nine experts only.</strong> An item endorsed by 7 of 9 experts now meets the I-CVI criterion; before, it needed 8. The criterion was stored as “.78”, which is Lynn’s (1986) 7 of 9 rounded, and 7/9 = .778 fell short of the rounded value. Lynn’s Table 2 requires 7 of 9, and Polit and Beck (2006) say the same in words. Every other panel size from three to ten was already right. This affects <code><a href="../reference/expert_validity.html">expert_validity()</a></code> verdicts, <code><a href="../reference/expert_power.html">expert_power()</a></code> planning probabilities, and <code><a href="../reference/judge_validity.html">judge_validity()</a></code>’s check of whether one judge moves an item.</li>
 <li>
 <strong><code>cvi_criterion</code> now shows Lynn’s cutoff for each panel size</strong>, such as .833 for six experts and .778 for nine, instead of .78 throughout. Verdicts at six, seven, eight and ten experts are unchanged, but the printed criterion now matches the verdict beside it: an item is supported exactly when its I-CVI reaches the number shown. A test checks that for every panel of 3 to 15 experts and every count of agreeing experts.</li>
 <li>
-<strong>Beyond ten experts, the criterion is now labeled an extension.</strong> Lynn’s table stops at ten. The package holds her lowest tabled proportion, 7 of 9, and says so, where before it applied .78 without comment. That also moves the requirement at 18 and 27 experts, where 7/9 falls exactly on a whole count.</li>
+<strong>Beyond ten experts, the criterion is now labeled an extension.</strong> Lynn’s table stops at ten. The package holds her lowest tabled proportion, 7 of 9, and says so, where before it applied .78 without comment. That also lowers the requirement by one expert at every multiple of nine, where 7/9 falls exactly on a whole count (14 of 18, 21 of 27, 28 of 36, and so on), and at some panels above 58, where .78 and 7/9 straddle a whole count.</li>
 <li>The rule lives in one place, stored as Lynn’s counts. The three functions compare counts of agreeing experts, so no rounding can move an item.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="attribution-in-development-0-7-0-9000">Attribution (in development)<a class="anchor" aria-label="anchor" href="#attribution-in-development-0-7-0-9000"></a></h3>
+<h3 id="attribution-0-8-0">Attribution<a class="anchor" aria-label="anchor" href="#attribution-0-8-0"></a></h3>
 <ul><li>
 <strong>Every source the package cites is now on its public reference list.</strong> The reference list in the README was missing eight sources that function help pages cite, including Krippendorff (2011), whose alpha is the default panel coefficient, and Schriesheim et al. (1993, 1999), behind <code><a href="../reference/qfactor_content.html">qfactor_content()</a></code>.</li>
 <li>
