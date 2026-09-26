@@ -12,7 +12,7 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.7.0.**
+**Current stable release: 0.8.0.**
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)

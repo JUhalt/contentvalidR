@@ -711,6 +711,41 @@ tag.
 
 ***
 
+## v0.8.0 - Reading the output and the literature correctly
+
+**Status:** Released (0.8.0 on 2026-09-26, on GitHub and R-universe)
+**Version:** `0.8.0`
+
+Work: [#64](https://github.com/JUhalt/contentvalidR/pull/64) to
+[#70](https://github.com/JUhalt/contentvalidR/pull/70).
+
+- [x] Cite every source where its method is used, and put every cited source
+      on the public reference list
+      ([#64](https://github.com/JUhalt/contentvalidR/pull/64)). Fixed three
+      instructions that passed the whole handoff object to nomologR.
+- [x] Make the I-CVI criterion match Lynn's (1986) table, in counts
+      ([#65](https://github.com/JUhalt/contentvalidR/pull/65)). An item
+      endorsed by 7 of 9 experts now meets it, as do 14 of 18 and 21 of 27.
+- [x] Print every result as a readable report, in APA style
+      ([#66](https://github.com/JUhalt/contentvalidR/pull/66)).
+- [x] Show the earlier published rules beside each decision, for comparison
+      ([#67](https://github.com/JUhalt/contentvalidR/pull/67)), with one
+      labeled package extension (Yao et al.'s rule generalized as chance plus
+      .05).
+- [x] Decide COSMIN ([#68](https://github.com/JUhalt/contentvalidR/pull/68)):
+      it does not fit.
+- [x] Stop tracking the pkgdown site, which CI builds
+      ([#69](https://github.com/JUhalt/contentvalidR/pull/69)).
+- [x] Complete the last deprecation, and add Hernández-Nieto's (2002) Ccv
+      for comparison with its shortcomings documented
+      ([#70](https://github.com/JUhalt/contentvalidR/pull/70)).
+
+CRAN: unchanged. 0.4.0 is still in review, so 0.8.0 is not submitted; whichever
+version is current when 0.4.0 resolves goes to CRAN as the update, from its own
+tag.
+
+***
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.
@@ -741,7 +776,7 @@ stable together.
         first submission.
   - [x] both public APIs are stable, under a written deprecation policy, as far
         as this package goes (0.7.0). The last deprecation in flight,
-        `anova_content()`'s `posthoc_pass` column, is removed for 0.8.0, so
+        `anova_content()`'s `posthoc_pass` column, was removed in 0.8.0, so
         nothing deprecated is carried into 1.0.
   - [x] there is a joint walkthrough from content review to empirical
         validation (0.7.0).

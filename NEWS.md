@@ -1,6 +1,45 @@
-# contentvalidR 0.7.0.9000 (development version)
+# contentvalidR 0.8.0
 
-## The last deprecation is completed before 1.0 (in development)
+Eighth public release. v0.8.0 is about reading the output and the literature
+correctly. Every printed result now reads as a report in APA style, every
+source is cited where its method is used, and the earlier published rules can
+be shown beside each decision for teaching, each with its shortcomings stated.
+One criterion now matches its source, and the last deprecation is completed,
+so nothing deprecated is carried into 1.0.
+
+The package continues to declare `Imports: stats` only.
+
+**Results that change.** Values computed by 0.7.0 and 0.8.0 were compared on
+25 analyses spanning every workflow. The only differences are these:
+
+* **Lynn's criterion at nine experts.** An item endorsed by 7 of 9 experts now
+  meets the I-CVI criterion, as Lynn's (1986) Table 2 says; 0.7.0 required 8.
+  `cvi_criterion` now shows each panel size's exact cutoff, such as .875 for
+  eight experts, where it showed .78 throughout. Beyond ten experts, where her
+  table stops, the package holds her 7 of 9, which also lowers the requirement
+  by one expert at 18 and 27. Verdicts at other panel sizes are unchanged.
+* **`judge_validity()`'s influence check.** It removes one judge at a time, so
+  a ten-judge panel was checked at nine, where 0.7.0 applied the wrong
+  criterion. On a ten-judge panel this could flag every judge as influential.
+  It now applies Lynn's.
+* **A label.** A judge whose fit falls below the range is now `Too
+  predictable`, not `Erratic`. The status is `Review` either way.
+* **One removed column.** `anova_content()` no longer returns `posthoc_pass`;
+  read `contrast_pass`, which holds the same value.
+* **Handoff rule text** reads as counts and APA numbers. The schema is
+  unchanged.
+
+**One display default changes.** Print methods now default to `digits = 2`, as
+APA reports statistics; `print(x, digits = 3)` restores the previous
+precision. Stored values are unaffected.
+
+New arguments: `sort_validity(legacy = , n_constructs = )`,
+`expert_validity(legacy = )`, and `legacy` in their `print()` methods.
+
+Published on GitHub and R-universe. 0.4.0 is still in CRAN's review queue, and
+CRAN policy asks that no further version be submitted while one is pending.
+
+## The last deprecation is completed before 1.0
 
 * **Breaking change: `anova_content()` no longer returns `posthoc_pass`.** It
   was a duplicate of `contrast_pass`, documented as deprecated in 0.7.0. The
@@ -11,7 +50,7 @@
 * No deprecation is in progress now, so nothing deprecated is carried into
   1.0. `?contentvalidR` records both of `anova_content()`'s completed cycles.
 
-## Earlier methods, for comparison (in development)
+## Earlier methods, for comparison
 
 For teaching, the way a methods text reports eta-squared beside omega-squared,
 `sort_validity()` and `expert_validity()` now compute the earlier published
@@ -67,14 +106,14 @@ against the numbers its source prints.
   where it and the exact test disagree. The expert-panel vignette shows
   Lawshe's anomaly at nine experts.
 
-## Every vignette lists what it cites (in development)
+## Every vignette lists what it cites
 
 * Four vignettes cited works without a reference list, and the expert-panel
   vignette cited Lynn (1986) without listing it. Each now has an APA reference
   list, and `vignette("reading-output")`, which explains the APA number rules,
   cites the Publication Manual. Yao et al. (2008) joins the README references.
 
-## Printed output reads as a report, in APA style (in development)
+## Printed output reads as a report, in APA style
 
 No statistic changes. Only printed output changes, and `results` still holds
 every value at full precision.
@@ -113,7 +152,7 @@ every value at full precision.
 * The README and vignettes follow the same rules, and the vignette on reading
   output explains them.
 
-## Two labels now say what they mean (in development)
+## Two labels now say what they mean
 
 * **`judge_validity()` no longer calls a too-predictable judge "Erratic".** A
   fit mean square above the range means ratings noisier than the model expects;
@@ -129,7 +168,7 @@ every value at full precision.
   the handoff now cites Lynn (1986). Rule text is prose for a person and
   outside the frozen schema, which is unchanged.
 
-## The I-CVI criterion now matches Lynn's table (in development)
+## The I-CVI criterion now matches Lynn's table
 
 * **Changed result, with nine experts only.** An item endorsed by 7 of 9 experts
   now meets the I-CVI criterion; before, it needed 8. The criterion was stored
@@ -153,7 +192,7 @@ every value at full precision.
 * The rule lives in one place, stored as Lynn's counts. The three functions
   compare counts of agreeing experts, so no rounding can move an item.
 
-## Attribution (in development)
+## Attribution
 
 * **Every source the package cites is now on its public reference list.** The
   reference list in the README was missing eight sources that function help
