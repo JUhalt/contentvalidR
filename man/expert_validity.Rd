@@ -208,5 +208,5 @@ Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
 
 Hernández-Nieto, R. (2002). \emph{Contributions to statistical analysis: The
 coefficients of proportional variance, content validity and kappa.}
-Universidad de Los Andes.
+BookSurge.
 }

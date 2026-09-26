@@ -189,7 +189,7 @@
 #'
 #' Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
 #' coefficients of proportional variance, content validity and kappa.*
-#' Universidad de Los Andes.
+#' BookSurge.
 #'
 #' @examples
 #' relevance <- matrix(

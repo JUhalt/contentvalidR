@@ -289,7 +289,7 @@ reliability measure for coding data. *Communication Methods and Measures, 1*(1),
 
 Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
 coefficients of proportional variance, content validity and kappa.*
-Universidad de Los Andes.
+BookSurge.
 
 Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability.* Annenberg
 School for Communication, University of Pennsylvania.
