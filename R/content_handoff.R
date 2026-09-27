@@ -498,7 +498,10 @@
 #'   \item{`scales`}{named list mapping each construct to its carried items, or
 #'     `NULL` when the design has no construct mapping. Expert relevance and
 #'     essentiality rate a single item set with no construct column, so they
-#'     produce `NULL`. Membership is one to one.}
+#'     produce `NULL`, as does a Delphi study. An item belongs to at most one
+#'     scale, the one its `item_evidence$scale` names: every workflow that maps
+#'     items to constructs requires exactly one target per item, and stops
+#'     otherwise.}
 #'   \item{`item_evidence`}{data frame with one row per reviewed item: `item`,
 #'     `scale` (`NA` without a construct mapping), `carried`, `status`,
 #'     `recommendation`, `n_judges`, `rule`, and `round`. For a Delphi handoff
@@ -529,6 +532,29 @@
 #' `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 #' Fields and columns added within schema version 1 are optional for a reader,
 #' which should check that they are present rather than assume it.
+#'
+#' @section Reading the decisions:
+#' Take each item's decision from the handoff, not from its statistics.
+#' `carried` says whether the item travels forward, and `status` says why: it
+#' is one of the four values `keep` accepts. `recommendation` words the same
+#' decision for a person, and like `rule` it is prose.
+#'
+#' Don't re-derive a decision by comparing `value` with `criterion`, and don't
+#' branch on `provenance$package_version`. A corrected rule can change a
+#' decision between releases while the statistics stay the same, and the
+#' handoff records the decision its producer made. contentvalidR 0.8.0 is the
+#' example. For an item that 7 of 9 experts rated relevant, the I-CVI is .778
+#' in both releases. 0.7.0 compared it with a rounded .78 and held the item
+#' back. 0.8.0 applies Lynn's (1986) 7 of 9, stores 7/9 as the criterion, and
+#' carries the item. There the value equals the criterion, so a recomputed
+#' `value >= criterion` would hang on floating-point rounding, where the
+#' package itself compares counts of experts. Read `carried`, which holds what
+#' each release decided.
+#'
+#' Keying is read the same way, from the field and not from a default:
+#' `keying` is `1` for a forward-worded item, `-1` for a reverse-worded one,
+#' and `NA` when nobody said, as described under "Instrument metadata". Treat
+#' `NA` as unknown, never as forward-worded.
 #'
 #' @section What version 1 freezes:
 #' Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
@@ -725,6 +751,11 @@
 #' its construct or load on an unintended factor. That is what the downstream
 #' empirical analysis tests, which is why the item set travels with its
 #' evidence rather than as a bare list of names.
+#'
+#' @references
+#' Lynn, M. R. (1986). Determination and quantification of content validity.
+#' *Nursing Research, 35*(6), 382–385.
+#' \doi{10.1097/00006199-198611000-00017}
 #'
 #' @param fit A fitted `contentvalid_sort`, `contentvalid_rating`,
 #'   `contentvalid_expert`, or `contentvalid_delphi` object.

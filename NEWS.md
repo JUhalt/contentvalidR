@@ -29,6 +29,21 @@ No computed value changes.
   `stability = "percent_change"`. The 1975 printing's pages could not be
   checked.
 
+## The handoff contract, stated for readers
+
+Asked for by nomologR before handoff schema 1 becomes a 1.0 promise. The
+schema and every handoff are unchanged.
+
+* `?content_handoff` has a new section, "Reading the decisions": take each
+  item's decision from `carried` and `status`, never re-derive it by
+  comparing `value` with `criterion` or by branching on the producer version.
+  The example is the nine-expert correction in 0.8.0, where an item's I-CVI
+  stayed at .778 while its decision changed. The section also restates that
+  `keying` of `NA` means unknown, never forward-worded.
+* `?content_handoff` says an item sits in at most one scale, the one its
+  `item_evidence$scale` names. A test holds the sort, rating, and congruence
+  workflows to it, and checks that each refuses an item with two targets.
+
 # contentvalidR 0.9.0
 
 Ninth public release. v0.9.0 is about how the package presents itself before
