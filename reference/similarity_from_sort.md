@@ -51,7 +51,7 @@ similarity ratings collected for that purpose.
 
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. *Applied Psychological
-Measurement, 16*(1), 17-31.
+Measurement, 16*(1), 17–31.
 [doi:10.1177/014662169201600102](https://doi.org/10.1177/014662169201600102)
 
 ## Examples

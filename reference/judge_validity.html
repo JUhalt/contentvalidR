@@ -43,7 +43,7 @@ person's ratings and therefore deserves a closer look."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,7 @@ person's ratings and therefore deserves a closer look."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Analyze judge and rater heterogeneity in content-validity ratings</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/R/judge_validity.R" class="external-link"><code>R/judge_validity.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/judge_validity.R" class="external-link"><code>R/judge_validity.R</code></a></small>
       <div class="d-none name"><code>judge_validity.Rd</code></div>
     </div>
 
@@ -172,7 +172,7 @@ item-level influence table.</p>
 
 <p>Logit severity comes from a many-facet Rasch model fitted by joint maximum
 likelihood as a logistic regression, the generalized linear model
-formulation described by de Boeck and Wilson (2004). Joint maximum
+formulation described by De Boeck and Wilson (2004). Joint maximum
 likelihood is known to over-disperse facet estimates in small designs. The
 standard Wright-Douglas <code>(L-1)/L</code> correction is applied by default and
 reported in <code>settings$bias_correction</code>, but it reduces rather than removes
@@ -188,13 +188,14 @@ from the model, which is reported rather than silent.</p>
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Crocker, L., Llabre, M., &amp; Miller, M. D. (1988). The generalizability of
 content validity ratings. <em>Journal of Educational Measurement, 25</em>(4),
-287-299. <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link">doi:10.1111/j.1745-3984.1988.tb00309.x</a></p>
+287–299. <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link">doi:10.1111/j.1745-3984.1988.tb00309.x</a></p>
+<p>De Boeck, P., &amp; Wilson, M. (Eds.). (2004). <em>Explanatory item response models:
+A generalized linear and nonlinear approach</em>. Springer.
+<a href="https://doi.org/10.1007/978-1-4757-3990-9" class="external-link">doi:10.1007/978-1-4757-3990-9</a></p>
 <p>Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. <em>Journal of Educational
-Measurement, 31</em>(2), 93-112. <a href="https://doi.org/10.1111/j.1745-3984.1994.tb00436.x" class="external-link">doi:10.1111/j.1745-3984.1994.tb00436.x</a></p>
-<p>Linacre, J. M. (1989). <em>Many-Facet Rasch Measurement.</em> MESA Press.</p>
-<p>de Boeck, P., &amp; Wilson, M. (2004). <em>Explanatory Item Response Models: A
-Generalized Linear and Nonlinear Approach.</em> Springer.</p>
+Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.1994.tb00436.x" class="external-link">doi:10.1111/j.1745-3984.1994.tb00436.x</a></p>
+<p>Linacre, J. M. (1989). <em>Many-facet Rasch measurement</em>. MESA Press.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -238,11 +239,13 @@ Generalized Linear and Nonlinear Approach.</em> Springer.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> direction, scale use is below 0.50, or any item's status depends on them.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Logit severity not estimated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judge severity could not be estimated. After removing judges and items with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> no variation in endorsement, fewer than two judges and two items remained.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This usually means the panel agreed almost completely, which is a substantive</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> finding rather than an estimation failure: with near total agreement there</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> are no severity differences to recover.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judge severity could not be estimated. After setting aside judges and items</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> with no variation in endorsement, fewer than two judges and two items</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> remained, usually because each judge endorsed either all of the remaining</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> items or none of them. That happens when the panel agrees almost completely,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> or when the only disagreement is a judge who rejects every item the others</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> accept. It describes the ratings rather than an estimation failure: a logit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scale needs judges whose endorsements vary.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Severity in rating points is reported instead and is used for flagging.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No item's review status depends on any single judge.</span>
@@ -278,6 +281,7 @@ Generalized Linear and Nonlinear Approach.</em> Springer.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expertise; the flag marks where a conclusion rests on one person's ratings.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary: judge and rater heterogeneity</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Judges: 8 | Items: 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Consistent with panel: 7 | Flagged for review: 1 | Insufficient: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

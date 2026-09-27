@@ -100,8 +100,8 @@ as.data.frame(fit, component = "scale_summary")
 #> 1 Overall (not correlation-normed)                 TRUE           Strong
 #> 2 Overall (not correlation-normed)                 TRUE         Moderate
 #> 3 Overall (not correlation-normed)                 TRUE         Moderate
-#>                                                                                                                             evidence
-#> 1                                     Strong normative standing on both definitional correspondence (Psa) and distinctiveness (Csv).
-#> 2 Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.
-#> 3 Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.
+#>                                                                                                                                       evidence
+#> 1                                              The weaker of Psa and Csv falls in the Strong band of published scales (Colquitt et al., 2019).
+#> 2 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> 3 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
 ```

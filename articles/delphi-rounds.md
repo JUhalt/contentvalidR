@@ -509,27 +509,27 @@ construct definition, and the rest of the content-validity evidence.
 ## References
 
 Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
-studies. *Technological Forecasting and Social Change, 16*(1), 67-73.
+studies. *Technological Forecasting and Social Change, 16*(1), 67–73.
 <https://doi.org/10.1016/0040-1625(80)90074-8>
 
 Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for
 scaled disagreement or partial credit. *Psychological Bulletin, 70*(4),
-213-220. <https://doi.org/10.1037/h0026256>
+213–220. <https://doi.org/10.1037/h0026256>
 
 Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
 agreement criteria for the termination of Delphi studies. *Technological
-Forecasting and Social Change, 13*(1), 83-90.
+Forecasting and Social Change, 13*(1), 83–90.
 <https://doi.org/10.1016/0040-1625(79)90007-6>
 
 Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B., Ling, S.
 C., Moore, A. M., & Wales, P. W. (2014). Defining consensus: A
 systematic review recommends methodologic criteria for reporting of
-Delphi studies. *Journal of Clinical Epidemiology, 67*(4), 401-409.
+Delphi studies. *Journal of Clinical Epidemiology, 67*(4), 401–409.
 <https://doi.org/10.1016/j.jclinepi.2013.12.002>
 
 Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
-*Educational and Psychological Measurement, 33*(3), 613-619.
+*Educational and Psychological Measurement, 33*(3), 613–619.
 <https://doi.org/10.1177/001316447303300309>
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
@@ -538,7 +538,7 @@ stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52.
 <https://doi.org/10.1186/1471-2288-7-52>
 
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer
-agreement for categorical data. *Biometrics, 33*(1), 159-174.
+agreement for categorical data. *Biometrics, 33*(1), 159–174.
 <https://doi.org/10.2307/2529310>
 
 Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi

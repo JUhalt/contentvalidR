@@ -205,7 +205,7 @@ fit
 #>  target items mean HTC   HTC level mean HTD   HTD level
 #>       A     3      .88      Strong      .58 Very Strong
 #>       B     1      .92 Very Strong      .61 Very Strong
-#> Benchmark set: overall
+#> Benchmark set: Overall (not correlation-normed)
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC and HTD
 #> averages, not universal cutoffs. HTC is an average rating and HTD is a
@@ -254,10 +254,10 @@ summary(fit)
 #>       Strong
 #>  Very Strong
 #> 
-#> A: Strong normative standing on the weaker of definitional correspondence
-#>   (HTC) and distinctiveness (HTD).
-#> B: Very Strong normative standing on the weaker of definitional
-#>   correspondence (HTC) and distinctiveness (HTD).
+#> A: The weaker of HTC and HTD falls in the Strong band of published scales
+#>   (Colquitt et al., 2019).
+#> B: The weaker of HTC and HTD falls in the Very Strong band of published
+#>   scales (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
 #> 
@@ -295,9 +295,9 @@ fit$scale_summary
 #>   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set
 #> 1       Strong 0.5781250  Very Strong           Strong         NA       overall
 #> 2  Very Strong 0.6145833  Very Strong      Very Strong         NA       overall
-#>                                                                                                       evidence
-#> 1      Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
-#> 2 Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
+#>                                                                                               evidence
+#> 1      The weaker of HTC and HTD falls in the Strong band of published scales (Colquitt et al., 2019).
+#> 2 The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).
 colquitt_benchmarks("htc")
 #>   statistic benchmark_set                  benchmark_label interpretation
 #> 1       htc       overall Overall (not correlation-normed)    Very Strong
@@ -343,9 +343,9 @@ rating_validity(
 #>   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set
 #> 1     Moderate 0.5781250  Very Strong         Moderate       0.42      moderate
 #> 2  Very Strong 0.6145833  Very Strong      Very Strong       0.55      stronger
-#>                                                                                                                                                                               evidence
-#> 1 Generally supportive normative standing, with at least one content-validity dimension in the moderate range; inspect weaker items and construct overlap before finalizing the scale.
-#> 2                                                                         Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).
+#>                                                                                                                                                                        evidence
+#> 1 The weaker of HTC and HTD falls in the Moderate band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.
+#> 2                                                                          The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).
 ```
 
 A given level of distinctiveness can be more impressive when the focal
@@ -452,11 +452,11 @@ pool comprehensively samples the full construct domain.
 
 ## References
 
-Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
-to content validation. *Organizational Research Methods, 2*(2), 175-186.
-<https://doi.org/10.1177/109442819922004>
-
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
-Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>
+Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
+to content validation. *Organizational Research Methods, 2*(2), 175–186.
+<https://doi.org/10.1177/109442819922004>

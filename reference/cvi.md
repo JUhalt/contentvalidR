@@ -84,38 +84,39 @@ A classed list with:
 
 ## References
 
-Lynn, M. R. (1986). Determination and quantification of content
-validity. *Nursing Research, 35*(6), 382-385.
-[doi:10.1097/00006199-198611000-00017](https://doi.org/10.1097/00006199-198611000-00017)
-
-Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
-sure you know what's being reported? Critique and recommendations.
-*Research in Nursing & Health, 29*(5), 489-497.
-[doi:10.1002/nur.20147](https://doi.org/10.1002/nur.20147)
-
-Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
-acceptable indicator of content validity? Appraisal and recommendations.
-*Research in Nursing & Health, 30*(4), 459-467.
-[doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
-
-Wilson, E. B. (1927). Probable inference, the law of succession, and
-statistical inference. *Journal of the American Statistical Association,
-22*(158), 209-212.
-[doi:10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
-
-Newcombe, R. G. (1998). Two-sided confidence intervals for the single
-proportion: Comparison of seven methods. *Statistics in Medicine,
-17*(8), 857-872.
-
 Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact"
 for interval estimation of binomial proportions. *The American
-Statistician, 52*(2), 119-126.
+Statistician, 52*(2), 119–126.
 [doi:10.1080/00031305.1998.10480550](https://doi.org/10.1080/00031305.1998.10480550)
 
 Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or
 fiducial limits illustrated in the case of the binomial. *Biometrika,
-26*(4), 404-413.
+26*(4), 404–413.
 [doi:10.1093/biomet/26.4.404](https://doi.org/10.1093/biomet/26.4.404)
+
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382–385.
+[doi:10.1097/00006199-198611000-00017](https://doi.org/10.1097/00006199-198611000-00017)
+
+Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. *Statistics in Medicine,
+17*(8), 857–872.
+[doi:10.1002/(SICI)1097-0258(19980430)17:8\<857::AID-SIM777\>3.0.CO;2-E](https://doi.org/10.1002/%28SICI%291097-0258%2819980430%2917%3A8%3C857%3A%3AAID-SIM777%3E3.0.CO%3B2-E)
+
+Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+sure you know what's being reported? Critique and recommendations.
+*Research in Nursing & Health, 29*(5), 489–497.
+[doi:10.1002/nur.20147](https://doi.org/10.1002/nur.20147)
+
+Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
+acceptable indicator of content validity? Appraisal and recommendations.
+*Research in Nursing & Health, 30*(4), 459–467.
+[doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. *Journal of the American Statistical Association,
+22*(158), 209–212.
+[doi:10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
 
 ## Examples
 

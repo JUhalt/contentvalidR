@@ -134,8 +134,8 @@ summary(fit)
 #>       A     3      2      1      .78  Moderate      .57  Moderate Moderate
 #>       B     3      2      1      .82  Moderate      .63    Strong Moderate
 #> 
-#> A, B: Generally supportive normative standing, with at least one dimension in
-#>   the moderate range; review weaker items before finalizing.
+#> A, B: The weaker of Psa and Csv falls in the Moderate band of published
+#>   scales (Colquitt et al., 2019); review the weaker items before finalizing.
 #> 
 #> Items needing attention
 #>  item target decision Psa Csv competitor    p
@@ -253,7 +253,8 @@ colquitt_benchmarks("csv")
 ```
 
 The labels—Very Strong, Strong, Moderate, Weak, and Lack of—are
-empirical normative standing, **not universal validity cutoffs**.
+percentile bands relative to published scales, **not universal validity
+cutoffs**.
 
 ### Correlation-conditional norms
 
@@ -281,9 +282,9 @@ fit_normed$scale_summary
 #>   overall_strength
 #> 1         Moderate
 #> 2             Weak
-#>                                                                                                                                evidence
-#> 1    Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.
-#> 2 Limited normative standing on at least one dimension; review item wording and construct overlap and consider re-pretesting revisions.
+#>                                                                                                                                                                                    evidence
+#> 1                                              The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> 2 The weaker of Psa and Csv falls in the Weak band of published scales (Colquitt et al., 2019); review item wording and construct overlap, and consider pretesting the revised items again.
 ```
 
 The conditional panels are:
@@ -539,19 +540,19 @@ A useful report should include:
 Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
 measures in a confirmatory factor analysis with a pretest assessment of
 their substantive validities. *Journal of Applied Psychology, 76*(5),
-732-740. <https://doi.org/10.1037/0021-9010.76.5.732>
-
-Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
-methods: The presentation of a new statistical significance formula and
-methodological best practices. *Journal of Business and Psychology,
-31*(1), 173-186. <https://doi.org/10.1007/s10869-015-9404-y>
+732–740. <https://doi.org/10.1037/0021-9010.76.5.732>
 
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
-Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>
+Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. *Journal of Business and Psychology,
+31*(1), 173–186. <https://doi.org/10.1007/s10869-015-9404-y>
 
 Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity
 of the WHOQOL-BREF from respondents’ perspective by quantitative
-methods. *Social Indicators Research, 85*(3), 483-498.
+methods. *Social Indicators Research, 85*(3), 483–498.
 <https://doi.org/10.1007/s11205-007-9112-8>

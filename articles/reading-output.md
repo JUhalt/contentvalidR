@@ -546,9 +546,9 @@ American Psychological Association* (7th ed.).
 <https://doi.org/10.1037/0000165-000>
 
 Lynn, M. R. (1986). Determination and quantification of content
-validity. *Nursing Research, 35*(6), 382-385.
+validity. *Nursing Research, 35*(6), 382–385.
 <https://doi.org/10.1097/00006199-198611000-00017>
 
 Newcombe, R. G. (1998). Two-sided confidence intervals for the single
 proportion: Comparison of seven methods. *Statistics in Medicine,
-17*(8), 857-872.
+17*(8), 857–872. <https://doi.org/10/cpchjg>

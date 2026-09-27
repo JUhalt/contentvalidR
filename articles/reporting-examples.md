@@ -70,10 +70,10 @@ sort_fit$scale_summary
 #> 1                 TRUE           Strong
 #> 2                 TRUE         Moderate
 #> 3                 TRUE         Moderate
-#>                                                                                                                             evidence
-#> 1                                     Strong normative standing on both definitional correspondence (Psa) and distinctiveness (Csv).
-#> 2 Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.
-#> 3 Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.
+#>                                                                                                                                       evidence
+#> 1                                              The weaker of Psa and Csv falls in the Strong band of published scales (Colquitt et al., 2019).
+#> 2 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> 3 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
 ```
 
 ### Methods scaffold
@@ -194,10 +194,10 @@ rating_fit$scale_summary
 #> 1         Weak   0.4375  Very Strong             Weak         NA       overall
 #> 2         Weak   0.4375  Very Strong             Weak         NA       overall
 #> 3         Weak   0.4375  Very Strong             Weak         NA       overall
-#>                                                                                                                                                            evidence
-#> 1 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
-#> 2 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
-#> 3 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
+#>                                                                                                                                                                                                                           evidence
+#> 1 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 2 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 3 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
 ```
 
 ### Methods scaffold
@@ -383,7 +383,7 @@ a fitted workflow:
 ``` r
 
 packageVersion("contentvalidR")
-#> [1] '0.8.0'
+#> [1] '0.8.0.9000'
 sort_fit$settings
 #> $method
 #> [1] "Anderson-Gerbing Psa/Csv with Howard-Melloy exact inference"
@@ -449,9 +449,9 @@ substantive item decisions.
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
-Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>
+Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
 
 Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
 methods: The presentation of a new statistical significance formula and
 methodological best practices. *Journal of Business and Psychology,
-31*(1), 173-186. <https://doi.org/10.1007/s10869-015-9404-y>
+31*(1), 173–186. <https://doi.org/10.1007/s10869-015-9404-y>

@@ -53,7 +53,7 @@ construct, complete-judge count, and number of target-orbiting pairs.
 ## References
 
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-*Journal of Applied Psychology, 104*(10), 1243-1265.
+*Journal of Applied Psychology, 104*(10), 1243–1265.
 [doi:10.1037/apl0000406](https://doi.org/10.1037/apl0000406)
 
 ## Examples

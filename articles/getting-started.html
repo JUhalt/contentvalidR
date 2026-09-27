@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
       <h1>Getting Started with contentvalidR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
@@ -175,7 +175,7 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt;  target items mean HTC HTC level mean HTD   HTD level</span></span>
 <span><span class="co">#&gt;       A     2      .86  Moderate      .50 Very Strong</span></span>
 <span><span class="co">#&gt;       B     1      .88    Strong      .54 Very Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: overall</span></span>
+<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
 <span><span class="co">#&gt; averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
@@ -221,11 +221,11 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt;       A     2      2      0      .86  Moderate      .50 Very Strong Moderate</span></span>
 <span><span class="co">#&gt;       B     1      1      0      .88    Strong      .54 Very Strong   Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Generally supportive normative standing, with at least one</span></span>
-<span><span class="co">#&gt;   content-validity dimension in the moderate range; inspect weaker items and</span></span>
-<span><span class="co">#&gt;   construct overlap before finalizing the scale.</span></span>
-<span><span class="co">#&gt; B: Strong normative standing on the weaker of definitional correspondence</span></span>
-<span><span class="co">#&gt;   (HTC) and distinctiveness (HTD).</span></span>
+<span><span class="co">#&gt; A: The weaker of HTC and HTD falls in the Moderate band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019); inspect the weaker items and construct overlap</span></span>
+<span><span class="co">#&gt;   before finalizing the scale.</span></span>
+<span><span class="co">#&gt; B: The weaker of HTC and HTD falls in the Strong band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -257,9 +257,11 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 6</span></span>
 <span><span class="co">#&gt; Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
-<span><span class="co">#&gt; Strong support: 3 | Support: 0 | Review: 0</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71.1%.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified</span></span>
+<span><span class="co">#&gt; kappa above .74).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
 <span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
@@ -301,7 +303,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span></span>
 <span><span class="co">#&gt;       have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
-<span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;       overstate consensus. (at most 1; below 0 when fewer experts agree</span></span>
+<span><span class="co">#&gt;       than chance predicts; higher is stronger)</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient describing how</span></span>
 <span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
 <span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
@@ -496,7 +499,7 @@ files.</p>
 <p>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T.
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
-<em>Journal of Applied Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
 </div>
   </main>
 </div>

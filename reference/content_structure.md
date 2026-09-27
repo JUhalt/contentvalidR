@@ -82,23 +82,23 @@ of the dimensions should drive that choice.
 
 ## References
 
+Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of
+Classification, 2*(1), 193–218.
+[doi:10.1007/BF01908075](https://doi.org/10.1007/BF01908075)
+
+Sireci, S. G. (1998). The construct of content validity. *Social
+Indicators Research, 45*(1–3), 83–117.
+[doi:10.1023/A:1006985528729](https://doi.org/10.1023/A%3A1006985528729)
+
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. *Applied Psychological
-Measurement, 16*(1), 17-31.
+Measurement, 16*(1), 17–31.
 [doi:10.1177/014662169201600102](https://doi.org/10.1177/014662169201600102)
 
 Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts
 to assess content representation: An MDS analysis. *Applied
-Psychological Measurement, 19*(3), 241-255.
+Psychological Measurement, 19*(3), 241–255.
 [doi:10.1177/014662169501900303](https://doi.org/10.1177/014662169501900303)
-
-Sireci, S. G. (1998). The construct of content validity. *Social
-Indicators Research, 45*(1-3), 83-117.
-[doi:10.1023/A:1006985528729](https://doi.org/10.1023/A%3A1006985528729)
-
-Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of
-Classification, 2*(1), 193-218.
-[doi:10.1007/BF01908075](https://doi.org/10.1007/BF01908075)
 
 ## See also
 

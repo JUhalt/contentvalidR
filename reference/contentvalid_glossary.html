@@ -17,7 +17,7 @@ the terms are familiar."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@ the terms are familiar."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Glossary of contentvalidR indices and status terms</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/glossary.R" class="external-link"><code>R/glossary.R</code></a></small>
       <div class="d-none name"><code>contentvalid_glossary.Rd</code></div>
     </div>
 
@@ -153,7 +153,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       would have agreed even if rating at random. With small panels, chance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (0 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (at most 1; below 0 when fewer experts agree</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       than chance predicts; higher is stronger)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   agreement -- Panel-level agreement. One coefficient describing how</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       consistently the whole panel rated the item set: Krippendorff's alpha</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       by default, or Gwet's AC1 if chosen. It is separate from modified</span>

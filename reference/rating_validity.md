@@ -98,15 +98,15 @@ method-specific `recommendation` field.
 
 ## References
 
-Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
-to content validation. *Organizational Research Methods, 2*(2), 175-186.
-[doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
-
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
-Psychology, 104*(10), 1243-1265.
+Psychology, 104*(10), 1243–1265.
 [doi:10.1037/apl0000406](https://doi.org/10.1037/apl0000406)
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
+to content validation. *Organizational Research Methods, 2*(2), 175–186.
+[doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
 
 ## Examples
 
@@ -147,7 +147,7 @@ fit
 #>  target items mean HTC   HTC level mean HTD   HTD level
 #>       A     2      .89      Strong      .62 Very Strong
 #>       B     1      .93 Very Strong      .69 Very Strong
-#> Benchmark set: overall
+#> Benchmark set: Overall (not correlation-normed)
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC and HTD
 #> averages, not universal cutoffs. HTC is an average rating and HTD is a
@@ -196,10 +196,10 @@ summary(fit)
 #>       Strong
 #>  Very Strong
 #> 
-#> A: Strong normative standing on the weaker of definitional correspondence
-#>   (HTC) and distinctiveness (HTD).
-#> B: Very Strong normative standing on the weaker of definitional
-#>   correspondence (HTC) and distinctiveness (HTD).
+#> A: The weaker of HTC and HTD falls in the Strong band of published scales
+#>   (Colquitt et al., 2019).
+#> B: The weaker of HTC and HTD falls in the Very Strong band of published
+#>   scales (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
 #> 

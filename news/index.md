@@ -1,5 +1,53 @@
 # Changelog
 
+## contentvalidR 0.8.0.9000 (development version)
+
+### References follow APA 7 everywhere (in development)
+
+- **One reference list, installed in BibTeX form.** `REFERENCES.bib`
+  held 13 of the works the package cites, and one it no longer cited; it
+  now holds all 53, generated from the reference list in the README,
+  with author names and details checked against the Crossref record for
+  each DOI. A test keeps the two in step. The README calls it a
+  reference list rather than a bibliography.
+- **Every reference list is in alphabetical order**, as APA 7 requires,
+  in the README, every help page, and every vignette. They had been
+  ordered by topic. Page ranges use en dashes.
+- **Corrections found by the check.** De Boeck and Wilson (2004) are the
+  editors of *Explanatory item response models*, not its authors. Book
+  titles are in sentence case. Four works gain the DOI they lacked
+  (Brennan, 2001; De Boeck & Wilson, 2004; Newcombe, 1998; Vach & Gerke,
+  2023). Colquitt et al. (2014) and the irr package, both cited in help
+  pages, join the list in the README.
+- `citation("contentvalidR")` prints the package reference in APA form,
+  with its version and “\[Computer software\]”.
+
+### Printed output says what it means (in development)
+
+- **The expert-panel print opens with its verdict**, as the other
+  workflows’ prints do: how many items met the criterion, then the
+  flagged items by name. 0.8.0’s release notes said every print did
+  this; the expert-panel print showed only a tally. Items rated by fewer
+  than three experts are named too, where the tally left them out.
+- **The key no longer says modified kappa runs from 0 to 1.** It falls
+  below 0 whenever fewer experts agree than chance predicts: with four
+  experts, an item none of them rates relevant has a modified kappa of
+  -.07.
+- An essentiality panel with no usable ratings no longer prints “an item
+  needs at least NA rating it essential”.
+- The scale-level summaries of the item-sort and construct-rating
+  workflows name the band the weaker index falls in (“The weaker of Psa
+  and Csv falls in the Moderate band of published scales”), where they
+  spoke of “normative standing”. The construct-rating print names its
+  benchmark set the way the item-sort print does.
+- Every summary heading has the same form and rule; counts read “1 item”
+  or “3 items” rather than “item(s)”; the handoff says held-back items
+  are listed only when some are; and the note when judge severity cannot
+  be estimated no longer attributes it to near-total agreement when one
+  judge rejecting the items the others accept causes it.
+
+No computed value changes.
+
 ## contentvalidR 0.8.0
 
 Eighth public release. v0.8.0 is about reading the output and the

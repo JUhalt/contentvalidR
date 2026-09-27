@@ -116,7 +116,7 @@ rating_fit
 #>  target items mean HTC HTC level mean HTD   HTD level
 #>       A     2      .86  Moderate      .50 Very Strong
 #>       B     1      .88    Strong      .54 Very Strong
-#> Benchmark set: overall
+#> Benchmark set: Overall (not correlation-normed)
 #> 
 #> Colquitt labels are empirical percentile norms for scale-level HTC and HTD
 #> averages, not universal cutoffs. HTC is an average rating and HTD is a
@@ -162,11 +162,11 @@ summary(rating_fit)
 #>       A     2      2      0      .86  Moderate      .50 Very Strong Moderate
 #>       B     1      1      0      .88    Strong      .54 Very Strong   Strong
 #> 
-#> A: Generally supportive normative standing, with at least one
-#>   content-validity dimension in the moderate range; inspect weaker items and
-#>   construct overlap before finalizing the scale.
-#> B: Strong normative standing on the weaker of definitional correspondence
-#>   (HTC) and distinctiveness (HTD).
+#> A: The weaker of HTC and HTD falls in the Moderate band of published scales
+#>   (Colquitt et al., 2019); inspect the weaker items and construct overlap
+#>   before finalizing the scale.
+#> B: The weaker of HTC and HTD falls in the Strong band of published scales
+#>   (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
 #> 
@@ -202,9 +202,11 @@ expert_fit
 #> Mode: relevance
 #> Items: 3 | Experts/item: 6
 #> Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
-#> Strong support: 3 | Support: 0 | Review: 0
 #> Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].
 #>   Identical rating pairs: 71.1%.
+#> 
+#> 3 of 3 items meet the I-CVI criterion, all with strong support (modified
+#> kappa above .74).
 #> 
 #>   item       decision N    V      95% CI I-CVI      95% CI kappa
 #>  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00
@@ -246,7 +248,8 @@ expert_fit
 #>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
 #>       have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (0 to 1; higher is stronger)
+#>       overstate consensus. (at most 1; below 0 when fewer experts agree
+#>       than chance predicts; higher is stronger)
 #>   Panel agreement -- Panel-level agreement. One coefficient describing how
 #>       consistently the whole panel rated the item set: Krippendorff's alpha
 #>       by default, or Gwet's AC1 if chosen. It is separate from modified
@@ -460,4 +463,4 @@ sort_power(N = c(20, 30), true_p = c(.65, .75))
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
-Psychology, 104*(10), 1243-1265. <https://doi.org/10.1037/apl0000406>
+Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>

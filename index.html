@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -228,8 +228,8 @@
 <span><span class="co">#&gt;  target items retain review mean Psa Psa level mean Csv Csv level  overall</span></span>
 <span><span class="co">#&gt;       A     3      2      1      .77  Moderate      .53  Moderate Moderate</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Generally supportive normative standing, with at least one dimension in</span></span>
-<span><span class="co">#&gt;   the moderate range; review weaker items before finalizing.</span></span>
+<span><span class="co">#&gt; A: The weaker of Psa and Csv falls in the Moderate band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019); review the weaker items before finalizing.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Items needing attention</span></span>
 <span><span class="co">#&gt;          item target decision Psa Csv competitor    p</span></span>
@@ -247,7 +247,7 @@
 <li>
 <strong>Target-scale level:</strong> Psa and Csv are averaged across the target scale’s items and interpreted using Colquitt et al. (2019)’s empirical percentile norms for definitional correspondence and distinctiveness. This matches how those norms were constructed.</li>
 </ul>
-<p><code>Review</code> deliberately does <strong>not</strong> mean automatic deletion. Likewise, Colquitt categories such as <em>Strong</em> or <em>Moderate</em> are empirical normative standing, not universal pass/fail cutoffs.</p>
+<p><code>Review</code> deliberately does <strong>not</strong> mean automatic deletion. Likewise, Colquitt categories such as <em>Strong</em> or <em>Moderate</em> are percentile bands relative to published scales, not universal pass/fail cutoffs.</p>
 <div class="section level3">
 <h3 id="correlation-conditional-colquitt-norms">Correlation-conditional Colquitt norms<a class="anchor" aria-label="anchor" href="#correlation-conditional-colquitt-norms"></a>
 </h3>
@@ -396,7 +396,7 @@
 <span><span class="co">#&gt;  target items mean HTC HTC level mean HTD   HTD level</span></span>
 <span><span class="co">#&gt;       A     2      .86  Moderate      .57 Very Strong</span></span>
 <span><span class="co">#&gt;       B     1      .89    Strong      .64 Very Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: overall</span></span>
+<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
 <span><span class="co">#&gt; averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
@@ -442,11 +442,11 @@
 <span><span class="co">#&gt;       A     2      2      0      .86  Moderate      .57 Very Strong Moderate</span></span>
 <span><span class="co">#&gt;       B     1      1      0      .89    Strong      .64 Very Strong   Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Generally supportive normative standing, with at least one</span></span>
-<span><span class="co">#&gt;   content-validity dimension in the moderate range; inspect weaker items and</span></span>
-<span><span class="co">#&gt;   construct overlap before finalizing the scale.</span></span>
-<span><span class="co">#&gt; B: Strong normative standing on the weaker of definitional correspondence</span></span>
-<span><span class="co">#&gt;   (HTC) and distinctiveness (HTD).</span></span>
+<span><span class="co">#&gt; A: The weaker of HTC and HTD falls in the Moderate band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019); inspect the weaker items and construct overlap</span></span>
+<span><span class="co">#&gt;   before finalizing the scale.</span></span>
+<span><span class="co">#&gt; B: The weaker of HTC and HTD falls in the Strong band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -526,9 +526,11 @@
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 6</span></span>
 <span><span class="co">#&gt; Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
-<span><span class="co">#&gt; Strong support: 3 | Support: 0 | Review: 0</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71.1%.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified</span></span>
+<span><span class="co">#&gt; kappa above .74).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
 <span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
@@ -570,7 +572,8 @@
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span></span>
 <span><span class="co">#&gt;       have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
-<span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;       overstate consensus. (at most 1; below 0 when fewer experts agree</span></span>
+<span><span class="co">#&gt;       than chance predicts; higher is stronger)</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient describing how</span></span>
 <span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
 <span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
@@ -625,9 +628,11 @@
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 6</span></span>
 <span><span class="co">#&gt; Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
-<span><span class="co">#&gt; Strong support: 3 | Support: 0 | Review: 0</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71.1%.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified</span></span>
+<span><span class="co">#&gt; kappa above .74).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
 <span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
@@ -669,7 +674,8 @@
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span></span>
 <span><span class="co">#&gt;       have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
-<span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;       overstate consensus. (at most 1; below 0 when fewer experts agree</span></span>
+<span><span class="co">#&gt;       than chance predicts; higher is stronger)</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient describing how</span></span>
 <span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
 <span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
@@ -708,6 +714,9 @@
 <span><span class="co">#&gt; Mode: essentiality</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 12</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 of 3 items meet the exact essentiality criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: Item2, Item3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item  decision essential CVR    p</span></span>
 <span><span class="co">#&gt;  Item1 Supported     10/12 .67 .019</span></span>
@@ -761,6 +770,8 @@
 <span><span class="co">#&gt; Mode: congruence</span></span>
 <span><span class="co">#&gt; Items: 2 | Experts/cell: 4 | Objectives: 2</span></span>
 <span><span class="co">#&gt; Method: Rovinelli-Hambleton item-objective congruence</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2 of 2 items are linked most strongly to their target objective.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  item target       decision target IOC competitor competitor IOC margin</span></span>
 <span><span class="co">#&gt;    I1      A Target favored       1.00          B          -1.00   2.00</span></span>
@@ -984,7 +995,7 @@
 <code class="sourceCode R"><span><span class="va">sort_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sort_example.csv"</span>, package <span class="op">=</span> <span class="st">"contentvalidR"</span><span class="op">)</span></span>
 <span><span class="va">bundled_sort</span> <span class="op">&lt;-</span> <span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">sort_path</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">bundled_sort</span><span class="op">)</span></span></code></pre></div>
-<p>See <code><a href="articles/reporting-examples.html">vignette("reporting-examples", package = "contentvalidR")</a></code> for conservative manuscript-ready methods/results scaffolds, table-building examples, and a minimum reproducibility statement. Package citation metadata are available with <code>citation("contentvalidR")</code>; the method bibliography is installed as <code>REFERENCES.bib</code>.</p>
+<p>See <code><a href="articles/reporting-examples.html">vignette("reporting-examples", package = "contentvalidR")</a></code> for conservative manuscript-ready methods/results scaffolds, table-building examples, and a minimum reproducibility statement. Cite the package with <code>citation("contentvalidR")</code>. The References list below is also installed in BibTeX form: <code>system.file("REFERENCES.bib", package = "contentvalidR")</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="auxiliary-modules">Auxiliary modules<a class="anchor" aria-label="anchor" href="#auxiliary-modules"></a>
@@ -992,105 +1003,110 @@
 <p>The diagnostic, simulation, and Q-factor helpers remain available as auxiliary functions, but they are not recommended workflows. The six recommended workflows are <code><a href="reference/sort_validity.html">sort_validity()</a></code>, <code><a href="reference/rating_validity.html">rating_validity()</a></code>, <code><a href="reference/expert_validity.html">expert_validity()</a></code>, <code><a href="reference/delphi_validity.html">delphi_validity()</a></code>, <code><a href="reference/judge_validity.html">judge_validity()</a></code>, and <code><a href="reference/domain_validity.html">domain_validity()</a></code>.</p>
 </div>
 <div class="section level2">
-<h2 id="core-methodological-references">Core methodological references<a class="anchor" aria-label="anchor" href="#core-methodological-references"></a>
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <ul>
+<li>Agresti, A., &amp; Coull, B. A. (1998). Approximate is better than “exact” for interval estimation of binomial proportions. <em>The American Statistician, 52</em>(2), 119–126. <a href="https://doi.org/10.1080/00031305.1998.10480550" class="external-link uri">https://doi.org/10.1080/00031305.1998.10480550</a>
+</li>
+<li>Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. <em>Educational and Psychological Measurement, 40</em>(4), 955–959. <a href="https://doi.org/10.1177/001316448004000419" class="external-link uri">https://doi.org/10.1177/001316448004000419</a>
+</li>
 <li>Anderson, J. C., &amp; Gerbing, D. W. (1991). Predicting the performance of measures in a confirmatory factor analysis with a pretest assessment of their substantive validities. <em>Journal of Applied Psychology, 76</em>(5), 732–740. <a href="https://doi.org/10.1037/0021-9010.76.5.732" class="external-link uri">https://doi.org/10.1037/0021-9010.76.5.732</a>
 </li>
-<li>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. <em>Journal of Business and Psychology, 31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a>
+<li>Ayre, C., &amp; Scally, A. J. (2014). Critical values for Lawshe’s content validity ratio: Revisiting the original methods of calculation. <em>Measurement and Evaluation in Counseling and Development, 47</em>(1), 79–86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a>
+</li>
+<li>Brennan, R. L. (2001). <em>Generalizability theory</em>. Springer. <a href="https://doi.org/10.1007/978-1-4757-3456-0" class="external-link uri">https://doi.org/10.1007/978-1-4757-3456-0</a>
+</li>
+<li>Chaffin, W. W., &amp; Talley, W. K. (1980). Individual stability in Delphi studies. <em>Technological Forecasting and Social Change, 16</em>(1), 67–73. <a href="https://doi.org/10.1016/0040-1625(80)90074-8" class="external-link uri">https://doi.org/10.1016/0040-1625(80)90074-8</a>
+</li>
+<li>Clopper, C. J., &amp; Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. <em>Biometrika, 26</em>(4), 404–413. <a href="https://doi.org/10.1093/biomet/26.4.404" class="external-link uri">https://doi.org/10.1093/biomet/26.4.404</a>
+</li>
+<li>Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. <em>Psychological Bulletin, 70</em>(4), 213–220. <a href="https://doi.org/10.1037/h0026256" class="external-link uri">https://doi.org/10.1037/h0026256</a>
+</li>
+<li>Colquitt, J. A., Baer, M. D., Long, D. M., &amp; Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social exchange relationships: A comparison of relative content validity. <em>Journal of Applied Psychology, 99</em>(4), 599–618. <a href="https://doi.org/10.1037/a0036374" class="external-link uri">https://doi.org/10.1037/a0036374</a>
 </li>
 <li>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. <em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a>
 </li>
-<li>Yao, G., Wu, C.-H., &amp; Yang, C.-T. (2008). Examining the content validity of the WHOQOL-BREF from respondents’ perspective by quantitative methods. <em>Social Indicators Research, 85</em>(3), 483–498. <a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link uri">https://doi.org/10.1007/s11205-007-9112-8</a>
+<li>Crocker, L., Llabre, M., &amp; Miller, M. D. (1988). The generalizability of content validity ratings. <em>Journal of Educational Measurement, 25</em>(4), 287–299. <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link uri">https://doi.org/10.1111/j.1745-3984.1988.tb00309.x</a>
 </li>
+<li>Dajani, J. S., Sincoff, M. Z., &amp; Talley, W. K. (1979). Stability and agreement criteria for the termination of Delphi studies. <em>Technological Forecasting and Social Change, 13</em>(1), 83–90. <a href="https://doi.org/10.1016/0040-1625(79)90007-6" class="external-link uri">https://doi.org/10.1016/0040-1625(79)90007-6</a>
+</li>
+<li>De Boeck, P., &amp; Wilson, M. (Eds.). (2004). <em>Explanatory item response models: A generalized linear and nonlinear approach</em>. Springer. <a href="https://doi.org/10.1007/978-1-4757-3990-9" class="external-link uri">https://doi.org/10.1007/978-1-4757-3990-9</a>
+</li>
+<li>Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B., Ling, S. C., Moore, A. M., &amp; Wales, P. W. (2014). Defining consensus: A systematic review recommends methodologic criteria for reporting of Delphi studies. <em>Journal of Clinical Epidemiology, 67</em>(4), 401–409. <a href="https://doi.org/10.1016/j.jclinepi.2013.12.002" class="external-link uri">https://doi.org/10.1016/j.jclinepi.2013.12.002</a>
+</li>
+<li>Engelhard, G. (1994). Examining rater errors in the assessment of written composition with a many-faceted Rasch model. <em>Journal of Educational Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.1994.tb00436.x" class="external-link uri">https://doi.org/10.1111/j.1745-3984.1994.tb00436.x</a>
+</li>
+<li>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but low kappa: I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology, 43</em>(6), 543–549. <a href="https://doi.org/10.1016/0895-4356(90)90158-L" class="external-link uri">https://doi.org/10.1016/0895-4356(90)90158-L</a>
+</li>
+<li>Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters. <em>Psychological Bulletin, 76</em>(5), 378–382. <a href="https://doi.org/10.1037/h0031619" class="external-link uri">https://doi.org/10.1037/h0031619</a>
+</li>
+<li>Fleiss, J. L., &amp; Cohen, J. (1973). The equivalence of weighted kappa and the intraclass correlation coefficient as measures of reliability. <em>Educational and Psychological Measurement, 33</em>(3), 613–619. <a href="https://doi.org/10.1177/001316447303300309" class="external-link uri">https://doi.org/10.1177/001316447303300309</a>
+</li>
+<li>Gamer, M., Lemon, J., Fellows, I., &amp; Singh, P. (2026). <em>irr: Various coefficients of interrater reliability and agreement</em> (R package version 0.85) [Computer software]. <a href="https://doi.org/10.32614/CRAN.package.irr" class="external-link uri">https://doi.org/10.32614/CRAN.package.irr</a>
+</li>
+<li>Glorfeld, L. W. (1995). An improvement on Horn’s parallel analysis methodology for selecting the correct number of factors to retain. <em>Educational and Psychological Measurement, 55</em>(3), 377–393. <a href="https://doi.org/10.1177/0013164495055003002" class="external-link uri">https://doi.org/10.1177/0013164495055003002</a>
+</li>
+<li>Gwet, K. L. (2008). Computing inter-rater reliability and its variance in the presence of high agreement. <em>British Journal of Mathematical and Statistical Psychology, 61</em>(1), 29–48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a>
+</li>
+<li>Hayes, A. F., &amp; Krippendorff, K. (2007). Answering the call for a standard reliability measure for coding data. <em>Communication Methods and Measures, 1</em>(1), 77–89. <a href="https://doi.org/10.1080/19312450709336664" class="external-link uri">https://doi.org/10.1080/19312450709336664</a>
+</li>
+<li>Hernández-Nieto, R. (2002). <em>Contributions to statistical analysis: The coefficients of proportional variance, content validity and kappa</em>. BookSurge.</li>
 <li>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance approach to content validation. <em>Organizational Research Methods, 2</em>(2), 175–186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a>
+</li>
+<li>Holey, E. A., Feeley, J. L., Dixon, J., &amp; Whittaker, V. J. (2007). An exploration of the use of simple statistics to measure consensus and stability in Delphi studies. <em>BMC Medical Research Methodology, 7</em>, 52. <a href="https://doi.org/10.1186/1471-2288-7-52" class="external-link uri">https://doi.org/10.1186/1471-2288-7-52</a>
+</li>
+<li>Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <em>Psychometrika, 30</em>(2), 179–185. <a href="https://doi.org/10.1007/BF02289447" class="external-link uri">https://doi.org/10.1007/BF02289447</a>
+</li>
+<li>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. <em>Journal of Business and Psychology, 31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a>
+</li>
+<li>Hubert, L., &amp; Arabie, P. (1985). Comparing partitions. <em>Journal of Classification, 2</em>(1), 193–218. <a href="https://doi.org/10.1007/BF01908075" class="external-link uri">https://doi.org/10.1007/BF01908075</a>
+</li>
+<li>Klar, N., Lipsitz, S. R., Parzen, M., &amp; Leong, T. (2002). An exact bootstrap confidence interval for kappa in small samples. <em>Journal of the Royal Statistical Society: Series D (The Statistician), 51</em>(4), 467–478. <a href="https://doi.org/10.1111/1467-9884.00331" class="external-link uri">https://doi.org/10.1111/1467-9884.00331</a>
+</li>
+<li>Krippendorff, K. (2011). <em>Computing Krippendorff’s alpha-reliability</em>. Annenberg School for Communication, University of Pennsylvania. <a href="https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20" class="external-link uri">https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20</a>
+</li>
+<li>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer agreement for categorical data. <em>Biometrics, 33</em>(1), 159–174. <a href="https://doi.org/10.2307/2529310" class="external-link uri">https://doi.org/10.2307/2529310</a>
+</li>
+<li>Lawshe, C. H. (1975). A quantitative approach to content validity. <em>Personnel Psychology, 28</em>(4), 563–575. <a href="https://doi.org/10.1111/j.1744-6570.1975.tb01393.x" class="external-link uri">https://doi.org/10.1111/j.1744-6570.1975.tb01393.x</a>
+</li>
+<li>Linacre, J. M. (1989). <em>Many-facet Rasch measurement</em>. MESA Press.</li>
+<li>Lynn, M. R. (1986). Determination and quantification of content validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a>
+</li>
+<li>Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. <em>Statistics in Medicine, 17</em>(8), 857–872. <a href="https://doi.org/10/cpchjg" class="external-link uri">https://doi.org/10/cpchjg</a>
+</li>
+<li>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score confidence interval to Aiken’s item content-relevance index. <em>Measurement in Physical Education and Exercise Science, 8</em>(4), 213–225. <a href="https://doi.org/10.1207/S15327841MPEE0804_3" class="external-link uri">https://doi.org/10.1207/S15327841MPEE0804_3</a>
 </li>
 <li>Polit, D. F., &amp; Beck, C. T. (2006). The content validity index: Are you sure you know what’s being reported? Critique and recommendations. <em>Research in Nursing &amp; Health, 29</em>(5), 489–497. <a href="https://doi.org/10.1002/nur.20147" class="external-link uri">https://doi.org/10.1002/nur.20147</a>
 </li>
 <li>Polit, D. F., Beck, C. T., &amp; Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. <em>Research in Nursing &amp; Health, 30</em>(4), 459–467. <a href="https://doi.org/10.1002/nur.20199" class="external-link uri">https://doi.org/10.1002/nur.20199</a>
 </li>
-<li>Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. <em>Educational and Psychological Measurement, 40</em>(4), 955–959. <a href="https://doi.org/10.1177/001316448004000419" class="external-link uri">https://doi.org/10.1177/001316448004000419</a>
-</li>
-<li>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score confidence interval to Aiken’s item content-relevance index. <em>Measurement in Physical Education and Exercise Science, 8</em>(4), 213–225. <a href="https://doi.org/10.1207/S15327841MPEE0804_3" class="external-link uri">https://doi.org/10.1207/S15327841MPEE0804_3</a>
-</li>
-<li>Lawshe, C. H. (1975). A quantitative approach to content validity. <em>Personnel Psychology, 28</em>(4), 563–575. <a href="https://doi.org/10.1111/j.1744-6570.1975.tb01393.x" class="external-link uri">https://doi.org/10.1111/j.1744-6570.1975.tb01393.x</a>
-</li>
-<li>Ayre, C., &amp; Scally, A. J. (2014). Critical values for Lawshe’s content validity ratio: Revisiting the original methods of calculation. <em>Measurement and Evaluation in Counseling and Development, 47</em>(1), 79–86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a>
-</li>
-<li>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation of the critical values for Lawshe’s content validity ratio. <em>Measurement and Evaluation in Counseling and Development, 45</em>(3), 197–210. <a href="https://doi.org/10.1177/0748175612440286" class="external-link uri">https://doi.org/10.1177/0748175612440286</a>
-</li>
-<li>Hernández-Nieto, R. (2002). <em>Contributions to statistical analysis: The coefficients of proportional variance, content validity and kappa</em>. BookSurge. Shown for comparison only; see <code><a href="reference/expert_validity.html">?expert_validity</a></code> for its shortcomings.</li>
 <li>Rovinelli, R. J., &amp; Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. <em>Dutch Journal of Educational Research, 2</em>, 49–60.</li>
-<li>Turner, R. C., &amp; Carlson, L. (2003). Indexes of item-objective congruence for multidimensional items. <em>International Journal of Testing, 3</em>(2), 163–171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a>
+<li>Scheibe, M., Skutsch, M., &amp; Schofer, J. (1975). Experiments in Delphi methodology. In H. A. Linstone &amp; M. Turoff (Eds.), <em>The Delphi method: Techniques and applications</em>. Addison-Wesley.</li>
+<li>Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &amp; Powers, K. J. (1999). An empirical comparison of approaches for quantitatively assessing the content adequacy of paper-and-pencil measurement instruments. <em>Organizational Research Methods, 2</em>(2), 140–156. <a href="https://doi.org/10.1177/109442819922002" class="external-link uri">https://doi.org/10.1177/109442819922002</a>
 </li>
-<li>Crocker, L., Llabre, M., &amp; Miller, M. D. (1988). The generalizability of content validity ratings. <em>Journal of Educational Measurement, 25</em>(4), 287–299. <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link uri">https://doi.org/10.1111/j.1745-3984.1988.tb00309.x</a>
+<li>Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., &amp; Lankau, M. J. (1993). Improving construct measurement in management research: Comments and a quantitative approach for assessing the theoretical content adequacy of paper-and-pencil survey-type instruments. <em>Journal of Management, 19</em>(2), 385–417. <a href="https://doi.org/10.1177/014920639301900208" class="external-link uri">https://doi.org/10.1177/014920639301900208</a>
 </li>
-<li>Brennan, R. L. (2001). <em>Generalizability Theory.</em> Springer.</li>
-<li>Engelhard, G. (1994). Examining rater errors in the assessment of written composition with a many-faceted Rasch model. <em>Journal of Educational Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.1994.tb00436.x" class="external-link uri">https://doi.org/10.1111/j.1745-3984.1994.tb00436.x</a>
+<li>Sireci, S. G. (1998). The construct of content validity. <em>Social Indicators Research, 45</em>(1–3), 83–117. <a href="https://doi.org/10.1023/A:1006985528729" class="external-link uri">https://doi.org/10.1023/A:1006985528729</a>
 </li>
-<li>Linacre, J. M. (1989). <em>Many-Facet Rasch Measurement.</em> MESA Press.</li>
-<li>de Boeck, P., &amp; Wilson, M. (2004). <em>Explanatory Item Response Models: A Generalized Linear and Nonlinear Approach.</em> Springer.</li>
 <li>Sireci, S. G., &amp; Geisinger, K. F. (1992). Analyzing test content using cluster analysis and multidimensional scaling. <em>Applied Psychological Measurement, 16</em>(1), 17–31. <a href="https://doi.org/10.1177/014662169201600102" class="external-link uri">https://doi.org/10.1177/014662169201600102</a>
 </li>
 <li>Sireci, S. G., &amp; Geisinger, K. F. (1995). Using subject-matter experts to assess content representation: An MDS analysis. <em>Applied Psychological Measurement, 19</em>(3), 241–255. <a href="https://doi.org/10.1177/014662169501900303" class="external-link uri">https://doi.org/10.1177/014662169501900303</a>
 </li>
-<li>Sireci, S. G. (1998). The construct of content validity. <em>Social Indicators Research, 45</em>(1–3), 83–117. <a href="https://doi.org/10.1023/A:1006985528729" class="external-link uri">https://doi.org/10.1023/A:1006985528729</a>
+<li>Turner, R. C., &amp; Carlson, L. (2003). Indexes of item-objective congruence for multidimensional items. <em>International Journal of Testing, 3</em>(2), 163–171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a>
 </li>
-<li>Hubert, L., &amp; Arabie, P. (1985). Comparing partitions. <em>Journal of Classification, 2</em>(1), 193–218. <a href="https://doi.org/10.1007/BF01908075" class="external-link uri">https://doi.org/10.1007/BF01908075</a>
-</li>
-<li>Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., &amp; Lankau, M. J. (1993). Improving construct measurement in management research: Comments and a quantitative approach for assessing the theoretical content adequacy of paper-and-pencil survey-type instruments. <em>Journal of Management, 19</em>(2), 385–417. <a href="https://doi.org/10.1177/014920639301900208" class="external-link uri">https://doi.org/10.1177/014920639301900208</a>
-</li>
-<li>Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &amp; Powers, K. J. (1999). An empirical comparison of approaches for quantitatively assessing the content adequacy of paper-and-pencil measurement instruments. <em>Organizational Research Methods, 2</em>(2), 140–156. <a href="https://doi.org/10.1177/109442819922002" class="external-link uri">https://doi.org/10.1177/109442819922002</a>
-</li>
-<li>Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. <em>Psychometrika, 30</em>(2), 179–185. <a href="https://doi.org/10.1007/BF02289447" class="external-link uri">https://doi.org/10.1007/BF02289447</a>
-</li>
-<li>Glorfeld, L. W. (1995). An improvement on Horn’s parallel analysis methodology for selecting the correct number of factors to retain. <em>Educational and Psychological Measurement, 55</em>(3), 377–393. <a href="https://doi.org/10.1177/0013164495055003002" class="external-link uri">https://doi.org/10.1177/0013164495055003002</a>
-</li>
-<li>Zwick, W. R., &amp; Velicer, W. F. (1986). Comparison of five rules for determining the number of components to retain. <em>Psychological Bulletin, 99</em>(3), 432–442. <a href="https://doi.org/10.1037/0033-2909.99.3.432" class="external-link uri">https://doi.org/10.1037/0033-2909.99.3.432</a>
-</li>
-<li>Lynn, M. R. (1986). Determination and quantification of content validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a>
+<li>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>, 102212. <a href="https://doi.org/10.1016/j.mex.2023.102212" class="external-link uri">https://doi.org/10.1016/j.mex.2023.102212</a>
 </li>
 <li>Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. <em>Journal of the American Statistical Association, 22</em>(158), 209–212. <a href="https://doi.org/10.1080/01621459.1927.10502953" class="external-link uri">https://doi.org/10.1080/01621459.1927.10502953</a>
 </li>
-<li>Clopper, C. J., &amp; Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. <em>Biometrika, 26</em>(4), 404–413. <a href="https://doi.org/10.1093/biomet/26.4.404" class="external-link uri">https://doi.org/10.1093/biomet/26.4.404</a>
-</li>
-<li>Agresti, A., &amp; Coull, B. A. (1998). Approximate is better than “exact” for interval estimation of binomial proportions. <em>The American Statistician, 52</em>(2), 119–126. <a href="https://doi.org/10.1080/00031305.1998.10480550" class="external-link uri">https://doi.org/10.1080/00031305.1998.10480550</a>
-</li>
-<li>Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. <em>Statistics in Medicine, 17</em>(8), 857–872.</li>
-<li>Hayes, A. F., &amp; Krippendorff, K. (2007). Answering the call for a standard reliability measure for coding data. <em>Communication Methods and Measures, 1</em>(1), 77–89. <a href="https://doi.org/10.1080/19312450709336664" class="external-link uri">https://doi.org/10.1080/19312450709336664</a>
-</li>
-<li>Krippendorff, K. (2011). <em>Computing Krippendorff’s alpha-reliability.</em> Annenberg School for Communication, University of Pennsylvania. <a href="https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20" class="external-link uri">https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20</a>
-</li>
-<li>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93. <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link uri">https://doi.org/10.1186/s12874-016-0200-9</a>
-</li>
-<li>Gwet, K. L. (2008). Computing inter-rater reliability and its variance in the presence of high agreement. <em>British Journal of Mathematical and Statistical Psychology, 61</em>(1), 29–48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a>
-</li>
-<li>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>,
-<ol start="102212" style="list-style-type: decimal"><li>
-</li></ol>
-</li>
-<li>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but low kappa: I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology, 43</em>(6), 543–549. <a href="https://doi.org/10.1016/0895-4356(90)90158-L" class="external-link uri">https://doi.org/10.1016/0895-4356(90)90158-L</a>
+<li>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation of the critical values for Lawshe’s content validity ratio. <em>Measurement and Evaluation in Counseling and Development, 45</em>(3), 197–210. <a href="https://doi.org/10.1177/0748175612440286" class="external-link uri">https://doi.org/10.1177/0748175612440286</a>
 </li>
 <li>Wongpakaran, N., Wongpakaran, T., Wedding, D., &amp; Gwet, K. L. (2013). A comparison of Cohen’s kappa and Gwet’s AC1 when calculating inter-rater reliability coefficients: A study conducted with personality disorder samples. <em>BMC Medical Research Methodology, 13</em>, 61. <a href="https://doi.org/10.1186/1471-2288-13-61" class="external-link uri">https://doi.org/10.1186/1471-2288-13-61</a>
 </li>
-<li>Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters. <em>Psychological Bulletin, 76</em>(5), 378–382. <a href="https://doi.org/10.1037/h0031619" class="external-link uri">https://doi.org/10.1037/h0031619</a>
+<li>Yao, G., Wu, C.-H., &amp; Yang, C.-T. (2008). Examining the content validity of the WHOQOL-BREF from respondents’ perspective by quantitative methods. <em>Social Indicators Research, 85</em>(3), 483–498. <a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link uri">https://doi.org/10.1007/s11205-007-9112-8</a>
 </li>
-<li>Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. <em>Psychological Bulletin, 70</em>(4), 213-220. <a href="https://doi.org/10.1037/h0026256" class="external-link uri">https://doi.org/10.1037/h0026256</a>
+<li>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93. <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link uri">https://doi.org/10.1186/s12874-016-0200-9</a>
 </li>
-<li>Fleiss, J. L., &amp; Cohen, J. (1973). The equivalence of weighted kappa and the intraclass correlation coefficient as measures of reliability. <em>Educational and Psychological Measurement, 33</em>(3), 613-619. <a href="https://doi.org/10.1177/001316447303300309" class="external-link uri">https://doi.org/10.1177/001316447303300309</a>
-</li>
-<li>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer agreement for categorical data. <em>Biometrics, 33</em>(1), 159-174. <a href="https://doi.org/10.2307/2529310" class="external-link uri">https://doi.org/10.2307/2529310</a>
-</li>
-<li>Klar, N., Lipsitz, S. R., Parzen, M., &amp; Leong, T. (2002). An exact bootstrap confidence interval for kappa in small samples. <em>Journal of the Royal Statistical Society: Series D (The Statistician), 51</em>(4), 467-478. <a href="https://doi.org/10.1111/1467-9884.00331" class="external-link uri">https://doi.org/10.1111/1467-9884.00331</a>
-</li>
-<li>Scheibe, M., Skutsch, M., &amp; Schofer, J. (1975). Experiments in Delphi methodology. In H. A. Linstone &amp; M. Turoff (Eds.), <em>The Delphi method: Techniques and applications</em>. Addison-Wesley.</li>
-<li>Dajani, J. S., Sincoff, M. Z., &amp; Talley, W. K. (1979). Stability and agreement criteria for the termination of Delphi studies. <em>Technological Forecasting and Social Change, 13</em>(1), 83-90. <a href="https://doi.org/10.1016/0040-1625(79)90007-6" class="external-link uri">https://doi.org/10.1016/0040-1625(79)90007-6</a>
-</li>
-<li>Chaffin, W. W., &amp; Talley, W. K. (1980). Individual stability in Delphi studies. <em>Technological Forecasting and Social Change, 16</em>(1), 67-73. <a href="https://doi.org/10.1016/0040-1625(80)90074-8" class="external-link uri">https://doi.org/10.1016/0040-1625(80)90074-8</a>
-</li>
-<li>Holey, E. A., Feeley, J. L., Dixon, J., &amp; Whittaker, V. J. (2007). An exploration of the use of simple statistics to measure consensus and stability in Delphi studies. <em>BMC Medical Research Methodology, 7</em>, 52. <a href="https://doi.org/10.1186/1471-2288-7-52" class="external-link uri">https://doi.org/10.1186/1471-2288-7-52</a>
-</li>
-<li>Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B., Ling, S. C., Moore, A. M., &amp; Wales, P. W. (2014). Defining consensus: A systematic review recommends methodologic criteria for reporting of Delphi studies. <em>Journal of Clinical Epidemiology, 67</em>(4), 401-409. <a href="https://doi.org/10.1016/j.jclinepi.2013.12.002" class="external-link uri">https://doi.org/10.1016/j.jclinepi.2013.12.002</a>
+<li>Zwick, W. R., &amp; Velicer, W. F. (1986). Comparison of five rules for determining the number of components to retain. <em>Psychological Bulletin, 99</em>(3), 432–442. <a href="https://doi.org/10.1037/0033-2909.99.3.432" class="external-link uri">https://doi.org/10.1037/0033-2909.99.3.432</a>
 </li>
 </ul>
 </div>

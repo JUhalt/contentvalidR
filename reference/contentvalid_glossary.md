@@ -97,7 +97,8 @@ contentvalid_glossary()
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (0 to 1; higher is stronger)
+#>       overstate consensus. (at most 1; below 0 when fewer experts agree
+#>       than chance predicts; higher is stronger)
 #>   agreement -- Panel-level agreement. One coefficient describing how
 #>       consistently the whole panel rated the item set: Krippendorff's alpha
 #>       by default, or Gwet's AC1 if chosen. It is separate from modified

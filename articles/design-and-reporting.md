@@ -146,10 +146,10 @@ rating_fit$scale_summary
 #> 1         Weak   0.4375  Very Strong             Weak         NA       overall
 #> 2         Weak   0.4375  Very Strong             Weak         NA       overall
 #> 3         Weak   0.4375  Very Strong             Weak         NA       overall
-#>                                                                                                                                                            evidence
-#> 1 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
-#> 2 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
-#> 3 Weak normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.
+#>                                                                                                                                                                                                                           evidence
+#> 1 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 2 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 3 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
 ```
 
 Report the repeated-measures design and target-versus-orbiting

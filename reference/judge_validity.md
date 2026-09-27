@@ -96,7 +96,7 @@ item-level influence table.
 
 Logit severity comes from a many-facet Rasch model fitted by joint
 maximum likelihood as a logistic regression, the generalized linear
-model formulation described by de Boeck and Wilson (2004). Joint maximum
+model formulation described by De Boeck and Wilson (2004). Joint maximum
 likelihood is known to over-disperse facet estimates in small designs.
 The standard Wright-Douglas `(L-1)/L` correction is applied by default
 and reported in `settings$bias_correction`, but it reduces rather than
@@ -114,18 +114,19 @@ silent.
 
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. *Journal of Educational Measurement, 25*(4),
-287-299.
+287–299.
 [doi:10.1111/j.1745-3984.1988.tb00309.x](https://doi.org/10.1111/j.1745-3984.1988.tb00309.x)
+
+De Boeck, P., & Wilson, M. (Eds.). (2004). *Explanatory item response
+models: A generalized linear and nonlinear approach*. Springer.
+[doi:10.1007/978-1-4757-3990-9](https://doi.org/10.1007/978-1-4757-3990-9)
 
 Engelhard, G. (1994). Examining rater errors in the assessment of
 written composition with a many-faceted Rasch model. *Journal of
-Educational Measurement, 31*(2), 93-112.
+Educational Measurement, 31*(2), 93–112.
 [doi:10.1111/j.1745-3984.1994.tb00436.x](https://doi.org/10.1111/j.1745-3984.1994.tb00436.x)
 
-Linacre, J. M. (1989). *Many-Facet Rasch Measurement.* MESA Press.
-
-de Boeck, P., & Wilson, M. (2004). *Explanatory Item Response Models: A
-Generalized Linear and Nonlinear Approach.* Springer.
+Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 
 ## See also
 
@@ -171,11 +172,13 @@ fit
 #> direction, scale use is below 0.50, or any item's status depends on them.
 #> 
 #> Logit severity not estimated
-#> Judge severity could not be estimated. After removing judges and items with
-#> no variation in endorsement, fewer than two judges and two items remained.
-#> This usually means the panel agreed almost completely, which is a substantive
-#> finding rather than an estimation failure: with near total agreement there
-#> are no severity differences to recover.
+#> Judge severity could not be estimated. After setting aside judges and items
+#> with no variation in endorsement, fewer than two judges and two items
+#> remained, usually because each judge endorsed either all of the remaining
+#> items or none of them. That happens when the panel agrees almost completely,
+#> or when the only disagreement is a judge who rejects every item the others
+#> accept. It describes the ratings rather than an estimation failure: a logit
+#> scale needs judges whose endorsements vary.
 #> Severity in rating points is reported instead and is used for flagging.
 #> 
 #> No item's review status depends on any single judge.
@@ -211,6 +214,7 @@ fit
 #> expertise; the flag marks where a conclusion rests on one person's ratings.
 summary(fit)
 #> Summary: judge and rater heterogeneity
+#> --------------------------------------
 #> Judges: 8 | Items: 6
 #> Consistent with panel: 7 | Flagged for review: 1 | Insufficient: 0
 #> 

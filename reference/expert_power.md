@@ -70,18 +70,18 @@ hiding this, so it is reported as it is.
 
 ## References
 
+Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
+validity ratio. *Measurement and Evaluation in Counseling and
+Development, 47*(1), 79–86.
+[doi:10.1177/0748175613513808](https://doi.org/10.1177/0748175613513808)
+
 Lynn, M. R. (1986). Determination and quantification of content
-validity. *Nursing Research, 35*(6), 382-385.
+validity. *Nursing Research, 35*(6), 382–385.
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
 acceptable indicator of content validity? *Research in Nursing & Health,
-30*(4), 459-467.
+30*(4), 459–467.
 [doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
-
-Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. *Measurement and Evaluation in Counseling and
-Development, 47*(1), 79-86.
-[doi:10.1177/0748175613513808](https://doi.org/10.1177/0748175613513808)
 
 ## See also
 

@@ -46,7 +46,7 @@ and `csv`.
 Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
 measures in a confirmatory factor analysis with a pretest assessment of
 their substantive validities. *Journal of Applied Psychology, 76*(5),
-732-740.
+732–740.
 [doi:10.1037/0021-9010.76.5.732](https://doi.org/10.1037/0021-9010.76.5.732)
 
 ## Examples

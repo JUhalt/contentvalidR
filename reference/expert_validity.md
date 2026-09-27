@@ -192,58 +192,58 @@ decision:
 
 ## References
 
-Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
-confidence interval to Aiken's item content-relevance index.
-*Measurement in Physical Education and Exercise Science, 8*(4), 213-225.
-[doi:10.1207/s15327841mpee0804_3](https://doi.org/10.1207/s15327841mpee0804_3)
-
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
 *Measurement and Evaluation in Counseling and Development, 47*(1),
-79-86.
+79–86.
 [doi:10.1177/0748175613513808](https://doi.org/10.1177/0748175613513808)
 
+Fleiss, J. L. (1971). Measuring nominal scale agreement among many
+raters. *Psychological Bulletin, 76*(5), 378–382.
+[doi:10.1037/h0031619](https://doi.org/10.1037/h0031619)
+
+Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a
+standard reliability measure for coding data. *Communication Methods and
+Measures, 1*(1), 77–89.
+[doi:10.1080/19312450709336664](https://doi.org/10.1080/19312450709336664)
+
+Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
+coefficients of proportional variance, content validity and kappa*.
+BookSurge.
+
+Lawshe, C. H. (1975). A quantitative approach to content validity.
+*Personnel Psychology, 28*(4), 563–575.
+[doi:10.1111/j.1744-6570.1975.tb01393.x](https://doi.org/10.1111/j.1744-6570.1975.tb01393.x)
+
 Lynn, M. R. (1986). Determination and quantification of content
-validity. *Nursing Research, 35*(6), 382-385.
+validity. *Nursing Research, 35*(6), 382–385.
 [doi:10.1097/00006199-198611000-00017](https://doi.org/10.1097/00006199-198611000-00017)
+
+Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
+confidence interval to Aiken's item content-relevance index.
+*Measurement in Physical Education and Exercise Science, 8*(4), 213–225.
+[doi:10.1207/s15327841mpee0804_3](https://doi.org/10.1207/s15327841mpee0804_3)
 
 Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
 sure you know what's being reported? Critique and recommendations.
-*Research in Nursing & Health, 29*(5), 489-497.
+*Research in Nursing & Health, 29*(5), 489–497.
 [doi:10.1002/nur.20147](https://doi.org/10.1002/nur.20147)
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
 acceptable indicator of content validity? *Research in Nursing & Health,
-30*(4), 459-467.
+30*(4), 459–467.
 [doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
 
-Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a
-standard reliability measure for coding data. *Communication Methods and
-Measures, 1*(1), 77-89.
-[doi:10.1080/19312450709336664](https://doi.org/10.1080/19312450709336664)
+Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe's content validity ratio. *Measurement and
+Evaluation in Counseling and Development, 45*(3), 197–210.
+[doi:10.1177/0748175612440286](https://doi.org/10.1177/0748175612440286)
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and
 confidence intervals are appropriate? *BMC Medical Research Methodology,
 16*, 93.
 [doi:10.1186/s12874-016-0200-9](https://doi.org/10.1186/s12874-016-0200-9)
-
-Lawshe, C. H. (1975). A quantitative approach to content validity.
-*Personnel Psychology, 28*(4), 563-575.
-[doi:10.1111/j.1744-6570.1975.tb01393.x](https://doi.org/10.1111/j.1744-6570.1975.tb01393.x)
-
-Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
-critical values for Lawshe's content validity ratio. *Measurement and
-Evaluation in Counseling and Development, 45*(3), 197-210.
-[doi:10.1177/0748175612440286](https://doi.org/10.1177/0748175612440286)
-
-Fleiss, J. L. (1971). Measuring nominal scale agreement among many
-raters. *Psychological Bulletin, 76*(5), 378-382.
-[doi:10.1037/h0031619](https://doi.org/10.1037/h0031619)
-
-Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
-coefficients of proportional variance, content validity and kappa.*
-BookSurge.
 
 ## Examples
 
@@ -260,9 +260,11 @@ fit
 #> Mode: relevance
 #> Items: 4 | Experts/item: 4
 #> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
-#> Strong support: 4 | Support: 0 | Review: 0
 #> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].
 #>   Identical rating pairs: 50.0%.
+#> 
+#> 4 of 4 items meet the I-CVI criterion, all with strong support (modified
+#> kappa above .74).
 #> 
 #>   item       decision N   V     95% CI I-CVI      95% CI kappa
 #>  Item1 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00
@@ -305,7 +307,8 @@ fit
 #>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
 #>       have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (0 to 1; higher is stronger)
+#>       overstate consensus. (at most 1; below 0 when fewer experts agree
+#>       than chance predicts; higher is stronger)
 #>   Panel agreement -- Panel-level agreement. One coefficient describing how
 #>       consistently the whole panel rated the item set: Krippendorff's alpha
 #>       by default, or Gwet's AC1 if chosen. It is separate from modified
@@ -349,6 +352,9 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
 #> Mode: essentiality
 #> Items: 4 | Experts/item: 12
 #> Method: Lawshe CVR with exact binomial critical values
+#> 
+#> 2 of 4 items meet the exact essentiality criterion.
+#> Flagged for review: Item3, Item4
 #> 
 #>   item  decision essential  CVR      p
 #>  Item1 Supported     12/12 1.00 < .001

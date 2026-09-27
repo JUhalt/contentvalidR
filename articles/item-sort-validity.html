@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
       <h1>Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/vignettes/item-sort-validity.Rmd" class="external-link"><code>vignettes/item-sort-validity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/item-sort-validity.Rmd" class="external-link"><code>vignettes/item-sort-validity.Rmd</code></a></small>
       <div class="d-none name"><code>item-sort-validity.Rmd</code></div>
     </div>
 
@@ -206,8 +206,8 @@ overlap.</p>
 <span><span class="co">#&gt;       A     3      2      1      .78  Moderate      .57  Moderate Moderate</span></span>
 <span><span class="co">#&gt;       B     3      2      1      .82  Moderate      .63    Strong Moderate</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A, B: Generally supportive normative standing, with at least one dimension in</span></span>
-<span><span class="co">#&gt;   the moderate range; review weaker items before finalizing.</span></span>
+<span><span class="co">#&gt; A, B: The weaker of Psa and Csv falls in the Moderate band of published</span></span>
+<span><span class="co">#&gt;   scales (Colquitt et al., 2019); review the weaker items before finalizing.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Items needing attention</span></span>
 <span><span class="co">#&gt;  item target decision Psa Csv competitor    p</span></span>
@@ -317,8 +317,8 @@ scale’s mean Psa and mean Csv.</p>
 <span><span class="co">#&gt; 4  20th-39th    0.05</span></span>
 <span><span class="co">#&gt; 5   0th-19th    -Inf</span></span></code></pre></div>
 <p>The labels—Very Strong, Strong, Moderate, Weak, and Lack of—are
-empirical normative standing, <strong>not universal validity
-cutoffs</strong>.</p>
+percentile bands relative to published scales, <strong>not universal
+validity cutoffs</strong>.</p>
 <div class="section level3">
 <h3 id="correlation-conditional-norms">Correlation-conditional norms<a class="anchor" aria-label="anchor" href="#correlation-conditional-norms"></a>
 </h3>
@@ -344,9 +344,9 @@ multiple focal scales, use a named vector.</p>
 <span><span class="co">#&gt;   overall_strength</span></span>
 <span><span class="co">#&gt; 1         Moderate</span></span>
 <span><span class="co">#&gt; 2             Weak</span></span>
-<span><span class="co">#&gt;                                                                                                                                evidence</span></span>
-<span><span class="co">#&gt; 1    Generally supportive normative standing, with at least one dimension in the moderate range; review weaker items before finalizing.</span></span>
-<span><span class="co">#&gt; 2 Limited normative standing on at least one dimension; review item wording and construct overlap and consider re-pretesting revisions.</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                                                                                                                                                    evidence</span></span>
+<span><span class="co">#&gt; 1                                              The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.</span></span>
+<span><span class="co">#&gt; 2 The weaker of Psa and Csv falls in the Weak band of published scales (Colquitt et al., 2019); review item wording and construct overlap, and consider pretesting the revised items again.</span></span></code></pre></div>
 <p>The conditional panels are:</p>
 <ul>
 <li>
@@ -574,19 +574,19 @@ decisions;</li>
 <p>Anderson, J. C., &amp; Gerbing, D. W. (1991). Predicting the
 performance of measures in a confirmatory factor analysis with a pretest
 assessment of their substantive validities. <em>Journal of Applied
-Psychology, 76</em>(5), 732-740. <a href="https://doi.org/10.1037/0021-9010.76.5.732" class="external-link uri">https://doi.org/10.1037/0021-9010.76.5.732</a></p>
-<p>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task
-methods: The presentation of a new statistical significance formula and
-methodological best practices. <em>Journal of Business and Psychology,
-31</em>(1), 173-186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
+Psychology, 76</em>(5), 732–740. <a href="https://doi.org/10.1037/0021-9010.76.5.732" class="external-link uri">https://doi.org/10.1037/0021-9010.76.5.732</a></p>
 <p>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T.
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
-<em>Journal of Applied Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. <em>Journal of Business and Psychology,
+31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
 <p>Yao, G., Wu, C.-H., &amp; Yang, C.-T. (2008). Examining the content
 validity of the WHOQOL-BREF from respondents’ perspective by
 quantitative methods. <em>Social Indicators Research, 85</em>(3),
-483-498. <a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link uri">https://doi.org/10.1007/s11205-007-9112-8</a></p>
+483–498. <a href="https://doi.org/10.1007/s11205-007-9112-8" class="external-link uri">https://doi.org/10.1007/s11205-007-9112-8</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

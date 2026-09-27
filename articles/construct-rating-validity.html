@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
       <h1>Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/vignettes/construct-rating-validity.Rmd" class="external-link"><code>vignettes/construct-rating-validity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/construct-rating-validity.Rmd" class="external-link"><code>vignettes/construct-rating-validity.Rmd</code></a></small>
       <div class="d-none name"><code>construct-rating-validity.Rmd</code></div>
     </div>
 
@@ -265,7 +265,7 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <span><span class="co">#&gt;  target items mean HTC   HTC level mean HTD   HTD level</span></span>
 <span><span class="co">#&gt;       A     3      .88      Strong      .58 Very Strong</span></span>
 <span><span class="co">#&gt;       B     1      .92 Very Strong      .61 Very Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: overall</span></span>
+<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
 <span><span class="co">#&gt; averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
@@ -314,10 +314,10 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <span><span class="co">#&gt;       Strong</span></span>
 <span><span class="co">#&gt;  Very Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Strong normative standing on the weaker of definitional correspondence</span></span>
-<span><span class="co">#&gt;   (HTC) and distinctiveness (HTD).</span></span>
-<span><span class="co">#&gt; B: Very Strong normative standing on the weaker of definitional</span></span>
-<span><span class="co">#&gt;   correspondence (HTC) and distinctiveness (HTD).</span></span>
+<span><span class="co">#&gt; A: The weaker of HTC and HTD falls in the Strong band of published scales</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt; B: The weaker of HTC and HTD falls in the Very Strong band of published</span></span>
+<span><span class="co">#&gt;   scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -355,9 +355,9 @@ normative labels.</p>
 <span><span class="co">#&gt;   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set</span></span>
 <span><span class="co">#&gt; 1       Strong 0.5781250  Very Strong           Strong         NA       overall</span></span>
 <span><span class="co">#&gt; 2  Very Strong 0.6145833  Very Strong      Very Strong         NA       overall</span></span>
-<span><span class="co">#&gt;                                                                                                       evidence</span></span>
-<span><span class="co">#&gt; 1      Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).</span></span>
-<span><span class="co">#&gt; 2 Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).</span></span>
+<span><span class="co">#&gt;                                                                                               evidence</span></span>
+<span><span class="co">#&gt; 1      The weaker of HTC and HTD falls in the Strong band of published scales (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt; 2 The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   statistic benchmark_set                  benchmark_label interpretation</span></span>
 <span><span class="co">#&gt; 1       htc       overall Overall (not correlation-normed)    Very Strong</span></span>
@@ -399,9 +399,9 @@ requested:</p>
 <span><span class="co">#&gt;   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set</span></span>
 <span><span class="co">#&gt; 1     Moderate 0.5781250  Very Strong         Moderate       0.42      moderate</span></span>
 <span><span class="co">#&gt; 2  Very Strong 0.6145833  Very Strong      Very Strong       0.55      stronger</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                               evidence</span></span>
-<span><span class="co">#&gt; 1 Generally supportive normative standing, with at least one content-validity dimension in the moderate range; inspect weaker items and construct overlap before finalizing the scale.</span></span>
-<span><span class="co">#&gt; 2                                                                         Very Strong normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).</span></span></code></pre></div>
+<span><span class="co">#&gt;                                                                                                                                                                        evidence</span></span>
+<span><span class="co">#&gt; 1 The weaker of HTC and HTD falls in the Moderate band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.</span></span>
+<span><span class="co">#&gt; 2                                                                          The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).</span></span></code></pre></div>
 <p>A given level of distinctiveness can be more impressive when the
 focal and orbiting constructs are known to correlate strongly.</p>
 </div>
@@ -491,13 +491,13 @@ domain.</p>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance
-approach to content validation. <em>Organizational Research Methods,
-2</em>(2), 175-186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a></p>
 <p>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T.
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
-<em>Journal of Applied Psychology, 104</em>(10), 1243-1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance
+approach to content validation. <em>Organizational Research Methods,
+2</em>(2), 175–186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

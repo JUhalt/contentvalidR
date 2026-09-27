@@ -101,12 +101,13 @@ truncation is visible rather than silent.
 
 ## References
 
+Brennan, R. L. (2001). *Generalizability theory*. Springer.
+[doi:10.1007/978-1-4757-3456-0](https://doi.org/10.1007/978-1-4757-3456-0)
+
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. *Journal of Educational Measurement, 25*(4),
-287-299.
+287–299.
 [doi:10.1111/j.1745-3984.1988.tb00309.x](https://doi.org/10.1111/j.1745-3984.1988.tb00309.x)
-
-Brennan, R. L. (2001). *Generalizability Theory.* Springer.
 
 ## Examples
 

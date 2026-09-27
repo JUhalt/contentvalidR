@@ -53,30 +53,31 @@ A data.frame with one row per item and columns `item`, `target`,
 
 ## References
 
+Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact"
+for interval estimation of binomial proportions. *The American
+Statistician, 52*(2), 119–126.
+[doi:10.1080/00031305.1998.10480550](https://doi.org/10.1080/00031305.1998.10480550)
+
 Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
 measures in a confirmatory factor analysis with a pretest assessment of
 their substantive validities. *Journal of Applied Psychology, 76*(5),
-732-740.
+732–740.
 [doi:10.1037/0021-9010.76.5.732](https://doi.org/10.1037/0021-9010.76.5.732)
-
-Wilson, E. B. (1927). Probable inference, the law of succession, and
-statistical inference. *Journal of the American Statistical Association,
-22*(158), 209-212.
-[doi:10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
-
-Newcombe, R. G. (1998). Two-sided confidence intervals for the single
-proportion: Comparison of seven methods. *Statistics in Medicine,
-17*(8), 857-872.
-
-Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact"
-for interval estimation of binomial proportions. *The American
-Statistician, 52*(2), 119-126.
-[doi:10.1080/00031305.1998.10480550](https://doi.org/10.1080/00031305.1998.10480550)
 
 Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or
 fiducial limits illustrated in the case of the binomial. *Biometrika,
-26*(4), 404-413.
+26*(4), 404–413.
 [doi:10.1093/biomet/26.4.404](https://doi.org/10.1093/biomet/26.4.404)
+
+Newcombe, R. G. (1998). Two-sided confidence intervals for the single
+proportion: Comparison of seven methods. *Statistics in Medicine,
+17*(8), 857–872.
+[doi:10.1002/(SICI)1097-0258(19980430)17:8\<857::AID-SIM777\>3.0.CO;2-E](https://doi.org/10.1002/%28SICI%291097-0258%2819980430%2917%3A8%3C857%3A%3AAID-SIM777%3E3.0.CO%3B2-E)
+
+Wilson, E. B. (1927). Probable inference, the law of succession, and
+statistical inference. *Journal of the American Statistical Association,
+22*(158), 209–212.
+[doi:10.1080/01621459.1927.10502953](https://doi.org/10.1080/01621459.1927.10502953)
 
 ## See also
 

@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
       <h1>Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.8.0/vignettes/expert-panel-validity.Rmd" class="external-link"><code>vignettes/expert-panel-validity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/expert-panel-validity.Rmd" class="external-link"><code>vignettes/expert-panel-validity.Rmd</code></a></small>
       <div class="d-none name"><code>expert-panel-validity.Rmd</code></div>
     </div>
 
@@ -118,9 +118,11 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Items: 4 | Experts/item: 6</span></span>
 <span><span class="co">#&gt; Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75</span></span>
-<span><span class="co">#&gt; Strong support: 4 | Support: 0 | Review: 0</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 63.3%.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 4 of 4 items meet the I-CVI criterion, all with strong support (modified</span></span>
+<span><span class="co">#&gt; kappa above .74).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
 <span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
@@ -163,7 +165,8 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span></span>
 <span><span class="co">#&gt;       have agreed even if rating at random. With small panels, chance</span></span>
 <span><span class="co">#&gt;       agreement is substantial, which is why the raw I-CVI alone can</span></span>
-<span><span class="co">#&gt;       overstate consensus. (0 to 1; higher is stronger)</span></span>
+<span><span class="co">#&gt;       overstate consensus. (at most 1; below 0 when fewer experts agree</span></span>
+<span><span class="co">#&gt;       than chance predicts; higher is stronger)</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient describing how</span></span>
 <span><span class="co">#&gt;       consistently the whole panel rated the item set: Krippendorff's alpha</span></span>
 <span><span class="co">#&gt;       by default, or Gwet's AC1 if chosen. It is separate from modified</span></span>
@@ -349,6 +352,9 @@ experts:</p>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 12</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 of 3 items meet the exact essentiality criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: Item2, Item3</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item  decision essential CVR    p</span></span>
 <span><span class="co">#&gt;  Item1 Supported     10/12 .67 .019</span></span>
 <span><span class="co">#&gt;  Item2    Review      8/12 .33 .194</span></span>
@@ -397,6 +403,9 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="co">#&gt; Items: 2 | Experts/item: 8</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 of 2 items meet the exact essentiality criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: Item2</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item  decision essential  CVR    p</span></span>
 <span><span class="co">#&gt;  Item1 Supported       8/8 1.00 .004</span></span>
 <span><span class="co">#&gt;  Item2    Review       5/8  .25 .363</span></span>
@@ -444,6 +453,9 @@ prints both beside the exact decision, without changing it:</p>
 <span><span class="co">#&gt; Mode: essentiality</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 9</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2 of 3 items meet the exact essentiality criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: Item3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   item  decision essential  CVR    p</span></span>
 <span><span class="co">#&gt;  Item1 Supported       9/9 1.00 .002</span></span>
@@ -517,6 +529,8 @@ competing objectives:</p>
 <span><span class="co">#&gt; Mode: congruence</span></span>
 <span><span class="co">#&gt; Items: 2 | Experts/cell: 4 | Objectives: 2</span></span>
 <span><span class="co">#&gt; Method: Rovinelli-Hambleton item-objective congruence</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2 of 2 items are linked most strongly to their target objective.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  item target       decision target IOC competitor competitor IOC margin</span></span>
 <span><span class="co">#&gt;    I1      A Target favored       1.00          B          -1.00   2.00</span></span>
@@ -602,56 +616,56 @@ task. It is not, by itself, a complete validity argument.</p>
 </h2>
 <p>Aiken, L. R. (1980). Content validity and reliability of single items
 or questionnaires. <em>Educational and Psychological Measurement,
-40</em>(4), 955-959. <a href="https://doi.org/10.1177/001316448004000419" class="external-link uri">https://doi.org/10.1177/001316448004000419</a></p>
-<p>Lawshe, C. H. (1975). A quantitative approach to content validity.
-<em>Personnel Psychology, 28</em>(4), 563-575. <a href="https://doi.org/10.1111/j.1744-6570.1975.tb01393.x" class="external-link uri">https://doi.org/10.1111/j.1744-6570.1975.tb01393.x</a></p>
+40</em>(4), 955–959. <a href="https://doi.org/10.1177/001316448004000419" class="external-link uri">https://doi.org/10.1177/001316448004000419</a></p>
 <p>Ayre, C., &amp; Scally, A. J. (2014). Critical values for Lawshe’s
 content validity ratio: Revisiting the original methods of calculation.
 <em>Measurement and Evaluation in Counseling and Development,
-47</em>(1), 79-86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a></p>
+47</em>(1), 79–86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link uri">https://doi.org/10.1177/0748175613513808</a></p>
 <p>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but
 low kappa: I. The problems of two paradoxes. <em>Journal of Clinical
-Epidemiology, 43</em>(6), 543-549. <a href="https://doi.org/10.1016/0895-4356(90)90158-L" class="external-link uri">https://doi.org/10.1016/0895-4356(90)90158-L</a></p>
+Epidemiology, 43</em>(6), 543–549. <a href="https://doi.org/10.1016/0895-4356(90)90158-L" class="external-link uri">https://doi.org/10.1016/0895-4356(90)90158-L</a></p>
 <p>Fleiss, J. L. (1971). Measuring nominal scale agreement among many
-raters. <em>Psychological Bulletin, 76</em>(5), 378-382. <a href="https://doi.org/10.1037/h0031619" class="external-link uri">https://doi.org/10.1037/h0031619</a></p>
+raters. <em>Psychological Bulletin, 76</em>(5), 378–382. <a href="https://doi.org/10.1037/h0031619" class="external-link uri">https://doi.org/10.1037/h0031619</a></p>
 <p>Gwet, K. L. (2008). Computing inter-rater reliability and its
 variance in the presence of high agreement. <em>British Journal of
-Mathematical and Statistical Psychology, 61</em>(1), 29-48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a></p>
+Mathematical and Statistical Psychology, 61</em>(1), 29–48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link uri">https://doi.org/10.1348/000711006X126600</a></p>
 <p>Hayes, A. F., &amp; Krippendorff, K. (2007). Answering the call for a
 standard reliability measure for coding data. <em>Communication Methods
-and Measures, 1</em>(1), 77-89. <a href="https://doi.org/10.1080/19312450709336664" class="external-link uri">https://doi.org/10.1080/19312450709336664</a></p>
+and Measures, 1</em>(1), 77–89. <a href="https://doi.org/10.1080/19312450709336664" class="external-link uri">https://doi.org/10.1080/19312450709336664</a></p>
 <p>Hernández-Nieto, R. (2002). <em>Contributions to statistical
 analysis: The coefficients of proportional variance, content validity
-and kappa.</em> BookSurge.</p>
+and kappa</em>. BookSurge.</p>
 <p>Krippendorff, K. (2011). <em>Computing Krippendorff’s
-alpha-reliability.</em> Annenberg School for Communication, University
+alpha-reliability</em>. Annenberg School for Communication, University
 of Pennsylvania.</p>
+<p>Lawshe, C. H. (1975). A quantitative approach to content validity.
+<em>Personnel Psychology, 28</em>(4), 563–575. <a href="https://doi.org/10.1111/j.1744-6570.1975.tb01393.x" class="external-link uri">https://doi.org/10.1111/j.1744-6570.1975.tb01393.x</a></p>
 <p>Lynn, M. R. (1986). Determination and quantification of content
-validity. <em>Nursing Research, 35</em>(6), 382-385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
+validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
 <p>Penfield, R. D., &amp; Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken’s item content-relevance index.
 <em>Measurement in Physical Education and Exercise Science, 8</em>(4),
-213-225. <a href="https://doi.org/10.1207/S15327841MPEE0804_3" class="external-link uri">https://doi.org/10.1207/S15327841MPEE0804_3</a></p>
+213–225. <a href="https://doi.org/10.1207/S15327841MPEE0804_3" class="external-link uri">https://doi.org/10.1207/S15327841MPEE0804_3</a></p>
 <p>Polit, D. F., &amp; Beck, C. T. (2006). The content validity index:
 Are you sure you know what’s being reported? Critique and
 recommendations. <em>Research in Nursing &amp; Health, 29</em>(5),
-489-497. <a href="https://doi.org/10.1002/nur.20147" class="external-link uri">https://doi.org/10.1002/nur.20147</a></p>
+489–497. <a href="https://doi.org/10.1002/nur.20147" class="external-link uri">https://doi.org/10.1002/nur.20147</a></p>
 <p>Polit, D. F., Beck, C. T., &amp; Owen, S. V. (2007). Is the CVI an
 acceptable indicator of content validity? Appraisal and recommendations.
-<em>Research in Nursing &amp; Health, 30</em>(4), 459-467. <a href="https://doi.org/10.1002/nur.20199" class="external-link uri">https://doi.org/10.1002/nur.20199</a></p>
+<em>Research in Nursing &amp; Health, 30</em>(4), 459–467. <a href="https://doi.org/10.1002/nur.20199" class="external-link uri">https://doi.org/10.1002/nur.20199</a></p>
 <p>Rovinelli, R. J., &amp; Hambleton, R. K. (1977). On the use of
 content specialists in the assessment of criterion-referenced test item
-validity. <em>Dutch Journal of Educational Research, 2</em>, 49-60.</p>
+validity. <em>Dutch Journal of Educational Research, 2</em>, 49–60.</p>
 <p>Turner, R. C., &amp; Carlson, L. (2003). Indexes of item-objective
 congruence for multidimensional items. <em>International Journal of
-Testing, 3</em>(2), 163-171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a></p>
+Testing, 3</em>(2), 163–171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a></p>
 <p>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for
 Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>,
-102212.</p>
+102212. <a href="https://doi.org/10.1016/j.mex.2023.102212" class="external-link uri">https://doi.org/10.1016/j.mex.2023.102212</a></p>
 <p>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation
 of the critical values for Lawshe’s content validity ratio.
 <em>Measurement and Evaluation in Counseling and Development,
-45</em>(3), 197-210. <a href="https://doi.org/10.1177/0748175612440286" class="external-link uri">https://doi.org/10.1177/0748175612440286</a></p>
+45</em>(3), 197–210. <a href="https://doi.org/10.1177/0748175612440286" class="external-link uri">https://doi.org/10.1177/0748175612440286</a></p>
 <p>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016).
 Measuring inter-rater reliability for nominal data: Which coefficients
 and confidence intervals are appropriate? <em>BMC Medical Research

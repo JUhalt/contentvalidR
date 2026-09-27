@@ -61,12 +61,12 @@ Aiken's `V`, and (when requested) `ci_low` and `ci_high`.
 
 Aiken, L. R. (1980). Content validity and reliability of single items or
 questionnaires. *Educational and Psychological Measurement, 40*(4),
-955-959.
+955–959.
 [doi:10.1177/001316448004000419](https://doi.org/10.1177/001316448004000419)
 
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
 confidence interval to Aiken's item content-relevance index.
-*Measurement in Physical Education and Exercise Science, 8*(4), 213-225.
+*Measurement in Physical Education and Exercise Science, 8*(4), 213–225.
 [doi:10.1207/S15327841MPEE0804_3](https://doi.org/10.1207/S15327841MPEE0804_3)
 
 ## Examples

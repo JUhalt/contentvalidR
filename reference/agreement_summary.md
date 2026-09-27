@@ -29,7 +29,7 @@ explaining how to install 'irr'.
 ## References
 
 Fleiss, J. L. (1971). Measuring nominal scale agreement among many
-raters. *Psychological Bulletin, 76*(5), 378-382.
+raters. *Psychological Bulletin, 76*(5), 378–382.
 [doi:10.1037/h0031619](https://doi.org/10.1037/h0031619)
 
 Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). *irr: Various
