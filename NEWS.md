@@ -44,6 +44,18 @@ schema and every handoff are unchanged.
   `item_evidence$scale` names. A test holds the sort, rating, and congruence
   workflows to it, and checks that each refuses an item with two targets.
 
+## The joint walkthrough lives here
+
+* `vignette("one-item-set-both-stages")` is the joint walkthrough for
+  contentvalidR and nomologR, as the maintainer decided for the joint 1.0.
+  It now says so, passes the handoff itself to `nomo_screen()` and
+  `nomo_run()` rather than `h$items`, and links to the section of the
+  nomologR guided workflow that continues from content review. Two stale
+  sentences are corrected. The handoff reader in nomologR, which the vignette
+  called future work, has shipped. And nomologR starts from the same handoff
+  but simulates its own responses, so its screening numbers differ from
+  these.
+
 # contentvalidR 0.9.0
 
 Ninth public release. v0.9.0 is about how the package presents itself before
