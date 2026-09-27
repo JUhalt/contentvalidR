@@ -1,5 +1,20 @@
 # contentvalidR 0.8.0.9000 (development version)
 
+## A README that is a front page (in development)
+
+* **The README is a front page rather than a manual.** It ran to about 1,400
+  lines of printed output: every workflow in full, the component functions,
+  and six copies of the key. It now shows one first analysis (the printout,
+  its APA table, and its plot), a table matching each question put to judges
+  or experts to its workflow, the sources it is built on, and its guide, then
+  how to read the output, what every workflow returns, and what you can rely
+  on. The worked examples it held live in the vignettes.
+* `vignette("design-and-reporting")` gains the planning examples the README
+  held: `expert_power()`, with why a fourth or fifth expert lowers the chance
+  of clearing Lynn's criterion, and `gtheory_content()`, with how many judges a
+  design would need. Its method list now names all six workflows, and it has a
+  reference list.
+
 ## Plots show the criterion and the uncertainty (in development)
 
 No computed value changes; this is about what the figures draw.
