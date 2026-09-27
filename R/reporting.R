@@ -7,7 +7,7 @@
     contentvalid_sort = c("item", "target", "n", "n_target", "competitor",
                           "psa", "psa_low", "psa_high", "csv", "p_value"),
     contentvalid_rating = c("item", "target", "n_complete", "strongest_competitor",
-                            "htc", "htd", "p_value"),
+                            "htc", "htd", "p_value", "max_contrast_p"),
     contentvalid_expert = c("item", "N", "V", "ci_low", "ci_high", "I_CVI",
                             "I_CVI_low", "I_CVI_high", "kappa_mod", "cvr",
                             "p_value", "ioc"),
@@ -96,26 +96,136 @@ as.data.frame.contentvalid_workflow <- function(x,
   out
 }
 
+# APA 7 display of a workflow's results for a manuscript table: one entry per
+# column, in order. `type` says how the cells are written (see format_apa.R);
+# `cols` names the results columns the cell is built from. A column whose
+# inputs are absent or entirely missing is left out.
+.report_spec <- function(x) {
+  ci <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
+  s <- function(heading, type, ...) list(heading = heading, type = type, cols = c(...))
+  switch(
+    class(x)[1],
+    contentvalid_sort = list(
+      s("item", "text", "item"), s("target", "text", "target"),
+      s("judges", "count", "n_target", "n"), s("competitor", "text", "competitor"),
+      s("Psa", "prop", "psa"), s(ci, "ci", "psa_low", "psa_high"),
+      s("Csv", "prop", "csv"), s("p", "p", "p_value"),
+      s("decision", "text", "recommendation")
+    ),
+    contentvalid_rating = list(
+      s("item", "text", "item"), s("target", "text", "target"),
+      s("judges", "int", "n_complete"), s("competitor", "text", "strongest_competitor"),
+      s("HTC", "prop", "htc"), s("HTD", "prop", "htd"),
+      s("omnibus p", "p", "p_value"), s("contrast p", "p", "max_contrast_p"),
+      s("decision", "text", "recommendation")
+    ),
+    contentvalid_expert = switch(
+      x$mode,
+      relevance = list(
+        s("item", "text", "item"), s("experts", "int", "N"),
+        s("V", "prop", "V"), s(ci, "ci", "ci_low", "ci_high"),
+        s("I-CVI", "prop", "I_CVI"), s(ci, "ci", "I_CVI_low", "I_CVI_high"),
+        s("kappa", "prop", "kappa_mod"), s("decision", "text", "recommendation")
+      ),
+      essentiality = list(
+        s("item", "text", "item"), s("essential", "count", "ne", "N"),
+        s("CVR", "prop", "cvr"), s("p", "p", "p_value"),
+        s("decision", "text", "recommendation")
+      ),
+      list(
+        s("item", "text", "item"), s("target", "text", "target"),
+        s("target IOC", "prop", "target_ioc"),
+        s("competitor", "text", "strongest_competitor"),
+        s("competitor IOC", "prop", "competitor_ioc"),
+        s("margin", "num", "margin"),
+        s("decision", "text", "recommendation")
+      )
+    ),
+    contentvalid_judge = list(
+      s("judge", "text", "judge"), s("ratings", "int", "n_ratings"),
+      s("mean", "num", "mean_rating"), s("severity", "num", "severity_raw"),
+      s("outfit", "num", "outfit"), s("scale use", "num", "differentiation"),
+      s("flipped", "int", "n_items_flipped"), s("decision", "text", "recommendation")
+    ),
+    contentvalid_domain = list(
+      s("cell", "text", "cell"), s("items", "int", "n_items"),
+      s("share", "percent", "share"), s("decision", "text", "recommendation")
+    ),
+    contentvalid_delphi = list(
+      s("item", "text", "item"), s("last round", "int", "last_round"),
+      s("experts", "int", "n_experts"), s("agree", "prop", "prop_agree"),
+      s("unchanged", "prop", "prop_unchanged"), s("stability", "prop", "stability"),
+      s(ci, "ci", "stability_low", "stability_high"), s("p", "p", "stability_p"),
+      s("decision", "text", "recommendation")
+    ),
+    list()
+  )
+}
+
+.report_cells <- function(res, entry, digits) {
+  v <- lapply(entry$cols, function(cl) res[[cl]])
+  switch(
+    entry$type,
+    text = ifelse(is.na(v[[1]]), "", as.character(v[[1]])),
+    int = ifelse(is.na(v[[1]]), "NA", format(v[[1]], trim = TRUE)),
+    count = ifelse(is.na(v[[1]]) | is.na(v[[2]]), "NA", paste0(v[[1]], "/", v[[2]])),
+    prop = .fmt(v[[1]], digits),
+    num = .fmt(v[[1]], digits, bounded = FALSE),
+    percent = ifelse(is.na(v[[1]]), "NA", paste0(round(100 * v[[1]]), "%")),
+    p = .fmt_p(v[[1]]),
+    ci = .fmt_ci(v[[1]], v[[2]], digits)
+  )
+}
+
+.report_apa_table <- function(x, res, digits) {
+  spec <- .report_spec(x)
+  cols <- list()
+  headings <- character(0)
+  for (entry in spec) {
+    if (!all(entry$cols %in% names(res))) next
+    if (nrow(res) && all(is.na(res[[entry$cols[1]]]))) next
+    cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits)
+    headings <- c(headings, entry$heading)
+  }
+  tab <- as.data.frame(cols, stringsAsFactors = FALSE)
+  names(tab) <- headings
+  tab
+}
+
 #' Build a manuscript-ready results table
 #'
 #' @description
-#' Formats a fitted workflow's results as a compact table suitable for pasting
-#' into a manuscript or a Quarto or R Markdown document, either as a data frame
-#' or as a Markdown table.
+#' Formats a fitted workflow's results as a compact table for a manuscript or a
+#' Quarto or R Markdown document. By default the table is written in APA style
+#' (7th ed.): readable column headings, two decimals, no leading zero on values
+#' that cannot exceed 1, *p* values to three decimals or `< .001`, and intervals
+#' as `[LL, UL]` under a heading that names their level.
 #'
 #' Markdown output is generated directly, so no reporting package is required to
 #' use it. Nothing in the core analysis depends on one.
 #'
 #' @param x A fitted `contentvalid_workflow` object.
-#' @param digits Digits for rounding numeric columns.
-#' @param format `"data.frame"` (default) or `"markdown"`.
+#' @param digits Decimal places for estimates. *p* values always get three, as
+#'   APA requires.
+#' @param format `"apa"` (default), a table of formatted text in APA style;
+#'   `"markdown"`, the same table as Markdown lines; or `"data.frame"`, the
+#'   selected columns as rounded numbers under their names in `results`, for
+#'   further computation.
 #' @param include `"all"` (default) or `"flagged"`, which keeps only units whose
 #'   status is not `Supported`.
 #' @param caption Optional caption line placed above a Markdown table.
 #'
-#' @return A data frame, or a character vector of Markdown lines when
-#'   `format = "markdown"`. The character vector carries the analysis provenance
-#'   as its `"settings"` attribute.
+#' @return For `"apa"`, a data frame of character columns that prints without
+#'   row names; `as.data.frame()` drops its print class. For `"data.frame"`, a
+#'   plain data frame with `recommendation` and `status` columns. For
+#'   `"markdown"`, a character vector of Markdown lines that prints as the
+#'   table, carrying the analysis provenance as its `"settings"` attribute.
+#'
+#' @section Changed in 0.9.0:
+#' The default is now `format = "apa"`. Earlier versions returned the numeric
+#' table by default, with *p* values rounded to `digits`; use
+#' `format = "data.frame"` for that table, where *p* values now keep three
+#' decimals.
 #'
 #' @section Reporting the decision rules:
 #' A results table alone is not a reproducible report. The thresholds that
@@ -134,11 +244,11 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' )
 #' fit <- sort_validity(sorts)
 #' content_report(fit)
-#' cat(content_report(fit, format = "markdown", include = "flagged"), sep = "\n")
+#' content_report(fit, format = "markdown", include = "flagged")
 #' @export
 content_report <- function(x,
                            digits = 2,
-                           format = c("data.frame", "markdown"),
+                           format = c("apa", "data.frame", "markdown"),
                            include = c("all", "flagged"),
                            caption = NULL) {
   if (!inherits(x, "contentvalid_workflow")) {
@@ -156,6 +266,25 @@ content_report <- function(x,
   if (include == "flagged") {
     res <- res[!is.na(res$status) & res$status != "Supported", , drop = FALSE]
   }
+  rownames(res) <- NULL
+
+  if (format != "data.frame") {
+    tab <- .report_apa_table(x, res, digits)
+    if (format == "apa") {
+      class(tab) <- c("contentvalid_report", "data.frame")
+      return(tab)
+    }
+    lines <- character(0)
+    if (!is.null(caption)) lines <- c(lines, caption, "")
+    lines <- c(lines, if (!nrow(tab)) {
+      "_No units matched the requested selection._"
+    } else {
+      .as_markdown_table(tab)
+    })
+    attr(lines, "settings") <- x$settings
+    class(lines) <- "contentvalid_markdown"
+    return(lines)
+  }
 
   keep <- unique(c(.report_columns(x), "recommendation", "status"))
   keep <- intersect(keep, names(res))
@@ -172,18 +301,31 @@ content_report <- function(x,
   }
 
   num <- vapply(tab, is.numeric, logical(1))
-  tab[num] <- lapply(tab[num], round, digits = digits)
-  rownames(tab) <- NULL
+  # p values keep the three decimals APA asks for, whatever `digits` is.
+  is_p <- names(tab) %in% c("p_value", "max_contrast_p", "stability_p")
+  tab[num & !is_p] <- lapply(tab[num & !is_p], round, digits = digits)
+  tab[num & is_p] <- lapply(tab[num & is_p], round, digits = max(3L, digits))
+  tab
+}
 
-  if (format == "data.frame") return(tab)
-
-  lines <- character(0)
-  if (!is.null(caption)) lines <- c(lines, caption, "")
-  if (!nrow(tab)) {
-    lines <- c(lines, "_No units matched the requested selection._")
+#' @export
+print.contentvalid_report <- function(x, ...) {
+  if (!nrow(x)) {
+    cat("No units matched the requested selection.\n")
   } else {
-    lines <- c(lines, .as_markdown_table(tab))
+    .print_table(as.data.frame(x))
   }
-  attr(lines, "settings") <- x$settings
-  lines
+  invisible(x)
+}
+
+#' @export
+as.data.frame.contentvalid_report <- function(x, ...) {
+  class(x) <- "data.frame"
+  x
+}
+
+#' @export
+print.contentvalid_markdown <- function(x, ...) {
+  cat(unclass(x), sep = "\n")
+  invisible(x)
 }

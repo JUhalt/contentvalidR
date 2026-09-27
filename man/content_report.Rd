@@ -7,7 +7,7 @@
 content_report(
   x,
   digits = 2,
-  format = c("data.frame", "markdown"),
+  format = c("apa", "data.frame", "markdown"),
   include = c("all", "flagged"),
   caption = NULL
 )
@@ -15,9 +15,13 @@ content_report(
 \arguments{
 \item{x}{A fitted \code{contentvalid_workflow} object.}
 
-\item{digits}{Digits for rounding numeric columns.}
+\item{digits}{Decimal places for estimates. \emph{p} values always get three, as
+APA requires.}
 
-\item{format}{\code{"data.frame"} (default) or \code{"markdown"}.}
+\item{format}{\code{"apa"} (default), a table of formatted text in APA style;
+\code{"markdown"}, the same table as Markdown lines; or \code{"data.frame"}, the
+selected columns as rounded numbers under their names in \code{results}, for
+further computation.}
 
 \item{include}{\code{"all"} (default) or \code{"flagged"}, which keeps only units whose
 status is not \code{Supported}.}
@@ -25,18 +29,30 @@ status is not \code{Supported}.}
 \item{caption}{Optional caption line placed above a Markdown table.}
 }
 \value{
-A data frame, or a character vector of Markdown lines when
-\code{format = "markdown"}. The character vector carries the analysis provenance
-as its \code{"settings"} attribute.
+For \code{"apa"}, a data frame of character columns that prints without
+row names; \code{as.data.frame()} drops its print class. For \code{"data.frame"}, a
+plain data frame with \code{recommendation} and \code{status} columns. For
+\code{"markdown"}, a character vector of Markdown lines that prints as the
+table, carrying the analysis provenance as its \code{"settings"} attribute.
 }
 \description{
-Formats a fitted workflow's results as a compact table suitable for pasting
-into a manuscript or a Quarto or R Markdown document, either as a data frame
-or as a Markdown table.
+Formats a fitted workflow's results as a compact table for a manuscript or a
+Quarto or R Markdown document. By default the table is written in APA style
+(7th ed.): readable column headings, two decimals, no leading zero on values
+that cannot exceed 1, \emph{p} values to three decimals or \verb{< .001}, and intervals
+as \verb{[LL, UL]} under a heading that names their level.
 
 Markdown output is generated directly, so no reporting package is required to
 use it. Nothing in the core analysis depends on one.
 }
+\section{Changed in 0.9.0}{
+
+The default is now \code{format = "apa"}. Earlier versions returned the numeric
+table by default, with \emph{p} values rounded to \code{digits}; use
+\code{format = "data.frame"} for that table, where \emph{p} values now keep three
+decimals.
+}
+
 \section{Reporting the decision rules}{
 
 A results table alone is not a reproducible report. The thresholds that
@@ -53,7 +69,7 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 content_report(fit)
-cat(content_report(fit, format = "markdown", include = "flagged"), sep = "\n")
+content_report(fit, format = "markdown", include = "flagged")
 }
 \seealso{
 \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}} for the untrimmed table, and
