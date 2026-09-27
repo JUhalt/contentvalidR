@@ -47,6 +47,6 @@ htd(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
 }
 \references{
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-\emph{Journal of Applied Psychology, 104}(10), 1243-1265.
+\emph{Journal of Applied Psychology, 104}(10), 1243–1265.
 \doi{10.1037/apl0000406}
 }

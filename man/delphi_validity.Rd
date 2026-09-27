@@ -197,27 +197,27 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 }
 \references{
 Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
-studies. \emph{Technological Forecasting and Social Change, 16}(1), 67-73.
+studies. \emph{Technological Forecasting and Social Change, 16}(1), 67–73.
 \doi{10.1016/0040-1625(80)90074-8}
 
 Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for
 scaled disagreement or partial credit. \emph{Psychological Bulletin, 70}(4),
-213-220. \doi{10.1037/h0026256}
+213–220. \doi{10.1037/h0026256}
 
 Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
 agreement criteria for the termination of Delphi studies. \emph{Technological
-Forecasting and Social Change, 13}(1), 83-90.
+Forecasting and Social Change, 13}(1), 83–90.
 \doi{10.1016/0040-1625(79)90007-6}
 
 Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B., Ling, S. C.,
 Moore, A. M., & Wales, P. W. (2014). Defining consensus: A systematic
 review recommends methodologic criteria for reporting of Delphi studies.
-\emph{Journal of Clinical Epidemiology, 67}(4), 401-409.
+\emph{Journal of Clinical Epidemiology, 67}(4), 401–409.
 \doi{10.1016/j.jclinepi.2013.12.002}
 
 Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
-\emph{Educational and Psychological Measurement, 33}(3), 613-619.
+\emph{Educational and Psychological Measurement, 33}(3), 613–619.
 \doi{10.1177/001316447303300309}
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
@@ -227,11 +227,11 @@ stability in Delphi studies. \emph{BMC Medical Research Methodology, 7}, 52.
 
 Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
 bootstrap confidence interval for kappa in small samples. \emph{Journal of the
-Royal Statistical Society: Series D (The Statistician), 51}(4), 467-478.
+Royal Statistical Society: Series D (The Statistician), 51}(4), 467–478.
 \doi{10.1111/1467-9884.00331}
 
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
-for categorical data. \emph{Biometrics, 33}(1), 159-174. \doi{10.2307/2529310}
+for categorical data. \emph{Biometrics, 33}(1), 159–174. \doi{10.2307/2529310}
 
 Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), \emph{The Delphi method:

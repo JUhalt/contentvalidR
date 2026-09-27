@@ -163,50 +163,50 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
                 legacy = TRUE)
 }
 \references{
-Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
-interval to Aiken's item content-relevance index. \emph{Measurement in Physical
-Education and Exercise Science, 8}(4), 213-225.
-\doi{10.1207/s15327841mpee0804_3}
-
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
-\emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79-86.
+\emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79–86.
 \doi{10.1177/0748175613513808}
 
-Lynn, M. R. (1986). Determination and quantification of content validity.
-\emph{Nursing Research, 35}(6), 382-385.
-\doi{10.1097/00006199-198611000-00017}
-
-Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
-sure you know what's being reported? Critique and recommendations.
-\emph{Research in Nursing & Health, 29}(5), 489-497. \doi{10.1002/nur.20147}
-
-Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459-467. \doi{10.1002/nur.20199}
+Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+\emph{Psychological Bulletin, 76}(5), 378–382. \doi{10.1037/h0031619}
 
 Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
 reliability measure for coding data. \emph{Communication Methods and Measures,
-1}(1), 77-89. \doi{10.1080/19312450709336664}
+1}(1), 77–89. \doi{10.1080/19312450709336664}
+
+Hernández-Nieto, R. (2002). \emph{Contributions to statistical analysis: The
+coefficients of proportional variance, content validity and kappa}.
+BookSurge.
+
+Lawshe, C. H. (1975). A quantitative approach to content validity.
+\emph{Personnel Psychology, 28}(4), 563–575.
+\doi{10.1111/j.1744-6570.1975.tb01393.x}
+
+Lynn, M. R. (1986). Determination and quantification of content validity.
+\emph{Nursing Research, 35}(6), 382–385.
+\doi{10.1097/00006199-198611000-00017}
+
+Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
+interval to Aiken's item content-relevance index. \emph{Measurement in Physical
+Education and Exercise Science, 8}(4), 213–225.
+\doi{10.1207/s15327841mpee0804_3}
+
+Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+sure you know what's being reported? Critique and recommendations.
+\emph{Research in Nursing & Health, 29}(5), 489–497. \doi{10.1002/nur.20147}
+
+Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
+indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
+459–467. \doi{10.1002/nur.20199}
+
+Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+critical values for Lawshe's content validity ratio. \emph{Measurement and
+Evaluation in Counseling and Development, 45}(3), 197–210.
+\doi{10.1177/0748175612440286}
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and confidence
 intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
 \doi{10.1186/s12874-016-0200-9}
-
-Lawshe, C. H. (1975). A quantitative approach to content validity.
-\emph{Personnel Psychology, 28}(4), 563-575.
-\doi{10.1111/j.1744-6570.1975.tb01393.x}
-
-Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
-critical values for Lawshe's content validity ratio. \emph{Measurement and
-Evaluation in Counseling and Development, 45}(3), 197-210.
-\doi{10.1177/0748175612440286}
-
-Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
-\emph{Psychological Bulletin, 76}(5), 378-382. \doi{10.1037/h0031619}
-
-Hernández-Nieto, R. (2002). \emph{Contributions to statistical analysis: The
-coefficients of proportional variance, content validity and kappa.}
-BookSurge.
 }

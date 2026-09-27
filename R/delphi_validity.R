@@ -447,27 +447,27 @@
 #'
 #' @references
 #' Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
-#' studies. *Technological Forecasting and Social Change, 16*(1), 67-73.
+#' studies. *Technological Forecasting and Social Change, 16*(1), 67–73.
 #' \doi{10.1016/0040-1625(80)90074-8}
 #'
 #' Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for
 #' scaled disagreement or partial credit. *Psychological Bulletin, 70*(4),
-#' 213-220. \doi{10.1037/h0026256}
+#' 213–220. \doi{10.1037/h0026256}
 #'
 #' Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
 #' agreement criteria for the termination of Delphi studies. *Technological
-#' Forecasting and Social Change, 13*(1), 83-90.
+#' Forecasting and Social Change, 13*(1), 83–90.
 #' \doi{10.1016/0040-1625(79)90007-6}
 #'
 #' Diamond, I. R., Grant, R. C., Feldman, B. M., Pencharz, P. B., Ling, S. C.,
 #' Moore, A. M., & Wales, P. W. (2014). Defining consensus: A systematic
 #' review recommends methodologic criteria for reporting of Delphi studies.
-#' *Journal of Clinical Epidemiology, 67*(4), 401-409.
+#' *Journal of Clinical Epidemiology, 67*(4), 401–409.
 #' \doi{10.1016/j.jclinepi.2013.12.002}
 #'
 #' Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 #' the intraclass correlation coefficient as measures of reliability.
-#' *Educational and Psychological Measurement, 33*(3), 613-619.
+#' *Educational and Psychological Measurement, 33*(3), 613–619.
 #' \doi{10.1177/001316447303300309}
 #'
 #' Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
@@ -477,11 +477,11 @@
 #'
 #' Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
 #' bootstrap confidence interval for kappa in small samples. *Journal of the
-#' Royal Statistical Society: Series D (The Statistician), 51*(4), 467-478.
+#' Royal Statistical Society: Series D (The Statistician), 51*(4), 467–478.
 #' \doi{10.1111/1467-9884.00331}
 #'
 #' Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
-#' for categorical data. *Biometrics, 33*(1), 159-174. \doi{10.2307/2529310}
+#' for categorical data. *Biometrics, 33*(1), 159–174. \doi{10.2307/2529310}
 #'
 #' Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
 #' methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
@@ -1078,19 +1078,20 @@ summary.contentvalid_delphi <- function(object, ...) {
 #' @export
 print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary of Delphi consensus and stability\n")
-  cat(strrep("-", 41), "\n", sep = "")
+  cat("Summary: Delphi consensus and stability\n")
+  cat(strrep("-", 39), "\n", sep = "")
   cat("Rounds: ", nrow(x$panel), " | Experts per round: ",
       paste(x$panel$n_experts, collapse = ", "), "\n", sep = "")
   if (x$n_descriptive > 0L) {
-    cat("Descriptive only:", x$n_descriptive, "of", x$n_items,
-        "item(s); no consensus threshold was set.\n")
+    cat("Descriptive only: ", x$n_descriptive, " of ",
+        .n_noun(x$n_items, "item"), "; no consensus threshold was set.\n",
+        sep = "")
   } else {
-    cat("Consensus:", x$n_supported, "of", x$n_items, "item(s)\n")
-    cat("No consensus:", x$n_review, "of", x$n_items, "item(s)\n")
+    cat("Consensus: ", x$n_supported, " of ", x$n_items, " | No consensus: ",
+        x$n_review, " of ", x$n_items, "\n", sep = "")
   }
   if (x$n_insufficient > 0L) {
-    cat("Too few experts:", x$n_insufficient, "item(s)\n")
+    cat("Too few experts: ", .n_noun(x$n_insufficient, "item"), "\n", sep = "")
   }
   cat("Stability statistic: ", x$stability_method, "\n", sep = "")
   med <- x$scale_summary$median_prop_unchanged

@@ -88,22 +88,25 @@ panel_agreement(ratings, level = "interval", B = 0)
 panel_agreement(ratings >= 3, method = "ac1", B = 0)
 }
 \references{
-Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
-reliability measure for coding data. \emph{Communication Methods and Measures,
-1}(1), 77-89. \doi{10.1080/19312450709336664}
-
-Krippendorff, K. (2011). \emph{Computing Krippendorff's alpha-reliability.}
-Annenberg School for Communication, University of Pennsylvania.
-\url{https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20}
-
-Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
-inter-rater reliability for nominal data: Which coefficients and confidence
-intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
-\doi{10.1186/s12874-016-0200-9}
+Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
+I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
+43}(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
 
 Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 the presence of high agreement. \emph{British Journal of Mathematical and
-Statistical Psychology, 61}(1), 29-48. \doi{10.1348/000711006X126600}
+Statistical Psychology, 61}(1), 29–48. \doi{10.1348/000711006X126600}
+
+Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
+reliability measure for coding data. \emph{Communication Methods and Measures,
+1}(1), 77–89. \doi{10.1080/19312450709336664}
+
+Krippendorff, K. (2011). \emph{Computing Krippendorff's alpha-reliability}.
+Annenberg School for Communication, University of Pennsylvania.
+\url{https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20}
+
+Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
+kappa: A comparison of basic properties. \emph{MethodsX, 10}, 102212.
+\doi{10.1016/j.mex.2023.102212}
 
 Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
 comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater
@@ -111,12 +114,10 @@ reliability coefficients: A study conducted with personality disorder
 samples. \emph{BMC Medical Research Methodology, 13}, 61.
 \doi{10.1186/1471-2288-13-61}
 
-Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
-kappa: A comparison of basic properties. \emph{MethodsX, 10}, 102212.
-
-Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
-I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
-43}(6), 543-549. \doi{10.1016/0895-4356(90)90158-L}
+Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
+inter-rater reliability for nominal data: Which coefficients and confidence
+intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
+\doi{10.1186/s12874-016-0200-9}
 }
 \seealso{
 \code{\link[=expert_validity]{expert_validity()}} for item-level expert-panel evidence.

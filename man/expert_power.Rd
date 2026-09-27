@@ -63,16 +63,16 @@ expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
 expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
 }
 \references{
+Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
+validity ratio. \emph{Measurement and Evaluation in Counseling and Development,
+47}(1), 79–86. \doi{10.1177/0748175613513808}
+
 Lynn, M. R. (1986). Determination and quantification of content validity.
-\emph{Nursing Research, 35}(6), 382-385.
+\emph{Nursing Research, 35}(6), 382–385.
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459-467. \doi{10.1002/nur.20199}
-
-Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. \emph{Measurement and Evaluation in Counseling and Development,
-47}(1), 79-86. \doi{10.1177/0748175613513808}
+459–467. \doi{10.1002/nur.20199}
 }
 \seealso{
 \code{\link[=sort_power]{sort_power()}} for item-sort planning, and \code{\link[=gtheory_content]{gtheory_content()}} whose

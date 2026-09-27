@@ -94,7 +94,7 @@
 #' @section Estimation note:
 #' Logit severity comes from a many-facet Rasch model fitted by joint maximum
 #' likelihood as a logistic regression, the generalized linear model
-#' formulation described by de Boeck and Wilson (2004). Joint maximum
+#' formulation described by De Boeck and Wilson (2004). Joint maximum
 #' likelihood is known to over-disperse facet estimates in small designs. The
 #' standard Wright-Douglas `(L-1)/L` correction is applied by default and
 #' reported in `settings$bias_correction`, but it reduces rather than removes
@@ -110,16 +110,17 @@
 #' @references
 #' Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 #' content validity ratings. *Journal of Educational Measurement, 25*(4),
-#' 287-299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
+#' 287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
+#'
+#' De Boeck, P., & Wilson, M. (Eds.). (2004). *Explanatory item response models:
+#' A generalized linear and nonlinear approach*. Springer.
+#' \doi{10.1007/978-1-4757-3990-9}
 #'
 #' Engelhard, G. (1994). Examining rater errors in the assessment of written
 #' composition with a many-faceted Rasch model. *Journal of Educational
-#' Measurement, 31*(2), 93-112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
+#' Measurement, 31*(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
 #'
-#' Linacre, J. M. (1989). *Many-Facet Rasch Measurement.* MESA Press.
-#'
-#' de Boeck, P., & Wilson, M. (2004). *Explanatory Item Response Models: A
-#' Generalized Linear and Nonlinear Approach.* Springer.
+#' Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 #'
 #' @seealso [gtheory_content()] for the generalizability analysis alone,
 #'   [expert_validity()] for the item-level expert-panel workflow.
@@ -254,12 +255,12 @@ judge_validity <- function(ratings,
     }
     if (influential[i]) {
       return(sprintf(paste(
-        "Removing this judge would change the review status of %d item(s): %s.",
+        "Removing this judge would change the review status of %s: %s.",
         "The panel's conclusion about those items rests on this one judge.",
         "Read their ratings and any written comments before treating those",
         "items as settled. Note that removing a judge also reduces the panel",
         "size, which can itself change the CVI criterion."
-      ), res$n_items_flipped[i], res$flipped_items[i]))
+      ), .n_noun(res$n_items_flipped[i], "item"), res$flipped_items[i]))
     }
     if (over_fit_range[i]) {
       return(sprintf(paste(
@@ -475,6 +476,7 @@ summary.contentvalid_judge <- function(object, ...) {
 print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("Summary: judge and rater heterogeneity\n")
+  cat(strrep("-", 38), "\n", sep = "")
   cat("Judges: ", x$n_judges, " | Items: ", x$n_items, "\n", sep = "")
   cat("Consistent with panel: ", x$n_supported, " | Flagged for review: ",
       x$n_review, " | Insufficient: ", x$n_insufficient, "\n", sep = "")

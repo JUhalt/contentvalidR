@@ -26,17 +26,17 @@
 #'   p-value, critical essential count/CVR, and `pass`.
 #'
 #' @references
-#' Lawshe, C. H. (1975). A quantitative approach to content validity.
-#' *Personnel Psychology, 28*(4), 563-575. \doi{10.1111/j.1744-6570.1975.tb01393.x}
-#'
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 #' validity ratio: Revisiting the original methods of calculation.
-#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79-86.
+#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
 #' \doi{10.1177/0748175613513808}
+#'
+#' Lawshe, C. H. (1975). A quantitative approach to content validity.
+#' *Personnel Psychology, 28*(4), 563–575. \doi{10.1111/j.1744-6570.1975.tb01393.x}
 #'
 #' Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
 #' critical values for Lawshe's content validity ratio. *Measurement and
-#' Evaluation in Counseling and Development, 45*(3), 197-210.
+#' Evaluation in Counseling and Development, 45*(3), 197–210.
 #' \doi{10.1177/0748175612440286}
 #'
 #' @examples

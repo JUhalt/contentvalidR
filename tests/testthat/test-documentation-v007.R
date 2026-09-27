@@ -82,7 +82,38 @@ test_that("bundled examples execute all flagship workflow families", {
   expect_s3_class(con_fit, "contentvalid_expert")
 })
 
-test_that("citation and method bibliography are installed", {
+test_that("the README reference list and REFERENCES.bib list the same works", {
+  readme <- testthat::test_path("..", "..", "README.Rmd")
+  bib <- testthat::test_path("..", "..", "inst", "REFERENCES.bib")
+  skip_if_not(file.exists(readme) && file.exists(bib), "package sources are not available")
+
+  lines <- readLines(readme, warn = FALSE, encoding = "UTF-8")
+  start <- which(lines == "## References")
+  expect_length(start, 1L)
+  stop_at <- which(startsWith(lines, "## ") & seq_along(lines) > start)[1]
+  entries <- grep("^- ", lines[(start + 1L):(stop_at - 1L)], value = TRUE)
+  bib_text <- readLines(bib, warn = FALSE, encoding = "UTF-8")
+  expect_identical(length(entries), length(grep("^@", bib_text)))
+
+  norm_doi <- function(x) {
+    tolower(gsub("%3C", "<", gsub("%3E", ">", x, fixed = TRUE), fixed = TRUE))
+  }
+  readme_dois <- norm_doi(sub("^.*https://doi\\.org/(\\S+)$", "\\1",
+                              grep("https://doi\\.org/", entries, value = TRUE)))
+  bib_dois <- norm_doi(sub("^\\s*doi = \\{(.*)\\},?$", "\\1",
+                           grep("^\\s*doi = ", bib_text, value = TRUE)))
+  expect_setequal(readme_dois, bib_dois)
+
+  # APA 7 orders the reference list alphabetically by author.
+  authors <- sub("\\s\\(\\d{4}\\).*$", "", sub("^- ", "", entries))
+  plain <- tolower(iconv(authors, "UTF-8", "ASCII//TRANSLIT"))
+  plain <- gsub("[^a-z ]", " ", gsub("(eds.)", "", plain, fixed = TRUE))
+  plain <- trimws(gsub("\\s+", " ", plain))
+  years <- sub("^.*\\((\\d{4})\\).*$", "\\1", entries)
+  expect_identical(order(plain, years, method = "radix"), seq_along(entries))
+})
+
+test_that("citation and the BibTeX reference list are installed", {
   bib <- system.file("REFERENCES.bib", package = "contentvalidR")
   expect_true(nzchar(bib))
   expect_true(file.exists(bib))
@@ -96,9 +127,12 @@ test_that("citation and method bibliography are installed", {
     "10.1207/s15327841mpee0804_3",
     "10.1111/j.1744-6570.1975.tb01393.x",
     "10.1177/0748175613513808",
-    "10.1002/nur.20199"
+    "10.1002/nur.20199",
+    "10.1097/00006199-198611000-00017",
+    "10.1037/a0036374"
   )) {
-    expect_true(grepl(doi, bib_text, fixed = TRUE), info = doi)
+    # DOIs are case-insensitive; the file keeps each publisher's capitals.
+    expect_true(grepl(doi, tolower(bib_text), fixed = TRUE), info = doi)
   }
 
   cit <- system.file("CITATION", package = "contentvalidR")

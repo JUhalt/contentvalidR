@@ -144,52 +144,52 @@
 #'   [panel_agreement()] result.
 #'
 #' @references
-#' Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
-#' interval to Aiken's item content-relevance index. *Measurement in Physical
-#' Education and Exercise Science, 8*(4), 213-225.
-#' \doi{10.1207/s15327841mpee0804_3}
-#'
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 #' validity ratio: Revisiting the original methods of calculation.
-#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79-86.
+#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
 #' \doi{10.1177/0748175613513808}
 #'
-#' Lynn, M. R. (1986). Determination and quantification of content validity.
-#' *Nursing Research, 35*(6), 382-385.
-#' \doi{10.1097/00006199-198611000-00017}
-#'
-#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
-#' sure you know what's being reported? Critique and recommendations.
-#' *Research in Nursing & Health, 29*(5), 489-497. \doi{10.1002/nur.20147}
-#'
-#' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-#' indicator of content validity? *Research in Nursing & Health, 30*(4),
-#' 459-467. \doi{10.1002/nur.20199}
+#' Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
+#' *Psychological Bulletin, 76*(5), 378–382. \doi{10.1037/h0031619}
 #'
 #' Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
 #' reliability measure for coding data. *Communication Methods and Measures,
-#' 1*(1), 77-89. \doi{10.1080/19312450709336664}
+#' 1*(1), 77–89. \doi{10.1080/19312450709336664}
+#'
+#' Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
+#' coefficients of proportional variance, content validity and kappa*.
+#' BookSurge.
+#'
+#' Lawshe, C. H. (1975). A quantitative approach to content validity.
+#' *Personnel Psychology, 28*(4), 563–575.
+#' \doi{10.1111/j.1744-6570.1975.tb01393.x}
+#'
+#' Lynn, M. R. (1986). Determination and quantification of content validity.
+#' *Nursing Research, 35*(6), 382–385.
+#' \doi{10.1097/00006199-198611000-00017}
+#'
+#' Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
+#' interval to Aiken's item content-relevance index. *Measurement in Physical
+#' Education and Exercise Science, 8*(4), 213–225.
+#' \doi{10.1207/s15327841mpee0804_3}
+#'
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489–497. \doi{10.1002/nur.20147}
+#'
+#' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
+#' indicator of content validity? *Research in Nursing & Health, 30*(4),
+#' 459–467. \doi{10.1002/nur.20199}
+#'
+#' Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
+#' critical values for Lawshe's content validity ratio. *Measurement and
+#' Evaluation in Counseling and Development, 45*(3), 197–210.
+#' \doi{10.1177/0748175612440286}
 #'
 #' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 #' inter-rater reliability for nominal data: Which coefficients and confidence
 #' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
 #' \doi{10.1186/s12874-016-0200-9}
-#'
-#' Lawshe, C. H. (1975). A quantitative approach to content validity.
-#' *Personnel Psychology, 28*(4), 563-575.
-#' \doi{10.1111/j.1744-6570.1975.tb01393.x}
-#'
-#' Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
-#' critical values for Lawshe's content validity ratio. *Measurement and
-#' Evaluation in Counseling and Development, 45*(3), 197-210.
-#' \doi{10.1177/0748175612440286}
-#'
-#' Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
-#' *Psychological Bulletin, 76*(5), 378-382. \doi{10.1037/h0031619}
-#'
-#' Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
-#' coefficients of proportional variance, content validity and kappa.*
-#' BookSurge.
 #'
 #' @examples
 #' relevance <- matrix(
@@ -570,6 +570,49 @@ expert_validity <- function(data,
   tab
 }
 
+# The opening verdict every workflow print shares: how many items met the
+# criterion, then the items flagged and the items with too little data, by name.
+.expert_verdict <- function(r, mode) {
+  n <- nrow(r)
+  if (is.null(r$status)) {
+    r$status <- .workflow_status_from_recommendation(r$recommendation)
+  }
+  if (identical(mode, "relevance")) {
+    met <- sum(r$recommendation %in% c("Strong support", "Support"))
+    strong <- sum(r$recommendation == "Strong support")
+    which_strong <- if (met == 0L || strong == 0L) {
+      ""
+    } else if (strong == met) {
+      if (met == 1L) ", with strong support" else ", all with strong support"
+    } else {
+      sprintf(", %d of them with strong support", strong)
+    }
+    .say(sprintf("%d of %d items meet the I-CVI criterion%s%s.", met, n,
+                 which_strong,
+                 if (nzchar(which_strong)) " (modified kappa above .74)" else ""))
+  } else if (identical(mode, "essentiality")) {
+    .say(sum(r$status %in% "Supported"), "of", n,
+         "items meet the exact essentiality criterion.")
+  } else if (all(r$status %in% "Descriptive only")) {
+    .say("No target objective was supplied, so IOC is described for every",
+         "item-objective pair without a decision.")
+  } else {
+    .say(sum(r$recommendation == "Target favored"), "of", n,
+         "items are linked most strongly to their target objective.")
+  }
+  review <- r$item[r$status %in% "Review"]
+  if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
+  thin <- r$item[r$status %in% "Insufficient data"]
+  if (length(thin)) {
+    .say(if (identical(mode, "relevance")) {
+      "Too few experts to judge (fewer than three):"
+    } else {
+      "Insufficient data:"
+    }, paste(thin, collapse = ", "))
+  }
+  invisible(NULL)
+}
+
 #' @export
 print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
@@ -597,12 +640,12 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cat("Mean Aiken V: ", .fmt(s$mean_Aiken_V, digits),
         " | S-CVI/Ave: ", .fmt(s$S_CVI_Ave, digits),
         " | S-CVI/UA: ", .fmt(s$S_CVI_UA, digits), "\n", sep = "")
-    cat("Strong support: ", s$n_strong_support, " | Support: ", s$n_support,
-        " | Review: ", s$n_review, "\n", sep = "")
     if (show_agreement) {
       .say(.expert_agreement_line(x$details$agreement, digits), exdent = 2)
     }
     missing_line("item")
+    cat("\n")
+    .expert_verdict(x$results, "relevance")
     cat("\n")
     r <- x$results
     ci <- .ci_label(x$settings$alpha)
@@ -636,6 +679,8 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     missing_line("item")
     .say("Method:", x$settings$method)
     cat("\n")
+    .expert_verdict(x$results, "essentiality")
+    cat("\n")
     r <- x$results
     sizes <- unique(r$N)
     .print_table(.expert_item_table(r, "essentiality", digits,
@@ -643,7 +688,8 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cat("\n")
     .say("essential: experts rating the item essential, out of those who",
          "rated it.")
-    if (length(sizes) == 1L) {
+    # With no usable ratings there is no critical count to state.
+    if (length(sizes) == 1L && sizes >= 1L && !is.na(r$critical_ne[1])) {
       .say(sprintf(paste("With %d experts, an item needs at least %d rating it",
                          "essential for the exact one-tailed binomial test at",
                          "alpha = %s (Ayre & Scally, 2014)."),
@@ -655,6 +701,8 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
         " | Objectives: ", d$n_objectives, "\n", sep = "")
     missing_line("cell")
     .say("Method:", x$settings$method)
+    cat("\n")
+    .expert_verdict(x$results, "congruence")
     cat("\n")
     r <- x$results
     .print_table(.expert_item_table(r, "congruence", digits, x$settings$alpha))

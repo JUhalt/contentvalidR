@@ -41,5 +41,5 @@ colquitt_benchmarks("csv", orbiting_r = .40)
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. \emph{Journal of Applied
-Psychology, 104}(10), 1243-1265. \doi{10.1037/apl0000406}
+Psychology, 104}(10), 1243–1265. \doi{10.1037/apl0000406}
 }

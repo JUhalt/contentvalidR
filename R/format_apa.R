@@ -60,6 +60,11 @@
   invisible(NULL)
 }
 
+# A count with its noun in the right number: "1 item", "3 items".
+.n_noun <- function(n, noun, plural = paste0(noun, "s")) {
+  paste(n, ifelse(n == 1, noun, plural))
+}
+
 # Prints each distinct text once, led by every label it applies to, so an
 # explanation shared by five items is read once rather than five times.
 .say_grouped <- function(labels, texts, indent = 0L, exdent = indent + 2L) {

@@ -77,7 +77,7 @@
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 #' Content validation guidelines: Evaluation criteria for definitional
 #' correspondence and definitional distinctiveness. *Journal of Applied
-#' Psychology, 104*(10), 1243-1265. \doi{10.1037/apl0000406}
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
 #'
 #' @examples
 #' colquitt_benchmarks("psa")
@@ -123,7 +123,7 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-#' *Journal of Applied Psychology, 104*(10), 1243-1265.
+#' *Journal of Applied Psychology, 104*(10), 1243–1265.
 #' \doi{10.1037/apl0000406}
 #'
 #' @examples

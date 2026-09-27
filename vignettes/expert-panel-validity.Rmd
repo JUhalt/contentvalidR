@@ -262,69 +262,70 @@ not, by itself, a complete validity argument.
 ## References
 
 Aiken, L. R. (1980). Content validity and reliability of single items or
-questionnaires. *Educational and Psychological Measurement, 40*(4), 955-959. https://doi.org/10.1177/001316448004000419
-
-Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel
-Psychology, 28*(4), 563-575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
+questionnaires. *Educational and Psychological Measurement, 40*(4), 955–959. https://doi.org/10.1177/001316448004000419
 
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity
 ratio: Revisiting the original methods of calculation. *Measurement and
-Evaluation in Counseling and Development, 47*(1), 79-86.
+Evaluation in Counseling and Development, 47*(1), 79–86.
 https://doi.org/10.1177/0748175613513808
 
 Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa: I.
 The problems of two paradoxes. *Journal of Clinical Epidemiology, 43*(6),
-543-549. https://doi.org/10.1016/0895-4356(90)90158-L
+543–549. https://doi.org/10.1016/0895-4356(90)90158-L
 
 Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
-*Psychological Bulletin, 76*(5), 378-382. https://doi.org/10.1037/h0031619
+*Psychological Bulletin, 76*(5), 378–382. https://doi.org/10.1037/h0031619
 
 Gwet, K. L. (2008). Computing inter-rater reliability and its variance in the
 presence of high agreement. *British Journal of Mathematical and Statistical
-Psychology, 61*(1), 29-48. https://doi.org/10.1348/000711006X126600
+Psychology, 61*(1), 29–48. https://doi.org/10.1348/000711006X126600
 
 Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
 reliability measure for coding data. *Communication Methods and Measures, 1*(1),
-77-89. https://doi.org/10.1080/19312450709336664
+77–89. https://doi.org/10.1080/19312450709336664
 
 Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
-coefficients of proportional variance, content validity and kappa.*
+coefficients of proportional variance, content validity and kappa*.
 BookSurge.
 
-Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability.* Annenberg
+Krippendorff, K. (2011). *Computing Krippendorff's alpha-reliability*. Annenberg
 School for Communication, University of Pennsylvania.
 
+Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel
+Psychology, 28*(4), 563–575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
+
 Lynn, M. R. (1986). Determination and quantification of content validity.
-*Nursing Research, 35*(6), 382-385.
+*Nursing Research, 35*(6), 382–385.
 https://doi.org/10.1097/00006199-198611000-00017
 
 Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score confidence
 interval to Aiken's item content-relevance index. *Measurement in Physical
-Education and Exercise Science, 8*(4), 213-225.
+Education and Exercise Science, 8*(4), 213–225.
 https://doi.org/10.1207/S15327841MPEE0804_3
 
 Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you sure
 you know what's being reported? Critique and recommendations. *Research in
-Nursing & Health, 29*(5), 489-497. https://doi.org/10.1002/nur.20147
+Nursing & Health, 29*(5), 489–497. https://doi.org/10.1002/nur.20147
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? Appraisal and recommendations. *Research in
-Nursing & Health, 30*(4), 459-467. https://doi.org/10.1002/nur.20199
+Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
 
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists
 in the assessment of criterion-referenced test item validity. *Dutch Journal of
-Educational Research, 2*, 49-60.
+Educational Research, 2*, 49–60.
 
 Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence for
-multidimensional items. *International Journal of Testing, 3*(2), 163-171.
+multidimensional items. *International Journal of Testing, 3*(2), 163–171.
 https://doi.org/10.1207/S15327574IJT0302_5
 
 Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa:
 A comparison of basic properties. *MethodsX, 10*, 102212.
+https://doi.org/10.1016/j.mex.2023.102212
 
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the critical
 values for Lawshe's content validity ratio. *Measurement and Evaluation in
-Counseling and Development, 45*(3), 197-210.
+Counseling and Development, 45*(3), 197–210.
 https://doi.org/10.1177/0748175612440286
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater

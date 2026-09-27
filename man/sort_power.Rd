@@ -34,5 +34,5 @@ sort_power(N = 30, true_p = c(.60, .70, .80))
 Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
 The presentation of a new statistical significance formula and
 methodological best practices. \emph{Journal of Business and Psychology, 31}(1),
-173-186. \doi{10.1007/s10869-015-9404-y}
+173–186. \doi{10.1007/s10869-015-9404-y}
 }
