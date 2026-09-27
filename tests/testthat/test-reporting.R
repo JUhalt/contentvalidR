@@ -210,3 +210,56 @@ test_that("markdown output prints as the table, not as a character vector", {
   expect_false(any(grepl("^[[]1[]]|settings", out)))
   expect_match(out[1], "| Psa | 95% CI |", fixed = TRUE)
 })
+
+test_that("every workflow and expert mode has an APA report with a decision", {
+  set.seed(2)
+  rd <- expand.grid(item = c("A1", "B1"), rater = 1:12,
+                    construct = c("A", "B", "C"), stringsAsFactors = FALSE)
+  rd$target_construct <- ifelse(rd$item == "B1", "B", "A")
+  rd$rating <- ifelse(rd$construct == rd$target_construct,
+                      sample(4:5, nrow(rd), TRUE), sample(1:3, nrow(rd), TRUE))
+  rating <- content_report(rating_validity(rd))
+  expect_identical(names(rating), c("item", "target", "judges", "competitor",
+                                    "HTC", "HTD", "omnibus p", "contrast p",
+                                    "decision"))
+
+  ess <- content_report(expert_validity(c(10, 8), mode = "essentiality", N = 12))
+  expect_identical(names(ess), c("item", "essential", "CVR", "p", "decision"))
+  expect_identical(ess$essential, c("10/12", "8/12"))
+
+  d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"))
+  d$target_objective <- ifelse(d$item == "I1", "A", "B")
+  d$score <- ifelse(d$objective == d$target_objective, 1, -1)
+  con <- content_report(expert_validity(d, mode = "congruence"))
+  expect_identical(names(con), c("item", "target", "target IOC", "competitor",
+                                 "competitor IOC", "margin", "decision"))
+  expect_identical(con$margin, c("2.00", "2.00"))
+
+  long <- function(m, round) {
+    data.frame(expert = paste0("E", seq_len(nrow(m))),
+               item = rep(colnames(m), each = nrow(m)), round = round,
+               rating = as.vector(m), stringsAsFactors = FALSE)
+  }
+  r1 <- cbind(S1 = c(4, 4, 3, 4, 3, 4), S2 = c(3, 4, 3, 2, 4, 3))
+  r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(4, 4, 4, 4, 4, 3))
+  delphi <- content_report(delphi_validity(rbind(long(r1, 1), long(r2, 2)),
+                                           lo = 1, hi = 4, B = 0))
+  expect_true(all(c("item", "last round", "experts", "agree", "unchanged",
+                    "decision") %in% names(delphi)))
+
+  dom <- content_report(domain_validity(
+    data.frame(item = paste0("I", 1:3), cell = c("A", "A", "B"),
+               stringsAsFactors = FALSE),
+    domain = c("A", "B", "C")))
+  expect_identical(dom$share, c("67%", "33%", "0%"))
+})
+
+test_that("an APA report with no rows prints a note rather than an empty table", {
+  clean <- sort_validity(data.frame(
+    item = rep("I1", 6), rater = 1:6,
+    assigned_construct = rep("A", 6), target_construct = "A",
+    stringsAsFactors = FALSE
+  ))
+  out <- utils::capture.output(print(content_report(clean, include = "flagged")))
+  expect_identical(out, "No units matched the requested selection.")
+})
