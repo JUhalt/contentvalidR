@@ -1330,8 +1330,7 @@ recommended workflows are `sort_validity()`, `rating_validity()`,
   <https://doi.org/10.1097/00006199-198611000-00017>
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single
   proportion: Comparison of seven methods. *Statistics in Medicine,
-  17*(8), 857–872.
-  <https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8%3C857>::AID-SIM777%3E3.0.CO;2-E
+  17*(8), 857–872. <https://doi.org/10/cpchjg>
 - Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
   confidence interval to Aiken’s item content-relevance index.
   *Measurement in Physical Education and Exercise Science, 8*(4),

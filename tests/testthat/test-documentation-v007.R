@@ -95,8 +95,15 @@ test_that("the README reference list and REFERENCES.bib list the same works", {
   bib_text <- readLines(bib, warn = FALSE, encoding = "UTF-8")
   expect_identical(length(entries), length(grep("^@", bib_text)))
 
+  # Newcombe's (1998) DOI holds "<", ">" and "::", which break Markdown links,
+  # so the README gives its shortDOI (APA 7 allows either); the file keeps
+  # the full DOI.
+  short_dois <- c(
+    "10/cpchjg" = "10.1002/(sici)1097-0258(19980430)17:8<857::aid-sim777>3.0.co;2-e"
+  )
   norm_doi <- function(x) {
-    tolower(gsub("%3C", "<", gsub("%3E", ">", x, fixed = TRUE), fixed = TRUE))
+    x <- tolower(x)
+    ifelse(x %in% names(short_dois), short_dois[x], x)
   }
   readme_dois <- norm_doi(sub("^.*https://doi\\.org/(\\S+)$", "\\1",
                               grep("https://doi\\.org/", entries, value = TRUE)))
