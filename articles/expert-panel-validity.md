@@ -495,21 +495,29 @@ unlike indices into one generic chart.
 plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
 ```
 
-![](expert-panel-validity_files/figure-html/expert-plots-1.png)
+![Expert relevance plot: for each item, Aiken's V (filled) and I-CVI
+(open), each with its 95% interval, and a dashed line at the I-CVI
+criterion for the panel
+size.](expert-panel-validity_files/figure-html/expert-plots-1.png)
 
 ``` r
 
 plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 ```
 
-![](expert-panel-validity_files/figure-html/expert-plots-2.png)
+![Essentiality plot: each item's observed CVR (filled) joined to the CVR
+the exact test needs (open), with a dotted line at
+zero.](expert-panel-validity_files/figure-html/expert-plots-2.png)
 
 ``` r
 
 plot(expert_validity(d, mode = "congruence"))
 ```
 
-![](expert-panel-validity_files/figure-html/expert-plots-3.png)
+![Congruence plot: each item's IOC for its intended objective (filled)
+joined to its IOC for the strongest competing objective (open), with a
+dotted line at
+zero.](expert-panel-validity_files/figure-html/expert-plots-3.png)
 
 Relevance mode displays Aiken’s V with its score interval and overlays
 I-CVI as a separate marker. Essentiality mode displays observed CVR

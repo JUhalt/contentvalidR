@@ -379,14 +379,18 @@ The original one-index views remain available:
 plot(fit, metric = "htc")
 ```
 
-![](construct-rating-validity_files/figure-html/plot-1.png)
+![HTC for each item on a 0 to 1 scale; filled points are retained items
+and open points are items to
+review.](construct-rating-validity_files/figure-html/plot-1.png)
 
 ``` r
 
 plot(fit, metric = "htd")
 ```
 
-![](construct-rating-validity_files/figure-html/plot-2.png)
+![HTD for each item on a -1 to 1 scale, with a dotted line at zero;
+filled points are retained items and open points are items to
+review.](construct-rating-validity_files/figure-html/plot-2.png)
 
 A correspondence-distinctiveness evidence map displays HTC and HTD
 together:
@@ -396,7 +400,10 @@ together:
 plot(fit, type = "map")
 ```
 
-![](construct-rating-validity_files/figure-html/rating-map-1.png)
+![Construct-rating evidence map: each item's HTC on the horizontal axis
+against its HTD on the vertical axis. Filled points are retained items,
+open points are items to review, and triangles mark each target scale's
+mean.](construct-rating-validity_files/figure-html/rating-map-1.png)
 
 Target-scale averages are shown as diamonds and items needing review are
 labeled by default. As with the item-sort map, Colquitt norm regions are
@@ -411,7 +418,10 @@ mean-rating logic more directly visible:
 plot(fit, type = "profile")
 ```
 
-![](construct-rating-validity_files/figure-html/rating-profile-1.png)
+![Construct-rating profile: for each item, its mean rating against the
+intended definition (filled) and against the strongest competing
+definition (open), joined by a line that is dashed for items to
+review.](construct-rating-validity_files/figure-html/rating-profile-1.png)
 
 Filled points are intended-definition means, open points are the
 strongest orbiting-definition means, and the connecting segment is the

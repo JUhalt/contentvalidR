@@ -1116,28 +1116,41 @@ around the substantive questions in each method:
 plot(fit, type = "map")
 ```
 
-![](reference/figures/README-visualization-1.png)
+![Item-sort evidence map: each item's Psa, the share of judges choosing
+its target, on the horizontal axis against its Csv, the lead of the
+target over its top rival, on the vertical axis. Filled points are
+retained items, open points are items to review, and triangles mark each
+target scale's mean.](reference/figures/README-visualization-1.png)
 
 ``` r
 
 plot(rfit, type = "map")
 ```
 
-![](reference/figures/README-visualization-2.png)
+![Construct-rating evidence map: each item's HTC on the horizontal axis
+against its HTD on the vertical axis. Filled points are retained items,
+open points are items to review, and triangles mark each target scale's
+mean.](reference/figures/README-visualization-2.png)
 
 ``` r
 
 plot(rfit, type = "profile")
 ```
 
-![](reference/figures/README-visualization-3.png)
+![Construct-rating profile: for each item, its mean rating against the
+intended definition (filled) and against the strongest competing
+definition (open), joined by a line that is dashed for items to
+review.](reference/figures/README-visualization-3.png)
 
 ``` r
 
 plot(efit)
 ```
 
-![](reference/figures/README-visualization-4.png)
+![Expert relevance plot: for each item, Aiken's V (filled) and I-CVI
+(open), each with its 95% interval, and a dashed line at the I-CVI
+criterion for the panel
+size.](reference/figures/README-visualization-4.png)
 
 The sort and rating maps jointly display **definitional correspondence**
 and **definitional distinctiveness**, with target-scale means
@@ -1153,7 +1166,10 @@ item-level cutoffs.
 plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
 ```
 
-![](reference/figures/README-visualization-power-1.png)
+![Exact retention power of the item-sort test against the number of
+judges, one line for each assumed rate at which judges choose the
+target: .60, .70, and
+.80.](reference/figures/README-visualization-power-1.png)
 
 ## Reproducible examples and reporting
 

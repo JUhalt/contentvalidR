@@ -46,6 +46,20 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.8.0.9000" id="contentvalidr-0809000-development-version">contentvalidR 0.8.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0809000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="plots-show-the-criterion-and-the-uncertainty-in-development-0-8-0-9000">Plots show the criterion and the uncertainty (in development)<a class="anchor" aria-label="anchor" href="#plots-show-the-criterion-and-the-uncertainty-in-development-0-8-0-9000"></a></h3>
+<p>No computed value changes; this is about what the figures draw.</p>
+<ul><li>
+<strong>The item-sort Psa plot draws each item’s interval, and a dashed mark at the share of judges the exact test needs for that item</strong>, so an item is retained when its point reaches its mark. It used to show bare points.</li>
+<li>
+<strong>The expert relevance plot shows Aiken’s V and I-CVI side by side, each with its interval</strong>, and a dashed line at the I-CVI criterion when every item had the same number of experts (“I-CVI criterion (5 of 6)”). Before, only V had an interval, and an I-CVI point could hide behind V’s.</li>
+<li>
+<strong>Legends list only what the figure draws</strong> and sit in headroom above the data. The item plots offered a “No data” symbol no item used, the profile plot a “Review gap” line it had not drawn, and the essentiality key sat on its own zero line. The content map’s key is titled “Cluster” or “Blueprint cell”, where it showed bare numbers.</li>
+<li>
+<strong>Axis labels say what is measured</strong> (“Psa: share of judges choosing the target”) in place of “Psa correspondence”, and axes for statistics that cannot exceed 1 are labeled as APA prints them (.25, .50). No figure leaves an empty band for a title unless <code>main</code> is given, and each restores the graphics settings it changes. Item rows run top to bottom in the order of the results table, and scale means are triangles, clearly distinct from retained items.</li>
+<li>
+<strong>Every figure in the README and the vignettes has alt text</strong> describing what it shows; 17 of 19 had none.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="shorter-keys-formatted-components-and-apa-report-tables-in-development-0-8-0-9000">Shorter keys, formatted components, and APA report tables (in development)<a class="anchor" aria-label="anchor" href="#shorter-keys-formatted-components-and-apa-report-tables-in-development-0-8-0-9000"></a></h3>
 <p>No computed value changes; this is about what is printed.</p>
 <ul><li>

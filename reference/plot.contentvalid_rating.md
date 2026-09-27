@@ -4,8 +4,9 @@ Provides three complementary views of a construct-rating pretest.
 `"item"` reproduces the original one-index plot, `"map"` places HTC
 against HTD to show correspondence and distinctiveness jointly, and
 `"profile"` draws a target-versus- strongest-competitor gap plot on the
-original response scale. The latter is a graphical analogue of the
-mean-rating tables used in Hinkin and Tracey (1999).
+original response scale, first item at the top, with a dashed gap for
+items to review. The latter is a graphical analogue of the mean-rating
+tables used in Hinkin and Tracey (1999).
 
 ## Usage
 

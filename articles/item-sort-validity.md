@@ -319,14 +319,19 @@ The one-index views remain available:
 plot(fit, metric = "psa")
 ```
 
-![](item-sort-validity_files/figure-html/unnamed-chunk-8-1.png)
+![Psa for each item with its 95% interval and a dashed mark at the share
+of judges the exact test needs; filled points are retained items and
+open points are items to
+review.](item-sort-validity_files/figure-html/sort-item-plots-1.png)
 
 ``` r
 
 plot(fit, metric = "csv")
 ```
 
-![](item-sort-validity_files/figure-html/unnamed-chunk-8-2.png)
+![Csv for each item, with a dotted line at zero; filled points are
+retained items and open points are items to
+review.](item-sort-validity_files/figure-html/sort-item-plots-2.png)
 
 For diagnosis, the package also introduces a
 **correspondence-distinctiveness evidence map**:
@@ -336,7 +341,12 @@ For diagnosis, the package also introduces a
 plot(fit, type = "map")
 ```
 
-![](item-sort-validity_files/figure-html/unnamed-chunk-9-1.png)
+![Item-sort evidence map: each item's Psa, the share of judges choosing
+its target, on the horizontal axis against its Csv, the lead of the
+target over its top rival, on the vertical axis. Filled points are
+retained items, open points are items to review, and triangles mark each
+target scale's
+mean.](item-sort-validity_files/figure-html/sort-map-1.png)
 
 Psa and Csv are shown jointly, review items are labeled by default, and
 target- scale averages are added as diamonds. This makes it easier to
@@ -353,14 +363,19 @@ plan <- sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80))
 plot(plan)
 ```
 
-![](item-sort-validity_files/figure-html/unnamed-chunk-10-1.png)
+![Exact retention power of the item-sort test against the number of
+judges, one line for each assumed rate at which judges choose the
+target: .60, .70, and
+.80.](item-sort-validity_files/figure-html/sort-power-plots-1.png)
 
 ``` r
 
 plot(plan, type = "critical")
 ```
 
-![](item-sort-validity_files/figure-html/unnamed-chunk-10-2.png)
+![Minimum Psa an item needs to be retained under the exact test, a step
+function of the number of judges, with points at the panel sizes
+requested.](item-sort-validity_files/figure-html/sort-power-plots-2.png)
 
 No conventional target-power line is imposed unless the analyst supplies
 one.

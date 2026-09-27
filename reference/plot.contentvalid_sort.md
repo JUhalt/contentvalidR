@@ -1,12 +1,15 @@
 # Plot item-sort evidence
 
 Draws either the original one-index item plot or a
-correspondence-distinctiveness evidence map. The map places Psa on the
-x-axis and Csv on the y-axis so that intended-construct correspondence
-and distinctiveness can be inspected together. Target-scale means are
-added as diamonds when available. Colquitt benchmark bands are
-deliberately not drawn across item points because those norms were
-developed for scale-level averages rather than individual items.
+correspondence-distinctiveness evidence map. The Psa item plot draws
+each item's interval and a dashed mark at the share of judges the exact
+test needs for that item, so an item is retained when its point reaches
+its mark. The map places Psa on the x-axis and Csv on the y-axis so that
+intended-construct correspondence and distinctiveness can be inspected
+together. Target-scale means are added as triangles when available.
+Colquitt benchmark bands are deliberately not drawn across item points
+because those norms were developed for scale-level averages rather than
+individual items.
 
 ## Usage
 

@@ -541,13 +541,13 @@ reported so downstream interpretation uses the actual panel size.</p>
 unlike indices into one generic chart.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">R</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="expert-panel-validity_files/figure-html/expert-plots-1.png" class="r-plt" alt="" width="672"></p>
+<p><img src="expert-panel-validity_files/figure-html/expert-plots-1.png" class="r-plt" alt="Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size." width="672"></p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="expert-panel-validity_files/figure-html/expert-plots-2.png" class="r-plt" alt="" width="672"></p>
+<p><img src="expert-panel-validity_files/figure-html/expert-plots-2.png" class="r-plt" alt="Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero." width="672"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="" width="672"></p>
+<p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="Congruence plot: each item's IOC for its intended objective (filled) joined to its IOC for the strongest competing objective (open), with a dotted line at zero." width="672"></p>
 <p>Relevance mode displays Aiken’s V with its score interval and
 overlays I-CVI as a separate marker. Essentiality mode displays observed
 CVR against the exact panel-specific critical CVR. Congruence mode
