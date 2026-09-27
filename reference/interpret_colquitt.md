@@ -43,7 +43,10 @@ interpret_colquitt(
 ## Value
 
 A data.frame with the value, benchmark set, interpretation, and an
-applicability flag.
+applicability flag. It prints as a formatted table in APA style; the
+values themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -55,17 +58,17 @@ Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 
 ``` r
 interpret_colquitt(.84, "psa")
-#>   statistic value benchmark_set                  benchmark_label interpretation
-#> 1       psa  0.84       overall Overall (not correlation-normed)         Strong
-#>   applicable
-#> 1       TRUE
-#>                                                                           note
-#> 1 Empirical percentile norm from scale-level averages; not a universal cutoff.
+#> Benchmark bands (Colquitt et al., 2019)
+#> 
+#>  statistic value   band                       benchmarks
+#>        Psa   .84 Strong Overall (not correlation-normed)
+#> 
+#> Empirical percentile norm from scale-level averages; not a universal cutoff.
 interpret_colquitt(.70, "csv", orbiting_r = .40)
-#>   statistic value benchmark_set
-#> 1       csv   0.7      moderate
-#>                                      benchmark_label interpretation applicable
-#> 1 More moderate focal-orbiting correlation (.35-.50)         Strong       TRUE
-#>                                                                           note
-#> 1 Empirical percentile norm from scale-level averages; not a universal cutoff.
+#> Benchmark bands (Colquitt et al., 2019)
+#> 
+#>  statistic value   band                                         benchmarks
+#>        Csv   .70 Strong More moderate focal-orbiting correlation (.35-.50)
+#> 
+#> Empirical percentile norm from scale-level averages; not a universal cutoff.
 ```

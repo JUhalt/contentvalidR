@@ -157,28 +157,17 @@ fit
 #> benchmark, never against the other index's number.
 #> 
 #> What these columns mean
-#>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against
-#>       its intended construct definition, expressed as a proportion of the
-#>       rating scale. (0 to 1; higher is stronger)
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's
-#>       average rating exceeds the best competing construct's, as a
-#>       proportion of the rating scale. It is a difference, so its typical
-#>       values are far smaller than HTC's. (usually a small positive number;
-#>       higher is stronger)
+#>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
+#>       definition, as a share of the rating scale (0 to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
+#>       closest rival's, as a share of the scale (usually small).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- rated highest against its intended construct, with every
+#>       planned contrast meeting the screening criterion.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and

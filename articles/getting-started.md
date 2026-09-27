@@ -49,21 +49,30 @@ csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
   csv_binom_test(csv$n_target[i], csv$n[i])$decision
 }, character(1))
 psa; csv
-#>   item target n_total  n n_missing n_target       psa    psa_low  psa_high
-#> 1   I1      A      12 12         0        9 0.7500000 0.46769467 0.9110583
-#> 2   I2      A      12 12         0        5 0.4166667 0.19326031 0.6804887
-#> 3   I3      B      12 12         0        2 0.1666667 0.04696514 0.4480309
-#> 4   I4      B      12 12         0        5 0.4166667 0.19326031 0.6804887
-#>   item target n_total  n n_missing n_target competitor n_other_max        csv
-#> 1   I1      A      12 12         0        9          B           3  0.5000000
-#> 2   I2      A      12 12         0        5          B           7 -0.1666667
-#> 3   I3      B      12 12         0        2          A          10 -0.6666667
-#> 4   I4      B      12 12         0        5          A           7 -0.1666667
-#>   decision
-#> 1     n.s.
-#> 2     n.s.
-#> 3     n.s.
-#> 4     n.s.
+#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> 
+#>  item target judges Psa     95% CI
+#>    I1      A   9/12 .75 [.47, .91]
+#>    I2      A   5/12 .42 [.19, .68]
+#>    I3      B   2/12 .17 [.05, .45]
+#>    I4      B   5/12 .42 [.19, .68]
+#> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
+#> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> 
+#>  item target judges competitor competitor judges  Csv
+#>    I1      A   9/12          B              3/12  .50
+#>    I2      A   5/12          B              7/12 -.17
+#>    I3      B   2/12          A             10/12 -.67
+#>    I4      B   5/12          A              7/12 -.17
+#> 
+#> Csv is the target count minus the count for the most-chosen other construct,
+#> divided by the number of judges.
 ```
 
 **Interpretation** - **Psa** = share assigning the intended construct. -
@@ -126,28 +135,17 @@ rating_fit
 #> benchmark, never against the other index's number.
 #> 
 #> What these columns mean
-#>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against
-#>       its intended construct definition, expressed as a proportion of the
-#>       rating scale. (0 to 1; higher is stronger)
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's
-#>       average rating exceeds the best competing construct's, as a
-#>       proportion of the rating scale. It is a difference, so its typical
-#>       values are far smaller than HTC's. (usually a small positive number;
-#>       higher is stronger)
+#>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
+#>       definition, as a share of the rating scale (0 to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
+#>       closest rival's, as a share of the scale (usually small).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- rated highest against its intended construct, with every
+#>       planned contrast meeting the screening criterion.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
@@ -234,42 +232,23 @@ expert_fit
 #> cutoffs.
 #> 
 #> What these columns mean
-#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
-#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
-#>       1; higher is stronger)
-#>   I-CVI -- Item-level Content Validity Index. Proportion of experts who
-#>       rated the item as relevant, after applying the relevance cut. (0 to
-#>       1; compared against a panel-size guideline)
-#>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an
-#>       interval around I-CVI. Expert panels are usually small, so these
-#>       intervals are often wide: a single I-CVI value can look more settled
-#>       than the number of experts behind it supports. (between 0 and 1; the
-#>       method and level are named in the output)
-#>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
-#>       have agreed even if rating at random. With small panels, chance
-#>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (at most 1; below 0 when fewer experts agree
-#>       than chance predicts; higher is stronger)
-#>   Panel agreement -- Panel-level agreement. One coefficient describing how
-#>       consistently the whole panel rated the item set: Krippendorff's alpha
-#>       by default, or Gwet's AC1 if chosen. It is separate from modified
-#>       kappa, which describes one item at a time. (1 is perfect agreement
-#>       and 0 is agreement no better than chance; it can be low on a
-#>       close-agreeing panel whose ratings cluster on one value)
+#>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
+#>       possible) to 1 (highest).
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
+#>       item relevant, compared with Lynn's criterion for the panel size.
+#>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
+#>       small; the method is named above.
+#>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
+#>       below 0 when agreement is below chance).
+#>   Panel agreement -- Panel-level agreement. One coefficient for the whole
+#>       panel (1 is perfect, 0 is chance); it can be low when nearly every
+#>       rating is the same.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -332,19 +311,28 @@ for manuscript-ready reporting scaffolds built from those same files.
 
 R <- matrix(sample(1:5, 5*6, replace = TRUE), nrow = 5)
 aikens_v(R, lo = 1, hi = 5)
-#>    item N n_missing    V    ci_low   ci_high               ci_method
-#> 1 Item1 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score
-#> 2 Item2 5         0 0.30 0.1454772 0.5189728 Penfield-Giacobbi score
-#> 3 Item3 5         0 0.70 0.4810272 0.8545228 Penfield-Giacobbi score
-#> 4 Item4 5         0 0.35 0.1811918 0.5671457 Penfield-Giacobbi score
-#> 5 Item5 5         0 0.60 0.3865815 0.7811935 Penfield-Giacobbi score
-#> 6 Item6 5         0 0.65 0.4328543 0.8188082 Penfield-Giacobbi score
+#> Aiken's V (Aiken, 1980)
+#> 
+#>   item experts   V     95% CI
+#>  Item1       5 .60 [.39, .78]
+#>  Item2       5 .30 [.15, .52]
+#>  Item3       5 .70 [.48, .85]
+#>  Item4       5 .35 [.18, .57]
+#>  Item5       5 .60 [.39, .78]
+#>  Item6       5 .65 [.43, .82]
+#> 
+#> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
 
 cvr(essential = c(8,10,5), N = 12)
-#>    item ne  N        cvr    p_value critical_ne critical_cvr  pass
-#> 1 Item1  8 12  0.3333333 0.19384766          10    0.6666667 FALSE
-#> 2 Item2 10 12  0.6666667 0.01928711          10    0.6666667  TRUE
-#> 3 Item3  5 12 -0.1666667 0.80615234          10    0.6666667 FALSE
+#> Content validity ratio (CVR; Lawshe, 1975)
+#> 
+#>   item essential  CVR    p needed meets
+#>  Item1      8/12  .33 .194     10    no
+#>  Item2     10/12  .67 .019     10   yes
+#>  Item3      5/12 -.17 .806     10    no
+#> 
+#> needed: essential ratings the exact one-tailed binomial test requires at
+#> alpha = .05 (Ayre & Scally, 2014).
 
 M <- matrix(sample(0:1, 6*5, replace = TRUE, prob = c(.3,.7)), nrow = 6)
 cvi(M)
@@ -382,13 +370,15 @@ ioc_df <- data.frame(
   score = sample(c(-1,0,1), 18, replace = TRUE)
 )
 ioc(ioc_df)
-#>   item objective n_total n_judges n_missing        ioc
-#> 1   I1         A       3        3         0  0.0000000
-#> 2   I1         B       3        3         0  0.3333333
-#> 3   I1         C       3        3         0 -0.6666667
-#> 4   I2         A       3        3         0  0.0000000
-#> 5   I2         B       3        3         0  0.0000000
-#> 6   I2         C       3        3         0  0.0000000
+#> Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> 
+#>  item objective judges  IOC
+#>    I1         A      3  .00
+#>    I1         B      3  .33
+#>    I1         C      3 -.67
+#>    I2         A      3  .00
+#>    I2         B      3  .00
+#>    I2         C      3  .00
 ```
 
 **Diagnostics & reproducibility**
@@ -397,46 +387,25 @@ ioc(ioc_df)
 
 truth <- c(TRUE, TRUE, TRUE, FALSE)  # pretend "kept" after CFA
 signal_detection(csv$decision == "significant", truth)
-#> $confusion
+#> Retention decisions compared with the actual outcome
+#> 
 #>               Actual
 #> Predicted      Retain Not retained
 #>   Retain            0            0
 #>   Not retained      3            1
 #> 
-#> $accuracy
-#> [1] 0.25
-#> 
-#> $sensitivity
-#> [1] 0
-#> 
-#> $specificity
-#> [1] 1
-#> 
-#> $phi
-#> [1] NA
-#> 
-#> $chisq
-#> [1] NA
-#> 
-#> $p
-#> [1] NA
+#> accuracy = .25, sensitivity = .00, specificity = 1.00, phi = NA.
 
 csv2_sig <- sample(c(TRUE, FALSE), nrow(csv), replace = TRUE)
 reproducibility_phi(csv$decision == "significant", csv2_sig)
-#> $table
+#> Retention decisions in two pretests
+#> 
 #>               Pretest2
 #> Pretest1       Retain Not retained
 #>   Retain            0            0
 #>   Not retained      1            3
 #> 
-#> $phi
-#> [1] NA
-#> 
-#> $chisq
-#> [1] NA
-#> 
-#> $p
-#> [1] NA
+#> phi = NA.
 ```
 
 **Power quick-checks**

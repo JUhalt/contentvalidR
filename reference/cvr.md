@@ -47,7 +47,10 @@ cvr(essential, N = NULL, alpha = 0.05, na.rm = FALSE, item_names = NULL)
 ## Value
 
 A data.frame containing item, `ne`, effective `N`, CVR, exact p-value,
-critical essential count/CVR, and `pass`.
+critical essential count/CVR, and `pass`. It prints as a formatted table
+in APA style; the values themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -70,8 +73,13 @@ Evaluation in Counseling and Development, 45*(3), 197–210.
 
 ``` r
 cvr(essential = c(8, 10, 5), N = 12)
-#>    item ne  N        cvr    p_value critical_ne critical_cvr  pass
-#> 1 Item1  8 12  0.3333333 0.19384766          10    0.6666667 FALSE
-#> 2 Item2 10 12  0.6666667 0.01928711          10    0.6666667  TRUE
-#> 3 Item3  5 12 -0.1666667 0.80615234          10    0.6666667 FALSE
+#> Content validity ratio (CVR; Lawshe, 1975)
+#> 
+#>   item essential  CVR    p needed meets
+#>  Item1      8/12  .33 .194     10    no
+#>  Item2     10/12  .67 .019     10   yes
+#>  Item3      5/12 -.17 .806     10    no
+#> 
+#> needed: essential ratings the exact one-tailed binomial test requires at
+#> alpha = .05 (Ayre & Scally, 2014).
 ```

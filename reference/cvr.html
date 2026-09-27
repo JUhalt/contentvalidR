@@ -108,7 +108,9 @@ calculated itemwise.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame containing item, <code>ne</code>, effective <code>N</code>, CVR, exact
-p-value, critical essential count/CVR, and <code>pass</code>.</p>
+p-value, critical essential count/CVR, and <code>pass</code>.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> returns the plain data frame.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -127,10 +129,15 @@ Evaluation in Counseling and Development, 45</em>(3), 197–210.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cvr</span><span class="op">(</span>essential <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    item ne  N        cvr    p_value critical_ne critical_cvr  pass</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Item1  8 12  0.3333333 0.19384766          10    0.6666667 FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Item2 10 12  0.6666667 0.01928711          10    0.6666667  TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Item3  5 12 -0.1666667 0.80615234          10    0.6666667 FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content validity ratio (CVR; Lawshe, 1975)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item essential  CVR    p needed meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1      8/12  .33 .194     10    no</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2     10/12  .67 .019     10   yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3      5/12 -.17 .806     10    no</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> needed: essential ratings the exact one-tailed binomial test requires at</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> alpha = .05 (Ayre &amp; Scally, 2014).</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -127,8 +127,6 @@ items as the blueprint expects.
 
 Retained utilities that are not flagship v0.1.0 workflows.
 
-- [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  : Agreement summary (auxiliary)
 - [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
   : Q-factor helper for content adequacy (comparator)
 - [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md)
@@ -139,3 +137,11 @@ Retained utilities that are not flagship v0.1.0 workflows.
   : Legacy independent-groups ANOVA power simulator
 - [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md)
   : Legacy simulation of item-sort target-count power
+
+## Deprecated
+
+Still works in 0.9.0, with a warning naming its replacement; removed in
+1.0.0.
+
+- [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  : Agreement summary (deprecated)

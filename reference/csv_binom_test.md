@@ -41,7 +41,9 @@ csv_binom_test(n_c, N, p0 = 0.5, alpha = 0.05)
 A list containing the exact p-value, observed target proportion,
 one-sided confidence interval, the minimum critical target count, a
 logical `passes_chance` flag, a backward-compatible `decision` label,
-and a plain-language `interpretation`.
+and a plain-language `interpretation`. The inputs are returned too, as
+`n_target`, `N`, `p0`, and `alpha`. It prints as a short report in APA
+style; the elements themselves are unrounded.
 
 ## References
 
@@ -55,51 +57,19 @@ methodological best practices. *Journal of Business and Psychology,
 
 ``` r
 csv_binom_test(n_c = 15, N = 20)
-#> $p.value
-#> [1] 0.02069473
+#> Howard-Melloy exact test (one-tailed)
 #> 
-#> $estimate
-#> [1] 0.75
-#> 
-#> $conf.int
-#> [1] 0.5444176 1.0000000
-#> attr(,"conf.level")
-#> [1] 0.95
-#> 
-#> $critical_n_target
-#> [1] 15
-#> 
-#> $passes_chance
-#> [1] TRUE
-#> 
-#> $decision
-#> [1] "significant"
-#> 
-#> $interpretation
-#> [1] "Target assignments exceed the exact chance criterion."
-#> 
+#> 15 of 20 judges assigned the item to its target construct (Psa = .75). If
+#> judges chose the target at the rate p0 = .50, a count this high has
+#> probability p = .021.
+#> At alpha = .05 an item needs at least 15 of 20. Decision: significant.
+#> One-sided 95% interval for the target rate: [.54, 1.00].
 csv_binom_test(n_c = 14, N = 20)
-#> $p.value
-#> [1] 0.05765915
+#> Howard-Melloy exact test (one-tailed)
 #> 
-#> $estimate
-#> [1] 0.7
-#> 
-#> $conf.int
-#> [1] 0.4921816 1.0000000
-#> attr(,"conf.level")
-#> [1] 0.95
-#> 
-#> $critical_n_target
-#> [1] 15
-#> 
-#> $passes_chance
-#> [1] FALSE
-#> 
-#> $decision
-#> [1] "n.s."
-#> 
-#> $interpretation
-#> [1] "Target assignments do not exceed the exact chance criterion."
-#> 
+#> 14 of 20 judges assigned the item to its target construct (Psa = .70). If
+#> judges chose the target at the rate p0 = .50, a count this high has
+#> probability p = .058.
+#> At alpha = .05 an item needs at least 15 of 20. Decision: n.s..
+#> One-sided 95% interval for the target rate: [.49, 1.00].
 ```

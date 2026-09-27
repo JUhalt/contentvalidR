@@ -204,39 +204,26 @@ fit
 #> so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned
-#>       the item to the construct it was written for. Higher means judges
-#>       recognized the item as belonging where you intended. (0 to 1; higher
-#>       is stronger)
-#>   95% CI -- Interval for Psa. Lower and upper limits of an interval around
-#>       Psa. A wide interval means few judges sorted the item, so a different
-#>       sample of judges could plausibly give a quite different Psa. (between
-#>       0 and 1; the method and level are named in the output)
-#>   Csv -- Coefficient of Substantive Validity. How much more often the item
-#>       went to its intended construct than to the alternative construct
-#>       judges chose most. It rewards being distinctly right, not merely
-#>       often right. (-1 to 1; 0 means the intended construct and its closest
-#>       rival were chosen equally often)
-#>   competitor -- Strongest competing construct. The construct, other than
-#>       the intended one, that judges chose most often for this item.
-#>   p -- Howard-Melloy exact test. Probability of seeing at least this many
-#>       target assignments if judges were assigning at the chance rate p0.
-#>       Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
+#>       item in the construct it was written for (0 to 1; higher is
+#>       stronger).
+#>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
+#>       method is named above.
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges
+#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
+#>       tie).
+#>   competitor -- Strongest competing construct. The construct other than the
+#>       intended one that judges chose most often.
+#>   p -- Howard-Melloy exact test. Chance of at least this many target
+#>       assignments if judges assigned at the rate p0; compared with alpha.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- met the exact target-assignment criterion.
+#>   Review -- did not meet it; the competitor column shows where judges put
+#>       it instead.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
@@ -323,39 +310,26 @@ print(fit, legacy = TRUE)
 #> minus one, a different index.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned
-#>       the item to the construct it was written for. Higher means judges
-#>       recognized the item as belonging where you intended. (0 to 1; higher
-#>       is stronger)
-#>   95% CI -- Interval for Psa. Lower and upper limits of an interval around
-#>       Psa. A wide interval means few judges sorted the item, so a different
-#>       sample of judges could plausibly give a quite different Psa. (between
-#>       0 and 1; the method and level are named in the output)
-#>   Csv -- Coefficient of Substantive Validity. How much more often the item
-#>       went to its intended construct than to the alternative construct
-#>       judges chose most. It rewards being distinctly right, not merely
-#>       often right. (-1 to 1; 0 means the intended construct and its closest
-#>       rival were chosen equally often)
-#>   competitor -- Strongest competing construct. The construct, other than
-#>       the intended one, that judges chose most often for this item.
-#>   p -- Howard-Melloy exact test. Probability of seeing at least this many
-#>       target assignments if judges were assigning at the chance rate p0.
-#>       Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
+#>       item in the construct it was written for (0 to 1; higher is
+#>       stronger).
+#>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
+#>       method is named above.
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges
+#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
+#>       tie).
+#>   competitor -- Strongest competing construct. The construct other than the
+#>       intended one that judges chose most often.
+#>   p -- Howard-Melloy exact test. Chance of at least this many target
+#>       assignments if judges assigned at the rate p0; compared with alpha.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- met the exact target-assignment criterion.
+#>   Review -- did not meet it; the competitor column shows where judges put
+#>       it instead.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these

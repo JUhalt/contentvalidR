@@ -49,7 +49,10 @@ compute_psa(
 
 A data.frame with one row per item and columns `item`, `target`,
 `n_total`, `n`, `n_missing`, `n_target`, `psa`, `psa_low`, and
-`psa_high`.
+`psa_high`. It prints as a formatted table in APA style; the values
+themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -94,11 +97,29 @@ df <- data.frame(
   target_construct = rep(c("A", "B"), each = 4)
 )
 compute_psa(df)
-#>   item target n_total n n_missing n_target  psa   psa_low  psa_high
-#> 1   I1      A       4 4         0        3 0.75 0.3006418 0.9544127
-#> 2   I2      B       4 4         0        3 0.75 0.3006418 0.9544127
+#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> 
+#>  item target judges Psa     95% CI
+#>    I1      A    3/4 .75 [.30, .95]
+#>    I2      B    3/4 .75 [.30, .95]
+#> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
 compute_psa(df, ci = "exact")
-#>   item target n_total n n_missing n_target  psa   psa_low  psa_high
-#> 1   I1      A       4 4         0        3 0.75 0.1941204 0.9936905
-#> 2   I2      B       4 4         0        3 0.75 0.1941204 0.9936905
+#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> 
+#>  item target judges Psa     95% CI
+#>    I1      A    3/4 .75 [.19, .99]
+#>    I2      B    3/4 .75 [.19, .99]
+#> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
+#> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:
+#> Agresti and Coull (1998) show its coverage runs above the nominal level, so
+#> intervals are wider than they need to be. An interval reflects how few
+#> ratings an item received, not whether the right judges were chosen.
 ```

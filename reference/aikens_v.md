@@ -55,7 +55,10 @@ aikens_v(
 ## Value
 
 A data.frame with item, effective judge count `N`, number missing,
-Aiken's `V`, and (when requested) `ci_low` and `ci_high`.
+Aiken's `V`, and (when requested) `ci_low` and `ci_high`. It prints as a
+formatted table in APA style; the values themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -75,8 +78,12 @@ confidence interval to Aiken's item content-relevance index.
 R <- matrix(c(4,4,3,4, 4,3,4,4, 3,3,4,4), nrow = 4)
 colnames(R) <- c("Item1", "Item2", "Item3")
 aikens_v(R, lo = 1, hi = 4)
-#>    item N n_missing         V    ci_low   ci_high               ci_method
-#> 1 Item1 4         0 0.9166667 0.6461201 0.9851349 Penfield-Giacobbi score
-#> 2 Item2 4         0 0.9166667 0.6461201 0.9851349 Penfield-Giacobbi score
-#> 3 Item3 4         0 0.8333333 0.5519691 0.9530349 Penfield-Giacobbi score
+#> Aiken's V (Aiken, 1980)
+#> 
+#>   item experts   V     95% CI
+#>  Item1       4 .92 [.65, .99]
+#>  Item2       4 .92 [.65, .99]
+#>  Item3       4 .83 [.55, .95]
+#> 
+#> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
 ```

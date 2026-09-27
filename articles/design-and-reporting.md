@@ -204,46 +204,26 @@ workflows.
 pretest_supported <- sort_fit$results$status == "Supported"
 later_retained <- c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE)
 signal_detection(pretest_supported, later_retained)
-#> $confusion
+#> Retention decisions compared with the actual outcome
+#> 
 #>               Actual
 #> Predicted      Retain Not retained
 #>   Retain            4            0
 #>   Not retained      0            2
 #> 
-#> $accuracy
-#> [1] 1
-#> 
-#> $sensitivity
-#> [1] 1
-#> 
-#> $specificity
-#> [1] 1
-#> 
-#> $phi
-#> [1] 1
-#> 
-#> $chisq
-#> [1] 6
-#> 
-#> $p
-#> [1] 0.01430588
+#> accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00,
+#> chi-square(1) = 6.00, p = .014.
 
 replication_supported <- c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE)
 reproducibility_phi(pretest_supported, replication_supported)
-#> $table
+#> Retention decisions in two pretests
+#> 
 #>               Pretest2
 #> Pretest1       Retain Not retained
 #>   Retain            4            0
 #>   Not retained      1            1
 #> 
-#> $phi
-#> [1] 0.6324555
-#> 
-#> $chisq
-#> [1] 2.4
-#> 
-#> $p
-#> [1] 0.1213353
+#> phi = .63, chi-square(1) = 2.40, p = .121.
 ```
 
 ## Power quick check

@@ -86,7 +86,8 @@ rather than the pairwise similarity ratings of Sireci and Geisinger (1992).</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A square, symmetric item-by-item matrix of co-assignment proportions,
 with attribute <code>"n_pairs"</code> giving the number of judges contributing to each
-cell.</p>
+cell.
+It prints with two decimals; the values themselves are unrounded.</p>
     </div>
     <div class="section level2">
     <h2 id="weaker-evidence-than-a-similarity-task">Weaker evidence than a similarity task<a class="anchor" aria-label="anchor" href="#weaker-evidence-than-a-similarity-task"></a></h2>
@@ -116,17 +117,16 @@ Measurement, 16</em>(1), 17–31. <a href="https://doi.org/10.1177/0146621692016
 <span class="r-in"><span>  assigned_construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">similarity_from_sort</span><span class="op">(</span><span class="va">sorts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I1 I2 I3 I4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I1  1  1  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I2  1  1  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I3  0  0  1  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I4  0  0  1  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"n_pairs")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I1 I2 I3 I4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I1  5  5  5  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I2  5  5  5  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I3  5  5  5  5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I4  5  5  5  5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Item similarity: the share of judges who sorted both items and put them in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the same construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      I1   I2   I3   I4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I1    - 1.00  .00  .00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I2 1.00    -  .00  .00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I3  .00  .00    - 1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I4  .00  .00 1.00    -</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Every pair was sorted by the same 5 judges.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

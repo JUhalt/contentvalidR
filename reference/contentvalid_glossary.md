@@ -71,6 +71,11 @@ contentvalid_glossary()
 #>       item, so a different sample of judges could plausibly give a quite
 #>       different Psa. (between 0 and 1; the method and level are named in
 #>       the output)
+#>   decisions:
+#>     Retain -- met the exact target-assignment criterion.
+#>     Review -- did not meet it; the competitor column shows where judges put
+#>         it instead.
+#>     Insufficient data -- no judge sorted it.
 #> 
 #> construct-rating
 #>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
@@ -81,6 +86,13 @@ contentvalid_glossary()
 #>       proportion of the rating scale. It is a difference, so its typical
 #>       values are far smaller than HTC's. (usually a small positive number;
 #>       higher is stronger)
+#>   decisions:
+#>     Retain -- rated highest against its intended construct, with every
+#>         planned contrast meeting the screening criterion.
+#>     Review -- did not meet every criterion; the competitor column shows the
+#>         closest rival.
+#>     Insufficient data -- fewer than two judges rated it against every
+#>         construct.
 #> 
 #> expert-panel
 #>   V -- Aiken's V. Relevance index that rescales the experts' average rating
@@ -111,6 +123,26 @@ contentvalid_glossary()
 #>   ioc -- Item-Objective Congruence. How consistently experts linked the
 #>       item to the objective it was written for rather than to another
 #>       objective. (-1 to 1; higher is stronger)
+#>   decisions (relevance):
+#>     Strong support -- met the I-CVI criterion, with modified kappa above
+#>         .74.
+#>     Support -- met the I-CVI criterion.
+#>     Review -- did not meet the I-CVI criterion.
+#>     Insufficient panel -- fewer than three experts rated it.
+#>   decisions (essentiality):
+#>     Supported -- enough experts rated it essential to pass the exact test.
+#>     Review -- too few experts rated it essential to pass the exact test.
+#>     Insufficient data -- no expert rated it.
+#>   decisions (congruence):
+#>     Target favored -- experts linked it most strongly to its intended
+#>         objective.
+#>     Tie / review -- its intended objective tied with another.
+#>     Review -- experts linked it more strongly to another objective.
+#>     Target described -- only its intended objective was rated, so there is
+#>         nothing to compare.
+#>     Insufficient data -- no usable ratings for its intended objective.
+#>     Descriptive only -- no intended objective was given, so IOC is only
+#>         described.
 #> 
 #> judge-heterogeneity
 #>   severity -- Judge severity. How harsh or lenient a judge is compared with
@@ -136,6 +168,17 @@ contentvalid_glossary()
 #>       relevant one for content validity, where items are judged against a
 #>       fixed standard. (0 to 1; never exceeds the generalizability
 #>       coefficient)
+#>   decisions:
+#>     Typical -- consistent with the panel.
+#>     Severe -- rates markedly lower than the panel.
+#>     Lenient -- rates markedly higher than the panel.
+#>     Erratic -- decisions noisier than the model expects.
+#>     Too predictable -- decisions more predictable than the model expects.
+#>     Low differentiation -- draws few distinctions among items compared with
+#>         other judges.
+#>     Influential -- at least one item's review status changes without this
+#>         judge.
+#>     Insufficient data -- fewer than two usable ratings.
 #> 
 #> domain-coverage
 #>   share -- Share of items. Percentage of all items that fall in this
@@ -148,6 +191,11 @@ contentvalid_glossary()
 #>       squeezing the similarity data into the chosen number of dimensions.
 #>       Lower is a closer fit. (0 is perfect; below .10 is conventionally
 #>       called fair or better)
+#>   decisions:
+#>     Covered -- met the coverage criteria.
+#>     Thinly covered -- fewer items than the minimum set.
+#>     Over-represented -- a larger share of the items than expected.
+#>     Not covered -- the blueprint includes it, but no item addresses it.
 #> 
 #> delphi
 #>   prop_agree -- Share of experts agreeing. Share of the experts rating an
@@ -184,6 +232,13 @@ contentvalid_glossary()
 #>       the experts compared. Change below 15% is read as stable, a cut-off
 #>       its authors set from one study without statistical theory. (0 to 1;
 #>       stable below .15)
+#>   decisions:
+#>     Consensus -- reached the consensus threshold in its last round.
+#>     No consensus -- did not reach the consensus threshold.
+#>     Descriptive only -- no consensus threshold was set, so agreement is
+#>         only described.
+#>     Insufficient panel -- fewer than three experts rated it in its last
+#>         round.
 #> 
 #> status labels
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -192,6 +247,8 @@ contentvalid_glossary()
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
+#>   Each decision word above maps onto one of these statuses, stored in the
+#>   `status` column of `results`.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions relative to
 #> published scales, not absolute judgments, and are not comparable across
@@ -220,6 +277,11 @@ contentvalid_glossary("item-sort")
 #>       item, so a different sample of judges could plausibly give a quite
 #>       different Psa. (between 0 and 1; the method and level are named in
 #>       the output)
+#>   decisions:
+#>     Retain -- met the exact target-assignment criterion.
+#>     Review -- did not meet it; the competitor column shows where judges put
+#>         it instead.
+#>     Insufficient data -- no judge sorted it.
 #> 
 #> status labels
 #>   Supported -- The evidence met the criteria set for this analysis.
@@ -228,6 +290,8 @@ contentvalid_glossary("item-sort")
 #>   Insufficient data -- Too little usable data to reach a judgment.
 #>   Descriptive only -- Reported for description only; no decision rule was
 #>       applied.
+#>   Each decision word above maps onto one of these statuses, stored in the
+#>   `status` column of `results`.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions relative to
 #> published scales, not absolute judgments, and are not comparable across

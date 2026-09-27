@@ -24,6 +24,8 @@ reproducibility_phi(sig1, sig2)
 ## Value
 
 A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
+It prints as a short report in APA style; the elements themselves are
+unrounded.
 
 ## Examples
 
@@ -31,19 +33,12 @@ A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
 sig1 <- c(TRUE, TRUE, FALSE, FALSE)
 sig2 <- c(TRUE, FALSE, FALSE, TRUE)
 reproducibility_phi(sig1, sig2)
-#> $table
+#> Retention decisions in two pretests
+#> 
 #>               Pretest2
 #> Pretest1       Retain Not retained
 #>   Retain            1            1
 #>   Not retained      1            1
 #> 
-#> $phi
-#> [1] 0
-#> 
-#> $chisq
-#> [1] 0
-#> 
-#> $p
-#> [1] 1
-#> 
+#> phi = .00, chi-square(1) = 0.00, p = 1.000.
 ```

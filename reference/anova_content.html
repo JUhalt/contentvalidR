@@ -152,6 +152,8 @@ conservative option.</p></dd>
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 The full planned-contrast table is stored in <code>attr(result, "contrasts")</code>.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> returns the plain data frame.
 <code>posthoc_pass</code>, a duplicate of <code>contrast_pass</code> deprecated in 0.7.0, was
 removed in 0.8.0; read <code>contrast_pass</code>.</p>
     </div>
@@ -175,18 +177,19 @@ content validation. <em>Organizational Research Methods, 2</em>(2), 175–186.
 <span class="r-in"><span><span class="va">d</span><span class="op">$</span><span class="va">rating</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">construct</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">target_construct</span>,</span></span>
 <span class="r-in"><span>                   <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fl">4.5</span>, <span class="fl">.4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fl">2.3</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">anova_content</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item target design n_raters n_complete n_constructs target_mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A within       12         12            3    4.624823</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B within       12         12            3    4.479589</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   strongest_competitor competitor_mean        F df1 df2            p epsilon_gg</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                    B        2.182382 193.4263   2  22 1.095003e-14  0.9470582</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                    A        2.294693 138.4564   2  22 3.432890e-13  0.8868080</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     df1_gg   df2_gg         p_gg     p_screen partial_eta2 min_mean_diff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 1.894116 20.83528 5.134046e-14 5.134046e-14    0.9461909      2.442440</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 1.773616 19.50978 6.346279e-12 6.346279e-12    0.9263999      2.184897</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   max_contrast_p contrast_pass</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   9.296774e-10          TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   1.444617e-08          TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Content-validity ANOVA (Hinkin &amp; Tracey, 1999)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges            omnibus test      p partial eta^2 competitor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A     12 F(1.89, 20.84) = 193.43 &lt; .001           .95          B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B     12 F(1.77, 19.51) = 138.46 &lt; .001           .93          A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  contrast p contrasts met</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt; .001           yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt; .001           yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> of freedom are fractional.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contrast p: the largest p among the planned target-versus-other contrasts;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(x, "contrasts") holds every contrast.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

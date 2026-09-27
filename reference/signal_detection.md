@@ -29,7 +29,9 @@ signal_detection(predicted, actual)
 
 ## Value
 
-A list containing the confusion matrix and diagnostic statistics.
+A list containing the confusion matrix and diagnostic statistics. It
+prints as a short report in APA style; the elements themselves are
+unrounded.
 
 ## References
 
@@ -45,28 +47,13 @@ their substantive validities. *Journal of Applied Psychology, 76*(5),
 predicted <- c(TRUE, TRUE, FALSE, FALSE)
 actual    <- c(TRUE, FALSE, TRUE, FALSE)
 signal_detection(predicted, actual)
-#> $confusion
+#> Retention decisions compared with the actual outcome
+#> 
 #>               Actual
 #> Predicted      Retain Not retained
 #>   Retain            1            1
 #>   Not retained      1            1
 #> 
-#> $accuracy
-#> [1] 0.5
-#> 
-#> $sensitivity
-#> [1] 0.5
-#> 
-#> $specificity
-#> [1] 0.5
-#> 
-#> $phi
-#> [1] 0
-#> 
-#> $chisq
-#> [1] 0
-#> 
-#> $p
-#> [1] 1
-#> 
+#> accuracy = .50, sensitivity = .50, specificity = .50, phi = .00,
+#> chi-square(1) = 0.00, p = 1.000.
 ```

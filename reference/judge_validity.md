@@ -184,31 +184,19 @@ fit
 #> No item's review status depends on any single judge.
 #> 
 #> What these columns mean
-#>   severity -- Judge severity. How harsh or lenient a judge is compared with
-#>       the rest of the panel. Positive means the judge rates lower than the
-#>       panel. Reported in logits from the facets model when it can be
-#>       estimated, otherwise in rating points. (0 means typical of this
-#>       panel)
-#>   scale use -- Scale use. How widely a judge spread their ratings compared
-#>       with a typical judge on this panel. Values well below 1 mean the
-#>       judge distinguished less among items. (1.0 is typical of this panel)
-#>   Phi -- Dependability coefficient. How dependably the absolute level of
-#>       the ratings would reproduce with a different panel of the same size.
-#>       Penalized by judge severity differences, and usually the relevant one
-#>       for content validity, where items are judged against a fixed
-#>       standard. (0 to 1; never exceeds the generalizability coefficient)
+#>   severity -- Judge severity. How much harsher (positive) or more lenient
+#>       (negative) the judge is than the panel.
+#>   scale use -- Scale use. Spread of the judge's ratings compared with a
+#>       typical judge (1 is typical; low means few distinctions).
+#>   Phi -- Dependability coefficient. How well the absolute ratings would
+#>       reproduce with another panel of this size (0 to 1).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Typical -- consistent with the panel.
+#>   Severe -- rates markedly lower than the panel.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> A 'Review' judge is not a judge to remove. Disagreement can be substantive
 #> expertise; the flag marks where a conclusion rests on one person's ratings.

@@ -53,7 +53,10 @@ htc(
 ## Value
 
 A data.frame with item-level target means, usable target-rating counts,
-and HTC.
+and HTC. It prints as a formatted table in APA style; the values
+themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -73,6 +76,10 @@ to content validation. *Organizational Research Methods, 2*(2), 175–186.
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
 d$rating <- c(5, 4, 5, 4, 2, 2, 1, 2)
 htc(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
-#>   item target n_target target_mean anchors htc
-#> 1   I1      A        4         4.5       5 0.9
+#> Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean HTC
+#>    I1      A      4        4.50 .90
+#> 
+#> HTC expresses the mean target rating as a share of the 5-point scale.
 ```

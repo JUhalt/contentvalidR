@@ -363,35 +363,22 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> as indicative of precision, not as a test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of the experts rating an item</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       in a round whose rating was at or above the agreement cut. On a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       relevance scale this is the I-CVI. Consensus means it reached the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold set before the study. (0 to 1; higher is broader agreement)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Among experts who</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item in both of two consecutive rounds, the share who gave</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       exactly the same rating again. It is the plainest reading of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       stability, and it stays meaningful when kappa does not. (0 to 1; 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       means no expert changed their rating)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Weighted kappa between rounds. Agreement between each expert's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       ratings in two consecutive rounds, corrected for chance, with larger</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       changes counting more. Read it as a trend across rounds. It falls</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       when ratings bunch in one category, so a converged panel can show a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       low kappa even when almost no one changed their rating. (-1 to 1; 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       is perfect stability, 0 is no better than chance)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of experts at or above the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       agreement cut in a round; consensus means reaching the preset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Share of experts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       giving the same rating in two consecutive rounds (1 means nobody</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       changed).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       each expert's ratings across two rounds; read it as a trend, not</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       against a cut-off.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Consensus -- reached the consensus threshold in its last round.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   No consensus -- did not reach the consensus threshold.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> drop an item. Read these results with the experts' comments.</span>
@@ -463,34 +450,21 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> experts one net change is already 10%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of the experts rating an item</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       in a round whose rating was at or above the agreement cut. On a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       relevance scale this is the I-CVI. Consensus means it reached the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold set before the study. (0 to 1; higher is broader agreement)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Among experts who</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item in both of two consecutive rounds, the share who gave</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       exactly the same rating again. It is the plainest reading of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       stability, and it stays meaningful when kappa does not. (0 to 1; 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       means no expert changed their rating)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   change -- Net change in the rating distribution. How far the panel's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rating distribution moved between two rounds, as a share of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       experts compared. Change below 15% is read as stable, a cut-off its</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       authors set from one study without statistical theory. (0 to 1;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       stable below .15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of experts at or above the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       agreement cut in a round; consensus means reaching the preset</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Share of experts</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       giving the same rating in two consecutive rounds (1 means nobody</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       changed).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   change -- Net change in the rating distribution. Net change in the rating</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       distribution between rounds (stable below .15 by its authors' rule).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Consensus -- reached the consensus threshold in its last round.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   No consensus -- did not reach the consensus threshold.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> drop an item. Read these results with the experts' comments.</span>

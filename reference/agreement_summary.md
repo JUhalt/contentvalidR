@@ -1,11 +1,21 @@
-# Agreement summary (auxiliary)
+# Agreement summary (deprecated)
+
+**Deprecated in 0.9.0, to be removed in 1.0.0.** Use
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+instead. `agreement_summary()` is the only function in the package that
+takes items in rows and raters in columns; every other ratings function,
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+included, takes raters in rows. The same matrix passed to both would
+therefore be read two different ways.
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+also reports an interval and needs no other package. Calling
+`agreement_summary()` still works in 0.9.0, with a warning.
 
 Computes Fleiss' (1971) kappa, the extension of Cohen's kappa to many
 raters, by calling
 [`irr::kappam.fleiss()`](https://rdrr.io/pkg/irr/man/kappam.fleiss.html)
 from the irr package (Gamer, Lemon, Fellows, & Singh, 2026) when it is
-installed. This is an auxiliary compatibility helper, not part of the
-recommended contentvalidR workflows.
+installed.
 
 ## Usage
 
@@ -17,7 +27,9 @@ agreement_summary(ratings)
 
 - ratings:
 
-  matrix/data.frame: rows = items, cols = raters (nominal categories)
+  matrix/data.frame: rows = items, cols = raters (nominal categories).
+  Note the orientation, the reverse of
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
 
 ## Value
 
@@ -51,8 +63,9 @@ ratings <- data.frame(
   rater2 = c("A", "B", "B", "C"),
   rater3 = c("A", "B", "A", "C")
 )
+# Deprecated: it warns, and points to panel_agreement().
 if (requireNamespace("irr", quietly = TRUE)) {
-  agreement_summary(ratings)
+  suppressWarnings(agreement_summary(ratings))
 }
 #>  Fleiss' Kappa for m Raters
 #> 

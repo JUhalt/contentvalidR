@@ -48,7 +48,11 @@ htd(
 ## Value
 
 A data.frame containing item-level HTD, the strongest orbiting
-construct, complete-judge count, and number of target-orbiting pairs.
+construct, complete-judge count, and number of target-orbiting pairs. It
+prints as a formatted table in APA style; the values themselves are
+unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -62,8 +66,11 @@ Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B", "C"))
 d$rating <- c(5,4,5,4, 2,2,1,2, 3,2,2,1)
 htd(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
-#>   item target n_complete n_pairs target_mean_complete strongest_competitor
-#> 1   I1      A          4       8                  4.5                    C
-#>   competitor_mean anchors     htd
-#> 1               2       5 0.65625
+#> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean competitor competitor mean HTD
+#>    I1      A      4        4.50          C            2.00 .66
+#> 
+#> competitor: the other construct with the highest mean rating. HTD itself
+#> averages the gap over every other construct.
 ```

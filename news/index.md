@@ -2,6 +2,78 @@
 
 ## contentvalidR 0.8.0.9000 (development version)
 
+### Shorter keys, formatted components, and APA report tables (in development)
+
+No computed value changes; this is about what is printed.
+
+- **The key under each result explains only what it shows.** It ran 12
+  to 36 lines and was often longer than the results. Each column now
+  gets one line after its full name, and “What the decisions mean” lists
+  only the decision words that appear, saying what each means in that
+  workflow (“Retain – met the exact target-assignment criterion”). The
+  old legend listed all four shared statuses and left readers to match
+  Retain or Typical to them.
+  [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md)
+  keeps the full definitions and now lists every workflow’s decision
+  words. The item-sort example in the README prints 58 lines instead of
+  71.
+- **The component functions print as formatted tables.**
+  [`compute_psa()`](https://juhalt.github.io/contentvalidR/reference/compute_psa.md),
+  [`compute_csv()`](https://juhalt.github.io/contentvalidR/reference/compute_csv.md),
+  [`htc()`](https://juhalt.github.io/contentvalidR/reference/htc.md),
+  [`htd()`](https://juhalt.github.io/contentvalidR/reference/htd.md),
+  [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md),
+  [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md),
+  [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md),
+  [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md),
+  [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md),
+  [`colquitt_benchmarks()`](https://juhalt.github.io/contentvalidR/reference/colquitt_benchmarks.md),
+  [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md),
+  [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md),
+  [`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md),
+  and
+  [`similarity_from_sort()`](https://juhalt.github.io/contentvalidR/reference/similarity_from_sort.md)
+  printed raw data frames and lists, such as a *p* of `1.941920e-16`
+  beside seven-digit decimals. They now print as
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md)
+  already did: a titled table in APA style with a short note.
+  [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+  reports its tests as F(1.71, 32.57) = 108.55. The values are
+  unrounded; each result only gains a class,
+  [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+  the plain data frame, and workflow results are unaffected.
+  [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
+  also returns its inputs.
+- **Breaking:
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  writes APA tables by default.** The new default `format = "apa"` gives
+  readable headings, counts such as 18/20, *p* to three decimals, and
+  `[LL, UL]` intervals, and prints without row names;
+  `format = "markdown"` writes the same table and prints as the table.
+  For the numeric table that used to be the default, pass
+  `format = "data.frame"`; its *p* values now keep three decimals
+  whatever `digits` is. The construct-rating table shows the contrast
+  *p* beside the omnibus *p*, since a Review item can have an omnibus
+  *p* below .001.
+
+### `agreement_summary()` is deprecated (in development)
+
+- **Deprecated in 0.9.0, to be removed in 1.0.0.** Use
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
+  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  is the only function that takes items in rows; every other ratings
+  function,
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  included, takes raters in rows, so one matrix passed to both was read
+  two different ways.
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  also reports an interval and needs no other package.
+  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  still works in 0.9.0 and warns when called. Removing it at 1.0.0
+  leaves nothing deprecated past 1.0, as the stability policy in
+  [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  sets out.
+
 ### References follow APA 7 everywhere (in development)
 
 - **One reference list, installed in BibTeX form.** `REFERENCES.bib`

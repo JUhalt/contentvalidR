@@ -37,7 +37,10 @@ colquitt_benchmarks(
 ## Value
 
 A data.frame describing the selected benchmark set and its lower
-cutpoints.
+cutpoints. It prints as a formatted table in APA style; the values
+themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -51,29 +54,28 @@ Psychology, 104*(10), 1243–1265.
 
 ``` r
 colquitt_benchmarks("psa")
-#>   statistic benchmark_set                  benchmark_label interpretation
-#> 1       psa       overall Overall (not correlation-normed)    Very Strong
-#> 2       psa       overall Overall (not correlation-normed)         Strong
-#> 3       psa       overall Overall (not correlation-normed)       Moderate
-#> 4       psa       overall Overall (not correlation-normed)           Weak
-#> 5       psa       overall Overall (not correlation-normed)        Lack of
-#>   percentile minimum
-#> 1  80th-99th    0.91
-#> 2  60th-79th    0.82
-#> 3  40th-59th    0.72
-#> 4  20th-39th    0.39
-#> 5   0th-19th    -Inf
+#> Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .91
+#>       Strong  60th-79th     .82
+#>     Moderate  40th-59th     .72
+#>         Weak  20th-39th     .39
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 colquitt_benchmarks("csv", orbiting_r = .40)
-#>   statistic benchmark_set                                    benchmark_label
-#> 1       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 2       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 3       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 4       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 5       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#>   interpretation percentile minimum
-#> 1    Very Strong  80th-99th    0.83
-#> 2         Strong  60th-79th    0.61
-#> 3       Moderate  40th-59th    0.52
-#> 4           Weak  20th-39th    0.01
-#> 5        Lack of   0th-19th    -Inf
+#> Benchmarks for Csv (Colquitt et al., 2019): More moderate focal-orbiting
+#> correlation (.35-.50)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .83
+#>       Strong  60th-79th     .61
+#>     Moderate  40th-59th     .52
+#>         Weak  20th-39th     .01
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 ```

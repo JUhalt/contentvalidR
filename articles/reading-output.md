@@ -114,39 +114,26 @@ fit_sort
 #> so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned
-#>       the item to the construct it was written for. Higher means judges
-#>       recognized the item as belonging where you intended. (0 to 1; higher
-#>       is stronger)
-#>   95% CI -- Interval for Psa. Lower and upper limits of an interval around
-#>       Psa. A wide interval means few judges sorted the item, so a different
-#>       sample of judges could plausibly give a quite different Psa. (between
-#>       0 and 1; the method and level are named in the output)
-#>   Csv -- Coefficient of Substantive Validity. How much more often the item
-#>       went to its intended construct than to the alternative construct
-#>       judges chose most. It rewards being distinctly right, not merely
-#>       often right. (-1 to 1; 0 means the intended construct and its closest
-#>       rival were chosen equally often)
-#>   competitor -- Strongest competing construct. The construct, other than
-#>       the intended one, that judges chose most often for this item.
-#>   p -- Howard-Melloy exact test. Probability of seeing at least this many
-#>       target assignments if judges were assigning at the chance rate p0.
-#>       Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
+#>       item in the construct it was written for (0 to 1; higher is
+#>       stronger).
+#>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
+#>       method is named above.
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges
+#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
+#>       tie).
+#>   competitor -- Strongest competing construct. The construct other than the
+#>       intended one that judges chose most often.
+#>   p -- Howard-Melloy exact test. Chance of at least this many target
+#>       assignments if judges assigned at the rate p0; compared with alpha.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- met the exact target-assignment criterion.
+#>   Review -- did not meet it; the competitor column shows where judges put
+#>       it instead.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
@@ -229,31 +216,29 @@ for retention.
 ``` r
 
 colquitt_benchmarks("htc")
-#>   statistic benchmark_set                  benchmark_label interpretation
-#> 1       htc       overall Overall (not correlation-normed)    Very Strong
-#> 2       htc       overall Overall (not correlation-normed)         Strong
-#> 3       htc       overall Overall (not correlation-normed)       Moderate
-#> 4       htc       overall Overall (not correlation-normed)           Weak
-#> 5       htc       overall Overall (not correlation-normed)        Lack of
-#>   percentile minimum
-#> 1  80th-99th    0.91
-#> 2  60th-79th    0.87
-#> 3  40th-59th    0.84
-#> 4  20th-39th    0.60
-#> 5   0th-19th    -Inf
+#> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .91
+#>       Strong  60th-79th     .87
+#>     Moderate  40th-59th     .84
+#>         Weak  20th-39th     .60
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 colquitt_benchmarks("htd")
-#>   statistic benchmark_set                  benchmark_label interpretation
-#> 1       htd       overall Overall (not correlation-normed)    Very Strong
-#> 2       htd       overall Overall (not correlation-normed)         Strong
-#> 3       htd       overall Overall (not correlation-normed)       Moderate
-#> 4       htd       overall Overall (not correlation-normed)           Weak
-#> 5       htd       overall Overall (not correlation-normed)        Lack of
-#>   percentile minimum
-#> 1  80th-99th    0.35
-#> 2  60th-79th    0.27
-#> 3  40th-59th    0.18
-#> 4  20th-39th    0.04
-#> 5   0th-19th    -Inf
+#> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .35
+#>       Strong  60th-79th     .27
+#>     Moderate  40th-59th     .18
+#>         Weak  20th-39th     .04
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 ```
 
 ## Reading expert-panel evidence

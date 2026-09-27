@@ -100,7 +100,10 @@ Howard and Melloy (2016).</p></dd>
     <p>A list containing the exact p-value, observed target proportion,
 one-sided confidence interval, the minimum critical target count,
 a logical <code>passes_chance</code> flag, a backward-compatible <code>decision</code> label,
-and a plain-language <code>interpretation</code>.</p>
+and a plain-language <code>interpretation</code>.
+The inputs are returned too, as <code>n_target</code>, <code>N</code>, <code>p0</code>, and <code>alpha</code>.
+It prints as a short report in APA style; the elements themselves are
+unrounded.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -113,53 +116,21 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">csv_binom_test</span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">15</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $p.value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.02069473</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Howard-Melloy exact test (one-tailed)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.75</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $conf.int</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5444176 1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"conf.level")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $critical_n_target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $passes_chance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $decision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "significant"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Target assignments exceed the exact chance criterion."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 of 20 judges assigned the item to its target construct (Psa = .75). If</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges chose the target at the rate p0 = .50, a count this high has</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability p = .021.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At alpha = .05 an item needs at least 15 of 20. Decision: significant.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> One-sided 95% interval for the target rate: [.54, 1.00].</span>
 <span class="r-in"><span><span class="fu">csv_binom_test</span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">14</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $p.value</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05765915</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Howard-Melloy exact test (one-tailed)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $conf.int</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.4921816 1.0000000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"conf.level")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $critical_n_target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 15</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $passes_chance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $decision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "n.s."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $interpretation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Target assignments do not exceed the exact chance criterion."</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 of 20 judges assigned the item to its target construct (Psa = .70). If</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges chose the target at the rate p0 = .50, a count this high has</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability p = .058.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> At alpha = .05 an item needs at least 15 of 20. Decision: n.s..</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> One-sided 95% interval for the target rate: [.49, 1.00].</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

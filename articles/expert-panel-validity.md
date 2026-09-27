@@ -77,42 +77,23 @@ fit
 #> cutoffs.
 #> 
 #> What these columns mean
-#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
-#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
-#>       1; higher is stronger)
-#>   I-CVI -- Item-level Content Validity Index. Proportion of experts who
-#>       rated the item as relevant, after applying the relevance cut. (0 to
-#>       1; compared against a panel-size guideline)
-#>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an
-#>       interval around I-CVI. Expert panels are usually small, so these
-#>       intervals are often wide: a single I-CVI value can look more settled
-#>       than the number of experts behind it supports. (between 0 and 1; the
-#>       method and level are named in the output)
-#>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
-#>       have agreed even if rating at random. With small panels, chance
-#>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (at most 1; below 0 when fewer experts agree
-#>       than chance predicts; higher is stronger)
-#>   Panel agreement -- Panel-level agreement. One coefficient describing how
-#>       consistently the whole panel rated the item set: Krippendorff's alpha
-#>       by default, or Gwet's AC1 if chosen. It is separate from modified
-#>       kappa, which describes one item at a time. (1 is perfect agreement
-#>       and 0 is agreement no better than chance; it can be low on a
-#>       close-agreeing panel whose ratings cluster on one value)
+#>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
+#>       possible) to 1 (highest).
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
+#>       item relevant, compared with Lynn's criterion for the panel size.
+#>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
+#>       small; the method is named above.
+#>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
+#>       below 0 when agreement is below chance).
+#>   Panel agreement -- Panel-level agreement. One coefficient for the whole
+#>       panel (1 is perfect, 0 is chance); it can be low when nearly every
+#>       rating is the same.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -138,11 +119,15 @@ function:
 ``` r
 
 aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 200, seed = 1)
-#>    item N n_missing         V    ci_low   ci_high            ci_method
-#> 1 Item1 6         0 1.0000000 1.0000000 1.0000000 percentile bootstrap
-#> 2 Item2 6         0 0.9444444 0.8333333 1.0000000 percentile bootstrap
-#> 3 Item3 6         0 0.8888889 0.7763889 1.0000000 percentile bootstrap
-#> 4 Item4 6         0 0.6666667 0.5000000 0.8333333 percentile bootstrap
+#> Aiken's V (Aiken, 1980)
+#> 
+#>   item experts    V       95% CI
+#>  Item1       6 1.00 [1.00, 1.00]
+#>  Item2       6  .94  [.83, 1.00]
+#>  Item3       6  .89  [.78, 1.00]
+#>  Item4       6  .67   [.50, .83]
+#> 
+#> Interval: percentile bootstrap.
 ```
 
 For CVI, the workflow dichotomizes ratings at `relevance_cut`. On a 1-4
@@ -303,23 +288,15 @@ expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
-#>   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward
-#>       calling the item essential rather than merely useful. (-1 to 1; above
-#>       0 means more than half the panel called it essential)
+#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling
+#>       the item essential (-1 to 1; above 0 means more than half did).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Supported -- enough experts rated it essential to pass the exact test.
+#>   Review -- too few experts rated it essential to pass the exact test.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -358,23 +335,15 @@ expert_validity(E, mode = "essentiality")
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
-#>   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward
-#>       calling the item essential rather than merely useful. (-1 to 1; above
-#>       0 means more than half the panel called it essential)
+#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling
+#>       the item essential (-1 to 1; above 0 means more than half did).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Supported -- enough experts rated it essential to pass the exact test.
+#>   Review -- too few experts rated it essential to pass the exact test.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -491,22 +460,14 @@ expert_validity(d, mode = "congruence")
 #> 
 #> What these columns mean
 #>   IOC -- Item-Objective Congruence. How consistently experts linked the
-#>       item to the objective it was written for rather than to another
-#>       objective. (-1 to 1; higher is stronger)
+#>       item to its own objective rather than another (-1 to 1).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Target favored -- experts linked it most strongly to its intended
+#>       objective.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.

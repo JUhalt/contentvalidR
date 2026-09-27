@@ -253,35 +253,22 @@ study. The seed makes the bootstrap intervals reproducible.</p>
 <span><span class="co">#&gt; is weaker evidence.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   agree -- Share of experts agreeing. Share of the experts rating an item</span></span>
-<span><span class="co">#&gt;       in a round whose rating was at or above the agreement cut. On a</span></span>
-<span><span class="co">#&gt;       relevance scale this is the I-CVI. Consensus means it reached the</span></span>
-<span><span class="co">#&gt;       threshold set before the study. (0 to 1; higher is broader agreement)</span></span>
-<span><span class="co">#&gt;   unchanged -- Share of experts keeping their rating. Among experts who</span></span>
-<span><span class="co">#&gt;       rated the item in both of two consecutive rounds, the share who gave</span></span>
-<span><span class="co">#&gt;       exactly the same rating again. It is the plainest reading of</span></span>
-<span><span class="co">#&gt;       stability, and it stays meaningful when kappa does not. (0 to 1; 1</span></span>
-<span><span class="co">#&gt;       means no expert changed their rating)</span></span>
-<span><span class="co">#&gt;   kappa -- Weighted kappa between rounds. Agreement between each expert's</span></span>
-<span><span class="co">#&gt;       ratings in two consecutive rounds, corrected for chance, with larger</span></span>
-<span><span class="co">#&gt;       changes counting more. Read it as a trend across rounds. It falls</span></span>
-<span><span class="co">#&gt;       when ratings bunch in one category, so a converged panel can show a</span></span>
-<span><span class="co">#&gt;       low kappa even when almost no one changed their rating. (-1 to 1; 1</span></span>
-<span><span class="co">#&gt;       is perfect stability, 0 is no better than chance)</span></span>
+<span><span class="co">#&gt;   agree -- Share of experts agreeing. Share of experts at or above the</span></span>
+<span><span class="co">#&gt;       agreement cut in a round; consensus means reaching the preset</span></span>
+<span><span class="co">#&gt;       threshold.</span></span>
+<span><span class="co">#&gt;   unchanged -- Share of experts keeping their rating. Share of experts</span></span>
+<span><span class="co">#&gt;       giving the same rating in two consecutive rounds (1 means nobody</span></span>
+<span><span class="co">#&gt;       changed).</span></span>
+<span><span class="co">#&gt;   kappa -- Weighted kappa between rounds. Chance-corrected agreement of</span></span>
+<span><span class="co">#&gt;       each expert's ratings across two rounds; read it as a trend, not</span></span>
+<span><span class="co">#&gt;       against a cut-off.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; What the status labels mean</span></span>
-<span><span class="co">#&gt;   Supported -- The evidence met the criteria set for this analysis.</span></span>
-<span><span class="co">#&gt;   Review -- Something here needs a closer look. This is not an instruction</span></span>
-<span><span class="co">#&gt;       to delete anything.</span></span>
-<span><span class="co">#&gt;   Insufficient data -- Too little usable data to reach a judgment.</span></span>
-<span><span class="co">#&gt;   Descriptive only -- Reported for description only; no decision rule was</span></span>
-<span><span class="co">#&gt;       applied.</span></span>
-<span><span class="co">#&gt;   Each workflow also uses its own wording in the decision column (Retain,</span></span>
-<span><span class="co">#&gt;   Strong support, Typical, Covered, and so on). Those words map onto the</span></span>
-<span><span class="co">#&gt;   shared statuses above.</span></span>
+<span><span class="co">#&gt; What the decisions mean</span></span>
+<span><span class="co">#&gt;   Consensus -- reached the consensus threshold in its last round.</span></span>
+<span><span class="co">#&gt;   No consensus -- did not reach the consensus threshold.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See `contentvalid_glossary()` for all terms, or set</span></span>
-<span><span class="co">#&gt; `options(contentvalidR.show_key = FALSE)` to hide this key.</span></span>
+<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Consensus is not correctness, and 'No consensus' is not an instruction to</span></span>
 <span><span class="co">#&gt; drop an item. Read these results with the experts' comments.</span></span></code></pre></div>
@@ -519,20 +506,13 @@ after reaching consensus. S5 strengthened once experts converged.</p>
 manuscript:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   item last_round n_experts prop_agree prop_unchanged stability stability_low</span></span>
-<span><span class="co">#&gt; 1   S1          2        10       1.00           0.80      0.71          0.20</span></span>
-<span><span class="co">#&gt; 2   S2          3         9       1.00           0.89      0.00            NA</span></span>
-<span><span class="co">#&gt; 3   S3          3         9       0.00           1.00      1.00          1.00</span></span>
-<span><span class="co">#&gt; 4   S4          3         9       0.56           0.89      0.96          0.84</span></span>
-<span><span class="co">#&gt; 5   S5          3         9       1.00           0.78      0.53          0.00</span></span>
-<span><span class="co">#&gt; 6   S6          3         9       0.56           0.00     -0.99         -1.00</span></span>
-<span><span class="co">#&gt;   stability_high recommendation    status</span></span>
-<span><span class="co">#&gt; 1            1.0      Consensus Supported</span></span>
-<span><span class="co">#&gt; 2             NA      Consensus Supported</span></span>
-<span><span class="co">#&gt; 3            1.0   No consensus    Review</span></span>
-<span><span class="co">#&gt; 4            1.0   No consensus    Review</span></span>
-<span><span class="co">#&gt; 5            1.0      Consensus Supported</span></span>
-<span><span class="co">#&gt; 6           -0.3   No consensus    Review</span></span></code></pre></div>
+<span><span class="co">#&gt;  item last round experts agree unchanged stability        95% CI     decision</span></span>
+<span><span class="co">#&gt;    S1          2      10  1.00       .80       .71   [.20, 1.00]    Consensus</span></span>
+<span><span class="co">#&gt;    S2          3       9  1.00       .89       .00            NA    Consensus</span></span>
+<span><span class="co">#&gt;    S3          3       9   .00      1.00      1.00  [1.00, 1.00] No consensus</span></span>
+<span><span class="co">#&gt;    S4          3       9   .56       .89       .96   [.84, 1.00] No consensus</span></span>
+<span><span class="co">#&gt;    S5          3       9  1.00       .78       .53   [.00, 1.00]    Consensus</span></span>
+<span><span class="co">#&gt;    S6          3       9   .56       .00      -.99 [-1.00, -.30] No consensus</span></span></code></pre></div>
 <p>Diamond et al. (2014) recommend that a Delphi report state the
 definition of consensus and its threshold (decided before the study),
 the criteria for stopping, and the criteria for dropping items. Also

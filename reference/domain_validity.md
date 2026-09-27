@@ -153,17 +153,16 @@ domain_validity(
 #>    Belonging      Not covered     0    0%      25%
 #> 
 #> What these columns mean
-#>   share -- Share of items. Percentage of all items that fall in this
-#>       blueprint cell. (0 to 100%)
+#>   share -- Share of items. Percentage of all items in this cell.
 #> 
-#> What the cell labels mean
-#>   Covered -- the cell met the coverage criteria set for this analysis.
-#>   Thinly covered -- fewer items than the minimum you set.
-#>   Over-represented -- a larger share of the instrument than expected.
-#>   Not covered -- the blueprint intends this cell but no item addresses it.
+#> What the decisions mean
+#>   Covered -- met the coverage criteria.
+#>   Thinly covered -- fewer items than the minimum set.
+#>   Over-represented -- a larger share of the items than expected.
+#>   Not covered -- the blueprint includes it, but no item addresses it.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Coverage shows that items exist for each cell. It does not show that those
 #> items are good ones, or that the blueprint is the right description of the

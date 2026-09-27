@@ -251,31 +251,19 @@ Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.
 <span class="r-out co"><span class="r-pr">#&gt;</span> No item's review status depends on any single judge.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How harsh or lenient a judge is compared with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the rest of the panel. Positive means the judge rates lower than the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       panel. Reported in logits from the facets model when it can be</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       estimated, otherwise in rating points. (0 means typical of this</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       panel)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   scale use -- Scale use. How widely a judge spread their ratings compared</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       with a typical judge on this panel. Values well below 1 mean the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       judge distinguished less among items. (1.0 is typical of this panel)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Phi -- Dependability coefficient. How dependably the absolute level of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the ratings would reproduce with a different panel of the same size.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Penalized by judge severity differences, and usually the relevant one</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       for content validity, where items are judged against a fixed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       standard. (0 to 1; never exceeds the generalizability coefficient)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How much harsher (positive) or more lenient</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       (negative) the judge is than the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   scale use -- Scale use. Spread of the judge's ratings compared with a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       typical judge (1 is typical; low means few distinctions).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Phi -- Dependability coefficient. How well the absolute ratings would</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       reproduce with another panel of this size (0 to 1).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Typical -- consistent with the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Severe -- rates markedly lower than the panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A 'Review' judge is not a judge to remove. Disagreement can be substantive</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expertise; the flag marks where a conclusion rests on one person's ratings.</span>

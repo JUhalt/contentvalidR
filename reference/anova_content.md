@@ -81,9 +81,11 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast
 diagnostics. The full planned-contrast table is stored in
-`attr(result, "contrasts")`. `posthoc_pass`, a duplicate of
-`contrast_pass` deprecated in 0.7.0, was removed in 0.8.0; read
-`contrast_pass`.
+`attr(result, "contrasts")`. It prints as a formatted table in APA
+style; the values themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame. `posthoc_pass`, a duplicate of `contrast_pass`
+deprecated in 0.7.0, was removed in 0.8.0; read `contrast_pass`.
 
 ## References
 
@@ -107,16 +109,17 @@ d$target_construct <- ifelse(d$item == "I1", "A", "B")
 d$rating <- ifelse(d$construct == d$target_construct,
                    rnorm(nrow(d), 4.5, .4), rnorm(nrow(d), 2.3, .5))
 anova_content(d)
-#>   item target design n_raters n_complete n_constructs target_mean
-#> 1   I1      A within       12         12            3    4.624823
-#> 2   I2      B within       12         12            3    4.479589
-#>   strongest_competitor competitor_mean        F df1 df2            p epsilon_gg
-#> 1                    B        2.182382 193.4263   2  22 1.095003e-14  0.9470582
-#> 2                    A        2.294693 138.4564   2  22 3.432890e-13  0.8868080
-#>     df1_gg   df2_gg         p_gg     p_screen partial_eta2 min_mean_diff
-#> 1 1.894116 20.83528 5.134046e-14 5.134046e-14    0.9461909      2.442440
-#> 2 1.773616 19.50978 6.346279e-12 6.346279e-12    0.9263999      2.184897
-#>   max_contrast_p contrast_pass
-#> 1   9.296774e-10          TRUE
-#> 2   1.444617e-08          TRUE
+#> Content-validity ANOVA (Hinkin & Tracey, 1999)
+#> 
+#>  item target judges            omnibus test      p partial eta^2 competitor
+#>    I1      A     12 F(1.89, 20.84) = 193.43 < .001           .95          B
+#>    I2      B     12 F(1.77, 19.51) = 138.46 < .001           .93          A
+#>  contrast p contrasts met
+#>      < .001           yes
+#>      < .001           yes
+#> 
+#> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
+#> of freedom are fractional.
+#> contrast p: the largest p among the planned target-versus-other contrasts;
+#> attr(x, "contrasts") holds every contrast.
 ```

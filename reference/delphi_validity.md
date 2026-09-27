@@ -331,35 +331,22 @@ fit
 #> as indicative of precision, not as a test.
 #> 
 #> What these columns mean
-#>   agree -- Share of experts agreeing. Share of the experts rating an item
-#>       in a round whose rating was at or above the agreement cut. On a
-#>       relevance scale this is the I-CVI. Consensus means it reached the
-#>       threshold set before the study. (0 to 1; higher is broader agreement)
-#>   unchanged -- Share of experts keeping their rating. Among experts who
-#>       rated the item in both of two consecutive rounds, the share who gave
-#>       exactly the same rating again. It is the plainest reading of
-#>       stability, and it stays meaningful when kappa does not. (0 to 1; 1
-#>       means no expert changed their rating)
-#>   kappa -- Weighted kappa between rounds. Agreement between each expert's
-#>       ratings in two consecutive rounds, corrected for chance, with larger
-#>       changes counting more. Read it as a trend across rounds. It falls
-#>       when ratings bunch in one category, so a converged panel can show a
-#>       low kappa even when almost no one changed their rating. (-1 to 1; 1
-#>       is perfect stability, 0 is no better than chance)
+#>   agree -- Share of experts agreeing. Share of experts at or above the
+#>       agreement cut in a round; consensus means reaching the preset
+#>       threshold.
+#>   unchanged -- Share of experts keeping their rating. Share of experts
+#>       giving the same rating in two consecutive rounds (1 means nobody
+#>       changed).
+#>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of
+#>       each expert's ratings across two rounds; read it as a trend, not
+#>       against a cut-off.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Consensus -- reached the consensus threshold in its last round.
+#>   No consensus -- did not reach the consensus threshold.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Consensus is not correctness, and 'No consensus' is not an instruction to
 #> drop an item. Read these results with the experts' comments.
@@ -431,34 +418,21 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> experts one net change is already 10%.
 #> 
 #> What these columns mean
-#>   agree -- Share of experts agreeing. Share of the experts rating an item
-#>       in a round whose rating was at or above the agreement cut. On a
-#>       relevance scale this is the I-CVI. Consensus means it reached the
-#>       threshold set before the study. (0 to 1; higher is broader agreement)
-#>   unchanged -- Share of experts keeping their rating. Among experts who
-#>       rated the item in both of two consecutive rounds, the share who gave
-#>       exactly the same rating again. It is the plainest reading of
-#>       stability, and it stays meaningful when kappa does not. (0 to 1; 1
-#>       means no expert changed their rating)
-#>   change -- Net change in the rating distribution. How far the panel's
-#>       rating distribution moved between two rounds, as a share of the
-#>       experts compared. Change below 15% is read as stable, a cut-off its
-#>       authors set from one study without statistical theory. (0 to 1;
-#>       stable below .15)
+#>   agree -- Share of experts agreeing. Share of experts at or above the
+#>       agreement cut in a round; consensus means reaching the preset
+#>       threshold.
+#>   unchanged -- Share of experts keeping their rating. Share of experts
+#>       giving the same rating in two consecutive rounds (1 means nobody
+#>       changed).
+#>   change -- Net change in the rating distribution. Net change in the rating
+#>       distribution between rounds (stable below .15 by its authors' rule).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Consensus -- reached the consensus threshold in its last round.
+#>   No consensus -- did not reach the consensus threshold.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Consensus is not correctness, and 'No consensus' is not an instruction to
 #> drop an item. Read these results with the experts' comments.

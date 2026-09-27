@@ -275,46 +275,26 @@ required parts of the flagship workflows.</p>
 <code class="sourceCode R"><span><span class="va">pretest_supported</span> <span class="op">&lt;-</span> <span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Supported"</span></span>
 <span><span class="va">later_retained</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/signal_detection.html">signal_detection</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">later_retained</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $confusion</span></span>
+<span><span class="co">#&gt; Retention decisions compared with the actual outcome</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;               Actual</span></span>
 <span><span class="co">#&gt; Predicted      Retain Not retained</span></span>
 <span><span class="co">#&gt;   Retain            4            0</span></span>
 <span><span class="co">#&gt;   Not retained      0            2</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $accuracy</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $sensitivity</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $specificity</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $phi</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $chisq</span></span>
-<span><span class="co">#&gt; [1] 6</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $p</span></span>
-<span><span class="co">#&gt; [1] 0.01430588</span></span>
+<span><span class="co">#&gt; accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00,</span></span>
+<span><span class="co">#&gt; chi-square(1) = 6.00, p = .014.</span></span>
 <span></span>
 <span><span class="va">replication_supported</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">replication_supported</span><span class="op">)</span></span>
-<span><span class="co">#&gt; $table</span></span>
+<span><span class="co">#&gt; Retention decisions in two pretests</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;               Pretest2</span></span>
 <span><span class="co">#&gt; Pretest1       Retain Not retained</span></span>
 <span><span class="co">#&gt;   Retain            4            0</span></span>
 <span><span class="co">#&gt;   Not retained      1            1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $phi</span></span>
-<span><span class="co">#&gt; [1] 0.6324555</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $chisq</span></span>
-<span><span class="co">#&gt; [1] 2.4</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $p</span></span>
-<span><span class="co">#&gt; [1] 0.1213353</span></span></code></pre></div>
+<span><span class="co">#&gt; phi = .63, chi-square(1) = 2.40, p = .121.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="power-quick-check">Power quick check<a class="anchor" aria-label="anchor" href="#power-quick-check"></a>

@@ -129,7 +129,12 @@ was deprecated in the first release, warned through every release to 0.6.0,
 and was removed in 0.7.0. Its <code>posthoc_pass</code> returned column, a duplicate of
 <code>contrast_pass</code>, could not warn when read, so it was documented as
 deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
-<code>NEWS.md</code>. No deprecation is in progress, so nothing is carried into 1.0.</p>
+<code>NEWS.md</code>.</p>
+<p>One deprecation is in progress. <code><a href="agreement_summary.html">agreement_summary()</a></code>, a Tier 3 helper, is
+deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
+that takes items in rows rather than raters, and <code><a href="panel_agreement.html">panel_agreement()</a></code> does
+its job. It warns when called. Removing it at 1.0.0 means nothing
+deprecated is carried past 1.0.</p>
     </div>
     <div class="section level2">
     <h2 id="changing-a-default">Changing a default<a class="anchor" aria-label="anchor" href="#changing-a-default"></a></h2>

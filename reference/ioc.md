@@ -24,7 +24,10 @@ ioc(ratings, na.rm = FALSE)
 ## Value
 
 A data.frame with item, objective, total rows, effective judge count,
-missing count, and IOC.
+missing count, and IOC. It prints as a formatted table in APA style; the
+values themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -47,7 +50,9 @@ df <- data.frame(
   score = c(1,1,1, 0,-1,0)
 )
 ioc(df)
-#>   item objective n_total n_judges n_missing        ioc
-#> 1   I1         A       3        3         0  1.0000000
-#> 2   I1         B       3        3         0 -0.3333333
+#> Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> 
+#>  item objective judges  IOC
+#>    I1         A      3 1.00
+#>    I1         B      3 -.33
 ```

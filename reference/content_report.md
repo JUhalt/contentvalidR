@@ -1,8 +1,11 @@
 # Build a manuscript-ready results table
 
-Formats a fitted workflow's results as a compact table suitable for
-pasting into a manuscript or a Quarto or R Markdown document, either as
-a data frame or as a Markdown table.
+Formats a fitted workflow's results as a compact table for a manuscript
+or a Quarto or R Markdown document. By default the table is written in
+APA style (7th ed.): readable column headings, two decimals, no leading
+zero on values that cannot exceed 1, *p* values to three decimals or
+`< .001`, and intervals as `[LL, UL]` under a heading that names their
+level.
 
 Markdown output is generated directly, so no reporting package is
 required to use it. Nothing in the core analysis depends on one.
@@ -13,7 +16,7 @@ required to use it. Nothing in the core analysis depends on one.
 content_report(
   x,
   digits = 2,
-  format = c("data.frame", "markdown"),
+  format = c("apa", "data.frame", "markdown"),
   include = c("all", "flagged"),
   caption = NULL
 )
@@ -27,11 +30,15 @@ content_report(
 
 - digits:
 
-  Digits for rounding numeric columns.
+  Decimal places for estimates. *p* values always get three, as APA
+  requires.
 
 - format:
 
-  `"data.frame"` (default) or `"markdown"`.
+  `"apa"` (default), a table of formatted text in APA style;
+  `"markdown"`, the same table as Markdown lines; or `"data.frame"`, the
+  selected columns as rounded numbers under their names in `results`,
+  for further computation.
 
 - include:
 
@@ -44,9 +51,19 @@ content_report(
 
 ## Value
 
-A data frame, or a character vector of Markdown lines when
-`format = "markdown"`. The character vector carries the analysis
+For `"apa"`, a data frame of character columns that prints without row
+names; [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
+drops its print class. For `"data.frame"`, a plain data frame with
+`recommendation` and `status` columns. For `"markdown"`, a character
+vector of Markdown lines that prints as the table, carrying the analysis
 provenance as its `"settings"` attribute.
+
+## Changed in 0.9.0
+
+The default is now `format = "apa"`. Earlier versions returned the
+numeric table by default, with *p* values rounded to `digits`; use
+`format = "data.frame"` for that table, where *p* values now keep three
+decimals.
 
 ## Reporting the decision rules
 
@@ -72,23 +89,16 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 content_report(fit)
-#>   item target  n n_target competitor  psa psa_low psa_high  csv p_value
-#> 1   A1      A 20       18       B; C 0.90    0.70     0.97 0.85    0.00
-#> 2   A2      A 20       15          B 0.75    0.53     0.89 0.60    0.02
-#> 3   B1      B 20       17          A 0.85    0.64     0.95 0.75    0.00
-#> 4   B2      B 20       13          A 0.65    0.43     0.82 0.40    0.13
-#> 5   C1      C 20       18       A; B 0.90    0.70     0.97 0.85    0.00
-#> 6   C2      C 20       14          B 0.70    0.48     0.85 0.50    0.06
-#>   recommendation    status
-#> 1         Retain Supported
-#> 2         Retain Supported
-#> 3         Retain Supported
-#> 4         Review    Review
-#> 5         Retain Supported
-#> 6         Review    Review
-cat(content_report(fit, format = "markdown", include = "flagged"), sep = "\n")
-#> | item | target | n | n_target | competitor | psa | psa_low | psa_high | csv | p_value | recommendation | status |
-#> | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-#> | B2 | B | 20 | 13 | A | 0.65 | 0.43 | 0.82 | 0.4 | 0.13 | Review | Review |
-#> | C2 | C | 20 | 14 | B | 0.70 | 0.48 | 0.85 | 0.5 | 0.06 | Review | Review |
+#>  item target judges competitor Psa     95% CI Csv      p decision
+#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
+#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
+#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
+#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
+#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
+#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
+content_report(fit, format = "markdown", include = "flagged")
+#> | item | target | judges | competitor | Psa | 95% CI | Csv | p | decision |
+#> | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+#> | B2 | B | 13/20 | A | .65 | [.43, .82] | .40 | .132 | Review |
+#> | C2 | C | 14/20 | B | .70 | [.48, .85] | .50 | .058 | Review |
 ```

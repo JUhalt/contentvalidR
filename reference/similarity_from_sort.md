@@ -34,7 +34,8 @@ similarity_from_sort(
 
 A square, symmetric item-by-item matrix of co-assignment proportions,
 with attribute `"n_pairs"` giving the number of judges contributing to
-each cell.
+each cell. It prints with two decimals; the values themselves are
+unrounded.
 
 ## Weaker evidence than a similarity task
 
@@ -63,15 +64,14 @@ sorts <- data.frame(
   assigned_construct = c(rep("A", 5), rep("A", 5), rep("B", 5), rep("B", 5))
 )
 similarity_from_sort(sorts)
-#>    I1 I2 I3 I4
-#> I1  1  1  0  0
-#> I2  1  1  0  0
-#> I3  0  0  1  1
-#> I4  0  0  1  1
-#> attr(,"n_pairs")
-#>    I1 I2 I3 I4
-#> I1  5  5  5  5
-#> I2  5  5  5  5
-#> I3  5  5  5  5
-#> I4  5  5  5  5
+#> Item similarity: the share of judges who sorted both items and put them in
+#> the same construct
+#> 
+#>      I1   I2   I3   I4
+#> I1    - 1.00  .00  .00
+#> I2 1.00    -  .00  .00
+#> I3  .00  .00    - 1.00
+#> I4  .00  .00 1.00    -
+#> 
+#> Every pair was sorted by the same 5 judges.
 ```

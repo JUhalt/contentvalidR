@@ -103,7 +103,9 @@ interval.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame with one row per item and columns <code>item</code>, <code>target</code>,
-<code>n_total</code>, <code>n</code>, <code>n_missing</code>, <code>n_target</code>, <code>psa</code>, <code>psa_low</code>, and <code>psa_high</code>.</p>
+<code>n_total</code>, <code>n</code>, <code>n_missing</code>, <code>n_target</code>, <code>psa</code>, <code>psa_low</code>, and <code>psa_high</code>.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> returns the plain data frame.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -139,13 +141,31 @@ statistical inference. <em>Journal of the American Statistical Association,
 <span class="r-in"><span>  target_construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">compute_psa</span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item target n_total n n_missing n_target  psa   psa_low  psa_high</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A       4 4         0        3 0.75 0.3006418 0.9544127</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B       4 4         0        3 0.75 0.3006418 0.9544127</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of substantive agreement (Psa; Anderson &amp; Gerbing, 1991)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges Psa     95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A    3/4 .75 [.30, .95]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B    3/4 .75 [.30, .95]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges: assignments to the target construct, out of the judges who sorted the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald interval.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> An interval reflects how few ratings an item received, not whether the right</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges were chosen.</span>
 <span class="r-in"><span><span class="fu">compute_psa</span><span class="op">(</span><span class="va">df</span>, ci <span class="op">=</span> <span class="st">"exact"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item target n_total n n_missing n_target  psa   psa_low  psa_high</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1   I1      A       4 4         0        3 0.75 0.1941204 0.9936905</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2   I2      B       4 4         0        3 0.75 0.1941204 0.9936905</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Proportion of substantive agreement (Psa; Anderson &amp; Gerbing, 1991)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges Psa     95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A    3/4 .75 [.19, .99]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B    3/4 .75 [.19, .99]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges: assignments to the target construct, out of the judges who sorted the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> item.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Agresti and Coull (1998) show its coverage runs above the nominal level, so</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> intervals are wider than they need to be. An interval reflects how few</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ratings an item received, not whether the right judges were chosen.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -61,11 +61,15 @@ equivalent 1-to-5 anchor metric before computing HTC.
 ``` r
 
 htc(rating_dat, scale_min = 1, scale_max = 5)
-#>   item target n_target target_mean anchors       htc
-#> 1   A1      A       24    4.375000       5 0.8750000
-#> 2   A2      A       24    4.458333       5 0.8916667
-#> 3   A3      A       24    4.416667       5 0.8833333
-#> 4   B1      B       24    4.583333       5 0.9166667
+#> Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean HTC
+#>    A1      A     24        4.38 .88
+#>    A2      A     24        4.46 .89
+#>    A3      A     24        4.42 .88
+#>    B1      B     24        4.58 .92
+#> 
+#> HTC expresses the mean target rating as a share of the 5-point scale.
 ```
 
 Higher HTC means stronger correspondence with the intended definition.
@@ -86,16 +90,16 @@ on average.
 ``` r
 
 htd(rating_dat, scale_min = 1, scale_max = 5)
-#>   item target n_complete n_pairs target_mean_complete strongest_competitor
-#> 1   A1      A         24      48             4.375000                    B
-#> 2   A2      A         24      48             4.458333                    B
-#> 3   A3      A         24      48             4.416667                    C
-#> 4   B1      B         24      48             4.583333                    C
-#>   competitor_mean anchors       htd
-#> 1        2.375000       5 0.5572917
-#> 2        2.000000       5 0.6302083
-#> 3        2.250000       5 0.5468750
-#> 4        2.166667       5 0.6145833
+#> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean competitor competitor mean HTD
+#>    A1      A     24        4.38          B            2.38 .56
+#>    A2      A     24        4.46          B            2.00 .63
+#>    A3      A     24        4.42          C            2.25 .55
+#>    B1      B     24        4.58          C            2.17 .61
+#> 
+#> competitor: the other construct with the highest mean rating. HTD itself
+#> averages the gap over every other construct.
 ```
 
 The item-level table also identifies the strongest orbiting competitor.
@@ -115,26 +119,23 @@ definition against every orbiting definition.
 
 aov_out <- anova_content(rating_dat, design = "within")
 aov_out
-#>   item target design n_raters n_complete n_constructs target_mean
-#> 1   A1      A within       24         24            3    4.375000
-#> 2   A2      A within       24         24            3    4.458333
-#> 3   A3      A within       24         24            3    4.416667
-#> 4   B1      B within       24         24            3    4.583333
-#>   strongest_competitor competitor_mean         F df1 df2            p
-#> 1                    B        2.375000  72.64064   2  46 5.820538e-15
-#> 2                    B        2.000000 105.82309   2  46 6.164319e-18
-#> 3                    C        2.250000  82.24514   2  46 6.443079e-16
-#> 4                    C        2.166667 108.28649   2  46 3.987307e-18
-#>   epsilon_gg   df1_gg   df2_gg         p_gg     p_screen partial_eta2
-#> 1  0.9923166 1.984633 45.64657 7.290445e-15 7.290445e-15    0.7595165
-#> 2  0.8090412 1.618082 37.21590 6.097704e-15 6.097704e-15    0.8214606
-#> 3  0.9992587 1.998517 45.96590 6.595204e-16 6.595204e-16    0.7814626
-#> 4  0.9262517 1.852503 42.60758 5.895899e-17 5.895899e-17    0.8248106
-#>   min_mean_diff max_contrast_p contrast_pass
-#> 1      2.000000   8.344091e-10          TRUE
-#> 2      2.458333   1.372752e-10          TRUE
-#> 3      2.166667   5.918580e-11          TRUE
-#> 4      2.416667   1.786074e-12          TRUE
+#> Content-validity ANOVA (Hinkin & Tracey, 1999)
+#> 
+#>  item target judges            omnibus test      p partial eta^2 competitor
+#>    A1      A     24  F(1.98, 45.65) = 72.64 < .001           .76          B
+#>    A2      A     24 F(1.62, 37.22) = 105.82 < .001           .82          B
+#>    A3      A     24  F(2.00, 45.97) = 82.25 < .001           .78          C
+#>    B1      B     24 F(1.85, 42.61) = 108.29 < .001           .82          C
+#>  contrast p contrasts met
+#>      < .001           yes
+#>      < .001           yes
+#>      < .001           yes
+#>      < .001           yes
+#> 
+#> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
+#> of freedom are fractional.
+#> contrast p: the largest p among the planned target-versus-other contrasts;
+#> attr(x, "contrasts") holds every contrast.
 attr(aov_out, "contrasts")
 #>   item design target competitor  n mean_target mean_competitor mean_diff
 #> 1   A1 within      A          B 24    4.375000        2.375000  2.000000
@@ -215,28 +216,17 @@ fit
 #> benchmark, never against the other index's number.
 #> 
 #> What these columns mean
-#>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against
-#>       its intended construct definition, expressed as a proportion of the
-#>       rating scale. (0 to 1; higher is stronger)
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's
-#>       average rating exceeds the best competing construct's, as a
-#>       proportion of the rating scale. It is a difference, so its typical
-#>       values are far smaller than HTC's. (usually a small positive number;
-#>       higher is stronger)
+#>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
+#>       definition, as a share of the rating scale (0 to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
+#>       closest rival's, as a share of the scale (usually small).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- rated highest against its intended construct, with every
+#>       planned contrast meeting the screening criterion.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
@@ -299,31 +289,29 @@ fit$scale_summary
 #> 1      The weaker of HTC and HTD falls in the Strong band of published scales (Colquitt et al., 2019).
 #> 2 The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).
 colquitt_benchmarks("htc")
-#>   statistic benchmark_set                  benchmark_label interpretation
-#> 1       htc       overall Overall (not correlation-normed)    Very Strong
-#> 2       htc       overall Overall (not correlation-normed)         Strong
-#> 3       htc       overall Overall (not correlation-normed)       Moderate
-#> 4       htc       overall Overall (not correlation-normed)           Weak
-#> 5       htc       overall Overall (not correlation-normed)        Lack of
-#>   percentile minimum
-#> 1  80th-99th    0.91
-#> 2  60th-79th    0.87
-#> 3  40th-59th    0.84
-#> 4  20th-39th    0.60
-#> 5   0th-19th    -Inf
+#> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .91
+#>       Strong  60th-79th     .87
+#>     Moderate  40th-59th     .84
+#>         Weak  20th-39th     .60
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 colquitt_benchmarks("htd")
-#>   statistic benchmark_set                  benchmark_label interpretation
-#> 1       htd       overall Overall (not correlation-normed)    Very Strong
-#> 2       htd       overall Overall (not correlation-normed)         Strong
-#> 3       htd       overall Overall (not correlation-normed)       Moderate
-#> 4       htd       overall Overall (not correlation-normed)           Weak
-#> 5       htd       overall Overall (not correlation-normed)        Lack of
-#>   percentile minimum
-#> 1  80th-99th    0.35
-#> 2  60th-79th    0.27
-#> 3  40th-59th    0.18
-#> 4  20th-39th    0.04
-#> 5   0th-19th    -Inf
+#> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .35
+#>       Strong  60th-79th     .27
+#>     Moderate  40th-59th     .18
+#>         Weak  20th-39th     .04
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 ```
 
 The overall bands are empirical percentile standing, not universal

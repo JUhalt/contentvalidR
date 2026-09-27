@@ -127,6 +127,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       item, so a different sample of judges could plausibly give a quite</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       different Psa. (between 0 and 1; the method and level are named in</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the output)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Retain -- met the exact target-assignment criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet it; the competitor column shows where judges put</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         it instead.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no judge sorted it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> construct-rating</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
@@ -137,6 +142,13 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       proportion of the rating scale. It is a difference, so its typical</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       values are far smaller than HTC's. (usually a small positive number;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Retain -- rated highest against its intended construct, with every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         planned contrast meeting the screening criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet every criterion; the competitor column shows the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         closest rival.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two judges rated it against every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         construct.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> expert-panel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Relevance index that rescales the experts' average rating</span>
@@ -167,6 +179,26 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ioc -- Item-Objective Congruence. How consistently experts linked the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       item to the objective it was written for rather than to another</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       objective. (-1 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (relevance):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Strong support -- met the I-CVI criterion, with modified kappa above</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         .74.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Support -- met the I-CVI criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet the I-CVI criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient panel -- fewer than three experts rated it.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (essentiality):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Supported -- enough experts rated it essential to pass the exact test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- too few experts rated it essential to pass the exact test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no expert rated it.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (congruence):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Target favored -- experts linked it most strongly to its intended</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         objective.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Tie / review -- its intended objective tied with another.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- experts linked it more strongly to another objective.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Target described -- only its intended objective was rated, so there is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         nothing to compare.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no usable ratings for its intended objective.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Descriptive only -- no intended objective was given, so IOC is only</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         described.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> judge-heterogeneity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How harsh or lenient a judge is compared with</span>
@@ -192,6 +224,17 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       relevant one for content validity, where items are judged against a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       fixed standard. (0 to 1; never exceeds the generalizability</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       coefficient)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Typical -- consistent with the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Severe -- rates markedly lower than the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Lenient -- rates markedly higher than the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Erratic -- decisions noisier than the model expects.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Too predictable -- decisions more predictable than the model expects.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Low differentiation -- draws few distinctions among items compared with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         other judges.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Influential -- at least one item's review status changes without this</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         judge.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two usable ratings.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> domain-coverage</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   share -- Share of items. Percentage of all items that fall in this</span>
@@ -204,6 +247,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       squeezing the similarity data into the chosen number of dimensions.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Lower is a closer fit. (0 is perfect; below .10 is conventionally</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       called fair or better)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Covered -- met the coverage criteria.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Thinly covered -- fewer items than the minimum set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Over-represented -- a larger share of the items than expected.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Not covered -- the blueprint includes it, but no item addresses it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> delphi</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   prop_agree -- Share of experts agreeing. Share of the experts rating an</span>
@@ -240,6 +288,13 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the experts compared. Change below 15% is read as stable, a cut-off</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       its authors set from one study without statistical theory. (0 to 1;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       stable below .15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Consensus -- reached the consensus threshold in its last round.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     No consensus -- did not reach the consensus threshold.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Descriptive only -- no consensus threshold was set, so agreement is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         only described.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient panel -- fewer than three experts rated it in its last</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         round.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> status labels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
@@ -248,6 +303,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each decision word above maps onto one of these statuses, stored in the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   `status` column of `results`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Strength labels such as Strong or Weak are percentile positions relative to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments, and are not comparable across</span>
@@ -276,6 +333,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       item, so a different sample of judges could plausibly give a quite</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       different Psa. (between 0 and 1; the method and level are named in</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the output)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Retain -- met the exact target-assignment criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet it; the competitor column shows where judges put</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         it instead.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no judge sorted it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> status labels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
@@ -284,6 +346,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Each decision word above maps onto one of these statuses, stored in the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   `status` column of `results`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Strength labels such as Strong or Weak are percentile positions relative to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments, and are not comparable across</span>

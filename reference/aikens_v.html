@@ -108,7 +108,9 @@ If <code>TRUE</code>, item-specific effective judge counts are used.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A data.frame with item, effective judge count <code>N</code>, number missing,
-Aiken's <code>V</code>, and (when requested) <code>ci_low</code> and <code>ci_high</code>.</p>
+Aiken's <code>V</code>, and (when requested) <code>ci_low</code> and <code>ci_high</code>.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> returns the plain data frame.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -126,10 +128,14 @@ Education and Exercise Science, 8</em>(4), 213–225.
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">3</span>,<span class="fl">4</span>, <span class="fl">4</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">4</span>, <span class="fl">3</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">4</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">R</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Item1"</span>, <span class="st">"Item2"</span>, <span class="st">"Item3"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">aikens_v</span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    item N n_missing         V    ci_low   ci_high               ci_method</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Item1 4         0 0.9166667 0.6461201 0.9851349 Penfield-Giacobbi score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Item2 4         0 0.9166667 0.6461201 0.9851349 Penfield-Giacobbi score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Item3 4         0 0.8333333 0.5519691 0.9530349 Penfield-Giacobbi score</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Aiken's V (Aiken, 1980)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item experts   V     95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1       4 .92 [.65, .99]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2       4 .92 [.65, .99]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3       4 .83 [.55, .95]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Interval: Penfield-Giacobbi score (Penfield &amp; Giacobbi, 2004).</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

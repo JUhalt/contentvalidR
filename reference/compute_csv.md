@@ -39,7 +39,10 @@ compute_csv(
 
 A data.frame with one row per item and columns `item`, `target`,
 `n_total`, `n`, `n_missing`, `n_target`, `competitor`, `n_other_max`,
-and `csv`.
+and `csv`. It prints as a formatted table in APA style; the values
+themselves are unrounded, and
+[`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+the plain data frame.
 
 ## References
 
@@ -59,7 +62,12 @@ df <- data.frame(
   target_construct = rep("A", 8)
 )
 compute_csv(df)
-#>   item target n_total n n_missing n_target competitor n_other_max  csv
-#> 1   I1      A       4 4         0        3          B           1  0.5
-#> 2   I2      A       4 4         0        0          B           4 -1.0
+#> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> 
+#>  item target judges competitor competitor judges   Csv
+#>    I1      A    3/4          B               1/4   .50
+#>    I2      A    0/4          B               4/4 -1.00
+#> 
+#> Csv is the target count minus the count for the most-chosen other construct,
+#> divided by the number of judges.
 ```

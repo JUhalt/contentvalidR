@@ -323,42 +323,23 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span> cutoffs.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Relevance index that rescales the experts' average rating</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to run from 0 to 1 given the bounds of the rating scale used. (0 to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1; higher is stronger)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Proportion of experts who</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item as relevant, after applying the relevance cut. (0 to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared against a panel-size guideline)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       interval around I-CVI. Expert panels are usually small, so these</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       intervals are often wide: a single I-CVI value can look more settled</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       than the number of experts behind it supports. (between 0 and 1; the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       method and level are named in the output)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       have agreed even if rating at random. With small panels, chance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (at most 1; below 0 when fewer experts agree</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       than chance predicts; higher is stronger)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Panel agreement -- Panel-level agreement. One coefficient describing how</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       consistently the whole panel rated the item set: Krippendorff's alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       by default, or Gwet's AC1 if chosen. It is separate from modified</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       kappa, which describes one item at a time. (1 is perfect agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       and 0 is agreement no better than chance; it can be low on a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       close-agreeing panel whose ratings cluster on one value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       possible) to 1 (highest).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item relevant, compared with Lynn's criterion for the panel size.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       small; the method is named above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       below 0 when agreement is below chance).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Panel agreement -- Panel-level agreement. One coefficient for the whole</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       panel (1 is perfect, 0 is chance); it can be low when nearly every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rating is the same.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support -- met the I-CVI criterion, with modified kappa above .74.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> comprehensibility review.</span>
@@ -413,23 +394,15 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span> .83 (2 items).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       calling the item essential rather than merely useful. (-1 to 1; above</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       0 means more than half the panel called it essential)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the item essential (-1 to 1; above 0 means more than half did).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> What the status labels mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- The evidence met the criteria set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- Something here needs a closer look. This is not an instruction</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       to delete anything.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Insufficient data -- Too little usable data to reach a judgment.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Descriptive only -- Reported for description only; no decision rule was</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       applied.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Each workflow also uses its own wording in the decision column (Retain,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support, Typical, Covered, and so on). Those words map onto the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   shared statuses above.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- enough experts rated it essential to pass the exact test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- too few experts rated it essential to pass the exact test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See `contentvalid_glossary()` for all terms, or set</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `options(contentvalidR.show_key = FALSE)` to hide this key.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> comprehensibility review.</span>
