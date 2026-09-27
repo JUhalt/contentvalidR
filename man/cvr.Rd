@@ -24,6 +24,8 @@ calculated itemwise.}
 \value{
 A data.frame containing item, \code{ne}, effective \code{N}, CVR, exact
 p-value, critical essential count/CVR, and \code{pass}.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Computes Lawshe's CVR and exact one-sided binomial inference following the

@@ -2,12 +2,13 @@
 % Please edit documentation in R/agreement_summary.R
 \name{agreement_summary}
 \alias{agreement_summary}
-\title{Agreement summary (auxiliary)}
+\title{Agreement summary (deprecated)}
 \usage{
 agreement_summary(ratings)
 }
 \arguments{
-\item{ratings}{matrix/data.frame: rows = items, cols = raters (nominal categories)}
+\item{ratings}{matrix/data.frame: rows = items, cols = raters (nominal
+categories). Note the orientation, the reverse of \code{\link[=panel_agreement]{panel_agreement()}}.}
 }
 \value{
 When 'irr' is installed, the result of \code{irr::kappam.fleiss()}.
@@ -15,10 +16,17 @@ Otherwise a list with \code{ok = FALSE} and a \code{message}, after a message
 explaining how to install 'irr'.
 }
 \description{
+\strong{Deprecated in 0.9.0, to be removed in 1.0.0.} Use \code{\link[=panel_agreement]{panel_agreement()}}
+instead. \code{agreement_summary()} is the only function in the package that
+takes items in rows and raters in columns; every other ratings function,
+\code{panel_agreement()} included, takes raters in rows. The same matrix passed
+to both would therefore be read two different ways. \code{panel_agreement()}
+also reports an interval and needs no other package. Calling
+\code{agreement_summary()} still works in 0.9.0, with a warning.
+
 Computes Fleiss' (1971) kappa, the extension of Cohen's kappa to many
 raters, by calling \code{irr::kappam.fleiss()} from the irr package (Gamer,
-Lemon, Fellows, & Singh, 2026) when it is installed. This is an auxiliary
-compatibility helper, not part of the recommended contentvalidR workflows.
+Lemon, Fellows, & Singh, 2026) when it is installed.
 }
 \examples{
 ratings <- data.frame(
@@ -26,8 +34,9 @@ ratings <- data.frame(
   rater2 = c("A", "B", "B", "C"),
   rater3 = c("A", "B", "A", "C")
 )
+# Deprecated: it warns, and points to panel_agreement().
 if (requireNamespace("irr", quietly = TRUE)) {
-  agreement_summary(ratings)
+  suppressWarnings(agreement_summary(ratings))
 }
 }
 \references{

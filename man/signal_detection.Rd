@@ -13,6 +13,8 @@ signal_detection(predicted, actual)
 }
 \value{
 A list containing the confusion matrix and diagnostic statistics.
+It prints as a short report in APA style; the elements themselves are
+unrounded.
 }
 \description{
 Auxiliary compatibility diagnostic. Compares a logical vector of pretest

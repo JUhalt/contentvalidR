@@ -32,6 +32,8 @@ scale.}
 \value{
 A data.frame containing item-level HTD, the strongest orbiting
 construct, complete-judge count, and number of target-orbiting pairs.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Computes the Hinkin-Tracey distinctiveness index for each item in a fully

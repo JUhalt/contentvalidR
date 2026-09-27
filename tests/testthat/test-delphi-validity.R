@@ -347,6 +347,6 @@ test_that("the round fits feed compare_rounds, and reporting works", {
 
   expect_s3_class(fit, "contentvalid_workflow")
   expect_identical(fit$workflow, "delphi")
-  rep <- content_report(fit)
+  rep <- content_report(fit, format = "data.frame")
   expect_true(all(c("item", "prop_agree", "prop_unchanged", "stability") %in% names(rep)))
 })

@@ -32,6 +32,8 @@ scale (for example, 1 and 5).}
 \value{
 A data.frame with item-level target means, usable target-rating
 counts, and HTC.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Computes the Hinkin-Tracey correspondence index for each item. Following

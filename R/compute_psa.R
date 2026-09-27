@@ -20,6 +20,8 @@
 #'
 #' @return A data.frame with one row per item and columns `item`, `target`,
 #'   `n_total`, `n`, `n_missing`, `n_target`, `psa`, `psa_low`, and `psa_high`.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for
@@ -96,5 +98,5 @@ compute_psa <- function(assignments,
   interval <- .proportion_ci(out$n_target, out$n, method = ci, alpha = alpha)
   out$psa_low <- interval$low
   out$psa_high <- interval$high
-  out
+  .tag_component(out, "contentvalid_psa", alpha = alpha, ci_method = ci)
 }

@@ -18,6 +18,8 @@ its orbiting scales.}
 \value{
 A data.frame describing the selected benchmark set and its lower
 cutpoints.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Returns the empirical interpretation bands proposed by Colquitt et al.

@@ -187,39 +187,26 @@ fit
 #> so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who assigned
-#>       the item to the construct it was written for. Higher means judges
-#>       recognized the item as belonging where you intended. (0 to 1; higher
-#>       is stronger)
-#>   95% CI -- Interval for Psa. Lower and upper limits of an interval around
-#>       Psa. A wide interval means few judges sorted the item, so a different
-#>       sample of judges could plausibly give a quite different Psa. (between
-#>       0 and 1; the method and level are named in the output)
-#>   Csv -- Coefficient of Substantive Validity. How much more often the item
-#>       went to its intended construct than to the alternative construct
-#>       judges chose most. It rewards being distinctly right, not merely
-#>       often right. (-1 to 1; 0 means the intended construct and its closest
-#>       rival were chosen equally often)
-#>   competitor -- Strongest competing construct. The construct, other than
-#>       the intended one, that judges chose most often for this item.
-#>   p -- Howard-Melloy exact test. Probability of seeing at least this many
-#>       target assignments if judges were assigning at the chance rate p0.
-#>       Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
+#>       item in the construct it was written for (0 to 1; higher is
+#>       stronger).
+#>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
+#>       method is named above.
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges
+#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
+#>       tie).
+#>   competitor -- Strongest competing construct. The construct other than the
+#>       intended one that judges chose most often.
+#>   p -- Howard-Melloy exact test. Chance of at least this many target
+#>       assignments if judges assigned at the rate p0; compared with alpha.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- met the exact target-assignment criterion.
+#>   Review -- did not meet it; the competitor column shows where judges put
+#>       it instead.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
@@ -278,18 +265,18 @@ normed[c("target", "orbiting_r", "benchmark_set", "overall_strength")]
 #>   overall_strength
 #> 1         Moderate
 colquitt_benchmarks("csv", orbiting_r = .42)
-#>   statistic benchmark_set                                    benchmark_label
-#> 1       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 2       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 3       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 4       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#> 5       csv      moderate More moderate focal-orbiting correlation (.35-.50)
-#>   interpretation percentile minimum
-#> 1    Very Strong  80th-99th    0.83
-#> 2         Strong  60th-79th    0.61
-#> 3       Moderate  40th-59th    0.52
-#> 4           Weak  20th-39th    0.01
-#> 5        Lack of   0th-19th    -Inf
+#> Benchmarks for Csv (Colquitt et al., 2019): More moderate focal-orbiting
+#> correlation (.35-.50)
+#> 
+#>         band percentile minimum
+#>  Very Strong  80th-99th     .83
+#>       Strong  60th-79th     .61
+#>     Moderate  40th-59th     .52
+#>         Weak  20th-39th     .01
+#>      Lack of   0th-19th    none
+#> 
+#> A scale-level mean at or above a band's minimum falls in that band. The bands
+#> are percentiles of published scales, not validity cutoffs.
 ```
 
 The published norms were developed with **naive judges representative of
@@ -335,45 +322,44 @@ Researchers who need the component statistics directly can still use:
 
 ``` r
 compute_psa(sort_dat)
-#>           item target n_total  n n_missing n_target psa   psa_low  psa_high
-#> 1      Clear 1      A      20 20         0       18 0.9 0.6989664 0.9721335
-#> 2      Clear 2      A      20 20         0       16 0.8 0.5839826 0.9193423
-#> 3 Needs review      A      20 20         0       12 0.6 0.3865815 0.7811935
+#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> 
+#>          item target judges Psa     95% CI
+#>       Clear 1      A  18/20 .90 [.70, .97]
+#>       Clear 2      A  16/20 .80 [.58, .92]
+#>  Needs review      A  12/20 .60 [.39, .78]
+#> 
+#> judges: assignments to the target construct, out of the judges who sorted the
+#> item.
+#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#> compared seven methods and recommends score intervals over the Wald interval.
+#> An interval reflects how few ratings an item received, not whether the right
+#> judges were chosen.
 compute_csv(sort_dat)
-#>           item target n_total  n n_missing n_target competitor n_other_max csv
-#> 1      Clear 1      A      20 20         0       18          B           2 0.8
-#> 2      Clear 2      A      20 20         0       16          B           4 0.6
-#> 3 Needs review      A      20 20         0       12          B           8 0.2
+#> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> 
+#>          item target judges competitor competitor judges Csv
+#>       Clear 1      A  18/20          B              2/20 .80
+#>       Clear 2      A  16/20          B              4/20 .60
+#>  Needs review      A  12/20          B              8/20 .20
+#> 
+#> Csv is the target count minus the count for the most-chosen other construct,
+#> divided by the number of judges.
 csv_binom_test(n_c = 15, N = 20)
-#> $p.value
-#> [1] 0.02069473
+#> Howard-Melloy exact test (one-tailed)
 #> 
-#> $estimate
-#> [1] 0.75
-#> 
-#> $conf.int
-#> [1] 0.5444176 1.0000000
-#> attr(,"conf.level")
-#> [1] 0.95
-#> 
-#> $critical_n_target
-#> [1] 15
-#> 
-#> $passes_chance
-#> [1] TRUE
-#> 
-#> $decision
-#> [1] "significant"
-#> 
-#> $interpretation
-#> [1] "Target assignments exceed the exact chance criterion."
+#> 15 of 20 judges assigned the item to its target construct (Psa = .75). If
+#> judges chose the target at the rate p0 = .50, a count this high has
+#> probability p = .021.
+#> At alpha = .05 an item needs at least 15 of 20. Decision: significant.
+#> One-sided 95% interval for the target rate: [.54, 1.00].
 interpret_colquitt(.70, "csv")
-#>   statistic value benchmark_set                  benchmark_label interpretation
-#> 1       csv   0.7       overall Overall (not correlation-normed)         Strong
-#>   applicable
-#> 1       TRUE
-#>                                                                           note
-#> 1 Empirical percentile norm from scale-level averages; not a universal cutoff.
+#> Benchmark bands (Colquitt et al., 2019)
+#> 
+#>  statistic value   band                       benchmarks
+#>        Csv   .70 Strong Overall (not correlation-normed)
+#> 
+#> Empirical percentile norm from scale-level averages; not a universal cutoff.
 ```
 
 Missing assignments are excluded itemwise and are reported explicitly in
@@ -438,28 +424,17 @@ rfit
 #> benchmark, never against the other index's number.
 #> 
 #> What these columns mean
-#>   HTC -- Hinkin-Tracey Correspondence. Average rating of the item against
-#>       its intended construct definition, expressed as a proportion of the
-#>       rating scale. (0 to 1; higher is stronger)
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far the intended construct's
-#>       average rating exceeds the best competing construct's, as a
-#>       proportion of the rating scale. It is a difference, so its typical
-#>       values are far smaller than HTC's. (usually a small positive number;
-#>       higher is stronger)
+#>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
+#>       definition, as a share of the rating scale (0 to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
+#>       closest rival's, as a share of the scale (usually small).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Retain -- rated highest against its intended construct, with every
+#>       planned contrast meeting the screening criterion.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
@@ -509,36 +484,40 @@ Low-level components remain available:
 
 ``` r
 htc(rating_dat, scale_min = 1, scale_max = 5)
-#>   item target n_target target_mean anchors  htc
-#> 1   A1      A       20        4.40       5 0.88
-#> 2   A2      A       20        4.20       5 0.84
-#> 3   B1      B       20        4.45       5 0.89
+#> Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean HTC
+#>    A1      A     20        4.40 .88
+#>    A2      A     20        4.20 .84
+#>    B1      B     20        4.45 .89
+#> 
+#> HTC expresses the mean target rating as a share of the 5-point scale.
 htd(rating_dat, scale_min = 1, scale_max = 5)
-#>   item target n_complete n_pairs target_mean_complete strongest_competitor
-#> 1   A1      A         20      40                 4.40                    C
-#> 2   A2      A         20      40                 4.20                    B
-#> 3   B1      B         20      40                 4.45                    C
-#>   competitor_mean anchors     htd
-#> 1            1.95       5 0.61875
-#> 2            2.10       5 0.53125
-#> 3            2.00       5 0.63750
+#> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
+#> 
+#>  item target judges target mean competitor competitor mean HTD
+#>    A1      A     20        4.40          C            1.95 .62
+#>    A2      A     20        4.20          B            2.10 .53
+#>    B1      B     20        4.45          C            2.00 .64
+#> 
+#> competitor: the other construct with the highest mean rating. HTD itself
+#> averages the gap over every other construct.
 anova_content(rating_dat)
-#>   item target design n_raters n_complete n_constructs target_mean
-#> 1   A1      A within       20         20            3        4.40
-#> 2   A2      A within       20         20            3        4.20
-#> 3   B1      B within       20         20            3        4.45
-#>   strongest_competitor competitor_mean         F df1 df2            p
-#> 1                    C            1.95 108.55245   2  38 1.941920e-16
-#> 2                    B            2.10  66.92593   2  38 3.531492e-13
-#> 3                    C            2.00  94.20683   2  38 1.873865e-15
-#>   epsilon_gg   df1_gg   df2_gg         p_gg     p_screen partial_eta2
-#> 1  0.8571129 1.714226 32.57029 2.109513e-14 2.109513e-14    0.8510417
-#> 2  0.7606524 1.521305 28.90479 1.544388e-10 1.544388e-10    0.7788793
-#> 3  0.9532879 1.906576 36.22494 7.805392e-15 7.805392e-15    0.8321656
-#>   min_mean_diff max_contrast_p contrast_pass
-#> 1          2.45   4.238082e-10          TRUE
-#> 2          2.10   6.543223e-08          TRUE
-#> 3          2.45   2.290289e-10          TRUE
+#> Content-validity ANOVA (Hinkin & Tracey, 1999)
+#> 
+#>  item target judges            omnibus test      p partial eta^2 competitor
+#>    A1      A     20 F(1.71, 32.57) = 108.55 < .001           .85          C
+#>    A2      A     20  F(1.52, 28.90) = 66.93 < .001           .78          B
+#>    B1      B     20  F(1.91, 36.22) = 94.21 < .001           .83          C
+#>  contrast p contrasts met
+#>      < .001           yes
+#>      < .001           yes
+#>      < .001           yes
+#> 
+#> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
+#> of freedom are fractional.
+#> contrast p: the largest p among the planned target-versus-other contrasts;
+#> attr(x, "contrasts") holds every contrast.
 ```
 
 ## Recommended expert-panel workflow
@@ -602,42 +581,23 @@ efit
 #> cutoffs.
 #> 
 #> What these columns mean
-#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
-#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
-#>       1; higher is stronger)
-#>   I-CVI -- Item-level Content Validity Index. Proportion of experts who
-#>       rated the item as relevant, after applying the relevance cut. (0 to
-#>       1; compared against a panel-size guideline)
-#>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an
-#>       interval around I-CVI. Expert panels are usually small, so these
-#>       intervals are often wide: a single I-CVI value can look more settled
-#>       than the number of experts behind it supports. (between 0 and 1; the
-#>       method and level are named in the output)
-#>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
-#>       have agreed even if rating at random. With small panels, chance
-#>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (at most 1; below 0 when fewer experts agree
-#>       than chance predicts; higher is stronger)
-#>   Panel agreement -- Panel-level agreement. One coefficient describing how
-#>       consistently the whole panel rated the item set: Krippendorff's alpha
-#>       by default, or Gwet's AC1 if chosen. It is separate from modified
-#>       kappa, which describes one item at a time. (1 is perfect agreement
-#>       and 0 is agreement no better than chance; it can be low on a
-#>       close-agreeing panel whose ratings cluster on one value)
+#>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
+#>       possible) to 1 (highest).
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
+#>       item relevant, compared with Lynn's criterion for the panel size.
+#>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
+#>       small; the method is named above.
+#>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
+#>       below 0 when agreement is below chance).
+#>   Panel agreement -- Panel-level agreement. One coefficient for the whole
+#>       panel (1 is perfect, 0 is chance); it can be low when nearly every
+#>       rating is the same.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -735,42 +695,23 @@ expert_validity(expert_ratings, mode = "relevance",
 #> cutoffs.
 #> 
 #> What these columns mean
-#>   V -- Aiken's V. Relevance index that rescales the experts' average rating
-#>       to run from 0 to 1 given the bounds of the rating scale used. (0 to
-#>       1; higher is stronger)
-#>   I-CVI -- Item-level Content Validity Index. Proportion of experts who
-#>       rated the item as relevant, after applying the relevance cut. (0 to
-#>       1; compared against a panel-size guideline)
-#>   95% CI after I-CVI -- Interval for I-CVI. Lower and upper limits of an
-#>       interval around I-CVI. Expert panels are usually small, so these
-#>       intervals are often wide: a single I-CVI value can look more settled
-#>       than the number of experts behind it supports. (between 0 and 1; the
-#>       method and level are named in the output)
-#>   kappa -- Modified kappa. I-CVI adjusted for the chance that experts would
-#>       have agreed even if rating at random. With small panels, chance
-#>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (at most 1; below 0 when fewer experts agree
-#>       than chance predicts; higher is stronger)
-#>   Panel agreement -- Panel-level agreement. One coefficient describing how
-#>       consistently the whole panel rated the item set: Krippendorff's alpha
-#>       by default, or Gwet's AC1 if chosen. It is separate from modified
-#>       kappa, which describes one item at a time. (1 is perfect agreement
-#>       and 0 is agreement no better than chance; it can be low on a
-#>       close-agreeing panel whose ratings cluster on one value)
+#>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
+#>       possible) to 1 (highest).
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
+#>       item relevant, compared with Lynn's criterion for the panel size.
+#>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
+#>       small; the method is named above.
+#>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
+#>       below 0 when agreement is below chance).
+#>   Panel agreement -- Panel-level agreement. One coefficient for the whole
+#>       panel (1 is perfect, 0 is chance); it can be low when nearly every
+#>       rating is the same.
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -803,23 +744,15 @@ expert_validity(
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
-#>   CVR -- Lawshe's Content Validity Ratio. How far the panel leans toward
-#>       calling the item essential rather than merely useful. (-1 to 1; above
-#>       0 means more than half the panel called it essential)
+#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling
+#>       the item essential (-1 to 1; above 0 means more than half did).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Supported -- enough experts rated it essential to pass the exact test.
+#>   Review -- too few experts rated it essential to pass the exact test.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -861,22 +794,14 @@ expert_validity(ioc_dat, mode = "congruence")
 #> 
 #> What these columns mean
 #>   IOC -- Item-Objective Congruence. How consistently experts linked the
-#>       item to the objective it was written for rather than to another
-#>       objective. (-1 to 1; higher is stronger)
+#>       item to its own objective rather than another (-1 to 1).
 #> 
-#> What the status labels mean
-#>   Supported -- The evidence met the criteria set for this analysis.
-#>   Review -- Something here needs a closer look. This is not an instruction
-#>       to delete anything.
-#>   Insufficient data -- Too little usable data to reach a judgment.
-#>   Descriptive only -- Reported for description only; no decision rule was
-#>       applied.
-#>   Each workflow also uses its own wording in the decision column (Retain,
-#>   Strong support, Typical, Covered, and so on). Those words map onto the
-#>   shared statuses above.
+#> What the decisions mean
+#>   Target favored -- experts linked it most strongly to its intended
+#>       objective.
 #> 
-#> See `contentvalid_glossary()` for all terms, or set
-#> `options(contentvalidR.show_key = FALSE)` to hide this key.
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
@@ -892,15 +817,24 @@ components directly:
 
 ``` r
 aikens_v(expert_ratings, lo = 1, hi = 4)
-#>    item N n_missing         V    ci_low   ci_high               ci_method
-#> 1 Item1 6         0 1.0000000 0.8241208 1.0000000 Penfield-Giacobbi score
-#> 2 Item2 6         0 0.9444444 0.7424270 0.9901248 Penfield-Giacobbi score
-#> 3 Item3 6         0 0.8888889 0.6720023 0.9689805 Penfield-Giacobbi score
+#> Aiken's V (Aiken, 1980)
+#> 
+#>   item experts    V      95% CI
+#>  Item1       6 1.00 [.82, 1.00]
+#>  Item2       6  .94  [.74, .99]
+#>  Item3       6  .89  [.67, .97]
+#> 
+#> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
 cvr(essential = c(8, 10, 5), N = 12)
-#>    item ne  N        cvr    p_value critical_ne critical_cvr  pass
-#> 1 Item1  8 12  0.3333333 0.19384766          10    0.6666667 FALSE
-#> 2 Item2 10 12  0.6666667 0.01928711          10    0.6666667  TRUE
-#> 3 Item3  5 12 -0.1666667 0.80615234          10    0.6666667 FALSE
+#> Content validity ratio (CVR; Lawshe, 1975)
+#> 
+#>   item essential  CVR    p needed meets
+#>  Item1      8/12  .33 .194     10    no
+#>  Item2     10/12  .67 .019     10   yes
+#>  Item3      5/12 -.17 .806     10    no
+#> 
+#> needed: essential ratings the exact one-tailed binomial test requires at
+#> alpha = .05 (Ayre & Scally, 2014).
 cvi(expert_ratings >= 3)
 #> contentvalidR content validity index (CVI)
 #> ------------------------------------------
@@ -927,11 +861,13 @@ cvi(expert_ratings >= 3)
 #> expert feedback; CVI statistics alone do not establish comprehensive content
 #> validity.
 ioc(ioc_dat[c("item", "judge", "objective", "score")])
-#>   item objective n_total n_judges n_missing ioc
-#> 1   I1         A       4        4         0   1
-#> 2   I1         B       4        4         0  -1
-#> 3   I2         A       4        4         0  -1
-#> 4   I2         B       4        4         0   1
+#> Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> 
+#>  item objective judges   IOC
+#>    I1         A      4  1.00
+#>    I1         B      4 -1.00
+#>    I2         A      4 -1.00
+#>    I2         B      4  1.00
 ```
 
 ## From content validity to empirical validation
@@ -1115,16 +1051,15 @@ published alternatives are selectable, each with its limits printed:
 Chaffin and Talley’s lambda and chi-square, Dajani et al.’s chi-square,
 and Scheibe et al.’s 15% rule. See `vignette("delphi-rounds")`.
 
-`content_report()` builds manuscript-ready tables as a data frame or as
-Markdown for Quarto and R Markdown, with no reporting dependency added
-to the package.
+`content_report()` builds manuscript tables in APA style, printed as
+they are or as Markdown for Quarto and R Markdown, with no reporting
+dependency added to the package. `format = "data.frame"` gives the same
+columns as numbers.
 
 ``` r
 content_report(fit, include = "flagged")
-#>           item target  n n_target competitor psa psa_low psa_high csv p_value
-#> 1 Needs review      A 20       12          B 0.6    0.39     0.78 0.2    0.25
-#>   recommendation status
-#> 1         Review Review
+#>          item target judges competitor Psa     95% CI Csv    p decision
+#>  Needs review      A  12/20          B .60 [.39, .78] .20 .252   Review
 ```
 
 There is deliberately no helper returning “the items that passed.”

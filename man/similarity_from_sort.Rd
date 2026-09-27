@@ -20,6 +20,7 @@ similarity_from_sort(
 A square, symmetric item-by-item matrix of co-assignment proportions,
 with attribute \code{"n_pairs"} giving the number of judges contributing to each
 cell.
+It prints with two decimals; the values themselves are unrounded.
 }
 \description{
 Builds an item-by-item similarity matrix from item-sort data, where the

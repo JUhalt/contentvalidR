@@ -335,14 +335,7 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     if (!is.null(x$details$structure)) terms <- c(terms, "adjusted_rand", "stress")
     .print_key(terms, headings = c("share", "adjusted Rand", "stress")[
       seq_along(terms)])
-    cat("\nWhat the cell labels mean\n")
-    labels <- c(
-      "Covered -- the cell met the coverage criteria set for this analysis.",
-      "Thinly covered -- fewer items than the minimum you set.",
-      "Over-represented -- a larger share of the instrument than expected.",
-      "Not covered -- the blueprint intends this cell but no item addresses it."
-    )
-    for (lab in labels) .say(lab, indent = 2L, exdent = 6L)
+    .print_decision_legend(x$results$recommendation, "domain")
     .print_key_footer()
   }
 

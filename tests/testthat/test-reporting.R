@@ -77,7 +77,7 @@ test_that("as.data.frame works for every flagship workflow", {
 })
 
 test_that("content_report selects reporting columns and keeps status", {
-  tab <- content_report(sort_fit())
+  tab <- content_report(sort_fit(), format = "data.frame")
   expect_s3_class(tab, "data.frame")
   expect_true(all(c("item", "psa", "csv", "recommendation", "status") %in% names(tab)))
   # The long interpretation text does not belong in a manuscript table.
@@ -86,14 +86,16 @@ test_that("content_report selects reporting columns and keeps status", {
 })
 
 test_that("content_report rounds to the requested digits", {
-  tab <- content_report(sort_fit(), digits = 1)
+  tab <- content_report(sort_fit(), digits = 1, format = "data.frame")
   expect_equal(tab$psa, round(sort_fit()$results$psa, 1))
+  # p values keep three decimals whatever `digits` is.
+  expect_equal(tab$p_value, round(sort_fit()$results$p_value, 3))
   expect_error(content_report(sort_fit(), digits = -1), "nonnegative integer")
 })
 
 test_that("flagged selection keeps only units needing attention", {
-  all_rows <- content_report(sort_fit(), include = "all")
-  flagged <- content_report(sort_fit(), include = "flagged")
+  all_rows <- content_report(sort_fit(), include = "all", format = "data.frame")
+  flagged <- content_report(sort_fit(), include = "flagged", format = "data.frame")
 
   expect_lt(nrow(flagged), nrow(all_rows))
   expect_true(all(flagged$status != "Supported"))
@@ -147,7 +149,7 @@ test_that("columns that are entirely missing are dropped from manuscript tables"
   # This panel agrees too closely for logit severity to be estimable.
   expect_true(all(is.na(fit$results$severity)))
 
-  tab <- content_report(fit)
+  tab <- content_report(fit, format = "data.frame")
   expect_false("severity" %in% names(tab))
   expect_false("outfit" %in% names(tab))
   # Columns that do carry information are kept.
@@ -168,14 +170,43 @@ test_that("content_report works for every flagship workflow", {
     domain = c("A", "B", "C")
   )
   for (fit in list(sort_fit(), expert_fit(), judge_fit(), domain)) {
-    tab <- content_report(fit)
+    tab <- content_report(fit, format = "data.frame")
     expect_s3_class(tab, "data.frame")
     expect_true("status" %in% names(tab))
     expect_gt(ncol(tab), 2L)
+    apa <- content_report(fit)
+    expect_s3_class(apa, "contentvalid_report")
+    expect_true("decision" %in% names(apa))
+    expect_true(all(vapply(apa, is.character, logical(1))))
   }
 })
 
 test_that("content_report rejects non-workflow input", {
   expect_error(content_report("not a workflow"), "fitted contentvalidR workflow")
   expect_error(content_report(list()), "fitted contentvalidR workflow")
+})
+
+test_that("the default report is an APA table", {
+  tab <- content_report(sort_fit())
+  expect_identical(names(tab), c("item", "target", "judges", "competitor",
+                                 "Psa", "95% CI", "Csv", "p", "decision"))
+  r <- sort_fit()$results
+  i <- which(r$item == "A1")
+  expect_identical(tab$judges[i], paste0(r$n_target[i], "/", r$n[i]))
+  expect_false(any(grepl("^0[.]", tab$Psa)))
+  expect_match(tab$`95% CI`[i], "^[[][.][0-9]{2}, (1[.]00|[.][0-9]{2})[]]$")
+  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|1[.]000)$", tab$p)))
+
+  # It prints without row names, and as.data.frame() gives a plain data frame.
+  out <- utils::capture.output(print(tab))
+  expect_match(out[1], "^ *item")
+  expect_identical(class(as.data.frame(tab)), "data.frame")
+})
+
+test_that("markdown output prints as the table, not as a character vector", {
+  md <- content_report(sort_fit(), format = "markdown")
+  out <- utils::capture.output(print(md))
+  expect_identical(out, as.character(unclass(md)))
+  expect_false(any(grepl("^[[]1[]]|settings", out)))
+  expect_match(out[1], "| Psa | 95% CI |", fixed = TRUE)
 })

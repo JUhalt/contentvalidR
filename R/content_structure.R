@@ -40,7 +40,7 @@
 }
 
 .as_item_distance <- function(similarity, is_distance) {
-  M <- as.matrix(similarity)
+  M <- as.matrix(.untag_component(similarity))
   if (!is.numeric(M)) stop("`similarity` must be numeric.", call. = FALSE)
   if (nrow(M) != ncol(M)) {
     stop("`similarity` must be a square item-by-item matrix.", call. = FALSE)
@@ -369,6 +369,7 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
 #' @return A square, symmetric item-by-item matrix of co-assignment proportions,
 #'   with attribute `"n_pairs"` giving the number of judges contributing to each
 #'   cell.
+#'   It prints with two decimals; the values themselves are unrounded.
 #'
 #' @section Weaker evidence than a similarity task:
 #' Co-assignment similarity is coarser than a direct similarity rating. A sort
@@ -450,5 +451,5 @@ similarity_from_sort <- function(assignments,
          "similarity is undefined.", call. = FALSE)
   }
   attr(sim, "n_pairs") <- pairs
-  sim
+  .tag_component(sim, "contentvalid_similarity")
 }

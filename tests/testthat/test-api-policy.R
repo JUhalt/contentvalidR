@@ -73,9 +73,21 @@ test_that("both deprecation examples the policy cites are in the state it claims
   rd <- rd_text("anova_content.Rd")
   expect_match(rd, "removed in 0.8.0", fixed = TRUE)
 
-  # With both cycles complete, the policy says nothing is carried into 1.0.
+  # The policy names the one deprecation in progress and when it ends.
   expect_match(gsub("[[:space:]]+", " ", policy_text()),
-               "No deprecation is in progress", fixed = TRUE)
+               "One deprecation is in progress", fixed = TRUE)
+})
+
+test_that("agreement_summary() is deprecated as the policy says: it warns and still works", {
+  expect_match(gsub("[[:space:]]+", " ", policy_text()),
+               "deprecated in 0.9.0 and will be removed in 1.0.0", fixed = TRUE)
+  ratings <- data.frame(r1 = c("A", "B", "A"), r2 = c("A", "B", "B"),
+                        stringsAsFactors = FALSE)
+  expect_warning(res <- agreement_summary(ratings),
+                 class = "contentvalidR_deprecated")
+  expect_warning(agreement_summary(ratings), "panel_agreement()", fixed = TRUE)
+  # It still returns a result: irr's, or the documented fallback without irr.
+  expect_false(is.null(res))
 })
 
 test_that("the status vocabulary the policy promises is what workflows use", {

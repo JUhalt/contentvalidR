@@ -379,7 +379,7 @@ Note the step. Lynn's (1986) I-CVI criterion requires unanimity up to five exper
 
 For a Delphi study, where the same panel rates items over several rounds with feedback in between, `delphi_validity()` reports two questions separately. Consensus is the share of experts agreeing, judged against a threshold you fix before the study. Stability is the share of experts who kept their rating, shown beside weighted kappa between rounds. Kappa carries no verbal labels, because it falls as a panel converges. The published alternatives are selectable, each with its limits printed: Chaffin and Talley's lambda and chi-square, Dajani et al.'s chi-square, and Scheibe et al.'s 15% rule. See `vignette("delphi-rounds")`.
 
-`content_report()` builds manuscript-ready tables as a data frame or as Markdown for Quarto and R Markdown, with no reporting dependency added to the package.
+`content_report()` builds manuscript tables in APA style, printed as they are or as Markdown for Quarto and R Markdown, with no reporting dependency added to the package. `format = "data.frame"` gives the same columns as numbers.
 
 ```{r reporting}
 content_report(fit, include = "flagged")

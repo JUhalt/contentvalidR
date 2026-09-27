@@ -21,6 +21,9 @@ A list containing the exact p-value, observed target proportion,
 one-sided confidence interval, the minimum critical target count,
 a logical \code{passes_chance} flag, a backward-compatible \code{decision} label,
 and a plain-language \code{interpretation}.
+The inputs are returned too, as \code{n_target}, \code{N}, \code{p0}, and \code{alpha}.
+It prints as a short report in APA style; the elements themselves are
+unrounded.
 }
 \description{
 Tests whether the number of assignments to an item's intended construct

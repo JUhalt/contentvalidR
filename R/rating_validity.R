@@ -11,8 +11,8 @@
     mean_htd <- if (n_htd == 0L) NA_real_ else mean(z$htd, na.rm = TRUE)
     r <- unname(r_map[target])
     r_arg <- if (is.na(r)) NULL else r
-    htc_i <- interpret_colquitt(mean_htc, "htc", orbiting_r = r_arg, judge_type = judge_type)
-    htd_i <- interpret_colquitt(mean_htd, "htd", orbiting_r = r_arg, judge_type = judge_type)
+    htc_i <- .untag_component(interpret_colquitt(mean_htc, "htc", orbiting_r = r_arg, judge_type = judge_type))
+    htd_i <- .untag_component(interpret_colquitt(mean_htd, "htd", orbiting_r = r_arg, judge_type = judge_type))
     hs <- htc_i$interpretation[1]
     ds <- htd_i$interpretation[1]
     overall <- if (is.na(hs) || is.na(ds)) NA_character_ else {
@@ -182,6 +182,10 @@ rating_validity <- function(ratings,
     alpha = alpha,
     adjust = adjust
   )
+  # The components print as formatted tables; the workflow's results must not.
+  htc_out <- .untag_component(htc_out)
+  htd_out <- .untag_component(htd_out)
+  anova_out <- .untag_component(anova_out)
 
   idx_h <- match(anova_out$item, htc_out$item)
   idx_d <- match(anova_out$item, htd_out$item)
@@ -374,7 +378,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
 
   if (.show_key()) {
     .print_key(c("htc", "htd"), headings = c("HTC", "HTD"))
-    .print_status_legend()
+    .print_decision_legend(x$results$recommendation, "construct-rating")
     .print_key_footer()
   }
 

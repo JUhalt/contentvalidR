@@ -311,6 +311,117 @@
   )
 }
 
+# One line per term for the key printed under results. The full definitions
+# stay in .term_defs() and contentvalid_glossary(); a test requires every term
+# to have one here.
+.term_short <- function() {
+  c(
+    psa = "Share of judges who put the item in the construct it was written for (0 to 1; higher is stronger).",
+    csv = "How much more often judges chose the intended construct than its closest rival (-1 to 1; 0 is a tie).",
+    competitor = "The construct other than the intended one that judges chose most often.",
+    p_value = "Chance of at least this many target assignments if judges assigned at the rate p0; compared with alpha.",
+    htc = "Mean rating against the intended definition, as a share of the rating scale (0 to 1).",
+    htd = "How far that mean exceeds the closest rival's, as a share of the scale (usually small).",
+    V = "Mean relevance rating rescaled to run from 0 (lowest possible) to 1 (highest).",
+    I_CVI = "Share of experts rating the item relevant, compared with Lynn's criterion for the panel size.",
+    `I_CVI_low/I_CVI_high` = "Wide because expert panels are small; the method is named above.",
+    `psa_low/psa_high` = "Wider when fewer judges sorted the item; the method is named above.",
+    kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 when agreement is below chance).",
+    agreement = "One coefficient for the whole panel (1 is perfect, 0 is chance); it can be low when nearly every rating is the same.",
+    cvr = "Lean of the panel toward calling the item essential (-1 to 1; above 0 means more than half did).",
+    ioc = "How consistently experts linked the item to its own objective rather than another (-1 to 1).",
+    severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel.",
+    `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is too predictable.",
+    differentiation = "Spread of the judge's ratings compared with a typical judge (1 is typical; low means few distinctions).",
+    g_coefficient = "How well the ranking of items would reproduce with another panel of this size (0 to 1).",
+    phi_coefficient = "How well the absolute ratings would reproduce with another panel of this size (0 to 1).",
+    share = "Percentage of all items in this cell.",
+    adjusted_rand = "Match between the experts' groupings and the blueprint, corrected for chance (0 is chance, 1 is exact).",
+    stress = "Distortion from fitting the similarities into few dimensions (0 is perfect; below .10 is fair or better).",
+    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the preset threshold.",
+    prop_unchanged = "Share of experts giving the same rating in two consecutive rounds (1 means nobody changed).",
+    kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cut-off.",
+    lambda = "How much an expert's earlier rating predicts the later one (0 to 1): predictability, not agreement.",
+    chi_sq_individual = "Tests whether later ratings depend on earlier ones; needs expected counts of 5 or more.",
+    chi_sq_group = "Tests whether the two rounds' distributions differ; small panels often look stable for lack of power.",
+    percent_change = "Net change in the rating distribution between rounds (stable below .15 by its authors' rule)."
+  )
+}
+
+# What each word in a workflow's decision column means, shown under results for
+# the words that actually appear. A test checks every word a workflow can
+# produce has an entry.
+.decision_meanings <- function(workflow) {
+  switch(
+    workflow,
+    "item-sort" = c(
+      Retain = "met the exact target-assignment criterion.",
+      Review = "did not meet it; the competitor column shows where judges put it instead.",
+      "Insufficient data" = "no judge sorted it."
+    ),
+    "construct-rating" = c(
+      Retain = "rated highest against its intended construct, with every planned contrast meeting the screening criterion.",
+      Review = "did not meet every criterion; the competitor column shows the closest rival.",
+      "Insufficient data" = "fewer than two judges rated it against every construct."
+    ),
+    relevance = c(
+      "Strong support" = "met the I-CVI criterion, with modified kappa above .74.",
+      Support = "met the I-CVI criterion.",
+      Review = "did not meet the I-CVI criterion.",
+      "Insufficient panel" = "fewer than three experts rated it."
+    ),
+    essentiality = c(
+      Supported = "enough experts rated it essential to pass the exact test.",
+      Review = "too few experts rated it essential to pass the exact test.",
+      "Insufficient data" = "no expert rated it."
+    ),
+    congruence = c(
+      "Target favored" = "experts linked it most strongly to its intended objective.",
+      "Tie / review" = "its intended objective tied with another.",
+      Review = "experts linked it more strongly to another objective.",
+      "Target described" = "only its intended objective was rated, so there is nothing to compare.",
+      "Insufficient data" = "no usable ratings for its intended objective.",
+      "Descriptive only" = "no intended objective was given, so IOC is only described."
+    ),
+    delphi = c(
+      Consensus = "reached the consensus threshold in its last round.",
+      "No consensus" = "did not reach the consensus threshold.",
+      "Descriptive only" = "no consensus threshold was set, so agreement is only described.",
+      "Insufficient panel" = "fewer than three experts rated it in its last round."
+    ),
+    judge = c(
+      Typical = "consistent with the panel.",
+      Severe = "rates markedly lower than the panel.",
+      Lenient = "rates markedly higher than the panel.",
+      Erratic = "decisions noisier than the model expects.",
+      "Too predictable" = "decisions more predictable than the model expects.",
+      "Low differentiation" = "draws few distinctions among items compared with other judges.",
+      Influential = "at least one item's review status changes without this judge.",
+      "Insufficient data" = "fewer than two usable ratings."
+    ),
+    domain = c(
+      Covered = "met the coverage criteria.",
+      "Thinly covered" = "fewer items than the minimum set.",
+      "Over-represented" = "a larger share of the items than expected.",
+      "Not covered" = "the blueprint includes it, but no item addresses it."
+    ),
+    stop("No decision meanings for workflow '", workflow, "'.", call. = FALSE)
+  )
+}
+
+# Explains the decision words present in `decisions`, in the order defined.
+.print_decision_legend <- function(decisions, workflow, width = 76) {
+  meanings <- .decision_meanings(workflow)
+  present <- meanings[names(meanings) %in% as.character(decisions)]
+  if (!length(present)) return(invisible(NULL))
+  cat("\nWhat the decisions mean\n")
+  for (nm in names(present)) {
+    cat(strwrap(paste0(nm, " -- ", present[[nm]]), width = width,
+                initial = "  ", prefix = "      "), sep = "\n")
+  }
+  invisible(NULL)
+}
+
 .status_definitions <- function() {
   data.frame(
     status = c("Supported", "Review", "Insufficient data", "Descriptive only"),
@@ -346,10 +457,10 @@
   if (!nrow(defs)) return(invisible(NULL))
   defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
 
+  short <- .term_short()
   cat("\nWhat these columns mean\n")
   for (i in seq_len(nrow(defs))) {
-    body <- defs$definition[i]
-    if (nzchar(defs$range[i])) body <- paste0(body, " (", defs$range[i], ")")
+    body <- short[[defs$term[i]]]
     cat(strwrap(paste0(shown[[defs$term[i]]], " -- ", defs$label[i], ". ", body),
                 width = width, initial = "  ", prefix = "      "), sep = "\n")
   }
@@ -357,29 +468,10 @@
 }
 
 .print_key_footer <- function() {
-  cat("\nSee `contentvalid_glossary()` for all terms, or set\n",
-      "`options(contentvalidR.show_key = FALSE)` to hide this key.\n",
-      sep = "")
+  cat("\nFull definitions: contentvalid_glossary(). To hide this key:\n",
+      "options(contentvalidR.show_key = FALSE).\n", sep = "")
 }
 
-.print_status_legend <- function(width = 76, statuses = NULL) {
-  d <- .status_definitions()
-  if (!is.null(statuses)) {
-    d <- d[d$status %in% statuses, , drop = FALSE]
-    if (!nrow(d)) return(invisible(NULL))
-  }
-  cat("\nWhat the status labels mean\n")
-  for (i in seq_len(nrow(d))) {
-    cat(strwrap(paste0(d$status[i], " -- ", d$meaning[i]),
-                width = width, initial = "  ", prefix = "      "), sep = "\n")
-  }
-  cat(strwrap(paste(
-    "Each workflow also uses its own wording in the decision column",
-    "(Retain, Strong support, Typical, Covered, and so on). Those words map",
-    "onto the shared statuses above."
-  ), width = width, initial = "  ", prefix = "  "), sep = "\n")
-  invisible(NULL)
-}
 
 #' Glossary of contentvalidR indices and status terms
 #'
@@ -446,6 +538,21 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
       cat(strwrap(paste0(sub$term[i], " -- ", sub$label[i], ". ", body),
                   width = width, initial = "  ", prefix = "      "), sep = "\n")
     }
+    # The words each workflow prints in its decision column.
+    sets <- switch(wf,
+                   "expert-panel" = c("relevance", "essentiality", "congruence"),
+                   "judge-heterogeneity" = "judge",
+                   "domain-coverage" = "domain",
+                   wf)
+    for (s in sets) {
+      cat("  decisions", if (length(sets) > 1L) paste0(" (", s, ")"), ":\n",
+          sep = "")
+      meanings <- .decision_meanings(s)
+      for (nm in names(meanings)) {
+        cat(strwrap(paste0(nm, " -- ", meanings[[nm]]), width = width,
+                    initial = "    ", prefix = "        "), sep = "\n")
+      }
+    }
   }
 
   st <- attr(x, "statuses")
@@ -455,6 +562,9 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
       cat(strwrap(paste0(st$status[i], " -- ", st$meaning[i]),
                   width = width, initial = "  ", prefix = "      "), sep = "\n")
     }
+    cat(strwrap(paste("Each decision word above maps onto one of these",
+                      "statuses, stored in the `status` column of `results`."),
+                width = width, initial = "  ", prefix = "  "), sep = "\n")
   }
   cat("\n")
   .say("Strength labels such as Strong or Weak are percentile positions",

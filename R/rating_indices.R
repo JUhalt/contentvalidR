@@ -20,6 +20,8 @@
 #'
 #' @return A data.frame with item-level target means, usable target-rating
 #'   counts, and HTC.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -64,7 +66,7 @@ htc <- function(ratings,
   })
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
-  out
+  .tag_component(out, "contentvalid_htc")
 }
 
 #' Hinkin-Tracey distinctiveness (HTD)
@@ -86,6 +88,8 @@ htc <- function(ratings,
 #'
 #' @return A data.frame containing item-level HTD, the strongest orbiting
 #'   construct, complete-judge count, and number of target-orbiting pairs.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -159,5 +163,5 @@ htd <- function(ratings,
   })
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
-  out
+  .tag_component(out, "contentvalid_htd")
 }

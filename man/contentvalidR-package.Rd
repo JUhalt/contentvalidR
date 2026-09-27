@@ -73,7 +73,13 @@ was deprecated in the first release, warned through every release to 0.6.0,
 and was removed in 0.7.0. Its \code{posthoc_pass} returned column, a duplicate of
 \code{contrast_pass}, could not warn when read, so it was documented as
 deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
-\code{NEWS.md}. No deprecation is in progress, so nothing is carried into 1.0.
+\code{NEWS.md}.
+
+One deprecation is in progress. \code{\link[=agreement_summary]{agreement_summary()}}, a Tier 3 helper, is
+deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
+that takes items in rows rather than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does
+its job. It warns when called. Removing it at 1.0.0 means nothing
+deprecated is carried past 1.0.
 }
 
 \section{Changing a default}{

@@ -13,6 +13,8 @@ reproducibility_phi(sig1, sig2)
 }
 \value{
 A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
+It prints as a short report in APA style; the elements themselves are
+unrounded.
 }
 \description{
 Auxiliary compatibility diagnostic. Cross-tabulates retention decisions for

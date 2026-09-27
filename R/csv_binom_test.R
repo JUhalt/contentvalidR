@@ -21,6 +21,9 @@
 #'   one-sided confidence interval, the minimum critical target count,
 #'   a logical `passes_chance` flag, a backward-compatible `decision` label,
 #'   and a plain-language `interpretation`.
+#'   The inputs are returned too, as `n_target`, `N`, `p0`, and `alpha`.
+#'   It prints as a short report in APA style; the elements themselves are
+#'   unrounded.
 #'
 #' @references
 #' Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
@@ -51,7 +54,7 @@ csv_binom_test <- function(n_c, N, p0 = 0.5, alpha = 0.05) {
   critical_n <- .critical_target_count(N, p0 = p0, alpha = alpha)
   passes <- isTRUE(bt$p.value <= alpha)
 
-  list(
+  out <- list(
     p.value = bt$p.value,
     estimate = unname(bt$estimate),
     conf.int = bt$conf.int,
@@ -62,6 +65,8 @@ csv_binom_test <- function(n_c, N, p0 = 0.5, alpha = 0.05) {
       "Target assignments exceed the exact chance criterion."
     } else {
       "Target assignments do not exceed the exact chance criterion."
-    }
+    },
+    n_target = n_c, N = N, p0 = p0, alpha = alpha
   )
+  .tag_component(out, "contentvalid_binom")
 }

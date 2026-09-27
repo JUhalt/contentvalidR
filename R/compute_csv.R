@@ -18,6 +18,8 @@
 #'
 #' @return A data.frame with one row per item and columns `item`, `target`,
 #'   `n_total`, `n`, `n_missing`, `n_target`, `competitor`, `n_other_max`, and `csv`.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -86,5 +88,5 @@ compute_csv <- function(assignments,
 
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
-  out
+  .tag_component(out, "contentvalid_csv")
 }
