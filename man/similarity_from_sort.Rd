@@ -52,5 +52,5 @@ similarity_from_sort(sorts)
 \references{
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological
-Measurement, 16}(1), 17-31. \doi{10.1177/014662169201600102}
+Measurement, 16}(1), 17–31. \doi{10.1177/014662169201600102}
 }

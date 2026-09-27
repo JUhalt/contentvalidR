@@ -938,9 +938,11 @@ print.contentvalid_handoff <- function(x, ...) {
   .say("Surviving content review is evidence about relevance, representation,",
        "and expert judgment. It does not establish that an item will behave",
        "well empirically: an item can be clearly relevant and still correlate",
-       "poorly with its construct or load on an unintended factor. Items held",
-       "back are listed above rather than deleted, so the record stays",
-       "complete.")
+       "poorly with its construct or load on an unintended factor.",
+       if (nrow(held)) {
+         paste("Items held back are listed above rather than deleted, so the",
+               "record stays complete.")
+       })
   cat("\n")
   invisible(x)
 }

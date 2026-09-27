@@ -112,7 +112,8 @@
         "rating at random. With small panels, chance agreement is substantial,",
         "which is why the raw I-CVI alone can overstate consensus."
       ),
-      range = "0 to 1; higher is stronger",
+      range = paste("at most 1; below 0 when fewer experts agree than chance",
+                    "predicts; higher is stronger"),
       stringsAsFactors = FALSE
     ),
     data.frame(

@@ -88,9 +88,10 @@ dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 gtheory_content(ratings)
 }
 \references{
+Brennan, R. L. (2001). \emph{Generalizability theory}. Springer.
+\doi{10.1007/978-1-4757-3456-0}
+
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. \emph{Journal of Educational Measurement, 25}(4),
-287-299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
-
-Brennan, R. L. (2001). \emph{Generalizability Theory.} Springer.
+287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
 }

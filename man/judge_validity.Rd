@@ -75,7 +75,7 @@ person's ratings and therefore deserves a closer look.
 
 Logit severity comes from a many-facet Rasch model fitted by joint maximum
 likelihood as a logistic regression, the generalized linear model
-formulation described by de Boeck and Wilson (2004). Joint maximum
+formulation described by De Boeck and Wilson (2004). Joint maximum
 likelihood is known to over-disperse facet estimates in small designs. The
 standard Wright-Douglas \code{(L-1)/L} correction is applied by default and
 reported in \code{settings$bias_correction}, but it reduces rather than removes
@@ -103,16 +103,17 @@ summary(fit)
 \references{
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. \emph{Journal of Educational Measurement, 25}(4),
-287-299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
+287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
+
+De Boeck, P., & Wilson, M. (Eds.). (2004). \emph{Explanatory item response models:
+A generalized linear and nonlinear approach}. Springer.
+\doi{10.1007/978-1-4757-3990-9}
 
 Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. \emph{Journal of Educational
-Measurement, 31}(2), 93-112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
+Measurement, 31}(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
 
-Linacre, J. M. (1989). \emph{Many-Facet Rasch Measurement.} MESA Press.
-
-de Boeck, P., & Wilson, M. (2004). \emph{Explanatory Item Response Models: A
-Generalized Linear and Nonlinear Approach.} Springer.
+Linacre, J. M. (1989). \emph{Many-facet Rasch measurement}. MESA Press.
 }
 \seealso{
 \code{\link[=gtheory_content]{gtheory_content()}} for the generalizability analysis alone,

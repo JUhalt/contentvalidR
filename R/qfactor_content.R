@@ -115,27 +115,27 @@
 #' @references
 #' Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
 #' methodology for selecting the correct number of factors to retain.
-#' *Educational and Psychological Measurement, 55*(3), 377-393.
+#' *Educational and Psychological Measurement, 55*(3), 377–393.
 #' \doi{10.1177/0013164495055003002}
 #'
 #' Horn, J. L. (1965). A rationale and test for the number of factors in factor
-#' analysis. *Psychometrika, 30*(2), 179-185. \doi{10.1007/BF02289447}
+#' analysis. *Psychometrika, 30*(2), 179–185. \doi{10.1007/BF02289447}
+#'
+#' Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &
+#' Powers, K. J. (1999). An empirical comparison of approaches for
+#' quantitatively assessing the content adequacy of paper-and-pencil measurement
+#' instruments. *Organizational Research Methods, 2*(2), 140–156.
+#' \doi{10.1177/109442819922002}
 #'
 #' Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., &
 #' Lankau, M. J. (1993). Improving construct measurement in management research:
 #' Comments and a quantitative approach for assessing the theoretical content
 #' adequacy of paper-and-pencil survey-type instruments. *Journal of Management,
-#' 19*(2), 385-417. \doi{10.1177/014920639301900208}
-#'
-#' Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &
-#' Powers, K. J. (1999). An empirical comparison of approaches for
-#' quantitatively assessing the content adequacy of paper-and-pencil measurement
-#' instruments. *Organizational Research Methods, 2*(2), 140-156.
-#' \doi{10.1177/109442819922002}
+#' 19*(2), 385–417. \doi{10.1177/014920639301900208}
 #'
 #' Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for
 #' determining the number of components to retain. *Psychological Bulletin,
-#' 99*(3), 432-442. \doi{10.1037/0033-2909.99.3.432}
+#' 99*(3), 432–442. \doi{10.1037/0033-2909.99.3.432}
 #'
 #' @examples
 #' set.seed(1)

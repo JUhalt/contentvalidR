@@ -297,6 +297,7 @@ summary.contentvalid_rounds <- function(object, ...) {
 #' @export
 print.summary.contentvalid_rounds <- function(x, ...) {
   cat("Summary: comparison across pretest rounds\n")
+  cat(strrep("-", 41), "\n", sep = "")
   cat("Workflow: ", x$workflow, " | Rounds: ", x$n_rounds, " | Units: ",
       x$n_units, "\n", sep = "")
   cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",

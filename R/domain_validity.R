@@ -58,16 +58,16 @@
 #' blueprint itself.
 #'
 #' @references
+#' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+#' specialists in the assessment of criterion-referenced test item validity.
+#' *Dutch Journal of Educational Research, 2*, 49–60.
+#'
 #' Sireci, S. G. (1998). The construct of content validity. *Social Indicators
-#' Research, 45*(1-3), 83-117. \doi{10.1023/A:1006985528729}
+#' Research, 45*(1–3), 83–117. \doi{10.1023/A:1006985528729}
 #'
 #' Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 #' cluster analysis and multidimensional scaling. *Applied Psychological
-#' Measurement, 16*(1), 17-31. \doi{10.1177/014662169201600102}
-#'
-#' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-#' specialists in the assessment of criterion-referenced test item validity.
-#' *Dutch Journal of Educational Research, 2*, 49-60.
+#' Measurement, 16*(1), 17–31. \doi{10.1177/014662169201600102}
 #'
 #' @seealso [content_structure()], [similarity_from_sort()], [ioc()].
 #'
@@ -185,11 +185,11 @@ domain_validity <- function(assignments,
     }
     if (thin[i]) {
       return(sprintf(paste(
-        "Only %d item(s) address this cell, below the minimum of %d set for",
+        "Only %s this cell, below the minimum of %d set for",
         "this analysis. Thin coverage limits how well the cell can be",
         "represented, and leaves the cell's contribution dependent on very few",
         "items."
-      ), counts[i], min_items))
+      ), .n_noun(counts[i], "item addresses", "items address"), min_items))
     }
     if (over[i]) {
       return(sprintf(paste(
@@ -199,8 +199,8 @@ domain_validity <- function(assignments,
         "rather than an accident of item writing."
       ), share[i] * 100, over_factor, expected_share[i] * 100))
     }
-    sprintf("This cell holds %d item(s), %.0f%% of the instrument, which meets the coverage criteria set for this analysis.",
-            counts[i], share[i] * 100)
+    sprintf("This cell holds %s, %.0f%% of the instrument, which meets the coverage criteria set for this analysis.",
+            .n_noun(counts[i], "item"), share[i] * 100)
   }, character(1))
 
   results <- data.frame(
@@ -368,6 +368,7 @@ summary.contentvalid_domain <- function(object, ...) {
 print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   cat("Summary: content-domain coverage\n")
+  cat(strrep("-", 32), "\n", sep = "")
   cat("Items: ", x$n_items, " | Blueprint cells: ", x$n_cells, "\n", sep = "")
   cat("Cells meeting coverage criteria: ", x$n_supported, " | Flagged: ",
       x$n_review, "\n", sep = "")

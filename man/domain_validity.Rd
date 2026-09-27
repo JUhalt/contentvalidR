@@ -92,16 +92,16 @@ domain_validity(
 )
 }
 \references{
+Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+specialists in the assessment of criterion-referenced test item validity.
+\emph{Dutch Journal of Educational Research, 2}, 49–60.
+
 Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
-Research, 45}(1-3), 83-117. \doi{10.1023/A:1006985528729}
+Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
 
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological
-Measurement, 16}(1), 17-31. \doi{10.1177/014662169201600102}
-
-Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-specialists in the assessment of criterion-referenced test item validity.
-\emph{Dutch Journal of Educational Research, 2}, 49-60.
+Measurement, 16}(1), 17–31. \doi{10.1177/014662169201600102}
 }
 \seealso{
 \code{\link[=content_structure]{content_structure()}}, \code{\link[=similarity_from_sort]{similarity_from_sort()}}, \code{\link[=ioc]{ioc()}}.

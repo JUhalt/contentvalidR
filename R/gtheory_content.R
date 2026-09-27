@@ -114,11 +114,12 @@
 #' than silent.
 #'
 #' @references
+#' Brennan, R. L. (2001). *Generalizability theory*. Springer.
+#' \doi{10.1007/978-1-4757-3456-0}
+#'
 #' Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 #' content validity ratings. *Journal of Educational Measurement, 25*(4),
-#' 287-299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
-#'
-#' Brennan, R. L. (2001). *Generalizability Theory.* Springer.
+#' 287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
 #'
 #' @examples
 #' # Six items rated for relevance by eight judges on a 1-4 scale. Items 1-4 are

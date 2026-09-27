@@ -85,12 +85,12 @@ fit
 summary(fit)
 }
 \references{
-Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
-content validation. \emph{Organizational Research Methods, 2}(2), 175-186.
-\doi{10.1177/109442819922004}
-
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. \emph{Journal of Applied
-Psychology, 104}(10), 1243-1265. \doi{10.1037/apl0000406}
+Psychology, 104}(10), 1243–1265. \doi{10.1037/apl0000406}
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. \emph{Organizational Research Methods, 2}(2), 175–186.
+\doi{10.1177/109442819922004}
 }

@@ -114,7 +114,7 @@ test_that("a unanimous panel reports no single-judge dependence", {
   expect_equal(fit$scale_summary$n_fragile_items, 0L)
   expect_equal(fit$scale_summary$n_influential, 0L)
   expect_false(fit$scale_summary$severity_estimable)
-  expect_match(fit$details$severity_note, "agreed almost completely")
+  expect_match(fit$details$severity_note, "agrees almost completely")
 })
 
 test_that("generalizability results are carried through to the panel summary", {

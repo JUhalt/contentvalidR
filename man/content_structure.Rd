@@ -74,19 +74,19 @@ diag(sim) <- 5
 content_structure(sim, membership = blueprint)
 }
 \references{
+Hubert, L., & Arabie, P. (1985). Comparing partitions. \emph{Journal of
+Classification, 2}(1), 193–218. \doi{10.1007/BF01908075}
+
+Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
+Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
+
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological
-Measurement, 16}(1), 17-31. \doi{10.1177/014662169201600102}
+Measurement, 16}(1), 17–31. \doi{10.1177/014662169201600102}
 
 Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to
 assess content representation: An MDS analysis. \emph{Applied Psychological
-Measurement, 19}(3), 241-255. \doi{10.1177/014662169501900303}
-
-Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
-Research, 45}(1-3), 83-117. \doi{10.1023/A:1006985528729}
-
-Hubert, L., & Arabie, P. (1985). Comparing partitions. \emph{Journal of
-Classification, 2}(1), 193-218. \doi{10.1007/BF01908075}
+Measurement, 19}(3), 241–255. \doi{10.1177/014662169501900303}
 }
 \seealso{
 \code{\link[=similarity_from_sort]{similarity_from_sort()}} to derive similarities from an item-sort

@@ -22,14 +22,14 @@
 #'   counts, and HTC.
 #'
 #' @references
-#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
-#' content validation. *Organizational Research Methods, 2*(2), 175-186.
-#' \doi{10.1177/109442819922004}
-#'
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 #' Content validation guidelines: Evaluation criteria for definitional
 #' correspondence and definitional distinctiveness. *Journal of Applied
-#' Psychology, 104*(10), 1243-1265. \doi{10.1037/apl0000406}
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
+#'
+#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+#' content validation. *Organizational Research Methods, 2*(2), 175–186.
+#' \doi{10.1177/109442819922004}
 #'
 #' @examples
 #' d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
@@ -89,7 +89,7 @@ htc <- function(ratings,
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-#' *Journal of Applied Psychology, 104*(10), 1243-1265.
+#' *Journal of Applied Psychology, 104*(10), 1243–1265.
 #' \doi{10.1037/apl0000406}
 #'
 #' @examples

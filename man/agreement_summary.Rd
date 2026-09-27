@@ -32,7 +32,7 @@ if (requireNamespace("irr", quietly = TRUE)) {
 }
 \references{
 Fleiss, J. L. (1971). Measuring nominal scale agreement among many raters.
-\emph{Psychological Bulletin, 76}(5), 378-382. \doi{10.1037/h0031619}
+\emph{Psychological Bulletin, 76}(5), 378–382. \doi{10.1037/h0031619}
 
 Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). \emph{irr: Various
 coefficients of interrater reliability and agreement} (R package version

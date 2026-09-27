@@ -28,7 +28,7 @@
 # Dichotomous many-facet Rasch model fitted as a logistic regression:
 #   logit P(endorse) = item_effect - judge_severity
 # The generalized linear model formulation of Rasch-family models follows
-# de Boeck & Wilson (2004). Estimation is joint maximum likelihood, so the
+# De Boeck & Wilson (2004). Estimation is joint maximum likelihood, so the
 # Wright-Douglas (L-1)/L bias correction is applied and reported.
 .facets_severity <- function(B, bias_correct = TRUE) {
   n_j <- nrow(B)
@@ -58,11 +58,14 @@
       n_items_dropped = n_drop_i,
       bias_correction = NA_real_,
       reason = paste(
-        "Judge severity could not be estimated. After removing judges and items",
-        "with no variation in endorsement, fewer than two judges and two items",
-        "remained. This usually means the panel agreed almost completely, which",
-        "is a substantive finding rather than an estimation failure: with near",
-        "total agreement there are no severity differences to recover."
+        "Judge severity could not be estimated. After setting aside judges and",
+        "items with no variation in endorsement, fewer than two judges and two",
+        "items remained, usually because each judge endorsed either all of the",
+        "remaining items or none of them. That happens when the panel agrees",
+        "almost completely,",
+        "or when the only disagreement is a judge who rejects every item the",
+        "others accept. It describes the ratings rather than an estimation",
+        "failure: a logit scale needs judges whose endorsements vary."
       )
     ))
   }

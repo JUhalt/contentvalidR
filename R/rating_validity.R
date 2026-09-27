@@ -20,19 +20,26 @@
     }
 
     partial_note <- if (n_htc < nrow(z) || n_htd < nrow(z)) {
-      paste0(" Normative averages use ", n_htc, "/", nrow(z), " item(s) for HTC and ",
-             n_htd, "/", nrow(z), " item(s) for HTD because of missing/insufficient data.")
+      paste0(" Normative averages use ", n_htc, " of ", .n_noun(nrow(z), "item"),
+             " for HTC and ", n_htd, " of ", nrow(z), " for HTD because some",
+             " items had missing or insufficient data.")
     } else ""
     evidence <- if (judge_type == "expert") {
       paste0("HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.", partial_note)
     } else if (is.na(overall)) {
       paste0("Insufficient scale-level rating evidence is available for normative interpretation.", partial_note)
-    } else if (overall %in% c("Very Strong", "Strong")) {
-      paste0(overall, " normative standing on the weaker of definitional correspondence (HTC) and distinctiveness (HTD).", partial_note)
-    } else if (overall == "Moderate") {
-      paste0("Generally supportive normative standing, with at least one content-validity dimension in the moderate range; inspect weaker items and construct overlap before finalizing the scale.", partial_note)
     } else {
-      paste0(overall, " normative standing on at least one dimension; review item wording, construct boundaries, and orbiting-construct choice and consider re-pretesting revisions.", partial_note)
+      band <- sprintf(paste("The weaker of HTC and HTD falls in the %s band of",
+                            "published scales (Colquitt et al., 2019)"), overall)
+      advice <- if (overall %in% c("Very Strong", "Strong")) {
+        "."
+      } else if (overall == "Moderate") {
+        "; inspect the weaker items and construct overlap before finalizing the scale."
+      } else {
+        paste("; review item wording, construct boundaries, and the choice of",
+              "orbiting constructs, and consider pretesting the revised items again.")
+      }
+      paste0(band, advice, partial_note)
     }
 
     data.frame(
@@ -103,14 +110,14 @@
 #'   method-specific `recommendation` field.
 #'
 #' @references
-#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
-#' content validation. *Organizational Research Methods, 2*(2), 175-186.
-#' \doi{10.1177/109442819922004}
-#'
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 #' Content validation guidelines: Evaluation criteria for definitional
 #' correspondence and definitional distinctiveness. *Journal of Applied
-#' Psychology, 104*(10), 1243-1265. \doi{10.1037/apl0000406}
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
+#'
+#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+#' content validation. *Organizational Research Methods, 2*(2), 175–186.
+#' \doi{10.1177/109442819922004}
 #'
 #' @examples
 #' set.seed(12)
@@ -332,7 +339,12 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
 
   sc <- x$scale_summary
   cat("\nTarget-scale Colquitt benchmarks\n")
-  sets <- unique(sc$benchmark_set)
+  # The stored code ("overall") prints as the label the item-sort print uses.
+  labels <- vapply(as.character(sc$benchmark_set), function(s) {
+    lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
+    if (is.null(lab)) s else lab
+  }, character(1), USE.NAMES = FALSE)
+  sets <- unique(labels)
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean HTC` = .fmt(sc$mean_htc, digits), `HTC level` = sc$htc_strength,
                    `mean HTD` = .fmt(sc$mean_htd, digits), `HTD level` = sc$htd_strength,
@@ -342,7 +354,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     st$`items with HTC` <- sc$n_htc
     st$`items with HTD` <- sc$n_htd
   }
-  if (length(sets) > 1L) st$benchmarks <- sc$benchmark_set
+  if (length(sets) > 1L) st$benchmarks <- labels
   .print_table(st)
   if (length(sets) == 1L) .say("Benchmark set:", sets)
 

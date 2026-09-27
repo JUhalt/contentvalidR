@@ -42,6 +42,6 @@ interpret_colquitt(.70, "csv", orbiting_r = .40)
 }
 \references{
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-\emph{Journal of Applied Psychology, 104}(10), 1243-1265.
+\emph{Journal of Applied Psychology, 104}(10), 1243–1265.
 \doi{10.1037/apl0000406}
 }
