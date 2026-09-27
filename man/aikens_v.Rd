@@ -35,6 +35,8 @@ If \code{TRUE}, item-specific effective judge counts are used.}
 \value{
 A data.frame with item, effective judge count \code{N}, number missing,
 Aiken's \code{V}, and (when requested) \code{ci_low} and \code{ci_high}.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Computes Aiken's V per item for bounded ordinal expert ratings. By default,

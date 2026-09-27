@@ -32,6 +32,12 @@
   out
 }
 
+# "p = .021", or "p < .001" when it is that small.
+.p_phrase <- function(p) {
+  txt <- .fmt_p(p)
+  ifelse(startsWith(txt, "<"), paste("p", txt), paste("p =", txt))
+}
+
 .fmt_ci <- function(lo, hi, digits = 2, bounded = TRUE) {
   out <- sprintf("[%s, %s]", .fmt(lo, digits, bounded), .fmt(hi, digits, bounded))
   out[is.na(lo) | is.na(hi)] <- "NA"

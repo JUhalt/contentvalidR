@@ -18,6 +18,8 @@
 #'
 #' @return A data.frame with item, effective judge count `N`, number missing,
 #'   Aiken's `V`, and (when requested) `ci_low` and `ci_high`.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Aiken, L. R. (1980). Content validity and reliability of single items or
@@ -86,7 +88,7 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     stringsAsFactors = FALSE
   )
 
-  if (ci == "none") return(out)
+  if (ci == "none") return(.tag_component(out, "contentvalid_aiken", alpha = alpha))
 
   if (ci == "score") {
     z <- stats::qnorm(1 - alpha / 2)
@@ -99,7 +101,7 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     out$ci_low[N < 1L] <- NA_real_
     out$ci_high[N < 1L] <- NA_real_
     out$ci_method <- "Penfield-Giacobbi score"
-    return(out)
+    return(.tag_component(out, "contentvalid_aiken", alpha = alpha))
   }
 
   if (!is.numeric(B) || length(B) != 1L || !is.finite(B) || B < 2 || B != floor(B)) {
@@ -134,5 +136,5 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
   out$ci_low <- apply(bootV, 2, boot_quantile, prob = qlo)
   out$ci_high <- apply(bootV, 2, boot_quantile, prob = qhi)
   out$ci_method <- "percentile bootstrap"
-  out
+  .tag_component(out, "contentvalid_aiken", alpha = alpha)
 }

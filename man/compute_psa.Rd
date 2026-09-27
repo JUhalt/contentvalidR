@@ -30,6 +30,8 @@ interval.}
 \value{
 A data.frame with one row per item and columns \code{item}, \code{target},
 \code{n_total}, \code{n}, \code{n_missing}, \code{n_target}, \code{psa}, \code{psa_low}, and \code{psa_high}.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 For each item, computes the proportion of non-missing item-sort responses

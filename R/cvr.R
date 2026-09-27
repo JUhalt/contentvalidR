@@ -24,6 +24,8 @@
 #'
 #' @return A data.frame containing item, `ne`, effective `N`, CVR, exact
 #'   p-value, critical essential count/CVR, and `pass`.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
@@ -117,7 +119,7 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
   )
   pass <- !is.na(critical_ne) & N > 0 & essential >= critical_ne
 
-  data.frame(
+  out <- data.frame(
     item = as.character(item_names),
     ne = essential,
     N = N,
@@ -129,4 +131,5 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     row.names = NULL,
     stringsAsFactors = FALSE
   )
+  .tag_component(out, "contentvalid_cvr", alpha = alpha)
 }

@@ -24,6 +24,8 @@ the average focal-orbiting correlation. \code{NULL} uses the overall norms.}
 \value{
 A data.frame with the value, benchmark set, interpretation, and an
 applicability flag.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Classifies one or more Psa, Csv, HTC, or HTD values using the empirical

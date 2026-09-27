@@ -239,8 +239,8 @@ expert_validity <- function(data,
     }
 
     R <- as.matrix(data)
-    aiken <- aikens_v(R, lo = lo, hi = hi, ci = "score",
-                      alpha = alpha, na.rm = na.rm)
+    aiken <- .untag_component(aikens_v(R, lo = lo, hi = hi, ci = "score",
+                                       alpha = alpha, na.rm = na.rm))
     B <- ifelse(is.na(R), NA_real_, as.numeric(R >= relevance_cut))
     dim(B) <- dim(R)
     dimnames(B) <- dimnames(R)
@@ -350,7 +350,7 @@ expert_validity <- function(data,
       legacy = list(scale = scale)
     )
   } else if (mode == "essentiality") {
-    res <- cvr(data, N = N, alpha = alpha, na.rm = na.rm)
+    res <- .untag_component(cvr(data, N = N, alpha = alpha, na.rm = na.rm))
     res$recommendation <- ifelse(
       res$N < 1L,
       "Insufficient data",
@@ -403,7 +403,7 @@ expert_validity <- function(data,
     if (!is.data.frame(data)) {
       stop("Congruence mode requires a long data.frame.", call. = FALSE)
     }
-    cells <- ioc(data, na.rm = na.rm)
+    cells <- .untag_component(ioc(data, na.rm = na.rm))
     if (!is.character(target_col) || length(target_col) != 1L || is.na(target_col) ||
         !nzchar(trimws(target_col))) {
       stop("`target_col` must be one non-empty column name.", call. = FALSE)

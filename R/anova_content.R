@@ -38,6 +38,8 @@
 #'   Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 #'   within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 #'   The full planned-contrast table is stored in `attr(result, "contrasts")`.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'   `posthoc_pass`, a duplicate of `contrast_pass` deprecated in 0.7.0, was
 #'   removed in 0.8.0; read `contrast_pass`.
 #'
@@ -191,5 +193,5 @@ anova_content <- function(ratings,
   attr(out, "contrasts") <- contrasts
   attr(out, "settings") <- list(alpha = alpha, adjust = adjust,
                                  within_method = "one-way repeated-measures ANOVA with Greenhouse-Geisser correction plus planned paired contrasts")
-  out
+  .tag_component(out, "contentvalid_anova")
 }

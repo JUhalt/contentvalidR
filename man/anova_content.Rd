@@ -45,6 +45,8 @@ A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
 The full planned-contrast table is stored in \code{attr(result, "contrasts")}.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 \code{posthoc_pass}, a duplicate of \code{contrast_pass} deprecated in 0.7.0, was
 removed in 0.8.0; read \code{contrast_pass}.
 }

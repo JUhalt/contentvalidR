@@ -9,6 +9,8 @@
 #' @param sig2 Logical vector of retention decisions from pretest 2.
 #'
 #' @return A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
+#'   It prints as a short report in APA style; the elements themselves are
+#'   unrounded.
 #' @examples
 #' sig1 <- c(TRUE, TRUE, FALSE, FALSE)
 #' sig2 <- c(TRUE, FALSE, FALSE, TRUE)
@@ -40,10 +42,11 @@ reproducibility_phi <- function(sig1, sig2) {
     error = function(e) NULL
   )
 
-  list(
+  out <- list(
     table = m,
     phi = phi,
     chisq = if (is.null(chisq) || !is.finite(chisq$statistic)) NA_real_ else unname(chisq$statistic),
     p = if (is.null(chisq) || !is.finite(chisq$p.value)) NA_real_ else chisq$p.value
   )
+  .tag_component(out, "contentvalid_reproducibility")
 }

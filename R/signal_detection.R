@@ -14,6 +14,8 @@
 #' @param actual Logical vector of criterion retention decisions.
 #'
 #' @return A list containing the confusion matrix and diagnostic statistics.
+#'   It prints as a short report in APA style; the elements themselves are
+#'   unrounded.
 #'
 #' @references
 #' Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
@@ -57,7 +59,7 @@ signal_detection <- function(predicted, actual) {
   )
   phi <- .signed_phi(tp = tp, tn = tn, fp = fp, fn = fn)
 
-  list(
+  out <- list(
     confusion = m,
     accuracy = (tp + tn) / sum(m),
     sensitivity = if ((tp + fn) > 0) tp / (tp + fn) else NA_real_,
@@ -66,4 +68,5 @@ signal_detection <- function(predicted, actual) {
     chisq = if (is.null(chisq) || !is.finite(chisq$statistic)) NA_real_ else unname(chisq$statistic),
     p = if (is.null(chisq) || !is.finite(chisq$p.value)) NA_real_ else chisq$p.value
   )
+  .tag_component(out, "contentvalid_signal")
 }

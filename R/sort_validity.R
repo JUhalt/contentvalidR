@@ -32,8 +32,8 @@
     r <- unname(r_map[target])
     r_arg <- if (is.na(r)) NULL else r
 
-    psa_i <- interpret_colquitt(mean_psa, "psa", orbiting_r = r_arg, judge_type = judge_type)
-    csv_i <- interpret_colquitt(mean_csv, "csv", orbiting_r = r_arg, judge_type = judge_type)
+    psa_i <- .untag_component(interpret_colquitt(mean_psa, "psa", orbiting_r = r_arg, judge_type = judge_type))
+    csv_i <- .untag_component(interpret_colquitt(mean_csv, "csv", orbiting_r = r_arg, judge_type = judge_type))
 
     if (!psa_i$applicable || !csv_i$applicable || is.na(mean_psa) || is.na(mean_csv)) {
       evidence <- if (judge_type == "expert") {
@@ -226,6 +226,9 @@ sort_validity <- function(assignments,
   psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
                      ci = proportion_ci, alpha = alpha)
   csv <- compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
+  # The components print as formatted tables; the workflow's results must not.
+  psa <- .untag_component(psa)
+  csv <- .untag_component(csv)
 
   idx <- match(csv$item, psa$item)
   results <- csv
@@ -239,7 +242,8 @@ sort_validity <- function(assignments,
 
   tests <- lapply(seq_len(nrow(results)), function(i) {
     if (results$n[i] < 1L) return(NULL)
-    csv_binom_test(results$n_target[i], results$n[i], p0 = p0, alpha = alpha)
+    .untag_component(csv_binom_test(results$n_target[i], results$n[i], p0 = p0,
+                                    alpha = alpha))
   })
   results$p_value <- vapply(tests, function(z) if (is.null(z)) NA_real_ else z$p.value, numeric(1))
   results$critical_n_target <- vapply(tests, function(z) if (is.null(z)) NA_integer_ else z$critical_n_target, integer(1))

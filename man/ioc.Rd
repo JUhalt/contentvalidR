@@ -15,6 +15,8 @@ missing scores are removed within item-objective cells.}
 \value{
 A data.frame with item, objective, total rows, effective judge count,
 missing count, and IOC.
+It prints as a formatted table in APA style; the values themselves are
+unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
 Computes item-objective congruence from expert ratings coded \code{-1}, \code{0}, and

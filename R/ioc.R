@@ -11,6 +11,8 @@
 #'
 #' @return A data.frame with item, objective, total rows, effective judge count,
 #'   missing count, and IOC.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
@@ -72,5 +74,6 @@ ioc <- function(ratings, na.rm = FALSE) {
   })
   out <- do.call(rbind, rows)
   rownames(out) <- NULL
-  out[order(out$item, out$objective), , drop = FALSE]
+  .tag_component(out[order(out$item, out$objective), , drop = FALSE],
+                 "contentvalid_ioc")
 }

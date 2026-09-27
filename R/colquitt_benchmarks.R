@@ -72,6 +72,8 @@
 #'
 #' @return A data.frame describing the selected benchmark set and its lower
 #'   cutpoints.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -88,7 +90,7 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
   statistic <- match.arg(statistic)
   norm <- .colquitt_norm(orbiting_r)
   cp <- .colquitt_cutpoints(statistic, norm)
-  data.frame(
+  out <- data.frame(
     statistic = statistic,
     benchmark_set = norm,
     benchmark_label = .colquitt_norm_label(norm),
@@ -97,6 +99,7 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
     minimum = c(unname(cp), -Inf),
     stringsAsFactors = FALSE
   )
+  .tag_component(out, "contentvalid_colquitt_norms")
 }
 
 #' Interpret a statistic using Colquitt et al. (2019) norms
@@ -120,6 +123,8 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #'
 #' @return A data.frame with the value, benchmark set, interpretation, and an
 #'   applicability flag.
+#'   It prints as a formatted table in APA style; the values themselves are
+#'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -179,5 +184,5 @@ interpret_colquitt <- function(value,
       stringsAsFactors = FALSE
     )
   })
-  do.call(rbind, rows)
+  .tag_component(do.call(rbind, rows), "contentvalid_colquitt")
 }
