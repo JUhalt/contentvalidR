@@ -691,9 +691,12 @@ settled, and the joint walkthrough.
       removed; `posthoc_pass` is documented as deprecated, starting its clock.
 - [x] Freeze handoff schema version 1
       ([#54](https://github.com/JUhalt/contentvalidR/issues/54)), after
-      checking it against nomologR and solomonR. Adds `keying`,
+      checking it against nomologR, its reader. Adds `keying`,
       `response_min`, and `response_max`, which come from the analyst and
-      never from the fit.
+      never from the fit. solomonR was also asked at the time; on
+      2026-09-25 its maintainer made solomonR a separate project that reads
+      no handoffs, and withdrew the issue that recorded its answer, so it is
+      not a consumer of schema version 1.
 - [x] The joint walkthrough on shared teaching data
       ([#55](https://github.com/JUhalt/contentvalidR/issues/55)):
       `vignette("one-item-set-both-stages")`, where the two stages disagree in

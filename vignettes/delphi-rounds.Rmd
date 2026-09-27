@@ -100,8 +100,9 @@ fit <- delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 fit
 ```
 
-The printout ends with a key to every column and status. The rest of this
-article turns the key off, to keep the output short:
+The printout ends with a key: how the stability statistic works, and what each
+column and decision means. The two caveats above the key print either way. The
+rest of this article turns the key off, to keep the output short:
 
 ```{r key-off}
 options(contentvalidR.show_key = FALSE)

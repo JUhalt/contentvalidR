@@ -113,6 +113,10 @@ test_that("the construct-rating components print as APA tables", {
 
   within <- shown(anova_content(d))
   expect_match(within, "Greenhouse-Geisser corrected", fixed = TRUE)
+  # The table fits an 80-column console.
+  old_width <- options(width = 80)
+  on.exit(options(old_width), add = TRUE)
+  expect_lte(max(nchar(utils::capture.output(print(anova_content(d))))), 80L)
   expect_match(within, "F[(][0-9.]+, [0-9.]+[)] = [0-9.]+")
   # A between-judges design has whole-number degrees of freedom and no
   # Greenhouse-Geisser note.

@@ -229,42 +229,61 @@
   list(data = d, rounds = round_levels)
 }
 
+# What the printout says about the stability method, in two layers. `always`
+# holds what changes how a result should be read, and prints every time.
+# `teaching` holds the fuller explanation, printed with the key, so an
+# experienced reader can hide it (options(contentvalidR.show_key = FALSE))
+# without losing a caveat. Each element is a paragraph.
 .delphi_method_note <- function(method, weights, intervals = TRUE) {
+  if (identical(method, "kappa")) {
+    return(list(
+      always = c(
+        paste("Read kappa as a trend across rounds, beside the share of experts",
+              "who kept their rating (unchanged), not against a cut-off: kappa",
+              "falls as a panel converges on one category, so a stable panel",
+              "can show a low kappa (Holey et al., 2007)."),
+        if (intervals) {
+          paste("The kappa intervals resample the experts (Klar et al., 2002).",
+                "With fewer than about 40 experts they cover less than their",
+                "stated 95%, so read them as rough indications of precision,",
+                "not as tests.")
+        }
+      ),
+      teaching = c(
+        paste(
+          "Stability is weighted kappa between each expert's ratings in",
+          "consecutive rounds (Holey et al., 2007), with", weights, "weights.",
+          if (weights == "quadratic") {
+            paste("A change of two scale points counts four times a change of",
+                  "one. With these weights kappa equals the intraclass",
+                  "correlation of the two rounds' ratings, so a shift of the",
+                  "whole panel counts as instability (Fleiss & Cohen, 1973).")
+          } else {
+            paste("A change of two scale points counts twice a change of one",
+                  "(Cohen, 1968).")
+          },
+          "No verbal labels such as 'substantial' are shown, because kappa",
+          "falls when ratings converge, which is what a Delphi aims for: Holey",
+          "et al. saw a low kappa for their most-agreed statement."
+        ),
+        if (intervals) {
+          paste("The intervals are percentile bootstraps that resample the",
+                "experts, the units the two rounds cross-classify: the",
+                "procedure Klar et al. (2002) describe for kappa. They",
+                "evaluated it for an unweighted kappa on two categories, and a",
+                "nominal 95% interval covered about 83% of the time with 20",
+                "units and 91% with 30, reaching 94% only from 40 up.")
+        }
+      )
+    ))
+  }
+  # The alternatives are contested, so each one's critique always prints.
+  list(always = .delphi_alternative_note(method), teaching = NULL)
+}
+
+.delphi_alternative_note <- function(method) {
   switch(
     method,
-    # Each element is a paragraph; the print method separates them.
-    kappa = c(
-      paste(
-        "Stability is weighted kappa between each expert's ratings in",
-        "consecutive rounds (Holey et al., 2007), with", weights, "weights.",
-        if (weights == "quadratic") {
-          paste("A change of two scale points counts four times a change of",
-                "one. With these weights kappa equals the intraclass",
-                "correlation of the two rounds' ratings, so a shift of the",
-                "whole panel counts as instability (Fleiss & Cohen, 1973).")
-        } else {
-          paste("A change of two scale points counts twice a change of one",
-                "(Cohen, 1968).")
-        },
-        "Read kappa as a trend across rounds, not against a cut-off. No verbal",
-        "labels such as 'substantial' are shown: kappa falls when ratings",
-        "converge on one category, which is what a Delphi aims for, so a panel",
-        "whose experts nearly all kept their answer can still show a low",
-        "kappa. Holey et al. saw this for their most-agreed statement. Read",
-        "kappa next to the share of experts who kept their rating (unchanged)."
-      ),
-      if (intervals) {
-        paste("The intervals are percentile bootstraps that resample the",
-              "experts, which are the units the two rounds cross-classify.",
-              "That is the procedure Klar et al. (2002) describe for kappa,",
-              "but they evaluated it for an unweighted kappa on two",
-              "categories and found a nominal 95% interval covered about 83%",
-              "of the time with 20 units and 91% with 30, reaching 94% only",
-              "from 40 up. Most panels are smaller than that, so the interval",
-              "is narrower than its label claims: read it as indicative of",
-              "precision, not as a test.")
-      }
-    ),
     lambda = paste(
       "Stability is lambda, the index of predictive association that Chaffin",
       "and Talley (1980) take from Goodman and Kruskal: how much knowing an",
@@ -864,9 +883,9 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   cat("\n")
   note <- .delphi_method_note(s$stability, s$kappa_weights,
                               intervals = any(!is.na(stab$lower)))
-  for (i in seq_along(note)) {
+  for (i in seq_along(note$always)) {
     if (i > 1L) cat("\n")
-    .say(note[[i]])
+    .say(note$always[[i]])
   }
   if (is.null(s$consensus_threshold)) {
     cat("\n")
@@ -885,6 +904,13 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   }
 
   if (.show_key()) {
+    if (length(note$teaching)) {
+      cat("\nHow the stability statistic works\n")
+      for (i in seq_along(note$teaching)) {
+        if (i > 1L) cat("\n")
+        .say(note$teaching[[i]], indent = 2L, exdent = 2L)
+      }
+    }
     key <- c("prop_agree", "prop_unchanged",
              switch(s$stability, kappa = "kappa_w", lambda = "lambda",
                     chisq_individual = "chi_sq_individual",
