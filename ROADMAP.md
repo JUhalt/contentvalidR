@@ -979,6 +979,42 @@ update, from its own tag.
 
 ------------------------------------------------------------------------
 
+## v0.9.0 - Ready to be read: references, output, plots, and the README
+
+**Status:** Released (0.9.0 on 2026-09-27, on GitHub and R-universe)
+**Version:** `0.9.0`
+
+Work: [\#72](https://github.com/JUhalt/contentvalidR/pull/72) to
+[\#75](https://github.com/JUhalt/contentvalidR/pull/75). The maintainer
+asked for everything a user sees to be ready before 1.0; an output
+gallery of every print, summary, and plot set the list.
+
+Put every reference list in APA 7 form and fix what the output misstated
+([\#72](https://github.com/JUhalt/contentvalidR/pull/72)): the installed
+BibTeX file holds all 53 cited works, checked against Crossref; lists
+are alphabetical with en dashes; the expert-panel print opens with its
+verdict; the modified-kappa range is corrected.
+
+Show a short key tailored to each result, print the component functions
+in APA style, make
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+APA by default, and deprecate
+[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+([\#73](https://github.com/JUhalt/contentvalidR/pull/73)).
+
+Make the plots show the criterion and the uncertainty, and give every
+figure alt text
+([\#74](https://github.com/JUhalt/contentvalidR/pull/74)).
+
+Make the README a front page and move its planning examples to a
+vignette ([\#75](https://github.com/JUhalt/contentvalidR/pull/75)).
+
+CRAN: unchanged. 0.4.0 is still in review, so 0.9.0 is not submitted;
+whichever version is current when 0.4.0 resolves goes to CRAN as the
+update, from its own tag.
+
+------------------------------------------------------------------------
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.
