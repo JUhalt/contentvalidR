@@ -830,11 +830,11 @@ reads no handoffs and takes no part in the joint 1.0.
         candidate, so neither README describes a 1.x before one exists.
   - [ ] one handoff example shown in both READMEs, regenerated from
         contentvalidR's release candidate.
-  - [ ] the joint walkthrough lives in one package, and the other links to
-        it. Recommended, and acceptable to nomologR: this package's
-        `vignette("one-item-set-both-stages")`, linking to nomologR's
-        guided-workflow article for the empirical side. The maintainer
-        decides.
+  - [x] the joint walkthrough lives in one package, and the other links to
+        it. Decided by the maintainer on 2026-09-27: it lives here, as
+        `vignette("one-item-set-both-stages")`, which links to nomologR's
+        guided-workflow article for the empirical stage. nomologR has agreed
+        to link its article back to it.
   - [ ] the release notes link each other.
 - Three handoff clarifications nomologR asked for before schema 1 becomes a
   1.0 promise, approved on 2026-09-27. None changes the schema:
