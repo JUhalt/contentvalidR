@@ -1057,8 +1057,8 @@ tested against stored producer output from contentvalidR 0.6.0 and
 schema version 1 is frozen and becomes a compatibility promise (0.7.0).
 
 both packages are on CRAN. Waiting on CRAN’s review of 0.4.0, which has
-been in the `newbies` queue since 2026-09-18, and on nomologR’s first
-submission.
+been in the `newbies` queue since 2026-09-18, and of nomologR 0.3.0,
+submitted on 2026-09-26.
 
 both public APIs are stable, under a written deprecation policy, as far
 as this package goes (0.7.0).
@@ -1072,6 +1072,43 @@ there is a joint walkthrough from content review to empirical validation
 (0.7.0).
 
 the two releases go out on the same day, each linking the other.
+
+The release-candidate checklist, proposed by nomologR and approved by
+the maintainer on 2026-09-27. It adds to \#53’s criteria rather than
+replacing them:
+
+a final fixture set from each release candidate, with a manifest of md5
+sums, that nomologR’s tests pass before either package tags.
+
+the compatibility table in both READMEs: contentvalidR 1.x writes
+handoff schema 1, and nomologR 1.x reads it. It goes in at the release
+candidate, so neither README describes a 1.x before one exists.
+
+one handoff example shown in both READMEs, regenerated from
+contentvalidR’s release candidate.
+
+the joint walkthrough lives in one package, and the other links to it.
+Recommended, and acceptable to nomologR: this package’s
+[`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md),
+linking to nomologR’s guided-workflow article for the empirical side.
+The maintainer decides.
+
+the release notes link each other.
+
+Three handoff clarifications nomologR asked for before schema 1 becomes
+a 1.0 promise, approved on 2026-09-27. None changes the schema:
+
+a fixture that records keying as checked with no item reversed
+(`reverse_keyed = character(0)`, so `keying` is `1` throughout),
+generated from v0.9.0.
+
+[`?content_handoff`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+says an item sits in at most one scale, and a test holds every workflow
+to it.
+
+[`?content_handoff`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+says a reader takes each decision from `carried` and `status`, never
+re-deriving it from the statistics or the producer version.
 
 ------------------------------------------------------------------------
 

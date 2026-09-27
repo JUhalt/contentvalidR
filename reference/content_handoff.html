@@ -152,7 +152,10 @@ consumer matches on <code>"cv_handoff"</code> and reads these fields:</p>
 <dd><p>named list mapping each construct to its carried items, or
 <code>NULL</code> when the design has no construct mapping. Expert relevance and
 essentiality rate a single item set with no construct column, so they
-produce <code>NULL</code>. Membership is one to one.</p></dd>
+produce <code>NULL</code>, as does a Delphi study. An item belongs to at most one
+scale, the one its <code>item_evidence$scale</code> names: every workflow that maps
+items to constructs requires exactly one target per item, and stops
+otherwise.</p></dd>
 
 <dt><code>item_evidence</code></dt>
 <dd><p>data frame with one row per reviewed item: <code>item</code>,
@@ -191,6 +194,30 @@ otherwise.</p></dd>
 <code>nomo_screen()</code> and <code>nomo_run()</code>. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="reading-the-decisions">Reading the decisions<a class="anchor" aria-label="anchor" href="#reading-the-decisions"></a></h2>
+
+
+<p>Take each item's decision from the handoff, not from its statistics.
+<code>carried</code> says whether the item travels forward, and <code>status</code> says why: it
+is one of the four values <code>keep</code> accepts. <code>recommendation</code> words the same
+decision for a person, and like <code>rule</code> it is prose.</p>
+<p>Don't re-derive a decision by comparing <code>value</code> with <code>criterion</code>, and don't
+branch on <code>provenance$package_version</code>. A corrected rule can change a
+decision between releases while the statistics stay the same, and the
+handoff records the decision its producer made. contentvalidR 0.8.0 is the
+example. For an item that 7 of 9 experts rated relevant, the I-CVI is .778
+in both releases. 0.7.0 compared it with a rounded .78 and held the item
+back. 0.8.0 applies Lynn's (1986) 7 of 9, stores 7/9 as the criterion, and
+carries the item. There the value equals the criterion, so a recomputed
+<code>value &gt;= criterion</code> would hang on floating-point rounding, where the
+package itself compares counts of experts. Read <code>carried</code>, which holds what
+each release decided.</p>
+<p>Keying is read the same way, from the field and not from a default:
+<code>keying</code> is <code>1</code> for a forward-worded item, <code>-1</code> for a reverse-worded one,
+and <code>NA</code> when nobody said, as described under "Instrument metadata". Treat
+<code>NA</code> as unknown, never as forward-worded.</p>
     </div>
     <div class="section level2">
     <h2 id="what-version-freezes">What version 1 freezes<a class="anchor" aria-label="anchor" href="#what-version-freezes"></a></h2>
@@ -384,6 +411,12 @@ empirically. An item can be clearly relevant and still correlate poorly with
 its construct or load on an unintended factor. That is what the downstream
 empirical analysis tests, which is why the item set travels with its
 evidence rather than as a bare list of names.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Lynn, M. R. (1986). Determination and quantification of content validity.
+<em>Nursing Research, 35</em>(6), 382–385.
+<a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link">doi:10.1097/00006199-198611000-00017</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

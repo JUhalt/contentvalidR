@@ -93,7 +93,10 @@ A consumer matches on `"cv_handoff"` and reads these fields:
   named list mapping each construct to its carried items, or `NULL` when
   the design has no construct mapping. Expert relevance and essentiality
   rate a single item set with no construct column, so they produce
-  `NULL`. Membership is one to one.
+  `NULL`, as does a Delphi study. An item belongs to at most one scale,
+  the one its `item_evidence$scale` names: every workflow that maps
+  items to constructs requires exactly one target per item, and stops
+  otherwise.
 
 - `item_evidence`:
 
@@ -136,6 +139,30 @@ This shape is agreed with the `nomologR` package, which consumes it in
 `nomo_screen()` and `nomo_run()`. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a
 reader, which should check that they are present rather than assume it.
+
+## Reading the decisions
+
+Take each item's decision from the handoff, not from its statistics.
+`carried` says whether the item travels forward, and `status` says why:
+it is one of the four values `keep` accepts. `recommendation` words the
+same decision for a person, and like `rule` it is prose.
+
+Don't re-derive a decision by comparing `value` with `criterion`, and
+don't branch on `provenance$package_version`. A corrected rule can
+change a decision between releases while the statistics stay the same,
+and the handoff records the decision its producer made. contentvalidR
+0.8.0 is the example. For an item that 7 of 9 experts rated relevant,
+the I-CVI is .778 in both releases. 0.7.0 compared it with a rounded .78
+and held the item back. 0.8.0 applies Lynn's (1986) 7 of 9, stores 7/9
+as the criterion, and carries the item. There the value equals the
+criterion, so a recomputed `value >= criterion` would hang on
+floating-point rounding, where the package itself compares counts of
+experts. Read `carried`, which holds what each release decided.
+
+Keying is read the same way, from the field and not from a default:
+`keying` is `1` for a forward-worded item, `-1` for a reverse-worded
+one, and `NA` when nobody said, as described under "Instrument
+metadata". Treat `NA` as unknown, never as forward-worded.
 
 ## What version 1 freezes
 
@@ -368,6 +395,12 @@ empirically. An item can be clearly relevant and still correlate poorly
 with its construct or load on an unintended factor. That is what the
 downstream empirical analysis tests, which is why the item set travels
 with its evidence rather than as a bare list of names.
+
+## References
+
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382–385.
+[doi:10.1097/00006199-198611000-00017](https://doi.org/10.1097/00006199-198611000-00017)
 
 ## See also
 

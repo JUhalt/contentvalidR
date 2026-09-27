@@ -66,6 +66,14 @@
 <li>
 <strong>Scheibe et al. is cited from the edition the package’s method was checked against:</strong> the editors’ 2002 web edition of Linstone and Turoff, with the chapter’s pages (257–281), a link, and “(Original work published 1975)”, as APA 7 requires for a republished work. In-text citations read “Scheibe et al. (1975/2002)”, including the citation a handoff carries for <code>stability = "percent_change"</code>. The 1975 printing’s pages could not be checked.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="the-handoff-contract-stated-for-readers-0-9-0-9000">The handoff contract, stated for readers<a class="anchor" aria-label="anchor" href="#the-handoff-contract-stated-for-readers-0-9-0-9000"></a></h3>
+<p>Asked for by nomologR before handoff schema 1 becomes a 1.0 promise. The schema and every handoff are unchanged.</p>
+<ul><li>
+<code><a href="../reference/content_handoff.html">?content_handoff</a></code> has a new section, “Reading the decisions”: take each item’s decision from <code>carried</code> and <code>status</code>, never re-derive it by comparing <code>value</code> with <code>criterion</code> or by branching on the producer version. The example is the nine-expert correction in 0.8.0, where an item’s I-CVI stayed at .778 while its decision changed. The section also restates that <code>keying</code> of <code>NA</code> means unknown, never forward-worded.</li>
+<li>
+<code><a href="../reference/content_handoff.html">?content_handoff</a></code> says an item sits in at most one scale, the one its <code>item_evidence$scale</code> names. A test holds the sort, rating, and congruence workflows to it, and checks that each refuses an item with two targets.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.0" id="contentvalidr-090">contentvalidR 0.9.0<a class="anchor" aria-label="anchor" href="#contentvalidr-090"></a></h2>
