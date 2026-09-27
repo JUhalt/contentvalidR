@@ -79,7 +79,7 @@ reference:
   - similarity_from_sort
 
 - title: Auxiliary and compatibility helpers
-  desc: Retained utilities that are not flagship v0.1.0 workflows.
+  desc: Kept for older analyses and sensitivity checks; not recommended workflows.
   contents:
   - qfactor_content
   - signal_detection
@@ -94,18 +94,27 @@ reference:
 
 articles:
 - title: Start here
-  navbar: ~
+  navbar: Start here
   contents:
   - getting-started
   - reading-output
-  - design-and-reporting
-  - reporting-examples
-  - handoff-to-empirical-validation
-  - one-item-set-both-stages
 
 - title: Workflow guides
+  navbar: Workflow guides
   contents:
   - item-sort-validity
   - construct-rating-validity
   - expert-panel-validity
   - delphi-rounds
+
+- title: Planning and reporting
+  navbar: Planning and reporting
+  contents:
+  - design-and-reporting
+  - reporting-examples
+
+- title: After content review
+  navbar: After content review
+  contents:
+  - handoff-to-empirical-validation
+  - one-item-set-both-stages

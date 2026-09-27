@@ -153,12 +153,13 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
                      sprintf("F(%s, %s) = %s", .fmt(d1, digits, bounded = FALSE),
                              .fmt(d2, digits, bounded = FALSE),
                              .fmt(x$F, digits, bounded = FALSE)))
+      # Narrow enough for an 80-column console; the strongest competitor
+      # stays in the `strongest_competitor` column.
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
-                 `omnibus test` = test, p = .fmt_p(x$p_screen),
+                 `F test` = test, p = .fmt_p(x$p_screen),
                  `partial eta^2` = .fmt(x$partial_eta2, digits),
-                 competitor = x$strongest_competitor,
                  `contrast p` = .fmt_p(x$max_contrast_p),
-                 `contrasts met` = .yes_no(x$contrast_pass),
+                 met = .yes_no(x$contrast_pass),
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = c(
@@ -166,7 +167,9 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
         "Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees of freedom are fractional."
       },
       paste("contrast p: the largest p among the planned target-versus-other",
-            "contrasts; attr(x, \"contrasts\") holds every contrast.")
+            "contrasts; met: whether every one of them met the screening",
+            "criterion. attr(x, \"contrasts\") holds each contrast, and",
+            "`strongest_competitor` the construct rated closest to the target.")
     )
   )
 }

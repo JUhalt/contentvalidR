@@ -396,9 +396,11 @@ Works cited in this README, the help pages, and the vignettes.
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
   specialists in the assessment of criterion-referenced test item
   validity. *Dutch Journal of Educational Research, 2*, 49–60.
-- Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+- Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
   methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-  Techniques and applications*. Addison-Wesley.
+  Techniques and applications* (pp. 257–281).
+  <https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf>
+  (Original work published 1975)
 - Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &
   Powers, K. J. (1999). An empirical comparison of approaches for
   quantitatively assessing the content adequacy of paper-and-pencil

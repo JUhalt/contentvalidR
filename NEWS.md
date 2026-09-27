@@ -1,3 +1,34 @@
+# contentvalidR 0.9.0.9000 (development version)
+
+## Finishing touches before 1.0 (in development)
+
+No computed value changes.
+
+* **The Delphi printout separates what changes a reading from what teaches
+  it.** Two short caveats always print: read kappa as a trend beside the
+  share of experts who kept their rating, not against a cut-off; and with
+  fewer than about 40 experts the kappa intervals cover less than their
+  stated 95%. The fuller explanation (the weights, why kappa falls as a panel
+  converges, Klar et al.'s coverage figures) now sits in the key under "How
+  the stability statistic works", so an instructor's students see it and a
+  researcher can hide it with `options(contentvalidR.show_key = FALSE)`. The
+  critique printed for an alternative stability method still always prints.
+  The example printout goes from 100 lines to 92, or 58 with the key hidden.
+* `anova_content()` prints within 80 columns. The strongest competitor, which
+  `htd()` and the construct-rating workflow already show, stays in the
+  `strongest_competitor` column.
+* The website's Articles menu lists every guide under a heading, in the order
+  a course would use them: Start here, Workflow guides, Planning and
+  reporting, and After content review. The workflow guides were hidden under
+  "More articles".
+* **Scheibe et al. is cited from the edition the package's method was checked
+  against:** the editors' 2002 web edition of Linstone and Turoff, with the
+  chapter's pages (257–281), a link, and "(Original work published 1975)", as
+  APA 7 requires for a republished work. In-text citations read
+  "Scheibe et al. (1975/2002)", including the citation a handoff carries for
+  `stability = "percent_change"`. The 1975 printing's pages could not be
+  checked.
+
 # contentvalidR 0.9.0
 
 Ninth public release. v0.9.0 is about how the package presents itself before

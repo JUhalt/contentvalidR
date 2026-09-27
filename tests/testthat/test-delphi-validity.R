@@ -350,3 +350,30 @@ test_that("the round fits feed compare_rounds, and reporting works", {
   rep <- content_report(fit, format = "data.frame")
   expect_true(all(c("item", "prop_agree", "prop_unchanged", "stability") %in% names(rep)))
 })
+
+test_that("the kappa caveats always print, and the teaching layer prints with the key", {
+  fit <- delphi_validity(small_delphi(), lo = 1, hi = 4, B = 100, seed = 3)
+  text <- function() {
+    gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
+  }
+  with_key <- text()
+  expect_match(with_key, "Read kappa as a trend across rounds", fixed = TRUE)
+  expect_match(with_key, "fewer than about 40 experts", fixed = TRUE)
+  expect_match(with_key, "How the stability statistic works", fixed = TRUE)
+  expect_match(with_key, "covered about 83% of the time with 20 units", fixed = TRUE)
+
+  old <- options(contentvalidR.show_key = FALSE)
+  on.exit(options(old), add = TRUE)
+  without <- text()
+  # What changes how a result is read survives hiding the key ...
+  expect_match(without, "Read kappa as a trend across rounds", fixed = TRUE)
+  expect_match(without, "fewer than about 40 experts", fixed = TRUE)
+  # ... and the teaching layer goes with it.
+  expect_false(grepl("How the stability statistic works", without, fixed = TRUE))
+  expect_false(grepl("intraclass correlation", without, fixed = TRUE))
+  # An alternative method's critique is never hidden.
+  alt <- paste(capture.output(print(delphi_validity(small_delphi(), lo = 1, hi = 4,
+                                                    stability = "lambda", B = 0))),
+               collapse = " ")
+  expect_match(alt, "predictability, not agreement", fixed = TRUE)
+})

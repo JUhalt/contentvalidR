@@ -100,7 +100,7 @@ each expert's pair of ratings; a significant result is read as stable.
 \item \code{"chisq_group"}: Dajani, Sincoff and Talley's (1979) chi-square test on
 the two rounds' distributions; a non-significant result is read as
 stable.
-\item \code{"percent_change"}: Scheibe, Skutsch and Schofer's (1975) net change,
+\item \code{"percent_change"}: the net change of Scheibe et al. (1975/2002),
 stable below 15\%.
 }
 
@@ -233,9 +233,11 @@ Royal Statistical Society: Series D (The Statistician), 51}(4), 467–478.
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
 for categorical data. \emph{Biometrics, 33}(1), 159–174. \doi{10.2307/2529310}
 
-Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), \emph{The Delphi method:
-Techniques and applications}. Addison-Wesley.
+Techniques and applications} (pp. 257–281).
+\url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
+(Original work published 1975)
 }
 \seealso{
 \code{\link[=expert_validity]{expert_validity()}} for a single round, and \code{\link[=compare_rounds]{compare_rounds()}},

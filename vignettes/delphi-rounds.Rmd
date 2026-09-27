@@ -100,8 +100,9 @@ fit <- delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 fit
 ```
 
-The printout ends with a key to every column and status. The rest of this
-article turns the key off, to keep the output short:
+The printout ends with a key: how the stability statistic works, and what each
+column and decision means. The two caveats above the key print either way. The
+rest of this article turns the key off, to keep the output short:
 
 ```{r key-off}
 options(contentvalidR.show_key = FALSE)
@@ -198,8 +199,8 @@ no verbal labels.
 
 ## Why the default looks at individual experts
 
-S6 is the reason stability is measured expert by expert. Under Scheibe,
-Skutsch and Schofer's (1975) 15% rule, which compares the two rounds' overall
+S6 is the reason stability is measured expert by expert. Under the 15% rule
+of Scheibe et al. (1975/2002), which compares the two rounds' overall
 rating distributions, S6 looks perfectly stable:
 
 ```{r percent-change}
@@ -288,7 +289,7 @@ a downstream package reads it.
 
 Consensus is agreement among these experts. It is not, by itself, evidence
 that an item is valid. Feedback between rounds can also press experts toward
-agreement they do not hold: Scheibe, Skutsch and Schofer (1975) observed that
+agreement they do not hold: Scheibe et al. (1975/2002) observed that
 participants who conformed most strongly were the least satisfied with the
 process. A `No consensus` result is not an instruction to drop an item, and
 `Consensus` is not an instruction to keep one. Read these results together
@@ -328,6 +329,8 @@ https://doi.org/10.1186/1471-2288-7-52
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for
 categorical data. *Biometrics, 33*(1), 159–174. https://doi.org/10.2307/2529310
 
-Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-Techniques and applications*. Addison-Wesley.
+Techniques and applications* (pp. 257–281).
+https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf
+(Original work published 1975)
