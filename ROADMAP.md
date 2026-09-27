@@ -1088,10 +1088,10 @@ one handoff example shown in both READMEs, regenerated from
 contentvalidR’s release candidate.
 
 the joint walkthrough lives in one package, and the other links to it.
-Recommended, and acceptable to nomologR: this package’s
+Decided by the maintainer on 2026-09-27: it lives here, as
 [`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md),
-linking to nomologR’s guided-workflow article for the empirical side.
-The maintainer decides.
+which links to nomologR’s guided-workflow article for the empirical
+stage. nomologR has agreed to link its article back to it.
 
 the release notes link each other.
 

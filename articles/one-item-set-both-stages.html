@@ -101,6 +101,12 @@ misbehave in specific ways. Nothing here is a real instrument or a real
 sample. The advantage of simulated data is that the right answer is
 known in advance, so you can check whether each stage found what was
 actually put there.</p>
+<p>This is the joint walkthrough for <code>contentvalidR</code> and its
+partner package <code>nomologR</code>, which handles the empirical
+stage. The empirical steps below use base R, so the whole vignette runs
+with <code>contentvalidR</code> alone. Where the handoff leaves this
+package, the walkthrough shows the <code>nomologR</code> calls that pick
+it up.</p>
 </div>
 <div class="section level2">
 <h2 id="the-construct-and-the-items">The construct and the items<a class="anchor" aria-label="anchor" href="#the-construct-and-the-items"></a>
@@ -421,18 +427,24 @@ outside the rest. Nothing about the item’s wording predicts that, and no
 panel could have. Whether the difference matters is a
 measurement-invariance question, which belongs to the empirical
 stage.</p>
-<p>The handoff is what carries the decision into that stage. Its
-<code>items</code> are the item names to screen and its
-<code>scales</code> are the subscales to form, both in the shape a
-downstream package needs. <code>nomologR</code> is one such package; it
-is not a dependency of this one, so the call below is shown rather than
-run:</p>
+<p>The handoff is what carries the decision into that stage. Pass the
+handoff itself rather than <code>h$items</code>, so that the held-back
+items, their reasons, the keying, and the response scale travel with the
+names. <code>nomologR</code>, the partner package for the empirical
+stage, reads it that way. It is not a dependency of this package, so the
+calls below are shown rather than run:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nomologR</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">h</span><span class="op">$</span><span class="va">items</span><span class="op">)</span></span></code></pre></div>
-<p>Reading the handoff object directly, rather than taking
-<code>h$items</code> out of it, is tracked on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>.</p>
+<span><span class="co"># Screen the carried items, using the keying declared at content review.</span></span>
+<span><span class="va">screened</span> <span class="op">&lt;-</span> <span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">h</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Form the subscales content review defined, and run the empirical stage.</span></span>
+<span><span class="va">run</span> <span class="op">&lt;-</span> <span class="fu">nomo_run</span><span class="op">(</span><span class="va">responses</span>, scales <span class="op">=</span> <span class="va">h</span><span class="op">)</span></span></code></pre></div>
+<p><code>nomologR</code>’s guided workflow continues from here, in its
+section <a href="https://juhalt.github.io/nomologR/articles/guided-workflow.html#starting-from-content-review" class="external-link">Starting
+from content review</a>: screening, the measurement model, and a report
+that opens with the content review.</p>
 </div>
 <div class="section level2">
 <h2 id="the-moral-stated-plainly">The moral, stated plainly<a class="anchor" aria-label="anchor" href="#the-moral-stated-plainly"></a>
@@ -463,8 +475,10 @@ rather than just the surviving names.</p>
 which uses only base R and is deterministic. It states the full
 generating model: the two-factor structure, every loading, the factor
 correlation, the response thresholds, and the single cohort shift.
-<code>nomologR</code> mirrors the response file from the same script, so
-both packages show the same numbers.</p>
+<code>nomologR</code>’s guided workflow starts from the same handoff,
+which it ships as a file, so the items, decisions, and keying match
+between the two packages. Its responses are simulated separately, so its
+screening numbers are not the ones shown here.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
