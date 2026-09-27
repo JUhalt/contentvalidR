@@ -92,9 +92,17 @@ planned target-versus-orbiting contrasts, and scale-level norms.</li>
 <strong>Expert panel:</strong> experts answer a relevance,
 essentiality, or congruence question. Use <code><a href="../reference/expert_validity.html">expert_validity()</a></code>
 with the corresponding explicit <code>mode</code>.</li>
+<li>
+<strong>Delphi rounds:</strong> the same panel rates the items over
+several rounds, with feedback in between. Use
+<code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> for consensus against a threshold fixed
+before the study, and stability between rounds.</li>
 </ul>
-<p>The three designs can complement one another during scale
-development, but their statistics are not interchangeable.</p>
+<p>The designs can complement one another during scale development, but
+their statistics are not interchangeable. Two further questions apply to
+any of them: whether the conclusions depend on the particular judges who
+served (<code><a href="../reference/judge_validity.html">judge_validity()</a></code>), and whether the items cover the
+blueprint of the domain (<code><a href="../reference/domain_validity.html">domain_validity()</a></code>).</p>
 </div>
 <div class="section level2">
 <h2 id="sample-size-planning">Sample-size planning<a class="anchor" aria-label="anchor" href="#sample-size-planning"></a>
@@ -297,8 +305,14 @@ required parts of the flagship workflows.</p>
 <span><span class="co">#&gt; phi = .63, chi-square(1) = 2.40, p = .121.</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="power-quick-check">Power quick check<a class="anchor" aria-label="anchor" href="#power-quick-check"></a>
+<h2 id="planning-how-many-judges-to-recruit">Planning how many judges to recruit<a class="anchor" aria-label="anchor" href="#planning-how-many-judges-to-recruit"></a>
 </h2>
+<p>Each planning function answers the question for one design exactly,
+from the decision rule the analysis will apply, rather than from a rule
+of thumb.</p>
+<p>For an item sort, <code><a href="../reference/sort_power.html">sort_power()</a></code> gives the probability
+that an item reaches the exact retention count, for each panel size and
+each rate at which you expect judges to choose the target:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR item-sort planning</span></span>
@@ -314,6 +328,91 @@ required parts of the flagship workflows.</p>
 <span><span class="co">#&gt; same as a proportion. power at p: the exact probability of reaching the</span></span>
 <span><span class="co">#&gt; required count if each judge assigns the item to its target with probability</span></span>
 <span><span class="co">#&gt; p.</span></span></code></pre></div>
+<p>For an expert panel, <code><a href="../reference/expert_power.html">expert_power()</a></code> gives the
+probability that an item clears the I-CVI criterion, for each panel size
+and an assumed probability that one expert endorses it:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_power.html">expert_power</a></span><span class="op">(</span>n_experts <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">8</span>, prob <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span><span class="co">#&gt; contentvalidR expert-panel planning</span></span>
+<span><span class="co">#&gt; -----------------------------------</span></span>
+<span><span class="co">#&gt; Criterion: Exact binomial planning against the panel-size I-CVI guideline</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Probability that an item clears the criterion</span></span>
+<span><span class="co">#&gt;  experts required prob = .90</span></span>
+<span><span class="co">#&gt;        3      3/3        .73</span></span>
+<span><span class="co">#&gt;        4      4/4        .66</span></span>
+<span><span class="co">#&gt;        5      5/5        .59</span></span>
+<span><span class="co">#&gt;        6      5/6        .89</span></span>
+<span><span class="co">#&gt;        7      6/7        .85</span></span>
+<span><span class="co">#&gt;        8      7/8        .81</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; required: endorsements the criterion needs from the panel. prob: the</span></span>
+<span><span class="co">#&gt; probability you assume that one expert endorses the item.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note the step at six experts. Lynn's criterion requires unanimity with three</span></span>
+<span><span class="co">#&gt; to five experts and allows one disagreement from six, so a sixth expert</span></span>
+<span><span class="co">#&gt; relaxes the criterion while a fourth or fifth makes unanimity harder. That is</span></span>
+<span><span class="co">#&gt; a property of the guideline, not of the items.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; This table reports the consequences of the panel sizes you asked about. It</span></span>
+<span><span class="co">#&gt; does not recommend one. `prob` is an assumption you supply, so treat the</span></span>
+<span><span class="co">#&gt; result as conditional on it and report the value you assumed.</span></span></code></pre></div>
+<p>Note the step. Lynn’s (1986) criterion requires every expert to agree
+on panels of up to five, and allows one disagreement from six, so a
+fourth or fifth expert <strong>lowers</strong> the probability of
+clearing while a sixth raises it sharply. That is a property of the
+guideline, not of the items, and the package reports it rather than
+smoothing it away.</p>
+<p>When a panel has already rated the items, generalizability theory
+(Brennan, 2001; Crocker et al., 1988) estimates how many judges the same
+design would need to reach a given dependability:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">judge_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">judge_ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/gtheory_content.html">gtheory_content</a></span><span class="op">(</span><span class="va">judge_ratings</span><span class="op">)</span></span>
+<span><span class="co">#&gt; contentvalidR generalizability analysis</span></span>
+<span><span class="co">#&gt; ---------------------------------------</span></span>
+<span><span class="co">#&gt; Design: items x judges, crossed, one rating per cell</span></span>
+<span><span class="co">#&gt; Items: 6 | Judges: 8</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Observed design</span></span>
+<span><span class="co">#&gt;   Generalizability coefficient (relative, rank ordering): .97</span></span>
+<span><span class="co">#&gt;   Dependability coefficient (absolute, fixed standard):   .94</span></span>
+<span><span class="co">#&gt; Status: Supported</span></span>
+<span><span class="co">#&gt; With 8 judges, absolute decisions about these items would generalize</span></span>
+<span><span class="co">#&gt; dependably to another panel of the same size (Phi = .94). Judge differences</span></span>
+<span><span class="co">#&gt; account for 15.6% of total variance.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Variance components</span></span>
+<span><span class="co">#&gt;    source df   MS estimate used % of total</span></span>
+<span><span class="co">#&gt;      item  5 7.77     0.94 0.94       66.8</span></span>
+<span><span class="co">#&gt;     judge  7 1.57     0.22 0.22       15.6</span></span>
+<span><span class="co">#&gt;  residual 35 0.25     0.25 0.25       17.5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; estimate: the ANOVA estimate of each variance component. used: the same with</span></span>
+<span><span class="co">#&gt; a negative estimate set to 0, which the coefficients use (Brennan, 2001).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Judges needed to reach each coefficient</span></span>
+<span><span class="co">#&gt;  target relative (G) absolute (Phi)</span></span>
+<span><span class="co">#&gt;     .70            1              2</span></span>
+<span><span class="co">#&gt;     .80            2              2</span></span>
+<span><span class="co">#&gt;     .90            3              5</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A dependability coefficient describes generalization over judges only. It is</span></span>
+<span><span class="co">#&gt; not evidence that the items cover the intended content domain.</span></span></code></pre></div>
+<p>The dependability coefficient (Phi) concerns the absolute level of
+the ratings and is lowered by differences in judge severity, which is
+usually what a content-validity decision rests on. A target no realistic
+panel reaches shows as <code>NA</code>: the judges barely distinguished
+the items.</p>
+<p>Across pretest rounds, <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> sets each item’s
+status side by side and checks whether the analysis settings changed
+between rounds, so a relaxed criterion cannot read as an improved
+item.</p>
 </div>
 <div class="section level2">
 <h2 id="good-practices">Good practices<a class="anchor" aria-label="anchor" href="#good-practices"></a>
@@ -324,6 +423,16 @@ archive the construct definitions and item wording used in the pretest.
 A content-validation statistic is evidence from a designed judgment
 task; it is not a substitute for defining and sampling the construct
 domain.</p>
+</div>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Brennan, R. L. (2001). <em>Generalizability theory</em>. Springer. <a href="https://doi.org/10.1007/978-1-4757-3456-0" class="external-link uri">https://doi.org/10.1007/978-1-4757-3456-0</a></p>
+<p>Crocker, L., Llabre, M., &amp; Miller, M. D. (1988). The
+generalizability of content validity ratings. <em>Journal of Educational
+Measurement, 25</em>(4), 287–299. <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link uri">https://doi.org/10.1111/j.1745-3984.1988.tb00309.x</a></p>
+<p>Lynn, M. R. (1986). Determination and quantification of content
+validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

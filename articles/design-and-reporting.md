@@ -19,9 +19,19 @@ selecting an index after data collection.
   congruence question. Use
   [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
   with the corresponding explicit `mode`.
+- **Delphi rounds:** the same panel rates the items over several rounds,
+  with feedback in between. Use
+  [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  for consensus against a threshold fixed before the study, and
+  stability between rounds.
 
-The three designs can complement one another during scale development,
-but their statistics are not interchangeable.
+The designs can complement one another during scale development, but
+their statistics are not interchangeable. Two further questions apply to
+any of them: whether the conclusions depend on the particular judges who
+served
+([`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)),
+and whether the items cover the blueprint of the domain
+([`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)).
 
 ## Sample-size planning
 
@@ -226,7 +236,17 @@ reproducibility_phi(pretest_supported, replication_supported)
 #> phi = .63, chi-square(1) = 2.40, p = .121.
 ```
 
-## Power quick check
+## Planning how many judges to recruit
+
+Each planning function answers the question for one design exactly, from
+the decision rule the analysis will apply, rather than from a rule of
+thumb.
+
+For an item sort,
+[`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+gives the probability that an item reaches the exact retention count,
+for each panel size and each rate at which you expect judges to choose
+the target:
 
 ``` r
 
@@ -246,6 +266,102 @@ sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
 #> p.
 ```
 
+For an expert panel,
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+gives the probability that an item clears the I-CVI criterion, for each
+panel size and an assumed probability that one expert endorses it:
+
+``` r
+
+expert_power(n_experts = 3:8, prob = 0.9)
+#> contentvalidR expert-panel planning
+#> -----------------------------------
+#> Criterion: Exact binomial planning against the panel-size I-CVI guideline
+#> 
+#> Probability that an item clears the criterion
+#>  experts required prob = .90
+#>        3      3/3        .73
+#>        4      4/4        .66
+#>        5      5/5        .59
+#>        6      5/6        .89
+#>        7      6/7        .85
+#>        8      7/8        .81
+#> 
+#> required: endorsements the criterion needs from the panel. prob: the
+#> probability you assume that one expert endorses the item.
+#> 
+#> Note the step at six experts. Lynn's criterion requires unanimity with three
+#> to five experts and allows one disagreement from six, so a sixth expert
+#> relaxes the criterion while a fourth or fifth makes unanimity harder. That is
+#> a property of the guideline, not of the items.
+#> 
+#> This table reports the consequences of the panel sizes you asked about. It
+#> does not recommend one. `prob` is an assumption you supply, so treat the
+#> result as conditional on it and report the value you assumed.
+```
+
+Note the step. Lynn’s (1986) criterion requires every expert to agree on
+panels of up to five, and allows one disagreement from six, so a fourth
+or fifth expert **lowers** the probability of clearing while a sixth
+raises it sharply. That is a property of the guideline, not of the
+items, and the package reports it rather than smoothing it away.
+
+When a panel has already rated the items, generalizability theory
+(Brennan, 2001; Crocker et al., 1988) estimates how many judges the same
+design would need to reach a given dependability:
+
+``` r
+
+judge_ratings <- rbind(
+  c(4, 4, 4, 3, 2, 2), c(4, 4, 3, 4, 2, 1), c(4, 3, 4, 4, 1, 2),
+  c(3, 4, 4, 4, 2, 2), c(4, 4, 4, 4, 2, 1), c(4, 3, 4, 3, 1, 2),
+  c(4, 4, 3, 4, 2, 2), c(2, 2, 2, 2, 1, 1)
+)
+dimnames(judge_ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
+gtheory_content(judge_ratings)
+#> contentvalidR generalizability analysis
+#> ---------------------------------------
+#> Design: items x judges, crossed, one rating per cell
+#> Items: 6 | Judges: 8
+#> 
+#> Observed design
+#>   Generalizability coefficient (relative, rank ordering): .97
+#>   Dependability coefficient (absolute, fixed standard):   .94
+#> Status: Supported
+#> With 8 judges, absolute decisions about these items would generalize
+#> dependably to another panel of the same size (Phi = .94). Judge differences
+#> account for 15.6% of total variance.
+#> 
+#> Variance components
+#>    source df   MS estimate used % of total
+#>      item  5 7.77     0.94 0.94       66.8
+#>     judge  7 1.57     0.22 0.22       15.6
+#>  residual 35 0.25     0.25 0.25       17.5
+#> 
+#> estimate: the ANOVA estimate of each variance component. used: the same with
+#> a negative estimate set to 0, which the coefficients use (Brennan, 2001).
+#> 
+#> Judges needed to reach each coefficient
+#>  target relative (G) absolute (Phi)
+#>     .70            1              2
+#>     .80            2              2
+#>     .90            3              5
+#> 
+#> A dependability coefficient describes generalization over judges only. It is
+#> not evidence that the items cover the intended content domain.
+```
+
+The dependability coefficient (Phi) concerns the absolute level of the
+ratings and is lowered by differences in judge severity, which is
+usually what a content-validity decision rests on. A target no realistic
+panel reaches shows as `NA`: the judges barely distinguished the items.
+
+Across pretest rounds,
+[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+sets each item’s status side by side and checks whether the analysis
+settings changed between rounds, so a relaxed criterion cannot read as
+an improved item.
+
 ## Good practices
 
 Pre-register quantitative screening criteria when feasible, preserve
@@ -254,3 +370,16 @@ archive the construct definitions and item wording used in the pretest.
 A content-validation statistic is evidence from a designed judgment
 task; it is not a substitute for defining and sampling the construct
 domain.
+
+## References
+
+Brennan, R. L. (2001). *Generalizability theory*. Springer.
+<https://doi.org/10.1007/978-1-4757-3456-0>
+
+Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
+content validity ratings. *Journal of Educational Measurement, 25*(4),
+287–299. <https://doi.org/10.1111/j.1745-3984.1988.tb00309.x>
+
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382–385.
+<https://doi.org/10.1097/00006199-198611000-00017>
