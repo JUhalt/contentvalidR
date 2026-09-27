@@ -1,6 +1,41 @@
-# contentvalidR 0.8.0.9000 (development version)
+# contentvalidR 0.9.0
 
-## A README that is a front page (in development)
+Ninth public release. v0.9.0 is about how the package presents itself before
+1.0. Every reference list is in APA 7 form; printed output is shorter and says
+what it means; the component functions and report tables print in APA style;
+the figures show the criterion and the uncertainty; and the README is a front
+page rather than a manual.
+
+The package continues to declare `Imports: stats` only.
+
+**No computed value changes.** Across 25 analyses spanning every workflow,
+every value 0.8.0 returns is identical in 0.9.0. Some wording changes: the
+scale-level summaries of the item-sort and construct-rating workflows name the
+Colquitt band of the weaker index, counts read "1 item" or "3 items", and the
+note when judge severity cannot be estimated no longer blames near-total
+agreement when one dissenting judge causes it.
+
+**Breaking changes.**
+
+* `content_report()` writes an APA table by default. For the numeric table
+  that used to be the default, pass `format = "data.frame"`; its *p* values
+  now keep three decimals whatever `digits` is.
+* The component functions' results (`compute_psa()`, `aikens_v()`, `cvr()`,
+  and eleven others) gain a class, so they print as formatted tables. Every
+  value is unchanged and `as.data.frame()` returns the plain data frame; only
+  code that tests `class(x) == "data.frame"` exactly would notice.
+
+**Deprecated.** `agreement_summary()` warns and will be removed in 1.0.0; use
+`panel_agreement()`, which takes raters in rows like every other ratings
+function.
+
+New: `content_report(format = "apa")`, and `csv_binom_test()` returns its
+inputs (`n_target`, `N`, `p0`, `alpha`) beside its result.
+
+Published on GitHub and R-universe. 0.4.0 is still in CRAN's review queue, and
+CRAN policy asks that no further version be submitted while one is pending.
+
+## A README that is a front page
 
 * **The README is a front page rather than a manual.** It ran to about 1,400
   lines of printed output: every workflow in full, the component functions,
@@ -15,7 +50,7 @@
   design would need. Its method list now names all six workflows, and it has a
   reference list.
 
-## Plots show the criterion and the uncertainty (in development)
+## Plots show the criterion and the uncertainty
 
 No computed value changes; this is about what the figures draw.
 
@@ -41,7 +76,7 @@ No computed value changes; this is about what the figures draw.
 * **Every figure in the README and the vignettes has alt text** describing
   what it shows; 17 of 19 had none.
 
-## Shorter keys, formatted components, and APA report tables (in development)
+## Shorter keys, formatted components, and APA report tables
 
 No computed value changes; this is about what is printed.
 
@@ -73,7 +108,7 @@ No computed value changes; this is about what is printed.
   `digits` is. The construct-rating table shows the contrast *p* beside the
   omnibus *p*, since a Review item can have an omnibus *p* below .001.
 
-## `agreement_summary()` is deprecated (in development)
+## `agreement_summary()` is deprecated
 
 * **Deprecated in 0.9.0, to be removed in 1.0.0.** Use `panel_agreement()`.
   `agreement_summary()` is the only function that takes items in rows; every
@@ -84,7 +119,7 @@ No computed value changes; this is about what is printed.
   it at 1.0.0 leaves nothing deprecated past 1.0, as the stability policy in
   `?contentvalidR` sets out.
 
-## References follow APA 7 everywhere (in development)
+## References follow APA 7 everywhere
 
 * **One reference list, installed in BibTeX form.** `REFERENCES.bib` held 13
   of the works the package cites, and one it no longer cited; it now holds all
@@ -104,7 +139,7 @@ No computed value changes; this is about what is printed.
 * `citation("contentvalidR")` prints the package reference in APA form, with
   its version and "[Computer software]".
 
-## Printed output says what it means (in development)
+## Printed output says what it means
 
 * **The expert-panel print opens with its verdict**, as the other workflows'
   prints do: how many items met the criterion, then the flagged items by name.
