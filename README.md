@@ -141,8 +141,8 @@ fit
 
 The verdict comes first: two items meet the exact test of Howard and
 Melloy (2016), and one is flagged for review. `Review` is not a decision
-to delete; it marks an item to look at again, with the judges’ comments
-in hand.
+to delete; it marks an item to look at again, together with what the
+judges wrote about it.
 
 For a manuscript, `content_report()` gives the same evidence as an APA
 table, and `format = "markdown"` writes it for Quarto or R Markdown:
