@@ -6,14 +6,6 @@
   contentvalidR](https://juhalt.github.io/contentvalidR/articles/getting-started.md):
 - [How to Read contentvalidR
   Output](https://juhalt.github.io/contentvalidR/articles/reading-output.md):
-- [Design & Reporting
-  Guide](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md):
-- [Manuscript-Ready Reporting
-  Examples](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md):
-- [From Content Validity to Empirical
-  Validation](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md):
-- [One Item Set, Both
-  Stages](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md):
 
 ### Workflow guides
 
@@ -25,3 +17,17 @@
   Congruence](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.md):
 - [Delphi Rounds: Consensus and
   Stability](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.md):
+
+### Planning and reporting
+
+- [Design & Reporting
+  Guide](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md):
+- [Manuscript-Ready Reporting
+  Examples](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md):
+
+### After content review
+
+- [From Content Validity to Empirical
+  Validation](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md):
+- [One Item Set, Both
+  Stages](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md):

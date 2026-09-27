@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,14 +33,24 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Start here</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
     <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Workflow guides</h6></li>
+    <li><a class="dropdown-item" href="../articles/item-sort-validity.html">Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/construct-rating-validity.html">Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/expert-panel-validity.html">Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</a></li>
+    <li><a class="dropdown-item" href="../articles/delphi-rounds.html">Delphi Rounds: Consensus and Stability</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Planning and reporting</h6></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>After content review</h6></li>
     <li><a class="dropdown-item" href="../articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><a class="dropdown-item" href="../articles/one-item-set-both-stages.html">One Item Set, Both Stages</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -66,7 +76,7 @@
       <h1>Delphi Rounds: Consensus and Stability</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.9.0/vignettes/delphi-rounds.Rmd" class="external-link"><code>vignettes/delphi-rounds.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/delphi-rounds.Rmd" class="external-link"><code>vignettes/delphi-rounds.Rmd</code></a></small>
       <div class="d-none name"><code>delphi-rounds.Rmd</code></div>
     </div>
 
@@ -228,29 +238,34 @@ study. The seed makes the bootstrap intervals reproducible.</p>
 <span><span class="co">#&gt; one category. Those intervals use the remaining resamples (n_boot_usable in</span></span>
 <span><span class="co">#&gt; details$stability), so treat them as rough.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Stability is weighted kappa between each expert's ratings in consecutive</span></span>
-<span><span class="co">#&gt; rounds (Holey et al., 2007), with quadratic weights. A change of two scale</span></span>
-<span><span class="co">#&gt; points counts four times a change of one. With these weights kappa equals the</span></span>
-<span><span class="co">#&gt; intraclass correlation of the two rounds' ratings, so a shift of the whole</span></span>
-<span><span class="co">#&gt; panel counts as instability (Fleiss &amp; Cohen, 1973). Read kappa as a trend</span></span>
-<span><span class="co">#&gt; across rounds, not against a cut-off. No verbal labels such as 'substantial'</span></span>
-<span><span class="co">#&gt; are shown: kappa falls when ratings converge on one category, which is what a</span></span>
-<span><span class="co">#&gt; Delphi aims for, so a panel whose experts nearly all kept their answer can</span></span>
-<span><span class="co">#&gt; still show a low kappa. Holey et al. saw this for their most-agreed</span></span>
-<span><span class="co">#&gt; statement. Read kappa next to the share of experts who kept their rating</span></span>
-<span><span class="co">#&gt; (unchanged).</span></span>
+<span><span class="co">#&gt; Read kappa as a trend across rounds, beside the share of experts who kept</span></span>
+<span><span class="co">#&gt; their rating (unchanged), not against a cut-off: kappa falls as a panel</span></span>
+<span><span class="co">#&gt; converges on one category, so a stable panel can show a low kappa (Holey et</span></span>
+<span><span class="co">#&gt; al., 2007).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The intervals are percentile bootstraps that resample the experts, which are</span></span>
-<span><span class="co">#&gt; the units the two rounds cross-classify. That is the procedure Klar et al.</span></span>
-<span><span class="co">#&gt; (2002) describe for kappa, but they evaluated it for an unweighted kappa on</span></span>
-<span><span class="co">#&gt; two categories and found a nominal 95% interval covered about 83% of the time</span></span>
-<span><span class="co">#&gt; with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels are</span></span>
-<span><span class="co">#&gt; smaller than that, so the interval is narrower than its label claims: read it</span></span>
-<span><span class="co">#&gt; as indicative of precision, not as a test.</span></span>
+<span><span class="co">#&gt; The kappa intervals resample the experts (Klar et al., 2002). With fewer than</span></span>
+<span><span class="co">#&gt; about 40 experts they cover less than their stated 95%, so read them as rough</span></span>
+<span><span class="co">#&gt; indications of precision, not as tests.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The panel changed size across rounds (10, 10, 9 experts). Stability uses only</span></span>
 <span><span class="co">#&gt; the experts who rated an item in both rounds, and a result from fewer experts</span></span>
 <span><span class="co">#&gt; is weaker evidence.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; How the stability statistic works</span></span>
+<span><span class="co">#&gt;   Stability is weighted kappa between each expert's ratings in consecutive</span></span>
+<span><span class="co">#&gt;   rounds (Holey et al., 2007), with quadratic weights. A change of two scale</span></span>
+<span><span class="co">#&gt;   points counts four times a change of one. With these weights kappa equals</span></span>
+<span><span class="co">#&gt;   the intraclass correlation of the two rounds' ratings, so a shift of the</span></span>
+<span><span class="co">#&gt;   whole panel counts as instability (Fleiss &amp; Cohen, 1973). No verbal labels</span></span>
+<span><span class="co">#&gt;   such as 'substantial' are shown, because kappa falls when ratings converge,</span></span>
+<span><span class="co">#&gt;   which is what a Delphi aims for: Holey et al. saw a low kappa for their</span></span>
+<span><span class="co">#&gt;   most-agreed statement.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   The intervals are percentile bootstraps that resample the experts, the</span></span>
+<span><span class="co">#&gt;   units the two rounds cross-classify: the procedure Klar et al. (2002)</span></span>
+<span><span class="co">#&gt;   describe for kappa. They evaluated it for an unweighted kappa on two</span></span>
+<span><span class="co">#&gt;   categories, and a nominal 95% interval covered about 83% of the time with</span></span>
+<span><span class="co">#&gt;   20 units and 91% with 30, reaching 94% only from 40 up.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   agree -- Share of experts agreeing. Share of experts at or above the</span></span>
@@ -272,8 +287,10 @@ study. The seed makes the bootstrap intervals reproducible.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Consensus is not correctness, and 'No consensus' is not an instruction to</span></span>
 <span><span class="co">#&gt; drop an item. Read these results with the experts' comments.</span></span></code></pre></div>
-<p>The printout ends with a key to every column and status. The rest of
-this article turns the key off, to keep the output short:</p>
+<p>The printout ends with a key: how the stability statistic works, and
+what each column and decision means. The two caveats above the key print
+either way. The rest of this article turns the key off, to keep the
+output short:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -392,9 +409,9 @@ kappa, for the same reason there are no verbal labels.</p>
 <div class="section level2">
 <h2 id="why-the-default-looks-at-individual-experts">Why the default looks at individual experts<a class="anchor" aria-label="anchor" href="#why-the-default-looks-at-individual-experts"></a>
 </h2>
-<p>S6 is the reason stability is measured expert by expert. Under
-Scheibe, Skutsch and Schofer’s (1975) 15% rule, which compares the two
-rounds’ overall rating distributions, S6 looks perfectly stable:</p>
+<p>S6 is the reason stability is measured expert by expert. Under the
+15% rule of Scheibe et al. (1975/2002), which compares the two rounds’
+overall rating distributions, S6 looks perfectly stable:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/delphi_validity.html">delphi_validity</a></span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, consensus_threshold <span class="op">=</span> <span class="fl">0.75</span>,</span>
 <span>                      stability <span class="op">=</span> <span class="st">"percent_change"</span><span class="op">)</span></span>
@@ -561,10 +578,10 @@ object holds and how a downstream package reads it.</p>
 </h2>
 <p>Consensus is agreement among these experts. It is not, by itself,
 evidence that an item is valid. Feedback between rounds can also press
-experts toward agreement they do not hold: Scheibe, Skutsch and Schofer
-(1975) observed that participants who conformed most strongly were the
-least satisfied with the process. A <code>No consensus</code> result is
-not an instruction to drop an item, and <code>Consensus</code> is not an
+experts toward agreement they do not hold: Scheibe et al. (1975/2002)
+observed that participants who conformed most strongly were the least
+satisfied with the process. A <code>No consensus</code> result is not an
+instruction to drop an item, and <code>Consensus</code> is not an
 instruction to keep one. Read these results together with the experts’
 comments, the construct definition, and the rest of the content-validity
 evidence.</p>
@@ -596,9 +613,10 @@ consensus and stability in Delphi studies. <em>BMC Medical Research
 Methodology, 7</em>, 52. <a href="https://doi.org/10.1186/1471-2288-7-52" class="external-link uri">https://doi.org/10.1186/1471-2288-7-52</a></p>
 <p>Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. <em>Biometrics, 33</em>(1), 159–174. <a href="https://doi.org/10.2307/2529310" class="external-link uri">https://doi.org/10.2307/2529310</a></p>
-<p>Scheibe, M., Skutsch, M., &amp; Schofer, J. (1975). Experiments in
+<p>Scheibe, M., Skutsch, M., &amp; Schofer, J. (2002). Experiments in
 Delphi methodology. In H. A. Linstone &amp; M. Turoff (Eds.), <em>The
-Delphi method: Techniques and applications</em>. Addison-Wesley.</p>
+Delphi method: Techniques and applications</em> (pp. 257–281). <a href="https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf" class="external-link uri">https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf</a>
+(Original work published 1975)</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

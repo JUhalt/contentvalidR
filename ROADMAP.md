@@ -915,9 +915,12 @@ release afterwards, so this was the last release that could settle
 
 Freeze handoff schema version 1
 ([\#54](https://github.com/JUhalt/contentvalidR/issues/54)), after
-checking it against nomologR and solomonR. Adds `keying`,
-`response_min`, and `response_max`, which come from the analyst and
-never from the fit.
+checking it against nomologR, its reader. Adds `keying`, `response_min`,
+and `response_max`, which come from the analyst and never from the fit.
+solomonR was also asked at the time; on 2026-09-25 its maintainer made
+solomonR a separate project that reads no handoffs, and withdrew the
+issue that recorded its answer, so it is not a consumer of schema
+version 1.
 
 The joint walkthrough on shared teaching data
 ([\#55](https://github.com/JUhalt/contentvalidR/issues/55)):
@@ -1029,6 +1032,12 @@ handoff schema on
 [nomologR#46](https://github.com/JUhalt/nomologR/issues/46). The target
 is for both to release 1.0.0 together, so the version number tells users
 the pair is stable together.
+
+The maintainer’s intent (2026-09-27): contentvalidR and nomologR are
+partners, kept on the same page about handoffs before and after 1.0.
+solomonR, the maintainer’s package for Solomon four-group designs, is a
+separate project: it reads no handoffs and takes no part in the joint
+1.0.
 
 Converge, don’t move in lockstep. Minor versions stay independent until
 1.0.0, and neither package tags 1.0.0 on its own.

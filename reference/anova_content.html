@@ -35,7 +35,7 @@ the more direct item-level evidence."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,14 +46,24 @@ the more direct item-level evidence."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Start here</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
     <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Workflow guides</h6></li>
+    <li><a class="dropdown-item" href="../articles/item-sort-validity.html">Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/construct-rating-validity.html">Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/expert-panel-validity.html">Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</a></li>
+    <li><a class="dropdown-item" href="../articles/delphi-rounds.html">Delphi Rounds: Consensus and Stability</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Planning and reporting</h6></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>After content review</h6></li>
     <li><a class="dropdown-item" href="../articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><a class="dropdown-item" href="../articles/one-item-set-both-stages.html">One Item Set, Both Stages</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -68,7 +78,7 @@ the more direct item-level evidence."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Hinkin-Tracey ANOVA content test</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.9.0/R/anova_content.R" class="external-link"><code>R/anova_content.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/R/anova_content.R" class="external-link"><code>R/anova_content.R</code></a></small>
       <div class="d-none name"><code>anova_content.Rd</code></div>
     </div>
 
@@ -179,17 +189,16 @@ content validation. <em>Organizational Research Methods, 2</em>(2), 175–186.
 <span class="r-in"><span><span class="fu">anova_content</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Content-validity ANOVA (Hinkin &amp; Tracey, 1999)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges            omnibus test      p partial eta^2 competitor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A     12 F(1.89, 20.84) = 193.43 &lt; .001           .95          B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B     12 F(1.77, 19.51) = 138.46 &lt; .001           .93          A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  contrast p contrasts met</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt; .001           yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      &lt; .001           yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges                  F test      p partial eta^2 contrast p met</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A     12 F(1.89, 20.84) = 193.43 &lt; .001           .95     &lt; .001 yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B     12 F(1.77, 19.51) = 138.46 &lt; .001           .93     &lt; .001 yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> of freedom are fractional.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contrast p: the largest p among the planned target-versus-other contrasts;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(x, "contrasts") holds every contrast.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> met: whether every one of them met the screening criterion. attr(x,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> "contrasts") holds each contrast, and `strongest_competitor` the construct</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rated closest to the target.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

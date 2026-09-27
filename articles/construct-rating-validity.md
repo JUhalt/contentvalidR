@@ -121,21 +121,18 @@ aov_out <- anova_content(rating_dat, design = "within")
 aov_out
 #> Content-validity ANOVA (Hinkin & Tracey, 1999)
 #> 
-#>  item target judges            omnibus test      p partial eta^2 competitor
-#>    A1      A     24  F(1.98, 45.65) = 72.64 < .001           .76          B
-#>    A2      A     24 F(1.62, 37.22) = 105.82 < .001           .82          B
-#>    A3      A     24  F(2.00, 45.97) = 82.25 < .001           .78          C
-#>    B1      B     24 F(1.85, 42.61) = 108.29 < .001           .82          C
-#>  contrast p contrasts met
-#>      < .001           yes
-#>      < .001           yes
-#>      < .001           yes
-#>      < .001           yes
+#>  item target judges                  F test      p partial eta^2 contrast p met
+#>    A1      A     24  F(1.98, 45.65) = 72.64 < .001           .76     < .001 yes
+#>    A2      A     24 F(1.62, 37.22) = 105.82 < .001           .82     < .001 yes
+#>    A3      A     24  F(2.00, 45.97) = 82.25 < .001           .78     < .001 yes
+#>    B1      B     24 F(1.85, 42.61) = 108.29 < .001           .82     < .001 yes
 #> 
 #> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
 #> of freedom are fractional.
 #> contrast p: the largest p among the planned target-versus-other contrasts;
-#> attr(x, "contrasts") holds every contrast.
+#> met: whether every one of them met the screening criterion. attr(x,
+#> "contrasts") holds each contrast, and `strongest_competitor` the construct
+#> rated closest to the target.
 attr(aov_out, "contrasts")
 #>   item design target competitor  n mean_target mean_competitor mean_diff
 #> 1   A1 within      A          B 24    4.375000        2.375000  2.000000

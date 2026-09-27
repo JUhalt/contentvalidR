@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,14 +18,24 @@
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with contentvalidR</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Start here</h6></li>
+    <li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with contentvalidR</a></li>
     <li><a class="dropdown-item" href="articles/reading-output.html">How to Read contentvalidR Output</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Workflow guides</h6></li>
+    <li><a class="dropdown-item" href="articles/item-sort-validity.html">Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt</a></li>
+    <li><a class="dropdown-item" href="articles/construct-rating-validity.html">Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</a></li>
+    <li><a class="dropdown-item" href="articles/expert-panel-validity.html">Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</a></li>
+    <li><a class="dropdown-item" href="articles/delphi-rounds.html">Delphi Rounds: Consensus and Stability</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Planning and reporting</h6></li>
     <li><a class="dropdown-item" href="articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>After content review</h6></li>
     <li><a class="dropdown-item" href="articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><a class="dropdown-item" href="articles/one-item-set-both-stages.html">One Item Set, Both Stages</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -40,7 +50,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>contentvalidR development roadmap</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.9.0/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
     </div>
 
 <div id="contentvalidr-development-roadmap" class="section level1">
@@ -386,7 +396,7 @@
 <li><label><input type="checkbox" checked>Make the release gate’s clean-library smoke test actually run (<a href="https://github.com/JUhalt/contentvalidR/issues/51" class="external-link">#51</a>). It lives in the repository at <code>tools/release-gate.R</code>, runs each stage in its own process, and fails rather than printing findings to read past. The old gate skipped its own smoke test at three consecutive releases.</label></li>
 <li><label><input type="checkbox" checked>State the deprecation policy and public API stability (<a href="https://github.com/JUhalt/contentvalidR/pull/53" class="external-link">#53</a>), which is the 1.0 criterion on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a> that rests entirely with this package. Three tiers covering every export, the deprecation cycle, a changed default treated as breaking, the handoff schema’s guarantees, and which versions of R are supported.</label></li>
 <li><label><input type="checkbox" checked>Resolve the one deprecation in flight before 1.0 locks it in (<a href="https://github.com/JUhalt/contentvalidR/issues/60" class="external-link">#60</a>). The policy removes a deprecation in a minor release before 1.0 and only in a major release afterwards, so this was the last release that could settle <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc</code> argument without waiting for 2.0. It is removed; <code>posthoc_pass</code> is documented as deprecated, starting its clock.</label></li>
-<li><label><input type="checkbox" checked>Freeze handoff schema version 1 (<a href="https://github.com/JUhalt/contentvalidR/issues/54" class="external-link">#54</a>), after checking it against nomologR and solomonR. Adds <code>keying</code>, <code>response_min</code>, and <code>response_max</code>, which come from the analyst and never from the fit.</label></li>
+<li><label><input type="checkbox" checked>Freeze handoff schema version 1 (<a href="https://github.com/JUhalt/contentvalidR/issues/54" class="external-link">#54</a>), after checking it against nomologR, its reader. Adds <code>keying</code>, <code>response_min</code>, and <code>response_max</code>, which come from the analyst and never from the fit. solomonR was also asked at the time; on 2026-09-25 its maintainer made solomonR a separate project that reads no handoffs, and withdrew the issue that recorded its answer, so it is not a consumer of schema version 1.</label></li>
 <li><label><input type="checkbox" checked>The joint walkthrough on shared teaching data (<a href="https://github.com/JUhalt/contentvalidR/issues/55" class="external-link">#55</a>): <code><a href="articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code>, where the two stages disagree in both directions.</label></li>
 <li><label><input type="checkbox" checked>Settle the two interval extensions (<a href="https://github.com/JUhalt/contentvalidR/issues/56" class="external-link">#56</a>). The Delphi kappa interval turned out to be a published procedure (Klar et al., 2002) with a measured coverage shortfall at panel sizes, which the output now reports. The AC1 interval remains an extension, labeled wherever its number appears.</label></li>
 </ul><p>CRAN: unchanged. 0.4.0 is still in review, so 0.7.0 is not submitted; whichever version is current when 0.4.0 resolves goes to CRAN as the update, from its own tag.</p>
@@ -418,6 +428,7 @@
 <h2 id="v100---joint-stable-release-with-nomologr-proposed">v1.0.0 - Joint stable release with nomologR (proposed)<a class="anchor" aria-label="anchor" href="#v100---joint-stable-release-with-nomologr-proposed"></a></h2>
 <p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> agreed jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it, with this package’s progress.</p>
 <p>contentvalidR and nomologR are the two halves of scale development: content review, then empirical validation. They are joined by the handoff schema on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The target is for both to release 1.0.0 together, so the version number tells users the pair is stable together.</p>
+<p>The maintainer’s intent (2026-09-27): contentvalidR and nomologR are partners, kept on the same page about handoffs before and after 1.0. solomonR, the maintainer’s package for Solomon four-group designs, is a separate project: it reads no handoffs and takes no part in the joint 1.0.</p>
 <ul><li>Converge, don’t move in lockstep. Minor versions stay independent until 1.0.0, and neither package tags 1.0.0 on its own.</li>
 <li>After 1.0.0, major versions move together whenever the shared contract breaks. Minor versions and patches stay independent.</li>
 <li>The criteria on nomologR#53, with where contentvalidR stands now:

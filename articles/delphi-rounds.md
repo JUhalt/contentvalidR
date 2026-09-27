@@ -152,29 +152,34 @@ fit
 #> one category. Those intervals use the remaining resamples (n_boot_usable in
 #> details$stability), so treat them as rough.
 #> 
-#> Stability is weighted kappa between each expert's ratings in consecutive
-#> rounds (Holey et al., 2007), with quadratic weights. A change of two scale
-#> points counts four times a change of one. With these weights kappa equals the
-#> intraclass correlation of the two rounds' ratings, so a shift of the whole
-#> panel counts as instability (Fleiss & Cohen, 1973). Read kappa as a trend
-#> across rounds, not against a cut-off. No verbal labels such as 'substantial'
-#> are shown: kappa falls when ratings converge on one category, which is what a
-#> Delphi aims for, so a panel whose experts nearly all kept their answer can
-#> still show a low kappa. Holey et al. saw this for their most-agreed
-#> statement. Read kappa next to the share of experts who kept their rating
-#> (unchanged).
+#> Read kappa as a trend across rounds, beside the share of experts who kept
+#> their rating (unchanged), not against a cut-off: kappa falls as a panel
+#> converges on one category, so a stable panel can show a low kappa (Holey et
+#> al., 2007).
 #> 
-#> The intervals are percentile bootstraps that resample the experts, which are
-#> the units the two rounds cross-classify. That is the procedure Klar et al.
-#> (2002) describe for kappa, but they evaluated it for an unweighted kappa on
-#> two categories and found a nominal 95% interval covered about 83% of the time
-#> with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels are
-#> smaller than that, so the interval is narrower than its label claims: read it
-#> as indicative of precision, not as a test.
+#> The kappa intervals resample the experts (Klar et al., 2002). With fewer than
+#> about 40 experts they cover less than their stated 95%, so read them as rough
+#> indications of precision, not as tests.
 #> 
 #> The panel changed size across rounds (10, 10, 9 experts). Stability uses only
 #> the experts who rated an item in both rounds, and a result from fewer experts
 #> is weaker evidence.
+#> 
+#> How the stability statistic works
+#>   Stability is weighted kappa between each expert's ratings in consecutive
+#>   rounds (Holey et al., 2007), with quadratic weights. A change of two scale
+#>   points counts four times a change of one. With these weights kappa equals
+#>   the intraclass correlation of the two rounds' ratings, so a shift of the
+#>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
+#>   such as 'substantial' are shown, because kappa falls when ratings converge,
+#>   which is what a Delphi aims for: Holey et al. saw a low kappa for their
+#>   most-agreed statement.
+#> 
+#>   The intervals are percentile bootstraps that resample the experts, the
+#>   units the two rounds cross-classify: the procedure Klar et al. (2002)
+#>   describe for kappa. They evaluated it for an unweighted kappa on two
+#>   categories, and a nominal 95% interval covered about 83% of the time with
+#>   20 units and 91% with 30, reaching 94% only from 40 up.
 #> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the
@@ -198,8 +203,10 @@ fit
 #> drop an item. Read these results with the experts' comments.
 ```
 
-The printout ends with a key to every column and status. The rest of
-this article turns the key off, to keep the output short:
+The printout ends with a key: how the stability statistic works, and
+what each column and decision means. The two caveats above the key print
+either way. The rest of this article turns the key off, to keep the
+output short:
 
 ``` r
 
@@ -333,8 +340,8 @@ kappa, for the same reason there are no verbal labels.
 
 ## Why the default looks at individual experts
 
-S6 is the reason stability is measured expert by expert. Under Scheibe,
-Skutsch and Schofer’s (1975) 15% rule, which compares the two rounds’
+S6 is the reason stability is measured expert by expert. Under the 15%
+rule of Scheibe et al. (1975/2002), which compares the two rounds’
 overall rating distributions, S6 looks perfectly stable:
 
 ``` r
@@ -479,9 +486,9 @@ for what the object holds and how a downstream package reads it.
 
 Consensus is agreement among these experts. It is not, by itself,
 evidence that an item is valid. Feedback between rounds can also press
-experts toward agreement they do not hold: Scheibe, Skutsch and Schofer
-(1975) observed that participants who conformed most strongly were the
-least satisfied with the process. A `No consensus` result is not an
+experts toward agreement they do not hold: Scheibe et al. (1975/2002)
+observed that participants who conformed most strongly were the least
+satisfied with the process. A `No consensus` result is not an
 instruction to drop an item, and `Consensus` is not an instruction to
 keep one. Read these results together with the experts’ comments, the
 construct definition, and the rest of the content-validity evidence.
@@ -521,6 +528,8 @@ Landis, J. R., & Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. *Biometrics, 33*(1), 159–174.
 <https://doi.org/10.2307/2529310>
 
-Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-Techniques and applications*. Addison-Wesley.
+Techniques and applications* (pp. 257–281).
+<https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf>
+(Original work published 1975)

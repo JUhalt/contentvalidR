@@ -111,15 +111,14 @@ d$rating <- ifelse(d$construct == d$target_construct,
 anova_content(d)
 #> Content-validity ANOVA (Hinkin & Tracey, 1999)
 #> 
-#>  item target judges            omnibus test      p partial eta^2 competitor
-#>    I1      A     12 F(1.89, 20.84) = 193.43 < .001           .95          B
-#>    I2      B     12 F(1.77, 19.51) = 138.46 < .001           .93          A
-#>  contrast p contrasts met
-#>      < .001           yes
-#>      < .001           yes
+#>  item target judges                  F test      p partial eta^2 contrast p met
+#>    I1      A     12 F(1.89, 20.84) = 193.43 < .001           .95     < .001 yes
+#>    I2      B     12 F(1.77, 19.51) = 138.46 < .001           .93     < .001 yes
 #> 
 #> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
 #> of freedom are fractional.
 #> contrast p: the largest p among the planned target-versus-other contrasts;
-#> attr(x, "contrasts") holds every contrast.
+#> met: whether every one of them met the screening criterion. attr(x,
+#> "contrasts") holds each contrast, and `strongest_competitor` the construct
+#> rated closest to the target.
 ```

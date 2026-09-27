@@ -130,7 +130,7 @@ argument chooses the statistic reported beside it:
   on the two rounds' distributions; a non-significant result is read as
   stable.
 
-- `"percent_change"`: Scheibe, Skutsch and Schofer's (1975) net change,
+- `"percent_change"`: the net change of Scheibe et al. (1975/2002),
   stable below 15%.
 
 The alternatives are published but contested, so the printed output
@@ -240,9 +240,11 @@ Landis, J. R., & Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. *Biometrics, 33*(1), 159–174.
 [doi:10.2307/2529310](https://doi.org/10.2307/2529310)
 
-Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-Techniques and applications*. Addison-Wesley.
+Techniques and applications* (pp. 257–281).
+<https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf>
+(Original work published 1975)
 
 ## See also
 
@@ -310,25 +312,30 @@ fit
 #> one category. Those intervals use the remaining resamples (n_boot_usable in
 #> details$stability), so treat them as rough.
 #> 
-#> Stability is weighted kappa between each expert's ratings in consecutive
-#> rounds (Holey et al., 2007), with quadratic weights. A change of two scale
-#> points counts four times a change of one. With these weights kappa equals the
-#> intraclass correlation of the two rounds' ratings, so a shift of the whole
-#> panel counts as instability (Fleiss & Cohen, 1973). Read kappa as a trend
-#> across rounds, not against a cut-off. No verbal labels such as 'substantial'
-#> are shown: kappa falls when ratings converge on one category, which is what a
-#> Delphi aims for, so a panel whose experts nearly all kept their answer can
-#> still show a low kappa. Holey et al. saw this for their most-agreed
-#> statement. Read kappa next to the share of experts who kept their rating
-#> (unchanged).
+#> Read kappa as a trend across rounds, beside the share of experts who kept
+#> their rating (unchanged), not against a cut-off: kappa falls as a panel
+#> converges on one category, so a stable panel can show a low kappa (Holey et
+#> al., 2007).
 #> 
-#> The intervals are percentile bootstraps that resample the experts, which are
-#> the units the two rounds cross-classify. That is the procedure Klar et al.
-#> (2002) describe for kappa, but they evaluated it for an unweighted kappa on
-#> two categories and found a nominal 95% interval covered about 83% of the time
-#> with 20 units and 91% with 30, reaching 94% only from 40 up. Most panels are
-#> smaller than that, so the interval is narrower than its label claims: read it
-#> as indicative of precision, not as a test.
+#> The kappa intervals resample the experts (Klar et al., 2002). With fewer than
+#> about 40 experts they cover less than their stated 95%, so read them as rough
+#> indications of precision, not as tests.
+#> 
+#> How the stability statistic works
+#>   Stability is weighted kappa between each expert's ratings in consecutive
+#>   rounds (Holey et al., 2007), with quadratic weights. A change of two scale
+#>   points counts four times a change of one. With these weights kappa equals
+#>   the intraclass correlation of the two rounds' ratings, so a shift of the
+#>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
+#>   such as 'substantial' are shown, because kappa falls when ratings converge,
+#>   which is what a Delphi aims for: Holey et al. saw a low kappa for their
+#>   most-agreed statement.
+#> 
+#>   The intervals are percentile bootstraps that resample the experts, the
+#>   units the two rounds cross-classify: the procedure Klar et al. (2002)
+#>   describe for kappa. They evaluated it for an unweighted kappa on two
+#>   categories, and a nominal 95% interval covered about 83% of the time with
+#>   20 units and 91% with 30, reaching 94% only from 40 up.
 #> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the
@@ -379,7 +386,7 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> Experts per round: 8, 8, 8
 #> Agreement: a rating of 3 or higher on the 1-4 scale. Consensus threshold:
 #> 75%, fixed before the study.
-#> Stability: net percent change (Scheibe et al., 1975) between consecutive
+#> Stability: net percent change (Scheibe et al., 1975/2002) between consecutive
 #> rounds
 #> 
 #> 3 of 4 items reached consensus in their last round.
@@ -409,13 +416,13 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #>    S3  .50  .88
 #>    S4  .75  .88
 #> 
-#> Stability is Scheibe, Skutsch and Schofer's (1975) net change: half the
-#> summed differences between the two rounds' rating distributions, as a share
-#> of the experts compared, with change below 15% read as stable. The authors
-#> say the measure has no statistical theory behind it; the 15% cut-off came
-#> from the movement they observed in one classroom Delphi. Experts swapping
-#> answers cancel out, and in a small panel one expert is a large share: with 10
-#> experts one net change is already 10%.
+#> Stability is the net change of Scheibe et al. (1975/2002): half the summed
+#> differences between the two rounds' rating distributions, as a share of the
+#> experts compared, with change below 15% read as stable. The authors say the
+#> measure has no statistical theory behind it; the 15% cut-off came from the
+#> movement they observed in one classroom Delphi. Experts swapping answers
+#> cancel out, and in a small panel one expert is a large share: with 10 experts
+#> one net change is already 10%.
 #> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the

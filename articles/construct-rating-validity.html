@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,14 +33,24 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
+<li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Start here</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with contentvalidR</a></li>
     <li><a class="dropdown-item" href="../articles/reading-output.html">How to Read contentvalidR Output</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Workflow guides</h6></li>
+    <li><a class="dropdown-item" href="../articles/item-sort-validity.html">Item-Sort Content Validation: Anderson-Gerbing to Howard-Melloy to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/construct-rating-validity.html">Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</a></li>
+    <li><a class="dropdown-item" href="../articles/expert-panel-validity.html">Expert-Panel Content Validation: Relevance, Essentiality, and Congruence</a></li>
+    <li><a class="dropdown-item" href="../articles/delphi-rounds.html">Delphi Rounds: Consensus and Stability</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Planning and reporting</h6></li>
     <li><a class="dropdown-item" href="../articles/design-and-reporting.html">Design &amp; Reporting Guide</a></li>
     <li><a class="dropdown-item" href="../articles/reporting-examples.html">Manuscript-Ready Reporting Examples</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>After content review</h6></li>
     <li><a class="dropdown-item" href="../articles/handoff-to-empirical-validation.html">From Content Validity to Empirical Validation</a></li>
     <li><a class="dropdown-item" href="../articles/one-item-set-both-stages.html">One Item Set, Both Stages</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -66,7 +76,7 @@
       <h1>Construct-Rating Content Validation: Hinkin-Tracey to Colquitt</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.9.0/vignettes/construct-rating-validity.Rmd" class="external-link"><code>vignettes/construct-rating-validity.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/vignettes/construct-rating-validity.Rmd" class="external-link"><code>vignettes/construct-rating-validity.Rmd</code></a></small>
       <div class="d-none name"><code>construct-rating-validity.Rmd</code></div>
     </div>
 
@@ -184,21 +194,18 @@ definition against every orbiting definition.</p>
 <span><span class="va">aov_out</span></span>
 <span><span class="co">#&gt; Content-validity ANOVA (Hinkin &amp; Tracey, 1999)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges            omnibus test      p partial eta^2 competitor</span></span>
-<span><span class="co">#&gt;    A1      A     24  F(1.98, 45.65) = 72.64 &lt; .001           .76          B</span></span>
-<span><span class="co">#&gt;    A2      A     24 F(1.62, 37.22) = 105.82 &lt; .001           .82          B</span></span>
-<span><span class="co">#&gt;    A3      A     24  F(2.00, 45.97) = 82.25 &lt; .001           .78          C</span></span>
-<span><span class="co">#&gt;    B1      B     24 F(1.85, 42.61) = 108.29 &lt; .001           .82          C</span></span>
-<span><span class="co">#&gt;  contrast p contrasts met</span></span>
-<span><span class="co">#&gt;      &lt; .001           yes</span></span>
-<span><span class="co">#&gt;      &lt; .001           yes</span></span>
-<span><span class="co">#&gt;      &lt; .001           yes</span></span>
-<span><span class="co">#&gt;      &lt; .001           yes</span></span>
+<span><span class="co">#&gt;  item target judges                  F test      p partial eta^2 contrast p met</span></span>
+<span><span class="co">#&gt;    A1      A     24  F(1.98, 45.65) = 72.64 &lt; .001           .76     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;    A2      A     24 F(1.62, 37.22) = 105.82 &lt; .001           .82     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;    A3      A     24  F(2.00, 45.97) = 82.25 &lt; .001           .78     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;    B1      B     24 F(1.85, 42.61) = 108.29 &lt; .001           .82     &lt; .001 yes</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees</span></span>
 <span><span class="co">#&gt; of freedom are fractional.</span></span>
 <span><span class="co">#&gt; contrast p: the largest p among the planned target-versus-other contrasts;</span></span>
-<span><span class="co">#&gt; attr(x, "contrasts") holds every contrast.</span></span>
+<span><span class="co">#&gt; met: whether every one of them met the screening criterion. attr(x,</span></span>
+<span><span class="co">#&gt; "contrasts") holds each contrast, and `strongest_competitor` the construct</span></span>
+<span><span class="co">#&gt; rated closest to the target.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">aov_out</span>, <span class="st">"contrasts"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   item design target competitor  n mean_target mean_competitor mean_diff</span></span>
 <span><span class="co">#&gt; 1   A1 within      A          B 24    4.375000        2.375000  2.000000</span></span>

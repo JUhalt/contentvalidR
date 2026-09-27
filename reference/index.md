@@ -125,7 +125,8 @@ items as the blueprint expects.
 
 ## Auxiliary and compatibility helpers
 
-Retained utilities that are not flagship v0.1.0 workflows.
+Kept for older analyses and sensitivity checks; not recommended
+workflows.
 
 - [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md)
   : Q-factor helper for content adequacy (comparator)
