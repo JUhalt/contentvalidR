@@ -241,12 +241,15 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 #' @export
 plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   probs <- sort(unique(r$prob))
 
-  graphics::plot(range(r$n_experts), c(0, 1), type = "n",
+  graphics::plot(range(r$n_experts), c(0, 1), type = "n", yaxt = "n",
                  xlab = "Experts on the panel",
                  ylab = "Probability of clearing the criterion", ...)
+  .axis_bounded(2, at = seq(0, 1, 0.25))
   for (i in seq_along(probs)) {
     sub <- r[r$prob == probs[i], , drop = FALSE]
     sub <- sub[order(sub$n_experts), , drop = FALSE]

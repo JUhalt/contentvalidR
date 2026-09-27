@@ -996,6 +996,8 @@ plot.contentvalid_delphi <- function(x, which = c("consensus", "stability"),
                                      show_legend = TRUE, ...) {
   which <- match.arg(which)
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   rounds <- x$design$rounds
   items <- unique(x$results$item)
   colours <- .delphi_item_colours(length(items))
@@ -1012,7 +1014,7 @@ plot.contentvalid_delphi <- function(x, which = c("consensus", "stability"),
     graphics::plot(NA, xlim = c(1, length(rounds) + right_pad * 0.12),
                    ylim = ylim, yaxt = "n", xaxt = "n",
                    xlab = "Round", ylab = "Share of experts agreeing", ...)
-    graphics::axis(2, at = seq(0, 1, by = 0.25))
+    .axis_bounded(2, at = seq(0, 1, by = 0.25))
     graphics::axis(1, at = seq_along(rounds), labels = rounds)
     threshold <- x$settings$consensus_threshold
     if (!is.null(threshold)) graphics::abline(h = threshold, lty = 3)
@@ -1048,9 +1050,12 @@ plot.contentvalid_delphi <- function(x, which = c("consensus", "stability"),
                    stab$to_round[!duplicated(pair_at)])
 
   graphics::plot(NA, xlim = c(1, max(pair_at) + right_pad * 0.12), ylim = ylim,
-                 xaxt = "n", xlab = "Pair of rounds",
+                 xaxt = "n", yaxt = "n", xlab = "Pair of rounds",
                  ylab = .delphi_axis_label(x$settings), ...)
   graphics::axis(1, at = sort(unique(pair_at)), labels = labels)
+  # Ticks stop at 1, below the headroom kept for the legend.
+  ticks <- pretty(c(ylim[1], 1))
+  .axis_bounded(2, at = ticks[ticks >= ylim[1] & ticks <= 1])
   for (i in seq_along(items)) {
     graphics::lines(xs[[i]], ys[[i]], col = colours[i], lwd = 1.5)
     graphics::points(xs[[i]], ys[[i]], col = colours[i], pch = 19, cex = 0.8)

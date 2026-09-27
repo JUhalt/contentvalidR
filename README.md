@@ -1075,25 +1075,25 @@ around the substantive questions in each method:
 plot(fit, type = "map")
 ```
 
-<img src="man/figures/README-visualization-1.png" alt="" width="100%" />
+<img src="man/figures/README-visualization-1.png" alt="Item-sort evidence map: each item's Psa, the share of judges choosing its target, on the horizontal axis against its Csv, the lead of the target over its top rival, on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean." width="100%" />
 
 ``` r
 plot(rfit, type = "map")
 ```
 
-<img src="man/figures/README-visualization-2.png" alt="" width="100%" />
+<img src="man/figures/README-visualization-2.png" alt="Construct-rating evidence map: each item's HTC on the horizontal axis against its HTD on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean." width="100%" />
 
 ``` r
 plot(rfit, type = "profile")
 ```
 
-<img src="man/figures/README-visualization-3.png" alt="" width="100%" />
+<img src="man/figures/README-visualization-3.png" alt="Construct-rating profile: for each item, its mean rating against the intended definition (filled) and against the strongest competing definition (open), joined by a line that is dashed for items to review." width="100%" />
 
 ``` r
 plot(efit)
 ```
 
-<img src="man/figures/README-visualization-4.png" alt="" width="100%" />
+<img src="man/figures/README-visualization-4.png" alt="Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size." width="100%" />
 
 The sort and rating maps jointly display **definitional correspondence**
 and **definitional distinctiveness**, with target-scale means
@@ -1108,7 +1108,7 @@ item-level cutoffs.
 plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
 ```
 
-<img src="man/figures/README-visualization-power-1.png" alt="" width="100%" />
+<img src="man/figures/README-visualization-power-1.png" alt="Exact retention power of the item-sort test against the number of judges, one line for each assumed rate at which judges choose the target: .60, .70, and .80." width="100%" />
 
 ## Reproducible examples and reporting
 

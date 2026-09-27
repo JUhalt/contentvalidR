@@ -1,5 +1,31 @@
 # contentvalidR 0.8.0.9000 (development version)
 
+## Plots show the criterion and the uncertainty (in development)
+
+No computed value changes; this is about what the figures draw.
+
+* **The item-sort Psa plot draws each item's interval, and a dashed mark at
+  the share of judges the exact test needs for that item**, so an item is
+  retained when its point reaches its mark. It used to show bare points.
+* **The expert relevance plot shows Aiken's V and I-CVI side by side, each
+  with its interval**, and a dashed line at the I-CVI criterion when every
+  item had the same number of experts ("I-CVI criterion (5 of 6)"). Before,
+  only V had an interval, and an I-CVI point could hide behind V's.
+* **Legends list only what the figure draws** and sit in headroom above the
+  data. The item plots offered a "No data" symbol no item used, the profile
+  plot a "Review gap" line it had not drawn, and the essentiality key sat on
+  its own zero line. The content map's key is titled "Cluster" or "Blueprint
+  cell", where it showed bare numbers.
+* **Axis labels say what is measured** ("Psa: share of judges choosing the
+  target") in place of "Psa correspondence", and axes for statistics that
+  cannot exceed 1 are labeled as APA prints them (.25, .50). No figure leaves
+  an empty band for a title unless `main` is given, and each restores the
+  graphics settings it changes. Item rows run top to bottom in the order of
+  the results table, and scale means are triangles, clearly distinct from
+  retained items.
+* **Every figure in the README and the vignettes has alt text** describing
+  what it shows; 17 of 19 had none.
+
 ## Shorter keys, formatted components, and APA report tables (in development)
 
 No computed value changes; this is about what is printed.
