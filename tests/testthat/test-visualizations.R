@@ -87,6 +87,48 @@ test_that("nearby scale-mean labels are deterministically separated", {
 })
 
 
+test_that("bounded axes are labeled as APA prints numbers", {
+  expect_identical(.tick_labels(seq(0, 1, 0.25)),
+                   c("0", ".25", ".50", ".75", "1.00"))
+  expect_identical(.tick_labels(c(-1, -0.5, 0, 0.5, 1)),
+                   c("-1.00", "-.50", "0", ".50", "1.00"))
+})
+
+test_that("a plot legend lists only the decisions it draws", {
+  leg <- .decision_legend(c("Retain", "Retain", "Review"))
+  expect_identical(leg$legend, c("Retain", "Review"))
+  expect_identical(leg$pch, c(19L, 1L))
+  # No "No data" entry unless an item has no data.
+  expect_false("Insufficient data" %in% .decision_legend(c("Retain", "Review"))$legend)
+  expect_identical(.decision_legend(c("Insufficient data", "Retain"))$legend,
+                   c("Retain", "Insufficient data"))
+})
+
+test_that("plots restore the graphics settings they change", {
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  before <- graphics::par("mar")
+  plot(.make_sort_visual())
+  plot(.make_rating_visual(), type = "profile")
+  expect_identical(graphics::par("mar"), before)
+})
+
+test_that("every plot type draws, with and without a title", {
+  grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  fit <- .make_sort_visual()
+  expect_identical(plot(fit, metric = "psa"), fit)
+  expect_identical(plot(fit, metric = "csv"), fit)
+  expect_identical(plot(fit, main = "Item sort"), fit)
+  r <- .make_rating_visual()
+  expect_identical(plot(r, metric = "htc"), r)
+  expect_identical(plot(r, metric = "htd"), r)
+  ep <- expert_power(n_experts = 3:8, prob = c(0.8, 0.9))
+  expect_identical(plot(ep), ep)
+  # A key whose entries have no lines at all must still draw.
+  expect_silent(.legend_top(c("Retain", "Review"), c(19, 1)))
+})
+
 test_that("critical Psa curve represents every integer judge count", {
   curve <- .critical_psa_curve(c(10, 15, 20), p0 = .5, alpha = .05)
 

@@ -473,9 +473,11 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
 #'
 #' @description
 #' Draws either the original one-index item plot or a correspondence-distinctiveness
-#' evidence map. The map places Psa on the x-axis and Csv on the y-axis so that
+#' evidence map. The Psa item plot draws each item's interval and a dashed mark
+#' at the share of judges the exact test needs for that item, so an item is
+#' retained when its point reaches its mark. The map places Psa on the x-axis and Csv on the y-axis so that
 #' intended-construct correspondence and distinctiveness can be inspected together.
-#' Target-scale means are added as diamonds when available. Colquitt benchmark bands
+#' Target-scale means are added as triangles when available. Colquitt benchmark bands
 #' are deliberately not drawn across item points because those norms were developed
 #' for scale-level averages rather than individual items.
 #'
@@ -513,35 +515,64 @@ plot.contentvalid_sort <- function(x,
   type <- match.arg(type)
   label <- match.arg(label)
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   r <- x$results
+  pch <- .decision_pch(r$recommendation)
+  psa_lab <- "Psa: share of judges choosing the target"
+  csv_lab <- "Csv: lead of the target over its top rival"
 
   if (type == "item") {
     metric <- match.arg(metric)
     y <- r[[metric]]
-    pch <- ifelse(r$recommendation == "Retain", 19,
-                  ifelse(r$recommendation == "Review", 1, 4))
-    ylim <- if (metric == "psa") c(0, 1) else c(-1, 1)
-    ylab <- if (metric == "psa") "Psa correspondence" else "Csv distinctiveness"
-
-    graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
-                   ylim = ylim, pch = pch, ...)
-    graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
-    if (metric == "csv") graphics::abline(h = 0, lty = 3)
-    if (isTRUE(show_legend)) {
-      graphics::legend("bottomleft", legend = c("Retain", "Review", "No data"),
-                       pch = c(19, 1, 4), bty = "n", cex = 0.72)
+    xs <- seq_along(y)
+    lo <- if (metric == "psa") 0 else -1
+    # Headroom above 1 holds the legend, clear of the data.
+    graphics::plot(xs, y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+                   ylab = if (metric == "psa") psa_lab else csv_lab,
+                   xlim = c(0.5, length(y) + 0.5),
+                   ylim = c(lo, 1 + 0.2 * (1 - lo)), ...)
+    graphics::axis(1, at = xs, labels = r$item, las = 2)
+    .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+    leg <- .decision_legend(r$recommendation)
+    lg <- leg$legend
+    lp <- leg$pch
+    ll <- rep(NA, length(lg))
+    if (metric == "psa") {
+      ci <- is.finite(r$psa_low) & is.finite(r$psa_high)
+      if (any(ci)) {
+        graphics::segments(xs[ci], r$psa_low[ci], xs[ci], r$psa_high[ci])
+        lg <- c(lg, .ci_label(x$settings$alpha))
+        lp <- c(lp, NA)
+        ll <- c(ll, 1)
+      }
+      # The exact test compares counts, so each item's criterion is the count
+      # it needs over the judges who sorted it.
+      crit <- r$critical_n_target / r$n
+      ok <- is.finite(crit)
+      if (any(ok)) {
+        graphics::segments(xs[ok] - 0.3, crit[ok], xs[ok] + 0.3, crit[ok], lty = 2)
+        lg <- c(lg, "Criterion (exact test)")
+        lp <- c(lp, NA)
+        ll <- c(ll, 2)
+      }
+    } else {
+      .hline(0)
     }
+    has <- is.finite(y)
+    graphics::points(xs[has], y[has], pch = pch[has])
+    graphics::points(xs[!has], rep(lo, sum(!has)), pch = 4)
+    if (isTRUE(show_legend)) .legend_top(lg, lp, ll)
     return(invisible(x))
   }
 
   ok <- is.finite(r$psa) & is.finite(r$csv)
-  pch <- ifelse(r$recommendation == "Retain", 19,
-                ifelse(r$recommendation == "Review", 1, 4))
-  graphics::plot(r$psa[ok], r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1),
-                 xlab = "Psa correspondence",
-                 ylab = "Csv distinctiveness",
+  graphics::plot(r$psa[ok], r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
+                 xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = csv_lab,
                  pch = pch[ok], ...)
-  graphics::abline(h = 0, lty = 3)
+  .axis_bounded(1, at = seq(0, 1, 0.25))
+  .axis_bounded(2, at = seq(-1, 1, 0.5))
+  .hline(0)
 
   lab_idx <- switch(
     label,
@@ -559,20 +590,15 @@ plot.contentvalid_sort <- function(x,
   if (any(s_ok)) {
     sx <- s$mean_psa[s_ok]
     sy <- s$mean_csv[s_ok]
-    graphics::points(sx, sy, pch = 18, cex = 1.25)
+    graphics::points(sx, sy, pch = 17, cex = 1.1)
     label_y <- .map_scale_label_y(sx, sy)
     graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
   }
 
   if (isTRUE(show_legend)) {
-    legend_labels <- c("Retain", "Review")
-    legend_pch <- c(19, 1)
-    if (any(s_ok)) {
-      legend_labels <- c(legend_labels, "Scale mean")
-      legend_pch <- c(legend_pch, 18)
-    }
-    graphics::legend("bottomleft", legend = legend_labels, pch = legend_pch,
-                     bty = "n", cex = 0.72)
+    leg <- .decision_legend(r$recommendation[ok])
+    .legend_top(c(leg$legend, if (any(s_ok)) "Scale mean"),
+                c(leg$pch, if (any(s_ok)) 17))
   }
   invisible(x)
 }

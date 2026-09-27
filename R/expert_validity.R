@@ -788,11 +788,13 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' Plot expert-panel content-validity results
 #'
 #' @description
-#' Draws a mode-specific evidence plot. Relevance mode shows Aiken's V with its
-#' score confidence interval and overlays I-CVI as a separate marker. Essentiality
-#' mode shows each observed CVR against its item-specific critical CVR. Congruence
-#' mode uses a target-versus-strongest-competitor gap plot when a target mapping is
-#' available.
+#' Draws a mode-specific evidence plot, one row per item with the first item at
+#' the top. Relevance mode shows Aiken's V and I-CVI side by side, each with its
+#' interval, and a dashed line at the I-CVI criterion when every item had the
+#' same number of experts. Essentiality mode shows each observed CVR against the
+#' CVR the exact test needs for that item. Congruence mode shows each item's IOC
+#' for its intended objective against its strongest competitor, when a target
+#' mapping is available.
 #'
 #' @param x A `contentvalid_expert` object.
 #' @param show_legend Logical; draw the compact plot key. Default `TRUE`.
@@ -810,51 +812,74 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' @export
 plot.contentvalid_expert <- function(x, show_legend = TRUE, ...) {
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
+  r <- x$results
+  n <- nrow(r)
+  # The first item is drawn at the top, in the order of the results table.
+  y <- rev(seq_len(n))
+  top <- n + 0.5
+  ci_label <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
+
   if (x$mode == "relevance") {
-    r <- x$results
-    y <- seq_len(nrow(r))
-    graphics::plot(r$V, y, xlim = c(0, 1), ylim = c(0.5, nrow(r) + 1.25), yaxt = "n",
-                   xlab = "Relevance index", ylab = "", pch = 19, ...)
+    graphics::plot(NA, xlim = c(0, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                   yaxt = "n", xlab = "Relevance (0 to 1)", ylab = "", ...)
+    .axis_bounded(1, at = seq(0, 1, 0.25))
     graphics::axis(2, at = y, labels = r$item, las = 1)
-    good_ci <- is.finite(r$ci_low) & is.finite(r$ci_high)
-    graphics::segments(r$ci_low[good_ci], y[good_ci], r$ci_high[good_ci], y[good_ci])
-    good_cvi <- is.finite(r$I_CVI)
-    graphics::points(r$I_CVI[good_cvi], y[good_cvi], pch = 1)
+    # The I-CVI criterion depends on the panel size, so it is drawn as a line
+    # only when every item had the same number of experts.
+    crit <- unique(r$cvi_criterion[is.finite(r$cvi_criterion)])
+    one_crit <- length(crit) == 1L
+    if (one_crit) .vline_below(crit, 0.5, top, lty = 2)
+    # Aiken's V just above each item's row, I-CVI just below, each with its
+    # interval, so the two never hide each other.
+    yv <- y + 0.15
+    yc <- y - 0.15
+    v_ci <- is.finite(r$ci_low) & is.finite(r$ci_high)
+    graphics::segments(r$ci_low[v_ci], yv[v_ci], r$ci_high[v_ci], yv[v_ci])
+    c_ci <- is.finite(r$I_CVI_low) & is.finite(r$I_CVI_high)
+    graphics::segments(r$I_CVI_low[c_ci], yc[c_ci], r$I_CVI_high[c_ci], yc[c_ci])
+    graphics::points(r$V, yv, pch = 19)
+    graphics::points(r$I_CVI, yc, pch = 1)
     if (isTRUE(show_legend)) {
-      graphics::legend("top", legend = c("Aiken V", "I-CVI", "Score CI"),
-                       pch = c(19, 1, NA), lty = c(NA, NA, 1), bty = "n",
-                       horiz = TRUE, cex = 0.68, x.intersp = 0.7)
+      need <- if (one_crit) {
+        size <- unique(r$N[is.finite(r$cvi_criterion)])
+        if (length(size) == 1L) {
+          sprintf("I-CVI criterion (%d of %d)", .cvi_required_count(size), size)
+        } else "I-CVI criterion"
+      }
+      .legend_top(c("Aiken's V", "I-CVI", ci_label, need),
+                  c(19, 1, NA, if (one_crit) NA),
+                  c(NA, NA, 1, if (one_crit) 2))
     }
   } else if (x$mode == "essentiality") {
-    r <- x$results
-    y <- seq_len(nrow(r))
-    graphics::plot(r$cvr, y, xlim = c(-1, 1), ylim = c(0.5, nrow(r) + 1.25), yaxt = "n",
-                   xlab = "CVR", ylab = "", pch = 19, ...)
+    graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                   yaxt = "n", xlab = "CVR (-1 to 1)", ylab = "", ...)
+    .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
-    graphics::abline(v = 0, lty = 3)
+    .vline_below(0, 0.5, top)
     good <- is.finite(r$critical_cvr) & is.finite(r$cvr)
     graphics::segments(r$critical_cvr[good], y[good], r$cvr[good], y[good])
     graphics::points(r$critical_cvr[good], y[good], pch = 1)
+    graphics::points(r$cvr, y, pch = 19)
     if (isTRUE(show_legend)) {
-      graphics::legend("top", legend = c("Observed", "Critical"),
-                       pch = c(19, 1), bty = "n", horiz = TRUE, cex = 0.70)
+      .legend_top(c("Observed CVR", "Needed (exact test)"), c(19, 1))
     }
   } else {
-    r <- x$results
     if (!"target_ioc" %in% names(r)) {
       stop("Congruence plots require a target-objective mapping.", call. = FALSE)
     }
-    y <- seq_len(nrow(r))
-    graphics::plot(r$target_ioc, y, xlim = c(-1, 1), ylim = c(0.5, nrow(r) + 1.25), yaxt = "n",
-                   xlab = "IOC", ylab = "", pch = 19, ...)
+    graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                   yaxt = "n", xlab = "IOC (-1 to 1)", ylab = "", ...)
+    .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
-    graphics::abline(v = 0, lty = 3)
+    .vline_below(0, 0.5, top)
     good <- is.finite(r$competitor_ioc) & is.finite(r$target_ioc)
     graphics::segments(r$competitor_ioc[good], y[good], r$target_ioc[good], y[good])
     graphics::points(r$competitor_ioc[good], y[good], pch = 1)
+    graphics::points(r$target_ioc, y, pch = 19)
     if (isTRUE(show_legend)) {
-      graphics::legend("top", legend = c("Target", "Competitor"),
-                       pch = c(19, 1), bty = "n", horiz = TRUE, cex = 0.70)
+      .legend_top(c("Intended objective", "Strongest competitor"), c(19, 1))
     }
   }
   invisible(x)

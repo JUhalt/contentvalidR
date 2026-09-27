@@ -415,6 +415,8 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #' @export
 plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   pts <- x$coordinates
   cl <- x$clusters
 
@@ -440,9 +442,12 @@ plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
   graphics::text(pts[, 1], pts[, 2], labels = rownames(pts), pos = 3, cex = 0.7)
 
   if (isTRUE(show_legend)) {
+    # Name what the symbols stand for: the blueprint's cells when one was
+    # supplied, otherwise the clusters recovered from the similarities.
     graphics::legend("top", legend = levels(group),
                      pch = (seq_along(levels(group)) - 1L) %% 25L + 1L,
-                     bty = "n", horiz = TRUE, cex = 0.68, x.intersp = 0.7)
+                     title = if (!is.null(cl$blueprint_cell)) "Blueprint cell" else "Cluster",
+                     bty = "n", horiz = TRUE, cex = 0.72, x.intersp = 0.7)
   }
   invisible(x)
 }

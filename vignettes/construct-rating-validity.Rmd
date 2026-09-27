@@ -151,14 +151,14 @@ For HTD and repeated-measures inference, a judge must have a usable rating for e
 
 The original one-index views remain available:
 
-```{r plot, fig.width=7, fig.height=4}
+```{r plot, fig.width=7, fig.height=4, fig.alt=c("HTC for each item on a 0 to 1 scale; filled points are retained items and open points are items to review.", "HTD for each item on a -1 to 1 scale, with a dotted line at zero; filled points are retained items and open points are items to review.")}
 plot(fit, metric = "htc")
 plot(fit, metric = "htd")
 ```
 
 A correspondence-distinctiveness evidence map displays HTC and HTD together:
 
-```{r rating-map, fig.width=7, fig.height=5}
+```{r rating-map, fig.width=7, fig.height=5, fig.alt="Construct-rating evidence map: each item's HTC on the horizontal axis against its HTD on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean."}
 plot(fit, type = "map")
 ```
 
@@ -169,7 +169,7 @@ individual items because those benchmarks were constructed from scale averages.
 The **target-versus-competitor gap plot** makes the Hinkin-Tracey mean-rating
 logic more directly visible:
 
-```{r rating-profile, fig.width=7, fig.height=5}
+```{r rating-profile, fig.width=7, fig.height=5, fig.alt="Construct-rating profile: for each item, its mean rating against the intended definition (filled) and against the strongest competing definition (open), joined by a line that is dashed for items to review."}
 plot(fit, type = "profile")
 ```
 

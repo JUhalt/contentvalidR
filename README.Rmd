@@ -392,7 +392,7 @@ There is deliberately no helper returning "the items that passed." Filtering on 
 The workflow objects include dependency-free base-R graphics designed around the
 substantive questions in each method:
 
-```{r visualization, fig.width=7, fig.height=5}
+```{r visualization, fig.width=7, fig.height=5, fig.alt=c("Item-sort evidence map: each item's Psa, the share of judges choosing its target, on the horizontal axis against its Csv, the lead of the target over its top rival, on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean.", "Construct-rating evidence map: each item's HTC on the horizontal axis against its HTD on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean.", "Construct-rating profile: for each item, its mean rating against the intended definition (filled) and against the strongest competing definition (open), joined by a line that is dashed for items to review.", "Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.")}
 plot(fit, type = "map")
 plot(rfit, type = "map")
 plot(rfit, type = "profile")
@@ -407,7 +407,7 @@ panel-specific CVR criteria, or target-versus-competitor IOC gaps as appropriate
 The plots intentionally avoid converting scale-level empirical norms into item-level
 cutoffs.
 
-```{r visualization-power, fig.width=7, fig.height=4}
+```{r visualization-power, fig.width=7, fig.height=4, fig.alt="Exact retention power of the item-sort test against the number of judges, one line for each assumed rate at which judges choose the target: .60, .70, and .80."}
 plot(sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80)))
 ```
 

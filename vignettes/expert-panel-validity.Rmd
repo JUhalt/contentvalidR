@@ -231,7 +231,7 @@ actual panel size.
 Each mode uses a plot matched to the expert task rather than forcing unlike
 indices into one generic chart.
 
-```{r expert-plots, fig.width=7, fig.height=4}
+```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's IOC for its intended objective (filled) joined to its IOC for the strongest competing objective (open), with a dotted line at zero.")}
 plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
 plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 plot(expert_validity(d, mode = "congruence"))

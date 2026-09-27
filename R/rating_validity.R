@@ -457,7 +457,8 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' Provides three complementary views of a construct-rating pretest. `"item"`
 #' reproduces the original one-index plot, `"map"` places HTC against HTD to show
 #' correspondence and distinctiveness jointly, and `"profile"` draws a target-versus-
-#' strongest-competitor gap plot on the original response scale. The latter is a
+#' strongest-competitor gap plot on the original response scale, first item at
+#' the top, with a dashed gap for items to review. The latter is a
 #' graphical analogue of the mean-rating tables used in Hinkin and Tracey (1999).
 #'
 #' @param x A `contentvalid_rating` object.
@@ -491,35 +492,43 @@ plot.contentvalid_rating <- function(x,
   type <- match.arg(type)
   label <- match.arg(label)
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   r <- x$results
+  pch <- .decision_pch(r$recommendation)
+  htc_lab <- "HTC: target rating as a share of the scale"
+  htd_lab <- "HTD: lead of the target over the other constructs"
 
   if (type == "item") {
     metric <- match.arg(metric)
     y <- r[[metric]]
-    pch <- ifelse(r$recommendation == "Retain", 19,
-                  ifelse(r$recommendation == "Review", 1, 4))
-    ylim <- if (metric == "htc") c(0, 1) else c(-1, 1)
-    ylab <- if (metric == "htc") "HTC correspondence" else "HTD distinctiveness"
-    graphics::plot(seq_along(y), y, xaxt = "n", xlab = "Item", ylab = ylab,
-                   ylim = ylim, pch = pch, ...)
-    graphics::axis(1, at = seq_along(y), labels = r$item, las = 2)
-    if (metric == "htd") graphics::abline(h = 0, lty = 3)
+    xs <- seq_along(y)
+    lo <- if (metric == "htc") 0 else -1
+    graphics::plot(xs, y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+                   ylab = if (metric == "htc") htc_lab else htd_lab,
+                   xlim = c(0.5, length(y) + 0.5),
+                   ylim = c(lo, 1 + 0.2 * (1 - lo)), ...)
+    graphics::axis(1, at = xs, labels = r$item, las = 2)
+    .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+    if (metric == "htd") .hline(0)
+    has <- is.finite(y)
+    graphics::points(xs[has], y[has], pch = pch[has])
+    graphics::points(xs[!has], rep(lo, sum(!has)), pch = 4)
     if (isTRUE(show_legend)) {
-      graphics::legend("bottomleft", legend = c("Retain", "Review", "No data"),
-                       pch = c(19, 1, 4), bty = "n", cex = 0.72)
+      leg <- .decision_legend(r$recommendation)
+      .legend_top(leg$legend, leg$pch)
     }
     return(invisible(x))
   }
 
   if (type == "map") {
     ok <- is.finite(r$htc) & is.finite(r$htd)
-    pch <- ifelse(r$recommendation == "Retain", 19,
-                  ifelse(r$recommendation == "Review", 1, 4))
-    graphics::plot(r$htc[ok], r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1),
-                   xlab = "HTC correspondence",
-                   ylab = "HTD distinctiveness",
+    graphics::plot(r$htc[ok], r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
+                   xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
                    pch = pch[ok], ...)
-    graphics::abline(h = 0, lty = 3)
+    .axis_bounded(1, at = seq(0, 1, 0.25))
+    .axis_bounded(2, at = seq(-1, 1, 0.5))
+    .hline(0)
 
     lab_idx <- switch(
       label,
@@ -537,43 +546,40 @@ plot.contentvalid_rating <- function(x,
     if (any(s_ok)) {
       sx <- s$mean_htc[s_ok]
       sy <- s$mean_htd[s_ok]
-      graphics::points(sx, sy, pch = 18, cex = 1.25)
+      graphics::points(sx, sy, pch = 17, cex = 1.1)
       label_y <- .map_scale_label_y(sx, sy)
       graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
     }
     if (isTRUE(show_legend)) {
-      legend_labels <- c("Retain", "Review")
-      legend_pch <- c(19, 1)
-      if (any(s_ok)) {
-        legend_labels <- c(legend_labels, "Scale mean")
-        legend_pch <- c(legend_pch, 18)
-      }
-      graphics::legend("bottomleft", legend = legend_labels, pch = legend_pch,
-                       bty = "n", cex = 0.72)
+      leg <- .decision_legend(r$recommendation[ok])
+      .legend_top(c(leg$legend, if (any(s_ok)) "Scale mean"),
+                  c(leg$pch, if (any(s_ok)) 17))
     }
     return(invisible(x))
   }
 
-  y <- seq_len(nrow(r))
+  # The first item is drawn at the top, in the order of the results table.
+  n <- nrow(r)
+  y <- rev(seq_len(n))
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
-  finite_any <- is.finite(r$target_mean) | is.finite(r$competitor_mean)
-  graphics::plot(r$target_mean[finite_any], y[finite_any], xlim = xlim,
-                 ylim = c(0.5, nrow(r) + 1.25), yaxt = "n",
-                 xlab = "Mean definition rating", ylab = "", pch = 19, ...)
+  graphics::plot(NA, xlim = xlim, ylim = c(0.5, n + 1.25), yaxt = "n",
+                 xlab = "Mean rating against each definition", ylab = "", ...)
   graphics::axis(2, at = y, labels = r$item, las = 1)
   both <- is.finite(r$target_mean) & is.finite(r$competitor_mean)
+  review <- .workflow_status_from_recommendation(r$recommendation) %in% "Review"
   if (any(both)) {
-    lty <- ifelse(r$recommendation[both] == "Retain", 1,
-                  ifelse(r$recommendation[both] == "Review", 2, 3))
-    graphics::segments(r$competitor_mean[both], y[both], r$target_mean[both], y[both], lty = lty)
+    graphics::segments(r$competitor_mean[both], y[both], r$target_mean[both],
+                       y[both], lty = ifelse(review[both], 2, 1))
     graphics::points(r$competitor_mean[both], y[both], pch = 1)
   }
   target_ok <- is.finite(r$target_mean)
   graphics::points(r$target_mean[target_ok], y[target_ok], pch = 19)
   if (isTRUE(show_legend)) {
-    graphics::legend("top", legend = c("Target", "Competitor", "Review gap"),
-                     pch = c(19, 1, NA), lty = c(NA, NA, 2), bty = "n",
-                     horiz = TRUE, cex = 0.68, x.intersp = 0.7)
+    gaps <- c(if (any(both & !review)) "Gap (retain)",
+              if (any(both & review)) "Gap (review)")
+    .legend_top(c("Target", "Top competitor", gaps),
+                c(19, 1, rep(NA, length(gaps))),
+                c(NA, NA, c(if (any(both & !review)) 1, if (any(both & review)) 2)))
   }
   invisible(x)
 }

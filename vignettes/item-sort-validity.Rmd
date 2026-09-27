@@ -149,7 +149,7 @@ probability, `N`, the null probability, and alpha.
 
 The one-index views remain available:
 
-```{r fig.width=7, fig.height=4}
+```{r sort-item-plots, fig.width=7, fig.height=4, fig.alt=c("Psa for each item with its 95% interval and a dashed mark at the share of judges the exact test needs; filled points are retained items and open points are items to review.", "Csv for each item, with a dotted line at zero; filled points are retained items and open points are items to review.")}
 plot(fit, metric = "psa")
 plot(fit, metric = "csv")
 ```
@@ -157,7 +157,7 @@ plot(fit, metric = "csv")
 For diagnosis, the package also introduces a **correspondence-distinctiveness
 evidence map**:
 
-```{r fig.width=7, fig.height=5}
+```{r sort-map, fig.width=7, fig.height=5, fig.alt="Item-sort evidence map: each item's Psa, the share of judges choosing its target, on the horizontal axis against its Csv, the lead of the target over its top rival, on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean."}
 plot(fit, type = "map")
 ```
 
@@ -169,7 +169,7 @@ items because those empirical norms were constructed from scale-level averages.
 
 The exact planning object is also plottable:
 
-```{r fig.width=7, fig.height=4}
+```{r sort-power-plots, fig.width=7, fig.height=4, fig.alt=c("Exact retention power of the item-sort test against the number of judges, one line for each assumed rate at which judges choose the target: .60, .70, and .80.", "Minimum Psa an item needs to be retained under the exact test, a step function of the number of judges, with points at the panel sizes requested.")}
 plan <- sort_power(N = seq(10, 50, by = 5), true_p = c(.60, .70, .80))
 plot(plan)
 plot(plan, type = "critical")

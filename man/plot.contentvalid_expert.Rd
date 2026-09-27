@@ -17,11 +17,13 @@
 The input object invisibly.
 }
 \description{
-Draws a mode-specific evidence plot. Relevance mode shows Aiken's V with its
-score confidence interval and overlays I-CVI as a separate marker. Essentiality
-mode shows each observed CVR against its item-specific critical CVR. Congruence
-mode uses a target-versus-strongest-competitor gap plot when a target mapping is
-available.
+Draws a mode-specific evidence plot, one row per item with the first item at
+the top. Relevance mode shows Aiken's V and I-CVI side by side, each with its
+interval, and a dashed line at the I-CVI criterion when every item had the
+same number of experts. Essentiality mode shows each observed CVR against the
+CVR the exact test needs for that item. Congruence mode shows each item's IOC
+for its intended objective against its strongest competitor, when a target
+mapping is available.
 }
 \examples{
 relevance <- matrix(

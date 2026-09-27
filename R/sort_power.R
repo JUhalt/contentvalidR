@@ -108,6 +108,8 @@ plot.contentvalid_sort_power <- function(x,
                                          ...) {
   type <- match.arg(type)
   .validate_flag(show_legend, "show_legend")
+  op <- .plot_margins(list(...))
+  on.exit(graphics::par(op), add = TRUE)
   tab <- x$table
 
   if (type == "critical") {
@@ -119,8 +121,9 @@ plot.contentvalid_sort_power <- function(x,
       alpha = x$settings$alpha
     )
     graphics::plot(curve$N, curve$minimum_observed_psa, type = "s", ylim = c(0, 1),
-                   xlab = "Judges (N)",
+                   yaxt = "n", xlab = "Judges (N)",
                    ylab = "Minimum Psa for retention", ...)
+    .axis_bounded(2, at = seq(0, 1, 0.25))
     graphics::points(requested$N, requested$minimum_observed_psa, pch = 1)
     return(invisible(x))
   }
@@ -134,8 +137,9 @@ plot.contentvalid_sort_power <- function(x,
   }
   xr <- range(tab$N)
   if (diff(xr) == 0) xr <- xr + c(-0.5, 0.5)
-  graphics::plot(xr, c(0, 1), type = "n",
+  graphics::plot(xr, c(0, 1), type = "n", yaxt = "n",
                  xlab = "Judges (N)", ylab = "Exact retention power", ...)
+  .axis_bounded(2, at = seq(0, 1, 0.25))
   if (!is.null(reference_power)) graphics::abline(h = reference_power, lty = 3)
   for (i in seq_along(ps)) {
     z <- tab[tab$true_p == ps[i], , drop = FALSE]
