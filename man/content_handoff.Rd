@@ -68,7 +68,10 @@ consumer matches on \code{"cv_handoff"} and reads these fields:
 \item{\code{scales}}{named list mapping each construct to its carried items, or
 \code{NULL} when the design has no construct mapping. Expert relevance and
 essentiality rate a single item set with no construct column, so they
-produce \code{NULL}. Membership is one to one.}
+produce \code{NULL}, as does a Delphi study. An item belongs to at most one
+scale, the one its \code{item_evidence$scale} names: every workflow that maps
+items to constructs requires exactly one target per item, and stops
+otherwise.}
 \item{\code{item_evidence}}{data frame with one row per reviewed item: \code{item},
 \code{scale} (\code{NA} without a construct mapping), \code{carried}, \code{status},
 \code{recommendation}, \code{n_judges}, \code{rule}, and \code{round}. For a Delphi handoff
@@ -99,6 +102,31 @@ This shape is agreed with the \code{nomologR} package, which consumes it in
 \code{nomo_screen()} and \code{nomo_run()}. Neither package depends on the other.
 Fields and columns added within schema version 1 are optional for a reader,
 which should check that they are present rather than assume it.
+}
+
+\section{Reading the decisions}{
+
+Take each item's decision from the handoff, not from its statistics.
+\code{carried} says whether the item travels forward, and \code{status} says why: it
+is one of the four values \code{keep} accepts. \code{recommendation} words the same
+decision for a person, and like \code{rule} it is prose.
+
+Don't re-derive a decision by comparing \code{value} with \code{criterion}, and don't
+branch on \code{provenance$package_version}. A corrected rule can change a
+decision between releases while the statistics stay the same, and the
+handoff records the decision its producer made. contentvalidR 0.8.0 is the
+example. For an item that 7 of 9 experts rated relevant, the I-CVI is .778
+in both releases. 0.7.0 compared it with a rounded .78 and held the item
+back. 0.8.0 applies Lynn's (1986) 7 of 9, stores 7/9 as the criterion, and
+carries the item. There the value equals the criterion, so a recomputed
+\code{value >= criterion} would hang on floating-point rounding, where the
+package itself compares counts of experts. Read \code{carried}, which holds what
+each release decided.
+
+Keying is read the same way, from the field and not from a default:
+\code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+and \code{NA} when nobody said, as described under "Instrument metadata". Treat
+\code{NA} as unknown, never as forward-worded.
 }
 
 \section{What version 1 freezes}{
@@ -333,6 +361,11 @@ handoff$item_statistics
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items
+}
+\references{
+Lynn, M. R. (1986). Determination and quantification of content validity.
+\emph{Nursing Research, 35}(6), 382–385.
+\doi{10.1097/00006199-198611000-00017}
 }
 \seealso{
 \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}} for the full results table,

@@ -155,6 +155,48 @@ test_that("statistics stack long with their criteria", {
   expect_setequal(unique(st$item), as.character(fit$results$item))
 })
 
+test_that("an item sits in at most one scale, the one its evidence row names", {
+  fits <- list(sort = sort_fit(), rating = rating_fit(),
+               congruence = congruence_fit())
+  for (workflow in names(fits)) {
+    h <- content_handoff(fits[[workflow]], keep = c("Supported", "Review"))
+    members <- unlist(h$scales, use.names = FALSE)
+    expect_equal(anyDuplicated(members), 0L, info = workflow)
+    carried <- h$item_evidence[h$item_evidence$carried, , drop = FALSE]
+    expect_true(nrow(carried) > 0, info = workflow)
+    for (i in seq_len(nrow(carried))) {
+      expect_true(carried$item[i] %in% h$scales[[carried$scale[i]]],
+                  info = paste(workflow, carried$item[i]))
+    }
+  }
+
+  # A handoff cannot place an item in two scales, because every workflow that
+  # maps items to constructs refuses an item with two targets.
+  sort_dat <- data.frame(
+    item = rep(c("A1", "B1"), each = 4), rater = rep(1:4, 2),
+    target_construct = c("A", "A", "A", "B", rep("B", 4)),
+    assigned_construct = c(rep("A", 4), rep("B", 4)),
+    stringsAsFactors = FALSE
+  )
+  expect_error(sort_validity(sort_dat), "exactly one target construct")
+
+  d <- expand.grid(item = c("A1", "B1"), rater = 1:4, construct = c("A", "B"),
+                   stringsAsFactors = FALSE)
+  d$target_construct <- ifelse(d$item == "B1", "B", "A")
+  d$target_construct[d$item == "A1" & d$rater == 1] <- "B"
+  d$rating <- ifelse(d$construct == d$target_construct, 5, 2)
+  expect_error(rating_validity(d, scale_min = 1, scale_max = 5),
+               "exactly one target construct")
+
+  con <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"),
+                     KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+  con$score <- 1
+  con$target_objective <- ifelse(con$item == "I1", "A", "B")
+  con$target_objective[con$item == "I1" & con$judge == 1] <- "B"
+  expect_error(expert_validity(con, mode = "congruence"),
+               "exactly one target objective")
+})
+
 test_that("essentiality and congruence modes hand off", {
   ess <- content_handoff(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12),
                          keep = c("Supported", "Review"))
@@ -720,4 +762,25 @@ test_that("instrument metadata covers held-back items too", {
   expect_true(any(!ev$carried))
   expect_false(anyNA(ev$keying))
   expect_true(all(ev$response_max == 7L))
+})
+
+test_that("status is always one of the values keep accepts", {
+  valid <- .status_definitions()$status
+  handoffs <- list(
+    content_handoff(expert_fit()),
+    content_handoff(sort_fit()),
+    content_handoff(rating_fit()),
+    content_handoff(congruence_fit()),
+    content_handoff(congruence_fit(target = FALSE), keep = "Descriptive only"),
+    content_handoff(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)),
+    content_handoff(delphi_fit(B = 0))
+  )
+  for (h in handoffs) {
+    expect_true(all(h$item_evidence$status %in% valid),
+                info = h$provenance$workflow)
+  }
+  # `carried` is the decision; it follows `status` and `keep` exactly.
+  h <- content_handoff(sort_fit(), keep = c("Supported", "Review"))
+  expect_identical(h$item_evidence$carried,
+                   h$item_evidence$status %in% c("Supported", "Review"))
 })
