@@ -374,7 +374,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
 
   if (.show_key()) {
     .print_key(c("htc", "htd"), headings = c("HTC", "HTD"))
-    .print_status_legend()
+    .print_decision_legend(x$results$recommendation, "construct-rating")
     .print_key_footer()
   }
 

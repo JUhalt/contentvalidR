@@ -190,9 +190,9 @@ test_that("a method's critique is printed when that method ran, and not otherwis
   }
 })
 
-test_that("the status legend's example words are real recommendation values", {
-  # Every workflow, because the legend's examples are drawn from all of them:
-  # "Typical" is judge_validity's and "Covered" is domain_validity's.
+test_that("every decision word a workflow prints is explained under it", {
+  # Every workflow, so each one's decision words are checked against the
+  # legend printed beneath its results.
   judge_ratings <- rbind(
     c(4, 4, 4, 3, 2, 2), c(4, 4, 3, 4, 2, 1), c(4, 3, 4, 4, 1, 2),
     c(3, 4, 4, 4, 2, 2), c(4, 4, 4, 4, 2, 1), c(4, 3, 4, 3, 1, 2),
@@ -204,30 +204,43 @@ test_that("the status legend's example words are real recommendation values", {
     stringsAsFactors = FALSE
   )
   fits <- list(
-    fit_sort(), fit_expert(agreement = "none"),
-    expert_validity(c(10, 8, 6), mode = "essentiality", N = 12),
-    fit_delphi(consensus_threshold = 0.75, B = 0),
-    judge_validity(judge_ratings, lo = 1, hi = 4),
-    domain_validity(blueprint, targets = c(A = 0.4, B = 0.3, C = 0.3))
+    "item-sort" = fit_sort(),
+    relevance = fit_expert(agreement = "none"),
+    essentiality = expert_validity(c(10, 8, 6), mode = "essentiality", N = 12),
+    delphi = fit_delphi(consensus_threshold = 0.75, B = 0),
+    judge = judge_validity(judge_ratings, lo = 1, hi = 4),
+    domain = domain_validity(blueprint, targets = c(A = 0.4, B = 0.3, C = 0.3))
   )
-  observed <- unique(unlist(lapply(fits, function(f) {
-    as.character(f$results$recommendation)
-  })))
-
-  legend <- paste(utils::capture.output(contentvalidR:::.print_status_legend()),
-                  collapse = " ")
-  quoted <- regmatches(legend, regexpr("\\(([^)]*and so on)\\)", legend))
-  words <- trimws(strsplit(gsub("[()]|and so on", "", quoted), ",")[[1]])
-  words <- words[nzchar(words)]
-
-  expect_gt(length(words), 0L)
-  for (w in words) {
-    expect_true(w %in% observed,
-                info = paste0("the status legend names '", w,
-                              "' as a recommendation word, but no workflow ",
-                              "produces it; observed: ",
-                              paste(observed, collapse = ", ")))
+  for (wf in names(fits)) {
+    words <- unique(as.character(fits[[wf]]$results$recommendation))
+    meanings <- contentvalidR:::.decision_meanings(wf)
+    expect_true(all(words %in% names(meanings)),
+                info = paste0(wf, " prints a decision word with no meaning: ",
+                              paste(setdiff(words, names(meanings)),
+                                    collapse = ", ")))
+    out <- printed(fits[[wf]])
+    legend <- sub(".*What the decisions mean", "", out)
+    for (w in words) {
+      expect_true(grepl(paste0(w, " -- "), legend, fixed = TRUE),
+                  info = paste(wf, "does not explain", w))
+    }
   }
+})
+
+test_that("each decision word maps onto a shared status", {
+  for (wf in c("item-sort", "construct-rating", "relevance", "essentiality",
+               "congruence", "delphi")) {
+    words <- names(contentvalidR:::.decision_meanings(wf))
+    status <- contentvalidR:::.workflow_status_from_recommendation(words)
+    expect_false(anyNA(status), info = wf)
+  }
+})
+
+test_that("every glossary term has a one-line version for the printed key", {
+  terms <- contentvalidR:::.term_defs()$term
+  short <- contentvalidR:::.term_short()
+  expect_setequal(names(short), terms)
+  expect_true(all(nchar(short) <= 120L))
 })
 
 test_that("a printed key defines every term, and unknown terms are refused", {
@@ -246,7 +259,7 @@ test_that("a printed key defines every term, and unknown terms are refused", {
     out <- printed(f)
     body <- sub("What these columns mean.*", "", out)
     key <- sub(".*What these columns mean", "", out)
-    key <- sub("What the status labels mean.*", "", key)
+    key <- sub("What the decisions mean.*", "", key)
     entries <- regmatches(key, gregexpr("(?m)^  ([^ ].*?) -- [^.]*[.]", key,
                                         perl = TRUE))[[1]]
     expect_gt(length(entries), 0L)

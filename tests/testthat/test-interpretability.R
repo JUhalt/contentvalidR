@@ -108,15 +108,21 @@ test_that("printed output defines its abbreviated columns", {
   expect_match(out_e, "Modified kappa")
 })
 
-test_that("printed output explains the shared status vocabulary", {
+test_that("printed output explains the decision words it shows, and no others", {
   for (fit in list(sort_fixture(), rating_fixture(), expert_fixture())) {
     out <- printed(fit)
-    expect_match(out, "What the status labels mean")
-    # Wrapping inserts run-on whitespace, so match flexibly on the sentence.
-    expect_match(out, "not an instruction\\s+to delete anything")
-    # Workflow-specific wording must be connected to the shared vocabulary.
-    expect_match(out, "its own wording in the decision column")
+    expect_match(out, "What the decisions mean")
+    legend <- sub(".*What the decisions mean", "", out)
+    shown <- unique(as.character(fit$results$recommendation))
+    for (w in shown) expect_match(legend, paste0(w, " -- "), fixed = TRUE)
+    # Words this output never uses are left to contentvalid_glossary().
+    expect_false(grepl("Descriptive only --", legend, fixed = TRUE))
   }
+  # With the key hidden, the caution about "Review" still prints.
+  old <- options(contentvalidR.show_key = FALSE)
+  on.exit(options(old), add = TRUE)
+  expect_match(printed(sort_fixture()),
+               "'Review' is not an automatic deletion decision")
 })
 
 test_that("every flagship workflow says Review is not a deletion decision", {

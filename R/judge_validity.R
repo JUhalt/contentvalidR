@@ -448,7 +448,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
       headings <- append(headings, "outfit", after = 1L)
     }
     .print_key(terms, headings = headings)
-    .print_status_legend(statuses = c("Supported", "Review", "Insufficient data"))
+    .print_decision_legend(x$results$recommendation, "judge")
     .print_key_footer()
   }
 

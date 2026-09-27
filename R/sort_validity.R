@@ -399,7 +399,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (.show_key()) {
     .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"),
                headings = c("Psa", ci, "Csv", "competitor", "p"))
-    .print_status_legend()
+    .print_decision_legend(x$results$recommendation, "item-sort")
     .print_key_footer()
   }
 

@@ -732,7 +732,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
       essentiality = .print_key("cvr", headings = "CVR"),
       .print_key("ioc", headings = "IOC")
     )
-    .print_status_legend()
+    .print_decision_legend(x$results$recommendation, x$mode)
     .print_key_footer()
   }
 

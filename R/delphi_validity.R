@@ -892,7 +892,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                     percent_change = "percent_change"))
     .print_key(key, headings = c("agree", "unchanged",
                                  if (val == "chi_sq") "chi-square" else val))
-    .print_status_legend()
+    .print_decision_legend(x$results$recommendation, "delphi")
     .print_key_footer()
   }
 
