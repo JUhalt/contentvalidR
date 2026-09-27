@@ -7,7 +7,7 @@
 .delphi_stability_methods <- c("kappa", "lambda", "chisq_individual",
                                "chisq_group", "percent_change")
 
-# Scheibe, Skutsch & Schofer (1975): change below 15% is read as stable.
+# Scheibe et al. (1975/2002): change below 15% is read as stable.
 .delphi_scheibe_cut <- 0.15
 
 .delphi_disagreement_weights <- function(k, weights) {
@@ -60,7 +60,7 @@
        n_rows = nrow(O), n_cols = ncol(O))
 }
 
-# Scheibe et al. (1975): net person-changes between the two rounds' histograms
+# Scheibe et al. (1975/2002): net person-changes between the two rounds' histograms
 # as a share of the experts compared.
 .delphi_percent_change <- function(x1, x2, k) {
   sum(abs(tabulate(x2, k) - tabulate(x1, k))) / 2 / length(x1)
@@ -313,7 +313,7 @@
       "category. Expected counts below 5 are flagged."
     ),
     percent_change = paste(
-      "Stability is Scheibe, Skutsch and Schofer's (1975) net change: half the",
+      "Stability is the net change of Scheibe et al. (1975/2002): half the",
       "summed differences between the two rounds' rating distributions, as a",
       "share of the experts compared, with change below 15% read as stable.",
       "The authors say the measure has no statistical theory behind it; the",
@@ -370,7 +370,7 @@
 #' * `"chisq_group"`: Dajani, Sincoff and Talley's (1979) chi-square test on
 #'   the two rounds' distributions; a non-significant result is read as
 #'   stable.
-#' * `"percent_change"`: Scheibe, Skutsch and Schofer's (1975) net change,
+#' * `"percent_change"`: the net change of Scheibe et al. (1975/2002),
 #'   stable below 15%.
 #'
 #' The alternatives are published but contested, so the printed output
@@ -502,9 +502,11 @@
 #' Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement
 #' for categorical data. *Biometrics, 33*(1), 159–174. \doi{10.2307/2529310}
 #'
-#' Scheibe, M., Skutsch, M., & Schofer, J. (1975). Experiments in Delphi
+#' Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 #' methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-#' Techniques and applications*. Addison-Wesley.
+#' Techniques and applications* (pp. 257–281).
+#' \url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
+#' (Original work published 1975)
 #'
 #' @seealso [expert_validity()] for a single round, and [compare_rounds()],
 #'   which accepts the fits in `details$round_fits`.
@@ -796,7 +798,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     lambda = "lambda (Chaffin & Talley, 1980)",
     chisq_individual = "individual chi-square (Chaffin & Talley, 1980)",
     chisq_group = "group chi-square (Dajani et al., 1979)",
-    percent_change = "net percent change (Scheibe et al., 1975)"
+    percent_change = "net percent change (Scheibe et al., 1975/2002)"
   )
   .say("Stability:", method_label, "between consecutive rounds")
   if (s$stability %in% c("chisq_individual", "chisq_group")) {

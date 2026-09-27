@@ -244,7 +244,7 @@
     lambda = "Chaffin & Talley (1980)",
     chisq_individual = "Chaffin & Talley (1980)",
     chisq_group = "Dajani, Sincoff & Talley (1979)",
-    percent_change = "Scheibe, Skutsch & Schofer (1975)"
+    percent_change = "Scheibe et al. (1975/2002)"
   )
 
   # Relevance evidence comes from each item's own last round, so the interval

@@ -21,6 +21,13 @@ No computed value changes.
   a course would use them: Start here, Workflow guides, Planning and
   reporting, and After content review. The workflow guides were hidden under
   "More articles".
+* **Scheibe et al. is cited from the edition the package's method was checked
+  against:** the editors' 2002 web edition of Linstone and Turoff, with the
+  chapter's pages (257–281), a link, and "(Original work published 1975)", as
+  APA 7 requires for a republished work. In-text citations read
+  "Scheibe et al. (1975/2002)", including the citation a handoff carries for
+  `stability = "percent_change"`. The 1975 printing's pages could not be
+  checked.
 
 # contentvalidR 0.9.0
 

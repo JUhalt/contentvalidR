@@ -792,6 +792,11 @@ review, then empirical validation. They are joined by the handoff schema on
 both to release 1.0.0 together, so the version number tells users the pair is
 stable together.
 
+The maintainer's intent (2026-09-27): contentvalidR and nomologR are partners,
+kept on the same page about handoffs before and after 1.0. solomonR, the
+maintainer's package for Solomon four-group designs, is a separate project: it
+reads no handoffs and takes no part in the joint 1.0.
+
 - Converge, don't move in lockstep. Minor versions stay independent until
   1.0.0, and neither package tags 1.0.0 on its own.
 - After 1.0.0, major versions move together whenever the shared contract
