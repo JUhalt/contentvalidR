@@ -193,7 +193,9 @@ test_that("Q-factor PCA retains a stable auxiliary return contract", {
 })
 
 test_that("agreement helper validates shape before optional dependency lookup", {
-  expect_error(agreement_summary(data.frame(rater1 = c("A", "B"))), "two raters")
+  # The deprecation warning (0.9.0) comes first; the shape check still stops it.
+  expect_error(suppressWarnings(agreement_summary(data.frame(rater1 = c("A", "B")))),
+               "two raters")
 })
 
 test_that("v0.0.6 workflow contracts preserve v0.0.5 compatibility aliases", {

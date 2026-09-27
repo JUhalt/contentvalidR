@@ -81,12 +81,16 @@ reference:
 - title: Auxiliary and compatibility helpers
   desc: Retained utilities that are not flagship v0.1.0 workflows.
   contents:
-  - agreement_summary
   - qfactor_content
   - signal_detection
   - reproducibility_phi
   - simulate_anova_power
   - simulate_csv_power
+
+- title: Deprecated
+  desc: Still works in 0.9.0, with a warning naming its replacement; removed in 1.0.0.
+  contents:
+  - agreement_summary
 
 articles:
 - title: Start here

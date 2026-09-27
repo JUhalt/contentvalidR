@@ -1,11 +1,19 @@
-#' Agreement summary (auxiliary)
+#' Agreement summary (deprecated)
 #'
 #' @description
+#' **Deprecated in 0.9.0, to be removed in 1.0.0.** Use [panel_agreement()]
+#' instead. `agreement_summary()` is the only function in the package that
+#' takes items in rows and raters in columns; every other ratings function,
+#' `panel_agreement()` included, takes raters in rows. The same matrix passed
+#' to both would therefore be read two different ways. `panel_agreement()`
+#' also reports an interval and needs no other package. Calling
+#' `agreement_summary()` still works in 0.9.0, with a warning.
+#'
 #' Computes Fleiss' (1971) kappa, the extension of Cohen's kappa to many
 #' raters, by calling `irr::kappam.fleiss()` from the irr package (Gamer,
-#' Lemon, Fellows, & Singh, 2026) when it is installed. This is an auxiliary
-#' compatibility helper, not part of the recommended contentvalidR workflows.
-#' @param ratings matrix/data.frame: rows = items, cols = raters (nominal categories)
+#' Lemon, Fellows, & Singh, 2026) when it is installed.
+#' @param ratings matrix/data.frame: rows = items, cols = raters (nominal
+#'   categories). Note the orientation, the reverse of [panel_agreement()].
 #' @return When 'irr' is installed, the result of `irr::kappam.fleiss()`.
 #'   Otherwise a list with `ok = FALSE` and a `message`, after a message
 #'   explaining how to install 'irr'.
@@ -24,11 +32,21 @@
 #'   rater2 = c("A", "B", "B", "C"),
 #'   rater3 = c("A", "B", "A", "C")
 #' )
+#' # Deprecated: it warns, and points to panel_agreement().
 #' if (requireNamespace("irr", quietly = TRUE)) {
-#'   agreement_summary(ratings)
+#'   suppressWarnings(agreement_summary(ratings))
 #' }
 #' @export
 agreement_summary <- function(ratings) {
+  warning(structure(
+    class = c("contentvalidR_deprecated", "deprecatedWarning", "warning",
+              "condition"),
+    list(message = paste(
+      "`agreement_summary()` is deprecated and will be removed in",
+      "contentvalidR 1.0.0. Use `panel_agreement()`, which takes raters in",
+      "rows, where `agreement_summary()` takes items in rows."
+    ), call = NULL)
+  ))
   X <- as.data.frame(ratings)
   if (nrow(X) < 1L || ncol(X) < 2L) {
     stop("`ratings` must contain at least one item and two raters.", call. = FALSE)
