@@ -29,6 +29,7 @@ reference:
   - plot.contentvalid_sort_power
   - plot.contentvalid_structure
   - plot.contentvalid_expert_power
+  - plot.contentvalid_evidence
 
 - title: Reading and reporting results
   desc: Definitions of every index and status label, plus extraction into reports and downstream workflows.
@@ -37,6 +38,7 @@ reference:
   - as.data.frame.contentvalid_workflow
   - content_report
   - content_handoff
+  - content_evidence
   - compare_rounds
 
 - title: Item-sort components and planning

@@ -14,8 +14,9 @@
 #' and `plot()` methods; the object contract they share (`results`,
 #' `scale_summary`, `settings`, `design`, `details`); the shared status
 #' vocabulary (`Supported`, `Review`, `Insufficient data`, `Descriptive
-#' only`); and [content_handoff()], [content_report()], [compare_rounds()],
-#' [as.data.frame.contentvalid_workflow()], and [contentvalid_glossary()].
+#' only`); and [content_handoff()], [content_evidence()], [content_report()],
+#' [compare_rounds()], [as.data.frame.contentvalid_workflow()], and
+#' [contentvalid_glossary()].
 #'
 #' Tier 1 will not change in a way that breaks working code except across a
 #' major version, and never without the deprecation cycle below.

@@ -243,6 +243,26 @@ panel-specific critical CVR. Congruence mode connects target IOC to the stronges
 competitor so the alignment margin is visually explicit. These displays are
 diagnostic summaries; they do not create new validity thresholds.
 
+An index reduces each item's ratings to one number, and the relevance plot
+shows that number. The distribution view shows the ratings behind it, as
+diverging stacked bars (Heiberger & Robbins, 2014). Each bar splits at the
+relevance cut: ratings below it extend left and ratings at or above it extend
+right, so the right-hand length is the I-CVI, read against the dashed criterion
+line.
+
+```{r expert-distribution, fig.width=7, fig.height=4, fig.alt="Rating distributions for four items rated by six experts, as bars split at the relevance cut of 3, with a dashed line at the I-CVI criterion of .83. Items 1 to 3 are rated relevant by all six experts, Item 1 entirely with 4s; Item 4 is rated relevant by five of six, mostly with 3s."}
+plot(fit, type = "distribution",
+     labels = c("Not relevant", "Somewhat", "Quite", "Highly relevant"))
+```
+
+Item1 and Item3 have the same I-CVI, but every expert gave Item1 a 4, while
+two gave Item3 a 3. The index cannot tell them apart; the bars can, and so can
+Aiken's V, which uses the whole scale. The figure is gray by default, as an APA
+figure is printed. For slides or a poster, `apa = FALSE` draws it in color:
+brown for ratings below the cut and teal for ratings at or above it. The
+symbol beside each bar still carries the decision, so no reading depends on
+color.
+
 ## Reporting
 
 A concise methods/results description should identify:
@@ -283,6 +303,10 @@ Psychology, 61*(1), 29–48. https://doi.org/10.1348/000711006X126600
 Hayes, A. F., & Krippendorff, K. (2007). Answering the call for a standard
 reliability measure for coding data. *Communication Methods and Measures, 1*(1),
 77–89. https://doi.org/10.1080/19312450709336664
+
+Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked bar
+charts for Likert scales and other applications. *Journal of Statistical
+Software, 57*(5), 1–32. https://doi.org/10.18637/jss.v057.i05
 
 Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The
 coefficients of proportional variance, content validity and kappa*.

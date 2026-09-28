@@ -34,5 +34,18 @@ fail content review for opposite reasons, one passes and then carries almost no
 common variance, one passes and loads on two facets, and one is flagged by an
 empirical screen for restricted variance while being worth keeping. The generating model
 is stated in full in `data-raw/build-walkthrough-data.R`, which writes all
-three files. `nomologR` mirrors `walkthrough_responses.csv` from that same
-script so the two packages cannot drift.
+three files. `nomologR` ships `walkthrough_items.csv` and
+`walkthrough_responses.csv` unchanged, with that same script, so the two
+packages cannot drift.
+
+One more file gives the same twelve items a second source of content evidence,
+for `content_evidence()` and `plot(type = "distribution")`:
+
+- `walkthrough_relevance.csv`: eight experts' 1-4 relevance ratings, one row
+  per expert and one column per item, for `expert_validity()` in relevance
+  mode.
+
+These ratings are constructed by hand rather than simulated, and
+`data-raw/build-walkthrough-panel.R` states what each item's ratings are built
+to show. It is a separate script so that the three mirrored files above never
+change.

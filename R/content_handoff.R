@@ -962,8 +962,10 @@ print.contentvalid_handoff <- function(x, ...) {
   cat("\n")
   .say("Carry these items into the empirical workflow once response data are",
        "collected. In nomologR that is")
-  cat("  nomo_screen(data, items = handoff$items)\n")
-  .say("which screens the same items you retained here.")
+  cat("  nomo_screen(data, items = handoff)\n")
+  .say("which screens the items carried here. Passing the whole handoff,",
+       "rather than handoff$items, keeps the keying and the reasons for",
+       "anything held back.")
 
   cat("\n")
   .say("Surviving content review is evidence about relevance, representation,",

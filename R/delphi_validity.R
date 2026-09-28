@@ -998,12 +998,32 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' "good" region would mislead exactly when a Delphi is succeeding. See
 #' [delphi_validity()].
 #'
+#' `which = "distribution"` draws every rating in every round as a diverging
+#' stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,
+#' split at `agree_cut`. The right-hand length is the share agreeing, read
+#' against the dashed consensus threshold, and the symbol beside it is that
+#' round's consensus decision. Rounds in which an item was not rated, because
+#' it had been set aside, are marked "not rated".
+#'
 #' @param x A fitted `contentvalid_delphi` object.
-#' @param which `"consensus"` (default) or `"stability"`.
+#' @param which `"consensus"` (default), `"stability"`, or `"distribution"`.
 #' @param show_legend Draw the legend. Defaults to `TRUE`.
+#' @param apa Used by `which = "distribution"`. `TRUE` (default) draws in
+#'   gray, with darker meaning a higher rating, as an APA figure is printed.
+#'   `FALSE` draws ratings below the agreement cut in brown and ratings at or
+#'   above it in teal, a colorblind-safe scheme for slides and posters. The
+#'   consensus and stability views color each item's line so the lines can be
+#'   told apart.
+#' @param labels For `which = "distribution"`, one label per rating category,
+#'   lowest first. Defaults to `"Rated 1"`, `"Rated 2"`, and so on.
 #' @param ... Passed to [graphics::plot()].
 #'
 #' @return `x`, invisibly. Called for the plot it draws.
+#'
+#' @references
+#' Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked bar
+#' charts for Likert scales and other applications. *Journal of Statistical
+#' Software, 57*(5), 1–32. \doi{10.18637/jss.v057.i05}
 #'
 #' @seealso [delphi_validity()].
 #'
@@ -1019,11 +1039,49 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #'                        consensus_threshold = 0.75, B = 0)
 #' plot(fit)
 #' plot(fit, which = "stability")
+#' plot(fit, which = "distribution")
 #' @export
-plot.contentvalid_delphi <- function(x, which = c("consensus", "stability"),
-                                     show_legend = TRUE, ...) {
+plot.contentvalid_delphi <- function(x,
+                                     which = c("consensus", "stability",
+                                               "distribution"),
+                                     show_legend = TRUE, apa = TRUE,
+                                     labels = NULL, ...) {
   which <- match.arg(which)
   .validate_flag(show_legend, "show_legend")
+  .validate_flag(apa, "apa")
+  if (which == "distribution") {
+    fits <- x$details$round_fits
+    ratings <- lapply(fits, function(f) f$details$ratings)
+    if (!length(fits) || any(vapply(ratings, is.null, logical(1)))) {
+      stop("This fit does not carry its ratings, because it was made by an ",
+           "earlier version of contentvalidR. Fit it again to draw the ",
+           "distribution view.", call. = FALSE)
+    }
+    rounds <- x$design$rounds
+    # Numbered rounds read as R1, R2; named rounds keep their names.
+    round_labels <- as.character(rounds)
+    if (all(grepl("^[0-9]+$", round_labels))) {
+      round_labels <- paste0("R", round_labels)
+    }
+    names(ratings) <- round_labels
+    cons <- x$details$consensus
+    # The symbol is each round's own consensus decision, as the fit made it.
+    status <- lapply(rounds, function(rd) {
+      cr <- cons[cons$round == rd, , drop = FALSE]
+      st <- ifelse(is.na(cr$consensus), "Descriptive only",
+                   ifelse(cr$consensus, "Supported", "Review"))
+      stats::setNames(st, cr$item)
+    })
+    threshold <- x$settings$consensus_threshold
+    .plot_rating_distribution(
+      rounds = ratings, items = unique(as.character(x$results$item)),
+      lo = x$settings$lo, hi = x$settings$hi, cut = x$settings$agree_cut,
+      criterion = threshold, status = status, value_label = "Agree",
+      xlab = "Share of experts (left: below the agreement cut; right: agreeing)",
+      labels = labels, apa = apa, show_legend = show_legend, ...
+    )
+    return(invisible(x))
+  }
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   rounds <- x$design$rounds
