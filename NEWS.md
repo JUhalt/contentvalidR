@@ -10,6 +10,8 @@
   answered in 2 to 10 seconds, returned a server error, and timed out. It is
   the same paper, dated 2011.1.25, with its reading list updated in 2013. The
   expert-panel vignette's reference list now gives the link too.
+* The reader in nomologR is now tested against handoffs from contentvalidR
+  0.6.0 through 0.10.0, and the README says so.
 
 # contentvalidR 0.10.0
 

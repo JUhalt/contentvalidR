@@ -840,7 +840,7 @@ reads no handoffs and takes no part in the joint 1.0.
         nomologR's reader
         ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46), closed)
         is tested against stored producer output from contentvalidR 0.6.0
-        through 0.9.0.
+        through 0.10.0.
   - [x] schema version 1 is frozen and becomes a compatibility promise (0.7.0).
   - [ ] both packages are on CRAN. contentvalidR 0.4.0 was accepted and
         published on 2026-09-28
