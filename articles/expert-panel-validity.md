@@ -610,6 +610,7 @@ BookSurge.
 
 Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability*.
 Annenberg School for Communication, University of Pennsylvania.
+<https://www.asc.upenn.edu/sites/default/files/2021-03/Computing%20Krippendorff%27s%20Alpha-Reliability.pdf>
 
 Lawshe, C. H. (1975). A quantitative approach to content validity.
 *Personnel Psychology, 28*(4), 563–575.

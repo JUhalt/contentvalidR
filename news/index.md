@@ -7,6 +7,12 @@
   it, how to read its decisions, and how the schema is versioned. The
   nomologR README carries the mirror section, so the handoff can be
   found from either package’s front page.
+- Krippendorff (2011) now links to the copy on the Annenberg School’s
+  site, because the Penn repository copy had become unreliable to reach:
+  it answered in 2 to 10 seconds, returned a server error, and timed
+  out. It is the same paper, dated 2011.1.25, with its reading list
+  updated in 2013. The expert-panel vignette’s reference list now gives
+  the link too.
 
 ## contentvalidR 0.10.0
 

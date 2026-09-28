@@ -453,7 +453,7 @@ Works cited in this README, the help pages, and the vignettes.
   467–478. <https://doi.org/10.1111/1467-9884.00331>
 - Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability*.
   Annenberg School for Communication, University of Pennsylvania.
-  <https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20>
+  <https://www.asc.upenn.edu/sites/default/files/2021-03/Computing%20Krippendorff%27s%20Alpha-Reliability.pdf>
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer
   agreement for categorical data. *Biometrics, 33*(1), 159–174.
   <https://doi.org/10.2307/2529310>
