@@ -426,18 +426,26 @@
 <hr></div>
 <div class="section level2">
 <h2 id="v100---joint-stable-release-with-nomologr-proposed">v1.0.0 - Joint stable release with nomologR (proposed)<a class="anchor" aria-label="anchor" href="#v100---joint-stable-release-with-nomologr-proposed"></a></h2>
-<p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Not scheduled. <strong>Criteria:</strong> agreed jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it, with this package’s progress.</p>
+<p><strong>Status:</strong> Proposed by the maintainer on 2026-09-19. Release candidate on 2026-10-17, the date the maintainer chose; CRAN submission after that, as the timeline below explains. <strong>Criteria:</strong> agreed jointly on <a href="https://github.com/JUhalt/nomologR/issues/53" class="external-link">nomologR#53</a>, which is the single list. This section only mirrors it, with this package’s progress.</p>
 <p>contentvalidR and nomologR are the two halves of scale development: content review, then empirical validation. They are joined by the handoff schema on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>. The target is for both to release 1.0.0 together, so the version number tells users the pair is stable together.</p>
 <p>The maintainer’s intent (2026-09-27): contentvalidR and nomologR are partners, kept on the same page about handoffs before and after 1.0. solomonR, the maintainer’s package for Solomon four-group designs, is a separate project: it reads no handoffs and takes no part in the joint 1.0.</p>
 <ul><li>Converge, don’t move in lockstep. Minor versions stay independent until 1.0.0, and neither package tags 1.0.0 on its own.</li>
 <li>After 1.0.0, major versions move together whenever the shared contract breaks. Minor versions and patches stay independent.</li>
 <li>The criteria on nomologR#53, with where contentvalidR stands now:
-<ul class="task-list"><li><label><input type="checkbox" checked>the handoff is implemented on both sides, tested against real fixtures from more than one producer version. The producer shipped in 0.4.0; nomologR’s reader (<a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>, closed) is tested against stored producer output from contentvalidR 0.6.0 and 0.7.0.</label></li>
+<ul class="task-list"><li><label><input type="checkbox" checked>the handoff is implemented on both sides, tested against real fixtures from more than one producer version. The producer shipped in 0.4.0; nomologR’s reader (<a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>, closed) is tested against stored producer output from contentvalidR 0.6.0 through 0.9.0.</label></li>
 <li><label><input type="checkbox" checked>schema version 1 is frozen and becomes a compatibility promise (0.7.0).</label></li>
-<li><label><input type="checkbox">both packages are on CRAN. Waiting on CRAN’s review of 0.4.0, which has been in the <code>newbies</code> queue since 2026-09-18, and of nomologR 0.3.0, submitted on 2026-09-26.</label></li>
+<li><label><input type="checkbox">both packages are on CRAN. contentvalidR 0.4.0 was accepted and published on 2026-09-28 (<a href="https://github.com/JUhalt/contentvalidR/issues/14" class="external-link">#14</a>, closed). Waiting on CRAN’s review of nomologR 0.3.0, submitted on 2026-09-26.</label></li>
 <li><label><input type="checkbox" checked>both public APIs are stable, under a written deprecation policy, as far as this package goes (0.7.0). <code><a href="reference/anova_content.html">anova_content()</a></code>’s <code>posthoc_pass</code> column was removed in 0.8.0. <code><a href="reference/agreement_summary.html">agreement_summary()</a></code>, the one function taking items in rows, is deprecated in 0.9.0 and is removed in 1.0.0, so nothing deprecated is carried past 1.0.</label></li>
 <li><label><input type="checkbox" checked>there is a joint walkthrough from content review to empirical validation (0.7.0).</label></li>
 <li><label><input type="checkbox">the two releases go out on the same day, each linking the other.</label></li>
+</ul></li>
+<li>The timeline, as the maintainer set it on 2026-09-28:
+<ul><li>
+<strong>Release candidates.</strong> Both packages use one scheme: <code>DESCRIPTION</code> says 0.99.0, and the candidate is a git tag, <code>v1.0.0-rc.1</code> (then <code>rc.2</code> if another round is needed). It is a tag only, never a GitHub release, because R-universe publishes GitHub releases to users. Handoff fixtures from a candidate are named <code>handoff-&lt;fit&gt;-v0.99.0.rds</code>.</li>
+<li>
+<strong>2026-10-17, release-candidate day.</strong> <code><a href="reference/agreement_summary.html">agreement_summary()</a></code> is removed, the version becomes 0.99.0, and <code>v1.0.0-rc.1</code> is tagged. Then the round below runs: the fixture set goes to nomologR, and the compatibility table, the shared handoff example, and the release notes are drafted.</li>
+<li>
+<strong>CRAN submission, after that.</strong> CRAN asks for updates to an established package no more often than every one to two months. So the joint 1.0 goes to CRAN no sooner than about a month after the later of the two acceptances (contentvalidR’s was 2026-09-28; nomologR’s is pending), and only on the maintainer’s go-ahead. Both are released the same day.</li>
 </ul></li>
 <li>The release-candidate checklist, proposed by nomologR and approved by the maintainer on 2026-09-27. It adds to #53’s criteria rather than replacing them:
 <ul class="task-list"><li><label><input type="checkbox">a final fixture set from each release candidate, with a manifest of md5 sums, that nomologR’s tests pass before either package tags.</label></li>

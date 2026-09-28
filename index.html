@@ -74,7 +74,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><strong>Current stable release: 0.9.0.</strong></p>
+<p><strong>Current stable release: 0.9.0</strong> (on R-universe; CRAN has 0.4.0, see <a href="#installation">Installation</a>).</p>
 <p>Development plans: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link">Roadmap</a> · <a href="https://github.com/JUhalt/contentvalidR/milestone/3" class="external-link">Future research</a> · <a href="https://github.com/JUhalt/contentvalidR/issues" class="external-link">Open issues</a>. Documentation: <a href="https://juhalt.github.io/contentvalidR/">Package website</a> · <a href="https://juhalt.github.io/contentvalidR/news/index.html">Changelog</a>.</p>
 <p><strong>contentvalidR</strong> analyzes the content-validity evidence that judges and experts provide before a scale reaches respondents: whether each item represents the construct it was written for, whether a panel agrees on it, whether the conclusions depend on who sat on the panel, and whether the items cover the domain at all. Every analysis prints its verdict first, reports its numbers in APA style, and explains each index it shows, so the output can be read without first consulting the source papers.</p>
 <blockquote>
@@ -83,8 +83,11 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the current stable release from the JUhalt R-universe:</p>
+<p>Install from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"contentvalidR"</span><span class="op">)</span></span></code></pre></div>
+<p>CRAN is updated less often than GitHub, because it asks packages to update no more than every one to two months, so its version can trail the newest release. To install the newest stable release, use the JUhalt R-universe:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
 <span>  <span class="st">"contentvalidR"</span>,</span>
 <span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -93,7 +96,7 @@
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Install the current development version directly from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"JUhalt/contentvalidR"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -101,7 +104,7 @@
 <h2 id="a-first-analysis">A first analysis<a class="anchor" aria-label="anchor" href="#a-first-analysis"></a>
 </h2>
 <p>Twenty judges sorted three items, each written for construct A, into the construct each one best represents:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JUhalt/contentvalidR" class="external-link">contentvalidR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sort_dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -177,14 +180,14 @@
 <span><span class="co">#&gt; statistics.</span></span></code></pre></div>
 <p>The verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. <code>Review</code> is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.</p>
 <p>For a manuscript, <code><a href="reference/content_report.html">content_report()</a></code> gives the same evidence as an APA table, and <code>format = "markdown"</code> writes it for Quarto or R Markdown:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          item target judges competitor Psa     95% CI Csv      p decision</span></span>
 <span><span class="co">#&gt;       Clear 1      A  18/20          B .90 [.70, .97] .80 &lt; .001   Retain</span></span>
 <span><span class="co">#&gt;       Clear 2      A  16/20          B .80 [.58, .92] .60   .006   Retain</span></span>
 <span><span class="co">#&gt;  Needs review      A  12/20          B .60 [.39, .78] .20   .252   Review</span></span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> draws each item’s share of judges with its interval, against the share the exact test needs for that item:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-first-plot-1.png" alt="Psa for each item with its 95% interval and a dashed mark at the share of judges the exact test needs; filled points are retained items and open points are items to review." width="100%"></p>
 <p><code>summary(fit)</code> condenses the result to the items that need attention, and <code>content_handoff(fit)</code> carries the retained items into the analysis of response data. There is deliberately no helper returning “the items that passed”: filtering on <code>status</code> is a substantive decision that belongs in your own visible code.</p>
@@ -444,6 +447,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://CRAN.R-project.org/package=contentvalidR" class="external-link"><img src="https://www.r-pkg.org/badges/version/contentvalidR" alt="CRAN status"></a></li>
 <li><a href="https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md" class="external-link"><img src="https://img.shields.io/badge/License-GPL--3.0--only-blue.svg" alt="License: GPL v3 only"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>

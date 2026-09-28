@@ -1020,8 +1020,9 @@ update, from its own tag.
 
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
-**Status:** Proposed by the maintainer on 2026-09-19. Not scheduled.
-**Criteria:** agreed jointly on
+**Status:** Proposed by the maintainer on 2026-09-19. Release candidate
+on 2026-10-17, the date the maintainer chose; CRAN submission after
+that, as the timeline below explains. **Criteria:** agreed jointly on
 [nomologR#53](https://github.com/JUhalt/nomologR/issues/53), which is
 the single list. This section only mirrors it, with this package’s
 progress.
@@ -1051,14 +1052,15 @@ the handoff is implemented on both sides, tested against real fixtures
 from more than one producer version. The producer shipped in 0.4.0;
 nomologR’s reader
 ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46), closed) is
-tested against stored producer output from contentvalidR 0.6.0 and
-0.7.0.
+tested against stored producer output from contentvalidR 0.6.0 through
+0.9.0.
 
 schema version 1 is frozen and becomes a compatibility promise (0.7.0).
 
-both packages are on CRAN. Waiting on CRAN’s review of 0.4.0, which has
-been in the `newbies` queue since 2026-09-18, and of nomologR 0.3.0,
-submitted on 2026-09-26.
+both packages are on CRAN. contentvalidR 0.4.0 was accepted and
+published on 2026-09-28
+([\#14](https://github.com/JUhalt/contentvalidR/issues/14), closed).
+Waiting on CRAN’s review of nomologR 0.3.0, submitted on 2026-09-26.
 
 both public APIs are stable, under a written deprecation policy, as far
 as this package goes (0.7.0).
@@ -1072,6 +1074,27 @@ there is a joint walkthrough from content review to empirical validation
 (0.7.0).
 
 the two releases go out on the same day, each linking the other.
+
+The timeline, as the maintainer set it on 2026-09-28:
+
+- **Release candidates.** Both packages use one scheme: `DESCRIPTION`
+  says 0.99.0, and the candidate is a git tag, `v1.0.0-rc.1` (then
+  `rc.2` if another round is needed). It is a tag only, never a GitHub
+  release, because R-universe publishes GitHub releases to users.
+  Handoff fixtures from a candidate are named
+  `handoff-<fit>-v0.99.0.rds`.
+- **2026-10-17, release-candidate day.**
+  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+  is removed, the version becomes 0.99.0, and `v1.0.0-rc.1` is tagged.
+  Then the round below runs: the fixture set goes to nomologR, and the
+  compatibility table, the shared handoff example, and the release notes
+  are drafted.
+- **CRAN submission, after that.** CRAN asks for updates to an
+  established package no more often than every one to two months. So the
+  joint 1.0 goes to CRAN no sooner than about a month after the later of
+  the two acceptances (contentvalidR’s was 2026-09-28; nomologR’s is
+  pending), and only on the maintainer’s go-ahead. Both are released the
+  same day.
 
 The release-candidate checklist, proposed by nomologR and approved by
 the maintainer on 2026-09-27. It adds to \#53’s criteria rather than

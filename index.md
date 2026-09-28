@@ -1,6 +1,7 @@
 # contentvalidR
 
-**Current stable release: 0.9.0.**
+**Current stable release: 0.9.0** (on R-universe; CRAN has 0.4.0, see
+[Installation](#installation)).
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -27,7 +28,17 @@ papers.
 
 ## Installation
 
-Install the current stable release from the JUhalt R-universe:
+Install from CRAN:
+
+``` r
+
+install.packages("contentvalidR")
+```
+
+CRAN is updated less often than GitHub, because it asks packages to
+update no more than every one to two months, so its version can trail
+the newest release. To install the newest stable release, use the JUhalt
+R-universe:
 
 ``` r
 
