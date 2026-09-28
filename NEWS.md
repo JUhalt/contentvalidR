@@ -1,17 +1,36 @@
-# contentvalidR 0.9.0.9000 (development version)
+# contentvalidR 0.10.0
 
-## On CRAN
+Tenth public release, and the last planned before the joint 1.0 release
+candidate on 2026-10-17. v0.10.0 adds figures for papers, posters, and
+teaching: the item flow diagram and the item evidence profile of
+`content_evidence()`, and the full distribution of a panel's ratings, each in
+APA gray or in color. It also states the handoff contract nomologR reads, makes
+this package's walkthrough the joint one, and separates the Delphi printout's
+caveats from its teaching.
 
-* **contentvalidR 0.4.0 was published on CRAN on 2026-09-28.** The README now
-  gives `install.packages("contentvalidR")` first, carries a CRAN badge, and
-  explains why CRAN's version can trail the newest release on R-universe:
-  CRAN asks packages to update no more than every one to two months.
+contentvalidR is on CRAN: 0.4.0 was published there on 2026-09-28. CRAN asks
+for updates no more often than every one to two months, so 0.10.0 is released
+on GitHub and R-universe, and the next CRAN submission is the joint 1.0.
 
-## Figures for papers, posters, and teaching (in development)
+The package continues to declare `Imports: stats` only.
 
-No computed value changes. Each new figure draws what the fits and handoffs
-already decided, and says whether it follows a published form or is this
-package's own design.
+**No computed value changes.** Across 25 analyses spanning every workflow,
+every value 0.9.0 returns is identical in 0.10.0. Relevance fits gain
+`details$ratings`. Some printed wording changes: the Delphi printout's method
+paragraphs move into its key, `anova_content()` prints within 80 columns, the
+printed handoff advises passing the whole handoff to nomologR, and the
+`citation` a handoff carries for `stability = "percent_change"` reads
+"Scheibe et al. (1975/2002)".
+
+**No breaking changes.** The plot methods gain arguments after their existing
+ones: `type`, `apa`, and `labels` for expert-panel fits, and
+`which = "distribution"`, `apa`, and `labels` for Delphi fits.
+`agreement_summary()` remains deprecated and is removed in 1.0.0.
+
+## Figures for papers, posters, and teaching
+
+Each new figure draws what the fits and handoffs already decided, and says
+whether it follows a published form or is this package's own design.
 
 * **`content_evidence()` (new)** brings the handoffs from several review
   stages together, such as a relevance panel and then an item sort. It prints
@@ -47,9 +66,14 @@ package's own design.
   back travel with the items. The vignette no longer calls the handoff reader
   in nomologR future work.
 
-## Finishing touches before 1.0 (in development)
+## On CRAN
 
-No computed value changes.
+* **contentvalidR 0.4.0 was published on CRAN on 2026-09-28.** The README now
+  gives `install.packages("contentvalidR")` first, carries a CRAN badge, and
+  explains why CRAN's version can trail the newest release on R-universe:
+  CRAN asks packages to update no more than every one to two months.
+
+## Finishing touches before 1.0
 
 * **The Delphi printout separates what changes a reading from what teaches
   it.** Two short caveats always print: read kappa as a trend beside the
