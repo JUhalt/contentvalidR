@@ -102,7 +102,7 @@ reliability measure for coding data. \emph{Communication Methods and Measures,
 
 Krippendorff, K. (2011). \emph{Computing Krippendorff's alpha-reliability}.
 Annenberg School for Communication, University of Pennsylvania.
-\url{https://repository.upenn.edu/items/034a6030-c584-4d14-9d3d-7b7e8d16df20}
+\url{https://www.asc.upenn.edu/sites/default/files/2021-03/Computing\%20Krippendorff\%27s\%20Alpha-Reliability.pdf}
 
 Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
 kappa: A comparison of basic properties. \emph{MethodsX, 10}, 102212.
