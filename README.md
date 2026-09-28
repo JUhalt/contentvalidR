@@ -341,6 +341,10 @@ Works cited in this README, the help pages, and the vignettes.
   standard reliability measure for coding data. *Communication Methods
   and Measures, 1*(1), 77–89.
   <https://doi.org/10.1080/19312450709336664>
+- Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked
+  bar charts for Likert scales and other applications. *Journal of
+  Statistical Software, 57*(5), 1–32.
+  <https://doi.org/10.18637/jss.v057.i05>
 - Hernández-Nieto, R. (2002). *Contributions to statistical analysis:
   The coefficients of proportional variance, content validity and
   kappa*. BookSurge.
@@ -381,6 +385,13 @@ Works cited in this README, the help pages, and the vignettes.
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single
   proportion: Comparison of seven methods. *Statistics in Medicine,
   17*(8), 857–872. <https://doi.org/10/cpchjg>
+- Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I.,
+  Hoffmann, T. C., Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E.
+  A., Brennan, S. E., Chou, R., Glanville, J., Grimshaw, J. M.,
+  Hróbjartsson, A., Lalu, M. M., Li, T., Loder, E. W., Mayo-Wilson, E.,
+  McDonald, S., . . . Moher, D. (2021). The PRISMA 2020 statement: An
+  updated guideline for reporting systematic reviews. *BMJ, 372*,
+  Article n71. <https://doi.org/10.1136/bmj.n71>
 - Penfield, R. D., & Giacobbi, P. R., Jr. (2004). Applying a score
   confidence interval to Aiken’s item content-relevance index.
   *Measurement in Physical Education and Exercise Science, 8*(4),

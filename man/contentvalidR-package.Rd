@@ -22,8 +22,9 @@ The public API is in three tiers.
 \code{\link[=judge_validity]{judge_validity()}}, and \code{\link[=domain_validity]{domain_validity()}}; their \code{print()}, \code{summary()},
 and \code{plot()} methods; the object contract they share (\code{results},
 \code{scale_summary}, \code{settings}, \code{design}, \code{details}); the shared status
-vocabulary (\code{Supported}, \code{Review}, \verb{Insufficient data}, \verb{Descriptive only}); and \code{\link[=content_handoff]{content_handoff()}}, \code{\link[=content_report]{content_report()}}, \code{\link[=compare_rounds]{compare_rounds()}},
-\code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}}, and \code{\link[=contentvalid_glossary]{contentvalid_glossary()}}.
+vocabulary (\code{Supported}, \code{Review}, \verb{Insufficient data}, \verb{Descriptive only}); and \code{\link[=content_handoff]{content_handoff()}}, \code{\link[=content_evidence]{content_evidence()}}, \code{\link[=content_report]{content_report()}},
+\code{\link[=compare_rounds]{compare_rounds()}}, \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}}, and
+\code{\link[=contentvalid_glossary]{contentvalid_glossary()}}.
 
 Tier 1 will not change in a way that breaks working code except across a
 major version, and never without the deprecation cycle below.

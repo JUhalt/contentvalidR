@@ -206,3 +206,36 @@ test_that("recoding restores exactly the data the design describes", {
   expect_true(all(rec >= 1L & rec <= 5L))
   expect_identical(anyNA(rec), FALSE)
 })
+
+# The relevance panel, a second source of content evidence for the same items
+# (data-raw/build-walkthrough-panel.R). The reporting vignette narrates these
+# claims, so they are held here.
+wt_relevance <- function() {
+  r <- read.csv(extdata("walkthrough_relevance.csv"), stringsAsFactors = FALSE)
+  as.matrix(r[setdiff(names(r), "expert")])
+}
+
+test_that("the relevance panel rates the same twelve items, eight experts each", {
+  R <- wt_relevance()
+  expect_identical(colnames(R), wt_items()$item)
+  expect_identical(nrow(R), 8L)
+  expect_true(all(R %in% 1:4))
+})
+
+test_that("the relevance panel shows what its generator says it shows", {
+  fit <- expert_validity(wt_relevance(), mode = "relevance", lo = 1, hi = 4,
+                         agreement = "none")
+  r <- fit$results
+  # Only EF5 falls short, at 4 of 8, where Lynn's criterion is 7 of 8.
+  expect_identical(r$item[r$status == "Review"], "EF5")
+  expect_equal(r$A[r$item == "EF5"], 4)
+  # EF6 meets the criterion exactly.
+  expect_equal(r$A[r$item == "EF6"], 7)
+  expect_identical(r$status[r$item == "EF6"], "Supported")
+  # EF1 and EF3 have the same I-CVI, but EF3's panel is lukewarm, which only the
+  # full distribution (and Aiken's V) shows.
+  expect_identical(r$I_CVI[r$item == "EF1"], r$I_CVI[r$item == "EF3"])
+  expect_lt(r$V[r$item == "EF3"], r$V[r$item == "EF1"] - 0.2)
+  # TF5 is relevant by every expert; only the sort holds it back.
+  expect_equal(r$A[r$item == "TF5"], 8)
+})

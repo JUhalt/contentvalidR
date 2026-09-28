@@ -77,3 +77,49 @@
 .hline <- function(y, lty = 3) {
   graphics::abline(h = y, lty = lty)
 }
+
+# Colors for the displays that take `apa`. With apa = TRUE everything is
+# black, white, and gray, as an APA figure is printed. With apa = FALSE, teal
+# marks evidence that met its criterion and brown evidence under review, from
+# the colorblind-safe brown-teal diverging scheme. The plotting symbol still
+# carries the decision in both, so no reading depends on color alone.
+.evidence_colours <- function(apa) {
+  if (isTRUE(apa)) {
+    list(met = "black", review = "black", none = "grey40",
+         stage = "white", held = "grey93", final = "grey85", border = "grey20")
+  } else {
+    list(met = "#01665E", review = "#8C510A", none = "grey40",
+         stage = "white", held = "#F6E8C3", final = "#C7EAE5", border = "grey20")
+  }
+}
+
+# The color of each decision, from its shared status.
+.status_colour <- function(status, apa) {
+  pal <- .evidence_colours(apa)
+  ifelse(status %in% "Supported", pal$met,
+         ifelse(status %in% "Review", pal$review, pal$none))
+}
+
+# One plotting symbol per shared status: met (filled), review (open), no
+# decision (cross), as .decision_pch() draws from the workflow's own words.
+.status_pch <- function(status) {
+  ifelse(status %in% "Supported", 19L, ifelse(status %in% "Review", 1L, 4L))
+}
+
+# One fill per rating category, lowest first. In gray, darker means a higher
+# rating. In color, ratings below the cut are brown and ratings at or above it
+# teal, each deeper the further it lies from the cut.
+.rating_fills <- function(k, n_below, apa) {
+  if (isTRUE(apa)) return(grDevices::grey(seq(0.93, 0.22, length.out = k)))
+  n_above <- k - n_below
+  below <- if (n_below > 0L) {
+    grDevices::colorRampPalette(c("#A6611A", "#DFC27D"))(max(n_below, 2L))
+  }
+  above <- if (n_above > 0L) {
+    grDevices::colorRampPalette(c("#80CDC1", "#018571"))(max(n_above, 2L))
+  }
+  # With one category on a side, use the shade nearest the cut.
+  if (n_below == 1L) below <- below[2L]
+  if (n_above == 1L) above <- above[1L]
+  c(below, above)
+}

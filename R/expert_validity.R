@@ -340,6 +340,9 @@ expert_validity <- function(data,
       design = design,
       details = list(
         cvi = cv, agreement = agree,
+        # Kept for plot(type = "distribution"), which draws every rating
+        # rather than the share that met the cut.
+        ratings = R,
         # The ratings' columns are the items in `item`'s order, which is how
         # aikens_v() returns them.
         earlier_methods = .relevance_earlier_methods(
@@ -796,22 +799,75 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' for its intended objective against its strongest competitor, when a target
 #' mapping is available.
 #'
+#' In relevance mode, `type = "distribution"` draws every expert's rating as
+#' a diverging stacked bar (Heiberger & Robbins, 2014), split at the relevance
+#' cut. Ratings below the cut extend left and ratings at or above it extend
+#' right, so the right-hand length is the item's I-CVI, read against the dashed
+#' criterion line. The number beside each bar is that I-CVI, and the symbol is
+#' the decision the fit made. It shows what the index cannot: two items with
+#' the same I-CVI, one rated relevant with 4s and the other with 3s.
+#'
 #' @param x A `contentvalid_expert` object.
 #' @param show_legend Logical; draw the compact plot key. Default `TRUE`.
+#' @param type `"item"` (default) for the evidence plot described above, or
+#'   `"distribution"` for the rating distributions (relevance mode only).
+#' @param apa Used by `type = "distribution"`. `TRUE` (default) draws in gray,
+#'   with darker meaning a higher rating, as an APA figure is printed. `FALSE`
+#'   draws ratings below the cut in brown and ratings at or above it in teal,
+#'   a colorblind-safe scheme for slides and posters. The symbol beside each
+#'   bar carries the decision either way. The `"item"` plot is always gray.
+#' @param labels For `type = "distribution"`, one label per rating category,
+#'   lowest first, such as `c("Not relevant", "Somewhat relevant", "Quite
+#'   relevant", "Highly relevant")`. Defaults to `"Rated 1"`, `"Rated 2"`,
+#'   and so on.
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #' @return The input object invisibly.
+#' @references
+#' Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked bar
+#' charts for Likert scales and other applications. *Journal of Statistical
+#' Software, 57*(5), 1–32. \doi{10.18637/jss.v057.i05}
 #' @examples
 #' relevance <- matrix(
 #'   c(4,4,4,3, 4,4,3,4, 3,4,4,4, 4,3,4,4),
 #'   nrow = 4,
 #'   dimnames = list(NULL, paste0("Item", 1:4))
 #' )
-#' plot(expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
-#'                      agreement = "none"))
+#' fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
+#'                        agreement = "none")
+#' plot(fit)
+#' plot(fit, type = "distribution")
+#' plot(fit, type = "distribution", apa = FALSE)
 #' plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 #' @export
-plot.contentvalid_expert <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_expert <- function(x, show_legend = TRUE,
+                                     type = c("item", "distribution"),
+                                     apa = TRUE, labels = NULL, ...) {
   .validate_flag(show_legend, "show_legend")
+  .validate_flag(apa, "apa")
+  type <- match.arg(type)
+  if (type == "distribution") {
+    if (!identical(x$mode, "relevance")) {
+      stop("The distribution view draws relevance ratings, so it needs a ",
+           "relevance-mode fit.", call. = FALSE)
+    }
+    R <- x$details$ratings
+    if (is.null(R)) {
+      stop("This fit does not carry its ratings, because it was made by an ",
+           "earlier version of contentvalidR. Fit it again to draw the ",
+           "distribution view.", call. = FALSE)
+    }
+    r <- x$results
+    crit <- unique(r$cvi_criterion[is.finite(r$cvi_criterion)])
+    .plot_rating_distribution(
+      rounds = list(R), items = as.character(r$item), lo = x$settings$lo,
+      hi = x$settings$hi, cut = x$settings$relevance_cut,
+      criterion = if (length(crit) == 1L) crit else NULL,
+      status = list(stats::setNames(r$status, r$item)), value_label = "I-CVI",
+      xlab = "Share of experts (left: below the relevance cut; right: relevant)",
+      labels = labels, apa = apa, show_legend = show_legend, ...
+    )
+    return(invisible(x))
+  }
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
