@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,15 +54,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.9.0.9000" id="contentvalidr-0909000-development-version">contentvalidR 0.9.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0909000-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.10.0" id="contentvalidr-0100">contentvalidR 0.10.0<a class="anchor" aria-label="anchor" href="#contentvalidr-0100"></a></h2>
+<p>Tenth public release, and the last planned before the joint 1.0 release candidate on 2026-10-17. v0.10.0 adds figures for papers, posters, and teaching: the item flow diagram and the item evidence profile of <code><a href="../reference/content_evidence.html">content_evidence()</a></code>, and the full distribution of a panel’s ratings, each in APA gray or in color. It also states the handoff contract nomologR reads, makes this package’s walkthrough the joint one, and separates the Delphi printout’s caveats from its teaching.</p>
+<p>contentvalidR is on CRAN: 0.4.0 was published there on 2026-09-28. CRAN asks for updates no more often than every one to two months, so 0.10.0 is released on GitHub and R-universe, and the next CRAN submission is the joint 1.0.</p>
+<p>The package continues to declare <code>Imports: stats</code> only.</p>
+<p><strong>No computed value changes.</strong> Across 25 analyses spanning every workflow, every value 0.9.0 returns is identical in 0.10.0. Relevance fits gain <code>details$ratings</code>. Some printed wording changes: the Delphi printout’s method paragraphs move into its key, <code><a href="../reference/anova_content.html">anova_content()</a></code> prints within 80 columns, the printed handoff advises passing the whole handoff to nomologR, and the <code>citation</code> a handoff carries for <code>stability = "percent_change"</code> reads “Scheibe et al. (1975/2002)”.</p>
+<p><strong>No breaking changes.</strong> The plot methods gain arguments after their existing ones: <code>type</code>, <code>apa</code>, and <code>labels</code> for expert-panel fits, and <code>which = "distribution"</code>, <code>apa</code>, and <code>labels</code> for Delphi fits. <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> remains deprecated and is removed in 1.0.0.</p>
 <div class="section level3">
-<h3 id="on-cran-0-9-0-9000">On CRAN<a class="anchor" aria-label="anchor" href="#on-cran-0-9-0-9000"></a></h3>
-<ul><li>
-<strong>contentvalidR 0.4.0 was published on CRAN on 2026-09-28.</strong> The README now gives <code>install.packages("contentvalidR")</code> first, carries a CRAN badge, and explains why CRAN’s version can trail the newest release on R-universe: CRAN asks packages to update no more than every one to two months.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="figures-for-papers-posters-and-teaching-in-development-0-9-0-9000">Figures for papers, posters, and teaching (in development)<a class="anchor" aria-label="anchor" href="#figures-for-papers-posters-and-teaching-in-development-0-9-0-9000"></a></h3>
-<p>No computed value changes. Each new figure draws what the fits and handoffs already decided, and says whether it follows a published form or is this package’s own design.</p>
+<h3 id="figures-for-papers-posters-and-teaching-0-10-0">Figures for papers, posters, and teaching<a class="anchor" aria-label="anchor" href="#figures-for-papers-posters-and-teaching-0-10-0"></a></h3>
+<p>Each new figure draws what the fits and handoffs already decided, and says whether it follows a published form or is this package’s own design.</p>
 <ul><li>
 <strong><code><a href="../reference/content_evidence.html">content_evidence()</a></code> (new)</strong> brings the handoffs from several review stages together, such as a relevance panel and then an item sort. It prints one row per item with each stage’s decision beside the statistic its rule read, and draws two figures:
 <ul><li>
@@ -79,8 +79,12 @@
 <li>The printed handoff and <code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code> now pass the whole handoff to nomologR, <code>nomo_screen(data, items = handoff)</code>, rather than <code>handoff$items</code>, so the keying and the reasons for anything held back travel with the items. The vignette no longer calls the handoff reader in nomologR future work.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="finishing-touches-before-in-development-0-9-0-9000">Finishing touches before 1.0 (in development)<a class="anchor" aria-label="anchor" href="#finishing-touches-before-in-development-0-9-0-9000"></a></h3>
-<p>No computed value changes.</p>
+<h3 id="on-cran-0-10-0">On CRAN<a class="anchor" aria-label="anchor" href="#on-cran-0-10-0"></a></h3>
+<ul><li>
+<strong>contentvalidR 0.4.0 was published on CRAN on 2026-09-28.</strong> The README now gives <code>install.packages("contentvalidR")</code> first, carries a CRAN badge, and explains why CRAN’s version can trail the newest release on R-universe: CRAN asks packages to update no more than every one to two months.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="finishing-touches-before-0-10-0">Finishing touches before 1.0<a class="anchor" aria-label="anchor" href="#finishing-touches-before-0-10-0"></a></h3>
 <ul><li>
 <strong>The Delphi printout separates what changes a reading from what teaches it.</strong> Two short caveats always print: read kappa as a trend beside the share of experts who kept their rating, not against a cut-off; and with fewer than about 40 experts the kappa intervals cover less than their stated 95%. The fuller explanation (the weights, why kappa falls as a panel converges, Klar et al.’s coverage figures) now sits in the key under “How the stability statistic works”, so an instructor’s students see it and a researcher can hide it with <code>options(contentvalidR.show_key = FALSE)</code>. The critique printed for an alternative stability method still always prints. The example printout goes from 100 lines to 92, or 58 with the key hidden.</li>
 <li>
@@ -90,7 +94,7 @@
 <strong>Scheibe et al. is cited from the edition the package’s method was checked against:</strong> the editors’ 2002 web edition of Linstone and Turoff, with the chapter’s pages (257–281), a link, and “(Original work published 1975)”, as APA 7 requires for a republished work. In-text citations read “Scheibe et al. (1975/2002)”, including the citation a handoff carries for <code>stability = "percent_change"</code>. The 1975 printing’s pages could not be checked.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="the-handoff-contract-stated-for-readers-0-9-0-9000">The handoff contract, stated for readers<a class="anchor" aria-label="anchor" href="#the-handoff-contract-stated-for-readers-0-9-0-9000"></a></h3>
+<h3 id="the-handoff-contract-stated-for-readers-0-10-0">The handoff contract, stated for readers<a class="anchor" aria-label="anchor" href="#the-handoff-contract-stated-for-readers-0-10-0"></a></h3>
 <p>Asked for by nomologR before handoff schema 1 becomes a 1.0 promise. The schema and every handoff are unchanged.</p>
 <ul><li>
 <code><a href="../reference/content_handoff.html">?content_handoff</a></code> has a new section, “Reading the decisions”: take each item’s decision from <code>carried</code> and <code>status</code>, never re-derive it by comparing <code>value</code> with <code>criterion</code> or by branching on the producer version. The example is the nine-expert correction in 0.8.0, where an item’s I-CVI stayed at .778 while its decision changed. The section also restates that <code>keying</code> of <code>NA</code> means unknown, never forward-worded.</li>
@@ -98,7 +102,7 @@
 <code><a href="../reference/content_handoff.html">?content_handoff</a></code> says an item sits in at most one scale, the one its <code>item_evidence$scale</code> names. A test holds the sort, rating, and congruence workflows to it, and checks that each refuses an item with two targets.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="the-joint-walkthrough-lives-here-0-9-0-9000">The joint walkthrough lives here<a class="anchor" aria-label="anchor" href="#the-joint-walkthrough-lives-here-0-9-0-9000"></a></h3>
+<h3 id="the-joint-walkthrough-lives-here-0-10-0">The joint walkthrough lives here<a class="anchor" aria-label="anchor" href="#the-joint-walkthrough-lives-here-0-10-0"></a></h3>
 <ul><li>
 <code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> is the joint walkthrough for contentvalidR and nomologR, as the maintainer decided for the joint 1.0. It now says so, passes the handoff itself to <code>nomo_screen()</code> and <code>nomo_run()</code> rather than <code>h$items</code>, and links to the section of the nomologR guided workflow that continues from content review. Two stale sentences are corrected. The handoff reader in nomologR, which the vignette called future work, has shipped. And the nomologR guided workflow starts from the same handoff but simulates its own responses, so its screening numbers differ from these.</li>
 <li>The walkthrough links to the companion article in nomologR, “From content review to empirical screening”, which continues it on the same responses. nomologR ships the item and response files of the walkthrough unchanged, with the script that generates them.</li>
@@ -508,7 +512,7 @@ Each alternative’s limits are printed. The two chi-square tests read in opposi
 </ul></div>
 </div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.4.0" id="contentvalidr-040">contentvalidR 0.4.0<a class="anchor" aria-label="anchor" href="#contentvalidr-040"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="contentvalidr-040">contentvalidR 0.4.0<a class="anchor" aria-label="anchor" href="#contentvalidr-040"></a></h2><p class="text-muted">CRAN release: 2026-09-28</p>
 <p>Fourth public release. v0.4.0 connects content validation to what comes after it: a documented handoff carries the items that survived content review, and the evidence behind each decision, into empirical scale development. It also adds a stricter, selectable criterion for parallel analysis, and fixes the two packaging problems that returned the 0.3.x CRAN submissions.</p>
 <p>The package continues to declare <code>Imports: stats</code> only.</p>
 <p>No default changes. Existing calls return the same values as in 0.3.1; <code><a href="../reference/qfactor_content.html">qfactor_content()</a></code> results gain two fields recording the parallel analysis criterion that ran.</p>

@@ -1,6 +1,6 @@
 # contentvalidR
 
-**Current stable release: 0.9.0** (on R-universe; CRAN has 0.4.0, see
+**Current stable release: 0.10.0** (on R-universe; CRAN has 0.4.0, see
 [Installation](#installation)).
 
 Development plans:

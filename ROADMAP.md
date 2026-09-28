@@ -1018,6 +1018,44 @@ update, from its own tag.
 
 ------------------------------------------------------------------------
 
+## v0.10.0 - Figures for papers, posters, and teaching
+
+**Status:** Released (0.10.0 on 2026-09-28, on GitHub and R-universe)
+**Version:** `0.10.0`
+
+Work: [\#78](https://github.com/JUhalt/contentvalidR/pull/78) to
+[\#83](https://github.com/JUhalt/contentvalidR/pull/83). The last
+release planned before the joint 1.0 release candidate.
+
+Separate the Delphi printout’s caveats from its teaching, fit
+[`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+in 80 columns, list every guide in the site menu, and cite Scheibe et
+al. from the 2002 edition
+([\#78](https://github.com/JUhalt/contentvalidR/pull/78)).
+
+State the handoff contract nomologR asked for, and record the joint 1.0
+checklist ([\#79](https://github.com/JUhalt/contentvalidR/pull/79)).
+
+Host the joint walkthrough here, pass nomologR the whole handoff, and
+link nomologR’s companion article on the same data
+([\#80](https://github.com/JUhalt/contentvalidR/pull/80),
+[\#81](https://github.com/JUhalt/contentvalidR/pull/81)).
+
+Add
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md),
+with the item flow diagram and the item evidence profile, the
+rating-distribution view, and the `apa` switch
+([\#82](https://github.com/JUhalt/contentvalidR/pull/82)).
+
+Set 2026-10-17 as release-candidate day, and install from CRAN first
+([\#83](https://github.com/JUhalt/contentvalidR/pull/83)).
+
+CRAN: 0.4.0 was published on 2026-09-28. CRAN asks for updates no more
+often than every one to two months, so 0.10.0 is not submitted; the next
+submission is the joint 1.0.
+
+------------------------------------------------------------------------
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Release candidate
