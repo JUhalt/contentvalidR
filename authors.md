@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/JUhalt/contentvalidR/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/JUhalt/contentvalidR/blob/v0.10.0/inst/CITATION)
 
 Uhalt, J. (2026). contentvalidR: Tools for substantive and content
 validity pretesting (R package version 0.10.0) \[Computer software\].
