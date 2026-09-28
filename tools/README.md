@@ -75,7 +75,12 @@ rather than the source tree:
 - the expected vignettes are installed;
 - the citation names the version being released.
 
-The two notes `check` tolerates are "New submission", which stands until the
-package is on CRAN, and math rendering skipped where V8 is unavailable. Any
-other note fails the stage: a gate that prints findings for a human to eyeball
-is not a gate.
+The two notes `check` tolerates are CRAN's incoming-feasibility note and math
+rendering skipped where V8 is unavailable. The incoming note is tolerated only
+when every line of it is expected: the maintainer, "New submission" (before
+the package was on CRAN), "Version contains large components" (a development
+version), or "Days since last update" (since 0.4.0 reached CRAN on
+2026-09-28). Any other line in it fails the stage, and so does any other note:
+a gate that prints findings for a human to eyeball is not a gate. When the
+last update was under 60 days ago, the stage also prints a reminder that CRAN
+asks for updates no more often than every one to two months.
