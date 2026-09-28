@@ -52,9 +52,13 @@ schema and every handoff are unchanged.
   `nomo_run()` rather than `h$items`, and links to the section of the
   nomologR guided workflow that continues from content review. Two stale
   sentences are corrected. The handoff reader in nomologR, which the vignette
-  called future work, has shipped. And nomologR starts from the same handoff
-  but simulates its own responses, so its screening numbers differ from
-  these.
+  called future work, has shipped. And the nomologR guided workflow starts
+  from the same handoff but simulates its own responses, so its screening
+  numbers differ from these.
+* The walkthrough links to the companion article in nomologR, "From content
+  review to empirical screening", which continues it on the same responses.
+  nomologR ships the item and response files of the walkthrough unchanged,
+  with the script that generates them.
 
 # contentvalidR 0.9.0
 
