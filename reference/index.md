@@ -44,6 +44,8 @@ plans.
   : Plot an expert content map
 - [`plot(`*`<contentvalid_expert_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert_power.md)
   : Plot an expert-panel planning curve
+- [`plot(`*`<contentvalid_evidence>`*`)`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_evidence.md)
+  : Plot content evidence across review stages
 
 ## Reading and reporting results
 
@@ -58,6 +60,8 @@ reports and downstream workflows.
   : Build a manuscript-ready results table
 - [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
   : Carry content-validity decisions into empirical validation
+- [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+  : Combine content evidence across review stages
 - [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
   : Compare content-validity evidence across pretest rounds
 

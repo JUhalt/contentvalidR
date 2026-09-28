@@ -374,6 +374,134 @@ For IOC, report the intended objective, target IOC, strongest competing
 objective, and target-minus-competitor margin. The margin is diagnostic
 evidence about alignment; it is not a newly invented significance test.
 
+## Figures across review stages
+
+Most studies gather more than one kind of content evidence.
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+brings the stages together, in the order they ran, and draws two figures
+for a paper or poster. Here the twelve items of
+[`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md)
+are first rated for relevance by eight experts, and the items the panel
+carries go on to the item sort. The relevance ratings are constructed
+for this example; `data-raw/build-walkthrough-panel.R` says what each
+item’s ratings are built to show.
+
+``` r
+
+relevance <- read_example("walkthrough_relevance.csv")
+panel <- content_handoff(expert_validity(
+  as.matrix(relevance[setdiff(names(relevance), "expert")]),
+  mode = "relevance", lo = 1, hi = 4, agreement = "none"
+))
+sorted <- read_example("walkthrough_sort.csv")
+sort_stage <- sort_validity(sorted[sorted$item %in% panel$items, ])
+evidence <- content_evidence(`Relevance panel` = panel, `Item sort` = sort_stage)
+evidence
+#> Content evidence across 2 stages
+#> --------------------------------
+#> 10 of 12 items carried by every stage that reviewed them. Held back: EF5
+#> (Relevance panel), TF5 (Item sort).
+#> 
+#> Stages, in order
+#>   1. Relevance panel: 12 items, 8 experts. Shows I-CVI.
+#>   2. Item sort: 11 items, 20 judges. Shows Psa.
+#> 
+#>  item     Relevance panel  Item sort                     result
+#>   EF1 1.00 Strong support .95 Retain                    carried
+#>   EF2 1.00 Strong support .90 Retain                    carried
+#>   EF3 1.00 Strong support .90 Retain                    carried
+#>   EF4 1.00 Strong support .90 Retain                    carried
+#>   EF5          .50 Review         -- held back: Relevance panel
+#>   EF6  .88 Strong support .75 Retain                    carried
+#>   TF1 1.00 Strong support .95 Retain                    carried
+#>   TF2 1.00 Strong support .85 Retain                    carried
+#>   TF3 1.00 Strong support .90 Retain                    carried
+#>   TF4 1.00 Strong support .80 Retain                    carried
+#>   TF5 1.00 Strong support .30 Review       held back: Item sort
+#>   TF6 1.00 Strong support .90 Retain                    carried
+#> 
+#> What these columns mean
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
+#>       item relevant, compared with Lynn's criterion for the panel size.
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
+#>       item in the construct it was written for (0 to 1; higher is
+#>       stronger).
+#>   result -- carried when every stage that reviewed the item carried it;
+#>       otherwise the stages that held it back. -- marks a stage that did not
+#>       review the item.
+#> 
+#> Figures: plot(x) for the evidence profile, plot(x, type = "flow")
+#> for the flow diagram; add apa = FALSE for color.
+#> 
+#> Full definitions: contentvalid_glossary(). To hide this key:
+#> options(contentvalidR.show_key = FALSE).
+```
+
+The flow diagram follows the items through the stages. It is modeled on
+the PRISMA 2020 flow diagram for systematic reviews (Page et al., 2021),
+with items in place of studies, and it is the figure a Method section
+needs: what each stage reviewed, what it held back and why, and what
+went forward.
+
+``` r
+
+plot(evidence, type = "flow")
+```
+
+![Item flow diagram. Stage 1, the relevance panel, reviewed 12 items
+with 8 experts and held back EF5, with an I-CVI of .50 against a
+criterion of .88. Stage 2, the item sort, reviewed the remaining 11
+items with 20 judges and held back TF5, with a Psa of .30 against a
+criterion of .75. Ten items were carried forward, five in each
+facet.](reporting-examples_files/figure-html/evidence-flow-1.png)
+
+The evidence profile sets the stages side by side, item by item. Each
+panel shows the statistic that stage’s decision read, its 95% interval,
+and its criterion as a dashed line; a filled symbol met the criterion
+and an open one was flagged for review.
+
+``` r
+
+plot(evidence)
+```
+
+![Item evidence profile with one panel per stage. Left, the I-CVI for
+twelve items with 95% intervals and a dashed criterion at .88; every
+item meets it except EF5, at .50. Right, Psa for the eleven items the
+panel carried, with a dashed criterion at .75; every item meets it
+except TF5, at .30, and EF6 sits exactly on the line. A last column
+marks EF5 as held back by the relevance panel and TF5 by the item
+sort.](reporting-examples_files/figure-html/evidence-profile-1.png)
+
+Read across a row and the sources can disagree. Every expert rated `TF5`
+relevant; only the sort shows that judges place it in the other facet.
+Read down a panel and the intervals speak: an I-CVI of 1.00 from eight
+experts has an interval reaching down to about .68, a reminder of how
+small a panel is.
+
+Both figures are gray by default, as an APA figure is printed. For
+slides or a poster, `apa = FALSE` draws them in color, teal for evidence
+that met its criterion and brown for evidence under review. The symbols
+carry the same decisions, so no reading depends on color.
+
+``` r
+
+plot(evidence, apa = FALSE)
+```
+
+![The same item evidence profile in color: items that met each criterion
+in teal, and EF5 in the relevance panel and TF5 in the item sort in
+brown, with open
+symbols.](reporting-examples_files/figure-html/evidence-color-1.png)
+
+A caption for the profile might read: *Content evidence for twelve draft
+items. Left: the share of eight experts rating each item relevant
+(I-CVI), with 95% Wilson score intervals and Lynn’s (1986) criterion of
+7 of 8. Right: the share of 20 judges assigning each item to its
+intended facet (Psa), with 95% Wilson score intervals and the exact
+test’s criterion of 15 of 20 (Howard & Melloy, 2016). Filled symbols met
+the criterion; open symbols were flagged for review.*
+
 ## Minimum reproducibility statement
 
 At minimum, a manuscript or supplement should identify the package
@@ -455,3 +583,15 @@ Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
 methods: The presentation of a new statistical significance formula and
 methodological best practices. *Journal of Business and Psychology,
 31*(1), 173–186. <https://doi.org/10.1007/s10869-015-9404-y>
+
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382–385.
+<https://doi.org/10.1097/00006199-198611000-00017>
+
+Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann, T.
+C., Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A., Brennan,
+S. E., Chou, R., Glanville, J., Grimshaw, J. M., Hróbjartsson, A., Lalu,
+M. M., Li, T., Loder, E. W., Mayo-Wilson, E., McDonald, S., . . . Moher,
+D. (2021). The PRISMA 2020 statement: An updated guideline for reporting
+systematic reviews. *BMJ, 372*, Article n71.
+<https://doi.org/10.1136/bmj.n71>

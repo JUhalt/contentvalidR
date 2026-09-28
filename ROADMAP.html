@@ -451,6 +451,10 @@
 <li><label><input type="checkbox" checked><code><a href="reference/content_handoff.html">?content_handoff</a></code> says an item sits in at most one scale, and a test holds every workflow to it.</label></li>
 <li><label><input type="checkbox" checked><code><a href="reference/content_handoff.html">?content_handoff</a></code> says a reader takes each decision from <code>carried</code> and <code>status</code>, never re-deriving it from the statistics or the producer version.</label></li>
 </ul></li>
+<li>Displays for papers, posters, and teaching, asked for by the maintainer on 2026-09-28 to go in before 1.0. Graphics are the one place the maintainer welcomes going beyond the literature, so each display says whether it follows a published form or is this package’s own design. None computes anything new: each draws what the fits and handoffs already decided. All take <code>apa</code>: gray by default, as an APA figure is printed, or a colorblind-safe scheme with teal for evidence that met its criterion and brown for evidence under review. Symbols carry the decision either way.
+<ul class="task-list"><li><label><input type="checkbox" checked><code><a href="reference/content_evidence.html">content_evidence()</a></code> combines handoffs across review stages. It draws the item flow diagram, modeled on the PRISMA 2020 flow diagram (Page et al., 2021), and the item evidence profile, this package’s own design.</label></li>
+<li><label><input type="checkbox" checked><code>plot(type = "distribution")</code> for relevance panels and <code>plot(which = "distribution")</code> for Delphi studies draw every rating as diverging stacked bars (Heiberger &amp; Robbins, 2014), split at the cut the decision rule counts.</label></li>
+</ul></li>
 </ul><hr></div>
 <div class="section level2">
 <h2 id="future-research">Future research<a class="anchor" aria-label="anchor" href="#future-research"></a></h2>

@@ -8,7 +8,14 @@ rounds, which a plot shows better than a table of round pairs.
 
 ``` r
 # S3 method for class 'contentvalid_delphi'
-plot(x, which = c("consensus", "stability"), show_legend = TRUE, ...)
+plot(
+  x,
+  which = c("consensus", "stability", "distribution"),
+  show_legend = TRUE,
+  apa = TRUE,
+  labels = NULL,
+  ...
+)
 ```
 
 ## Arguments
@@ -19,11 +26,25 @@ plot(x, which = c("consensus", "stability"), show_legend = TRUE, ...)
 
 - which:
 
-  `"consensus"` (default) or `"stability"`.
+  `"consensus"` (default), `"stability"`, or `"distribution"`.
 
 - show_legend:
 
   Draw the legend. Defaults to `TRUE`.
+
+- apa:
+
+  Used by `which = "distribution"`. `TRUE` (default) draws in gray, with
+  darker meaning a higher rating, as an APA figure is printed. `FALSE`
+  draws ratings below the agreement cut in brown and ratings at or above
+  it in teal, a colorblind-safe scheme for slides and posters. The
+  consensus and stability views color each item's line so the lines can
+  be told apart.
+
+- labels:
+
+  For `which = "distribution"`, one label per rating category, lowest
+  first. Defaults to `"Rated 1"`, `"Rated 2"`, and so on.
 
 - ...:
 
@@ -49,6 +70,20 @@ so a shaded "good" region would mislead exactly when a Delphi is
 succeeding. See
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
 
+`which = "distribution"` draws every rating in every round as a
+diverging stacked bar (Heiberger & Robbins, 2014), one bar per round for
+each item, split at `agree_cut`. The right-hand length is the share
+agreeing, read against the dashed consensus threshold, and the symbol
+beside it is that round's consensus decision. Rounds in which an item
+was not rated, because it had been set aside, are marked "not rated".
+
+## References
+
+Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked
+bar charts for Likert scales and other applications. *Journal of
+Statistical Software, 57*(5), 1–32.
+[doi:10.18637/jss.v057.i05](https://doi.org/10.18637/jss.v057.i05)
+
 ## See also
 
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
@@ -68,4 +103,6 @@ fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2)), lo = 1, hi = 4,
 plot(fit)
 
 plot(fit, which = "stability")
+
+plot(fit, which = "distribution")
 ```

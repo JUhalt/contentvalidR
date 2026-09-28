@@ -2,6 +2,53 @@
 
 ## contentvalidR 0.9.0.9000 (development version)
 
+### Figures for papers, posters, and teaching (in development)
+
+No computed value changes. Each new figure draws what the fits and
+handoffs already decided, and says whether it follows a published form
+or is this package’s own design.
+
+- **[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+  (new)** brings the handoffs from several review stages together, such
+  as a relevance panel and then an item sort. It prints one row per item
+  with each stage’s decision beside the statistic its rule read, and
+  draws two figures:
+  - `plot(x, type = "flow")`, the item flow diagram, modeled on the
+    PRISMA 2020 flow diagram (Page et al., 2021): what each stage
+    reviewed, what it held back and the number behind each decision, and
+    what went forward;
+  - `plot(x)`, the item evidence profile, this package’s own design: one
+    panel per stage with each statistic, its interval, and its
+    criterion, so agreement and disagreement between methods can be seen
+    item by item.
+- **The distribution view** draws every rating behind an index as
+  diverging stacked bars (Heiberger & Robbins, 2014), split at the cut
+  the decision rule counts: `plot(fit, type = "distribution")` for a
+  relevance panel and `plot(fit, which = "distribution")` for a Delphi
+  study, one bar per round. It shows what the I-CVI cannot: two items at
+  1.00, one rated relevant with 4s and the other with 3s. Relevance fits
+  now keep their ratings in `details$ratings` to draw it.
+- **`apa`** switches these figures between gray (`TRUE`, the default, as
+  an APA figure is printed) and a colorblind-safe scheme for slides and
+  posters (`FALSE`): teal for evidence that met its criterion, brown for
+  evidence under review. Symbols carry the decision either way, so no
+  reading depends on color.
+- **A relevance panel for the walkthrough items**,
+  `walkthrough_relevance.csv`, gives the twelve items a second source of
+  content evidence.
+  [`vignette("reporting-examples")`](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md)
+  uses it to show both figures, with a sample caption. The ratings are
+  constructed, and a separate script,
+  `data-raw/build-walkthrough-panel.R`, says what each is built to show.
+  The three walkthrough files that nomologR ships are unchanged.
+- The printed handoff and
+  [`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md)
+  now pass the whole handoff to nomologR,
+  `nomo_screen(data, items = handoff)`, rather than `handoff$items`, so
+  the keying and the reasons for anything held back travel with the
+  items. The vignette no longer calls the handoff reader in nomologR
+  future work.
+
 ### Finishing touches before 1.0 (in development)
 
 No computed value changes.

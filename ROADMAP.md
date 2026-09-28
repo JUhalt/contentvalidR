@@ -1110,6 +1110,26 @@ to it.
 says a reader takes each decision from `carried` and `status`, never
 re-deriving it from the statistics or the producer version.
 
+Displays for papers, posters, and teaching, asked for by the maintainer
+on 2026-09-28 to go in before 1.0. Graphics are the one place the
+maintainer welcomes going beyond the literature, so each display says
+whether it follows a published form or is this package’s own design.
+None computes anything new: each draws what the fits and handoffs
+already decided. All take `apa`: gray by default, as an APA figure is
+printed, or a colorblind-safe scheme with teal for evidence that met its
+criterion and brown for evidence under review. Symbols carry the
+decision either way.
+
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+combines handoffs across review stages. It draws the item flow diagram,
+modeled on the PRISMA 2020 flow diagram (Page et al., 2021), and the
+item evidence profile, this package’s own design.
+
+`plot(type = "distribution")` for relevance panels and
+`plot(which = "distribution")` for Delphi studies draw every rating as
+diverging stacked bars (Heiberger & Robbins, 2014), split at the cut the
+decision rule counts.
+
 ------------------------------------------------------------------------
 
 ## Future research

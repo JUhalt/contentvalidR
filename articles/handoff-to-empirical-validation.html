@@ -142,8 +142,9 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Carry these items into the empirical workflow once response data are</span></span>
 <span><span class="co">#&gt; collected. In nomologR that is</span></span>
-<span><span class="co">#&gt;   nomo_screen(data, items = handoff$items)</span></span>
-<span><span class="co">#&gt; which screens the same items you retained here.</span></span>
+<span><span class="co">#&gt;   nomo_screen(data, items = handoff)</span></span>
+<span><span class="co">#&gt; which screens the items carried here. Passing the whole handoff, rather than</span></span>
+<span><span class="co">#&gt; handoff$items, keeps the keying and the reasons for anything held back.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Surviving content review is evidence about relevance, representation, and</span></span>
 <span><span class="co">#&gt; expert judgment. It does not establish that an item will behave well</span></span>
@@ -296,13 +297,14 @@ models, reliability, invariance, and nomological networks.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nomologR</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># `responses` is your collected data: one row per respondent, one column per item.</span></span>
-<span><span class="va">scr</span> <span class="op">&lt;-</span> <span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">handoff</span><span class="op">$</span><span class="va">items</span><span class="op">)</span></span>
+<span><span class="va">scr</span> <span class="op">&lt;-</span> <span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">handoff</span><span class="op">)</span></span>
 <span><span class="va">scr</span><span class="op">$</span><span class="va">item_summary</span></span></code></pre></div>
 <p>That chunk is not evaluated here, because this vignette builds
 without nomologR installed and because a content-validity pretest has no
-responses to screen. It passes the carried item names. Reading the
-handoff object itself, so that nomologR also receives the evidence and
-each item’s keying, is tracked on <a href="https://github.com/JUhalt/nomologR/issues/46" class="external-link">nomologR#46</a>.</p>
+responses to screen. It passes the handoff itself rather than
+<code>handoff$items</code>, so nomologR receives the carried items
+together with their evidence and each item’s keying, and can quote the
+reasons for anything held back.</p>
 <p>The object shape is agreed between the two packages as schema version
 1, and every field is a base type: character, logical, numeric, integer,
 data frame, list, and Date. Neither package depends on the other, so any

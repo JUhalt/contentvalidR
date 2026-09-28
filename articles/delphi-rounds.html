@@ -405,6 +405,17 @@ their rating. S6 sits at the bottom on both, and S2’s kappa of 0 sits
 well below its share unchanged, which is the unanimous-round case
 described above. There are no shaded “good” and “poor” bands behind
 kappa, for the same reason there are no verbal labels.</p>
+<p>Both plots summarize. The distribution view shows every rating, one
+bar per round for each statement, split at the agreement cut (Heiberger
+&amp; Robbins, 2014). The right-hand length is the share agreeing, read
+against the dashed consensus threshold:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, which <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="delphi-rounds_files/figure-html/plot-distribution-1.png" class="r-plt" alt="Rating distributions for six statements over three rounds, one bar per round, split at the agreement cut of 3, with a dashed line at the 75% consensus threshold. S1 is not rated in round 3, having reached consensus in round 2; S2 moves to unanimous 4s by round 3; nearly every expert rates S3 below the cut in every round." width="672"></p>
+<p>S2’s bars show a panel converging, and S3’s a panel agreeing that the
+statement does not belong: agreement in the other direction, which the
+printout notes in words and the bars show at a glance. Add
+<code>apa = FALSE</code> for a color version for slides or a poster.</p>
 </div>
 <div class="section level2">
 <h2 id="why-the-default-looks-at-individual-experts">Why the default looks at individual experts<a class="anchor" aria-label="anchor" href="#why-the-default-looks-at-individual-experts"></a>
@@ -412,7 +423,7 @@ kappa, for the same reason there are no verbal labels.</p>
 <p>S6 is the reason stability is measured expert by expert. Under the
 15% rule of Scheibe et al. (1975/2002), which compares the two rounds’
 overall rating distributions, S6 looks perfectly stable:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/delphi_validity.html">delphi_validity</a></span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, consensus_threshold <span class="op">=</span> <span class="fl">0.75</span>,</span>
 <span>                      stability <span class="op">=</span> <span class="st">"percent_change"</span><span class="op">)</span></span>
 <span><span class="va">s6</span> <span class="op">&lt;-</span> <span class="va">pc</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">stability</span><span class="op">[</span><span class="va">pc</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">stability</span><span class="op">$</span><span class="va">item</span> <span class="op">==</span> <span class="st">"S6"</span>, <span class="op">]</span></span>
@@ -487,7 +498,7 @@ printout always says which is which.</p>
 the usual relevance evidence (I-CVI, Aiken’s V, and their intervals) is
 available round by round. <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> reads those fits
 directly:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">compare_rounds</span>, <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">round_fits</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; contentvalidR comparison across pretest rounds</span></span>
 <span><span class="co">#&gt; ----------------------------------------------</span></span>
@@ -521,7 +532,7 @@ after reaching consensus. S5 strengthened once experts converged.</p>
 </h2>
 <p><code><a href="../reference/content_report.html">content_report()</a></code> gives a compact table for a
 manuscript:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  item last round experts agree unchanged stability        95% CI     decision</span></span>
 <span><span class="co">#&gt;    S1          2      10  1.00       .80       .71   [.20, 1.00]    Consensus</span></span>
@@ -546,7 +557,7 @@ report:</p>
 <p>When the panel is finished, <code><a href="../reference/content_handoff.html">content_handoff()</a></code> packages
 the items that survived, with the evidence behind each decision, for the
 empirical stage:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span>, keep <span class="op">=</span> <span class="st">"Supported"</span><span class="op">)</span></span>
 <span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"carried"</span>, <span class="st">"status"</span>, <span class="st">"n_judges"</span>, <span class="st">"round"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   item carried    status n_judges round</span></span>
@@ -562,7 +573,7 @@ workflow writes one constant into that column, because one fit is one
 round.</p>
 <p>Each item’s relevance evidence comes from its own last round, with
 intervals, and the stability evidence travels beside it:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">st</span> <span class="op">&lt;-</span> <span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">st</span><span class="op">$</span><span class="va">statistic</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "I-CVI"                      "Aiken's V"                 </span></span>
@@ -607,6 +618,9 @@ Delphi studies. <em>Journal of Clinical Epidemiology, 67</em>(4),
 kappa and the intraclass correlation coefficient as measures of
 reliability. <em>Educational and Psychological Measurement, 33</em>(3),
 613–619. <a href="https://doi.org/10.1177/001316447303300309" class="external-link uri">https://doi.org/10.1177/001316447303300309</a></p>
+<p>Heiberger, R. M., &amp; Robbins, N. B. (2014). Design of diverging
+stacked bar charts for Likert scales and other applications. <em>Journal
+of Statistical Software, 57</em>(5), 1–32. <a href="https://doi.org/10.18637/jss.v057.i05" class="external-link uri">https://doi.org/10.18637/jss.v057.i05</a></p>
 <p>Holey, E. A., Feeley, J. L., Dixon, J., &amp; Whittaker, V. J.
 (2007). An exploration of the use of simple statistics to measure
 consensus and stability in Delphi studies. <em>BMC Medical Research

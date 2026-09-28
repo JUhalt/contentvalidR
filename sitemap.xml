@@ -29,6 +29,7 @@
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compare_rounds.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compute_csv.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/compute_psa.html</loc></url>
+<url><loc>https://juhalt.github.io/contentvalidR/reference/content_evidence.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/content_handoff.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/content_report.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/content_structure.html</loc></url>
@@ -50,6 +51,7 @@
 <url><loc>https://juhalt.github.io/contentvalidR/reference/judge_validity.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/panel_agreement.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_delphi.html</loc></url>
+<url><loc>https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_evidence.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_expert_power.html</loc></url>
 <url><loc>https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_rating.html</loc></url>

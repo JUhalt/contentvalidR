@@ -57,6 +57,7 @@ object contract they share (`results`, `scale_summary`, `settings`,
 `design`, `details`); the shared status vocabulary (`Supported`,
 `Review`, `Insufficient data`, `Descriptive only`); and
 [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md),
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md),
 [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),
 [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md),
 [`as.data.frame.contentvalid_workflow()`](https://juhalt.github.io/contentvalidR/reference/as.data.frame.contentvalid_workflow.md),

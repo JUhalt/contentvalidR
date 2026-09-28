@@ -338,6 +338,28 @@ well below its share unchanged, which is the unanimous-round case
 described above. There are no shaded “good” and “poor” bands behind
 kappa, for the same reason there are no verbal labels.
 
+Both plots summarize. The distribution view shows every rating, one bar
+per round for each statement, split at the agreement cut (Heiberger &
+Robbins, 2014). The right-hand length is the share agreeing, read
+against the dashed consensus threshold:
+
+``` r
+
+plot(fit, which = "distribution")
+```
+
+![Rating distributions for six statements over three rounds, one bar per
+round, split at the agreement cut of 3, with a dashed line at the 75%
+consensus threshold. S1 is not rated in round 3, having reached
+consensus in round 2; S2 moves to unanimous 4s by round 3; nearly every
+expert rates S3 below the cut in every
+round.](delphi-rounds_files/figure-html/plot-distribution-1.png)
+
+S2’s bars show a panel converging, and S3’s a panel agreeing that the
+statement does not belong: agreement in the other direction, which the
+printout notes in words and the bars show at a glance. Add `apa = FALSE`
+for a color version for slides or a poster.
+
 ## Why the default looks at individual experts
 
 S6 is the reason stability is measured expert by expert. Under the 15%
@@ -518,6 +540,11 @@ Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
 *Educational and Psychological Measurement, 33*(3), 613–619.
 <https://doi.org/10.1177/001316447303300309>
+
+Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked
+bar charts for Likert scales and other applications. *Journal of
+Statistical Software, 57*(5), 1–32.
+<https://doi.org/10.18637/jss.v057.i05>
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
 exploration of the use of simple statistics to measure consensus and

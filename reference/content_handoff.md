@@ -436,8 +436,9 @@ handoff
 #> 
 #> Carry these items into the empirical workflow once response data are
 #> collected. In nomologR that is
-#>   nomo_screen(data, items = handoff$items)
-#> which screens the same items you retained here.
+#>   nomo_screen(data, items = handoff)
+#> which screens the items carried here. Passing the whole handoff, rather than
+#> handoff$items, keeps the keying and the reasons for anything held back.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well

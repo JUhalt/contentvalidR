@@ -67,7 +67,14 @@ which a plot shows better than a table of round pairs.</p>
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'contentvalid_delphi'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consensus"</span>, <span class="st">"stability"</span><span class="op">)</span>, show_legend <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  which <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"consensus"</span>, <span class="st">"stability"</span>, <span class="st">"distribution"</span><span class="op">)</span>,</span>
+<span>  show_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  apa <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  labels <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,11 +86,25 @@ which a plot shows better than a table of round pairs.</p>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p><code>"consensus"</code> (default) or <code>"stability"</code>.</p></dd>
+<dd><p><code>"consensus"</code> (default), <code>"stability"</code>, or <code>"distribution"</code>.</p></dd>
 
 
 <dt id="arg-show-legend">show_legend<a class="anchor" aria-label="anchor" href="#arg-show-legend"></a></dt>
 <dd><p>Draw the legend. Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt id="arg-apa">apa<a class="anchor" aria-label="anchor" href="#arg-apa"></a></dt>
+<dd><p>Used by <code>which = "distribution"</code>. <code>TRUE</code> (default) draws in
+gray, with darker meaning a higher rating, as an APA figure is printed.
+<code>FALSE</code> draws ratings below the agreement cut in brown and ratings at or
+above it in teal, a colorblind-safe scheme for slides and posters. The
+consensus and stability views color each item's line so the lines can be
+told apart.</p></dd>
+
+
+<dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
+<dd><p>For <code>which = "distribution"</code>, one label per rating category,
+lowest first. Defaults to <code>"Rated 1"</code>, <code>"Rated 2"</code>, and so on.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -106,6 +127,18 @@ circles. No bands or shaded regions are drawn behind kappa: its verbal
 benchmarks are arbitrary, and kappa falls as a panel converges, so a shaded
 "good" region would mislead exactly when a Delphi is succeeding. See
 <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+<p><code>which = "distribution"</code> draws every rating in every round as a diverging
+stacked bar (Heiberger &amp; Robbins, 2014), one bar per round for each item,
+split at <code>agree_cut</code>. The right-hand length is the share agreeing, read
+against the dashed consensus threshold, and the symbol beside it is that
+round's consensus decision. Rounds in which an item was not rated, because
+it had been set aside, are marked "not rated".</p>
+    </div>
+    <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Heiberger, R. M., &amp; Robbins, N. B. (2014). Design of diverging stacked bar
+charts for Likert scales and other applications. <em>Journal of Statistical
+Software, 57</em>(5), 1–32. <a href="https://doi.org/10.18637/jss.v057.i05" class="external-link">doi:10.18637/jss.v057.i05</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -127,6 +160,8 @@ benchmarks are arbitrary, and kappa falls as a panel converges, so a shaded
 <span class="r-plt img"><img src="plot.contentvalid_delphi-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, which <span class="op">=</span> <span class="st">"stability"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="plot.contentvalid_delphi-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, which <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="plot.contentvalid_delphi-3.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

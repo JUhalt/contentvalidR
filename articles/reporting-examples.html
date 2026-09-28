@@ -453,12 +453,107 @@ significance test.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="figures-across-review-stages">Figures across review stages<a class="anchor" aria-label="anchor" href="#figures-across-review-stages"></a>
+</h2>
+<p>Most studies gather more than one kind of content evidence.
+<code><a href="../reference/content_evidence.html">content_evidence()</a></code> brings the stages together, in the order
+they ran, and draws two figures for a paper or poster. Here the twelve
+items of <code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> are first
+rated for relevance by eight experts, and the items the panel carries go
+on to the item sort. The relevance ratings are constructed for this
+example; <code>data-raw/build-walkthrough-panel.R</code> says what each
+item’s ratings are built to show.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">relevance</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"walkthrough_relevance.csv"</span><span class="op">)</span></span>
+<span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">)</span>, <span class="st">"expert"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
+<span>  mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, agreement <span class="op">=</span> <span class="st">"none"</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sorted</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"walkthrough_sort.csv"</span><span class="op">)</span></span>
+<span><span class="va">sort_stage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorted</span><span class="op">[</span><span class="va">sorted</span><span class="op">$</span><span class="va">item</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">panel</span><span class="op">$</span><span class="va">items</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">evidence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_evidence.html">content_evidence</a></span><span class="op">(</span>`Relevance panel` <span class="op">=</span> <span class="va">panel</span>, `Item sort` <span class="op">=</span> <span class="va">sort_stage</span><span class="op">)</span></span>
+<span><span class="va">evidence</span></span>
+<span><span class="co">#&gt; Content evidence across 2 stages</span></span>
+<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; 10 of 12 items carried by every stage that reviewed them. Held back: EF5</span></span>
+<span><span class="co">#&gt; (Relevance panel), TF5 (Item sort).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Stages, in order</span></span>
+<span><span class="co">#&gt;   1. Relevance panel: 12 items, 8 experts. Shows I-CVI.</span></span>
+<span><span class="co">#&gt;   2. Item sort: 11 items, 20 judges. Shows Psa.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  item     Relevance panel  Item sort                     result</span></span>
+<span><span class="co">#&gt;   EF1 1.00 Strong support .95 Retain                    carried</span></span>
+<span><span class="co">#&gt;   EF2 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt;   EF3 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt;   EF4 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt;   EF5          .50 Review         -- held back: Relevance panel</span></span>
+<span><span class="co">#&gt;   EF6  .88 Strong support .75 Retain                    carried</span></span>
+<span><span class="co">#&gt;   TF1 1.00 Strong support .95 Retain                    carried</span></span>
+<span><span class="co">#&gt;   TF2 1.00 Strong support .85 Retain                    carried</span></span>
+<span><span class="co">#&gt;   TF3 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt;   TF4 1.00 Strong support .80 Retain                    carried</span></span>
+<span><span class="co">#&gt;   TF5 1.00 Strong support .30 Review       held back: Item sort</span></span>
+<span><span class="co">#&gt;   TF6 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
+<span><span class="co">#&gt;       item relevant, compared with Lynn's criterion for the panel size.</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span></span>
+<span><span class="co">#&gt;       item in the construct it was written for (0 to 1; higher is</span></span>
+<span><span class="co">#&gt;       stronger).</span></span>
+<span><span class="co">#&gt;   result -- carried when every stage that reviewed the item carried it;</span></span>
+<span><span class="co">#&gt;       otherwise the stages that held it back. -- marks a stage that did not</span></span>
+<span><span class="co">#&gt;       review the item.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Figures: plot(x) for the evidence profile, plot(x, type = "flow")</span></span>
+<span><span class="co">#&gt; for the flow diagram; add apa = FALSE for color.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span></code></pre></div>
+<p>The flow diagram follows the items through the stages. It is modeled
+on the PRISMA 2020 flow diagram for systematic reviews (Page et al.,
+2021), with items in place of studies, and it is the figure a Method
+section needs: what each stage reviewed, what it held back and why, and
+what went forward.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span>, type <span class="op">=</span> <span class="st">"flow"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reporting-examples_files/figure-html/evidence-flow-1.png" class="r-plt" alt="Item flow diagram. Stage 1, the relevance panel, reviewed 12 items with 8 experts and held back EF5, with an I-CVI of .50 against a criterion of .88. Stage 2, the item sort, reviewed the remaining 11 items with 20 judges and held back TF5, with a Psa of .30 against a criterion of .75. Ten items were carried forward, five in each facet." width="720"></p>
+<p>The evidence profile sets the stages side by side, item by item. Each
+panel shows the statistic that stage’s decision read, its 95% interval,
+and its criterion as a dashed line; a filled symbol met the criterion
+and an open one was flagged for review.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reporting-examples_files/figure-html/evidence-profile-1.png" class="r-plt" alt="Item evidence profile with one panel per stage. Left, the I-CVI for twelve items with 95% intervals and a dashed criterion at .88; every item meets it except EF5, at .50. Right, Psa for the eleven items the panel carried, with a dashed criterion at .75; every item meets it except TF5, at .30, and EF6 sits exactly on the line. A last column marks EF5 as held back by the relevance panel and TF5 by the item sort." width="720"></p>
+<p>Read across a row and the sources can disagree. Every expert rated
+<code>TF5</code> relevant; only the sort shows that judges place it in
+the other facet. Read down a panel and the intervals speak: an I-CVI of
+1.00 from eight experts has an interval reaching down to about .68, a
+reminder of how small a panel is.</p>
+<p>Both figures are gray by default, as an APA figure is printed. For
+slides or a poster, <code>apa = FALSE</code> draws them in color, teal
+for evidence that met its criterion and brown for evidence under review.
+The symbols carry the same decisions, so no reading depends on
+color.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span>, apa <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reporting-examples_files/figure-html/evidence-color-1.png" class="r-plt" alt="The same item evidence profile in color: items that met each criterion in teal, and EF5 in the relevance panel and TF5 in the item sort in brown, with open symbols." width="720"></p>
+<p>A caption for the profile might read: <em>Content evidence for twelve
+draft items. Left: the share of eight experts rating each item relevant
+(I-CVI), with 95% Wilson score intervals and Lynn’s (1986) criterion of
+7 of 8. Right: the share of 20 judges assigning each item to its
+intended facet (Psa), with 95% Wilson score intervals and the exact
+test’s criterion of 15 of 20 (Howard &amp; Melloy, 2016). Filled symbols
+met the criterion; open symbols were flagged for review.</em></p>
+</div>
+<div class="section level2">
 <h2 id="minimum-reproducibility-statement">Minimum reproducibility statement<a class="anchor" aria-label="anchor" href="#minimum-reproducibility-statement"></a>
 </h2>
 <p>At minimum, a manuscript or supplement should identify the package
 version and record the analysis settings that determine the results. For
 a fitted workflow:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"contentvalidR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] '0.9.0.9000'</span></span>
 <span><span class="va">sort_fit</span><span class="op">$</span><span class="va">settings</span></span>
@@ -531,6 +626,14 @@ definitional correspondence and definitional distinctiveness.
 methods: The presentation of a new statistical significance formula and
 methodological best practices. <em>Journal of Business and Psychology,
 31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
+<p>Lynn, M. R. (1986). Determination and quantification of content
+validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
+<p>Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann,
+T. C., Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A.,
+Brennan, S. E., Chou, R., Glanville, J., Grimshaw, J. M., Hróbjartsson,
+A., Lalu, M. M., Li, T., Loder, E. W., Mayo-Wilson, E., McDonald, S., .
+. . Moher, D. (2021). The PRISMA 2020 statement: An updated guideline
+for reporting systematic reviews. <em>BMJ, 372</em>, Article n71. <a href="https://doi.org/10.1136/bmj.n71" class="external-link uri">https://doi.org/10.1136/bmj.n71</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

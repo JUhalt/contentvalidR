@@ -56,6 +56,24 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.9.0.9000" id="contentvalidr-0909000-development-version">contentvalidR 0.9.0.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-0909000-development-version"></a></h2>
 <div class="section level3">
+<h3 id="figures-for-papers-posters-and-teaching-in-development-0-9-0-9000">Figures for papers, posters, and teaching (in development)<a class="anchor" aria-label="anchor" href="#figures-for-papers-posters-and-teaching-in-development-0-9-0-9000"></a></h3>
+<p>No computed value changes. Each new figure draws what the fits and handoffs already decided, and says whether it follows a published form or is this package’s own design.</p>
+<ul><li>
+<strong><code><a href="../reference/content_evidence.html">content_evidence()</a></code> (new)</strong> brings the handoffs from several review stages together, such as a relevance panel and then an item sort. It prints one row per item with each stage’s decision beside the statistic its rule read, and draws two figures:
+<ul><li>
+<code>plot(x, type = "flow")</code>, the item flow diagram, modeled on the PRISMA 2020 flow diagram (Page et al., 2021): what each stage reviewed, what it held back and the number behind each decision, and what went forward;</li>
+<li>
+<code>plot(x)</code>, the item evidence profile, this package’s own design: one panel per stage with each statistic, its interval, and its criterion, so agreement and disagreement between methods can be seen item by item.</li>
+</ul></li>
+<li>
+<strong>The distribution view</strong> draws every rating behind an index as diverging stacked bars (Heiberger &amp; Robbins, 2014), split at the cut the decision rule counts: <code>plot(fit, type = "distribution")</code> for a relevance panel and <code>plot(fit, which = "distribution")</code> for a Delphi study, one bar per round. It shows what the I-CVI cannot: two items at 1.00, one rated relevant with 4s and the other with 3s. Relevance fits now keep their ratings in <code>details$ratings</code> to draw it.</li>
+<li>
+<strong><code>apa</code></strong> switches these figures between gray (<code>TRUE</code>, the default, as an APA figure is printed) and a colorblind-safe scheme for slides and posters (<code>FALSE</code>): teal for evidence that met its criterion, brown for evidence under review. Symbols carry the decision either way, so no reading depends on color.</li>
+<li>
+<strong>A relevance panel for the walkthrough items</strong>, <code>walkthrough_relevance.csv</code>, gives the twelve items a second source of content evidence. <code><a href="../articles/reporting-examples.html">vignette("reporting-examples")</a></code> uses it to show both figures, with a sample caption. The ratings are constructed, and a separate script, <code>data-raw/build-walkthrough-panel.R</code>, says what each is built to show. The three walkthrough files that nomologR ships are unchanged.</li>
+<li>The printed handoff and <code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code> now pass the whole handoff to nomologR, <code>nomo_screen(data, items = handoff)</code>, rather than <code>handoff$items</code>, so the keying and the reasons for anything held back travel with the items. The vignette no longer calls the handoff reader in nomologR future work.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="finishing-touches-before-in-development-0-9-0-9000">Finishing touches before 1.0 (in development)<a class="anchor" aria-label="anchor" href="#finishing-touches-before-in-development-0-9-0-9000"></a></h3>
 <p>No computed value changes.</p>
 <ul><li>

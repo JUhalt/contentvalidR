@@ -63,8 +63,9 @@ handoff
 #> 
 #> Carry these items into the empirical workflow once response data are
 #> collected. In nomologR that is
-#>   nomo_screen(data, items = handoff$items)
-#> which screens the same items you retained here.
+#>   nomo_screen(data, items = handoff)
+#> which screens the items carried here. Passing the whole handoff, rather than
+#> handoff$items, keeps the keying and the reasons for anything held back.
 #> 
 #> Surviving content review is evidence about relevance, representation, and
 #> expert judgment. It does not establish that an item will behave well
@@ -242,16 +243,16 @@ models, reliability, invariance, and nomological networks.
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.
-scr <- nomo_screen(responses, items = handoff$items)
+scr <- nomo_screen(responses, items = handoff)
 scr$item_summary
 ```
 
 That chunk is not evaluated here, because this vignette builds without
 nomologR installed and because a content-validity pretest has no
-responses to screen. It passes the carried item names. Reading the
-handoff object itself, so that nomologR also receives the evidence and
-each item’s keying, is tracked on
-[nomologR#46](https://github.com/JUhalt/nomologR/issues/46).
+responses to screen. It passes the handoff itself rather than
+`handoff$items`, so nomologR receives the carried items together with
+their evidence and each item’s keying, and can quote the reasons for
+anything held back.
 
 The object shape is agreed between the two packages as schema version 1,
 and every field is a base type: character, logical, numeric, integer,
