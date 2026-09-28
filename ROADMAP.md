@@ -1091,7 +1091,7 @@ from more than one producer version. The producer shipped in 0.4.0;
 nomologR’s reader
 ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46), closed) is
 tested against stored producer output from contentvalidR 0.6.0 through
-0.9.0.
+0.10.0.
 
 schema version 1 is frozen and becomes a compatibility promise (0.7.0).
 
