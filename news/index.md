@@ -1,5 +1,13 @@
 # Changelog
 
+## contentvalidR 0.10.0.9000 (development version)
+
+- The README has a section on the handoff to nomologR, just above the
+  references: what a handoff carries, the two nomologR calls that read
+  it, how to read its decisions, and how the schema is versioned. The
+  nomologR README carries the mirror section, so the handoff can be
+  found from either package’s front page.
+
 ## contentvalidR 0.10.0
 
 Tenth public release, and the last planned before the joint 1.0 release

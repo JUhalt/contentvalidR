@@ -1121,12 +1121,20 @@ The timeline, as the maintainer set it on 2026-09-28:
   release, because R-universe publishes GitHub releases to users.
   Handoff fixtures from a candidate are named
   `handoff-<fit>-v0.99.0.rds`.
-- **2026-10-17, release-candidate day.**
-  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  is removed, the version becomes 0.99.0, and `v1.0.0-rc.1` is tagged.
-  Then the round below runs: the fixture set goes to nomologR, and the
-  compatibility table, the shared handoff example, and the release notes
-  are drafted.
+- **2026-10-17, release-candidate day,** for both packages, in this
+  order, agreed with nomologR so that its tests pass before either
+  package tags:
+  1.  contentvalidR removes
+      [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
+      sets the version to 0.99.0, pushes that commit untagged, and
+      generates the fixture set from it, with the commit recorded in the
+      manifest;
+  2.  nomologR adds the fixtures, reads 0.99.0 as a producer version,
+      and runs its suite;
+  3.  once that passes, both packages tag `v1.0.0-rc.1`, contentvalidR
+      on exactly the commit the fixtures came from;
+  4.  then the compatibility table, the shared handoff example, and the
+      release notes are drafted.
 - **CRAN submission, after that.** CRAN asks for updates to an
   established package no more often than every one to two months. So the
   joint 1.0 goes to CRAN no sooner than about a month after the later of

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>contentvalidR development roadmap</h1>
-      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/v0.10.0/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md" class="external-link"><code>ROADMAP.md</code></a></small>
     </div>
 
 <div id="contentvalidr-development-roadmap" class="section level1">
@@ -454,7 +454,12 @@
 <ul><li>
 <strong>Release candidates.</strong> Both packages use one scheme: <code>DESCRIPTION</code> says 0.99.0, and the candidate is a git tag, <code>v1.0.0-rc.1</code> (then <code>rc.2</code> if another round is needed). It is a tag only, never a GitHub release, because R-universe publishes GitHub releases to users. Handoff fixtures from a candidate are named <code>handoff-&lt;fit&gt;-v0.99.0.rds</code>.</li>
 <li>
-<strong>2026-10-17, release-candidate day.</strong> <code><a href="reference/agreement_summary.html">agreement_summary()</a></code> is removed, the version becomes 0.99.0, and <code>v1.0.0-rc.1</code> is tagged. Then the round below runs: the fixture set goes to nomologR, and the compatibility table, the shared handoff example, and the release notes are drafted.</li>
+<strong>2026-10-17, release-candidate day,</strong> for both packages, in this order, agreed with nomologR so that its tests pass before either package tags:
+<ol style="list-style-type: decimal"><li>contentvalidR removes <code><a href="reference/agreement_summary.html">agreement_summary()</a></code>, sets the version to 0.99.0, pushes that commit untagged, and generates the fixture set from it, with the commit recorded in the manifest;</li>
+<li>nomologR adds the fixtures, reads 0.99.0 as a producer version, and runs its suite;</li>
+<li>once that passes, both packages tag <code>v1.0.0-rc.1</code>, contentvalidR on exactly the commit the fixtures came from;</li>
+<li>then the compatibility table, the shared handoff example, and the release notes are drafted.</li>
+</ol></li>
 <li>
 <strong>CRAN submission, after that.</strong> CRAN asks for updates to an established package no more often than every one to two months. So the joint 1.0 goes to CRAN no sooner than about a month after the later of the two acceptances (contentvalidR’s was 2026-09-28; nomologR’s is pending), and only on the maintainer’s go-ahead. Both are released the same day.</li>
 </ul></li>

@@ -279,6 +279,64 @@ Cite the package with `citation("contentvalidR")`. The reference list
 below is also installed in BibTeX form:
 `system.file("REFERENCES.bib", package = "contentvalidR")`.
 
+## The handoff to nomologR
+
+Content review decides which items go on to be tested with response
+data.
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+packages that decision so the empirical stage can pick it up without
+retyping anything, and [nomologR](https://github.com/JUhalt/nomologR) is
+the partner package that reads it. A handoff carries:
+
+- the items carried forward, and the items held back, each with its
+  status, its recommendation, and the rule that made the decision;
+- the scales, where the design maps items to constructs;
+- each item’s statistics, with their intervals and criteria, and the
+  panel’s agreement where one was computed;
+- two facts about the instrument that only you know: which items are
+  reverse-worded (`reverse_keyed`, or `character(0)` if you checked and
+  none is) and the response scale respondents will answer on
+  (`response_scale`).
+
+``` r
+
+h <- content_handoff(fit, reverse_keyed = character(0), response_scale = c(1, 5))
+h$items
+#> [1] "Clear 1" "Clear 2"
+```
+
+Once responses are collected, pass the handoff itself to nomologR, not
+`h$items`, so the keying and the reasons for anything held back travel
+with the items:
+
+``` r
+
+library(nomologR)
+nomo_screen(responses, items = h)  # screens the carried items
+nomo_run(responses, scales = h)    # runs the empirical stage on the handoff's scales
+```
+
+**Reading a handoff.** Take each item’s decision from `carried` and
+`status`; never re-derive it by comparing a statistic with its
+criterion, or by branching on the version that produced it.
+`recommendation` states the same decision in the workflow’s own words
+and, like `rule`, is prose. A `keying` of `NA` means nobody said, never
+that an item is forward-worded.
+
+**Versions.** The handoff is schema version 1, frozen since 0.7.0: its
+fields and columns keep their names, positions, and types, and new
+optional ones may only be added at the end. A change that broke this
+would be schema version 2, produced beside version 1 for at least a
+release cycle. The reader in nomologR is tested against handoffs from
+contentvalidR 0.6.0 through 0.9.0, and neither package depends on the
+other. See
+[`?content_handoff`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+for the full contract,
+[`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md)
+for a guide, and
+[`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md)
+for the joint walkthrough.
+
 ## References
 
 Works cited in this README, the help pages, and the vignettes.

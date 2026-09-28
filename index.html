@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">contentvalidR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.10.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -283,6 +283,28 @@
 </h2>
 <p>Five deterministic example data sets, covering the item-sort, construct-rating, relevance, essentiality, and congruence input shapes, are installed as CSV files, for example <code>system.file("extdata", "sort_example.csv", package = "contentvalidR")</code>. <code><a href="articles/reporting-examples.html">vignette("reporting-examples")</a></code> gives methods and results scaffolds and a minimum reproducibility statement.</p>
 <p>Cite the package with <code>citation("contentvalidR")</code>. The reference list below is also installed in BibTeX form: <code>system.file("REFERENCES.bib", package = "contentvalidR")</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="the-handoff-to-nomologr">The handoff to nomologR<a class="anchor" aria-label="anchor" href="#the-handoff-to-nomologr"></a>
+</h2>
+<p>Content review decides which items go on to be tested with response data. <code><a href="reference/content_handoff.html">content_handoff()</a></code> packages that decision so the empirical stage can pick it up without retyping anything, and <a href="https://github.com/JUhalt/nomologR" class="external-link">nomologR</a> is the partner package that reads it. A handoff carries:</p>
+<ul>
+<li>the items carried forward, and the items held back, each with its status, its recommendation, and the rule that made the decision;</li>
+<li>the scales, where the design maps items to constructs;</li>
+<li>each item’s statistics, with their intervals and criteria, and the panel’s agreement where one was computed;</li>
+<li>two facts about the instrument that only you know: which items are reverse-worded (<code>reverse_keyed</code>, or <code>character(0)</code> if you checked and none is) and the response scale respondents will answer on (<code>response_scale</code>).</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span>, reverse_keyed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>, response_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">h</span><span class="op">$</span><span class="va">items</span></span>
+<span><span class="co">#&gt; [1] "Clear 1" "Clear 2"</span></span></code></pre></div>
+<p>Once responses are collected, pass the handoff itself to nomologR, not <code>h$items</code>, so the keying and the reasons for anything held back travel with the items:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">nomologR</span><span class="op">)</span></span>
+<span><span class="fu">nomo_screen</span><span class="op">(</span><span class="va">responses</span>, items <span class="op">=</span> <span class="va">h</span><span class="op">)</span>  <span class="co"># screens the carried items</span></span>
+<span><span class="fu">nomo_run</span><span class="op">(</span><span class="va">responses</span>, scales <span class="op">=</span> <span class="va">h</span><span class="op">)</span>    <span class="co"># runs the empirical stage on the handoff's scales</span></span></code></pre></div>
+<p><strong>Reading a handoff.</strong> Take each item’s decision from <code>carried</code> and <code>status</code>; never re-derive it by comparing a statistic with its criterion, or by branching on the version that produced it. <code>recommendation</code> states the same decision in the workflow’s own words and, like <code>rule</code>, is prose. A <code>keying</code> of <code>NA</code> means nobody said, never that an item is forward-worded.</p>
+<p><strong>Versions.</strong> The handoff is schema version 1, frozen since 0.7.0: its fields and columns keep their names, positions, and types, and new optional ones may only be added at the end. A change that broke this would be schema version 2, produced beside version 1 for at least a release cycle. The reader in nomologR is tested against handoffs from contentvalidR 0.6.0 through 0.9.0, and neither package depends on the other. See <code><a href="reference/content_handoff.html">?content_handoff</a></code> for the full contract, <code><a href="articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code> for a guide, and <code><a href="articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> for the joint walkthrough.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
