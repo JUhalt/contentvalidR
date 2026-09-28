@@ -1,5 +1,12 @@
 # contentvalidR 0.9.0.9000 (development version)
 
+## On CRAN
+
+* **contentvalidR 0.4.0 was published on CRAN on 2026-09-28.** The README now
+  gives `install.packages("contentvalidR")` first, carries a CRAN badge, and
+  explains why CRAN's version can trail the newest release on R-universe:
+  CRAN asks packages to update no more than every one to two months.
+
 ## Figures for papers, posters, and teaching (in development)
 
 No computed value changes. Each new figure draws what the fits and handoffs
