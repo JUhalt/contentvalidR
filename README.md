@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/contentvalidR)](https://CRAN.R-project.org/package=contentvalidR)
 [![R-CMD-check](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JUhalt/contentvalidR/actions/workflows/R-CMD-check.yaml)
 [![License: GPL v3
 only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md)
@@ -12,7 +14,8 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.9.0.**
+**Current stable release: 0.9.0** (on R-universe; CRAN has 0.4.0, see
+[Installation](#installation)).
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -39,7 +42,16 @@ papers.
 
 ## Installation
 
-Install the current stable release from the JUhalt R-universe:
+Install from CRAN:
+
+``` r
+install.packages("contentvalidR")
+```
+
+CRAN is updated less often than GitHub, because it asks packages to
+update no more than every one to two months, so its version can trail
+the newest release. To install the newest stable release, use the JUhalt
+R-universe:
 
 ``` r
 install.packages(
