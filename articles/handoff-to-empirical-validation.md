@@ -47,7 +47,7 @@ handoff <- content_handoff(fit)
 handoff
 #> contentvalidR handoff (schema version 1)
 #> ----------------------------------------
-#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1 | 2026-09-29
+#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-09-29
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.

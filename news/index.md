@@ -1,5 +1,10 @@
 # Changelog
 
+## contentvalidR 0.10.1.9000 (development version)
+
+- The reader in nomologR is now tested against handoffs from
+  contentvalidR 0.6.0 through 0.10.1, and the README says so.
+
 ## contentvalidR 0.10.1
 
 A documentation release. The README now documents the handoff to
