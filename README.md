@@ -14,7 +14,7 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.10.0** (on R-universe; CRAN has 0.4.0, see
+**Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see
 [Installation](#installation)).
 
 Development plans:
