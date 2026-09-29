@@ -1,6 +1,16 @@
 # Changelog
 
-## contentvalidR 0.10.0.9000 (development version)
+## contentvalidR 0.10.1
+
+A documentation release. The README now documents the handoff to
+nomologR in its own section, matching the one the nomologR README
+carries for the handoff from contentvalidR, so either front page
+explains how the two packages connect. Released on GitHub and
+R-universe; CRAN keeps 0.4.0 until the joint 1.0.
+
+**No computed value changes.** Across 25 analyses spanning every
+workflow, every value 0.10.0 returns is identical in 0.10.1, and no
+function, argument, or handoff field changed.
 
 - The README has a section on the handoff to nomologR, just above the
   references: what a handoff carries, the two nomologR calls that read
