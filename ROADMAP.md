@@ -810,6 +810,30 @@ is the joint 1.0.
 
 ***
 
+## v0.10.1 - The handoff on the front page
+
+**Status:** Released (0.10.1 on 2026-09-28, on GitHub and R-universe)
+**Version:** `0.10.1`
+
+Work: [#85](https://github.com/JUhalt/contentvalidR/pull/85) to
+[#87](https://github.com/JUhalt/contentvalidR/pull/87). A documentation
+release, asked for by the maintainer so that both packages' README pages
+explain the handoff between them.
+
+- [x] Document the handoff to nomologR in its own README section, mirrored by
+      nomologR's "The handoff from contentvalidR", and set the
+      release-candidate day's order as agreed with nomologR
+      ([#85](https://github.com/JUhalt/contentvalidR/pull/85)).
+- [x] Link Krippendorff (2011) to the Annenberg School copy, after the Penn
+      repository copy became unreliable to reach
+      ([#86](https://github.com/JUhalt/contentvalidR/pull/86)).
+- [x] Say the nomologR reader is tested against contentvalidR 0.6.0 through
+      0.10.0 ([#87](https://github.com/JUhalt/contentvalidR/pull/87)).
+
+CRAN: not submitted, for the same reason as 0.10.0.
+
+***
+
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Release candidate on
