@@ -168,7 +168,7 @@ nomo_run(responses, scales = h)    # runs the empirical stage on the handoff's s
 
 **Reading a handoff.** Take each item's decision from `carried` and `status`; never re-derive it by comparing a statistic with its criterion, or by branching on the version that produced it. `recommendation` states the same decision in the workflow's own words and, like `rule`, is prose. A `keying` of `NA` means nobody said, never that an item is forward-worded.
 
-**Versions.** The handoff is schema version 1, frozen since 0.7.0: its fields and columns keep their names, positions, and types, and new optional ones may only be added at the end. A change that broke this would be schema version 2, produced beside version 1 for at least a release cycle. The reader in nomologR is tested against handoffs from contentvalidR 0.6.0 through 0.10.0, and neither package depends on the other. See `?content_handoff` for the full contract, `vignette("handoff-to-empirical-validation")` for a guide, and `vignette("one-item-set-both-stages")` for the joint walkthrough.
+**Versions.** The handoff is schema version 1, frozen since 0.7.0: its fields and columns keep their names, positions, and types, and new optional ones may only be added at the end. A change that broke this would be schema version 2, produced beside version 1 for at least a release cycle. The reader in nomologR is tested against handoffs from contentvalidR 0.6.0 through 0.10.1, and neither package depends on the other. See `?content_handoff` for the full contract, `vignette("handoff-to-empirical-validation")` for a guide, and `vignette("one-item-set-both-stages")` for the joint walkthrough.
 
 ## References
 

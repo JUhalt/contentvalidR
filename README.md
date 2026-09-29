@@ -313,7 +313,7 @@ fields and columns keep their names, positions, and types, and new
 optional ones may only be added at the end. A change that broke this
 would be schema version 2, produced beside version 1 for at least a
 release cycle. The reader in nomologR is tested against handoffs from
-contentvalidR 0.6.0 through 0.10.0, and neither package depends on the
+contentvalidR 0.6.0 through 0.10.1, and neither package depends on the
 other. See `?content_handoff` for the full contract,
 `vignette("handoff-to-empirical-validation")` for a guide, and
 `vignette("one-item-set-both-stages")` for the joint walkthrough.
