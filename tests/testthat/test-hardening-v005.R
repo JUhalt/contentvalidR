@@ -192,11 +192,6 @@ test_that("Q-factor PCA retains a stable auxiliary return contract", {
   expect_equal(out$method, "pca")
 })
 
-test_that("agreement helper validates shape before optional dependency lookup", {
-  # The deprecation warning (0.9.0) comes first; the shape check still stops it.
-  expect_error(suppressWarnings(agreement_summary(data.frame(rater1 = c("A", "B")))),
-               "two raters")
-})
 
 test_that("v0.0.6 workflow contracts preserve v0.0.5 compatibility aliases", {
   core <- c("workflow", "results", "scale_summary", "settings", "design", "details")

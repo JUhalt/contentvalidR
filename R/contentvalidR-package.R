@@ -33,7 +33,7 @@
 #' break working code goes through the deprecation cycle.
 #'
 #' \strong{Tier 3, auxiliary and compatibility helpers.}
-#' [agreement_summary()], [qfactor_content()], [reproducibility_phi()],
+#' [qfactor_content()], [reproducibility_phi()],
 #' [signal_detection()], [simulate_anova_power()], and
 #' [simulate_csv_power()].
 #'
@@ -65,11 +65,11 @@
 #' deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
 #' `NEWS.md`.
 #'
-#' One deprecation is in progress. [agreement_summary()], a Tier 3 helper, is
-#' deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
-#' that takes items in rows rather than raters, and [panel_agreement()] does
-#' its job. It warns when called. Removing it at 1.0.0 means nothing
-#' deprecated is carried past 1.0.
+#' The last deprecation before 1.0 is complete. `agreement_summary()`, a Tier 3
+#' helper, was deprecated in 0.9.0 and removed for 1.0.0, first in the 0.99.0
+#' release candidate: it was the only function that took items in rows rather
+#' than raters, and [panel_agreement()] does its job. Nothing deprecated is
+#' carried past 1.0.
 #'
 #' @section Changing a default:
 #' A changed default can silently change published numbers, so it is treated

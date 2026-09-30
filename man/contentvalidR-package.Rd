@@ -41,7 +41,7 @@ arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.
 
 \strong{Tier 3, auxiliary and compatibility helpers.}
-\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}},
+\code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}},
 \code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}}, and
 \code{\link[=simulate_csv_power]{simulate_csv_power()}}.
 
@@ -76,11 +76,11 @@ and was removed in 0.7.0. Its \code{posthoc_pass} returned column, a duplicate o
 deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
 \code{NEWS.md}.
 
-One deprecation is in progress. \code{\link[=agreement_summary]{agreement_summary()}}, a Tier 3 helper, is
-deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
-that takes items in rows rather than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does
-its job. It warns when called. Removing it at 1.0.0 means nothing
-deprecated is carried past 1.0.
+The last deprecation before 1.0 is complete. \code{agreement_summary()}, a Tier 3
+helper, was deprecated in 0.9.0 and removed for 1.0.0, first in the 0.99.0
+release candidate: it was the only function that took items in rows rather
+than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does its job. Nothing deprecated is
+carried past 1.0.
 }
 
 \section{Changing a default}{

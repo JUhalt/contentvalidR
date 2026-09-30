@@ -873,8 +873,8 @@ reads no handoffs and takes no part in the joint 1.0.
   - [x] both public APIs are stable, under a written deprecation policy, as far
         as this package goes (0.7.0). `anova_content()`'s `posthoc_pass`
         column was removed in 0.8.0. `agreement_summary()`, the one function
-        taking items in rows, is deprecated in 0.9.0 and is removed in 1.0.0,
-        so nothing deprecated is carried past 1.0.
+        taking items in rows, was deprecated in 0.9.0 and removed in the
+        0.99.0 release candidate, so nothing deprecated is carried past 1.0.
   - [x] there is a joint walkthrough from content review to empirical
         validation (0.7.0).
   - [ ] the two releases go out on the same day, each linking the other.

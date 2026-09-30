@@ -388,10 +388,6 @@ Works cited in this README, the help pages, and the vignettes.
   and the intraclass correlation coefficient as measures of reliability.
   *Educational and Psychological Measurement, 33*(3), 613–619.
   <https://doi.org/10.1177/001316447303300309>
-- Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). *irr: Various
-  coefficients of interrater reliability and agreement* (R package
-  version 0.85) \[Computer software\].
-  <https://doi.org/10.32614/CRAN.package.irr>
 - Glorfeld, L. W. (1995). An improvement on Horn’s parallel analysis
   methodology for selecting the correct number of factors to retain.
   *Educational and Psychological Measurement, 55*(3), 377–393.

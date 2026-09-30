@@ -1,7 +1,31 @@
-# contentvalidR 0.10.1.9000 (development version)
+# contentvalidR 0.99.0
+
+The first release candidate for contentvalidR 1.0.0, released jointly with
+nomologR. A release candidate is a git tag only: it is not published on
+GitHub Releases, R-universe, or CRAN, which keep 0.10.1 and 0.4.0 until 1.0.0.
+Its purpose is to freeze the 1.0 interface so that the handoff tests in
+nomologR can run against it before either package tags. If it needs another round, the
+next candidate is 0.99.1.
+
+**No computed value changes.** Every value 0.10.1 returns is identical in
+0.99.0, and the handoff is unchanged: schema version 1, with the same fields
+and columns.
+
+**Breaking change.**
+
+* `agreement_summary()` is removed, as the stability policy said it would be
+  for 1.0.0. It was deprecated in 0.9.0 and has warned since, naming its
+  replacement. Use `panel_agreement()`, which takes raters in rows like every
+  other ratings function and reports Krippendorff's alpha or Gwet's AC1 with
+  an interval. Nothing deprecated is carried past 1.0.
+
+**Also.**
 
 * The reader in nomologR is now tested against handoffs from contentvalidR
   0.6.0 through 0.10.1, and the README says so.
+* The irr package is no longer cited, because the one help page that cited it
+  is gone. It stays in Suggests: the tests still check Krippendorff's alpha
+  and Fleiss' kappa against it.
 
 # contentvalidR 0.10.1
 
