@@ -86,7 +86,7 @@ test_that("agreement_summary() is gone for 1.0, as the policy says", {
   expect_false("agreement_summary" %in% getNamespaceExports("contentvalidR"))
   expect_false(exists("agreement_summary", envir = asNamespace("contentvalidR"),
                       inherits = FALSE))
-  # Its replacement is exported and takes raters in rows.
+  # Its replacement is exported.
   expect_true("panel_agreement" %in% getNamespaceExports("contentvalidR"))
 })
 

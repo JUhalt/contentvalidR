@@ -192,7 +192,6 @@ test_that("Q-factor PCA retains a stable auxiliary return contract", {
   expect_equal(out$method, "pca")
 })
 
-
 test_that("v0.0.6 workflow contracts preserve v0.0.5 compatibility aliases", {
   core <- c("workflow", "results", "scale_summary", "settings", "design", "details")
   summary_core <- c("workflow", "n_items", "n_results", "n_supported", "n_review",

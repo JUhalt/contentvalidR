@@ -1,23 +1,34 @@
 # contentvalidR 0.99.0
 
 The first release candidate for contentvalidR 1.0.0, released jointly with
-nomologR. A release candidate is a git tag only: it is not published on
-GitHub Releases, R-universe, or CRAN, which keep 0.10.1 and 0.4.0 until 1.0.0.
-Its purpose is to freeze the 1.0 interface so that the handoff tests in
-nomologR can run against it before either package tags. If it needs another round, the
-next candidate is 0.99.1.
+nomologR. A release candidate is a git tag only. GitHub Releases and
+R-universe keep 0.10.1, and CRAN keeps 0.4.0, until 1.0.0. Its purpose is to
+freeze the 1.0 interface so that the handoff tests in nomologR can run
+against it before either package tags. If it needs another round, the next
+candidate is 0.99.1.
 
-**No computed value changes.** Every value 0.10.1 returns is identical in
-0.99.0, and the handoff is unchanged: schema version 1, with the same fields
+**No computed value changes.** Apart from the removal below, every value
+0.10.1 returns is identical in 0.99.0, across 25 analyses spanning every
+workflow. The handoff is unchanged: schema version 1, with the same fields
 and columns.
 
 **Breaking change.**
 
 * `agreement_summary()` is removed, as the stability policy said it would be
   for 1.0.0. It was deprecated in 0.9.0 and has warned since, naming its
-  replacement. Use `panel_agreement()`, which takes raters in rows like every
-  other ratings function and reports Krippendorff's alpha or Gwet's AC1 with
-  an interval. Nothing deprecated is carried past 1.0.
+  replacement. CRAN still has 0.4.0, from before the deprecation, so code
+  installed from CRAN will not have shown that warning. Nothing deprecated is
+  carried past 1.0.
+
+  `agreement_summary()` returned Fleiss' kappa from the irr package, with
+  items in rows. Its replacement, `panel_agreement()`, reports Krippendorff's
+  alpha or Gwet's AC1 with an interval, and like every other ratings function
+  it takes raters in rows. To move to it, transpose the matrix with `t()`,
+  code the categories as numbers, and pass `level = "nominal"` for unordered
+  categories: the default is `"ordinal"`, which gives a different coefficient.
+  For Fleiss' kappa itself, call `irr::kappam.fleiss()` directly.
+  `expert_validity(legacy = TRUE)` still reports it for the relevant or
+  not-relevant decision.
 
 **Also.**
 
