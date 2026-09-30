@@ -1139,28 +1139,59 @@ there is a joint walkthrough from content review to empirical validation
 
 the two releases go out on the same day, each linking the other.
 
-The timeline, as the maintainer set it on 2026-09-28:
+The timeline, as the maintainer set it on 2026-09-28 and settled with
+nomologR on 2026-09-29:
 
 - **Release candidates.** Both packages use one scheme: `DESCRIPTION`
-  says 0.99.0, and the candidate is a git tag, `v1.0.0-rc.1` (then
-  `rc.2` if another round is needed). It is a tag only, never a GitHub
-  release, because R-universe publishes GitHub releases to users.
-  Handoff fixtures from a candidate are named
-  `handoff-<fit>-v0.99.0.rds`.
+  says 0.99.N for the git tag `v1.0.0-rc.(N+1)`, so 0.99.0 for
+  `v1.0.0-rc.1` and 0.99.1 for `rc.2` if another round is needed. No two
+  candidates share a version or a fixture name. Handoff fixtures from a
+  candidate are named `handoff-<fit>-v0.99.N.rds`. Candidate tags are
+  annotated and are never moved, deleted, or reused; a replaced
+  candidate takes the next number. A candidate is a tag only, never a
+  GitHub release of any kind, not even a pre-release or a draft, because
+  R-universe publishes GitHub releases to users.
 - **2026-10-17, release-candidate day,** for both packages, in this
   order, agreed with nomologR so that its tests pass before either
   package tags:
   1.  contentvalidR removes
-      [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
-      sets the version to 0.99.0, pushes that commit untagged, and
-      generates the fixture set from it, with the commit recorded in the
-      manifest;
-  2.  nomologR adds the fixtures, reads 0.99.0 as a producer version,
-      and runs its suite;
-  3.  once that passes, both packages tag `v1.0.0-rc.1`, contentvalidR
-      on exactly the commit the fixtures came from;
-  4.  then the compatibility table, the shared handoff example, and the
-      release notes are drafted.
+      [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+      with its export, tests, policy text, and `_pkgdown.yml` entry,
+      sets the version to 0.99.0, and merges that change. Merges to
+      `master` then pause until the tag. The commit as it sits on
+      `origin/master` must have green CI, including the `--as-cran` and
+      pkgdown jobs, and must pass `tools/release-gate.R` in a detached
+      worktree. It is never a PR head, because a squash merge changes
+      the SHA. Only then are the fixtures generated, in a detached
+      worktree at that commit. The manifest’s `tag` column says
+      “untagged”, `commit_sha` holds the commit, and the fixtures README
+      says the files come from that untagged commit.
+  2.  nomologR adds the fixtures, and regenerates its stored walkthrough
+      handoff from the same commit, in a PR that merges only after its
+      suite and CI pass. If a failure needs a contentvalidR change, step
+      1 restarts on a new commit and every fixture is replaced. Fixtures
+      from an abandoned commit never reach nomologR’s `master`.
+  3.  contentvalidR tags `v1.0.0-rc.1` on exactly that commit and pushes
+      the tag. nomologR then checks
+      `git ls-remote https://github.com/JUhalt/contentvalidR 'refs/tags/v1.0.0-rc.1^{}'`
+      against `commit_sha`, records the tag in the manifest, and tags
+      its own `v1.0.0-rc.1`. The `^{}` matters, because the tags are
+      annotated.
+  4.  Each package then adds the compatibility table, the shared handoff
+      example, and its release-candidate notes in a documentation-only
+      PR. Once a candidate is tagged, only `README.Rmd` and `README.md`,
+      `ROADMAP.md`, and NEWS prose under the existing 0.99.N heading may
+      change. Code, data, vignettes, tests, and `NAMESPACE` wait for the
+      next candidate, and there is no `.9000` bump while a candidate is
+      open. The README keeps its current stable-release line and adds
+      one line saying that 0.99.N is a release candidate.
+- **1.0.0 day repeats the cycle.** The 1.0.0 commit is the last
+  candidate’s tree plus the version, the NEWS heading, `CITATION.cff`,
+  and documentation, so
+  `git diff --stat v1.0.0-rc.N <commit> -- R inst data vignettes tests NAMESPACE`
+  must be empty. It merges untagged, the 1.0.0 fixtures come from it,
+  nomologR’s suite passes, both packages tag `v1.0.0`, and the GitHub
+  releases come last, the same day, each linking the other.
 - **CRAN submission, after that.** CRAN asks for updates to an
   established package no more often than every one to two months. So the
   joint 1.0 goes to CRAN no sooner than about a month after the later of
@@ -1176,11 +1207,19 @@ a final fixture set from each release candidate, with a manifest of md5
 sums, that nomologR’s tests pass before either package tags.
 
 the compatibility table in both READMEs: contentvalidR 1.x writes
-handoff schema 1, and nomologR 1.x reads it. It goes in at the release
-candidate, so neither README describes a 1.x before one exists.
+handoff schema 1, and nomologR 1.x reads it. The maintainer chose on
+2026-09-29 to use this “1.x” wording from the release candidate on, so
+it goes into each README in the documentation PR after the rc.1 tag.
+Each README states its own column. contentvalidR’s adds that schema 1
+has been written since 0.4.0 and frozen since 0.7.0, and that handoffs
+from 0.4.0 to 0.6.0 lack the optional columns.
 
 one handoff example shown in both READMEs, regenerated from
-contentvalidR’s release candidate.
+contentvalidR’s release candidate: the walkthrough-sort handoff `h`,
+screened with `nomo_screen(nomo_demo_walkthrough, items = h)`.
+contentvalidR’s README shows the call without running it. Both print
+only fields that do not change with the version or the date, so a later
+re-knit cannot alter the example.
 
 the joint walkthrough lives in one package, and the other links to it.
 Decided by the maintainer on 2026-09-27: it lives here, as
