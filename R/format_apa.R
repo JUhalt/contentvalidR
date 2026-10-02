@@ -32,6 +32,23 @@
   out
 }
 
+# An alpha level keeps the digits it was given, with at least two: .05, .10,
+# .025, .001. Rounding to two decimals would print .001 as .00.
+.fmt_alpha <- function(alpha) {
+  alpha <- as.numeric(alpha)
+  out <- vapply(alpha, function(a) {
+    if (is.na(a)) return("NA")
+    given <- format(a, scientific = FALSE, drop0trailing = TRUE)
+    decimals <- if (grepl(".", given, fixed = TRUE)) {
+      nchar(sub("^[^.]*\\.", "", given))
+    } else {
+      0L
+    }
+    formatC(a, format = "f", digits = max(2L, decimals))
+  }, character(1))
+  sub("^0\\.", ".", out)
+}
+
 # "p = .021", or "p < .001" when it is that small.
 .p_phrase <- function(p) {
   txt <- .fmt_p(p)

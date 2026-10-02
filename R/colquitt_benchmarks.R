@@ -128,8 +128,9 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-#' *Journal of Applied Psychology, 104*(10), 1243–1265.
-#' \doi{10.1037/apl0000406}
+#' Content validation guidelines: Evaluation criteria for definitional
+#' correspondence and definitional distinctiveness. *Journal of Applied
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
 #'
 #' @examples
 #' interpret_colquitt(.84, "psa")
@@ -173,7 +174,10 @@ interpret_colquitt <- function(value,
     label <- NA_character_
     if (!is.na(v)) {
       cp <- .colquitt_cutpoints(statistic, norm)
-      hit <- which(v >= cp)
+      # A mean that equals a band's printed minimum belongs to that band. The
+      # tolerance keeps a value such as 4.35 / 5, stored a hair under .87,
+      # from falling into the band below.
+      hit <- which(v >= cp - 1e-9)
       label <- if (length(hit)) names(cp)[min(hit)] else "Lack of"
     }
     data.frame(

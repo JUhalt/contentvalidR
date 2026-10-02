@@ -802,7 +802,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   )
   .say("Stability:", method_label, "between consecutive rounds")
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
-    cat("Test: alpha = ", .fmt(s$alpha, 2), "\n", sep = "")
+    cat("Test: alpha = ", .fmt_alpha(s$alpha), "\n", sep = "")
   }
   cat("\n")
 

@@ -253,7 +253,7 @@
   .print_table(tab)
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   worst_case <- paste(
     "Their critical value assumes every judge who misses the target picks the",
     "same rival. When those judges spread across several constructs, Csv can",
@@ -342,7 +342,7 @@
   .print_table(tab)
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   if (length(sizes) == 1L) {
     lmin <- it$lawshe_minimum[1]
     .say(if (is.na(lmin)) {

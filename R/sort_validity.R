@@ -26,7 +26,10 @@
 
   rows <- lapply(targets, function(target) {
     z <- results[results$target == target, , drop = FALSE]
-    usable <- !is.na(z$psa) & !is.na(z$csv)
+    # Only items the exact test could decide enter a scale mean: a Psa from
+    # three or four judges should not move a scale's benchmark band.
+    usable <- !is.na(z$psa) & !is.na(z$csv) &
+      !z$recommendation %in% "Insufficient panel"
     mean_psa <- if (any(usable)) mean(z$psa[usable]) else NA_real_
     mean_csv <- if (any(usable)) mean(z$csv[usable]) else NA_real_
     r <- unname(r_map[target])
@@ -92,7 +95,14 @@
 #' Csv statistics with the exact target-count significance test recommended by
 #' Howard and Melloy (2016). Items meeting the exact criterion are labeled
 #' `"Retain"`; items that do not meet it are labeled `"Review"`, not
-#' automatically `"Delete"`.
+#' automatically `"Delete"`. An item sorted by so few judges that no count
+#' could meet the criterion (four or fewer at the defaults) is labeled
+#' `"Insufficient panel"`, with status `"Insufficient data"`.
+#'
+#' Construct and item labels are compared as text after leading and trailing
+#' spaces are removed, so constructs may be coded as numbers, text or factors.
+#' Results list the items in the order they first appear in the data, or in
+#' the order of the levels when the item column is a factor.
 #'
 #' At the target-scale level, Psa and Csv are averaged across items and
 #' interpreted using the empirical percentile norms from Colquitt et al. (2019).
@@ -103,7 +113,12 @@
 #' @param item_col,rater_col,assigned_col,target_col Column names for the item,
 #'   rater, assigned construct, and intended target construct.
 #' @param p0 Null target-assignment probability for the exact binomial test.
-#'   Default `0.5`, following Howard and Melloy (2016).
+#'   Default `0.5`, following Howard and Melloy (2016). It is not the rate
+#'   expected from random assignment, which is 1 divided by the number of
+#'   constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+#'   suggest a higher value such as .6 or .75, chosen before data collection,
+#'   when the alternative constructs are clearly different from the target or
+#'   the judges are subject-matter experts.
 #' @param alpha Significance level. Default `0.05`.
 #' @param orbiting_r Optional average correlation between each focal/target
 #'   scale and its orbiting scales. For one target, supply one correlation. For
@@ -112,9 +127,11 @@
 #' @param judge_type Either `"naive"` (the Anderson-Gerbing/Colquitt design) or
 #'   `"expert"`. Colquitt benchmark labels are not applied to expert judges.
 #' @param proportion_ci Interval method for Psa: `"wilson"` (default),
-#'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval uses the same
-#'   `alpha` as the exact test. See `ci` in [cvi()] for the methods and the
-#'   evidence for each.
+#'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval is two-sided at
+#'   level `1 - alpha`, while the exact test is one-sided, so the interval of
+#'   an item that just meets the criterion can still include `p0`. The
+#'   decision comes from the test, not from the interval. See `ci` in [cvi()]
+#'   for the methods and the evidence for each.
 #' @param legacy Print the earlier published rules beside the decision, for
 #'   comparison. Default `FALSE`. They are computed either way, stored in
 #'   `details$earlier_methods`, and never change the decision; `print(fit,
@@ -248,10 +265,17 @@ sort_validity <- function(assignments,
   results$p_value <- vapply(tests, function(z) if (is.null(z)) NA_real_ else z$p.value, numeric(1))
   results$critical_n_target <- vapply(tests, function(z) if (is.null(z)) NA_integer_ else z$critical_n_target, integer(1))
   results$passes_chance <- vapply(tests, function(z) if (is.null(z)) FALSE else z$passes_chance, logical(1))
-  results$recommendation <- ifelse(results$n < 1L, "Insufficient data",
-                                   ifelse(results$passes_chance, "Retain", "Review"))
+  # With very few judges no count can reach alpha (4 of 4 gives p = .0625 at
+  # p0 = .5), so no decision is possible, whatever the judges did.
+  too_few <- results$n >= 1L & is.na(results$critical_n_target)
+  results$recommendation <- ifelse(
+    results$n < 1L, "Insufficient data",
+    ifelse(too_few, "Insufficient panel",
+           ifelse(results$passes_chance, "Retain", "Review"))
+  )
   results$issue <- vapply(seq_len(nrow(results)), function(i) {
     if (results$n[i] < 1L) return("No usable assignments")
+    if (too_few[i]) return("Too few judges for the exact test")
     if (results$passes_chance[i]) return("Supported")
     if (!is.na(results$csv[i]) && results$csv[i] < 0) return("Competing construct favored")
     if (!is.na(results$csv[i]) && results$csv[i] == 0) return("Target tied with strongest competitor")
@@ -260,6 +284,13 @@ sort_validity <- function(assignments,
   results$interpretation <- vapply(seq_len(nrow(results)), function(i) {
     competitor <- if (is.na(results$competitor[i])) "no observed competitor" else paste0("strongest competitor: ", results$competitor[i])
     if (results$n[i] < 1L) return("No non-missing assignments are available for this item.")
+    if (too_few[i]) {
+      return(sprintf(
+        paste("With %s, no count of target assignments can reach alpha = %s,",
+              "so the exact test cannot decide this item (%s)."),
+        .n_noun(results$n[i], "judge"), .fmt_alpha(alpha), competitor
+      ))
+    }
     if (results$passes_chance[i]) {
       return(paste0("Target assignment meets the exact retention criterion (", competitor,")."))
     }
@@ -326,13 +357,14 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   s <- x$settings
   review <- r$item[r$recommendation == "Review"]
   insufficient <- r$item[r$recommendation == "Insufficient data"]
+  too_few <- r$recommendation == "Insufficient panel"
 
   cat("contentvalidR item-sort analysis\n")
   cat(strrep("-", 32), "\n", sep = "")
   cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
       " | Target constructs: ", x$design$n_target_scales, "\n", sep = "")
   .say("Test: ", s$item_inference, " (p0 = ", .fmt(s$p0), ", alpha = ",
-       .fmt(s$alpha), ")", sep = "")
+       .fmt_alpha(s$alpha), ")", sep = "")
   .say(if (identical(s$judge_type, "expert")) {
     "Judges: content experts."
   } else {
@@ -346,9 +378,19 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (length(insufficient)) {
     .say("Insufficient data:", paste(insufficient, collapse = ", "))
   }
+  if (any(too_few)) {
+    .say(sprintf(
+      paste("Too few judges for the exact test: %s. With %s, no count of",
+            "target assignments can reach alpha = %s, so these items have no",
+            "decision."),
+      paste(r$item[too_few], collapse = ", "),
+      .or_fewer_judges(max(r$n[too_few])), .fmt_alpha(s$alpha)
+    ))
+  }
   if (any(r$n_missing > 0L)) {
     .say("Missing assignments:", sum(r$n_missing), "across",
-         sum(r$n_missing > 0L), "items; each item uses the judges who sorted it.")
+         paste0(.n_noun(sum(r$n_missing > 0L), "item"),
+                "; each item uses the judges who sorted it."))
   }
 
   # The decision sits beside the item so a row reads left to right; each

@@ -13,7 +13,10 @@
 #' @param alpha Significance level. Default `0.05`.
 #'
 #' @return An object of class `contentvalid_sort_power` containing an exact
-#'   planning table.
+#'   planning table. When a panel is too small for any count to reach `alpha`
+#'   (four or fewer judges at the defaults), `critical_n_target` and
+#'   `minimum_observed_psa` are `NA` and `power` is 0: no item can be retained
+#'   at that size.
 #'
 #' @references
 #' Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
@@ -36,8 +39,13 @@ sort_power <- function(N, true_p, p0 = .5, alpha = .05) {
 
   grid <- expand.grid(N = as.integer(N), true_p = true_p, KEEP.OUT.ATTRS = FALSE)
   grid$critical_n_target <- vapply(grid$N, .critical_target_count, integer(1), p0 = p0, alpha = alpha)
-  grid$power <- stats::pbinom(grid$critical_n_target - 1L, size = grid$N,
-                              prob = grid$true_p, lower.tail = FALSE)
+  # When no count can reach alpha (very small panels), no item can be retained,
+  # so the power is exactly 0, not undefined.
+  grid$power <- ifelse(
+    is.na(grid$critical_n_target), 0,
+    stats::pbinom(grid$critical_n_target - 1L, size = grid$N,
+                  prob = grid$true_p, lower.tail = FALSE)
+  )
   grid$minimum_observed_psa <- grid$critical_n_target / grid$N
   grid <- grid[c("N", "true_p", "critical_n_target", "minimum_observed_psa", "power")]
 
@@ -52,16 +60,19 @@ print.contentvalid_sort_power <- function(x, digits = 2, ...) {
   cat("contentvalidR item-sort planning\n")
   cat(strrep("-", 32), "\n", sep = "")
   cat("Retention rule: Howard-Melloy exact test (p0 = ", .fmt(x$settings$p0),
-      ", alpha = ", .fmt(x$settings$alpha), ")\n", sep = "")
+      ", alpha = ", .fmt_alpha(x$settings$alpha), ")\n", sep = "")
 
   # The required count depends on the panel size only, so it is one column;
   # power depends on the assumed probability too, so it spreads across columns.
   t <- x$table
   sizes <- sort(unique(t$N))
   first <- t[match(sizes, t$N), , drop = FALSE]
+  unreachable <- is.na(first$critical_n_target)
   tab <- data.frame(judges = sizes,
-                    required = paste0(first$critical_n_target, "/", sizes),
-                    `minimum Psa` = .fmt(first$minimum_observed_psa, digits),
+                    required = ifelse(unreachable, "none",
+                                      paste0(first$critical_n_target, "/", sizes)),
+                    `minimum Psa` = ifelse(unreachable, "--",
+                                           .fmt(first$minimum_observed_psa, digits)),
                     stringsAsFactors = FALSE, check.names = FALSE)
   for (p in sort(unique(t$true_p))) {
     sel <- t[t$true_p == p, , drop = FALSE]
@@ -72,9 +83,17 @@ print.contentvalid_sort_power <- function(x, digits = 2, ...) {
   .print_table(tab)
   cat("\n")
   .say("required: target assignments an item needs to be retained. minimum",
-       "Psa: the same as a proportion. power at p: the exact probability of",
-       "reaching the required count if each judge assigns the item to its",
-       "target with probability p.")
+       "Psa: the same as a proportion. power at a value: the exact probability",
+       "of reaching the required count if each judge assigns the item to its",
+       "target with that probability.")
+  if (any(unreachable)) {
+    cat("\n")
+    .say(sprintf(paste("With %s, no count of target assignments reaches",
+                       "alpha = %s, so no item can be retained and the power",
+                       "is 0."),
+                 .or_fewer_judges(max(sizes[unreachable])),
+                 .fmt_alpha(x$settings$alpha)))
+  }
   invisible(x)
 }
 
@@ -147,7 +166,7 @@ plot.contentvalid_sort_power <- function(x,
     graphics::lines(z$N, z$power, type = "b", lty = i, pch = ((i - 1L) %% 6L) + 1L)
   }
   if (isTRUE(show_legend)) {
-    graphics::legend("topleft", legend = paste0("p = ", .fmt(ps)),
+    graphics::legend("topleft", legend = paste0("Target rate ", .fmt(ps)),
                      lty = seq_along(ps), pch = ((seq_along(ps) - 1L) %% 6L) + 1L,
                      bty = "n", cex = 0.72)
   }

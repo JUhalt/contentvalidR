@@ -18,7 +18,10 @@ intended construct. May be scalar or vector.}
 }
 \value{
 An object of class \code{contentvalid_sort_power} containing an exact
-planning table.
+planning table. When a panel is too small for any count to reach \code{alpha}
+(four or fewer judges at the defaults), \code{critical_n_target} and
+\code{minimum_observed_psa} are \code{NA} and \code{power} is 0: no item can be retained
+at that size.
 }
 \description{
 Computes the exact probability that an item will meet the Howard-Melloy

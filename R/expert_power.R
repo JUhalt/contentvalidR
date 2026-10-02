@@ -176,7 +176,7 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
   cat("contentvalidR expert-panel planning\n")
   cat(strrep("-", 35), "\n", sep = "")
   .say("Criterion:", st$method)
-  if (st$criterion == "cvr") cat("Alpha: ", .fmt(st$alpha), "\n", sep = "")
+  if (st$criterion == "cvr") cat("Alpha: ", .fmt_alpha(st$alpha), "\n", sep = "")
   if (st$response_rate < 1) {
     .say(paste0(
       "Response rate: ", .fmt(st$response_rate), ". Panel sizes are experts ",

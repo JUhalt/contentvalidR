@@ -1,5 +1,65 @@
 # contentvalidR 0.10.1.9000 (development version)
 
+Fixes from the audit before 1.0. Some of them change values, so check any
+item sort that matches the cases below.
+
+## Item sort: values that change
+
+* **Constructs coded as numbers now give the right counts.** When the target
+  and assigned constructs were numbers (1, 2, 3), `compute_csv()` read the
+  target's count by position in its table, not by label. The target count,
+  Csv, the exact *p* value, the Retain or Review decision, and the items
+  `content_handoff()` carried could all be wrong: an item with 16 of 20
+  judges on target could print 4/20, Csv .00, and Review. Every release from
+  0.4.0 had this. Constructs coded as text were always right. Rerun any sort
+  whose construct columns are numeric.
+* **An item sorted by too few judges for the exact test gets no decision.**
+  With four or fewer judges at the defaults no count can reach alpha (4 of 4
+  gives *p* = .0625). Such items were labeled `"Review"`, as if judges had
+  disagreed. They are now `"Insufficient panel"`, with status
+  `"Insufficient data"`; the printout says why; they do not enter a scale's
+  mean Psa or Csv; and the `rule` text in the handoff says that no count can
+  meet the test, where it used to read "target assignments >= NA of 4".
+* **The `csv_binom_test()` interval follows `alpha`.** It was always a 95%
+  interval, so at `alpha = .10` a significant result could sit beside an
+  interval that included `p0`. It is now one-sided at `1 - alpha`, and
+  excludes `p0` exactly when the test rejects. At the default alpha nothing
+  changes.
+* **`sort_power()` reports a power of 0, not `NA`,** for a panel too small
+  for any count to reach alpha, and says so under the table.
+* **A scale mean exactly on a published Colquitt band minimum now falls in
+  that band.** A mean such as 4.35 / 5 is stored a hair under .87 and was put
+  in the band below.
+* **Leading and trailing spaces in labels are ignored.** `"A"` and `" A"`
+  were counted as two constructs.
+* **Items are listed in the order of the data,** or of the levels when the
+  item column is a factor. They used to be sorted as text, so Q10 came before
+  Q2. The order reaches `results`, the figures, and `items` in the handoff.
+  Item names in `results` are always text.
+
+## Item sort: other fixes
+
+* Factor construct columns with different level sets no longer stop
+  `compute_psa()` and `sort_validity()` with "level sets of factors are
+  different".
+* An alpha with more than two decimals is printed in full. `alpha = .001`
+  printed as "alpha = .00" in every workflow and in the `rule` text of the
+  handoff.
+* `csv_binom_test()` prints its verdict first, in the item-sort workflow's
+  words ("meets the exact target-assignment criterion"). It printed
+  "Decision: n.s.." at the end. The stored `decision` values are unchanged.
+* The help for `p0` no longer calls it a chance rate. It is the null
+  probability of a target assignment; random assignment would give 1 divided
+  by the number of constructs. The help now passes on the caution Howard and
+  Melloy (2016) give themselves: that .5 is arbitrary and lenient.
+* The help for `proportion_ci` says the interval is two-sided while the test
+  is one-sided, so a retained item's interval can include `p0`.
+* The item-sort and construct-rating vignettes said scale means are drawn as
+  diamonds; the figures draw triangles.
+* `?interpret_colquitt` gives the full reference for Colquitt et al. (2019).
+
+## Other changes
+
 * The reader in nomologR is now tested against handoffs from contentvalidR
   0.6.0 through 0.10.1, and the README says so.
 

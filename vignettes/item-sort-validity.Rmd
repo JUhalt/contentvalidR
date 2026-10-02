@@ -162,7 +162,7 @@ plot(fit, type = "map")
 ```
 
 Psa and Csv are shown jointly, review items are labeled by default, and target-
-scale averages are added as diamonds. This makes it easier to distinguish a
+scale averages are added as triangles. This makes it easier to distinguish a
 correspondence problem (low Psa) from a construct-overlap problem (low or
 negative Csv). The map does not draw Colquitt cutoff regions across individual
 items because those empirical norms were constructed from scale-level averages.

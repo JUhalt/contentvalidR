@@ -192,8 +192,21 @@ test_that("a csv_binom_test result saved before 0.9.0 still prints", {
   b <- unclass(csv_binom_test(15, 20))
   b[c("n_target", "N", "p0", "alpha")] <- NULL
   class(b) <- c("contentvalid_binom", "contentvalid_component")
-  expect_match(shown(b), "Psa = .75, p = .021. Decision: significant.",
+  out <- shown(b)
+  expect_match(out, "The item meets the exact target-assignment criterion.",
                fixed = TRUE)
+  expect_match(out, "Psa = .75, p = .021.", fixed = TRUE)
+})
+
+test_that("csv_binom_test prints its verdict first, in the workflow's words", {
+  pass <- capture.output(print(csv_binom_test(15, 20)))
+  expect_identical(pass[3], "The item meets the exact target-assignment criterion.")
+  fail <- shown(csv_binom_test(14, 20))
+  expect_match(fail, "The item does not meet the exact target-assignment criterion.",
+               fixed = TRUE)
+  # No doubled period, and no significance jargon in the printout.
+  expect_false(grepl("..", fail, fixed = TRUE))
+  expect_false(grepl("n.s.", fail, fixed = TRUE))
 })
 
 test_that("each component print falls back to a plain print after subsetting", {

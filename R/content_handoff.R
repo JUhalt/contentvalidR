@@ -330,10 +330,24 @@
     return(list(
       scale = as.character(results$target),
       n_judges = as.integer(results$n),
-      rule = sprintf(
-        paste("target assignments >= %d of %d (exact binomial target-count",
-              "test; Howard & Melloy, 2016), alpha = %s"),
-        as.integer(results$critical_n_target), as.integer(results$n), .fmt(alpha)
+      # A rule is quoted downstream as the reason for a decision, so it never
+      # carries a missing count: it says why no count applies.
+      rule = ifelse(
+        results$n < 1L,
+        sprintf(paste("no judge sorted the item, so the exact binomial",
+                      "target-count test (Howard & Melloy, 2016) was not",
+                      "applied, alpha = %s"), .fmt_alpha(alpha)),
+        ifelse(
+          is.na(results$critical_n_target),
+          sprintf(paste("no count of target assignments out of %d can meet",
+                        "the exact binomial target-count test (Howard &",
+                        "Melloy, 2016), alpha = %s"),
+                  as.integer(results$n), .fmt_alpha(alpha)),
+          sprintf(paste("target assignments >= %d of %d (exact binomial",
+                        "target-count test; Howard & Melloy, 2016), alpha = %s"),
+                  as.integer(results$critical_n_target), as.integer(results$n),
+                  .fmt_alpha(alpha))
+        )
       ),
       citation = c("Anderson & Gerbing (1991)", "Howard & Melloy (2016)",
                    "Colquitt et al. (2019)"),
@@ -359,7 +373,7 @@
       rule = rep(sprintf(
         paste("Greenhouse-Geisser corrected omnibus test plus planned",
               "target-versus-orbiting contrasts (Hinkin & Tracey, 1999),",
-              "alpha = %s"), .fmt(alpha)), n),
+              "alpha = %s"), .fmt_alpha(alpha)), n),
       citation = c("Hinkin & Tracey (1999)", "Colquitt et al. (2019)"),
       statistics = rbind(
         .handoff_stat(results$item, "HTC", results$htc),
@@ -416,7 +430,7 @@
         paste("CVR >= %s, i.e. at least %d of %d judges rating the item",
               "essential (exact binomial; Ayre & Scally, 2014), alpha = %s"),
         .fmt(results$critical_cvr), as.integer(results$critical_ne),
-        as.integer(results$N), .fmt(alpha)
+        as.integer(results$N), .fmt_alpha(alpha)
       ),
       citation = c("Lawshe (1975)", "Ayre & Scally (2014)"),
       statistics = rbind(

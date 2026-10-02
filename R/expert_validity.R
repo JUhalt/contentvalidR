@@ -696,7 +696,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
       .say(sprintf(paste("With %d experts, an item needs at least %d rating it",
                          "essential for the exact one-tailed binomial test at",
                          "alpha = %s (Ayre & Scally, 2014)."),
-                   sizes, r$critical_ne[1], .fmt(x$settings$alpha)))
+                   sizes, r$critical_ne[1], .fmt_alpha(x$settings$alpha)))
     }
   } else {
     cat("Items: ", d$n_items, " | Experts/cell: ", d$n_judges_min,
