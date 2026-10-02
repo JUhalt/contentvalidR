@@ -352,11 +352,6 @@ Works cited in this README, the help pages, and the vignettes.
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
   for scaled disagreement or partial credit. *Psychological Bulletin,
   70*(4), 213–220. <https://doi.org/10.1037/h0026256>
-- Colquitt, J. A., Baer, M. D., Long, D. M., &
-  Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social
-  exchange relationships: A comparison of relative content validity.
-  *Journal of Applied Psychology, 99*(4), 599–618.
-  <https://doi.org/10.1037/a0036374>
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
   Content validation guidelines: Evaluation criteria for definitional
   correspondence and definitional distinctiveness. *Journal of Applied

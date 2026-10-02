@@ -206,7 +206,8 @@ semantics. For example, a Delphi stability row may carry "Kappa is
 undefined: every rating fell in the same category in both rounds." It also
 says when a statistic that meets its criterion is not what decided: the
 construct-rating \code{p_value} is the omnibus \emph{p}, and for an item held back by
-a planned contrast its note says so and gives the largest contrast \emph{p}.
+a planned contrast its note says so, with the largest contrast \emph{p} or, when
+a contrast has none, the constructs that tied.
 
 Its contract, agreed with the \code{nomologR} maintainers:
 \itemize{

@@ -136,7 +136,8 @@ test_that("citation and the BibTeX reference list are installed", {
     "10.1177/0748175613513808",
     "10.1002/nur.20199",
     "10.1097/00006199-198611000-00017",
-    "10.1037/a0036374"
+    "10.2307/23044045",
+    "10.1007/bf02289823"
   )) {
     # DOIs are case-insensitive; the file keeps each publisher's capitals.
     expect_true(grepl(doi, tolower(bib_text), fixed = TRUE), info = doi)

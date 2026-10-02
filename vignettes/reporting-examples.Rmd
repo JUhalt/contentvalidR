@@ -90,12 +90,14 @@ rating_fit$scale_summary
 
 > Judges rated every candidate item against each focal and orbiting construct
 > definition using the same response scale. We summarized correspondence with
-> HTC and distinctiveness with HTD. Because the same judges rated the competing
-> definitions, item-level inference used a repeated-measures design. Planned
-> paired contrasts compared each item's intended definition with every orbiting
-> definition; omnibus Greenhouse-Geisser-corrected inference was used when
-> applicable. Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated
-> as empirical benchmarks rather than universal item cutoffs.
+> HTC and distinctiveness with HTD (Hinkin & Tracey, 1999; Colquitt et al.,
+> 2019). Because the same judges rated the competing definitions, item-level
+> inference used a one-way repeated-measures ANOVA followed by planned
+> contrasts (MacKenzie et al., 2011). The omnibus test was Greenhouse-Geisser
+> corrected (Greenhouse & Geisser, 1959), and one-sided paired contrasts
+> compared each item's intended definition with every orbiting definition.
+> Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated as
+> empirical benchmarks rather than universal item cutoffs.
 
 ### Results scaffold
 
@@ -262,6 +264,13 @@ validation guidelines: Evaluation criteria for definitional correspondence and
 definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
 1243–1265. https://doi.org/10.1037/apl0000406
 
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of profile
+data. *Psychometrika, 24*(2), 95–112. https://doi.org/10.1007/BF02289823
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. *Organizational Research Methods, 2*(2), 175–186.
+https://doi.org/10.1177/109442819922004
+
 Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
 presentation of a new statistical significance formula and methodological best
 practices. *Journal of Business and Psychology, 31*(1), 173–186.
@@ -270,6 +279,11 @@ https://doi.org/10.1007/s10869-015-9404-y
 Lynn, M. R. (1986). Determination and quantification of content validity.
 *Nursing Research, 35*(6), 382–385.
 https://doi.org/10.1097/00006199-198611000-00017
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2), 293–334.
+https://doi.org/10.2307/23044045
 
 Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann, T. C.,
 Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A., Brennan, S. E., Chou,

@@ -53,8 +53,11 @@ Planned contrasts live in \code{details$contrasts}; the historical top-level
 \code{results} include a standardized \code{status} field while retaining the
 method-specific \code{recommendation} field. In \code{results}, \code{p_value} is the
 Greenhouse-Geisser corrected omnibus \emph{p} and \code{df1_gg} and \code{df2_gg} are its
-degrees of freedom; \code{p_omnibus}, \code{df1} and \code{df2} are the uncorrected
-test; and \code{max_contrast_p} is the largest \emph{p} among the planned contrasts.
+degrees of freedom, where a correction applies (see \code{\link[=anova_content]{anova_content()}});
+\code{p_omnibus}, \code{df1} and \code{df2} are the uncorrected test; and
+\code{max_contrast_p} is the largest \emph{p} among the planned contrasts, \code{NA}
+when a contrast has no \emph{p}. In \code{scale_summary}, \code{n_htc} and \code{n_htd} count
+the items in each mean.
 }
 \description{
 Provides the recommended user-facing workflow for a fully crossed
@@ -79,8 +82,15 @@ labels statistical screening decisions \code{"Retain"}, \code{"Review"}, or
 \code{"Insufficient data"}. An item is labeled \code{"Retain"} when its omnibus \emph{p}
 and every contrast \emph{p} are at or below \code{alpha}. \code{"Review"} is not an
 instruction to delete the item. An item with fewer than two judges who
-rated it against every construct is labeled \code{"Insufficient data"} and is
-left out of the target-scale means.
+rated it against every construct is labeled \code{"Insufficient data"}.
+
+Each target-scale mean uses the items whose index rests on at least two
+judges, so that one judge cannot move a scale's band. HTC rests on every
+judge who rated the item against its intended construct (\code{n_target}); HTD
+and the tests rest on the judges who rated it against every construct
+(\code{n_complete}). An item can therefore count toward mean HTC and not toward
+mean HTD, and the printout says how many items are behind each mean when
+some are left out. The two-judge minimum is this package's choice.
 
 Colquitt et al. (2019) norms are applied only to \strong{target-scale averages} of
 HTC and HTD, matching the level at which those empirical benchmarks were
