@@ -11,7 +11,8 @@
 
 \item{show_legend}{Draw the blueprint-cell key.}
 
-\item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
+\item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}. An argument given here, such as
+\code{xlab}, \code{xlim} or \code{main}, replaces the one the method would set.}
 }
 \value{
 \code{x}, invisibly. Called for the plot.
@@ -23,11 +24,18 @@ blueprint cell. Items that sit away from others sharing their cell are the
 ones experts did not group as the blueprint expects.
 }
 \examples{
-items <- paste0("I", 1:6)
-blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-sim <- matrix(1, 6, 6, dimnames = list(items, items))
-sim[1:3, 1:3] <- 5
-sim[4:6, 4:6] <- 5
-diag(sim) <- 5
+items <- paste0("I", 1:9)
+blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+sim <- matrix(c(
+  5, 4, 4, 2, 2, 1, 1, 2, 1,
+  4, 5, 4, 2, 1, 2, 2, 1, 1,
+  4, 4, 5, 1, 2, 2, 1, 1, 2,
+  2, 2, 1, 5, 4, 4, 2, 2, 1,
+  2, 1, 2, 4, 5, 4, 1, 2, 2,
+  1, 2, 2, 4, 4, 5, 2, 1, 2,
+  1, 2, 1, 2, 1, 2, 5, 4, 4,
+  2, 1, 1, 2, 2, 1, 4, 5, 4,
+  1, 1, 2, 1, 2, 2, 4, 4, 5
+), 9, 9, dimnames = list(items, items))
 plot(content_structure(sim, membership = blueprint))
 }

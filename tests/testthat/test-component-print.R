@@ -179,7 +179,9 @@ test_that("the two-by-two helpers print their statistics", {
   expect_match(sig, "Retention decisions compared with the actual outcome",
                fixed = TRUE)
   expect_match(sig, "accuracy = ", fixed = TRUE)
-  expect_match(sig, "chi-square(1) = ", fixed = TRUE)
+  # Six items: the exact test is reported, with the chi-square beside it.
+  expect_match(sig, "Fisher's exact p = ", fixed = TRUE)
+  expect_match(sig, "chi-square(1, N = 6) = ", fixed = TRUE)
   rep_out <- shown(reproducibility_phi(pred, act))
   expect_match(rep_out, "Retention decisions in two pretests", fixed = TRUE)
   expect_match(rep_out, "phi = ", fixed = TRUE)

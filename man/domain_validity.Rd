@@ -34,15 +34,22 @@ to cover. Supplying it is what makes \strong{empty} cells detectable; without it
 only the cells that already contain items can be reported.}
 
 \item{min_items}{Fewest items a cell may hold before it is flagged as thinly
-covered.}
+covered. With \code{targets}, a cell is compared with the smaller of
+\code{min_items} and its own target, so a cell the blueprint gives one item is
+not thin with one.}
 
 \item{over_factor}{A cell holding more than this multiple of its expected
-share is flagged as over-represented. This is an attention-drawing
-heuristic, not a standard.}
+share is flagged as over-represented. With \code{targets}, a cell holding less
+than its expected share divided by \code{over_factor} is flagged as
+under-represented. This is an attention-drawing heuristic, not a
+standard. With few cells no share can exceed the multiple (two equal
+cells at the default of 2), and the printout says so.}
 
 \item{targets}{Optional named numeric vector giving the intended number of
 items per cell. When supplied, expected shares come from it rather than
-from an assumption of equal cells.}
+from an assumption of equal cells, and cells far below their intended
+share are flagged. Without it under-representation is not judged,
+because an equal share is an assumption, not a blueprint.}
 
 \item{similarity}{Optional square item-by-item expert similarity matrix. When
 supplied, the content-structure analysis is run and reported alongside
@@ -77,6 +84,12 @@ the right description of the domain, or that the cells are equally important.
 Coverage is evidence about the item set's reach, and is properly read
 alongside item-level relevance evidence and expert judgment about the
 blueprint itself.
+
+The coverage tally itself (\code{min_items}, \code{over_factor}, \code{targets}) is this
+package's blueprint check, not a published index: it counts items per
+cell and draws attention to cells that are empty, thin, or out of
+proportion. Sireci (1998) discusses why domain representation belongs in
+a content-validity argument alongside item relevance.
 }
 
 \examples{
@@ -92,10 +105,6 @@ domain_validity(
 )
 }
 \references{
-Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-specialists in the assessment of criterion-referenced test item validity.
-\emph{Dutch Journal of Educational Research, 2}, 49–60.
-
 Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
 Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
 

@@ -1,7 +1,8 @@
 .domain_cell_labels <- function(d, cell_col, facet_col) {
-  cells <- as.character(d[[cell_col]])
+  # Labels are compared as trimmed text, as in the other workflows.
+  cells <- .as_label(d[[cell_col]])
   if (!is.null(facet_col)) {
-    cells <- paste(cells, as.character(d[[facet_col]]), sep = " / ")
+    cells <- paste(cells, .as_label(d[[facet_col]]), sep = " / ")
   }
   cells
 }
@@ -33,13 +34,20 @@
 #'   to cover. Supplying it is what makes **empty** cells detectable; without it
 #'   only the cells that already contain items can be reported.
 #' @param min_items Fewest items a cell may hold before it is flagged as thinly
-#'   covered.
+#'   covered. With `targets`, a cell is compared with the smaller of
+#'   `min_items` and its own target, so a cell the blueprint gives one item is
+#'   not thin with one.
 #' @param over_factor A cell holding more than this multiple of its expected
-#'   share is flagged as over-represented. This is an attention-drawing
-#'   heuristic, not a standard.
+#'   share is flagged as over-represented. With `targets`, a cell holding less
+#'   than its expected share divided by `over_factor` is flagged as
+#'   under-represented. This is an attention-drawing heuristic, not a
+#'   standard. With few cells no share can exceed the multiple (two equal
+#'   cells at the default of 2), and the printout says so.
 #' @param targets Optional named numeric vector giving the intended number of
 #'   items per cell. When supplied, expected shares come from it rather than
-#'   from an assumption of equal cells.
+#'   from an assumption of equal cells, and cells far below their intended
+#'   share are flagged. Without it under-representation is not judged,
+#'   because an equal share is an assumption, not a blueprint.
 #' @param similarity Optional square item-by-item expert similarity matrix. When
 #'   supplied, the content-structure analysis is run and reported alongside
 #'   coverage.
@@ -57,11 +65,13 @@
 #' alongside item-level relevance evidence and expert judgment about the
 #' blueprint itself.
 #'
-#' @references
-#' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-#' specialists in the assessment of criterion-referenced test item validity.
-#' *Dutch Journal of Educational Research, 2*, 49–60.
+#' The coverage tally itself (`min_items`, `over_factor`, `targets`) is this
+#' package's blueprint check, not a published index: it counts items per
+#' cell and draws attention to cells that are empty, thin, or out of
+#' proportion. Sireci (1998) discusses why domain representation belongs in
+#' a content-validity argument alongside item relevance.
 #'
+#' @references
 #' Sireci, S. G. (1998). The construct of content validity. *Social Indicators
 #' Research, 45*(1–3), 83–117. \doi{10.1023/A:1006985528729}
 #'
@@ -121,7 +131,7 @@ domain_validity <- function(assignments,
   .validate_labels(d[[cell_col]], "cell")
   if (!is.null(facet_col)) .validate_labels(d[[facet_col]], "facet")
 
-  items <- as.character(d[[item_col]])
+  items <- .as_label(d[[item_col]])
   if (anyDuplicated(items)) {
     stop("Each item may appear only once. Duplicate item(s): ",
          paste(unique(items[duplicated(items)]), collapse = ", "), ".", call. = FALSE)
@@ -131,7 +141,7 @@ domain_validity <- function(assignments,
   observed <- unique(cells)
   if (!is.null(domain)) {
     .validate_labels(domain, "domain")
-    domain <- unique(as.character(domain))
+    domain <- unique(.as_label(domain))
     unknown <- setdiff(observed, domain)
     if (length(unknown)) {
       stop("These cells appear in `assignments` but not in `domain`: ",
@@ -152,6 +162,12 @@ domain_validity <- function(assignments,
         any(targets < 0) || any(!is.finite(targets))) {
       stop("`targets` must be a named, non-negative numeric vector.", call. = FALSE)
     }
+    names(targets) <- .as_label(names(targets))
+    if (anyDuplicated(names(targets))) {
+      stop("`targets` names a cell more than once: ",
+           paste(unique(names(targets)[duplicated(names(targets))]),
+                 collapse = ", "), ".", call. = FALSE)
+    }
     missing_targets <- setdiff(all_cells, names(targets))
     if (length(missing_targets)) {
       stop("`targets` is missing entries for: ",
@@ -166,13 +182,25 @@ domain_validity <- function(assignments,
 
   share <- counts / n_items
   empty <- counts == 0L
-  thin <- !empty & counts < min_items
+  # A cell the blueprint gives one item is not thin with one: with targets,
+  # the floor is the smaller of `min_items` and the cell's own target.
+  thin_floor <- if (is.null(targets)) {
+    rep(min_items, n_cells)
+  } else {
+    pmin(min_items, pmax(target_n, 1))
+  }
+  thin <- !empty & counts < thin_floor
   over <- !empty & !is.na(expected_share) & share > over_factor * expected_share
+  # Under-representation is judged only against stated targets. Without them
+  # the expected share is an assumption of equal cells, not a blueprint.
+  under <- !is.null(targets) & !empty & !thin & !is.na(expected_share) &
+    share < expected_share / over_factor
 
   recommendation <- ifelse(empty, "Not covered",
                     ifelse(thin, "Thinly covered",
-                    ifelse(over, "Over-represented", "Covered")))
-  status <- ifelse(empty | thin | over, "Review", "Supported")
+                    ifelse(over, "Over-represented",
+                    ifelse(under, "Under-represented", "Covered"))))
+  status <- ifelse(empty | thin | over | under, "Review", "Supported")
 
   interpretation <- vapply(seq_len(n_cells), function(i) {
     if (empty[i]) {
@@ -189,7 +217,17 @@ domain_validity <- function(assignments,
         "this analysis. Thin coverage limits how well the cell can be",
         "represented, and leaves the cell's contribution dependent on very few",
         "items."
-      ), .n_noun(counts[i], "item addresses", "items address"), min_items))
+      ), .n_noun(counts[i], "item addresses", "items address"),
+         as.integer(thin_floor[i])))
+    }
+    if (under[i]) {
+      return(sprintf(paste(
+        "This cell holds %.0f%% of the items, less than 1/%s of its intended",
+        "share of %.0f%% (a target of %s). The blueprint weights this cell",
+        "more heavily than the item set does. Either write more items for it",
+        "or revise the target."
+      ), share[i] * 100, format(over_factor), expected_share[i] * 100,
+         .n_noun(format(target_n[i]), "item")))
     }
     if (over[i]) {
       return(sprintf(paste(
@@ -243,10 +281,11 @@ domain_validity <- function(assignments,
   scale_summary <- data.frame(
     n_items = n_items,
     n_cells = n_cells,
-    n_covered = sum(!empty & !thin & !over),
+    n_covered = sum(status == "Supported"),
     n_empty = sum(empty),
     n_thin = sum(thin),
     n_over = sum(over),
+    n_under = sum(under),
     domain_supplied = !is.null(domain),
     adjusted_rand = if (is.null(structure_fit)) NA_real_ else structure_fit$adjusted_rand,
     stringsAsFactors = FALSE
@@ -257,6 +296,9 @@ domain_validity <- function(assignments,
     min_items = as.integer(min_items),
     over_factor = over_factor,
     targets_supplied = !is.null(targets),
+    # Whether any cell could be flagged as over-represented at all: with two
+    # equal cells and a factor of 2 a share would have to exceed 100%.
+    over_possible = any(!is.na(expected_share) & over_factor * expected_share < 1),
     domain_supplied = !is.null(domain),
     structure_analyzed = !is.null(structure_fit)
   )
@@ -297,8 +339,16 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     "Criteria: at least ", st$min_items, " item", if (st$min_items != 1L) "s",
     " per cell, and no cell above ", format(st$over_factor),
     " times its expected share",
-    if (isTRUE(st$targets_supplied)) " (from `targets`)" else
-      " (an equal share when no `targets` are given)", "."
+    if (isTRUE(st$targets_supplied)) {
+      paste0(" or below 1/", format(st$over_factor),
+             " of it (expected shares from `targets`)")
+    } else {
+      " (an equal share when no `targets` are given)"
+    }, ".",
+    if (identical(st$over_possible, FALSE)) {
+      paste(" With these cells no share can exceed that multiple, so no",
+            "cell can be flagged as over-represented.")
+    }
   ))
   cat("\n")
   .say(paste0(s$n_covered, " of ", s$n_cells,
@@ -327,14 +377,16 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
   if (!is.null(x$details$structure)) {
     cs <- x$details$structure
     cat("\nContent structure: adjusted Rand index ",
-        .fmt(cs$adjusted_rand, digits), " (", cs$status, ")\n", sep = "")
+        if (is.na(cs$adjusted_rand)) "not defined" else
+          .fmt(cs$adjusted_rand, digits), " (", cs$status, ")\n", sep = "")
   }
 
   if (.show_key()) {
+    # Only what this printout shows: the map's fit is in the structure
+    # object's own print.
     terms <- "share"
-    if (!is.null(x$details$structure)) terms <- c(terms, "adjusted_rand", "stress")
-    .print_key(terms, headings = c("share", "adjusted Rand", "stress")[
-      seq_along(terms)])
+    if (!is.null(x$details$structure)) terms <- c(terms, "adjusted_rand")
+    .print_key(terms, headings = c("share", "adjusted Rand")[seq_along(terms)])
     .print_decision_legend(x$results$recommendation, "domain")
     .print_key_footer()
   }
@@ -401,45 +453,57 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #'
 #' @param x A `contentvalid_structure` object.
 #' @param show_legend Draw the blueprint-cell key.
-#' @param ... Passed to [graphics::plot()].
+#' @param ... Passed to [graphics::plot()]. An argument given here, such as
+#'   `xlab`, `xlim` or `main`, replaces the one the method would set.
 #'
 #' @return `x`, invisibly. Called for the plot.
 #' @examples
-#' items <- paste0("I", 1:6)
-#' blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-#' sim <- matrix(1, 6, 6, dimnames = list(items, items))
-#' sim[1:3, 1:3] <- 5
-#' sim[4:6, 4:6] <- 5
-#' diag(sim) <- 5
+#' items <- paste0("I", 1:9)
+#' blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+#' sim <- matrix(c(
+#'   5, 4, 4, 2, 2, 1, 1, 2, 1,
+#'   4, 5, 4, 2, 1, 2, 2, 1, 1,
+#'   4, 4, 5, 1, 2, 2, 1, 1, 2,
+#'   2, 2, 1, 5, 4, 4, 2, 2, 1,
+#'   2, 1, 2, 4, 5, 4, 1, 2, 2,
+#'   1, 2, 2, 4, 4, 5, 2, 1, 2,
+#'   1, 2, 1, 2, 1, 2, 5, 4, 4,
+#'   2, 1, 1, 2, 2, 1, 4, 5, 4,
+#'   1, 1, 2, 1, 2, 2, 4, 4, 5
+#' ), 9, 9, dimnames = list(items, items))
 #' plot(content_structure(sim, membership = blueprint))
 #' @export
 plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
   .validate_flag(show_legend, "show_legend")
-  op <- .plot_margins(list(...))
+  user <- list(...)
+  op <- .plot_margins(user)
   on.exit(graphics::par(op), add = TRUE)
   pts <- x$coordinates
   cl <- x$clusters
 
-  if (ncol(pts) < 2L) {
-    y <- rep(0, nrow(pts))
-    graphics::plot(pts[, 1], y, yaxt = "n", ylab = "",
-                   xlab = "Dimension 1", pch = 19, ...)
-    graphics::text(pts[, 1], y, labels = rownames(pts), pos = 3, cex = 0.7)
-    return(invisible(x))
-  }
-
   group <- if (!is.null(cl$blueprint_cell)) factor(cl$blueprint_cell) else factor(cl$cluster)
   pch <- (as.integer(group) - 1L) %% 25L + 1L
+  # A map with one usable dimension is a strip: every item at height 0.
+  one_dim <- ncol(pts) < 2L
+  px <- pts[, 1]
+  py <- if (one_dim) rep(0, nrow(pts)) else pts[, 2]
 
-  xr <- range(pts[, 1]); yr <- range(pts[, 2])
+  xr <- range(px); yr <- range(py)
   pad <- 0.15 * c(diff(xr), diff(yr))
   pad[!is.finite(pad) | pad == 0] <- 1
 
-  graphics::plot(pts[, 1], pts[, 2], pch = pch,
-                 xlim = xr + c(-pad[1], pad[1]),
-                 ylim = yr + c(-pad[2], pad[2] * 1.6),
-                 xlab = "Dimension 1", ylab = "Dimension 2", ...)
-  graphics::text(pts[, 1], pts[, 2], labels = rownames(pts), pos = 3, cex = 0.7)
+  # What the caller passes replaces what the method would set, so `xlab`,
+  # `pch` or `xlim` never collide with it.
+  args <- list(
+    x = px, y = py, pch = pch,
+    xlim = xr + c(-pad[1], pad[1]),
+    ylim = yr + c(-pad[2], pad[2] * 1.6),
+    xlab = "Dimension 1", ylab = if (one_dim) "" else "Dimension 2"
+  )
+  if (one_dim) args$yaxt <- "n"
+  args[names(user)] <- user
+  do.call(graphics::plot, args)
+  graphics::text(px, py, labels = rownames(pts), pos = 3, cex = 0.7)
 
   if (isTRUE(show_legend)) {
     # Name what the symbols stand for: the blueprint's cells when one was

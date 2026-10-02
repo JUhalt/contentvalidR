@@ -93,6 +93,10 @@
 #' @param targets Coefficient targets used for the decision study. Each must lie
 #'   strictly between 0 and 1.
 #' @param max_judges Largest panel size shown in the decision-study projection.
+#' @param phi_cut Dependability coefficient at or above which the status is
+#'   `"Supported"`. Default .80. Neither Brennan (2001) nor Crocker et al.
+#'   (1988) sets a required value, so this is a contentvalidR convention,
+#'   printed beside the status so a reader can apply another.
 #'
 #' @return An object of class `contentvalid_gtheory`, a list containing:
 #'   \describe{
@@ -106,7 +110,16 @@
 #'       reachable with any realistic panel, which happens when items are barely
 #'       distinguished from one another.}
 #'     \item{settings, design}{Analysis settings and realized design metadata.}
+#'     \item{status}{`"Supported"` when the dependability coefficient is at or
+#'       above `phi_cut` and `"Review"` when it is below; `"Descriptive
+#'       only"` when the items show no variance to generalize; and
+#'       `"Insufficient data"` with fewer than two judges or two items.}
+#'     \item{interpretation}{The status in a sentence or two.}
 #'   }
+#'
+#' The projection and `judges_needed` are estimates from the variance
+#' components of one panel, with no interval. From a small panel they are
+#' rough, so read them as planning figures, not as exact answers.
 #'
 #' @section Negative variance estimates:
 #' ANOVA estimation can yield negative variance components when a true component
@@ -137,8 +150,13 @@
 gtheory_content <- function(ratings,
                             na.rm = FALSE,
                             targets = c(0.70, 0.80, 0.90),
-                            max_judges = 30) {
+                            max_judges = 30,
+                            phi_cut = 0.80) {
   .validate_flag(na.rm, "na.rm")
+  if (!is.numeric(phi_cut) || length(phi_cut) != 1L || !is.finite(phi_cut) ||
+      phi_cut <= 0 || phi_cut >= 1) {
+    stop("`phi_cut` must be one number strictly between 0 and 1.", call. = FALSE)
+  }
 
   if (!is.numeric(targets) || !length(targets) || anyNA(targets) ||
       any(!is.finite(targets)) || any(targets <= 0) || any(targets >= 1)) {
@@ -156,6 +174,10 @@ gtheory_content <- function(ratings,
   }
   if (any(is.infinite(X))) {
     stop("`ratings` cannot contain infinite values.", call. = FALSE)
+  }
+  if (!nrow(X) || !ncol(X)) {
+    stop("`ratings` must have at least one judge (row) and one item (column).",
+         call. = FALSE)
   }
   if (is.null(colnames(X))) colnames(X) <- paste0("Item", seq_len(ncol(X)))
   if (is.null(rownames(X))) rownames(X) <- paste0("Judge", seq_len(nrow(X)))
@@ -190,6 +212,7 @@ gtheory_content <- function(ratings,
     na.rm = isTRUE(na.rm),
     targets = targets,
     max_judges = as.integer(max_judges),
+    phi_cut = phi_cut,
     object_of_measurement = "item",
     facet = "judge"
   )
@@ -259,8 +282,9 @@ gtheory_content <- function(ratings,
     stringsAsFactors = FALSE
   )
 
-  sizes <- sort(unique(c(seq_len(min(10L, as.integer(max_judges))),
-                         seq(2L, as.integer(max_judges), by = 2L),
+  max_judges <- as.integer(max_judges)
+  sizes <- sort(unique(c(seq_len(min(10L, max_judges)),
+                         if (max_judges >= 2L) seq(2L, max_judges, by = 2L),
                          n_judges)))
   sizes <- sizes[sizes >= 1L & sizes <= max(as.integer(max_judges), n_judges)]
   proj <- lapply(sizes, function(k) {
@@ -286,7 +310,7 @@ gtheory_content <- function(ratings,
 
   status <- if (is.na(obs$phi) || no_item_variance) {
     "Descriptive only"
-  } else if (obs$phi >= 0.80) {
+  } else if (obs$phi >= phi_cut) {
     "Supported"
   } else {
     "Review"
@@ -300,29 +324,45 @@ gtheory_content <- function(ratings,
       "Treat the ratings as descriptive."
     )
   } else if (no_item_variance) {
-    paste(
-      "No item-level true-score variance was detected: the judges did not",
-      "reliably distinguish these items from one another, and essentially all",
-      "variation is disagreement within judge-item cells. Both coefficients are",
-      "therefore 0, which is not a statement that the items are poor -- a",
-      "uniformly relevant item set produces this result too. It does mean these",
-      "ratings cannot support comparisons among the items, and that a larger",
+    # Where the variance sits is read from the components, not assumed: with
+    # judges who each rate every item alike, it is all between judges.
+    where <- if (var_resid <= 0 && var_judge > 0) {
+      "all of the variation is between judges, each of whom rated every item alike"
+    } else if (var_judge <= 0) {
+      "all of the variation is disagreement within judge-item cells"
+    } else {
+      "the variation is between judges and within judge-item cells"
+    }
+    paste0(
+      "No item-level true-score variance was detected: the judges did not ",
+      "reliably distinguish these items from one another, and ", where, ". ",
+      "The dependability coefficient is therefore 0",
+      if (is.na(obs$g)) {
+        ", and the generalizability coefficient is undefined"
+      } else {
+        ", as is the generalizability coefficient"
+      },
+      ". That is not a statement that the items are poor: a uniformly ",
+      "relevant item set produces this result too. It does mean these ",
+      "ratings cannot support comparisons among the items, and that a larger ",
       "panel would not change that. Use item-level relevance evidence instead."
     )
-  } else if (obs$phi >= 0.80) {
+  } else if (obs$phi >= phi_cut) {
     sprintf(paste(
-      "With %d judges, absolute decisions about these items would generalize",
-      "dependably to another panel of the same size (Phi = %s). Judge",
-      "differences account for %.1f%% of total variance."
-    ), n_judges, .fmt(obs$phi), judge_share)
+      "With %s, absolute decisions about these items would generalize",
+      "to another panel of the same size at Phi = %s, at or above the %s set",
+      "for this analysis. Judge differences account for %.1f%% of total",
+      "variance."
+    ), .n_noun(n_judges, "judge"), .fmt(obs$phi), .fmt(phi_cut), judge_share)
   } else {
     sprintf(paste(
-      "With %d judges, absolute decisions about these items generalize only",
-      "moderately to another panel of the same size (Phi = %s). Judge",
-      "differences account for %.1f%% of total variance. See `judges_needed`",
-      "for the panel size implied by a higher target, and review judge-level",
-      "severity before treating borderline items as settled."
-    ), n_judges, .fmt(obs$phi), judge_share)
+      "With %s, absolute decisions about these items would generalize",
+      "to another panel of the same size at Phi = %s, below the %s set for",
+      "this analysis. Judge differences account for %.1f%% of total",
+      "variance. See `judges_needed` for the panel size a higher target",
+      "implies, and review judge-level severity before treating borderline",
+      "items as settled."
+    ), .n_noun(n_judges, "judge"), .fmt(obs$phi), .fmt(phi_cut), judge_share)
   }
 
   out <- list(
@@ -363,13 +403,30 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
   }
 
   cf <- x$coefficients
+  na_words <- function(v) if (is.na(v)) "not defined" else .fmt(v, digits)
+  phi_cut <- x$settings$phi_cut
+  if (is.null(phi_cut)) phi_cut <- 0.80
   cat("\nObserved design\n")
   cat("  Generalizability coefficient (relative, rank ordering): ",
-      .fmt(cf$g_coefficient, digits), "\n", sep = "")
+      na_words(cf$g_coefficient), "\n", sep = "")
   cat("  Dependability coefficient (absolute, fixed standard):   ",
-      .fmt(cf$phi_coefficient, digits), "\n", sep = "")
-  cat("Status: ", x$status, "\n", sep = "")
+      na_words(cf$phi_coefficient), "\n", sep = "")
+  cat("Status: ", x$status,
+      if (x$status %in% c("Supported", "Review")) {
+        paste0(" (criterion: Phi >= ", .fmt(phi_cut, digits),
+               ", a contentvalidR convention)")
+      }, "\n", sep = "")
   .say(x$interpretation)
+
+  # With too few judges or items there are no components and no projection to
+  # show: the sentence above says why.
+  if (identical(x$status, "Insufficient data")) {
+    cat("\n")
+    .say("A dependability coefficient describes generalization over judges",
+         "only. It is not evidence that the items cover the intended content",
+         "domain.")
+    return(invisible(x))
+  }
 
   cat("\nVariance components\n")
   vc <- x$variance_components
@@ -391,9 +448,19 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
     .print_table(.judges_needed_table(x$judges_needed, digits))
     if (anyNA(unlist(x$judges_needed[c("n_judges_relative",
                                        "n_judges_absolute")]))) {
-      .say("unreachable: no realistic panel reaches this target, because the",
-           "judges barely distinguish the items from one another.")
+      vc_item <- x$variance_components$variance[
+        x$variance_components$source == "item"]
+      .say(if (isTRUE(vc_item > 0)) {
+        paste("unreachable: no panel of", .gtheory_max_panel, "or fewer",
+              "judges reaches this target, because the judges barely",
+              "distinguish the items from one another.")
+      } else {
+        paste("unreachable: with no item variance, no number of judges",
+              "reaches any target.")
+      })
     }
+    .say("These panel sizes are estimates from one panel's variance",
+         "components, with no interval: read them as planning figures.")
   }
 
   cat("\n")

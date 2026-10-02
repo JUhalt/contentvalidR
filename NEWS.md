@@ -304,6 +304,113 @@ analysis that matches the cases below.
   Hinkin and Tracey (1999) used Duncan's test, not planned contrasts.
 * `?htd` gives the full reference for Colquitt et al. (2019).
 
+## Judges, domain and structure: values that change
+
+* **An item at the criterion no longer flags its judges.** With five of six
+  judges rating an item relevant, removing any of the five changes the
+  item's CVI status, so all five were `"Influential"` and flagged for
+  review, and the lone dissenter was the only `"Typical"` judge. On a panel
+  of three every judge was `"Influential"` for every item, because one judge
+  fewer leaves no criterion at all. `judge_validity()` now reports such items
+  in their own table, with the judges whose removal changes each one, and
+  flags no judge for it. An item rated by three or fewer judges is "not
+  checked". `"Influential"` is no longer a decision, `scale_summary` loses
+  `n_influential` and gains `n_items_unchecked`, and
+  `details$influence_items` gains `n_raters`, `n_relevant` and
+  `changes_without`.
+* **Fit statistics flag a judge only above the range, and only with enough
+  decisions.** Infit or outfit outside 0.5 to 1.5 sent a judge to review
+  either way. That range is Linacre's (2002) guide to how productive data are
+  for measurement, and he describes values below 0.5 as "less productive for
+  measurement, but not degrading". On six to ten items, a third to a half of
+  judges who fit the model exactly fell outside it by chance. A judge below
+  the range is now described and not flagged (`"Too predictable"` is no
+  longer a decision), and a judge above it is `"Erratic"` only when the model
+  scored at least `fit_min_ratings` of their decisions (default 30). With the
+  item counts usual in content validation the fit statistics are shown and
+  not flagged.
+* **Logit severity is corrected by the number of judges.** Joint maximum
+  likelihood stretches the judge severities by about J / (J - 1), with J the
+  number of judges. The correction multiplied by (L - 1) / L with L the
+  number of items, which left nearly all of the stretch in place on a small
+  panel: about 1.4 times too large with four judges. It now uses the judges
+  in the model, so printed logits are smaller and fewer judges pass the
+  1-logit cut. Wright and Douglas (1977) and Wright (1988) are cited for the
+  correction.
+* **With missing ratings a judge is compared on the items they rated.** A
+  judge who rated only the low-rated items, exactly as everyone else did, was
+  flagged `"Severe"`. Severity in rating points and scale use now compare
+  each judge with the panel on the same items. With complete ratings nothing
+  changes.
+* **`content_structure()` clusters the map coordinates.** It named the
+  procedure of Sireci and Geisinger (1992, 1995), who clustered the items'
+  scaling coordinates, but clustered the original dissimilarities, so the
+  number of dimensions never affected the clusters or the adjusted Rand
+  index. It now clusters the coordinates on the retained dimensions with
+  average linkage, as they did. Clusters, the adjusted Rand index and the
+  status can change, and now depend on `dims`. The help says what still
+  differs from their procedure.
+* **A one-cell blueprint, or one cluster, has no adjusted Rand index.** It
+  was .00 and "Review: correspond only weakly". It is `NA`, with status
+  `"Insufficient data"`, because nothing can be compared.
+* **The map's fit is no longer called Kruskal's stress-1.** The statistic
+  compares the map's distances with the dissimilarities; Kruskal's (1964)
+  stress-1 belongs to nonmetric scaling and is computed differently (on an
+  example the printed value was about double his). It keeps its value and
+  its name in the object, `stress`, is printed as "raw stress", and loses
+  the labels "good", "fair" and "poor", which were his benchmarks for a
+  different quantity. The `fit` table loses `fit_label`.
+* **`domain_validity()` with `targets`.** A cell far below its intended share
+  was `"Covered"`: it is now `"Under-represented"` when its share is below
+  the expected share divided by `over_factor`. A cell that met a target of
+  one item was `"Thinly covered"`: the minimum is now the smaller of
+  `min_items` and the cell's target. Without `targets` nothing changes.
+* **`reproducibility_phi()` and `signal_detection()` report Fisher's exact
+  *p* when an expected count is below 5.** They printed a chi-square *p* with
+  R's warning suppressed, on tables of six to twenty items: .121 where the
+  exact *p* is .333. `p` is now the exact *p* in that case, `p_method` says
+  which test it is, and `p_chisq` keeps the chi-square *p*.
+
+## Judges, domain and structure: other fixes
+
+* The cuts behind a status are arguments, printed beside it and labeled as
+  contentvalidR conventions: `phi_cut` in `gtheory_content()` (.80),
+  `ari_cut` in `content_structure()` (.60), and `differentiation_cut` and
+  `fit_min_ratings` in `judge_validity()`. No published standard sets them.
+* `gtheory_content(max_judges = 1)` no longer stops with "wrong sign in 'by'
+  argument".
+* `gtheory_content()` states its coefficient against the criterion. It called
+  any Phi below .80 "moderately" generalizable, .31 included. When no item
+  variance is found, the text says where the variance is; it said both
+  coefficients are 0 when one is undefined. A design too small to analyze
+  prints its reason without an empty variance table.
+* The projected panel sizes are described as estimates from one panel, in the
+  printout, the help and the README, which said the question is "answered
+  exactly".
+* A named `membership` whose names do not match the items is an error. It
+  was read by position, so one typo reordered the blueprint.
+* Equal similarities, repeated judge or item names, and a matrix with no
+  rows stop with a message that says what is wrong.
+* `plot()` on a content structure accepts `xlab`, `pch`, `xlim` and the like:
+  they replace the method's own. A map with one dimension keeps its symbols
+  and legend.
+* `judge_validity()` prints the scale and the relevance cut, the number of
+  missing ratings and how many judges Phi rests on, "not estimable" where it
+  printed `NA%`, and one judge as "Insufficient data".
+* `content_report()` for judges shows logit severity, infit and outfit, and
+  drops the count of flipped items.
+* `chi-square(1, N = 60) = 41.71`: the two-by-two comparators print the
+  sample size with the degrees of freedom, as APA asks.
+* `domain_validity()` says when no cell can be flagged as over-represented
+  (two equal cells at the default factor), and its key no longer defines
+  "stress", which that printout does not show.
+* `qfactor_content()` says its loadings are unrotated and how that differs
+  from the published approach. The message about Kaiser's rule is wrapped.
+* `similarity_from_sort()` keeps items in the order of the data and compares
+  labels as trimmed text; `domain_validity()` trims cell and item labels.
+* The examples for `judge_validity()` and `content_structure()` now show the
+  logit columns and a two-dimensional map.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

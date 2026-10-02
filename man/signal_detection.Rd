@@ -12,7 +12,12 @@ signal_detection(predicted, actual)
 \item{actual}{Logical vector of criterion retention decisions.}
 }
 \value{
-A list containing the confusion matrix and diagnostic statistics.
+A list containing the confusion matrix and diagnostic statistics:
+\code{accuracy}, \code{sensitivity}, \code{specificity}, signed \code{phi}, the chi-square
+statistic (\code{chisq}), the number of items (\code{n}), and \code{p} with the test it
+comes from in \code{p_method}: \code{"chi-square"}, or \code{"Fisher's exact test"}
+when an expected count is below 5. \code{p_chisq} always holds the chi-square
+\emph{p} value.
 It prints as a short report in APA style; the elements themselves are
 unrounded.
 }
@@ -20,7 +25,9 @@ unrounded.
 Auxiliary compatibility diagnostic. Compares a logical vector of pretest
 retention decisions with a logical ground-truth criterion (for example, later CFA retention). Reports a correctly
 oriented confusion matrix, accuracy, sensitivity, specificity, signed phi,
-and Pearson's chi-square test without Yates correction.
+and a test of association: Pearson's chi-square test without Yates
+correction, or Fisher's exact test when an expected count is below 5,
+where the chi-square approximation is unreliable.
 
 The comparison follows the validation design of Anderson and Gerbing (1991),
 who checked pretest assessments of items' substantive validity against how

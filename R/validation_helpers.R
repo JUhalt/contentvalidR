@@ -126,6 +126,20 @@
   code
 }
 
+# Judge and item names key every table built from a judges-by-items matrix,
+# so a repeated name is reported here, before it fails somewhere obscure.
+.check_unique_names <- function(nm, what, margin) {
+  dup <- unique(nm[duplicated(nm)])
+  if (length(dup)) {
+    stop("Each ", what, " needs its own name, but ",
+         if (length(dup) == 1L) "this " else "these ", margin, " name",
+         if (length(dup) == 1L) " is" else "s are", " used more than once: ",
+         paste(dup[seq_len(min(5L, length(dup)))], collapse = ", "),
+         if (length(dup) > 5L) ", ..." else "", ".", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
 .validate_labels <- function(x, name, allow_na = FALSE) {
   if (!allow_na && anyNA(x)) {
     stop(sprintf("`%s` identifiers cannot be missing.", name), call. = FALSE)

@@ -28,8 +28,12 @@
 # Dichotomous many-facet Rasch model fitted as a logistic regression:
 #   logit P(endorse) = item_effect - judge_severity
 # The generalized linear model formulation of Rasch-family models follows
-# De Boeck & Wilson (2004). Estimation is joint maximum likelihood, so the
-# Wright-Douglas (L-1)/L bias correction is applied and reported.
+# De Boeck & Wilson (2004). Estimation is joint maximum likelihood, which
+# stretches the judge severities by about J / (J - 1), J being the number of
+# judges in the model: every item parameter rests on J decisions. Wright and
+# Douglas's (1977) correction, (L - 1) / L for the L items of a test taken by
+# many persons, is applied with the judges in the place of the test items and
+# the rated items in the place of the persons.
 .facets_severity <- function(B, bias_correct = TRUE) {
   n_j <- nrow(B)
   judge_names <- rownames(B)
@@ -41,6 +45,9 @@
     se = NA_real_,
     infit = NA_real_,
     outfit = NA_real_,
+    # Decisions the model scored for this judge: what a fit mean square
+    # rests on.
+    n_scored = 0L,
     estimable = FALSE,
     stringsAsFactors = FALSE
   )
@@ -117,8 +124,9 @@
 
   correction <- 1
   if (isTRUE(bias_correct)) {
-    n_items_used <- ncol(sub)
-    if (n_items_used > 1L) correction <- (n_items_used - 1L) / n_items_used
+    # The count is the number of judges in the model, not the number of
+    # items: see the note above this function.
+    if (k > 1L) correction <- (k - 1L) / k
     severity <- severity * correction
     se <- se * correction
   }
@@ -129,8 +137,10 @@
   w <- p * (1 - p)
   infit <- rep(NA_real_, k)
   outfit <- rep(NA_real_, k)
+  n_scored <- integer(k)
   for (idx in seq_len(k)) {
     sel <- long$judge == sub_judges[idx]
+    n_scored[idx] <- sum(sel)
     if (!any(sel)) next
     wi <- w[sel]
     ri <- resid[sel]
@@ -147,6 +157,7 @@
   out$se[idx] <- se
   out$infit[idx] <- infit
   out$outfit[idx] <- outfit
+  out$n_scored[idx] <- n_scored
   out$estimable[idx] <- TRUE
 
   list(
@@ -168,19 +179,32 @@
   judge_names <- rownames(X)
   if (is.null(judge_names)) judge_names <- paste0("Judge", seq_len(n_j))
 
-  grand <- mean(X, na.rm = TRUE)
-  judge_mean <- rowMeans(X, na.rm = TRUE)
-  judge_sd <- apply(X, 1L, function(z) {
+  spread <- function(z) {
     z <- z[!is.na(z)]
     if (length(z) < 2L) NA_real_ else stats::sd(z)
-  })
-
-  typical_sd <- stats::median(judge_sd, na.rm = TRUE)
-  differentiation <- if (is.na(typical_sd) || typical_sd <= 0) {
-    rep(NA_real_, n_j)
-  } else {
-    judge_sd / typical_sd
   }
+  judge_mean <- rowMeans(X, na.rm = TRUE)
+  judge_mean[is.nan(judge_mean)] <- NA_real_
+  judge_sd <- apply(X, 1L, spread)
+  item_mean <- colMeans(X, na.rm = TRUE)
+
+  # A judge is compared with the panel on the items that judge rated. With
+  # complete ratings this is the grand mean less the judge's mean, and the
+  # judge's spread over the median spread. With missing ratings, a judge who
+  # rated only the low-rated items exactly as everyone else did is not made
+  # to look severe, or undiscriminating, by the items they did not rate.
+  severity_raw <- vapply(seq_len(n_j), function(j) {
+    rated <- !is.na(X[j, ])
+    if (!any(rated)) return(NA_real_)
+    mean(item_mean[rated] - X[j, rated])
+  }, numeric(1))
+  differentiation <- vapply(seq_len(n_j), function(j) {
+    rated <- !is.na(X[j, ])
+    if (is.na(judge_sd[j])) return(NA_real_)
+    typical <- stats::median(apply(X[, rated, drop = FALSE], 1L, spread),
+                             na.rm = TRUE)
+    if (is.na(typical) || typical <= 0) NA_real_ else judge_sd[j] / typical
+  }, numeric(1))
 
   # Middle categories are the scale points strictly inside the endpoints.
   middle_prop <- apply(X, 1L, function(z) {
@@ -201,7 +225,7 @@
     sd_rating = judge_sd,
     # Signed so that positive means more severe, matching the logit severity
     # scale: a judge who rates lower than the panel is harsher.
-    severity_raw = grand - judge_mean,
+    severity_raw = severity_raw,
     differentiation = differentiation,
     central_prop = middle_prop,
     extreme_prop = extreme_prop,

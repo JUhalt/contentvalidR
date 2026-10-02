@@ -13,8 +13,7 @@
                             "I_CVI_low", "I_CVI_high", "kappa_mod", "cvr",
                             "p_value", "ioc"),
     contentvalid_judge = c("judge", "n_ratings", "mean_rating", "severity_raw",
-                           "severity", "outfit", "differentiation",
-                           "n_items_flipped"),
+                           "severity", "infit", "outfit", "differentiation"),
     contentvalid_domain = c("cell", "n_items", "share"),
     contentvalid_delphi = c("item", "last_round", "n_experts", "prop_agree",
                             "prop_unchanged", "stability", "stability_low",
@@ -150,8 +149,9 @@ as.data.frame.contentvalid_workflow <- function(x,
     contentvalid_judge = list(
       s("judge", "text", "judge"), s("ratings", "int", "n_ratings"),
       s("mean", "num", "mean_rating"), s("severity", "num", "severity_raw"),
+      s("logit", "num", "severity"), s("infit", "num", "infit"),
       s("outfit", "num", "outfit"), s("scale use", "num", "differentiation"),
-      s("flipped", "int", "n_items_flipped"), s("decision", "text", "recommendation")
+      s("decision", "text", "recommendation")
     ),
     contentvalid_domain = list(
       s("cell", "text", "cell"), s("items", "int", "n_items"),
