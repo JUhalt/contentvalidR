@@ -1,10 +1,14 @@
 # Gwet's AC1 for any number of raters and categories, following the computation
 # in Gwet's own irrCAC implementation: agreement is averaged over items rated by
 # at least two raters, category probabilities over every rated item.
-.gwet_ac1 <- function(X) {
+#
+# `values` is the set of rating categories. AC1 depends on how many there are
+# (Gwet, 2008), so a bootstrap passes the categories of the full data to every
+# resample; left NULL, they are the categories observed, irrCAC's default.
+.gwet_ac1 <- function(X, values = NULL) {
   rated <- colSums(!is.na(X)) >= 1L
   X <- X[, rated, drop = FALSE]
-  values <- sort(unique(as.vector(X[!is.na(X)])))
+  if (is.null(values)) values <- sort(unique(as.vector(X[!is.na(X)])))
   q <- length(values)
   empty <- list(estimate = NA_real_, pa = NA_real_, pe = NA_real_, n_items = 0L)
   if (ncol(X) < 1L || q < 1L) return(empty)
@@ -45,11 +49,10 @@
 # Percentile bootstrap resampling items with every rater's rating intact
 # (Zapf et al., 2016).
 .unit_bootstrap <- function(X, stat, B, alpha, seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
   n_units <- ncol(X)
-  estimates <- vapply(seq_len(B), function(b) {
+  estimates <- .with_seed(seed, vapply(seq_len(B), function(b) {
     stat(X[, sample.int(n_units, n_units, replace = TRUE), drop = FALSE])
-  }, numeric(1))
+  }, numeric(1)))
   usable <- is.finite(estimates)
   limits <- if (sum(usable) >= 2L) {
     stats::quantile(estimates[usable], c(alpha / 2, 1 - alpha / 2), names = FALSE)
@@ -91,7 +94,10 @@
 #'   (2023) show that it rises as ratings concentrate in one category even at a
 #'   fixed level of agreement, and that it can be non-zero when raters are
 #'   independent. Its printed output always repeats that critique. AC1 treats
-#'   the supplied values as unordered categories.
+#'   the supplied values as unordered categories. It depends on how many
+#'   categories there are: they are the values observed in `ratings`, as in
+#'   Gwet's own software by default, and the bootstrap holds them fixed, so a
+#'   resample that happens to miss a category is scored on the same scale.
 #'
 #' @section Why a close-agreeing panel can have a low alpha:
 #' Alpha compares observed disagreement with the disagreement expected if the
@@ -117,7 +123,8 @@
 #' @param B Number of bootstrap resamples. Use `0` to skip the interval.
 #' @param alpha Two-sided error rate for the bootstrap interval; `0.05` gives a
 #'   95% interval. This is not Krippendorff's alpha.
-#' @param seed Optional seed for a reproducible interval.
+#' @param seed Optional seed for a reproducible interval. The random-number
+#'   stream of the session is left as it was.
 #'
 #' @return An object of class `contentvalid_agreement`: a list with `method`,
 #'   `level`, `estimate`, `ci_low`, `ci_high`, `alpha`, `B`, `n_boot_usable`,
@@ -176,6 +183,7 @@ panel_agreement <- function(ratings,
   method <- match.arg(method)
   level <- match.arg(level)
 
+  .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
   if (is.logical(X)) storage.mode(X) <- "numeric"
   if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
@@ -193,7 +201,10 @@ panel_agreement <- function(ratings,
   stat <- if (method == "krippendorff") {
     function(M) .krippendorff_alpha(M, level)$estimate
   } else {
-    function(M) .gwet_ac1(M)$estimate
+    # The categories are fixed from the full data, so a resample that happens
+    # to miss one is still scored on the same scale.
+    categories <- sort(unique(as.vector(X[!is.na(X)])))
+    function(M) .gwet_ac1(M, categories)$estimate
   }
   estimate <- stat(X)
   boot <- if (B > 0) {
@@ -259,8 +270,14 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   cat("Items rated by two or more raters: ", x$n_items, " | Raters: ",
       x$n_raters, "\n", sep = "")
   # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
-  line <- paste0(label, " = ", .fmt(x$estimate, digits))
-  if (is.finite(x$ci_low) && is.finite(x$ci_high)) {
+  defined <- is.finite(x$estimate)
+  line <- if (defined) {
+    paste0(label, " = ", .fmt(x$estimate, digits))
+  } else {
+    # The reason is in the interpretation printed below.
+    paste0(label, ": undefined")
+  }
+  if (defined && is.finite(x$ci_low) && is.finite(x$ci_high)) {
     line <- paste0(line, ", ", .ci_label(x$alpha), " ",
                    .fmt_ci(x$ci_low, x$ci_high, digits))
   }
@@ -285,7 +302,9 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     .say(x$critique)
   }
 
-  if (x$B > 0) {
+  # An undefined coefficient has no interval, so there is no bootstrap to
+  # describe.
+  if (x$B > 0 && defined) {
     cat("\n")
     note <- paste(
       "The interval resamples items with all of their ratings, following Zapf",

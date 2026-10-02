@@ -1,0 +1,216 @@
+# Fixes from the pre-1.0 audit of the expert-panel functions. Each test names
+# the wrong result the old code gave.
+
+test_that("on a two-point scale the default cut is the top point, not the bottom", {
+  # The default was hi - 1, the lowest point of a 0/1 scale, so every rating
+  # counted as relevant and an item no expert endorsed got I-CVI 1.00.
+  b <- cbind(Q1 = c(1, 1, 1, 1, 1, 1), Q2 = c(1, 1, 1, 0, 1, 1),
+             Q3 = c(0, 0, 1, 0, 0, 0), Q4 = c(0, 0, 0, 0, 0, 0))
+  fit <- expert_validity(b, lo = 0, hi = 1, agreement = "none")
+  expect_identical(fit$settings$relevance_cut, 1)
+  expect_equal(fit$results$I_CVI, c(1, 5 / 6, 1 / 6, 0))
+  expect_equal(fit$results$I_CVI, as.data.frame(cvi(b)$item_level)$I_CVI)
+  expect_identical(fit$results$recommendation,
+                   c("Strong support", "Strong support", "Review", "Review"))
+
+  # The same on a 1/2 coding, and in the judge and Delphi workflows.
+  expect_identical(expert_validity(b + 1, lo = 1, hi = 2,
+                                   agreement = "none")$settings$relevance_cut, 2)
+  expect_identical(judge_validity(b, lo = 0, hi = 1)$settings$relevance_cut, 1)
+  long <- data.frame(expert = rep(paste0("E", 1:6), times = 8),
+                     item = rep(rep(colnames(b), each = 6), 2),
+                     round = rep(1:2, each = 24), rating = rep(as.vector(b), 2))
+  delphi <- delphi_validity(long, lo = 0, hi = 1, consensus_threshold = .75,
+                            B = 0)
+  expect_identical(delphi$settings$agree_cut, 1)
+  expect_identical(delphi$results$recommendation,
+                   c("Consensus", "Consensus", "No consensus", "No consensus"))
+  # Longer scales keep the usual cut.
+  expect_identical(contentvalidR:::.default_cut(1, 4), 3)
+  expect_identical(contentvalidR:::.default_cut(1, 5), 4)
+  expect_identical(contentvalidR:::.default_cut(1, 3), 2)
+})
+
+test_that("a cut at the bottom of the scale is refused, with the reason", {
+  R <- cbind(A = c(4, 3, 4), B = c(2, 3, 4))
+  expect_error(expert_validity(R, relevance_cut = 1),
+               "cannot be the lowest point of the scale")
+  expect_error(judge_validity(R, relevance_cut = 1),
+               "cannot be the lowest point of the scale")
+  long <- data.frame(expert = rep(1:3, 4), item = rep(rep(c("A", "B"), each = 3), 2),
+                     round = rep(1:2, each = 6), rating = rep(as.vector(R), 2))
+  expect_error(delphi_validity(long, lo = 1, hi = 4, agree_cut = 1, B = 0),
+               "cannot be the lowest point of the scale")
+  expect_error(expert_validity(R, relevance_cut = 9), "within the rating scale")
+})
+
+test_that("the relevance print states the scale and the cut", {
+  R <- cbind(A = c(4, 3, 4), B = c(2, 3, 4))
+  out <- capture.output(print(expert_validity(R, agreement = "none")))
+  expect_true(any(out == "Scale: 1 to 4 | Relevant: a rating of 3 or higher"))
+  out5 <- capture.output(print(expert_validity(R, lo = 1, hi = 5,
+                                               agreement = "none")))
+  expect_true(any(out5 == "Scale: 1 to 5 | Relevant: a rating of 4 or higher"))
+  out2 <- capture.output(print(expert_validity((R >= 3) + 0, lo = 0, hi = 1,
+                                               agreement = "none")))
+  expect_true(any(out2 == "Scale: 0 to 1 | Relevant: a rating of 1"))
+})
+
+test_that("a rater-ID column is not analyzed as an item", {
+  rel <- read.csv(system.file("extdata", "expert_relevance_example.csv",
+                              package = "contentvalidR"))
+  expect_true("expert" %in% names(rel))
+  # With four experts on a 1-4 scale the IDs 1 to 4 are valid ratings, so the
+  # column used to become an item called "expert".
+  expect_error(expert_validity(rel[1:4, ]), "looks like a rater ID")
+  expect_error(expert_validity(rel[1:4, ]), "data[, -1]", fixed = TRUE)
+  expect_error(judge_validity(rel[1:4, ]), "looks like a rater ID")
+  expect_error(aikens_v(rel[1:4, ], lo = 1, hi = 4), "looks like a rater ID")
+  expect_error(cvr(data.frame(Judge = 1:3, A = c(1, 0, 1))),
+               "looks like a rater ID")
+  expect_error(expert_validity(data.frame(rater_id = 0:1, A = c(1, 0)),
+                               mode = "essentiality"), "looks like a rater ID")
+  fit <- expert_validity(rel[1:4, -1], agreement = "none")
+  expect_false("expert" %in% fit$results$item)
+  expect_identical(fit$design$n_items, 5L)
+  # An ordinary item name is left alone.
+  ok <- cbind(Expertise = c(4, 3, 4), Identity = c(3, 4, 4))
+  expect_silent(expert_validity(ok, agreement = "none"))
+})
+
+test_that("an out-of-range rating names its column and the scale", {
+  R <- cbind(A = c(4, 3, 4), B = c(2, 5, 4))
+  expect_error(aikens_v(R, lo = 1, hi = 4),
+               "bounds (1 to 4) in column \"B\"", fixed = TRUE)
+  expect_error(expert_validity(R), "in column \"B\"", fixed = TRUE)
+})
+
+test_that("aikens_v() needs the scale, and reports it", {
+  R <- cbind(A = c(4, 4, 4), B = c(3, 4, 4))
+  expect_error(aikens_v(R), "`lo` and `hi` are required")
+  expect_error(aikens_v(R, lo = 1), "`lo` and `hi` are required")
+  v <- aikens_v(R, lo = 1, hi = 4)
+  expect_equal(v$V, c(1, 8 / 9))
+  expect_identical(attr(v, "scale"), c(1, 4))
+  expect_true(any(capture.output(print(v)) == "Scale: 1 to 4."))
+  # The same ratings on a longer scale give a lower V, which is why the scale
+  # is never assumed.
+  expect_equal(aikens_v(R, lo = 1, hi = 5)$V, c(.75, 2 / 3))
+})
+
+test_that("named essential counts keep their names, into the handoff", {
+  fit <- expert_validity(c(Q1 = 12, Q2 = 10, Q3 = 6), mode = "essentiality",
+                         N = 12)
+  expect_identical(fit$results$item, c("Q1", "Q2", "Q3"))
+  expect_identical(content_handoff(fit)$items, c("Q1", "Q2"))
+  expect_identical(as.data.frame(cvr(c(A = 8, B = 5), N = 12))$item, c("A", "B"))
+  # An explicit item_names still wins, and unnamed counts keep the default.
+  expect_identical(
+    as.data.frame(cvr(c(A = 8, B = 5), N = 12, item_names = c("x", "y")))$item,
+    c("x", "y")
+  )
+  expect_identical(as.data.frame(cvr(c(8, 5), N = 12))$item, c("Item1", "Item2"))
+})
+
+test_that("a panel too small for the exact test gives no decision, and says why", {
+  # Four of four essential gives p = .0625, so nothing can pass at .05. Such
+  # items were labeled Review, as if experts had disagreed.
+  fit <- expert_validity(c(4, 3, 2), mode = "essentiality", N = 4)
+  expect_identical(fit$results$recommendation, rep("Insufficient panel", 3))
+  expect_identical(fit$results$status, rep("Insufficient data", 3))
+  expect_identical(fit$scale_summary$n_review, 0L)
+  expect_identical(fit$scale_summary$n_insufficient, 3L)
+  out <- paste(capture.output(print(fit)), collapse = " ")
+  expect_match(out, "Too few experts for the exact test: Item1, Item2, Item3.",
+               fixed = TRUE)
+  expect_match(out, "With 4 or fewer experts, no count of essential ratings",
+               fixed = TRUE)
+  expect_match(out, "Insufficient panel -- too few experts rated it",
+               fixed = TRUE)
+  expect_false(grepl("Flagged for review", out, fixed = TRUE))
+
+  rule <- content_handoff(
+    fit, keep = c("Supported", "Review", "Insufficient data")
+  )$item_evidence$rule
+  expect_false(any(grepl("NA", rule, fixed = TRUE)))
+  expect_match(rule[1], "no count of essential ratings out of 4 can meet",
+               fixed = TRUE)
+
+  # Five experts can decide: all five must agree.
+  five <- expert_validity(c(5, 4), mode = "essentiality", N = 5)
+  expect_identical(five$results$recommendation, c("Supported", "Review"))
+
+  # The component says the same.
+  comp <- gsub("\\s+", " ",
+               paste(capture.output(print(cvr(c(4, 3), N = 4))), collapse = " "))
+  expect_match(comp, "4/4 1.00 .062 none --", fixed = TRUE)
+  expect_match(comp, "With 4 or fewer experts, no count of essential ratings",
+               fixed = TRUE)
+  expect_false(grepl("NA", comp, fixed = TRUE))
+})
+
+test_that("a seeded call leaves the session's random stream as it found it", {
+  R <- rbind(c(4, 4, 3, 2, 4), c(4, 3, 3, 2, 4), c(3, 4, 4, 1, 4),
+             c(4, 4, 3, 2, 3))
+  colnames(R) <- paste0("I", 1:5)
+  after <- function(seed, call) {
+    set.seed(seed)
+    force(call)
+    stats::runif(1)
+  }
+  for (start in c(101, 202)) {
+    set.seed(start); expected <- stats::runif(1)
+    expect_identical(after(start, panel_agreement(R, B = 50, seed = 1)), expected)
+    expect_identical(after(start, expert_validity(R, agreement_B = 50, seed = 1)),
+                     expected)
+    expect_identical(
+      after(start, aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 20, seed = 1)),
+      expected
+    )
+  }
+  # The result itself is still reproducible.
+  expect_identical(panel_agreement(R, B = 50, seed = 7)$ci_low,
+                   panel_agreement(R, B = 50, seed = 7)$ci_low)
+
+  # With no stream yet, none is left behind.
+  local({
+    old <- if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
+      get(".Random.seed", envir = globalenv())
+    }
+    on.exit(if (!is.null(old)) assign(".Random.seed", old, envir = globalenv()))
+    if (!is.null(old)) rm(".Random.seed", envir = globalenv())
+    invisible(panel_agreement(R, B = 20, seed = 1))
+    expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+  })
+})
+
+test_that("the AC1 bootstrap scores every resample on the same categories", {
+  ac1 <- contentvalidR:::.gwet_ac1
+  # Three categories overall; this resample contains only two of them.
+  X <- rbind(c(1, 2, 3, 3), c(1, 2, 3, 2), c(1, 2, 2, 3))
+  sub <- X[, c(1, 1, 2, 2), drop = FALSE]
+  fixed <- ac1(sub, values = c(1, 2, 3))
+  free <- ac1(sub)
+  # Perfect agreement either way, but chance agreement differs with q.
+  expect_equal(fixed$pe, sum(c(.5, .5, 0) * (1 - c(.5, .5, 0))) / 2)
+  expect_equal(free$pe, sum(c(.5, .5) * (1 - c(.5, .5))) / 1)
+  # The point estimate is unchanged: observed categories, as irrCAC does.
+  expect_equal(panel_agreement(X, method = "ac1", B = 0)$estimate,
+               ac1(X)$estimate)
+  # The interval is the one the fixed categories give.
+  set.seed(11)
+  draws <- vapply(1:200, function(b) {
+    ac1(X[, sample.int(4, 4, replace = TRUE), drop = FALSE], c(1, 2, 3))$estimate
+  }, numeric(1))
+  got <- panel_agreement(X, method = "ac1", B = 200, seed = 11)
+  expect_equal(got$ci_low, stats::quantile(draws[is.finite(draws)], .025,
+                                           names = FALSE))
+})
+
+test_that("an undefined agreement coefficient is not printed as NA", {
+  same <- matrix(4, 3, 4)
+  out <- capture.output(print(panel_agreement(same, B = 20, seed = 1)))
+  expect_false(any(grepl("= NA", out, fixed = TRUE)))
+  expect_true(any(grepl(": undefined$", out)))
+  expect_false(any(grepl("resamples", out, fixed = TRUE)))
+})

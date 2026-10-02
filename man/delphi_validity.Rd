@@ -31,7 +31,9 @@ Rows with a missing rating are ignored.}
 numbers.}
 
 \item{agree_cut}{Rating at or above which an expert counts as agreeing.
-Defaults to \code{hi - 1}, the usual relevance cut on a 4-point scale.}
+Defaults to \code{hi - 1}, the usual relevance cut on a 4-point scale, and to
+\code{hi} on a two-point scale. It must lie above \code{lo}: at \code{lo} every rating
+would count as agreement.}
 
 \item{consensus_threshold}{Share of experts that must agree for consensus,
 between 0 and 1, fixed before the study. \code{NULL} (default) reports
@@ -47,7 +49,8 @@ agreement descriptively.}
 
 \item{B}{Bootstrap resamples for the kappa interval. Use \code{0} to skip it.}
 
-\item{seed}{Optional seed for the bootstrap.}
+\item{seed}{Optional seed for the bootstrap. The random-number stream of
+the session is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_delphi} and

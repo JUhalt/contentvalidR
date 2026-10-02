@@ -58,6 +58,61 @@ item sort that matches the cases below.
   diamonds; the figures draw triangles.
 * `?interpret_colquitt` gives the full reference for Colquitt et al. (2019).
 
+## Expert panel: values that change
+
+* **On a two-point scale the default cut is the top point.** The cut for
+  "relevant" defaulted to `hi - 1`, which is the bottom of a 0/1 or 1/2 scale,
+  so every rating counted. An item no expert rated relevant got an I-CVI of
+  1.00 and "Strong support". `expert_validity()`, `judge_validity()` and
+  `delphi_validity()` now default to `hi` on a two-point scale, and refuse a
+  cut at the bottom of any scale. `cvi()` was always right.
+* **`aikens_v()` needs `lo` and `hi`.** It assumed a 1-5 scale, while
+  `expert_validity()` and `judge_validity()` assume 1-4, so `aikens_v(R)` on
+  1-4 ratings returned .75 for an item every expert rated 4. V depends on the
+  scale, so the scale is no longer assumed, and the printout states it.
+* **A rater-ID column is no longer analyzed as an item.** With four experts
+  on a 1-4 scale, an `expert` column holding 1 to 4 was rated as an item and
+  changed S-CVI, the agreement coefficient and the handoff. Every function
+  that takes a judge-by-item table now stops when a column name looks like a
+  rater ID and says which column to remove.
+* **An essentiality item rated by too few experts for the exact test gets no
+  decision.** With four or fewer experts at the defaults no count can reach
+  alpha. Such items were `"Review"`, with a legend saying too few experts had
+  rated them essential, even at 4 of 4. They are now `"Insufficient panel"`,
+  with status `"Insufficient data"`, the printout says why, and the `rule`
+  text in the handoff no longer reads "CVR >= NA, i.e. at least NA of 4".
+* **Named essential counts keep their names.** `cvr()` and
+  `expert_validity(mode = "essentiality")` renamed the items of a named count
+  vector to Item1, Item2, so the handoff carried names that matched no
+  response data.
+* **Lawshe's table at nine panelists.** In the comparison block, 8 of 9
+  panelists (a CVR of .778) was reported as below his .78, and the vignette
+  said his table asks for all nine. His .78 is 8 of 9 printed to two
+  decimals: nine panelists can give no other value near it (Ayre & Scally,
+  2014). The comparison now uses the count each tabled value implies, so 8 of
+  9 meets it and his content validity index includes that item. Ten of 13
+  (.538 against .54) still falls short, the one size where his table and the
+  exact test differ.
+* **A seed no longer resets the random stream of the session.** Every `seed`
+  argument called `set.seed()` and left it set, so a seeded call inside a
+  simulation loop made every later replicate draw the same data. Seeded
+  resampling now restores the stream it found. Results for a given seed are
+  unchanged.
+* **The AC1 bootstrap scores every resample on the same categories.** A
+  resample that happened to miss a rating category was scored with fewer
+  categories, which pulled the interval down. It affected
+  `panel_agreement(method = "ac1")` on scales with three or more categories;
+  the point estimate, and AC1 inside `expert_validity()`, are unchanged.
+
+## Expert panel: other fixes
+
+* The relevance printout states the rating scale and the cut it used.
+* A rating outside the scale names its column and the scale in the error.
+* `cvr()` prints "none" where no count can meet the test, with a sentence
+  saying why, where it printed `NA`.
+* `panel_agreement()` prints "undefined" for a coefficient that cannot be
+  computed, where it printed "= NA" followed by a note about resamples.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

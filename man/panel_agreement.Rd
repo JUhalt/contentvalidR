@@ -27,7 +27,8 @@ in columns. Missing ratings are allowed.}
 \item{alpha}{Two-sided error rate for the bootstrap interval; \code{0.05} gives a
 95\% interval. This is not Krippendorff's alpha.}
 
-\item{seed}{Optional seed for a reproducible interval.}
+\item{seed}{Optional seed for a reproducible interval. The random-number
+stream of the session is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_agreement}: a list with \code{method},
@@ -56,7 +57,10 @@ kappa-type coefficients fall. It is never the default: Vach and Gerke
 (2023) show that it rises as ratings concentrate in one category even at a
 fixed level of agreement, and that it can be non-zero when raters are
 independent. Its printed output always repeats that critique. AC1 treats
-the supplied values as unordered categories.
+the supplied values as unordered categories. It depends on how many
+categories there are: they are the values observed in \code{ratings}, as in
+Gwet's own software by default, and the bootstrap holds them fixed, so a
+resample that happens to miss a category is scored on the same scale.
 }
 }
 \section{Why a close-agreeing panel can have a low alpha}{

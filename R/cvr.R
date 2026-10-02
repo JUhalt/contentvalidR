@@ -20,10 +20,15 @@
 #'   calculated itemwise.
 #' @param alpha One-sided exact alpha level. Default `.05`.
 #' @param na.rm Logical; for matrix input, permit itemwise missing ratings.
-#' @param item_names Optional item names for count-vector input.
+#' @param item_names Optional item names for count-vector input. By default
+#'   the names of `essential` are used when it has them, and `Item1`, `Item2`,
+#'   and so on otherwise.
 #'
 #' @return A data.frame containing item, `ne`, effective `N`, CVR, exact
-#'   p-value, critical essential count/CVR, and `pass`.
+#'   *p* value, critical essential count/CVR, and `pass`. With very few
+#'   experts no count can reach `alpha` (4 of 4 gives *p* = .0625), so the
+#'   critical count and CVR are `NA` and `pass` is `FALSE`; the printout says
+#'   so.
 #'   It prints as a formatted table in APA style; the values themselves are
 #'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'
@@ -52,6 +57,7 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
   }
 
   if (is.matrix(essential) || is.data.frame(essential)) {
+    .check_no_id_column(essential, "essential")
     X <- as.matrix(essential)
     if (!is.numeric(X) && !is.logical(X)) {
       stop("Matrix input must contain numeric/logical 0/1 values.", call. = FALSE)
@@ -69,6 +75,11 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     N <- if (isTRUE(na.rm)) colSums(!is.na(X)) else rep.int(nrow(X), ncol(X))
     essential <- colSums(X, na.rm = isTRUE(na.rm))
   } else {
+    # A named vector of counts names its own items.
+    if (is.null(item_names) && !is.null(names(essential)) &&
+        all(nzchar(names(essential)))) {
+      item_names <- names(essential)
+    }
     essential <- as.numeric(essential)
     if (length(essential) < 1L || any(!is.finite(essential))) {
       stop("`essential` must contain finite counts.", call. = FALSE)

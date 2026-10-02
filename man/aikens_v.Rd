@@ -6,8 +6,8 @@
 \usage{
 aikens_v(
   ratings,
-  lo = 1,
-  hi = 5,
+  lo,
+  hi,
   ci = c("score", "none", "bootstrap"),
   B = 500,
   alpha = 0.05,
@@ -16,9 +16,12 @@ aikens_v(
 )
 }
 \arguments{
-\item{ratings}{Matrix/data.frame with judges in rows and items in columns.}
+\item{ratings}{Matrix/data.frame with judges in rows and items in columns.
+Every column is an item, so remove a rater-ID column first.}
 
-\item{lo, hi}{Numeric lower and upper bounds of the rating scale.}
+\item{lo, hi}{Lowest and highest points of the rating scale. Both are
+required: V rescales the mean rating by the range of the scale, so the
+same ratings give a different V on a 1-4 scale than on a 1-5 scale.}
 
 \item{ci}{Confidence-interval method: \code{"score"} (default), \code{"bootstrap"},
 or \code{"none"}.}
@@ -27,7 +30,8 @@ or \code{"none"}.}
 
 \item{alpha}{Two-sided CI alpha level; \code{.05} gives a 95\% interval.}
 
-\item{seed}{Optional integer seed for bootstrap reproducibility.}
+\item{seed}{Optional integer seed for bootstrap reproducibility. The
+random-number stream of the session is left as it was.}
 
 \item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
 If \code{TRUE}, item-specific effective judge counts are used.}

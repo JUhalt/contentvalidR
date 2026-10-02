@@ -71,7 +71,9 @@
 #' @param ratings A judges-by-items numeric matrix or data frame of relevance
 #'   ratings: one row per judge, one column per item.
 #' @param lo,hi Rating-scale bounds.
-#' @param relevance_cut Lowest rating treated as relevant. Defaults to `hi - 1`.
+#' @param relevance_cut Lowest rating treated as relevant. Defaults to
+#'   `hi - 1`, and to `hi` on a two-point scale. It must lie above `lo`: at
+#'   `lo` every rating would count as relevant.
 #' @param na.rm Permit missing ratings. Generalizability analysis additionally
 #'   requires complete cases and drops incomplete judges, reporting how many.
 #' @param bias_correct Apply the Wright-Douglas joint-maximum-likelihood bias
@@ -152,11 +154,8 @@ judge_validity <- function(ratings,
       !is.numeric(hi) || length(hi) != 1L || !is.finite(hi) || hi <= lo) {
     stop("`lo` and `hi` must be finite scalars with `hi > lo`.", call. = FALSE)
   }
-  if (is.null(relevance_cut)) relevance_cut <- hi - 1
-  if (!is.numeric(relevance_cut) || length(relevance_cut) != 1L ||
-      !is.finite(relevance_cut) || relevance_cut < lo || relevance_cut > hi) {
-    stop("`relevance_cut` must lie within the rating scale.", call. = FALSE)
-  }
+  if (is.null(relevance_cut)) relevance_cut <- .default_cut(lo, hi)
+  .validate_cut(relevance_cut, lo, hi, "relevance_cut")
   if (!is.numeric(severity_cut) || length(severity_cut) != 1L ||
       !is.finite(severity_cut) || severity_cut <= 0) {
     stop("`severity_cut` must be one positive number.", call. = FALSE)
@@ -171,6 +170,7 @@ judge_validity <- function(ratings,
     stop("`fit_range` must be two increasing positive numbers.", call. = FALSE)
   }
 
+  .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
   if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
   if (any(is.infinite(X))) stop("`ratings` cannot contain infinite values.", call. = FALSE)

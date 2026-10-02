@@ -7,12 +7,16 @@
 #' compatibility and sensitivity analysis.
 #'
 #' @param ratings Matrix/data.frame with judges in rows and items in columns.
-#' @param lo,hi Numeric lower and upper bounds of the rating scale.
+#'   Every column is an item, so remove a rater-ID column first.
+#' @param lo,hi Lowest and highest points of the rating scale. Both are
+#'   required: V rescales the mean rating by the range of the scale, so the
+#'   same ratings give a different V on a 1-4 scale than on a 1-5 scale.
 #' @param ci Confidence-interval method: `"score"` (default), `"bootstrap"`,
 #'   or `"none"`.
 #' @param B Number of bootstrap replicates when `ci = "bootstrap"`.
 #' @param alpha Two-sided CI alpha level; `.05` gives a 95% interval.
-#' @param seed Optional integer seed for bootstrap reproducibility.
+#' @param seed Optional integer seed for bootstrap reproducibility. The
+#'   random-number stream of the session is left as it was.
 #' @param na.rm Logical. If `FALSE` (default), missing ratings are an error.
 #'   If `TRUE`, item-specific effective judge counts are used.
 #'
@@ -36,12 +40,19 @@
 #' colnames(R) <- c("Item1", "Item2", "Item3")
 #' aikens_v(R, lo = 1, hi = 4)
 #' @export
-aikens_v <- function(ratings, lo = 1, hi = 5,
+aikens_v <- function(ratings, lo, hi,
                      ci = c("score", "none", "bootstrap"),
                      B = 500, alpha = 0.05, seed = NULL,
                      na.rm = FALSE) {
   ci <- match.arg(ci)
   .validate_flag(na.rm, "na.rm")
+  # V is the mean rating rescaled by the scale's range, so the bounds decide
+  # the answer and are never assumed.
+  if (missing(lo) || missing(hi)) {
+    stop("`lo` and `hi` are required: the lowest and highest points of the ",
+         "rating scale, for example `lo = 1, hi = 4`.", call. = FALSE)
+  }
+  .check_no_id_column(ratings, "ratings")
   R <- as.matrix(ratings)
 
   if (length(dim(R)) != 2L || nrow(R) < 1L || ncol(R) < 1L) {
@@ -55,8 +66,15 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one finite number between 0 and 1.", call. = FALSE)
   }
-  if (!all(R >= lo & R <= hi, na.rm = TRUE)) {
-    stop("Ratings fall outside the specified `lo`/`hi` bounds.", call. = FALSE)
+  outside <- colSums(R < lo | R > hi, na.rm = TRUE) > 0
+  if (any(outside)) {
+    where <- if (is.null(colnames(R))) {
+      paste("column", paste(which(outside), collapse = ", "))
+    } else {
+      paste0("column ", paste0("\"", colnames(R)[outside], "\"", collapse = ", "))
+    }
+    stop("Ratings fall outside the specified `lo`/`hi` bounds (", format(lo),
+         " to ", format(hi), ") in ", where, ".", call. = FALSE)
   }
   if (!isTRUE(na.rm) && anyNA(R)) {
     stop("Missing ratings found. Use `na.rm = TRUE` for itemwise deletion.", call. = FALSE)
@@ -88,7 +106,7 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     stringsAsFactors = FALSE
   )
 
-  if (ci == "none") return(.tag_component(out, "contentvalid_aiken", alpha = alpha))
+  if (ci == "none") return(.tag_component(out, "contentvalid_aiken", alpha = alpha, scale = c(lo, hi)))
 
   if (ci == "score") {
     z <- stats::qnorm(1 - alpha / 2)
@@ -101,7 +119,7 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     out$ci_low[N < 1L] <- NA_real_
     out$ci_high[N < 1L] <- NA_real_
     out$ci_method <- "Penfield-Giacobbi score"
-    return(.tag_component(out, "contentvalid_aiken", alpha = alpha))
+    return(.tag_component(out, "contentvalid_aiken", alpha = alpha, scale = c(lo, hi)))
   }
 
   if (!is.numeric(B) || length(B) != 1L || !is.finite(B) || B < 2 || B != floor(B)) {
@@ -112,21 +130,22 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
     if (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed) || seed != floor(seed)) {
       stop("`seed` must be NULL or one finite integer.", call. = FALSE)
     }
-    set.seed(as.integer(seed))
   }
   qlo <- alpha / 2
   qhi <- 1 - alpha / 2
-  bootV <- matrix(NA_real_, nrow = B, ncol = ncol(R))
-
-  for (j in seq_len(ncol(R))) {
-    x <- R[, j]
-    if (isTRUE(na.rm)) x <- x[!is.na(x)]
-    if (length(x) < 1L) next
-    for (b in seq_len(B)) {
-      xb <- x[sample.int(length(x), length(x), replace = TRUE)]
-      bootV[b, j] <- sum(xb - lo) / (length(xb) * k)
+  bootV <- .with_seed(seed, {
+    draws <- matrix(NA_real_, nrow = B, ncol = ncol(R))
+    for (j in seq_len(ncol(R))) {
+      x <- R[, j]
+      if (isTRUE(na.rm)) x <- x[!is.na(x)]
+      if (length(x) < 1L) next
+      for (b in seq_len(B)) {
+        xb <- x[sample.int(length(x), length(x), replace = TRUE)]
+        draws[b, j] <- sum(xb - lo) / (length(xb) * k)
+      }
     }
-  }
+    draws
+  })
 
   boot_quantile <- function(x, prob) {
     x <- x[is.finite(x)]
@@ -136,5 +155,5 @@ aikens_v <- function(ratings, lo = 1, hi = 5,
   out$ci_low <- apply(bootV, 2, boot_quantile, prob = qlo)
   out$ci_high <- apply(bootV, 2, boot_quantile, prob = qhi)
   out$ci_method <- "percentile bootstrap"
-  .tag_component(out, "contentvalid_aiken", alpha = alpha)
+  .tag_component(out, "contentvalid_aiken", alpha = alpha, scale = c(lo, hi))
 }

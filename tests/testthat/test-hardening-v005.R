@@ -34,7 +34,7 @@
 
 test_that("logical missing-data flags are validated explicitly", {
   x <- matrix(c(4, 4, 3, 4), nrow = 2)
-  expect_error(aikens_v(x, na.rm = 1), "TRUE or FALSE")
+  expect_error(aikens_v(x, lo = 1, hi = 4, na.rm = 1), "TRUE or FALSE")
   expect_error(cvi(matrix(c(1, 0), nrow = 1), na.rm = NA), "TRUE or FALSE")
   expect_error(cvr(c(3, 4), N = 5, na.rm = "yes"), "TRUE or FALSE")
   expect_error(ioc(data.frame(item="I1", judge=1, objective="A", score=1), na.rm = 0), "TRUE or FALSE")

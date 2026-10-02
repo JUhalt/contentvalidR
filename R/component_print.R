@@ -180,6 +180,7 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
   alpha <- .alpha_attr(x)
   has_ci <- all(c("ci_low", "ci_high") %in% names(x)) && any(!is.na(x$ci_low))
   methods <- if ("ci_method" %in% names(x)) unique(stats::na.omit(x$ci_method)) else character(0)
+  scale <- attr(x, "scale")
   .print_component(
     x, c("item", "N", "V"),
     title = "Aiken's V (Aiken, 1980)",
@@ -189,10 +190,16 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
       if (has_ci) tab[[.ci_label(alpha)]] <- .fmt_ci(x$ci_low, x$ci_high, digits)
       tab
     },
-    notes = if (has_ci && length(methods) == 1L) {
-      paste0("Interval: ", methods,
-             if (identical(methods, "Penfield-Giacobbi score")) " (Penfield & Giacobbi, 2004)", ".")
-    }
+    notes = c(
+      # V depends on the scale, so the scale it was computed on is stated.
+      if (is.numeric(scale) && length(scale) == 2L) {
+        sprintf("Scale: %s to %s.", format(scale[1]), format(scale[2]))
+      },
+      if (has_ci && length(methods) == 1L) {
+        paste0("Interval: ", methods,
+               if (identical(methods, "Penfield-Giacobbi score")) " (Penfield & Giacobbi, 2004)", ".")
+      }
+    )
   )
 }
 
@@ -204,14 +211,26 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
     x, c("item", "ne", "N", "cvr", "p_value", "critical_ne", "pass"),
     title = "Content validity ratio (CVR; Lawshe, 1975)",
     build = function() {
+      unreachable <- is.na(x$critical_ne) & x$N >= 1L
       data.frame(item = x$item, essential = paste0(x$ne, "/", x$N),
                  CVR = .fmt(x$cvr, digits), p = .fmt_p(x$p_value),
-                 needed = x$critical_ne, meets = .yes_no(x$pass),
+                 needed = ifelse(unreachable, "none",
+                                 ifelse(is.na(x$critical_ne), "--",
+                                        as.character(x$critical_ne))),
+                 meets = ifelse(unreachable, "--", .yes_no(x$pass)),
                  stringsAsFactors = FALSE)
     },
-    notes = sprintf(paste("needed: essential ratings the exact one-tailed binomial",
-                          "test requires at alpha = %s (Ayre & Scally, 2014)."),
-                    .fmt_alpha(alpha))
+    notes = c(
+      sprintf(paste("needed: essential ratings the exact one-tailed binomial",
+                    "test requires at alpha = %s (Ayre & Scally, 2014)."),
+              .fmt_alpha(alpha)),
+      if (any(is.na(x$critical_ne) & x$N >= 1L)) {
+        sprintf(paste("With %s, no count of essential ratings reaches alpha =",
+                      "%s, so the test cannot be met at that panel size."),
+                .or_fewer(max(x$N[is.na(x$critical_ne) & x$N >= 1L]), "expert"),
+                .fmt_alpha(alpha))
+      }
+    )
   )
 }
 

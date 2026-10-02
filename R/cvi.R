@@ -93,6 +93,7 @@ cvi <- function(binary,
                 alpha = 0.05) {
   .validate_flag(na.rm, "na.rm")
   ci <- match.arg(ci)
+  .check_no_id_column(binary, "binary")
   X <- as.matrix(binary)
   if (length(dim(X)) != 2L || nrow(X) < 1L || ncol(X) < 1L) {
     stop("`binary` must contain at least one judge and one item.", call. = FALSE)

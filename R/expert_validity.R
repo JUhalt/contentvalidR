@@ -53,12 +53,19 @@
 #'
 #' @param data Ratings data. For relevance, a judge-by-item numeric matrix/data
 #'   frame. For essentiality, either a judge-by-item 0/1 matrix/data frame or a
-#'   vector of essential counts. For congruence, a long data frame accepted by
-#'   [ioc()].
+#'   vector of essential counts, whose names, if it has any, become the item
+#'   names. For congruence, a long data frame accepted by [ioc()]. In a
+#'   judge-by-item table every column is an item, so remove a rater-ID column
+#'   first.
 #' @param mode One of `"relevance"`, `"essentiality"`, or `"congruence"`.
-#' @param lo,hi Rating-scale bounds for relevance mode.
+#' @param lo,hi Rating-scale bounds for relevance mode. The default is the
+#'   1-4 relevance scale; give the bounds for any other scale, because Aiken's
+#'   V and the relevance cut both depend on them. The printout states the
+#'   scale that was used.
 #' @param relevance_cut Lowest rating treated as relevant for CVI. Defaults to
-#'   `hi - 1`, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale.
+#'   `hi - 1`, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale, and to `hi` on a
+#'   two-point scale. It must lie above `lo`: at `lo` every rating would count
+#'   as relevant.
 #' @param N Panel size for essential-count vector input.
 #' @param alpha Inferential/CI alpha level.
 #' @param na.rm Permit itemwise/cellwise missing ratings where supported.
@@ -79,6 +86,7 @@
 #' @param agreement_B Bootstrap resamples for the agreement interval; `0` skips
 #'   the interval.
 #' @param seed Optional seed that makes the agreement interval reproducible.
+#'   The random-number stream of the session is left as it was.
 #' @param legacy Print the earlier published rules beside the decision, for
 #'   comparison, in relevance and essentiality modes. Default `FALSE`. They are
 #'   computed either way, stored in `details$earlier_methods`, and never change
@@ -232,12 +240,10 @@ expert_validity <- function(data,
         !is.numeric(hi) || length(hi) != 1L || !is.finite(hi) || hi <= lo) {
       stop("`lo` and `hi` must be finite scalars with `hi > lo`.", call. = FALSE)
     }
-    if (is.null(relevance_cut)) relevance_cut <- hi - 1
-    if (!is.numeric(relevance_cut) || length(relevance_cut) != 1L ||
-        !is.finite(relevance_cut) || relevance_cut < lo || relevance_cut > hi) {
-      stop("`relevance_cut` must lie within the rating scale.", call. = FALSE)
-    }
+    if (is.null(relevance_cut)) relevance_cut <- .default_cut(lo, hi)
+    .validate_cut(relevance_cut, lo, hi, "relevance_cut")
 
+    .check_no_id_column(data, "data")
     R <- as.matrix(data)
     aiken <- .untag_component(aikens_v(R, lo = lo, hi = hi, ci = "score",
                                        alpha = alpha, na.rm = na.rm))
@@ -353,19 +359,31 @@ expert_validity <- function(data,
       legacy = list(scale = scale)
     )
   } else if (mode == "essentiality") {
+    if (is.matrix(data) || is.data.frame(data)) .check_no_id_column(data, "data")
     res <- .untag_component(cvr(data, N = N, alpha = alpha, na.rm = na.rm))
+    # With very few experts no count can reach alpha (4 of 4 gives p = .0625),
+    # so no decision is possible, whatever the experts said.
+    too_few <- res$N >= 1L & is.na(res$critical_ne)
     res$recommendation <- ifelse(
       res$N < 1L,
       "Insufficient data",
-      ifelse(res$pass, "Supported", "Review")
+      ifelse(too_few, "Insufficient panel",
+             ifelse(res$pass, "Supported", "Review"))
     )
     res$interpretation <- ifelse(
       res$N < 1L,
       "No usable expert ratings are available.",
       ifelse(
-        res$pass,
-        "Essential ratings meet the exact one-sided binomial criterion for this panel size.",
-        "Essential ratings do not meet the exact panel-size criterion; review the item and expert rationale before deciding whether to revise or remove it."
+        too_few,
+        sprintf(paste("With %s, no count of essential ratings can reach alpha",
+                      "= %s, so the exact test cannot decide this item."),
+                ifelse(res$N == 1L, "1 expert", paste(res$N, "experts")),
+                .fmt_alpha(alpha)),
+        ifelse(
+          res$pass,
+          "Essential ratings meet the exact one-sided binomial criterion for this panel size.",
+          "Essential ratings do not meet the exact panel-size criterion; review the item and expert rationale before deciding whether to revise or remove it."
+        )
       )
     )
     res$status <- .workflow_status_from_recommendation(res$recommendation)
@@ -575,7 +593,7 @@ expert_validity <- function(data,
 
 # The opening verdict every workflow print shares: how many items met the
 # criterion, then the items flagged and the items with too little data, by name.
-.expert_verdict <- function(r, mode) {
+.expert_verdict <- function(r, mode, alpha = 0.05) {
   n <- nrow(r)
   if (is.null(r$status)) {
     r$status <- .workflow_status_from_recommendation(r$recommendation)
@@ -605,13 +623,24 @@ expert_validity <- function(data,
   }
   review <- r$item[r$status %in% "Review"]
   if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
-  thin <- r$item[r$status %in% "Insufficient data"]
+  small <- identical(mode, "essentiality") &
+    r$recommendation %in% "Insufficient panel"
+  thin <- r$item[r$status %in% "Insufficient data" & !small]
   if (length(thin)) {
     .say(if (identical(mode, "relevance")) {
       "Too few experts to judge (fewer than three):"
     } else {
       "Insufficient data:"
     }, paste(thin, collapse = ", "))
+  }
+  if (any(small)) {
+    .say(sprintf(
+      paste("Too few experts for the exact test: %s. With %s, no count of",
+            "essential ratings can reach alpha = %s, so these items have no",
+            "decision."),
+      paste(r$item[small], collapse = ", "),
+      .or_fewer(max(r$N[small]), "expert"), .fmt_alpha(alpha)
+    ))
   }
   invisible(NULL)
 }
@@ -640,6 +669,13 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cat("Items: ", s$n_items, " | Experts/item: ", s$n_experts_min,
         if (s$n_experts_min != s$n_experts_max) paste0("-", s$n_experts_max),
         "\n", sep = "")
+    # The scale and the cut decide every index below, so they are stated.
+    st <- x$settings
+    if (is.numeric(st$lo) && is.numeric(st$hi) && is.numeric(st$relevance_cut)) {
+      .say(sprintf("Scale: %s to %s | Relevant: a rating of %s%s", format(st$lo),
+                   format(st$hi), format(st$relevance_cut),
+                   if (st$relevance_cut < st$hi) " or higher" else ""))
+    }
     cat("Mean Aiken V: ", .fmt(s$mean_Aiken_V, digits),
         " | S-CVI/Ave: ", .fmt(s$S_CVI_Ave, digits),
         " | S-CVI/UA: ", .fmt(s$S_CVI_UA, digits), "\n", sep = "")
@@ -682,7 +718,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     missing_line("item")
     .say("Method:", x$settings$method)
     cat("\n")
-    .expert_verdict(x$results, "essentiality")
+    .expert_verdict(x$results, "essentiality", alpha = x$settings$alpha)
     cat("\n")
     r <- x$results
     sizes <- unique(r$N)

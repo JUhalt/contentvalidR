@@ -25,15 +25,22 @@ expert_validity(
 \arguments{
 \item{data}{Ratings data. For relevance, a judge-by-item numeric matrix/data
 frame. For essentiality, either a judge-by-item 0/1 matrix/data frame or a
-vector of essential counts. For congruence, a long data frame accepted by
-\code{\link[=ioc]{ioc()}}.}
+vector of essential counts, whose names, if it has any, become the item
+names. For congruence, a long data frame accepted by \code{\link[=ioc]{ioc()}}. In a
+judge-by-item table every column is an item, so remove a rater-ID column
+first.}
 
 \item{mode}{One of \code{"relevance"}, \code{"essentiality"}, or \code{"congruence"}.}
 
-\item{lo, hi}{Rating-scale bounds for relevance mode.}
+\item{lo, hi}{Rating-scale bounds for relevance mode. The default is the
+1-4 relevance scale; give the bounds for any other scale, because Aiken's
+V and the relevance cut both depend on them. The printout states the
+scale that was used.}
 
 \item{relevance_cut}{Lowest rating treated as relevant for CVI. Defaults to
-\code{hi - 1}, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale.}
+\code{hi - 1}, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale, and to \code{hi} on a
+two-point scale. It must lie above \code{lo}: at \code{lo} every rating would count
+as relevant.}
 
 \item{N}{Panel size for essential-count vector input.}
 
@@ -62,7 +69,8 @@ than two experts or two items report no agreement coefficient.}
 \item{agreement_B}{Bootstrap resamples for the agreement interval; \code{0} skips
 the interval.}
 
-\item{seed}{Optional seed that makes the agreement interval reproducible.}
+\item{seed}{Optional seed that makes the agreement interval reproducible.
+The random-number stream of the session is left as it was.}
 
 \item{legacy}{Print the earlier published rules beside the decision, for
 comparison, in relevance and essentiality modes. Default \code{FALSE}. They are

@@ -178,11 +178,12 @@ expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
 options(old)
 ```
 
-Nine experts show why the table was questioned. Eight of nine gives a CVR of
-.778, just under Lawshe's .78, so his table asks for all nine, while with eight
-experts it accepts seven. Wilson et al. describe the anomaly: the minimum rises
-steadily from 40 experts down to nine, then drops at eight. The exact test
-needs eight of nine.
+Nine experts show why the table was questioned. Its minimum rises steadily
+from 40 experts down to nine, then drops from .78 at nine to .75 at eight,
+which Wilson et al. (2012) treated as an anomaly. Ayre and Scally (2014)
+showed it is not one. With so few experts only a few CVR values are possible:
+.75 is 7 of 8, and .78 is 8 of 9 (.778) printed to two decimals, the same
+counts the exact test requires.
 
 In relevance mode, `legacy = TRUE` adds Fleiss' (1971) kappa on the
 relevant/not-relevant decision and the Polit and Beck (2006) benchmarks for

@@ -46,7 +46,8 @@ supplied, \code{retention} is ignored.}
 
 \item{n_iter}{Number of random data sets for parallel analysis.}
 
-\item{seed}{Optional seed that makes parallel analysis reproducible.}
+\item{seed}{Optional seed that makes parallel analysis reproducible. The
+random-number stream of the session is left as it was.}
 }
 \value{
 A list with components:

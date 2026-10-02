@@ -147,6 +147,7 @@ gtheory_content <- function(ratings,
     stop("`max_judges` must be one positive integer.", call. = FALSE)
   }
 
+  .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
   if (!is.numeric(X)) {
     stop("`ratings` must be numeric.", call. = FALSE)

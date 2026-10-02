@@ -19,11 +19,16 @@ calculated itemwise.}
 
 \item{na.rm}{Logical; for matrix input, permit itemwise missing ratings.}
 
-\item{item_names}{Optional item names for count-vector input.}
+\item{item_names}{Optional item names for count-vector input. By default
+the names of \code{essential} are used when it has them, and \code{Item1}, \code{Item2},
+and so on otherwise.}
 }
 \value{
 A data.frame containing item, \code{ne}, effective \code{N}, CVR, exact
-p-value, critical essential count/CVR, and \code{pass}.
+\emph{p} value, critical essential count/CVR, and \code{pass}. With very few
+experts no count can reach \code{alpha} (4 of 4 gives \emph{p} = .0625), so the
+critical count and CVR are \code{NA} and \code{pass} is \code{FALSE}; the printout says
+so.
 It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
