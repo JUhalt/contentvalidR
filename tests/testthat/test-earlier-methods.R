@@ -285,8 +285,33 @@ test_that("the printed comparison states each rule's source and agreement", {
   out9 <- gsub("[[:space:]]+", " ",
                paste(utils::capture.output(print(nine)), collapse = " "))
   expect_false(grepl("falls short", out9, fixed = TRUE))
-  expect_match(out9, "minimum CVR .78 for 9 panelists, which 8 of 9 meet",
+  expect_match(out9, "minimum CVR .78 for 9 panelists (8 of 9), which he labeled",
                fixed = TRUE)
+
+  # With panels of 9 and 13 together, two rows show a CVR equal to its
+  # minimum and get opposite verdicts, so the printout says how the minimum
+  # is applied.
+  M <- cbind(A = c(rep(1, 8), 0, rep(NA, 4)), B = c(rep(1, 10), 0, 0, 0),
+             C = c(rep(1, 11), 0, 0))
+  mixed <- expert_validity(M, mode = "essentiality", na.rm = TRUE, legacy = TRUE)
+  expect_identical(mixed$details$earlier_methods$items$lawshe_meets,
+                   c(TRUE, FALSE, TRUE))
+  out_mixed <- gsub("[[:space:]]+", " ",
+                    paste(utils::capture.output(print(mixed)), collapse = " "))
+  expect_match(out_mixed,
+               "for 9 panelists his .78 is 8 of 9 (.778) printed to two decimals",
+               fixed = TRUE)
+  expect_match(out_mixed, "B (.538) prints at the Lawshe cutoff of .54",
+               fixed = TRUE)
+
+  # An unrated first item does not hide the minimum of the panel size in use.
+  Z <- cbind(Z = rep(NA_real_, 10), A = c(rep(1, 9), 0), B = rep(1, 10))
+  out_z <- gsub("[[:space:]]+", " ", paste(utils::capture.output(print(
+    expert_validity(Z, mode = "essentiality", na.rm = TRUE, legacy = TRUE)
+  )), collapse = " "))
+  expect_match(out_z, "minimum CVR .62 for 10 panelists (9 of 10)", fixed = TRUE)
+  expect_false(grepl("lists no minimum", out_z, fixed = TRUE))
+  expect_false(grepl("minimum CVR NA", out_z, fixed = TRUE))
 })
 
 # Hernandez-Nieto (2002): the book's worked examples are the reference, and

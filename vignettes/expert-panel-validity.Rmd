@@ -166,10 +166,15 @@ A failure to clear the exact criterion is labeled `Review`, not automatic
 deletion. Expert rationales and domain coverage matter when deciding whether an
 item should be rewritten, retained for breadth, or removed.
 
+With four or fewer experts no count can clear the criterion at the default
+alpha: all four calling an item essential gives *p* = .0625. Such an item is
+labeled `Insufficient panel`, not `Review`, because the panel is too small to
+decide, whatever the experts said.
+
 ### Lawshe's table and its recalculation, for comparison
 
-Lawshe (1975) published a table of minimum CVR values, and Wilson, Pan and
-Schumsky (2012) recalculated it. `legacy = TRUE` prints both beside the exact
+Lawshe (1975) published a table of minimum CVR values, and Wilson et al.
+(2012) recalculated it. `legacy = TRUE` prints both beside the exact
 decision, without changing it:
 
 ```{r essentiality-legacy}
@@ -240,7 +245,8 @@ plot(expert_validity(d, mode = "congruence"))
 
 Relevance mode displays Aiken's V with its score interval and overlays I-CVI as
 a separate marker. Essentiality mode displays observed CVR against the exact
-panel-specific critical CVR. Congruence mode connects target IOC to the strongest
+panel-specific critical CVR, and marks with a cross an item whose panel was too
+small to test. Congruence mode connects target IOC to the strongest
 competitor so the alignment margin is visually explicit. These displays are
 diagnostic summaries; they do not create new validity thresholds.
 

@@ -7,7 +7,9 @@
 #' compatibility and sensitivity analysis.
 #'
 #' @param ratings Matrix/data.frame with judges in rows and items in columns.
-#'   Every column is an item, so remove a rater-ID column first.
+#'   Every column is an item; a column whose name looks like a rater ID (such
+#'   as `expert` or `rater_id`) stops the function, so remove it, or rename an
+#'   item that has such a name.
 #' @param lo,hi Lowest and highest points of the rating scale. Both are
 #'   required: V rescales the mean rating by the range of the scale, so the
 #'   same ratings give a different V on a 1-4 scale than on a 1-5 scale.
@@ -66,15 +68,21 @@ aikens_v <- function(ratings, lo, hi,
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one finite number between 0 and 1.", call. = FALSE)
   }
-  outside <- colSums(R < lo | R > hi, na.rm = TRUE) > 0
-  if (any(outside)) {
-    where <- if (is.null(colnames(R))) {
-      paste("column", paste(which(outside), collapse = ", "))
+  outside <- which(colSums(R < lo | R > hi, na.rm = TRUE) > 0)
+  if (length(outside)) {
+    named <- if (is.null(colnames(R))) {
+      as.character(outside)
     } else {
-      paste0("column ", paste0("\"", colnames(R)[outside], "\"", collapse = ", "))
+      paste0("\"", colnames(R)[outside], "\"")
     }
+    shown <- utils::head(named, 5L)
     stop("Ratings fall outside the specified `lo`/`hi` bounds (", format(lo),
-         " to ", format(hi), ") in ", where, ".", call. = FALSE)
+         " to ", format(hi), ") in ",
+         if (length(outside) == 1L) "column " else "columns ",
+         paste(shown, collapse = ", "),
+         if (length(named) > 5L) paste0(" and ", length(named) - 5L, " more"),
+         ". Set `lo` and `hi` to the lowest and highest points of the scale ",
+         "the experts used, or correct the ratings.", call. = FALSE)
   }
   if (!isTRUE(na.rm) && anyNA(R)) {
     stop("Missing ratings found. Use `na.rm = TRUE` for itemwise deletion.", call. = FALSE)

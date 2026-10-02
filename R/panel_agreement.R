@@ -116,7 +116,9 @@
 #' extension. Intervals vary slightly between runs unless `seed` is set.
 #'
 #' @param ratings A numeric matrix or data frame with raters in rows and items
-#'   in columns. Missing ratings are allowed.
+#'   in columns. Missing ratings are allowed. A column whose name looks like a
+#'   rater ID (such as `expert` or `rater_id`) stops the function, so remove
+#'   it, or rename an item that has such a name.
 #' @param method `"krippendorff"` (default) or `"ac1"`.
 #' @param level Measurement level for Krippendorff's alpha: `"ordinal"`
 #'   (default), `"nominal"`, or `"interval"`. Ignored for AC1.

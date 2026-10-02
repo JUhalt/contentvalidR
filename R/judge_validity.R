@@ -69,7 +69,9 @@
 #' person's ratings and therefore deserves a closer look.
 #'
 #' @param ratings A judges-by-items numeric matrix or data frame of relevance
-#'   ratings: one row per judge, one column per item.
+#'   ratings: one row per judge, one column per item. A column whose name
+#'   looks like a rater ID (such as `expert` or `rater_id`) stops the
+#'   function, so remove it, or rename an item that has such a name.
 #' @param lo,hi Rating-scale bounds.
 #' @param relevance_cut Lowest rating treated as relevant. Defaults to
 #'   `hi - 1`, and to `hi` on a two-point scale. It must lie above `lo`: at

@@ -84,7 +84,9 @@
 #' residual component. This is a property of the design, not of the estimator.
 #'
 #' @param ratings A judges-by-items numeric matrix or data frame: one row per
-#'   judge, one column per item.
+#'   judge, one column per item. A column whose name looks like a rater ID
+#'   (such as `expert` or `rater_id`) stops the function, so remove it, or
+#'   rename an item that has such a name.
 #' @param na.rm If `TRUE`, judges with any missing rating are dropped so that a
 #'   complete crossed design remains, and the number dropped is reported. If
 #'   `FALSE` (default), missing values are an error.

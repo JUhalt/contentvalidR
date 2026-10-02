@@ -17,7 +17,9 @@ aikens_v(
 }
 \arguments{
 \item{ratings}{Matrix/data.frame with judges in rows and items in columns.
-Every column is an item, so remove a rater-ID column first.}
+Every column is an item; a column whose name looks like a rater ID (such
+as \code{expert} or \code{rater_id}) stops the function, so remove it, or rename an
+item that has such a name.}
 
 \item{lo, hi}{Lowest and highest points of the rating scale. Both are
 required: V rescales the mean rating by the range of the scale, so the
