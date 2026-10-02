@@ -164,6 +164,27 @@
   row
 }
 
+# Text round labels are put in order by the number each one carries ("R1",
+# "Round 2", "wave 10"), whatever order the rows are in. Labels without a
+# number, or sharing one, cannot be ordered from their text, and taking the
+# order of the rows instead would analyze a sorted or merged data set in the
+# wrong sequence without a word.
+.delphi_order_labels <- function(labels) {
+  has_number <- grepl("[0-9]", labels)
+  number <- rep(NA_real_, length(labels))
+  number[has_number] <- as.numeric(
+    regmatches(labels, regexpr("[0-9]+(\\.[0-9]+)?", labels))
+  )
+  if (anyNA(number) || anyDuplicated(number)) {
+    stop("The round labels (",
+         paste0("\"", labels, "\"", collapse = ", "),
+         ") do not say which round came first. Number the rounds, or make ",
+         "the round column a factor with its levels in round order.",
+         call. = FALSE)
+  }
+  labels[order(number)]
+}
+
 .delphi_prepare <- function(ratings, expert_col, item_col, round_col,
                             rating_col, lo, hi) {
   if (!is.data.frame(ratings)) {
@@ -207,7 +228,7 @@
   } else if (is.numeric(rounds_raw)) {
     as.character(sort(unique(rounds_raw)))
   } else {
-    unique(as.character(rounds_raw))
+    .delphi_order_labels(unique(as.character(rounds_raw)))
   }
 
   d <- data.frame(
@@ -234,19 +255,22 @@
 # `teaching` holds the fuller explanation, printed with the key, so an
 # experienced reader can hide it (options(contentvalidR.show_key = FALSE))
 # without losing a caveat. Each element is a paragraph.
-.delphi_method_note <- function(method, weights, intervals = TRUE) {
+.delphi_method_note <- function(method, weights, intervals = TRUE,
+                                alpha = 0.05) {
   if (identical(method, "kappa")) {
+    level <- paste0(format(100 * (1 - alpha)), "%")
     return(list(
       always = c(
         paste("Read kappa as a trend across rounds, beside the share of experts",
-              "who kept their rating (unchanged), not against a cut-off: kappa",
-              "falls as a panel converges on one category, so a stable panel",
-              "can show a low kappa (Holey et al., 2007)."),
+              "who kept their rating (unchanged), not against a cutoff. Kappa",
+              "is low when ratings concentrate in one category (Feinstein &",
+              "Cicchetti, 1990), so a stable, agreeing panel can show a low",
+              "kappa; Statement 7 in Holey et al. (2007) is an example."),
         if (intervals) {
-          paste("The kappa intervals resample the experts (Klar et al., 2002).",
-                "With fewer than about 40 experts they cover less than their",
-                "stated 95%, so read them as rough indications of precision,",
-                "not as tests.")
+          paste0("The kappa intervals resample the experts (Klar et al., 2002). ",
+                 "With fewer than about 40 experts they cover less than their ",
+                 "stated ", level, ", so read them as rough indications of ",
+                 "precision, not as tests.")
         }
       ),
       teaching = c(
@@ -262,9 +286,11 @@
             paste("A change of two scale points counts twice a change of one",
                   "(Cohen, 1968).")
           },
-          "No verbal labels such as 'substantial' are shown, because kappa",
-          "falls when ratings converge, which is what a Delphi aims for: Holey",
-          "et al. saw a low kappa for their most-agreed statement."
+          "No verbal labels such as 'substantial' are shown, because kappa is",
+          "low when ratings concentrate in one category, which is where a",
+          "Delphi aims to end: in Holey et al. (2007), the statement nearly",
+          "every expert agreed with had the lowest kappa between rounds 1 and",
+          "2 (.31)."
         ),
         if (intervals) {
           paste("The intervals are percentile bootstraps that resample the",
@@ -303,7 +329,7 @@
       "details$stability shows how far short each table falls."
     ),
     chisq_group = paste(
-      "Stability is Dajani, Sincoff and Talley's (1979) chi-square test",
+      "Stability is the chi-square test of Dajani et al. (1979)",
       "comparing the two rounds' rating distributions. Here a non-significant",
       "result (p >= alpha) is read as stability, so a small panel will often",
       "look stable simply because the test has little power. The test treats",
@@ -317,7 +343,7 @@
       "summed differences between the two rounds' rating distributions, as a",
       "share of the experts compared, with change below 15% read as stable.",
       "The authors say the measure has no statistical theory behind it; the",
-      "15% cut-off came from the movement they observed in one classroom",
+      "15% cutoff came from the movement they observed in one classroom",
       "Delphi. Experts swapping answers cancel out, and in a small panel one",
       "expert is a large share: with 10 experts one net change is already 10%."
     )
@@ -347,10 +373,12 @@
 #' `agree_cut`. `prop_agree` is the share of responding experts who agree,
 #' which on a relevance scale is the I-CVI. An item reaches consensus when
 #' `prop_agree` meets `consensus_threshold`. There is deliberately no default
-#' threshold: Diamond et al. (2014) recommend fixing it before the study,
-#' and the 75% median they report describes common practice rather than a
-#' validated cut-off. Without a threshold, items are reported as
-#' `Descriptive only`.
+#' threshold: Diamond et al. (2014) recommend fixing it before the study.
+#' Among the 25 studies in their review that defined consensus as a
+#' percentage of agreement, the median threshold was 75%, which describes
+#' common practice rather than a validated cutoff. The function cannot know
+#' when a threshold was chosen, so its output says only that one was
+#' supplied. Without a threshold, items are reported as `Descriptive only`.
 #'
 #' **Stability** is computed for each item and each pair of consecutive
 #' rounds, on the experts who rated the item in both. `prop_unchanged`, the
@@ -358,7 +386,7 @@
 #' chooses the statistic reported beside it:
 #'
 #' * `"kappa"` (default): weighted kappa between each expert's ratings in the
-#'   two rounds (Holey et al., 2007), read as a trend with no cut-off.
+#'   two rounds (Holey et al., 2007), read as a trend with no cutoff.
 #'   Quadratic weights (the default) make kappa the intraclass correlation of
 #'   the two rounds' ratings (Fleiss & Cohen, 1973); linear weights count a
 #'   two-point change twice a one-point change (Cohen, 1968). The interval is
@@ -367,7 +395,7 @@
 #' * `"lambda"`: Chaffin and Talley's (1980) index of predictive association.
 #' * `"chisq_individual"`: Chaffin and Talley's (1980) chi-square test on
 #'   each expert's pair of ratings; a significant result is read as stable.
-#' * `"chisq_group"`: Dajani, Sincoff and Talley's (1979) chi-square test on
+#' * `"chisq_group"`: the chi-square test of Dajani et al. (1979) on
 #'   the two rounds' distributions; a non-significant result is read as
 #'   stable.
 #' * `"percent_change"`: the net change of Scheibe et al. (1975/2002),
@@ -380,14 +408,25 @@
 #'
 #' Items may enter or leave between rounds. An item's last round is the last
 #' one in which anyone rated it, and stability is computed only between
-#' consecutive rounds in which it was rated.
+#' consecutive rounds in which it was rated. An item rated in rounds 1 and 3
+#' but not 2 therefore has no pair to compare, and an item rated in rounds 1,
+#' 2 and 4 reports the stability of rounds 1 and 2 beside its round 4
+#' consensus. `details$stability` names the rounds of every pair.
+#'
+#' **Round order.** Numbered rounds are put in numeric order and a factor
+#' keeps the order of its levels. Text labels are ordered by the number each
+#' carries (`"R1"`, `"Round 2"`, `"wave 10"`), whatever order the rows are in.
+#' Text labels without a number, such as `"pre"` and `"post"`, cannot be
+#' ordered from the text, so they stop with a request for a factor. The
+#' printout lists the rounds in the order used.
 #'
 #' @section When a stability statistic is undefined:
-#' A stability statistic can be `NA` for two different reasons, and
+#' A stability statistic can be `NA` for different reasons, and
 #' `prop_unchanged` tells them apart. When `prop_unchanged` is also `NA`, the
-#' item has no pair of consecutive rounds: it was rated in one round only.
-#' When `prop_unchanged` has a value, a pair exists but the statistic is
-#' undefined for that data, and `details$stability$note` says why.
+#' item has no pair of consecutive rounds: it was rated in one round only, or
+#' in rounds that are not consecutive. When `prop_unchanged` has a value, a
+#' pair exists but the statistic is undefined for that data, and
+#' `details$stability$note` says why.
 #'
 #' The common case is the one that reads worst if reported bare. Kappa is
 #' chance-corrected, so when every paired rating in both rounds falls in one
@@ -400,10 +439,14 @@
 #' @section Why kappa has no verbal labels:
 #' Landis and Koch (1977) introduced the familiar labels (slight, fair,
 #' moderate, substantial, almost perfect) and called their divisions clearly
-#' arbitrary. Kappa also falls when ratings converge on one category, which is
-#' what a Delphi aims for: in Holey et al. (2007), the statement experts agreed
-#' on most had the lowest kappa. A label would therefore tend to worsen as a
-#' panel succeeds. Read kappa as a trend, next to `prop_unchanged`.
+#' arbitrary. Kappa is also low when ratings concentrate in one category
+#' (Feinstein & Cicchetti, 1990), which is where a Delphi aims to end. In
+#' Holey et al. (2007), the statement nearly every expert agreed with, and
+#' ranked most important in every round, had the lowest kappa between rounds
+#' 1 and 2 (.31) and one of the highest between rounds 2 and 3 (.71); they
+#' suggest the narrow range of answers as the reason. A label could therefore
+#' worsen as a panel succeeds. Read kappa as a trend, next to
+#' `prop_unchanged`.
 #'
 #' @section Reading the kappa interval:
 #' The interval beside kappa is a percentile bootstrap: the experts are
@@ -436,16 +479,18 @@
 #'
 #' @param ratings A data frame with one row per expert, item, and round.
 #'   Rows with a missing rating are ignored.
-#' @param expert_col,item_col,round_col,rating_col Column names in `ratings`.
+#' @param expert_col,item_col,rating_col Column names in `ratings`.
 #' @param lo,hi Lowest and highest points of the rating scale, as whole
 #'   numbers.
 #' @param agree_cut Rating at or above which an expert counts as agreeing.
 #'   Defaults to `hi - 1`, the usual relevance cut on a 4-point scale, and to
 #'   `hi` on a two-point scale. It must lie above `lo`: at `lo` every rating
 #'   would count as agreement.
+#' @param round_col Name of the round column. Rounds may be numbers, a
+#'   factor, or text labels that carry a number; see *Round order* in Details.
 #' @param consensus_threshold Share of experts that must agree for consensus,
-#'   between 0 and 1, fixed before the study. `NULL` (default) reports
-#'   agreement descriptively.
+#'   between 0 and 1. Fix it before the study (Diamond et al., 2014). `NULL`
+#'   (default) reports agreement descriptively.
 #' @param stability Stability statistic; see Details.
 #' @param kappa_weights `"quadratic"` (default) or `"linear"`, used when
 #'   `stability = "kappa"`.
@@ -459,8 +504,9 @@
 #'   `contentvalid_workflow`. `results` has one row per item: its last round,
 #'   `n_experts` there, `prop_agree`, `consensus`, and, for the last pair of
 #'   consecutive rounds, `prop_unchanged`, `stability` with `stability_low`
-#'   and `stability_high` where an interval exists, `stability_p` for the
-#'   chi-square methods, and `stable` for the methods that make a decision.
+#'   and `stability_high` where an interval exists, `stability_df` and
+#'   `stability_p` for the chi-square methods, and `stable` for the methods
+#'   that make a decision.
 #'   `details` holds `consensus` (every item and round), `stability` (every
 #'   item and pair of rounds, including `n_paired`, `min_expected` for the
 #'   chi-square methods, `n_boot_usable` for the kappa interval, and a
@@ -487,6 +533,10 @@
 #' *Journal of Clinical Epidemiology, 67*(4), 401–409.
 #' \doi{10.1016/j.jclinepi.2013.12.002}
 #'
+#' Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
+#' I. The problems of two paradoxes. *Journal of Clinical Epidemiology,
+#' 43*(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
+#'
 #' Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 #' the intraclass correlation coefficient as measures of reliability.
 #' *Educational and Psychological Measurement, 33*(3), 613–619.
@@ -494,8 +544,8 @@
 #'
 #' Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
 #' exploration of the use of simple statistics to measure consensus and
-#' stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52.
-#' \doi{10.1186/1471-2288-7-52}
+#' stability in Delphi studies. *BMC Medical Research Methodology, 7*,
+#' Article 52. \doi{10.1186/1471-2288-7-52}
 #'
 #' Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
 #' bootstrap confidence interval for kappa in small samples. *Journal of the
@@ -638,6 +688,7 @@ delphi_validity <- function(ratings,
       stability = if (is.null(sl)) NA_real_ else sl$value,
       stability_low = if (is.null(sl)) NA_real_ else sl$lower,
       stability_high = if (is.null(sl)) NA_real_ else sl$upper,
+      stability_df = if (is.null(sl)) NA_integer_ else sl$df,
       stability_p = if (is.null(sl)) NA_real_ else sl$p_value,
       stable = if (is.null(sl)) NA else sl$stable,
       stringsAsFactors = FALSE
@@ -750,6 +801,25 @@ delphi_validity <- function(ratings,
 
 .delphi_pair_label <- function(from, to) paste0(from, "->", to)
 
+# The stability statistic in words, with its source, for the print and the
+# summary.
+.delphi_method_label <- function(settings) {
+  switch(
+    settings$stability,
+    kappa = paste0("weighted kappa (", settings$kappa_weights, " weights)"),
+    lambda = "lambda (Chaffin & Talley, 1980)",
+    chisq_individual = "individual chi-square (Chaffin & Talley, 1980)",
+    chisq_group = "group chi-square (Dajani et al., 1979)",
+    percent_change = "net percent change (Scheibe et al., 1975/2002)"
+  )
+}
+
+# A consensus threshold as a percentage: whole when it is whole (75%), and to
+# one decimal otherwise (66.7%, not 66.66667%).
+.delphi_percent <- function(p) {
+  paste0(format(round(100 * p, 1), nsmall = 0, drop0trailing = TRUE), "%")
+}
+
 .delphi_wide <- function(stab, column, digits, bounded = TRUE) {
   if (!nrow(stab)) return(NULL)
   lab <- .delphi_pair_label(stab$from_round, stab$to_round)
@@ -771,6 +841,50 @@ delphi_validity <- function(ratings,
   !method %in% c("chisq_individual", "chisq_group")
 }
 
+# The rounds in which each item was rated, as positions in the study's rounds.
+.delphi_rated_rounds <- function(x) {
+  cons <- x$details$consensus
+  if (!is.data.frame(cons) || !nrow(cons)) return(list())
+  split(match(cons$round, x$design$rounds),
+        factor(cons$item, levels = unique(cons$item)))
+}
+
+# Names the items whose stability the table could misstate: an item rated in
+# rounds that are not consecutive has no pair to compare, and an item rated
+# again after a gap reports an earlier pair than its last round.
+.delphi_pair_notes <- function(x) {
+  rounds <- x$design$rounds
+  stab <- x$details$stability
+  rated <- .delphi_rated_rounds(x)
+  no_pair <- character(0)
+  earlier <- character(0)
+  for (it in names(rated)) {
+    idx <- sort(rated[[it]])
+    if (length(idx) < 2L) next
+    si <- stab[stab$item == it, , drop = FALSE]
+    if (!nrow(si)) {
+      no_pair <- c(no_pair, sprintf("%s (rounds %s)", it,
+                                    paste(rounds[idx], collapse = ", ")))
+    } else if (!identical(as.character(si$to_round[nrow(si)]),
+                          as.character(rounds[max(idx)]))) {
+      earlier <- c(earlier, sprintf(
+        "%s (%s)", it,
+        .delphi_pair_label(si$from_round[nrow(si)], si$to_round[nrow(si)])
+      ))
+    }
+  }
+  if (length(no_pair)) {
+    .say(paste0("Rated in rounds that are not consecutive, so no pair was ",
+                "compared: ", paste(no_pair, collapse = "; "), "."))
+  }
+  if (length(earlier)) {
+    .say(paste0("Rated again after a gap, so the stability shown is from an ",
+                "earlier pair than the last round: ",
+                paste(earlier, collapse = "; "), "."))
+  }
+  invisible(NULL)
+}
+
 #' @export
 print.contentvalid_delphi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
@@ -786,21 +900,16 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
       paste(x$design$rounds, collapse = ", "), ")\n", sep = "")
   cat("Experts per round: ", paste(panel$n_experts, collapse = ", "), "\n",
       sep = "")
+  # The function is told the threshold, not when it was chosen, so it reports
+  # only that one was supplied.
   .say(paste0(
-    "Agreement: a rating of ", format(s$agree_cut), " or higher on the ",
-    format(s$lo), "-", format(s$hi), " scale. Consensus threshold: ",
+    "Agreement: a rating of ", format(s$agree_cut),
+    if (s$agree_cut < s$hi) " or higher", " on the ",
+    format(s$lo), " to ", format(s$hi), " scale. Consensus threshold: ",
     if (is.null(s$consensus_threshold)) "none set, so agreement is descriptive." else
-      paste0(format(100 * s$consensus_threshold), "%, fixed before the study.")
+      paste0(.delphi_percent(s$consensus_threshold), ", as supplied.")
   ))
-  method_label <- switch(
-    s$stability,
-    kappa = paste0("weighted kappa (", s$kappa_weights, " weights)"),
-    lambda = "lambda (Chaffin & Talley, 1980)",
-    chisq_individual = "individual chi-square (Chaffin & Talley, 1980)",
-    chisq_group = "group chi-square (Dajani et al., 1979)",
-    percent_change = "net percent change (Scheibe et al., 1975/2002)"
-  )
-  .say("Stability:", method_label, "between consecutive rounds")
+  .say("Stability:", .delphi_method_label(s), "between consecutive rounds")
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
     cat("Test: alpha = ", .fmt_alpha(s$alpha), "\n", sep = "")
   }
@@ -850,7 +959,12 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   .print_table(tab)
   cat("\n")
   .say("agree: share of experts agreeing in the item's last round. unchanged:",
-       "share who kept their rating between the last two rounds.")
+       "share who kept their rating between the item's last pair of",
+       "consecutive rounds.")
+  # An item rated in rounds that are not consecutive has no pair to compare,
+  # and one whose last pair is not its last two rounds would otherwise be
+  # misread, so both are named.
+  .delphi_pair_notes(x)
 
   if (nrow(stab) && length(unique(paste(stab$from_round, stab$to_round))) > 1L) {
     cat("\nStability trend (", if (val == "chi_sq") "chi-square" else val,
@@ -884,16 +998,21 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 
   cat("\n")
   note <- .delphi_method_note(s$stability, s$kappa_weights,
-                              intervals = any(!is.na(stab$lower)))
+                              intervals = any(!is.na(stab$lower)),
+                              alpha = s$alpha)
   for (i in seq_along(note$always)) {
     if (i > 1L) cat("\n")
     .say(note$always[[i]])
   }
+  cat("\n")
   if (is.null(s$consensus_threshold)) {
-    cat("\n")
     .say("Diamond et al. (2014) recommend defining consensus before the study.",
-         "Their review found a median threshold of 75%, which describes common",
-         "practice rather than a validated cut-off.")
+         "Among the 25 studies in their review that defined it as a percentage",
+         "of agreement, the median threshold was 75%, which describes common",
+         "practice rather than a validated cutoff.")
+  } else {
+    .say("Diamond et al. (2014) recommend fixing the consensus threshold",
+         "before the study. Report whether this one was.")
   }
   if (length(unique(panel$n_experts)) > 1L) {
     cat("\n")
@@ -968,6 +1087,49 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   invisible(NULL)
 }
 
+# Each round's consensus decision for every item rated in it, as a shared
+# status, by the rule the fit applies to an item's last round: fewer than
+# three experts is no decision, however many of them agreed.
+.delphi_round_status <- function(consensus, rounds) {
+  lapply(rounds, function(rd) {
+    cr <- consensus[consensus$round == rd, , drop = FALSE]
+    st <- ifelse(is.na(cr$consensus), "Descriptive only",
+                 ifelse(cr$n_experts < 3L, "Insufficient data",
+                        ifelse(cr$consensus, "Supported", "Review")))
+    stats::setNames(st, cr$item)
+  })
+}
+
+# Where the stability view puts its round pairs and its y-axis ticks. One
+# label per pair, at that pair's own position: an item that entered late
+# lists its first pair out of order. A chi-square gets ticks over its own
+# range; the bounded statistics get ticks from the bottom of the data to 1.
+.delphi_stability_axes <- function(stab, rounds, unbounded) {
+  pair_at <- match(stab$from_round, rounds)
+  first <- !duplicated(pair_at)
+  ord <- order(pair_at[first])
+  values <- if (unbounded) stab$value else c(stab$value, stab$prop_unchanged)
+  values <- values[is.finite(values)]
+  ylim <- if (!length(values)) {
+    c(0, 1)
+  } else if (unbounded) {
+    range(c(0, values))
+  } else {
+    range(c(0, 1, values))
+  }
+  if (diff(ylim) == 0) ylim[2] <- ylim[1] + 1
+  top <- if (unbounded) ylim[2] else 1
+  ticks <- pretty(c(ylim[1], top))
+  list(
+    pair_at = pair_at,
+    x_at = pair_at[first][ord],
+    x_labels = paste0(stab$from_round[first], "-", stab$to_round[first])[ord],
+    # Headroom above the data holds the legend, clear of the lines.
+    ylim = c(ylim[1], ylim[2] + 0.16 * diff(ylim)),
+    y_at = ticks[ticks >= ylim[1] - 1e-9 & ticks <= top + 1e-9]
+  )
+}
+
 # The axis label says which statistic is plotted, in full.
 .delphi_axis_label <- function(settings) {
   switch(settings$stability,
@@ -986,35 +1148,40 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' which a plot shows better than a table of round pairs.
 #'
 #' @details
-#' `which = "consensus"` draws each item's share of experts agreeing, round by
+#' `type = "consensus"` draws each item's share of experts agreeing, round by
 #' round. A line that stops early belongs to an item that settled and was set
 #' aside. The consensus threshold is drawn only when one was set, because the
 #' analysis applies no threshold without it.
 #'
-#' `which = "stability"` draws the stability statistic for each pair of
-#' consecutive rounds, with the share of experts who kept their rating as open
-#' circles. No bands or shaded regions are drawn behind kappa: its verbal
-#' benchmarks are arbitrary, and kappa falls as a panel converges, so a shaded
-#' "good" region would mislead exactly when a Delphi is succeeding. See
-#' [delphi_validity()].
+#' `type = "stability"` draws the stability statistic for each pair of
+#' consecutive rounds. Beside kappa, lambda and net change, which share the 0
+#' to 1 scale, the share of experts who kept their rating is drawn as open
+#' circles; a chi-square has its own scale, so it is drawn alone. No bands or
+#' shaded regions are drawn behind kappa: its verbal benchmarks are
+#' arbitrary, and kappa is low when ratings concentrate in one category, so a
+#' shaded "good" region would mislead exactly when a Delphi is succeeding.
+#' See [delphi_validity()].
 #'
-#' `which = "distribution"` draws every rating in every round as a diverging
+#' `type = "distribution"` draws every rating in every round as a diverging
 #' stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,
 #' split at `agree_cut`. The right-hand length is the share agreeing, read
 #' against the dashed consensus threshold, and the symbol beside it is that
-#' round's consensus decision. Rounds in which an item was not rated, because
-#' it had been set aside, are marked "not rated".
+#' round's consensus decision: a cross where fewer than three experts rated
+#' the item, which is no decision. Rounds in which an item was not rated,
+#' because it had been set aside, are marked "not rated".
 #'
 #' @param x A fitted `contentvalid_delphi` object.
-#' @param which `"consensus"` (default), `"stability"`, or `"distribution"`.
+#' @param type `"consensus"` (default), `"stability"`, or `"distribution"`.
+#' @param which The name `type` had before 1.0, still accepted so earlier
+#'   code runs: `plot(fit, which = "stability")` is `type = "stability"`.
 #' @param show_legend Draw the legend. Defaults to `TRUE`.
-#' @param apa Used by `which = "distribution"`. `TRUE` (default) draws in
+#' @param apa Used by `type = "distribution"`. `TRUE` (default) draws in
 #'   gray, with darker meaning a higher rating, as an APA figure is printed.
 #'   `FALSE` draws ratings below the agreement cut in brown and ratings at or
 #'   above it in teal, a colorblind-safe scheme for slides and posters. The
 #'   consensus and stability views color each item's line so the lines can be
 #'   told apart.
-#' @param labels For `which = "distribution"`, one label per rating category,
+#' @param labels For `type = "distribution"`, one label per rating category,
 #'   lowest first. Defaults to `"Rated 1"`, `"Rated 2"`, and so on.
 #' @param ... Passed to [graphics::plot()].
 #'
@@ -1038,18 +1205,20 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2)), lo = 1, hi = 4,
 #'                        consensus_threshold = 0.75, B = 0)
 #' plot(fit)
-#' plot(fit, which = "stability")
-#' plot(fit, which = "distribution")
+#' plot(fit, type = "stability")
+#' plot(fit, type = "distribution")
 #' @export
 plot.contentvalid_delphi <- function(x,
-                                     which = c("consensus", "stability",
-                                               "distribution"),
+                                     type = c("consensus", "stability",
+                                              "distribution"),
                                      show_legend = TRUE, apa = TRUE,
-                                     labels = NULL, ...) {
-  which <- match.arg(which)
+                                     labels = NULL, which = NULL, ...) {
+  # `which` was this argument's name before 1.0 and is still accepted.
+  if (!is.null(which)) type <- which
+  type <- match.arg(type)
   .validate_flag(show_legend, "show_legend")
   .validate_flag(apa, "apa")
-  if (which == "distribution") {
+  if (type == "distribution") {
     fits <- x$details$round_fits
     ratings <- lapply(fits, function(f) f$details$ratings)
     if (!length(fits) || any(vapply(ratings, is.null, logical(1)))) {
@@ -1064,14 +1233,7 @@ plot.contentvalid_delphi <- function(x,
       round_labels <- paste0("R", round_labels)
     }
     names(ratings) <- round_labels
-    cons <- x$details$consensus
-    # The symbol is each round's own consensus decision, as the fit made it.
-    status <- lapply(rounds, function(rd) {
-      cr <- cons[cons$round == rd, , drop = FALSE]
-      st <- ifelse(is.na(cr$consensus), "Descriptive only",
-                   ifelse(cr$consensus, "Supported", "Review"))
-      stats::setNames(st, cr$item)
-    })
+    status <- .delphi_round_status(x$details$consensus, rounds)
     threshold <- x$settings$consensus_threshold
     .plot_rating_distribution(
       rounds = ratings, items = unique(as.character(x$results$item)),
@@ -1090,7 +1252,7 @@ plot.contentvalid_delphi <- function(x,
   # Room on the right for the item labels.
   right_pad <- 1 + 0.35 * max(nchar(items))
 
-  if (which == "consensus") {
+  if (type == "consensus") {
     cons <- x$details$consensus
     xs <- lapply(items, function(it) match(cons$round[cons$item == it], rounds))
     ys <- lapply(items, function(it) cons$prop_agree[cons$item == it])
@@ -1112,7 +1274,7 @@ plot.contentvalid_delphi <- function(x,
     if (isTRUE(show_legend) && !is.null(threshold)) {
       graphics::legend("top",
                        legend = paste0("Consensus threshold (",
-                                       format(100 * threshold), "%)"),
+                                       .delphi_percent(threshold), ")"),
                        lty = 3, bty = "n", cex = 0.7, horiz = TRUE)
     }
     return(invisible(x))
@@ -1123,36 +1285,42 @@ plot.contentvalid_delphi <- function(x,
     stop("This analysis has no pair of consecutive rounds to plot.",
          call. = FALSE)
   }
-  pair_at <- match(stab$from_round, rounds)
+  # A chi-square runs far above 1, so it gets an axis of its own scale, and
+  # the share who kept their rating (0 to 1) is not drawn against it.
+  unbounded <- !.delphi_bounded(x$settings$stability)
+  ax <- .delphi_stability_axes(stab, rounds, unbounded)
+  pair_at <- ax$pair_at
+  ylim <- ax$ylim
   xs <- lapply(items, function(it) pair_at[stab$item == it])
   ys <- lapply(items, function(it) stab$value[stab$item == it])
   unchanged <- lapply(items, function(it) stab$prop_unchanged[stab$item == it])
 
-  finite <- unlist(c(ys, unchanged))
-  finite <- finite[is.finite(finite)]
-  ylim <- if (!length(finite)) c(0, 1) else range(c(0, 1, finite))
-  ylim[2] <- ylim[2] + 0.16 * diff(ylim)
-  labels <- paste0(stab$from_round[!duplicated(pair_at)], "-",
-                   stab$to_round[!duplicated(pair_at)])
-
   graphics::plot(NA, xlim = c(1, max(pair_at) + right_pad * 0.12), ylim = ylim,
                  xaxt = "n", yaxt = "n", xlab = "Pair of rounds",
                  ylab = .delphi_axis_label(x$settings), ...)
-  graphics::axis(1, at = sort(unique(pair_at)), labels = labels)
-  # Ticks stop at 1, below the headroom kept for the legend.
-  ticks <- pretty(c(ylim[1], 1))
-  .axis_bounded(2, at = ticks[ticks >= ylim[1] & ticks <= 1])
+  graphics::axis(1, at = ax$x_at, labels = ax$x_labels)
+  # Ticks stop below the headroom kept for the legend. A chi-square keeps the
+  # leading zero APA drops only for statistics that cannot exceed 1.
+  if (unbounded) {
+    graphics::axis(2, at = ax$y_at)
+  } else {
+    .axis_bounded(2, at = ax$y_at)
+  }
   for (i in seq_along(items)) {
     graphics::lines(xs[[i]], ys[[i]], col = colours[i], lwd = 1.5)
     graphics::points(xs[[i]], ys[[i]], col = colours[i], pch = 19, cex = 0.8)
-    graphics::points(xs[[i]], unchanged[[i]], col = colours[i], pch = 1, cex = 0.8)
+    if (!unbounded) {
+      graphics::points(xs[[i]], unchanged[[i]], col = colours[i], pch = 1,
+                       cex = 0.8)
+    }
   }
   .delphi_end_labels(xs, ys, items, colours, ylim)
   if (isTRUE(show_legend)) {
     graphics::legend("top",
                      legend = c(.delphi_axis_label(x$settings),
-                                "Kept their rating"),
-                     pch = c(19, 1), bty = "n", cex = 0.7, horiz = TRUE)
+                                if (!unbounded) "Kept their rating"),
+                     pch = c(19, if (!unbounded) 1), bty = "n", cex = 0.7,
+                     horiz = TRUE)
   }
   invisible(x)
 }
@@ -1184,11 +1352,25 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (x$n_insufficient > 0L) {
     cat("Too few experts: ", .n_noun(x$n_insufficient, "item"), "\n", sep = "")
   }
-  cat("Stability statistic: ", x$stability_method, "\n", sep = "")
+  # The items behind each count, by name, so the summary can be acted on.
+  f <- x$reviewed_items
+  if (is.data.frame(f) && nrow(f)) {
+    open <- f$item[f$status %in% "Review"]
+    thin <- f$item[f$status %in% "Insufficient data"]
+    if (length(open)) .say("No consensus:", paste(open, collapse = ", "))
+    if (length(thin)) {
+      .say("Too few experts (fewer than three in the last round):",
+           paste(thin, collapse = ", "))
+    }
+  }
+  .say("Stability statistic:", .delphi_method_label(x$settings))
   med <- x$scale_summary$median_prop_unchanged
   if (length(med) && !is.na(med)) {
-    cat("Median share of experts keeping their rating (last pair):",
-        .fmt(med, digits), "\n")
+    cat("Median share of experts keeping their rating (last pair): ",
+        .fmt(med, digits), "\n", sep = "")
   }
+  cat("\n")
+  .say("Consensus is not correctness, and 'No consensus' is not an instruction",
+       "to drop an item. Read these results with the experts' comments.")
   invisible(x)
 }

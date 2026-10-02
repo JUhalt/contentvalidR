@@ -6,29 +6,33 @@
 \usage{
 \method{plot}{contentvalid_delphi}(
   x,
-  which = c("consensus", "stability", "distribution"),
+  type = c("consensus", "stability", "distribution"),
   show_legend = TRUE,
   apa = TRUE,
   labels = NULL,
+  which = NULL,
   ...
 )
 }
 \arguments{
 \item{x}{A fitted \code{contentvalid_delphi} object.}
 
-\item{which}{\code{"consensus"} (default), \code{"stability"}, or \code{"distribution"}.}
+\item{type}{\code{"consensus"} (default), \code{"stability"}, or \code{"distribution"}.}
 
 \item{show_legend}{Draw the legend. Defaults to \code{TRUE}.}
 
-\item{apa}{Used by \code{which = "distribution"}. \code{TRUE} (default) draws in
+\item{apa}{Used by \code{type = "distribution"}. \code{TRUE} (default) draws in
 gray, with darker meaning a higher rating, as an APA figure is printed.
 \code{FALSE} draws ratings below the agreement cut in brown and ratings at or
 above it in teal, a colorblind-safe scheme for slides and posters. The
 consensus and stability views color each item's line so the lines can be
 told apart.}
 
-\item{labels}{For \code{which = "distribution"}, one label per rating category,
+\item{labels}{For \code{type = "distribution"}, one label per rating category,
 lowest first. Defaults to \code{"Rated 1"}, \code{"Rated 2"}, and so on.}
+
+\item{which}{The name \code{type} had before 1.0, still accepted so earlier
+code runs: \code{plot(fit, which = "stability")} is \code{type = "stability"}.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -41,24 +45,27 @@ agrees, and whether it has stopped moving. Both are trends across rounds,
 which a plot shows better than a table of round pairs.
 }
 \details{
-\code{which = "consensus"} draws each item's share of experts agreeing, round by
+\code{type = "consensus"} draws each item's share of experts agreeing, round by
 round. A line that stops early belongs to an item that settled and was set
 aside. The consensus threshold is drawn only when one was set, because the
 analysis applies no threshold without it.
 
-\code{which = "stability"} draws the stability statistic for each pair of
-consecutive rounds, with the share of experts who kept their rating as open
-circles. No bands or shaded regions are drawn behind kappa: its verbal
-benchmarks are arbitrary, and kappa falls as a panel converges, so a shaded
-"good" region would mislead exactly when a Delphi is succeeding. See
-\code{\link[=delphi_validity]{delphi_validity()}}.
+\code{type = "stability"} draws the stability statistic for each pair of
+consecutive rounds. Beside kappa, lambda and net change, which share the 0
+to 1 scale, the share of experts who kept their rating is drawn as open
+circles; a chi-square has its own scale, so it is drawn alone. No bands or
+shaded regions are drawn behind kappa: its verbal benchmarks are
+arbitrary, and kappa is low when ratings concentrate in one category, so a
+shaded "good" region would mislead exactly when a Delphi is succeeding.
+See \code{\link[=delphi_validity]{delphi_validity()}}.
 
-\code{which = "distribution"} draws every rating in every round as a diverging
+\code{type = "distribution"} draws every rating in every round as a diverging
 stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,
 split at \code{agree_cut}. The right-hand length is the share agreeing, read
 against the dashed consensus threshold, and the symbol beside it is that
-round's consensus decision. Rounds in which an item was not rated, because
-it had been set aside, are marked "not rated".
+round's consensus decision: a cross where fewer than three experts rated
+the item, which is no decision. Rounds in which an item was not rated,
+because it had been set aside, are marked "not rated".
 }
 \examples{
 r1 <- cbind(S1 = c(4, 4, 3, 4, 2, 4), S2 = c(2, 3, 2, 1, 3, 2))
@@ -71,8 +78,8 @@ long <- function(m, round) {
 fit <- delphi_validity(rbind(long(r1, 1), long(r2, 2)), lo = 1, hi = 4,
                        consensus_threshold = 0.75, B = 0)
 plot(fit)
-plot(fit, which = "stability")
-plot(fit, which = "distribution")
+plot(fit, type = "stability")
+plot(fit, type = "distribution")
 }
 \references{
 Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked bar

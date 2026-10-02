@@ -198,9 +198,19 @@
 # fit to take a note from, so that sentence is written here.
 .handoff_delphi_notes <- function(fit, results) {
   stab <- fit$details$stability
+  rounds <- fit$design$rounds
+  rated <- .delphi_rated_rounds(fit)
   vapply(seq_len(nrow(results)), function(i) {
     rows <- which(stab$item == results$item[i])
     if (!length(rows)) {
+      idx <- sort(rated[[results$item[i]]])
+      if (length(idx) >= 2L) {
+        # Rated more than once, but never in two rounds that follow each other.
+        return(paste0("This item was rated in rounds ",
+                      paste(rounds[idx], collapse = ", "),
+                      ", which are not consecutive, so no pair of rounds was ",
+                      "compared."))
+      }
       return(paste("This item was rated in only one round, so there was no",
                    "pair of rounds to compare."))
     }
@@ -219,15 +229,31 @@
   round_index <- match(results$last_round, rounds)
   threshold <- s$consensus_threshold
 
+  # The round is given by its position, with its label beside it when the
+  # label is not that number, so "round 3 of 3" never reads "round 4 of 3".
+  where <- sprintf(
+    "last rated in round %d of %d%s", round_index, length(rounds),
+    ifelse(as.character(round_index) == as.character(results$last_round), "",
+           paste0(" (\"", results$last_round, "\")"))
+  )
+  # The rule states what was supplied. Whether the threshold was fixed before
+  # the study is for the analyst to report; the software cannot know it.
   rule <- if (is.null(threshold)) {
-    rep(paste("no consensus threshold was set before the study, so agreement",
-              "is descriptive (Diamond et al., 2014)"), nrow(results))
+    paste0("no consensus threshold was supplied, so agreement is descriptive ",
+           "(Diamond et al., 2014, recommend fixing one before the study); ",
+           where)
   } else {
-    sprintf(paste("consensus when at least %s%% of experts rated the item %s or",
-                  "higher on the %s-%s scale, with the threshold fixed before",
-                  "the study (Diamond et al., 2014); settled in round %s of %d"),
-            format(100 * threshold), format(s$agree_cut), format(s$lo),
-            format(s$hi), results$last_round, length(rounds))
+    ifelse(
+      results$recommendation %in% "Insufficient panel",
+      paste0("fewer than three experts rated the item in its last round, so ",
+             "no consensus judgment was made; ", where),
+      sprintf(paste0("consensus when at least %s of experts rated the item %s",
+                     "%s on the %s to %s scale (threshold as supplied; Diamond ",
+                     "et al., 2014, recommend fixing it before the study); %s"),
+              .delphi_percent(threshold), format(s$agree_cut),
+              if (s$agree_cut < s$hi) " or higher" else "",
+              format(s$lo), format(s$hi), where)
+    )
   }
 
   stability_label <- switch(
@@ -243,7 +269,7 @@
     kappa = c("Holey et al. (2007)", "Cohen (1968)", "Fleiss & Cohen (1973)"),
     lambda = "Chaffin & Talley (1980)",
     chisq_individual = "Chaffin & Talley (1980)",
-    chisq_group = "Dajani, Sincoff & Talley (1979)",
+    chisq_group = "Dajani et al. (1979)",
     percent_change = "Scheibe et al. (1975/2002)"
   )
 
@@ -310,7 +336,7 @@
     round = as.integer(round_index),
     citation = c("Holey et al. (2007)", "Diamond et al. (2014)",
                  setdiff(stability_citation, "Holey et al. (2007)"),
-                 "Aiken (1980)", "Polit, Beck & Owen (2007)"),
+                 "Aiken (1980)", "Polit et al. (2007)"),
     statistics = statistics
   )
 }
@@ -393,7 +419,7 @@
       "fewer than three usable expert ratings; treated as insufficient",
       sprintf(paste("at least %d of %d experts rate the item relevant (I-CVI",
                     ">= %s; Lynn, 1986); modified kappa > .74 for strong",
-                    "support (Polit, Beck & Owen, 2007)"),
+                    "support (Polit et al., 2007)"),
               required, as.integer(results$N), .fmt(results$cvi_criterion))
     )
     return(list(
@@ -401,7 +427,7 @@
       n_judges = as.integer(results$N),
       rule = rule,
       citation = c("Aiken (1980)", "Penfield & Giacobbi (2004)", "Lynn (1986)",
-                   "Polit, Beck & Owen (2007)"),
+                   "Polit et al. (2007)"),
       statistics = rbind(
         .handoff_stat(results$item, "Aiken's V", results$V,
                       lower = .handoff_column(results, "ci_low"),

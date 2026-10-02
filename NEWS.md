@@ -132,6 +132,77 @@ item sort that matches the cases below.
 * `panel_agreement()` prints "undefined" for a coefficient that cannot be
   computed, where it printed "= NA" followed by a note about resamples.
 
+## Delphi and round comparison: values that change
+
+* **Text round labels are ordered by their number, not by row order.**
+  Rounds labeled `"R1"`, `"R2"`, `"R3"` were taken in the order the rows
+  appeared, so data sorted any other way was analyzed in the wrong sequence:
+  the wrong last round, the wrong stability pairs, and so the wrong consensus
+  decisions, with no message. Text labels are now ordered by the number each
+  carries, so `"wave 10"` follows `"wave 2"`. Labels with no number, such as
+  `"pre"` and `"post"`, stop with a request for a factor. Numeric and factor
+  rounds are unchanged.
+* **`compare_rounds()` treats a changed panel size as a changed rule.** The
+  exact tests and Lynn's criterion depend on the number of judges, so 5 of 6
+  and 10 of 12, the same Psa, give different decisions. The comparison called
+  such rounds identical in settings and their transitions "changes in
+  evidence". `comparable` is now `FALSE`, and the printout says the panel
+  changed. A changed seed or number of bootstrap resamples no longer makes
+  rounds non-comparable, because neither can move a status.
+* **`compare_rounds()` refuses fits from different expert-panel modes,** which
+  it compared as if a relevance and an essentiality decision were the same,
+  and refuses a round label that would overwrite the item or change column.
+* **The Delphi handoff `rule` text is reworded.** It gives the round by its
+  position, so rounds labeled 2, 3, 4 no longer read "round 4 of 3". It says
+  the threshold was supplied, where it stated as fact that it was "fixed
+  before the study", which the software cannot know. An item with fewer than
+  three experts in its last round gets its own sentence, not the consensus
+  rule. Three-author works are cited with "et al.", here and in the relevance
+  handoff.
+* **An item rated in rounds that are not consecutive is described as such.**
+  Rated in rounds 1 and 3, it has no pair to compare; the handoff note said
+  it "was rated in only one round". The printout names such items, and items
+  whose stability comes from an earlier pair than their last round.
+* `results` gains `stability_df`, the degrees of freedom of the chi-square
+  stability tests.
+
+## Delphi and round comparison: other fixes
+
+* `plot()` on a Delphi fit takes `type`, like every other plot method. The
+  earlier name, `which`, is still accepted.
+* In the distribution view, a round rated by fewer than three experts is
+  marked as no decision. It was drawn as "Met the criterion" when the two who
+  rated it agreed, against the fit's own "Insufficient panel".
+* The stability view scales a chi-square on its own axis. The ticks stopped at
+  1 while the statistic ran to 30, so the figure could not be read. The share
+  who kept their rating is drawn only beside the statistics that share its 0
+  to 1 scale. Round-pair labels are placed at their own positions; they were
+  swapped when the first item entered late.
+* The printout no longer says the consensus threshold was "fixed before the
+  study". It says the threshold was supplied, and that Diamond et al. (2014)
+  recommend fixing it in advance. Their 75% median is described as what it
+  is: the median among the 25 reviewed studies that defined consensus as a
+  percentage of agreement.
+* The kappa caveat states the interval level in use. It said "their stated
+  95%" under a 90% interval.
+* Holey et al. (2007) are cited for what they found: the statement nearly all
+  their experts agreed with had the lowest kappa between rounds 1 and 2, and
+  one of the highest between rounds 2 and 3. The general point, that kappa is
+  low when ratings concentrate in one category, is cited to Feinstein and
+  Cicchetti (1990).
+* `summary()` of a Delphi fit names the items without consensus and those
+  with too few experts, names the stability statistic in words, and ends with
+  the same caution as the printout.
+* `content_report()` heads the Delphi stability column with the statistic it
+  holds, and reports a chi-square with its leading zero and its degrees of
+  freedom.
+* `compare_rounds()` opens with its verdict: how many units changed status.
+* A consensus threshold such as 2/3 prints as 66.7%, not 66.66667%.
+* In the distribution views, a rating between two scale points is drawn on
+  the side of the cut where the rule counts it. A 2.5 was rounded up into the
+  relevant side, so the bar read 1.00 beside an I-CVI of .83.
+* The Delphi vignette restores the option it changes.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

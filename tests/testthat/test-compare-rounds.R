@@ -61,7 +61,7 @@ test_that("changed analysis settings mark the comparison as not comparable", {
 
   # The warning must appear in the output, not only in the object.
   out <- paste(capture.output(print(cmp)), collapse = " ")
-  expect_match(out, "analyzed under different settings")
+  expect_match(out, "not analyzed under the same decision rule")
   expect_match(out, "may reflect the changed rule rather than changed\\s+evidence")
 })
 
@@ -71,7 +71,7 @@ test_that("identical settings are reported as comparable", {
   expect_equal(nrow(cmp$settings_changes), 0L)
 
   out <- paste(capture.output(print(cmp)), collapse = " ")
-  expect_match(out, "Settings were identical across rounds")
+  expect_match(out, "settings and the panel size were the same in every round")
 })
 
 test_that("round-to-round summary counts each consecutive pair", {
