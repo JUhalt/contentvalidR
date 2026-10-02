@@ -32,7 +32,8 @@ told apart.}
 lowest first. Defaults to \code{"Rated 1"}, \code{"Rated 2"}, and so on.}
 
 \item{which}{The name \code{type} had before 1.0, still accepted so earlier
-code runs: \code{plot(fit, which = "stability")} is \code{type = "stability"}.}
+code runs: \code{plot(fit, which = "stability")} is \code{type = "stability"}.
+Give one or the other: supplying both is an error.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -51,13 +52,13 @@ aside. The consensus threshold is drawn only when one was set, because the
 analysis applies no threshold without it.
 
 \code{type = "stability"} draws the stability statistic for each pair of
-consecutive rounds. Beside kappa, lambda and net change, which share the 0
-to 1 scale, the share of experts who kept their rating is drawn as open
+consecutive rounds. Beside kappa, lambda and net change, which cannot
+exceed 1, the share of experts who kept their rating is drawn as open
 circles; a chi-square has its own scale, so it is drawn alone. No bands or
 shaded regions are drawn behind kappa: its verbal benchmarks are
-arbitrary, and kappa is low when ratings concentrate in one category, so a
-shaded "good" region would mislead exactly when a Delphi is succeeding.
-See \code{\link[=delphi_validity]{delphi_validity()}}.
+arbitrary, and kappa can be low when ratings concentrate in one category,
+so a shaded "good" region would mislead exactly when a Delphi is
+succeeding. See \code{\link[=delphi_validity]{delphi_validity()}}.
 
 \code{type = "distribution"} draws every rating in every round as a diverging
 stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,

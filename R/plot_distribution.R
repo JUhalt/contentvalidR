@@ -17,6 +17,9 @@
   bin <- pmin(pmax(as.integer(floor(x - cats[1] + 1e-9)) + 1L, 1L), k)
   crossed <- x >= cut & cats[bin] < cut
   bin[crossed] <- min(which(cats >= cut))
+  # And the mirror: a rating a hair under the cut stays on the lower side.
+  under <- x < cut & cats[bin] >= cut
+  bin[under] <- max(which(cats < cut))
   tabulate(bin, k) / length(x)
 }
 

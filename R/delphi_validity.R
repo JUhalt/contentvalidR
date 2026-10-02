@@ -165,17 +165,29 @@
 }
 
 # Text round labels are put in order by the number each one carries ("R1",
-# "Round 2", "wave 10"), whatever order the rows are in. Labels without a
-# number, or sharing one, cannot be ordered from their text, and taking the
-# order of the rows instead would analyze a sorted or merged data set in the
-# wrong sequence without a word.
+# "Round 2", "wave 10"), whatever order the rows are in. The order is taken
+# from the text only when it is unambiguous: the labels are numbers, or they
+# are alike apart from the first number in each ("Round 1 of 3", "Round 2 of
+# 3"). Labels without a number, sharing one, or differing elsewhere ("Q4
+# 2023", "Q1 2024") cannot be ordered from their text, and guessing, or taking
+# the order of the rows, would analyze the rounds in the wrong sequence
+# without a word.
 .delphi_order_labels <- function(labels) {
-  has_number <- grepl("[0-9]", labels)
+  # One round needs no order; the caller says a Delphi needs two.
+  if (length(labels) < 2L) return(labels)
+  trimmed <- trimws(labels)
+  as_number <- suppressWarnings(as.numeric(trimmed))
+  if (!anyNA(as_number) && !anyDuplicated(as_number)) {
+    return(labels[order(as_number)])
+  }
+  pattern <- "[0-9]+(\\.[0-9]+)?"
+  has_number <- grepl("[0-9]", trimmed)
   number <- rep(NA_real_, length(labels))
   number[has_number] <- as.numeric(
-    regmatches(labels, regexpr("[0-9]+(\\.[0-9]+)?", labels))
+    regmatches(trimmed, regexpr(pattern, trimmed))
   )
-  if (anyNA(number) || anyDuplicated(number)) {
+  template <- sub(pattern, "", trimmed)
+  if (anyNA(number) || anyDuplicated(number) || length(unique(template)) > 1L) {
     stop("The round labels (",
          paste0("\"", labels, "\"", collapse = ", "),
          ") do not say which round came first. Number the rounds, or make ",
@@ -225,7 +237,9 @@
   rounds_raw <- ratings[[round_col]][ok]
   round_levels <- if (is.factor(rounds_raw)) {
     levels(droplevels(rounds_raw))
-  } else if (is.numeric(rounds_raw)) {
+  } else if (is.numeric(rounds_raw) ||
+             inherits(rounds_raw, c("Date", "POSIXt"))) {
+    # Numbers and dates carry their own order.
     as.character(sort(unique(rounds_raw)))
   } else {
     .delphi_order_labels(unique(as.character(rounds_raw)))
@@ -259,18 +273,22 @@
                                 alpha = 0.05) {
   if (identical(method, "kappa")) {
     level <- paste0(format(100 * (1 - alpha)), "%")
+    # Klar et al. evaluated a nominal 95% interval; at another level the
+    # sentence says so.
+    studied <- if (isTRUE(all.equal(alpha, 0.05))) "" else
+      " (Klar et al. studied 95% intervals)"
     return(list(
       always = c(
         paste("Read kappa as a trend across rounds, beside the share of experts",
               "who kept their rating (unchanged), not against a cutoff. Kappa",
-              "is low when ratings concentrate in one category (Feinstein &",
-              "Cicchetti, 1990), so a stable, agreeing panel can show a low",
-              "kappa; Statement 7 in Holey et al. (2007) is an example."),
+              "can be low when ratings concentrate in one category (Feinstein &",
+              "Cicchetti, 1990), so an agreeing panel can show a low kappa;",
+              "Holey et al. (2007) suggest this for their Statement 7."),
         if (intervals) {
           paste0("The kappa intervals resample the experts (Klar et al., 2002). ",
                  "With fewer than about 40 experts they cover less than their ",
-                 "stated ", level, ", so read them as rough indications of ",
-                 "precision, not as tests.")
+                 "stated ", level, studied, ", so read them as rough ",
+                 "indications of precision, not as tests.")
         }
       ),
       teaching = c(
@@ -286,9 +304,11 @@
             paste("A change of two scale points counts twice a change of one",
                   "(Cohen, 1968).")
           },
-          "No verbal labels such as 'substantial' are shown, because kappa is",
-          "low when ratings concentrate in one category, which is where a",
-          "Delphi aims to end: in Holey et al. (2007), the statement nearly",
+          "No verbal labels such as 'substantial' are shown, because kappa can",
+          "be low when ratings concentrate in one category, which is where a",
+          "Delphi aims to end. Feinstein and Cicchetti (1990) showed it for",
+          "kappa on two categories, and the same arithmetic applies to",
+          "weighted kappa. In Holey et al. (2007), the statement nearly",
           "every expert agreed with had the lowest kappa between rounds 1 and",
           "2 (.31)."
         ),
@@ -413,12 +433,14 @@
 #' 2 and 4 reports the stability of rounds 1 and 2 beside its round 4
 #' consensus. `details$stability` names the rounds of every pair.
 #'
-#' **Round order.** Numbered rounds are put in numeric order and a factor
-#' keeps the order of its levels. Text labels are ordered by the number each
-#' carries (`"R1"`, `"Round 2"`, `"wave 10"`), whatever order the rows are in.
-#' Text labels without a number, such as `"pre"` and `"post"`, cannot be
-#' ordered from the text, so they stop with a request for a factor. The
-#' printout lists the rounds in the order used.
+#' **Round order.** Numbered rounds are put in numeric order, dates in date
+#' order, and a factor keeps the order of its levels. Text labels are ordered
+#' by the number each carries (`"R1"`, `"Round 2"`, `"wave 10"`), whatever
+#' order the rows are in, when that number is all that differs between them.
+#' Text labels without a number (`"pre"`, `"post"`), or that differ in more
+#' than one number (`"Q4 2023"`, `"Q1 2024"`), cannot be ordered from the
+#' text, so they stop with a request for a factor. The printout lists the
+#' rounds in the order used.
 #'
 #' @section When a stability statistic is undefined:
 #' A stability statistic can be `NA` for different reasons, and
@@ -701,7 +723,10 @@ delphi_validity <- function(ratings,
     ifelse(is.na(results$consensus), "Descriptive only",
            ifelse(results$consensus, "Consensus", "No consensus"))
   )
-  pct <- function(p) paste0(format(round(100 * p)), "%")
+  # The same percent text as the header and the handoff rule, so a threshold
+  # of 2/3 is 66.7% everywhere and a share just under it is not printed as
+  # equal to it.
+  pct <- .delphi_percent
   threshold_txt <- if (is.null(consensus_threshold)) "" else pct(consensus_threshold)
   results$interpretation <- vapply(seq_len(nrow(results)), function(i) {
     r <- results[i, ]
@@ -818,16 +843,33 @@ delphi_validity <- function(ratings,
   )
 }
 
-# A consensus threshold as a percentage: whole when it is whole (75%), and to
-# one decimal otherwise (66.7%, not 66.66667%).
+# A share as a percentage: whole when it is whole (75%), and to one decimal
+# otherwise (66.7%, not 66.66667%). The text goes into the handoff, so it does
+# not depend on the session's `digits` or `OutDec` options.
 .delphi_percent <- function(p) {
-  paste0(format(round(100 * p, 1), nsmall = 0, drop0trailing = TRUE), "%")
+  txt <- formatC(round(100 * p, 1), format = "f", digits = 1,
+                 decimal.mark = ".")
+  paste0(sub("\\.0$", "", txt), "%")
 }
 
-.delphi_wide <- function(stab, column, digits, bounded = TRUE) {
+# "1 and 3", "1, 2 and 4".
+.and_list <- function(x) {
+  x <- as.character(x)
+  if (length(x) < 2L) return(paste(x, collapse = ""))
+  paste(paste(x[-length(x)], collapse = ", "), "and", x[length(x)])
+}
+
+# One column for each pair of rounds, in round order whatever order the rows
+# are in: the table is read left to right as a trend.
+.delphi_wide <- function(stab, column, digits, bounded = TRUE, rounds = NULL) {
   if (!nrow(stab)) return(NULL)
   lab <- .delphi_pair_label(stab$from_round, stab$to_round)
-  pairs <- unique(lab)
+  pairs <- if (is.null(rounds)) {
+    unique(lab)
+  } else {
+    unique(lab[order(match(stab$from_round, rounds),
+                     match(stab$to_round, rounds))])
+  }
   items <- unique(stab$item)
   out <- data.frame(item = items, stringsAsFactors = FALSE, check.names = FALSE)
   for (p in pairs) {
@@ -868,7 +910,7 @@ delphi_validity <- function(ratings,
     si <- stab[stab$item == it, , drop = FALSE]
     if (!nrow(si)) {
       no_pair <- c(no_pair, sprintf("%s (rounds %s)", it,
-                                    paste(rounds[idx], collapse = ", ")))
+                                    .and_list(rounds[idx])))
     } else if (!identical(as.character(si$to_round[nrow(si)]),
                           as.character(rounds[max(idx)]))) {
       earlier <- c(earlier, sprintf(
@@ -877,6 +919,8 @@ delphi_validity <- function(ratings,
       ))
     }
   }
+  # Set apart from the column legend above, which they are not part of.
+  if (length(no_pair) || length(earlier)) cat("\n")
   if (length(no_pair)) {
     .say(paste0("Rated in rounds that are not consecutive, so no pair was ",
                 "compared: ", paste(no_pair, collapse = "; "), "."))
@@ -909,7 +953,10 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   .say(paste0(
     "Agreement: a rating of ", format(s$agree_cut),
     if (s$agree_cut < s$hi) " or higher", " on the ",
-    format(s$lo), " to ", format(s$hi), " scale. Consensus threshold: ",
+    format(s$lo), " to ", format(s$hi), " scale."
+  ))
+  .say(paste0(
+    "Consensus threshold: ",
     if (is.null(s$consensus_threshold)) "none set, so agreement is descriptive." else
       paste0(.delphi_percent(s$consensus_threshold), ", as supplied.")
   ))
@@ -973,9 +1020,11 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (nrow(stab) && length(unique(paste(stab$from_round, stab$to_round))) > 1L) {
     cat("\nStability trend (", if (val == "chi_sq") "chi-square" else val,
         ") by pair of rounds\n", sep = "")
-    .print_table(.delphi_wide(stab, "value", digits, bounded))
+    .print_table(.delphi_wide(stab, "value", digits, bounded,
+                              rounds = x$design$rounds))
     cat("\nShare of experts who kept their rating, by pair of rounds\n")
-    .print_table(.delphi_wide(stab, "prop_unchanged", digits))
+    .print_table(.delphi_wide(stab, "prop_unchanged", digits,
+                              rounds = x$design$rounds))
   }
 
   flagged <- stab[nzchar(stab$note), , drop = FALSE]
@@ -1070,7 +1119,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 }
 
 # Label each item's line at its last point, which also shows where an item
-# left the study: a line that stops in round 2 settled in round 2.
+# left the study: a line that stops in round 2 was last rated in round 2.
 .delphi_end_labels <- function(xs, ys, labels, colours, ylim) {
   last <- vapply(seq_along(labels), function(i) {
     keep <- is.finite(xs[[i]]) & is.finite(ys[[i]])
@@ -1086,7 +1135,11 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     same <- at_x == xx
     if (sum(same) > 1L) at_y[same] <- .delphi_dodge(at_y[same], gap)
   }
-  graphics::text(at_x, at_y, labels = labels[ok], pos = 4, cex = 0.7,
+  # A line that stops before the last position is labeled above its last
+  # point: to the right of it, another item's line can run through the label.
+  ends_early <- at_x < max(at_x)
+  graphics::text(at_x, at_y, labels = labels[ok],
+                 pos = ifelse(ends_early, 3, 4), cex = 0.7,
                  col = colours[ok], xpd = NA)
   invisible(NULL)
 }
@@ -1158,13 +1211,13 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' analysis applies no threshold without it.
 #'
 #' `type = "stability"` draws the stability statistic for each pair of
-#' consecutive rounds. Beside kappa, lambda and net change, which share the 0
-#' to 1 scale, the share of experts who kept their rating is drawn as open
+#' consecutive rounds. Beside kappa, lambda and net change, which cannot
+#' exceed 1, the share of experts who kept their rating is drawn as open
 #' circles; a chi-square has its own scale, so it is drawn alone. No bands or
 #' shaded regions are drawn behind kappa: its verbal benchmarks are
-#' arbitrary, and kappa is low when ratings concentrate in one category, so a
-#' shaded "good" region would mislead exactly when a Delphi is succeeding.
-#' See [delphi_validity()].
+#' arbitrary, and kappa can be low when ratings concentrate in one category,
+#' so a shaded "good" region would mislead exactly when a Delphi is
+#' succeeding. See [delphi_validity()].
 #'
 #' `type = "distribution"` draws every rating in every round as a diverging
 #' stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,
@@ -1178,6 +1231,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' @param type `"consensus"` (default), `"stability"`, or `"distribution"`.
 #' @param which The name `type` had before 1.0, still accepted so earlier
 #'   code runs: `plot(fit, which = "stability")` is `type = "stability"`.
+#'   Give one or the other: supplying both is an error.
 #' @param show_legend Draw the legend. Defaults to `TRUE`.
 #' @param apa Used by `type = "distribution"`. `TRUE` (default) draws in
 #'   gray, with darker meaning a higher rating, as an APA figure is printed.
@@ -1217,8 +1271,15 @@ plot.contentvalid_delphi <- function(x,
                                               "distribution"),
                                      show_legend = TRUE, apa = TRUE,
                                      labels = NULL, which = NULL, ...) {
-  # `which` was this argument's name before 1.0 and is still accepted.
-  if (!is.null(which)) type <- which
+  # `which` was this argument's name before 1.0 and is still accepted, in
+  # place of `type`, never beside it.
+  if (!is.null(which)) {
+    if (!missing(type)) {
+      stop("Give `type` or `which`, not both: `which` is the earlier name of ",
+           "`type`.", call. = FALSE)
+    }
+    type <- which
+  }
   type <- match.arg(type)
   .validate_flag(show_legend, "show_legend")
   .validate_flag(apa, "apa")
@@ -1345,27 +1406,27 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   cat(strrep("-", 39), "\n", sep = "")
   cat("Rounds: ", nrow(x$panel), " | Experts per round: ",
       paste(x$panel$n_experts, collapse = ", "), "\n", sep = "")
+  # The items behind each count are named on the count's own line, so the
+  # summary can be acted on and no heading is printed twice.
+  f <- x$reviewed_items
+  named <- function(status) {
+    if (!is.data.frame(f) || !nrow(f)) return("")
+    who <- f$item[f$status %in% status]
+    if (length(who)) paste0(" (", paste(who, collapse = ", "), ")") else ""
+  }
   if (x$n_descriptive > 0L) {
     cat("Descriptive only: ", x$n_descriptive, " of ",
         .n_noun(x$n_items, "item"), "; no consensus threshold was set.\n",
         sep = "")
   } else {
-    cat("Consensus: ", x$n_supported, " of ", x$n_items, " | No consensus: ",
-        x$n_review, " of ", x$n_items, "\n", sep = "")
+    cat("Consensus: ", x$n_supported, " of ", x$n_items, "\n", sep = "")
+    .say(paste0("No consensus: ", x$n_review, " of ", x$n_items,
+                named("Review")), exdent = 2L)
   }
   if (x$n_insufficient > 0L) {
-    cat("Too few experts: ", .n_noun(x$n_insufficient, "item"), "\n", sep = "")
-  }
-  # The items behind each count, by name, so the summary can be acted on.
-  f <- x$reviewed_items
-  if (is.data.frame(f) && nrow(f)) {
-    open <- f$item[f$status %in% "Review"]
-    thin <- f$item[f$status %in% "Insufficient data"]
-    if (length(open)) .say("No consensus:", paste(open, collapse = ", "))
-    if (length(thin)) {
-      .say("Too few experts (fewer than three in the last round):",
-           paste(thin, collapse = ", "))
-    }
+    .say(paste0("Too few experts (fewer than three in the last round): ",
+                .n_noun(x$n_insufficient, "item"), named("Insufficient data")),
+         exdent = 2L)
   }
   .say("Stability statistic:", .delphi_method_label(x$settings))
   med <- x$scale_summary$median_prop_unchanged
