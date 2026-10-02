@@ -5,49 +5,68 @@ item sort that matches the cases below.
 
 ## Item sort: values that change
 
-* **Constructs coded as numbers now give the right counts.** When the target
-  and assigned constructs were numbers (1, 2, 3), `compute_csv()` read the
-  target's count by position in its table, not by label. The target count,
-  Csv, the exact *p* value, the Retain or Review decision, and the items
-  `content_handoff()` carried could all be wrong: an item with 16 of 20
-  judges on target could print 4/20, Csv .00, and Review. Every release from
-  0.4.0 had this. Constructs coded as text were always right. Rerun any sort
-  whose construct columns are numeric.
+* **Constructs coded as numbers or factors now give the right counts.** When
+  the target construct was a number (1, 2, 3) or a factor, `compute_csv()`
+  read the target's count by position in its table, not by label. The target
+  count, Csv, the exact *p* value, the Retain or Review decision, and the
+  items `content_handoff()` carried could all be wrong, with no error: an
+  item with 16 of 20 judges on target could print 4/20, Csv .00, and Review.
+  Every earlier release had this, including 0.4.0, the version on CRAN.
+  Constructs stored as text in both columns were always right. Rerun any sort
+  whose construct columns are numbers or factors. Labels are now compared as
+  text, whatever they are stored as, so `target` in `results` is always text,
+  and tied competitors are listed in alphabetical order.
 * **An item sorted by too few judges for the exact test gets no decision.**
   With four or fewer judges at the defaults no count can reach alpha (4 of 4
   gives *p* = .0625). Such items were labeled `"Review"`, as if judges had
   disagreed. They are now `"Insufficient panel"`, with status
-  `"Insufficient data"`; the printout says why; they do not enter a scale's
-  mean Psa or Csv; and the `rule` text in the handoff says that no count can
-  meet the test, where it used to read "target assignments >= NA of 4".
+  `"Insufficient data"`; the printout and `summary()` say why; and the `rule`
+  text in the handoff says that no count can meet the test, where it used to
+  read "target assignments >= NA of 4". Scale means are unchanged: they still
+  average every item that has a Psa and a Csv.
 * **The `csv_binom_test()` interval follows `alpha`.** It was always a 95%
   interval, so at `alpha = .10` a significant result could sit beside an
-  interval that included `p0`. It is now one-sided at `1 - alpha`, and
-  excludes `p0` exactly when the test rejects. At the default alpha nothing
-  changes.
+  interval that included `p0`. It is now one-sided at `1 - alpha`, the level
+  of the test, so its lower limit is above `p0` whenever *p* is below alpha.
+  At the default alpha nothing changes.
 * **`sort_power()` reports a power of 0, not `NA`,** for a panel too small
   for any count to reach alpha, and says so under the table.
-* **A scale mean exactly on a published Colquitt band minimum now falls in
-  that band.** A mean such as 4.35 / 5 is stored a hair under .87 and was put
-  in the band below.
-* **Leading and trailing spaces in labels are ignored.** `"A"` and `" A"`
-  were counted as two constructs.
+* **Leading and trailing spaces in labels are ignored,** non-breaking spaces
+  included, in item, judge and construct labels. `"A"` and `" A"` were
+  counted as two constructs.
 * **Items are listed in the order of the data,** or of the levels when the
   item column is a factor. They used to be sorted as text, so Q10 came before
-  Q2. The order reaches `results`, the figures, and `items` in the handoff.
-  Item names in `results` are always text.
+  Q2. The order reaches `results`, the figures, and `items` in the handoff,
+  and the rows of `scale_summary` follow the order in which each scale first
+  appears. Item names in `results` are always text.
+
+## Every workflow: values that change
+
+* **A scale mean exactly on a published Colquitt band minimum now falls in
+  that band.** A mean such as 4.35 / 5 is stored a hair under .87 and was put
+  in the band below. This affects `interpret_colquitt()` and the scale labels
+  of both `sort_validity()` and `rating_validity()`.
+* **An alpha with more than two decimals is printed in full.**
+  `alpha = .001` printed as "alpha = .00" in every workflow and in the `rule`
+  text of the handoff. A computed level such as .05 / 3 prints to three
+  significant digits (.0167).
 
 ## Item sort: other fixes
 
-* Factor construct columns with different level sets no longer stop
+* Two factor construct columns with different level sets no longer stop
   `compute_psa()` and `sort_validity()` with "level sets of factors are
   different".
-* An alpha with more than two decimals is printed in full. `alpha = .001`
-  printed as "alpha = .00" in every workflow and in the `rule` text of the
-  handoff.
 * `csv_binom_test()` prints its verdict first, in the item-sort workflow's
   words ("meets the exact target-assignment criterion"). It printed
-  "Decision: n.s.." at the end. The stored `decision` values are unchanged.
+  "Decision: n.s.." at the end. The stored `decision` values are unchanged;
+  the stored `interpretation` text now says "meet the exact criterion" where
+  it said "exceed the exact chance criterion".
+* The `sort_power()` printout and figure no longer call the assumed
+  target-assignment probability "p", which APA reserves for a *p* value: the
+  note says "power at a value" and the legend "Target rate".
+* The legacy comparison says so when no item has a decision to compare with,
+  where it printed "0 of 0 items".
+* "Missing assignments: 2 across 1 items" now reads "1 item".
 * The help for `p0` no longer calls it a chance rate. It is the null
   probability of a target assignment; random assignment would give 1 divided
   by the number of constructs. The help now passes on the caution Howard and

@@ -134,9 +134,9 @@ test_that("items sorted by too few judges get no decision, and say why", {
   expect_match(fit$results$interpretation[1],
                "With 4 judges, no count of target assignments can reach alpha = .05",
                fixed = TRUE)
-  # A Psa from four judges does not set a scale's benchmark band.
-  expect_identical(fit$scale_summary$n_items_usable, 0L)
-  expect_true(is.na(fit$scale_summary$mean_psa))
+  # The scale means are untouched: they average every item with a Psa.
+  expect_identical(fit$scale_summary$n_items_usable, 2L)
+  expect_equal(fit$scale_summary$mean_psa, .75)
 
   out <- paste(capture.output(print(fit)), collapse = " ")
   expect_match(out, "Too few judges for the exact test: A1, A2. With 4 or fewer judges,",
@@ -150,6 +150,12 @@ test_that("items sorted by too few judges get no decision, and say why", {
                "no count of target assignments out of 4 can meet the exact",
                fixed = TRUE)
   expect_identical(content_handoff(fit)$items, character(0))
+
+  # With no decision to compare, the legacy block says so and counts nothing.
+  legacy <- paste(capture.output(print(fit, legacy = TRUE)), collapse = " ")
+  expect_match(legacy, "No item has a Retain or Review decision above",
+               fixed = TRUE)
+  expect_false(grepl("0 of 0", legacy, fixed = TRUE))
 })
 
 test_that("an unsorted item's handoff rule says no judge sorted it", {
@@ -185,4 +191,115 @@ test_that("a scale mean on a published band minimum falls in that band", {
                    "Very Strong")
   expect_identical(as.data.frame(interpret_colquitt(.8699, "htc"))$interpretation,
                    "Moderate")
+})
+
+test_that("one too-few item among decided ones is named, counted and worded in the singular", {
+  d <- rbind(sort_rows("A1", "A", c(rep("A", 18), rep("B", 2))),
+             sort_rows("A2", "A", rep("A", 4)),
+             sort_rows("A3", "A", rep(NA_character_, 20)))
+  fit <- sort_validity(d)
+  expect_identical(fit$results$recommendation,
+                   c("Retain", "Insufficient panel", "Insufficient data"))
+  # Both items with a Psa enter the scale mean, as before.
+  expect_identical(fit$scale_summary$n_items_usable, 2L)
+  expect_equal(fit$scale_summary$mean_psa, mean(c(.9, 1)))
+  out <- gsub("\\s+", " ", paste(capture.output(print(fit)), collapse = " "))
+  expect_match(out, "so this item has no decision.", fixed = TRUE)
+  expect_match(out, "Insufficient data: A3", fixed = TRUE)
+
+  # The summary counts the two reasons for no decision apart.
+  sm <- gsub("\\s+", " ",
+             paste(capture.output(print(summary(fit))), collapse = " "))
+  expect_match(sm, "Retain: 1 of 3 | Review: 0 of 3 | Too few judges: 1 | Insufficient data: 1",
+               fixed = TRUE)
+
+  # The comparison table keeps each row on one line.
+  legacy <- capture.output(print(fit, legacy = TRUE))
+  expect_true(any(grepl("^ +A2 +No decision ", legacy)))
+  expect_lte(max(nchar(legacy)), 80L)
+})
+
+test_that("csv_binom_test says when no count can reach alpha", {
+  b <- csv_binom_test(4, 4)
+  expect_true(is.na(b$critical_n_target))
+  expect_false(b$passes_chance)
+  expect_identical(
+    b$interpretation,
+    "No count of target assignments can meet the exact criterion with this many judges."
+  )
+  out <- gsub("\\s+", " ", paste(capture.output(print(b)), collapse = " "))
+  expect_match(out, "4 of 4 judges assigned the item", fixed = TRUE)
+  expect_match(out, "With 4 judges, no count can reach alpha = .05", fixed = TRUE)
+  expect_false(grepl("NA", out, fixed = TRUE))
+  one <- gsub("\\s+", " ",
+              paste(capture.output(print(csv_binom_test(1, 1))), collapse = " "))
+  expect_match(one, "1 of 1 judge assigned the item", fixed = TRUE)
+})
+
+test_that("item, target and judge labels are trimmed too, non-breaking spaces included", {
+  nbsp <- "\u00a0"
+  d <- sort_rows("A1", "A", c(rep("A", 16), rep("B", 4)))
+  d$target_construct[1:5] <- " A"
+  d$item[6:10] <- paste0("A1", nbsp)
+  d$assigned_construct[1:2] <- paste0(nbsp, "A")
+  fit <- sort_validity(d)
+  expect_identical(fit$results$item, "A1")
+  expect_identical(fit$results$target, "A")
+  expect_identical(fit$results$n, 20L)
+  expect_identical(fit$results$n_target, 16L)
+
+  # A judge listed twice, apart from a trailing space, is still a duplicate.
+  dup <- data.frame(item = "I1", rater = c("r1", "r1 ", "r2"),
+                    assigned_construct = "A", target_construct = "A")
+  expect_error(sort_validity(dup), "Each item-rater pair must appear only once")
+  # A label that is only a non-breaking space is empty.
+  blank <- sort_rows(nbsp, "A", rep("A", 5))
+  expect_error(sort_validity(blank), "cannot be empty")
+  # orbiting_r may be keyed by the labels as they appear in the data.
+  two <- rbind(sort_rows("B1", " B", c(rep(" B", 18), rep("C", 2))),
+               sort_rows("C1", "C", c(rep("C", 17), rep(" B", 3))))
+  expect_silent(keyed <- sort_validity(two, orbiting_r = c(" B" = .2, C = .6)))
+  expect_identical(keyed$scale_summary$target, c("B", "C"))
+})
+
+test_that("a missing numeric assignment stays missing, NaN included", {
+  d <- data.frame(item = rep(c("I1", "I2"), each = 6), rater = rep(1:6, 2),
+                  assigned_construct = c(1, 1, 1, 1, NaN, NaN, 2, 2, 2, 2, 2, NA),
+                  target_construct = rep(c(1, 2), each = 6))
+  psa <- as.data.frame(compute_psa(d))
+  expect_identical(psa$n, c(4L, 5L))
+  expect_identical(psa$n_missing, c(2L, 1L))
+  expect_equal(psa$psa, c(1, 1))
+  csv <- as.data.frame(compute_csv(d))
+  expect_identical(csv$n, c(4L, 5L))
+  expect_true(all(is.na(csv$competitor)))
+})
+
+test_that("large numeric codes match whether stored as integer or double", {
+  d <- data.frame(
+    item = rep(c("I1", "I2"), each = 20), rater = rep(1:20, 2),
+    assigned_construct = as.integer(c(rep(100000, 16), rep(10, 4),
+                                      rep(10, 18), rep(100000, 2))),
+    target_construct = rep(c(1e5, 10), each = 20)
+  )
+  fit <- sort_validity(d)
+  expect_identical(fit$results$n_target, c(16L, 18L))
+  expect_identical(fit$results$target, c("100000", "10"))
+  expect_identical(fit$results$recommendation, c("Retain", "Retain"))
+  # A whole number and the same number with a decimal part are one label.
+  mixed <- data.frame(item = "I1", rater = 1:6,
+                      assigned_construct = c(1, 1, 1, 1, 2.5, 2.5),
+                      target_construct = 1L)
+  expect_identical(as.data.frame(compute_csv(mixed))$n_target, 4L)
+  expect_identical(as.data.frame(compute_csv(mixed))$competitor, "2.5")
+})
+
+test_that("alpha text does not depend on session options", {
+  fmt <- contentvalidR:::.fmt_alpha
+  expect_identical(fmt(.05 / 3), ".0167")
+  old <- options(digits = 17)
+  on.exit(options(old), add = TRUE)
+  expect_identical(fmt(c(.05, .1, .001)), c(".05", ".10", ".001"))
+  options(digits = 7, OutDec = ",")
+  expect_identical(fmt(c(.05, .025, .001)), c(".05", ".025", ".001"))
 })

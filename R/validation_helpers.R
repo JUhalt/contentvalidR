@@ -95,7 +95,9 @@
     stop(sprintf("`%s` identifiers cannot be missing.", name), call. = FALSE)
   }
   z <- as.character(x)
-  bad <- !is.na(z) & !nzchar(trimws(z))
+  # Whitespace of any kind, so a label that is only a non-breaking space is
+  # empty too.
+  bad <- !is.na(z) & !nzchar(trimws(z, whitespace = "[\\h\\v]"))
   if (any(bad)) {
     stop(sprintf("`%s` identifiers cannot be empty.", name), call. = FALSE)
   }
