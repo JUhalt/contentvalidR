@@ -125,12 +125,14 @@ but not 2 therefore has no pair to compare, and an item rated in rounds 1,
 2 and 4 reports the stability of rounds 1 and 2 beside its round 4
 consensus. \code{details$stability} names the rounds of every pair.
 
-\strong{Round order.} Numbered rounds are put in numeric order and a factor
-keeps the order of its levels. Text labels are ordered by the number each
-carries (\code{"R1"}, \code{"Round 2"}, \code{"wave 10"}), whatever order the rows are in.
-Text labels without a number, such as \code{"pre"} and \code{"post"}, cannot be
-ordered from the text, so they stop with a request for a factor. The
-printout lists the rounds in the order used.
+\strong{Round order.} Numbered rounds are put in numeric order, dates in date
+order, and a factor keeps the order of its levels. Text labels are ordered
+by the number each carries (\code{"R1"}, \code{"Round 2"}, \code{"wave 10"}), whatever
+order the rows are in, when that number is all that differs between them.
+Text labels without a number (\code{"pre"}, \code{"post"}), or that differ in more
+than one number (\code{"Q4 2023"}, \code{"Q1 2024"}), cannot be ordered from the
+text, so they stop with a request for a factor. The printout lists the
+rounds in the order used.
 }
 \section{When a stability statistic is undefined}{
 

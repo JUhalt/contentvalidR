@@ -320,10 +320,13 @@ test_that("percentages written into prose match the computed proportions", {
   d <- fit_delphi(consensus_threshold = 0.75, B = 0)
   r <- d$results
   for (i in seq_len(nrow(r))) {
+    # Whole when the share is whole (83%), one decimal otherwise (16.7%).
     stated <- regmatches(r$interpretation[i],
-                         regexpr("[0-9]+(?=% agreed)", r$interpretation[i],
+                         regexpr("[0-9.]+(?=% agreed)", r$interpretation[i],
                                  perl = TRUE))
-    expect_identical(stated, format(round(100 * r$prop_agree[i])),
+    expect_identical(stated,
+                     sub("\\.0$", "", formatC(round(100 * r$prop_agree[i], 1),
+                                              format = "f", digits = 1)),
                      info = paste("interpretation for", r$item[i]))
   }
   # And the threshold quoted in the prose is the threshold that ran.

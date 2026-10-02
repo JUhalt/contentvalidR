@@ -27,8 +27,12 @@ units for each consecutive pair of rounds.}
 rounds, and a changed panel size, which is the audit trail for whether
 a status change can be read as an evidence change at all.}
 \item{comparable}{\code{FALSE} when any consecutive pair differs in settings
-or in panel size. The seed and the number of bootstrap resamples are
-ignored, because they cannot change a status.}
+or, where the criterion depends on it, in panel size. The seed and
+the number of bootstrap resamples are ignored, because they cannot
+change a status.}
+\item{panel_compared}{Whether the panel size was part of the
+comparison: \code{TRUE} for the item sort and for expert relevance and
+essentiality.}
 }
 }
 \description{
@@ -40,11 +44,13 @@ Scale development is iterative: items get revised and re-tested. The risk in
 reporting that process is attributing a status change to improved items when
 it actually came from a changed decision rule, a different panel size, or a
 different criterion. This function makes that distinction visible by
-comparing the \code{settings} and the panel size of each round alongside its
-results, and flagging rounds that differ in either. The panel size matters
-because the exact tests and Lynn's criterion depend on the number of
-judges: 5 of 6 does not meet the item-sort criterion, while the same share,
-10 of 12, does.
+comparing the \code{settings} of each round alongside its results and flagging
+rounds that differ. For the item sort and for expert relevance and
+essentiality it compares the panel size too, because the exact tests and
+Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+item-sort criterion, while the same share, 10 of 12, does. Where the rule
+is a fixed share or cut, as in a Delphi fit, the panel size is not
+compared: the criterion did not move.
 }
 \section{Reading a comparison}{
 
