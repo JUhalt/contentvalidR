@@ -44,6 +44,8 @@ Ratings are internally shifted to a 1-to-\code{a} metric when a scale such as
 
 HTC describes definitional correspondence. Higher values indicate that
 judges see the item as more representative of its intended construct.
+Because the lowest rating is 1 on the 1-to-\code{a} metric, HTC runs from
+\code{1 / a} to 1 (.20 to 1 on a five-point scale), not from 0.
 }
 \examples{
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))

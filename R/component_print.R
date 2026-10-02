@@ -142,17 +142,20 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
   needed <- c("item", "target", "n_complete", "F", "df1", "df2", "p_screen",
               "partial_eta2", "strongest_competitor", "max_contrast_p",
               "contrast_pass")
+  st <- attr(x, "settings")
   .print_component(
     x, needed,
-    title = "Content-validity ANOVA (Hinkin & Tracey, 1999)",
+    title = paste("Content-validity ANOVA (adapted from Hinkin & Tracey, 1999;",
+                  "MacKenzie et al., 2011)"),
     build = function() {
       gg <- !is.na(x$df1_gg)
       d1 <- ifelse(gg, x$df1_gg, x$df1)
       d2 <- ifelse(gg, x$df2_gg, x$df2)
-      test <- ifelse(is.na(x$F), "NA",
-                     sprintf("F(%s, %s) = %s", .fmt(d1, digits, bounded = FALSE),
-                             .fmt(d2, digits, bounded = FALSE),
-                             .fmt(x$F, digits, bounded = FALSE)))
+      test <- ifelse(is.na(x$F), "--",
+                     sprintf("F(%s, %s) = %s", .fmt_df(d1, digits),
+                             .fmt_df(d2, digits),
+                             ifelse(is.infinite(x$F), "Inf",
+                                    .fmt(x$F, digits, bounded = FALSE))))
       # Narrow enough for an 80-column console; the strongest competitor
       # stays in the `strongest_competitor` column.
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
@@ -163,13 +166,31 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = c(
-      if (any(!is.na(x$df1_gg))) {
+      # Only a correction that changed the degrees of freedom is mentioned:
+      # with two constructs there is nothing to correct.
+      if (any(!is.na(x$df1_gg) & abs(x$df1_gg - x$df1) > 1e-8)) {
         "Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees of freedom are fractional."
+      },
+      if (any(is.infinite(x$F))) {
+        paste("F = Inf: the judges' rating profiles were exactly parallel,",
+              "leaving no error variance, so the constructs differ for every",
+              "judge alike and no sphericity correction applies.")
       },
       paste("contrast p: the largest p among the planned target-versus-other",
             "contrasts; met: whether every one of them met the screening",
             "criterion. attr(x, \"contrasts\") holds each contrast, and",
-            "`strongest_competitor` the construct rated closest to the target.")
+            "`strongest_competitor` the other construct with the highest mean",
+            "rating."),
+      # The level and the adjustment the `met` column was decided at.
+      if (is.list(st) && is.numeric(st$alpha)) {
+        paste0("The contrasts are one-sided (the intended construct rated ",
+               "above the other), at alpha = ", .fmt_alpha(st$alpha),
+               if (identical(st$adjust, "holm")) {
+                 ", with p values Holm-adjusted for the number of contrasts."
+               } else {
+                 ", with no adjustment for the number of contrasts."
+               })
+      }
     )
   )
 }

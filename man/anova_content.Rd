@@ -36,15 +36,23 @@ identifies the design itemwise from whether judges provide ratings for
 multiple construct definitions.}
 
 \item{adjust}{Multiplicity adjustment for the target-versus-orbiting planned
-contrast p values. Default \code{"none"} reproduces the planned-comparison
-logic commonly used with the Hinkin-Tracey procedure; \code{"holm"} is a
-conservative option.}
+contrast \emph{p} values. Default \code{"none"} treats each contrast as a planned
+comparison, in the spirit of MacKenzie et al. (2011); \code{"holm"} is a
+conservative option. Hinkin and Tracey (1999) themselves used Duncan's
+multiple range test, not planned contrasts.}
 }
 \value{
 A data.frame with one row per item, including the omnibus F, raw p,
-Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
+Greenhouse-Geisser epsilon/corrected degrees of freedom and \emph{p} value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
-The full planned-contrast table is stored in \code{attr(result, "contrasts")}.
+The full planned-contrast table is stored in \code{attr(result, "contrasts")}:
+for each contrast the two means, their difference, \code{t}, \code{df}, the
+one-sided \code{p}, the adjusted \code{p_adj}, and \code{pass}. Its \code{dz} column is a
+standardized mean difference: the mean difference over the standard
+deviation of the differences in a within-judge design, and Cohen's \emph{d}
+with the pooled standard deviation in a between-judge design.
+\code{p_screen} is the \emph{p} the screening uses: the Greenhouse-Geisser corrected
+\code{p_gg} in a within-judge design and \code{p} otherwise.
 It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 \code{posthoc_pass}, a duplicate of \code{contrast_pass} deprecated in 0.7.0, was
@@ -55,20 +63,37 @@ For each item, evaluates whether definitional-correspondence ratings differ
 across construct definitions and whether the intended construct is rated
 higher than every orbiting construct.
 
-The Hinkin and Tracey (1999) rating task is ordinarily a \strong{within-judge}
-design: the same judge rates an item against multiple construct definitions.
-For that design, \code{anova_content()} uses a one-way repeated-measures ANOVA on
-judges with complete ratings for the item's construct set, followed by
-one-sided paired planned contrasts of the target against each orbiting
-construct. A between-judge path is retained for genuinely independent rating
-designs, but it is not the recommended Hinkin-Tracey protocol.
+The Hinkin and Tracey (1999) rating task is a \strong{within-judge} design: the
+same judge rates an item against every construct definition. Hinkin and
+Tracey analyzed those ratings with a one-way ANOVA and Duncan's multiple
+range test at .05, treating the definitions as independent groups. Because
+the same judges rate every definition, \code{anova_content()} uses the
+repeated-measures form that MacKenzie et al. (2011) recommend for this
+task: a one-way repeated-measures ANOVA on the judges with complete
+ratings for the item, followed by planned contrasts of the intended
+construct against the others. A between-judge path is kept for designs in
+which different judges rate each definition, where a one-way ANOVA across
+groups is the fitting test.
 
-The repeated-measures output includes the conventional omnibus F/p and a
-Greenhouse-Geisser epsilon/corrected p-value. With more than two construct
-definitions, the corrected p-value is the safer default for omnibus screening
-when sphericity may not hold. Planned target-versus-orbiting contrasts provide
-the more direct item-level evidence.
+The repeated-measures output includes the conventional omnibus \emph{F} and \emph{p}
+and a Greenhouse-Geisser (1959) epsilon with its corrected \emph{p} value. With
+more than two construct definitions, the corrected \emph{p} value is the safer
+default for omnibus screening when sphericity may not hold. Planned
+target-versus-orbiting contrasts provide the more direct item-level
+evidence.
 }
+\section{What is published and what is this package's choice}{
+
+The rating task is Hinkin and Tracey's (1999), and the repeated-measures
+ANOVA with a planned contrast is MacKenzie et al.'s (2011)
+recommendation for it. Four details are contentvalidR choices, not taken
+from either source: the Greenhouse-Geisser corrected \emph{p} as the screening
+\emph{p}; one one-sided paired contrast for each orbiting construct, where
+MacKenzie et al. describe a single contrast against the other constructs;
+no multiplicity adjustment by default; and the screening rule that the
+omnibus test and every contrast must pass.
+}
+
 \examples{
 set.seed(1)
 d <- expand.grid(item = c("I1", "I2"), rater = 1:12,
@@ -79,12 +104,15 @@ d$rating <- ifelse(d$construct == d$target_construct,
 anova_content(d)
 }
 \references{
-Colquitt, J. A., Baer, M. D., Long, D. M., & Halvorsen-Ganepola, M. D. K.
-(2014). Scale indicators of social exchange relationships: A comparison of
-relative content validity. \emph{Journal of Applied Psychology, 99}(4), 599–618.
-\doi{10.1037/a0036374}
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+profile data. \emph{Psychometrika, 24}(2), 95–112. \doi{10.1007/BF02289823}
 
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
 content validation. \emph{Organizational Research Methods, 2}(2), 175–186.
 \doi{10.1177/109442819922004}
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. \emph{MIS Quarterly, 35}(2), 293–334.
+\doi{10.2307/23044045}
 }

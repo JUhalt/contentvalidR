@@ -93,6 +93,15 @@
   paste(n, ifelse(n == 1, noun, plural))
 }
 
+# Degrees of freedom as APA writes them: a whole number without decimals, a
+# corrected (fractional) one with them. "F(2, 15)", "F(1.89, 20.84)".
+.fmt_df <- function(df, digits = 2) {
+  whole <- !is.na(df) & abs(df - round(df)) < 1e-8
+  out <- .fmt(df, digits, bounded = FALSE)
+  out[whole] <- format(round(df[whole]), trim = TRUE, scientific = FALSE)
+  out
+}
+
 # Scale points as text, written alike: "1" and "4", or "0.333" and "1.333" on
 # a scale with fractional points, never seven digits on one and six on another.
 .fmt_scale <- function(x) {

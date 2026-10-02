@@ -35,7 +35,10 @@ Provides three complementary views of a construct-rating pretest. \code{"item"}
 reproduces the original one-index plot, \code{"map"} places HTC against HTD to show
 correspondence and distinctiveness jointly, and \code{"profile"} draws a target-versus-
 strongest-competitor gap plot on the original response scale, first item at
-the top, with a dashed gap for items to review. The latter is a
+the top, with a dashed gap for items to review. Both ends of a gap are means
+over the judges who rated the item against every construct, the judges the
+tests use. An item without a decision has no gap: a cross marks its mean
+target rating. The latter is a
 graphical analogue of the mean-rating tables used in Hinkin and Tracey (1999).
 }
 \examples{

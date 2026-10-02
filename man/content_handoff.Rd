@@ -203,7 +203,10 @@ Added in contentvalidR 0.7.0 to \code{item_statistics} and \code{panel_statistic
 It says why a value or interval is absent or degenerate, in the producing
 function's own words, so a reader need not re-derive method-specific
 semantics. For example, a Delphi stability row may carry "Kappa is
-undefined: every rating fell in the same category in both rounds."
+undefined: every rating fell in the same category in both rounds." It also
+says when a statistic that meets its criterion is not what decided: the
+construct-rating \code{p_value} is the omnibus \emph{p}, and for an item held back by
+a planned contrast its note says so and gives the largest contrast \emph{p}.
 
 Its contract, agreed with the \code{nomologR} maintainers:
 \itemize{

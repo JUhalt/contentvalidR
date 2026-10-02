@@ -218,6 +218,92 @@ analysis that matches the cases below.
   relevant side, so the bar read 1.00 beside an I-CVI of .83.
 * The Delphi vignette restores the option it changes.
 
+## Construct rating: values that change
+
+* **An item rated by one complete judge stays out of the scale means.** An
+  item with fewer than two judges who rated it against every construct is
+  `"Insufficient data"`, yet its HTC and HTD, from that one judge, were
+  averaged into its scale's means and could move the scale's Colquitt band.
+  The scale means of `rating_validity()` now use only the items that have a
+  decision. Unlike the item sort, this does not depend on alpha: two complete
+  judges are needed whatever the level.
+* **Judges whose ratings run exactly parallel give `F = Inf`, as the help
+  always said.** When every judge's ratings differed across the constructs by
+  the same amounts there is no error variance. Rounding left a sum of squares
+  near 1e-15 where it should be 0, so the test printed an *F* in the
+  quadrillions with degrees of freedom "corrected" by an epsilon built from
+  that noise. The error is now treated as zero: *F* is `Inf`, *p* is 0, no
+  sphericity correction is reported, and the printout says what happened.
+  When every rating is the same, *F* and *p* are `NA` as before.
+* **Leading and trailing spaces in labels are ignored** in item, judge and
+  construct labels and in the names of `target_map`, as in the item sort.
+* **Items are listed in the order of the data,** or of the levels when the
+  item column is a factor, in `htc()`, `htd()`, `anova_content()` and
+  `rating_validity()`. They were sorted as text, so Q10 came before Q2. Item
+  names in `results` are always text.
+
+## Construct rating: other fixes
+
+* **The test is credited to its sources.** The printout and the handoff
+  credited the repeated-measures ANOVA with planned contrasts to Hinkin and
+  Tracey (1999). They proposed the rating task and analyzed it with a one-way
+  ANOVA and Duncan's multiple range test. The repeated-measures form with a
+  planned contrast is MacKenzie et al.'s (2011) recommendation for that task.
+  The help for `anova_content()` now says which details are published and
+  which are this package's choices (the Greenhouse-Geisser screening *p*, one
+  one-sided contrast for each orbiting construct, no adjustment by default,
+  and the rule that the omnibus test and every contrast must pass). The
+  heading reads "adapted from Hinkin & Tracey, 1999; MacKenzie et al., 2011",
+  the `rule` text in the handoff says the same and names both conditions, and
+  its `citation` adds MacKenzie et al. (2011). The numbers are unchanged.
+* **HTD is defined as what it is.** The key and the glossary said HTD is the
+  lead over the closest rival. It is the intended construct's lead averaged
+  over every other construct, as in Colquitt et al. (2019); the closest rival
+  is reported beside it. The range of HTC is given as 1 divided by the number
+  of scale points to 1 (.20 to 1 on a five-point scale); it said 0 to 1.
+* The printout of `rating_validity()` states its rule and its alpha: Retain
+  means the omnibus *p* and every contrast *p* are at or below alpha. The
+  meaning of "Retain" in the key names the omnibus test too.
+* `anova_content()` prints whole degrees of freedom as whole numbers,
+  "F(2, 14)", and mentions the Greenhouse-Geisser correction only when it
+  changed them. With two constructs it printed "F(1.00, 7.00)" under a note
+  about fractional degrees of freedom.
+* `content_report()` on a construct-rating fit adds the *F* test, with the
+  degrees of freedom its *p* was read from, and partial eta-squared. `results`
+  gains `df1_gg` and `df2_gg`, those corrected degrees of freedom.
+* The profile figure draws both ends of each gap from the judges with
+  complete ratings, the judges the tests use. The target end used every
+  rating, so with missing ratings a gap could point the wrong way for its own
+  decision. An item without a decision is marked with a cross and has no gap,
+  and the legend lists only what is drawn.
+* For expert judges, the scale tables of `rating_validity()` and
+  `sort_validity()` leave out the level columns and the benchmark set, which
+  were printed as columns of `NA` under a named benchmark set that was not
+  applied.
+* An item whose every contrast passed but whose omnibus test did not is told
+  so. Its advice pointed at "the weakest target-orbiting comparison", which
+  had passed. With two constructs this is the usual way to miss: the
+  one-sided contrast *p* is half the omnibus *p*.
+* In the handoff, the `p_value` of a construct-rating item is the omnibus
+  *p*. For an item that meets it and is held back by a contrast, the `note`
+  on that row now says so and gives the largest contrast *p*. No column or
+  statistic is added.
+* `anova_content()` prints the alpha and the adjustment its contrasts were
+  judged at, and says they are one-sided. Its help describes the columns of
+  the contrast table, including that `dz` is Cohen's *d* with the pooled
+  standard deviation in a between-judge design.
+* A single `orbiting_r` named for a construct other than the one target is an
+  error in `rating_validity()` and `sort_validity()`. It was applied to the
+  target whatever its name said.
+* When a scale's means leave items out, a sentence under the table says how
+  many items are in them. The columns "with HTC" and "with HTD" are gone.
+* "1 item-judge profiles were incomplete" now reads "1 item-judge profile
+  was", and the sentence says which statistics use which judges. "0 of 1
+  items meet" reads "0 of 1 item meets".
+* The help for `adjust` no longer calls unadjusted contrasts "historical":
+  Hinkin and Tracey (1999) used Duncan's test, not planned contrasts.
+* `?htd` gives the full reference for Colquitt et al. (2019).
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

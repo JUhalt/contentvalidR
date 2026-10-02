@@ -1,3 +1,16 @@
+# A single correlation for a single target may be unnamed. A name is a claim
+# about which scale the value belongs to, so a name that is not the target's
+# is reported, not ignored.
+.check_single_orbiting_r <- function(orbiting_r, target) {
+  nm <- names(orbiting_r)
+  if (is.null(nm) || is.na(nm) || !nzchar(trimws(nm))) return(invisible(NULL))
+  if (!identical(trimws(nm, whitespace = "[\\h\\v]"), target)) {
+    stop("`orbiting_r` is named '", nm, "', but the only target is '", target,
+         "'. Name it for that target, or leave it unnamed.", call. = FALSE)
+  }
+  invisible(NULL)
+}
+
 .resolve_orbiting_r <- function(targets, orbiting_r) {
   targets <- as.character(targets)
   if (is.null(orbiting_r)) {
@@ -7,6 +20,7 @@
     stop("`orbiting_r` must contain finite correlations between -1 and 1.", call. = FALSE)
   }
   if (length(targets) == 1L && length(orbiting_r) == 1L) {
+    .check_single_orbiting_r(orbiting_r, targets)
     return(stats::setNames(as.numeric(orbiting_r), targets))
   }
   # Target labels are trimmed, so the names that key this vector are too.
@@ -418,14 +432,19 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   sc <- x$scale_summary
   cat("\nScale-level Colquitt benchmarks\n")
   sets <- unique(sc$benchmark_set)
+  expert <- identical(s$judge_type, "expert")
   st <- data.frame(target = sc$target, items = sc$n_items,
-                   `mean Psa` = .fmt(sc$mean_psa, digits), `Psa level` = sc$psa_strength,
-                   `mean Csv` = .fmt(sc$mean_csv, digits), `Csv level` = sc$csv_strength,
+                   `mean Psa` = .fmt(sc$mean_psa, digits),
                    stringsAsFactors = FALSE, check.names = FALSE)
+  # No benchmark is applied for expert judges, so no level columns and no
+  # benchmark set are shown for them.
+  if (!expert) st$`Psa level` <- sc$psa_strength
+  st$`mean Csv` <- .fmt(sc$mean_csv, digits)
+  if (!expert) st$`Csv level` <- sc$csv_strength
   # A benchmark set shared by every scale is stated once, not on every row.
-  if (length(sets) > 1L) st$benchmarks <- sc$benchmark_set
+  if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
   .print_table(st)
-  if (length(sets) == 1L) .say("Benchmark set:", sets)
+  if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
 
   cat("\n")
   if (identical(s$judge_type, "expert")) {
@@ -484,13 +503,18 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
 
   cat("\nScale-level evidence\n")
   s <- x$scale_summary
-  .print_table(data.frame(
+  tab <- data.frame(
     target = s$target, items = s$n_items, retain = s$n_retain,
     review = s$n_review, `mean Psa` = .fmt(s$mean_psa, digits),
     `Psa level` = s$psa_strength, `mean Csv` = .fmt(s$mean_csv, digits),
     `Csv level` = s$csv_strength, overall = s$overall_strength,
     stringsAsFactors = FALSE, check.names = FALSE
-  ))
+  )
+  # Expert-judge analyses carry no benchmark labels, so the columns that
+  # would hold them are left out.
+  level_cols <- names(tab) %in% c("Psa level", "Csv level", "overall")
+  .print_table(tab[!(level_cols & vapply(tab, function(col) all(is.na(col)),
+                                         logical(1)))])
   cat("\n")
   .say_grouped(s$target, s$evidence)
 
