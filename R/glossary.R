@@ -244,7 +244,7 @@
       definition = paste(
         "Share of the experts rating an item in a round whose rating was at",
         "or above the agreement cut. On a relevance scale this is the I-CVI.",
-        "Consensus means it reached the threshold set before the study."
+        "Consensus means it reached the consensus threshold supplied."
       ),
       range = "0 to 1; higher is broader agreement",
       stringsAsFactors = FALSE
@@ -266,9 +266,9 @@
       definition = paste(
         "Agreement between each expert's ratings in two consecutive rounds,",
         "corrected for chance, with larger changes counting more. Read it as",
-        "a trend across rounds. It falls when ratings bunch in one category,",
-        "so a converged panel can show a low kappa even when almost no one",
-        "changed their rating."
+        "a trend across rounds. It can be low when ratings bunch in one",
+        "category, so a converged panel can show a low kappa even when almost",
+        "no one changed their rating."
       ),
       range = "-1 to 1; 1 is perfect stability, 0 is no better than chance",
       stringsAsFactors = FALSE
@@ -348,7 +348,7 @@
     share = "Percentage of all items in this cell.",
     adjusted_rand = "Match between the experts' groupings and the blueprint, corrected for chance (0 is chance, 1 is exact).",
     stress = "How far the map's distances depart from the experts' dissimilarities (0 is an exact map; no benchmark applies).",
-    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the preset threshold.",
+    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the consensus threshold.",
     prop_unchanged = "Share of experts giving the same rating in two consecutive rounds (1 means nobody changed).",
     kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cutoff.",
     lambda = "How much an expert's earlier rating predicts the later one (0 to 1): predictability, not agreement.",

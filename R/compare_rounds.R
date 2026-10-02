@@ -18,10 +18,23 @@
 # status, so two rounds that differ only in these are still comparable.
 .resampling_settings <- c("seed", "B", "agreement_B")
 
+# Whether the criterion a unit must meet moves with the number of judges. It
+# does for the exact tests (item sort, essentiality) and for Lynn's criterion
+# (relevance). It does not where the rule is a fixed share or cut: a Delphi
+# consensus threshold, the rating workflow's alpha, the judge and domain cuts,
+# the congruence margin.
+.criterion_depends_on_panel <- function(fit) {
+  if (inherits(fit, "contentvalid_sort")) return(TRUE)
+  inherits(fit, "contentvalid_expert") &&
+    isTRUE(fit$mode %in% c("relevance", "essentiality"))
+}
+
 # The number of judges behind a fit, as text: "6", or "5-6" when items differ.
-# The exact test and Lynn's criterion both depend on it, so a changed panel
-# size is a changed decision rule even when every setting is the same.
+# Where the criterion depends on it, a changed panel size is a changed
+# decision rule even when every setting is the same. Elsewhere it is NA: the
+# rule did not move, so the size is not compared.
 .round_panel_size <- function(fit) {
+  if (!.criterion_depends_on_panel(fit)) return(NA_character_)
   d <- .workflow_design(fit)
   lo <- d$n_judges_min
   hi <- d$n_judges_max
@@ -72,11 +85,13 @@
 #' reporting that process is attributing a status change to improved items when
 #' it actually came from a changed decision rule, a different panel size, or a
 #' different criterion. This function makes that distinction visible by
-#' comparing the `settings` and the panel size of each round alongside its
-#' results, and flagging rounds that differ in either. The panel size matters
-#' because the exact tests and Lynn's criterion depend on the number of
-#' judges: 5 of 6 does not meet the item-sort criterion, while the same share,
-#' 10 of 12, does.
+#' comparing the `settings` of each round alongside its results and flagging
+#' rounds that differ. For the item sort and for expert relevance and
+#' essentiality it compares the panel size too, because the exact tests and
+#' Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+#' item-sort criterion, while the same share, 10 of 12, does. Where the rule
+#' is a fixed share or cut, as in a Delphi fit, the panel size is not
+#' compared: the criterion did not move.
 #'
 #' @param ... Two or more fitted workflow objects, in round order. All must come
 #'   from the same workflow, and from the same mode of [expert_validity()],
@@ -96,8 +111,12 @@
 #'       rounds, and a changed panel size, which is the audit trail for whether
 #'       a status change can be read as an evidence change at all.}
 #'     \item{comparable}{`FALSE` when any consecutive pair differs in settings
-#'       or in panel size. The seed and the number of bootstrap resamples are
-#'       ignored, because they cannot change a status.}
+#'       or, where the criterion depends on it, in panel size. The seed and
+#'       the number of bootstrap resamples are ignored, because they cannot
+#'       change a status.}
+#'     \item{panel_compared}{Whether the panel size was part of the
+#'       comparison: `TRUE` for the item sort and for expert relevance and
+#'       essentiality.}
 #'   }
 #'
 #' @section Reading a comparison:
@@ -283,6 +302,8 @@ compare_rounds <- function(..., labels = NULL) {
     summary = pair_summary,
     settings_changes = settings_changes,
     comparable = comparable,
+    # Whether the panel size was part of the comparison at all.
+    panel_compared = .criterion_depends_on_panel(rounds[[1]]),
     labels = labels,
     id_col = id_col,
     workflow = .workflow_name(rounds[[1]]),
@@ -320,18 +341,23 @@ print.contentvalid_rounds <- function(x, ...) {
                }))
 
   if (!x$comparable) {
-    only_size <- all(x$settings_changes$setting == "panel size")
+    size <- x$settings_changes$setting == "panel size"
     cat("\n!! The rounds were not analyzed under the same decision rule.\n")
-    .say(if (only_size) {
-      paste("The panel changed size, and the criterion an item must meet",
-            "depends on the number of judges. A change in status may reflect",
-            "the changed criterion rather than changed evidence, so compare",
-            "each round's index values before reporting a change as progress.")
+    size_text <- paste(
+      "The panel changed size, and the criterion an item must meet depends",
+      "on the number of judges. A change in status may reflect the changed",
+      "criterion rather than changed evidence, so compare each round's index",
+      "values before reporting a change as progress."
+    )
+    if (all(size)) {
+      .say(size_text)
     } else {
-      paste("A change in status may reflect the changed rule rather than",
-            "changed evidence. Re-analyze the earlier round under the current",
-            "settings before reporting any change as progress.")
-    })
+      .say("A change in status may reflect the changed rule rather than",
+           "changed evidence. Re-analyze the earlier round under the current",
+           "settings before reporting any change as progress.")
+      # Re-analysis cannot undo a changed panel, so that part is said too.
+      if (any(size)) .say(size_text)
+    }
     cat("\nWhat differs\n")
     .print_table(x$settings_changes)
   }
@@ -351,8 +377,13 @@ print.contentvalid_rounds <- function(x, ...) {
 
   if (x$comparable) {
     cat("\n")
-    .say("The settings and the panel size were the same in every round, so",
-         "these transitions can be read as changes in evidence.")
+    # The panel size is named only where it was compared. An object from an
+    # earlier version has no such field; it compared the settings only.
+    .say(if (isTRUE(x$panel_compared)) {
+      "The settings and the panel size were the same in every round,"
+    } else {
+      "The settings were the same in every round,"
+    }, "so these transitions can be read as changes in evidence.")
   }
 
   cat("\n")
@@ -390,7 +421,7 @@ print.summary.contentvalid_rounds <- function(x, ...) {
       sep = "")
 
   if (!x$comparable) {
-    cat("\nSettings that differ between rounds\n")
+    cat("\nWhat differs between rounds\n")
     .print_table(x$settings_changes)
   }
 

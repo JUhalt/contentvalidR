@@ -87,9 +87,13 @@
 .as_label <- function(x) {
   missing <- is.na(x)
   out <- if (is.numeric(x)) {
-    vapply(x, function(v) {
+    # Each distinct value is formatted once and mapped back: a column of
+    # rater numbers repeats a few values many thousands of times.
+    u <- unique(x)
+    txt <- vapply(u, function(v) {
       format(v, scientific = FALSE, trim = TRUE, digits = 15, decimal.mark = ".")
     }, character(1), USE.NAMES = FALSE)
+    txt[match(x, u)]
   } else {
     as.character(x)
   }

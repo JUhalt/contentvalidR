@@ -2,7 +2,7 @@
 % Please edit documentation in R/anova_content.R
 \name{anova_content}
 \alias{anova_content}
-\title{Hinkin-Tracey ANOVA content test}
+\title{Repeated-measures ANOVA content test for construct ratings}
 \usage{
 anova_content(
   ratings,
@@ -52,7 +52,15 @@ standardized mean difference: the mean difference over the standard
 deviation of the differences in a within-judge design, and Cohen's \emph{d}
 with the pooled standard deviation in a between-judge design.
 \code{p_screen} is the \emph{p} the screening uses: the Greenhouse-Geisser corrected
-\code{p_gg} in a within-judge design and \code{p} otherwise.
+\code{p_gg} in a within-judge design where a correction applies, and \code{p}
+otherwise. \code{max_contrast_p} is the largest contrast \emph{p}, and \code{NA} when a
+contrast has no \emph{p} because every judge rated the intended construct and
+another the same.
+
+When every judge's ratings differ across the constructs by the same
+amounts there is no error variance: \code{F} is \code{Inf}, \code{p} is 0, no
+sphericity correction applies (\code{epsilon_gg}, \code{df1_gg}, \code{df2_gg} and
+\code{p_gg} are \code{NA}), and \code{p_screen} is \code{p}.
 It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 \code{posthoc_pass}, a duplicate of \code{contrast_pass} deprecated in 0.7.0, was
@@ -84,14 +92,23 @@ evidence.
 }
 \section{What is published and what is this package's choice}{
 
-The rating task is Hinkin and Tracey's (1999), and the repeated-measures
-ANOVA with a planned contrast is MacKenzie et al.'s (2011)
-recommendation for it. Four details are contentvalidR choices, not taken
-from either source: the Greenhouse-Geisser corrected \emph{p} as the screening
-\emph{p}; one one-sided paired contrast for each orbiting construct, where
-MacKenzie et al. describe a single contrast against the other constructs;
-no multiplicity adjustment by default; and the screening rule that the
-omnibus test and every contrast must pass.
+The rating task is Hinkin and Tracey's (1999). The repeated-measures ANOVA
+followed, when its \emph{F} is significant, by a planned contrast of the
+intended construct against the others is MacKenzie et al.'s (2011)
+recommendation for it, so the rule that an item passes the omnibus test
+and then its contrasts follows their sequence. These details are
+contentvalidR choices, not taken from either source:
+\itemize{
+\item The Greenhouse-Geisser corrected \emph{p} is the screening \emph{p} of the omnibus
+test.
+\item There is one one-sided paired contrast for each orbiting construct, and
+every one must pass, where MacKenzie et al. describe a single contrast
+against the other constructs.
+\item The contrasts are not adjusted for their number unless \code{adjust = "holm"}.
+\item The tests use the judges who rated the item against every construct, and
+need at least two of them.
+\item In a between-judge design the contrasts are one-sided Welch \emph{t} tests.
+}
 }
 
 \examples{

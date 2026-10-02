@@ -3,8 +3,12 @@
 # is reported, not ignored.
 .check_single_orbiting_r <- function(orbiting_r, target) {
   nm <- names(orbiting_r)
-  if (is.null(nm) || is.na(nm) || !nzchar(trimws(nm))) return(invisible(NULL))
-  if (!identical(trimws(nm, whitespace = "[\\h\\v]"), target)) {
+  if (is.null(nm) || is.na(nm)) return(invisible(NULL))
+  # Trimmed once, of every kind of space, for both questions: is there a
+  # name, and is it the target's.
+  nm <- trimws(nm, whitespace = "[\\h\\v]")
+  if (!nzchar(nm)) return(invisible(NULL))
+  if (!identical(nm, target)) {
     stop("`orbiting_r` is named '", nm, "', but the only target is '", target,
          "'. Name it for that target, or leave it unnamed.", call. = FALSE)
   }
@@ -430,9 +434,11 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!is.null(s$proportion_ci)) .say(.proportion_ci_note(s$proportion_ci, s$alpha))
 
   sc <- x$scale_summary
-  cat("\nScale-level Colquitt benchmarks\n")
-  sets <- unique(sc$benchmark_set)
   expert <- identical(s$judge_type, "expert")
+  # Without benchmarks the table holds means only, and is headed as such.
+  cat(if (expert) "\nScale-level means\n" else
+    "\nScale-level Colquitt benchmarks\n")
+  sets <- unique(sc$benchmark_set)
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean Psa` = .fmt(sc$mean_psa, digits),
                    stringsAsFactors = FALSE, check.names = FALSE)
@@ -511,10 +517,12 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
     stringsAsFactors = FALSE, check.names = FALSE
   )
   # Expert-judge analyses carry no benchmark labels, so the columns that
-  # would hold them are left out.
-  level_cols <- names(tab) %in% c("Psa level", "Csv level", "overall")
-  .print_table(tab[!(level_cols & vapply(tab, function(col) all(is.na(col)),
-                                         logical(1)))])
+  # would hold them are left out. The judge type decides, as in the main
+  # print.
+  if (identical(x$settings$judge_type, "expert")) {
+    tab <- tab[!names(tab) %in% c("Psa level", "Csv level", "overall")]
+  }
+  .print_table(tab)
   cat("\n")
   .say_grouped(s$target, s$evidence)
 

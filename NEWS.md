@@ -154,37 +154,48 @@ analysis that matches the cases below.
   appeared, so data sorted any other way was analyzed in the wrong sequence:
   the wrong last round, the wrong stability pairs, and so the wrong consensus
   decisions, with no message. Text labels are now ordered by the number each
-  carries, so `"wave 10"` follows `"wave 2"`. Labels with no number, such as
-  `"pre"` and `"post"`, stop with a request for a factor. Numeric and factor
-  rounds are unchanged.
-* **`compare_rounds()` treats a changed panel size as a changed rule.** The
-  exact tests and Lynn's criterion depend on the number of judges, so 5 of 6
-  and 10 of 12, the same Psa, give different decisions. The comparison called
-  such rounds identical in settings and their transitions "changes in
-  evidence". `comparable` is now `FALSE`, and the printout says the panel
-  changed. A changed seed or number of bootstrap resamples no longer makes
-  rounds non-comparable, because neither can move a status.
+  carries, so `"wave 10"` follows `"wave 2"`, when that number is all that
+  differs between them. Labels with no number (`"pre"`, `"post"`), or that
+  differ in more than one number (`"Q4 2023"`, `"Q1 2024"`), stop with a
+  request for a factor, because their order cannot be read from the text. A
+  date column is ordered by date. Numeric and factor rounds are unchanged.
+* **`compare_rounds()` treats a changed panel size as a changed rule,**
+  where the rule depends on it. The exact tests and Lynn's criterion depend
+  on the number of judges, so 5 of 6 and 10 of 12, the same Psa, give
+  different decisions. The comparison called such rounds identical in
+  settings and their transitions "changes in evidence". For item-sort fits
+  and for expert relevance and essentiality fits, `comparable` is now
+  `FALSE` and the printout says the panel changed. Other workflows decide on
+  a fixed share or cut, so their panel size is not compared. A changed seed
+  or number of bootstrap resamples no longer makes rounds non-comparable,
+  because neither can move a status.
 * **`compare_rounds()` refuses fits from different expert-panel modes,** which
   it compared as if a relevance and an essentiality decision were the same,
-  and refuses a round label that would overwrite the item or change column.
+  and refuses a round label that is missing, empty, or would overwrite the
+  item or change column.
 * **The Delphi handoff `rule` text is reworded.** It gives the round by its
   position, so rounds labeled 2, 3, 4 no longer read "round 4 of 3". It says
   the threshold was supplied, where it stated as fact that it was "fixed
   before the study", which the software cannot know. An item with fewer than
   three experts in its last round gets its own sentence, not the consensus
-  rule. Three-author works are cited with "et al.", here and in the relevance
-  handoff.
+  rule, whether or not a threshold was supplied. Three-author works are cited
+  with "et al.", here and in the relevance handoff.
 * **An item rated in rounds that are not consecutive is described as such.**
   Rated in rounds 1 and 3, it has no pair to compare; the handoff note said
   it "was rated in only one round". The printout names such items, and items
-  whose stability comes from an earlier pair than their last round.
+  whose stability comes from an earlier pair than their last round (rated in
+  rounds 1, 2 and 4). For those, the stability rows of the handoff carry a
+  note naming the pair, since the rows are dated by the last round. The printed
+  trend tables list the pairs of rounds in round order; a late-entry item
+  listed first put a later pair to the left.
 * `results` gains `stability_df`, the degrees of freedom of the chi-square
   stability tests.
 
 ## Delphi and round comparison: other fixes
 
-* `plot()` on a Delphi fit takes `type`, like every other plot method. The
-  earlier name, `which`, is still accepted.
+* `plot()` on a Delphi fit takes `type`, like the other plot methods with
+  more than one view. The earlier name, `which`, is still accepted in its
+  place; giving both is an error.
 * In the distribution view, a round rated by fewer than three experts is
   marked as no decision. It was drawn as "Met the criterion" when the two who
   rated it agreed, against the fit's own "Insufficient panel".
@@ -202,17 +213,21 @@ analysis that matches the cases below.
   95%" under a 90% interval.
 * Holey et al. (2007) are cited for what they found: the statement nearly all
   their experts agreed with had the lowest kappa between rounds 1 and 2, and
-  one of the highest between rounds 2 and 3. The general point, that kappa is
-  low when ratings concentrate in one category, is cited to Feinstein and
-  Cicchetti (1990).
+  one of the highest between rounds 2 and 3. The general point, that kappa
+  can be low when ratings concentrate in one category, is cited to Feinstein
+  and Cicchetti (1990), who showed it for kappa on two categories. The key
+  no longer calls the consensus threshold "preset".
 * `summary()` of a Delphi fit names the items without consensus and those
-  with too few experts, names the stability statistic in words, and ends with
-  the same caution as the printout.
+  with too few experts beside their counts, names the stability statistic in
+  words, and ends with the same caution as the printout.
 * `content_report()` heads the Delphi stability column with the statistic it
   holds, and reports a chi-square with its leading zero and its degrees of
   freedom.
 * `compare_rounds()` opens with its verdict: how many units changed status.
-* A consensus threshold such as 2/3 prints as 66.7%, not 66.66667%.
+* A consensus threshold such as 2/3 prints as 66.7%, not 66.66667%, in the
+  header, the figure, the handoff and each item's interpretation, whatever
+  the session's `digits` option. An interpretation could read "67% agreed,
+  against a threshold of 67%" for an item just short of it.
 * In the distribution views, a rating between two scale points is drawn on
   the side of the cut where the rule counts it. A 2.5 was rounded up into the
   relevant side, so the bar read 1.00 beside an I-CVI of .83.
@@ -220,42 +235,56 @@ analysis that matches the cases below.
 
 ## Construct rating: values that change
 
-* **An item rated by one complete judge stays out of the scale means.** An
-  item with fewer than two judges who rated it against every construct is
-  `"Insufficient data"`, yet its HTC and HTD, from that one judge, were
-  averaged into its scale's means and could move the scale's Colquitt band.
-  The scale means of `rating_validity()` now use only the items that have a
-  decision. Unlike the item sort, this does not depend on alpha: two complete
-  judges are needed whatever the level.
-* **Judges whose ratings run exactly parallel give `F = Inf`, as the help
-  always said.** When every judge's ratings differed across the constructs by
-  the same amounts there is no error variance. Rounding left a sum of squares
-  near 1e-15 where it should be 0, so the test printed an *F* in the
-  quadrillions with degrees of freedom "corrected" by an epsilon built from
-  that noise. The error is now treated as zero: *F* is `Inf`, *p* is 0, no
-  sphericity correction is reported, and the printout says what happened.
-  When every rating is the same, *F* and *p* are `NA` as before.
+* **An index from one judge stays out of the scale means.** An item with
+  fewer than two judges who rated it against every construct is
+  `"Insufficient data"`, yet its HTD, from that one judge, was averaged into
+  its scale's mean and could move the scale's Colquitt band. Each scale mean
+  of `rating_validity()` now uses the items whose index rests on at least
+  two judges. HTC rests on every judge who rated the item against its
+  intended construct, so such an item usually stays in mean HTC and leaves
+  mean HTD only. In `scale_summary`, `n_htc` and `n_htd` now count the items
+  in each mean, and `results` gains `n_target`, the judges behind HTC. Unlike
+  the item sort, this does not depend on alpha.
+* **Judges whose ratings run exactly parallel give `F = Inf`.** When every
+  judge's ratings differed across the constructs by the same amounts there
+  is no error variance. Rounding left a sum of squares near 1e-15 where it
+  should be 0, so the test printed an *F* in the quadrillions with degrees
+  of freedom "corrected" by an epsilon built from that noise, and the
+  contrasts a *t* of the same size. The error is now treated as zero: *F*
+  and the contrast *t* are `Inf`, *p* is 0, no sphericity correction is
+  reported, and the printout and the help say what happened. When every
+  rating is the same, *F* and *p* are `NA` as before.
+* **`max_contrast_p` is `NA` when a contrast has no *p*.** When every judge
+  rates the intended construct and another the same, that contrast cannot be
+  tested and fails. The largest *p* was taken over the other contrasts, so an
+  item could show an omnibus *p* and a contrast *p* that both met alpha
+  beside a `"Review"` decision. The value is now `NA`, and the printout and
+  the handoff note say which constructs tied.
 * **Leading and trailing spaces in labels are ignored** in item, judge and
   construct labels and in the names of `target_map`, as in the item sort.
+  Names of `target_map` that are the same once trimmed are an error.
 * **Items are listed in the order of the data,** or of the levels when the
   item column is a factor, in `htc()`, `htd()`, `anova_content()` and
-  `rating_validity()`. They were sorted as text, so Q10 came before Q2. Item
-  names in `results` are always text.
+  `rating_validity()`. They were sorted as text, so Q10 came before Q2. The
+  rows of `scale_summary` follow the order in which each scale first appears.
+  Item names in `results` are always text.
 
 ## Construct rating: other fixes
 
 * **The test is credited to its sources.** The printout and the handoff
   credited the repeated-measures ANOVA with planned contrasts to Hinkin and
   Tracey (1999). They proposed the rating task and analyzed it with a one-way
-  ANOVA and Duncan's multiple range test. The repeated-measures form with a
-  planned contrast is MacKenzie et al.'s (2011) recommendation for that task.
-  The help for `anova_content()` now says which details are published and
-  which are this package's choices (the Greenhouse-Geisser screening *p*, one
-  one-sided contrast for each orbiting construct, no adjustment by default,
-  and the rule that the omnibus test and every contrast must pass). The
-  heading reads "adapted from Hinkin & Tracey, 1999; MacKenzie et al., 2011",
-  the `rule` text in the handoff says the same and names both conditions, and
-  its `citation` adds MacKenzie et al. (2011). The numbers are unchanged.
+  ANOVA and Duncan's multiple range test. The repeated-measures ANOVA
+  followed, when its *F* is significant, by a planned contrast is MacKenzie et
+  al.'s (2011) recommendation for that task. The help for `anova_content()`
+  now says which details are published and which are this package's choices
+  (the Greenhouse-Geisser screening *p*, one one-sided contrast for each
+  orbiting construct with every one required, no adjustment by default, the
+  two-judge minimum, and Welch contrasts in a between-judge design). The
+  printout says "Adapted from Hinkin & Tracey (1999) and MacKenzie et al.
+  (2011)", the `rule` text in the handoff says the same and names both
+  conditions, and its `citation` adds MacKenzie et al. (2011). The numbers
+  are unchanged.
 * **HTD is defined as what it is.** The key and the glossary said HTD is the
   lead over the closest rival. It is the intended construct's lead averaged
   over every other construct, as in Colquitt et al. (2019); the closest rival
@@ -267,10 +296,13 @@ analysis that matches the cases below.
 * `anova_content()` prints whole degrees of freedom as whole numbers,
   "F(2, 14)", and mentions the Greenhouse-Geisser correction only when it
   changed them. With two constructs it printed "F(1.00, 7.00)" under a note
-  about fractional degrees of freedom.
-* `content_report()` on a construct-rating fit adds the *F* test, with the
-  degrees of freedom its *p* was read from, and partial eta-squared. `results`
-  gains `df1_gg` and `df2_gg`, those corrected degrees of freedom.
+  about fractional degrees of freedom. A missing *F* test prints "--".
+* `content_report()` on a construct-rating fit shows the *F* test, with the
+  degrees of freedom its *p* was read from. To keep the table within 80
+  columns it no longer shows the closest competitor; that and partial
+  eta-squared are in `format = "data.frame"`, whose new columns sit before
+  `p_value`, so read its columns by name. `results` gains `df1_gg` and
+  `df2_gg`, the corrected degrees of freedom, after `epsilon_gg`.
 * The profile figure draws both ends of each gap from the judges with
   complete ratings, the judges the tests use. The target end used every
   rating, so with missing ratings a gap could point the wrong way for its own
@@ -279,30 +311,38 @@ analysis that matches the cases below.
 * For expert judges, the scale tables of `rating_validity()` and
   `sort_validity()` leave out the level columns and the benchmark set, which
   were printed as columns of `NA` under a named benchmark set that was not
-  applied.
+  applied, and are headed "means", not "Colquitt benchmarks".
 * An item whose every contrast passed but whose omnibus test did not is told
-  so. Its advice pointed at "the weakest target-orbiting comparison", which
-  had passed. With two constructs this is the usual way to miss: the
-  one-sided contrast *p* is half the omnibus *p*.
+  so, with the new `issue` text "Every contrast met, omnibus test not met".
+  Its advice pointed at "the weakest target-orbiting comparison", which had
+  passed. With two constructs this is the usual way to miss: the one-sided
+  contrast *p* is half the omnibus *p*.
 * In the handoff, the `p_value` of a construct-rating item is the omnibus
   *p*. For an item that meets it and is held back by a contrast, the `note`
-  on that row now says so and gives the largest contrast *p*. No column or
-  statistic is added.
+  on that row now says so, with the largest contrast *p* or the constructs
+  that tied; a missing *p* carries a note saying why. With `adjust =
+  "holm"`, the rule and the note say the contrasts were Holm-adjusted. No
+  column or statistic is added.
 * `anova_content()` prints the alpha and the adjustment its contrasts were
   judged at, and says they are one-sided. Its help describes the columns of
   the contrast table, including that `dz` is Cohen's *d* with the pooled
-  standard deviation in a between-judge design.
+  standard deviation in a between-judge design. The help page is titled for
+  what it runs, a repeated-measures ANOVA.
 * A single `orbiting_r` named for a construct other than the one target is an
   error in `rating_validity()` and `sort_validity()`. It was applied to the
   target whatever its name said.
 * When a scale's means leave items out, a sentence under the table says how
-  many items are in them. The columns "with HTC" and "with HTD" are gone.
-* "1 item-judge profiles were incomplete" now reads "1 item-judge profile
-  was", and the sentence says which statistics use which judges. "0 of 1
-  items meet" reads "0 of 1 item meets".
+  many items are in each. The columns "with HTC" and "with HTD" are gone.
+* "Incomplete judge profiles occurred for 1 item-judge profiles" now reads
+  "1 item-judge profile was incomplete", and the sentence says which
+  statistics use which judges. "0 of 1 items meet" reads "0 of 1 item
+  meets", and "1 of 3 items meet" reads "1 of 3 items meets".
 * The help for `adjust` no longer calls unadjusted contrasts "historical":
   Hinkin and Tracey (1999) used Duncan's test, not planned contrasts.
-* `?htd` gives the full reference for Colquitt et al. (2019).
+* `?htd` gives the full reference for Colquitt et al. (2019). Colquitt et al.
+  (2014), no longer cited on any page, leaves the reference lists.
+* Label handling is faster on large data with numeric identifiers: each
+  distinct value is converted once.
 
 ## Judges, domain and structure: values that change
 

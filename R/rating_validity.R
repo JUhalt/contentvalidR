@@ -5,14 +5,17 @@
 
   rows <- lapply(targets, function(target) {
     z <- results[results$target == target, , drop = FALSE]
-    # An item the workflow marks "Insufficient data" (fewer than two judges
-    # with complete ratings) still has an HTC and HTD from its one judge. It
-    # stays out of the scale means, so one judge cannot move a scale's band.
-    decided <- !z$recommendation %in% "Insufficient data"
-    n_htc <- sum(decided & !is.na(z$htc))
-    n_htd <- sum(decided & !is.na(z$htd))
-    mean_htc <- if (n_htc == 0L) NA_real_ else mean(z$htc[decided], na.rm = TRUE)
-    mean_htd <- if (n_htd == 0L) NA_real_ else mean(z$htd[decided], na.rm = TRUE)
+    # Each scale mean uses the items whose index rests on at least two judges,
+    # so one judge cannot move a scale's band. The two indices rest on
+    # different judges: HTC on everyone who rated the item against its
+    # intended construct, HTD on those who rated it against every construct.
+    # An item can therefore be in mean HTC and out of mean HTD.
+    in_htc <- !is.na(z$htc) & z$n_target >= 2L
+    in_htd <- !is.na(z$htd) & z$n_complete >= 2L
+    n_htc <- sum(in_htc)
+    n_htd <- sum(in_htd)
+    mean_htc <- if (n_htc == 0L) NA_real_ else mean(z$htc[in_htc])
+    mean_htd <- if (n_htd == 0L) NA_real_ else mean(z$htd[in_htd])
     r <- unname(r_map[target])
     r_arg <- if (is.na(r)) NULL else r
     htc_i <- .untag_component(interpret_colquitt(mean_htc, "htc", orbiting_r = r_arg, judge_type = judge_type))
@@ -24,8 +27,8 @@
     }
 
     partial_note <- if (n_htc < nrow(z) || n_htd < nrow(z)) {
-      paste0(" Here ", .rating_means_used(n_htc, n_htd, nrow(z)),
-             "; an item without a decision is left out.")
+      paste0(" Here ", .rating_means_used(n_htc, n_htd, nrow(z)), "; ",
+             .rating_left_out, ".")
     } else ""
     evidence <- if (judge_type == "expert") {
       paste0("HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.", partial_note)
@@ -69,14 +72,17 @@
   out
 }
 
-# One sentence for each target scale whose means leave items out: the items
-# without a decision. Empty when every item is in its scale's means.
+# Why an item is missing from a scale mean, in the words every place uses.
+.rating_left_out <- "an index that rests on fewer than two judges is left out"
+
+# One sentence for each target scale whose means leave items out. Empty when
+# every item is in its scale's means.
 .rating_partial_means <- function(sc) {
   part <- which(sc$n_htc != sc$n_items | sc$n_htd != sc$n_items)
   vapply(part, function(i) {
     paste0(sc$target[i], ": ",
            .rating_means_used(sc$n_htc[i], sc$n_htd[i], sc$n_items[i]),
-           "; an item without a decision is left out.")
+           "; ", .rating_left_out, ".")
   }, character(1))
 }
 
@@ -114,8 +120,15 @@
 #' `"Insufficient data"`. An item is labeled `"Retain"` when its omnibus *p*
 #' and every contrast *p* are at or below `alpha`. `"Review"` is not an
 #' instruction to delete the item. An item with fewer than two judges who
-#' rated it against every construct is labeled `"Insufficient data"` and is
-#' left out of the target-scale means.
+#' rated it against every construct is labeled `"Insufficient data"`.
+#'
+#' Each target-scale mean uses the items whose index rests on at least two
+#' judges, so that one judge cannot move a scale's band. HTC rests on every
+#' judge who rated the item against its intended construct (`n_target`); HTD
+#' and the tests rest on the judges who rated it against every construct
+#' (`n_complete`). An item can therefore count toward mean HTC and not toward
+#' mean HTD, and the printout says how many items are behind each mean when
+#' some are left out. The two-judge minimum is this package's choice.
 #'
 #' Colquitt et al. (2019) norms are applied only to **target-scale averages** of
 #' HTC and HTD, matching the level at which those empirical benchmarks were
@@ -144,8 +157,11 @@
 #'   `results` include a standardized `status` field while retaining the
 #'   method-specific `recommendation` field. In `results`, `p_value` is the
 #'   Greenhouse-Geisser corrected omnibus *p* and `df1_gg` and `df2_gg` are its
-#'   degrees of freedom; `p_omnibus`, `df1` and `df2` are the uncorrected
-#'   test; and `max_contrast_p` is the largest *p* among the planned contrasts.
+#'   degrees of freedom, where a correction applies (see [anova_content()]);
+#'   `p_omnibus`, `df1` and `df2` are the uncorrected test; and
+#'   `max_contrast_p` is the largest *p* among the planned contrasts, `NA`
+#'   when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd` count
+#'   the items in each mean.
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -238,6 +254,9 @@ rating_validity <- function(ratings,
     n_raters = anova_out$n_raters,
     n_complete = anova_out$n_complete,
     n_incomplete = anova_out$n_raters - anova_out$n_complete,
+    # Judges who rated the item against its intended construct: what HTC
+    # rests on, where HTD and the tests rest on `n_complete`.
+    n_target = htc_out$n_target[idx_h],
     n_constructs = anova_out$n_constructs,
     target_mean = htc_out$target_mean[idx_h],
     target_mean_complete = htd_out$target_mean_complete[idx_d],
@@ -301,9 +320,18 @@ rating_validity <- function(ratings,
     # Held back by the omnibus test alone: the contrasts are not the place to
     # look, so the advice does not point at them.
     if (isTRUE(results$contrast_pass[i])) {
-      return(paste0("Every planned contrast met the screening criterion, but the omnibus test did not (",
-                    comp, "), so the item is flagged under this package's rule that both must pass. ",
-                    "The contrasts are the more direct evidence; read the item on them and on the size of the gaps."))
+      return(paste0(
+        "Every planned contrast met the screening criterion, but the omnibus ",
+        "test, which comes first in the procedure (MacKenzie et al., 2011), ",
+        "did not (", comp, "), so the item is not retained.",
+        if (results$n_constructs[i] == 2L) {
+          paste(" With two constructs the one-sided contrast p is half the",
+                "omnibus p, so the contrast can pass where the omnibus test",
+                "does not.")
+        } else {
+          ""
+        }
+      ))
     }
     paste0("The intended construct has the highest mean but the full inferential screening criterion was not met (",
            comp, "); review the weakest target-orbiting comparison before revising or removing the item.")
@@ -367,7 +395,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   # The rule and its alpha, so the decisions below can be checked by hand.
   .say(paste0("Retain: the omnibus p and every contrast p at or below alpha = ",
               .fmt_alpha(s$alpha), ". The contrasts are one-sided: the ",
-              "intended construct rated above each other construct."))
+              "intended construct rated above every other construct."))
   .say(if (identical(s$judge_type, "expert")) {
     "Judges: content experts."
   } else {
@@ -377,8 +405,11 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
 
   review <- r$item[r$recommendation == "Review"]
   insufficient <- r$item[r$recommendation == "Insufficient data"]
-  .say(sum(r$recommendation == "Retain"), "of",
-       .n_noun(nrow(r), "item meets", "items meet"),
+  # "1 of 3 items meets", "2 of 3 items meet", "0 of 1 item meets": the verb
+  # is singular for a count of one or a set of one.
+  n_retain <- sum(r$recommendation == "Retain")
+  .say(n_retain, "of", .n_noun(nrow(r), "item"),
+       if (n_retain == 1L || nrow(r) == 1L) "meets" else "meet",
        "the full item-level screening criterion.")
   if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
   if (length(insufficient)) {
@@ -388,9 +419,9 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     n_inc <- sum(r$n_incomplete)
     .say(n_inc, if (n_inc == 1L) "item-judge profile was" else
            "item-judge profiles were",
-         "incomplete; each item's tests use the judges who rated it against",
-         "every construct, while HTC uses every rating against the intended",
-         "construct.")
+         "incomplete; each item's tests and HTD use the judges who rated it",
+         "against every construct, while HTC uses every rating against the",
+         "intended construct.")
   }
 
   cat("\nItem-level evidence\n")
@@ -403,20 +434,31 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
                     stringsAsFactors = FALSE, check.names = FALSE)
   .print_table(tab)
   cat("\n")
-  .say("n: judges who rated the item against every construct. omnibus p: do",
-       "the item's ratings differ across constructs (Greenhouse-Geisser",
-       "corrected). contrast p: the largest p among the planned",
-       "target-versus-orbiting contrasts, so every contrast is at or below it.")
+  .say(paste0(
+    "n: judges who rated the item against every construct. omnibus p: do ",
+    "the item's ratings differ across constructs (Greenhouse-Geisser ",
+    "corrected). contrast p: the largest ",
+    if (identical(s$adjust, "holm")) "Holm-adjusted ",
+    "p among the planned target-versus-orbiting contrasts, so every contrast ",
+    "is at or below it",
+    # A contrast with no p fails, and leaves no largest p to report.
+    if (anyNA(r$max_contrast_p[r$recommendation != "Insufficient data"])) {
+      paste("; NA when a contrast could not be tested because every judge",
+            "rated the intended construct and another the same")
+    },
+    "."))
 
   sc <- x$scale_summary
-  cat("\nTarget-scale Colquitt benchmarks\n")
+  expert <- identical(s$judge_type, "expert")
+  # Without benchmarks the table holds means only, and is headed as such.
+  cat(if (expert) "\nTarget-scale means\n" else
+    "\nTarget-scale Colquitt benchmarks\n")
   # The stored code ("overall") prints as the label the item-sort print uses.
   labels <- vapply(as.character(sc$benchmark_set), function(s) {
     lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
     if (is.null(lab)) s else lab
   }, character(1), USE.NAMES = FALSE)
   sets <- unique(labels)
-  expert <- identical(s$judge_type, "expert")
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean HTC` = .fmt(sc$mean_htc, digits),
                    stringsAsFactors = FALSE, check.names = FALSE)
@@ -491,10 +533,12 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   tab$`HTD level` <- s$htd_strength
   tab$overall <- s$overall_strength
   # Expert-judge analyses carry no benchmark labels, so the columns that
-  # would hold them are left out.
-  level_cols <- names(tab) %in% c("HTC level", "HTD level", "overall")
-  .print_table(tab[!(level_cols & vapply(tab, function(col) all(is.na(col)),
-                                         logical(1)))])
+  # would hold them are left out. The judge type decides, as in the main
+  # print, so a naive-judge analysis keeps the columns even when empty.
+  if (identical(x$settings$judge_type, "expert")) {
+    tab <- tab[!names(tab) %in% c("HTC level", "HTD level", "overall")]
+  }
+  .print_table(tab)
   cat("\n")
   .say_grouped(s$target, s$evidence)
 
@@ -528,11 +572,11 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' reproduces the original one-index plot, `"map"` places HTC against HTD to show
 #' correspondence and distinctiveness jointly, and `"profile"` draws a target-versus-
 #' strongest-competitor gap plot on the original response scale, first item at
-#' the top, with a dashed gap for items to review. Both ends of a gap are means
-#' over the judges who rated the item against every construct, the judges the
-#' tests use. An item without a decision has no gap: a cross marks its mean
-#' target rating. The latter is a
-#' graphical analogue of the mean-rating tables used in Hinkin and Tracey (1999).
+#' the top, with a dashed gap for items to review. The profile view is a
+#' graphical analogue of the mean-rating tables used in Hinkin and Tracey
+#' (1999). Both ends of a gap are means over the judges who rated the item
+#' against every construct, the judges the tests use. An item without a
+#' decision has no gap: a cross marks its mean target rating.
 #'
 #' @param x A `contentvalid_rating` object.
 #' @param metric Either `"htc"` or `"htd"` for `type = "item"`.
@@ -543,6 +587,12 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' @param ... Additional graphical arguments passed to [graphics::plot()].
 #'
 #' @return The input object invisibly.
+#'
+#' @references
+#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+#' content validation. *Organizational Research Methods, 2*(2), 175–186.
+#' \doi{10.1177/109442819922004}
+#'
 #' @examples
 #' set.seed(12)
 #' d <- expand.grid(item = c("A1", "A2", "B1"), rater = 1:20,
@@ -632,12 +682,35 @@ plot.contentvalid_rating <- function(x,
   }
 
   # The first item is drawn at the top, in the order of the results table.
+  lay <- .rating_profile_layout(r)
   n <- nrow(r)
   y <- rev(seq_len(n))
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
-  graphics::plot(NA, xlim = xlim, ylim = c(0.5, n + 1.25), yaxt = "n",
+  # A key of five entries takes two rows, and the headroom to hold them.
+  two_rows <- length(lay$legend) > 4L
+  graphics::plot(NA, xlim = xlim,
+                 ylim = c(0.5, n + if (two_rows) 1.7 else 1.25), yaxt = "n",
                  xlab = "Mean rating against each definition", ylab = "", ...)
   graphics::axis(2, at = y, labels = r$item, las = 1)
+  both <- lay$both
+  if (any(both)) {
+    graphics::segments(lay$competitor[both], y[both], lay$target[both],
+                       y[both], lty = ifelse(lay$review[both], 2, 1))
+    graphics::points(lay$competitor[both], y[both], pch = 1)
+    graphics::points(lay$target[both], y[both], pch = 19)
+  }
+  graphics::points(lay$cross[lay$loose], y[lay$loose], pch = 4)
+  if (isTRUE(show_legend)) {
+    .legend_top(lay$legend, lay$pch, lay$lty,
+                ncol = if (two_rows) 3L else NULL)
+  }
+  invisible(x)
+}
+
+# What the profile view draws, worked out apart from the drawing so it can be
+# checked: for each item the two ends of its gap, whether a gap is drawn, and
+# the key that names only what is drawn.
+.rating_profile_layout <- function(r) {
   status <- .workflow_status_from_recommendation(r$recommendation)
   review <- status %in% "Review"
   decided <- status %in% c("Supported", "Review")
@@ -651,29 +724,20 @@ plot.contentvalid_rating <- function(x,
     r$target_mean
   }
   both <- decided & is.finite(target) & is.finite(r$competitor_mean)
-  if (any(both)) {
-    graphics::segments(r$competitor_mean[both], y[both], target[both],
-                       y[both], lty = ifelse(review[both], 2, 1))
-    graphics::points(r$competitor_mean[both], y[both], pch = 1)
-    graphics::points(target[both], y[both], pch = 19)
-  }
   # An item without a decision gets no gap: a cross at its target mean, from
   # whatever ratings it has.
   loose <- !both & is.finite(r$target_mean)
-  graphics::points(r$target_mean[loose], y[loose], pch = 4)
-  if (isTRUE(show_legend)) {
-    # Only what was drawn is listed.
-    retain_gap <- any(both & !review)
-    review_gap <- any(both & review)
-    .legend_top(
-      c(if (any(both)) c("Target", "Top competitor"),
-        if (retain_gap) "Gap (retain)", if (review_gap) "Gap (review)",
-        if (any(loose)) "No decision"),
-      c(if (any(both)) c(19, 1), if (retain_gap) NA, if (review_gap) NA,
-        if (any(loose)) 4),
-      c(if (any(both)) c(NA, NA), if (retain_gap) 1, if (review_gap) 2,
-        if (any(loose)) NA)
-    )
-  }
-  invisible(x)
+  retain_gap <- any(both & !review)
+  review_gap <- any(both & review)
+  list(
+    target = target, competitor = r$competitor_mean, cross = r$target_mean,
+    both = both, loose = loose, review = review,
+    legend = c(if (any(both)) c("Target", "Top competitor"),
+               if (retain_gap) "Gap (retain)", if (review_gap) "Gap (review)",
+               if (any(loose)) "No decision"),
+    pch = c(if (any(both)) c(19, 1), if (retain_gap) NA, if (review_gap) NA,
+            if (any(loose)) 4),
+    lty = c(if (any(both)) c(NA, NA), if (retain_gap) 1, if (review_gap) 2,
+            if (any(loose)) NA)
+  )
 }

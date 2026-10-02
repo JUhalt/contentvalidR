@@ -22,7 +22,7 @@ content_handoff(
 \item{round}{Pretest round this analysis represents. One fit is one round, so
 this defaults to \code{1} and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
-settled in.}
+was last rated in.}
 
 \item{reverse_keyed}{Names of the reverse-worded items, \code{character(0)} if
 none is, or \code{NULL} (the default) to leave keying unrecorded. See
@@ -206,7 +206,8 @@ semantics. For example, a Delphi stability row may carry "Kappa is
 undefined: every rating fell in the same category in both rounds." It also
 says when a statistic that meets its criterion is not what decided: the
 construct-rating \code{p_value} is the omnibus \emph{p}, and for an item held back by
-a planned contrast its note says so and gives the largest contrast \emph{p}.
+a planned contrast its note says so, with the largest contrast \emph{p} or, when
+a contrast has none, the constructs that tied.
 
 Its contract, agreed with the \code{nomologR} maintainers:
 \itemize{
@@ -268,6 +269,11 @@ method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambd
 The chi-square methods add \verb{stability p_value} against \code{alpha}. Stability
 travels as evidence beside the decision; it never decides what is carried,
 exactly as it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+
+The stability rows come from the item's last pair of consecutive rounds.
+For an item rated again after a gap (rounds 1, 2 and 4) that pair is
+earlier than the round the rows are dated by, and their \code{note} says which
+rounds they compare.
 }
 
 \section{When a stability statistic is NA}{

@@ -80,9 +80,9 @@ The item-level table also identifies the strongest orbiting competitor. That is 
 
 ## Repeated-measures item screening
 
-Hinkin and Tracey (1999) analyzed these ratings with a one-way ANOVA and Duncan's multiple range test, treating the definitions as independent groups. The same judges provide multiple construct ratings, though, so those observations are not independent. MacKenzie et al. (2011) recommend a one-way repeated-measures ANOVA for this task, followed by a planned contrast of the intended definition against the others. `anova_content()` uses that repeated-measures form for the standard fully crossed design and follows it with planned paired comparisons of the intended definition against every orbiting definition.
+Hinkin and Tracey (1999) analyzed these ratings with a one-way ANOVA and Duncan's multiple range test, treating the definitions as independent groups. The same judges provide multiple construct ratings, though, so those observations are not independent. MacKenzie et al. (2011) recommend a one-way repeated-measures ANOVA for this task, followed, when its *F* is significant, by a planned contrast of the intended definition against the others. `anova_content()` uses that repeated-measures form for the standard fully crossed design and follows it with planned paired comparisons of the intended definition against every orbiting definition.
 
-Four details are this package's choices, not taken from either source: the Greenhouse-Geisser (1959) corrected *p* is the screening *p*; there is one one-sided contrast for each orbiting definition; the contrasts are not adjusted for their number unless you ask (`adjust = "holm"`); and an item is retained only when the omnibus test and every contrast pass.
+An item is retained when the omnibus test and then its contrasts pass, which follows their sequence. Some details are this package's choices, not taken from either source: the Greenhouse-Geisser (1959) corrected *p* is the screening *p* of the omnibus test; there is one one-sided contrast for each orbiting definition, and every one must pass, where MacKenzie et al. describe a single contrast; the contrasts are not adjusted for their number unless you ask (`adjust = "holm"`); and the tests need at least two judges who rated the item against every definition.
 
 ```{r anova}
 aov_out <- anova_content(rating_dat, design = "within")
@@ -110,7 +110,7 @@ The item-level recommendation has deliberately limited meaning:
 
 - **Retain:** the item cleared the package's inferential screening rule in this pretest: its omnibus *p* and every contrast *p* are at or below alpha.
 - **Review:** the full screening rule was not met; inspect wording, construct overlap, and judge feedback.
-- **Insufficient data:** fewer than two judges rated the item against every definition, so the repeated-measures comparison cannot be made. Such an item is left out of its scale's mean HTC and HTD.
+- **Insufficient data:** fewer than two judges rated the item against every definition, so the repeated-measures comparison cannot be made. Its HTD, which rests on those judges, is left out of the scale's mean HTD. Its HTC stays in the scale's mean HTC when at least two judges rated the item against its intended definition.
 
 `Review` is not an instruction to delete an item. Content coverage can be harmed by mechanical item deletion.
 
@@ -143,7 +143,7 @@ Colquitt et al.'s normative distributions were developed using naive judges repr
 rating_validity(rating_dat, judge_type = "expert")$scale_summary
 ```
 
-HTC/HTD are still computed, but the Colquitt labels are suppressed, and the printed tables leave out the columns that would hold them.
+HTC/HTD are still computed, but the Colquitt labels are suppressed. `print()` and `summary()` leave out the columns that would hold them; the stored table, shown here, keeps them as `NA`.
 
 ## Missing ratings
 

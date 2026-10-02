@@ -115,13 +115,14 @@ as.data.frame.contentvalid_workflow <- function(x,
     ),
     contentvalid_rating = list(
       s("item", "text", "item"), s("target", "text", "target"),
-      s("judges", "int", "n_complete"), s("competitor", "text", "strongest_competitor"),
+      s("judges", "int", "n_complete"),
       s("HTC", "prop", "htc"), s("HTD", "prop", "htd"),
       # The test behind the omnibus p, with the corrected degrees of freedom
-      # that p was read from, and its effect size.
+      # that p was read from. The table is kept to one 80-column block, so
+      # the closest competitor and partial eta-squared are left to
+      # `format = "data.frame"` and to the fit's own printout.
       s("F test", "ftest", "F", "df1", "df2", "df1_gg", "df2_gg"),
-      s("partial eta^2", "prop", "partial_eta2"),
-      s("omnibus p", "p", "p_value"), s("contrast p", "p", "max_contrast_p"),
+      s("p", "p", "p_value"), s("contrast p", "p", "max_contrast_p"),
       s("decision", "text", "recommendation")
     ),
     contentvalid_expert = switch(
@@ -198,11 +199,10 @@ as.data.frame.contentvalid_workflow <- function(x,
     p = .fmt_p(v[[1]]),
     # Corrected degrees of freedom where a correction applied, the plain
     # ones otherwise (an F of Inf has no error variance to correct).
-    ftest = ifelse(is.na(v[[1]]), "NA",
-                   sprintf("F(%s, %s) = %s",
-                           .fmt_df(ifelse(is.na(v[[4]]), v[[2]], v[[4]]), digits),
-                           .fmt_df(ifelse(is.na(v[[5]]), v[[3]], v[[5]]), digits),
-                           .fmt(v[[1]], digits, bounded = FALSE))),
+    ftest = ifelse(is.na(v[[1]]), "--",
+                   .fmt_f_test(v[[1]],
+                               ifelse(is.na(v[[4]]), v[[2]], v[[4]]),
+                               ifelse(is.na(v[[5]]), v[[3]], v[[5]]), digits)),
     ci = .fmt_ci(v[[1]], v[[2]], digits)
   )
 }
