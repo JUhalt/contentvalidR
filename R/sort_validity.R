@@ -9,6 +9,10 @@
   if (length(targets) == 1L && length(orbiting_r) == 1L) {
     return(stats::setNames(as.numeric(orbiting_r), targets))
   }
+  # Target labels are trimmed, so the names that key this vector are too.
+  if (!is.null(names(orbiting_r))) {
+    names(orbiting_r) <- trimws(names(orbiting_r), whitespace = "[\\h\\v]")
+  }
   if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "") || anyDuplicated(names(orbiting_r))) {
     stop("For multiple target constructs, `orbiting_r` must be a uniquely named numeric vector keyed by target construct.", call. = FALSE)
   }
@@ -26,10 +30,7 @@
 
   rows <- lapply(targets, function(target) {
     z <- results[results$target == target, , drop = FALSE]
-    # Only items the exact test could decide enter a scale mean: a Psa from
-    # three or four judges should not move a scale's benchmark band.
-    usable <- !is.na(z$psa) & !is.na(z$csv) &
-      !z$recommendation %in% "Insufficient panel"
+    usable <- !is.na(z$psa) & !is.na(z$csv)
     mean_psa <- if (any(usable)) mean(z$psa[usable]) else NA_real_
     mean_csv <- if (any(usable)) mean(z$csv[usable]) else NA_real_
     r <- unname(r_map[target])
@@ -381,10 +382,10 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (any(too_few)) {
     .say(sprintf(
       paste("Too few judges for the exact test: %s. With %s, no count of",
-            "target assignments can reach alpha = %s, so these items have no",
-            "decision."),
+            "target assignments can reach alpha = %s, so %s no decision."),
       paste(r$item[too_few], collapse = ", "),
-      .or_fewer_judges(max(r$n[too_few])), .fmt_alpha(s$alpha)
+      .or_fewer_judges(max(r$n[too_few])), .fmt_alpha(s$alpha),
+      if (sum(too_few) == 1L) "this item has" else "these items have"
     ))
   }
   if (any(r$n_missing > 0L)) {
@@ -472,8 +473,12 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   cat(strrep("-", 44), "\n", sep = "")
   cat("Retain: ", x$n_retain, " of ", x$n_items, " | Review: ", x$n_review,
       " of ", x$n_items, sep = "")
-  if (x$n_insufficient > 0L) {
-    cat(" | Insufficient data: ", x$n_insufficient, sep = "")
+  # Two different reasons for no decision, counted apart: too few judges for
+  # any count to meet the test, and no judge at all.
+  n_few <- sum(x$reviewed_items$recommendation %in% "Insufficient panel")
+  if (n_few > 0L) cat(" | Too few judges: ", n_few, sep = "")
+  if (x$n_insufficient - n_few > 0L) {
+    cat(" | Insufficient data: ", x$n_insufficient - n_few, sep = "")
   }
   cat("\n")
 

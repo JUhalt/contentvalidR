@@ -62,7 +62,10 @@ test_that("workflow status is standardized without erasing method-specific recom
   s_retain <- s$results$recommendation == "Retain"
   expect_true(any(s_retain))
   expect_true(all(s$results$status[s_retain] == "Supported"))
-  expect_true(all(s$results$recommendation %in% c("Retain", "Review", "Insufficient data")))
+  expect_true(all(s$results$recommendation %in%
+                    names(contentvalidR:::.decision_meanings("item-sort"))))
+  expect_setequal(names(contentvalidR:::.decision_meanings("item-sort")),
+                  c("Retain", "Review", "Insufficient panel", "Insufficient data"))
 
   r <- rating_validity(.make_v006_rating())
   r_retain <- r$results$recommendation == "Retain"

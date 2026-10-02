@@ -282,11 +282,11 @@ print.contentvalid_binom <- function(x, digits = 2, ...) {
     "The item does not meet the exact target-assignment criterion."
   })
   if (has_counts) {
-    .say(sprintf(paste("%d of %d judges assigned the item to its target construct",
+    .say(sprintf(paste("%d of %s assigned the item to its target construct",
                        "(Psa = %s). If each judge chose the target with",
                        "probability p0 = %s, a count this high has probability %s."),
-                 as.integer(x$n_target), as.integer(x$N), .fmt(x$estimate, digits),
-                 .fmt(x$p0, digits), p_txt))
+                 as.integer(x$n_target), .n_noun(as.integer(x$N), "judge"),
+                 .fmt(x$estimate, digits), .fmt(x$p0, digits), p_txt))
     if (is.na(x$critical_n_target)) {
       .say(sprintf(paste("With %s, no count can reach alpha = %s, so no item",
                          "can meet the criterion at this panel size."),

@@ -48,7 +48,9 @@ psa; csv
 **Interpretation**
 - **Psa** = share assigning the intended construct.
 - **Csv** = margin of wins: $ \frac{n_{target} - max_{other}}{N} $.
-- Binomial test (H0: $ p ≤ .5 $) flags items with above-chance targeting.
+- The exact binomial test (null hypothesis: a target rate of .5 or less)
+  flags items whose target count meets the criterion. The .5 is a benchmark
+  rate, not the rate random sorting would give.
 
 **Construct-rating workflow (HTC, HTD, repeated-measures ANOVA)**
 ```{r}

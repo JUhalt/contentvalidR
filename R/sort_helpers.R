@@ -38,13 +38,14 @@
   # table of counts by position, two factors with different levels cannot be
   # compared at all, and a stray space would split one construct into two.
   item_order <- if (is.factor(d$item)) {
-    trimws(levels(droplevels(d$item)))
+    .as_label(levels(droplevels(d$item)))
   } else {
-    unique(trimws(as.character(d$item)))
+    unique(.as_label(d$item))
   }
-  d$item <- trimws(as.character(d$item))
-  d$assigned <- trimws(as.character(d$assigned))
-  d$target <- trimws(as.character(d$target))
+  d$item <- .as_label(d$item)
+  d$rater <- .as_label(d$rater)
+  d$assigned <- .as_label(d$assigned)
+  d$target <- .as_label(d$target)
 
   dup <- duplicated(d[c("item", "rater")])
   if (any(dup)) {
@@ -76,6 +77,25 @@
   # items are not rearranged as text (Q1, Q10, Q2).
   attr(d, "item_order") <- unique(item_order)
   d
+}
+
+# A label as text, whatever it was stored as. A number is written without
+# scientific notation, so the integer 100000 and the double 1e5 are one label,
+# and one value at a time, so 1 is "1" whether or not 2.5 appears beside it.
+# Missing values, NaN included, stay missing. Leading and trailing whitespace
+# of any kind, non-breaking spaces included, is removed.
+.as_label <- function(x) {
+  missing <- is.na(x)
+  out <- if (is.numeric(x)) {
+    vapply(x, function(v) {
+      format(v, scientific = FALSE, trim = TRUE, digits = 15, decimal.mark = ".")
+    }, character(1), USE.NAMES = FALSE)
+  } else {
+    as.character(x)
+  }
+  out <- trimws(out, whitespace = "[\\h\\v]")
+  out[missing] <- NA_character_
+  out
 }
 
 # Splits prepared assignments by item, in the order the items were given.

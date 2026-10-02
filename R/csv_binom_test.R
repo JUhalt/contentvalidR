@@ -65,8 +65,9 @@ csv_binom_test <- function(n_c, N, p0 = 0.5, alpha = 0.05) {
     stop("`alpha` must be one finite probability strictly between 0 and 1.", call. = FALSE)
   }
 
-  # The interval is one-sided at 1 - alpha, so it excludes p0 exactly when the
-  # test rejects, and the two never disagree.
+  # The interval is one-sided at 1 - alpha, the level of the test, so the two
+  # agree: its lower limit is above p0 when p is below alpha, and equals p0 in
+  # the rare case where p equals alpha.
   bt <- stats::binom.test(n_c, N, p = p0, alternative = "greater",
                           conf.level = 1 - alpha)
   critical_n <- .critical_target_count(N, p0 = p0, alpha = alpha)
