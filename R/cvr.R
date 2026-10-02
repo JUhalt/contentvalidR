@@ -6,23 +6,27 @@
 #' counts of experts marking each item essential or a judge-by-item 0/1 matrix.
 #'
 #' Lawshe (1975) published a table of critical values computed by a colleague,
-#' Lowell Schipper, without saying how. Wilson, Pan and Schumsky (2012) found
-#' the table dips at eight experts where it should rise, and that it matches a
-#' normal approximation at a two-tailed .05 level rather than the one-tailed
-#' .05 it was labeled with. Ayre and Scally (2014) then derived exact binomial
-#' values, which are the ones used here.
+#' Lowell Schipper, without saying how. Wilson et al. (2012) read the step
+#' from .78 at nine experts to .75 at eight as an anomaly, and found that the
+#' table matches a normal approximation at a two-tailed .05 level rather than
+#' the one-tailed .05 it was labeled with. Ayre and Scally (2014) then derived
+#' exact binomial values, which are the ones used here, and showed that the
+#' step is not an anomaly: .78 is 8 of 9 and .75 is 7 of 8, the counts the
+#' exact test also requires.
 #'
 #' @param essential Numeric/integer vector of essential counts, or a matrix/data
 #'   frame with judges in rows, items in columns, coded `1 = essential` and
-#'   `0 = not essential`.
+#'   `0 = not essential`. In a judge-by-item table every column is an item; a
+#'   column whose name looks like a rater ID (such as `expert` or `rater_id`)
+#'   stops the function, so remove it, or rename an item that has such a name.
 #' @param N Panel size. Required for count-vector input. May be a scalar or a
 #'   vector matching `essential`. Ignored for matrix input, where effective N is
 #'   calculated itemwise.
 #' @param alpha One-sided exact alpha level. Default `.05`.
 #' @param na.rm Logical; for matrix input, permit itemwise missing ratings.
 #' @param item_names Optional item names for count-vector input. By default
-#'   the names of `essential` are used when it has them, and `Item1`, `Item2`,
-#'   and so on otherwise.
+#'   the names of `essential` are used when every count has a distinct,
+#'   non-blank name, and `Item1`, `Item2`, and so on otherwise.
 #'
 #' @return A data.frame containing item, `ne`, effective `N`, CVR, exact
 #'   *p* value, critical essential count/CVR, and `pass`. With very few
@@ -75,10 +79,12 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     N <- if (isTRUE(na.rm)) colSums(!is.na(X)) else rep.int(nrow(X), ncol(X))
     essential <- colSums(X, na.rm = isTRUE(na.rm))
   } else {
-    # A named vector of counts names its own items.
-    if (is.null(item_names) && !is.null(names(essential)) &&
-        all(nzchar(names(essential)))) {
-      item_names <- names(essential)
+    # A named vector of counts names its own items, when the names can serve:
+    # complete, non-blank and unique. Otherwise the items are numbered.
+    count_names <- names(essential)
+    if (is.null(item_names) && !is.null(count_names) && !anyNA(count_names) &&
+        all(nzchar(trimws(count_names))) && !anyDuplicated(count_names)) {
+      item_names <- count_names
     }
     essential <- as.numeric(essential)
     if (length(essential) < 1L || any(!is.finite(essential))) {

@@ -26,7 +26,9 @@
 #' reported alongside it. The interval method is selectable; see `ci`.
 #'
 #' @param binary Matrix/data.frame with judges in rows and items in columns,
-#'   coded `1 = relevant` and `0 = not relevant`.
+#'   coded `1 = relevant` and `0 = not relevant`. Every column is an item; a
+#'   column whose name looks like a rater ID (such as `expert` or `rater_id`)
+#'   stops the function, so remove it, or rename an item that has such a name.
 #' @param na.rm Logical. If `FALSE` (default), missing ratings are an error.
 #'   If `TRUE`, missing ratings are removed itemwise and each item's effective
 #'   judge count is reported in `N`.

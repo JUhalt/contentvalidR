@@ -93,6 +93,12 @@
   paste(n, ifelse(n == 1, noun, plural))
 }
 
+# Scale points as text, written alike: "1" and "4", or "0.333" and "1.333" on
+# a scale with fractional points, never seven digits on one and six on another.
+.fmt_scale <- function(x) {
+  format(x, digits = 3, drop0trailing = TRUE, trim = TRUE)
+}
+
 # "4 or fewer experts": a panel too small for any count to reach alpha stays
 # too small at every smaller size.
 .or_fewer <- function(n, noun) {

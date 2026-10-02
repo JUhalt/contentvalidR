@@ -15,7 +15,9 @@ panel_agreement(
 }
 \arguments{
 \item{ratings}{A numeric matrix or data frame with raters in rows and items
-in columns. Missing ratings are allowed.}
+in columns. Missing ratings are allowed. A column whose name looks like a
+rater ID (such as \code{expert} or \code{rater_id}) stops the function, so remove
+it, or rename an item that has such a name.}
 
 \item{method}{\code{"krippendorff"} (default) or \code{"ac1"}.}
 

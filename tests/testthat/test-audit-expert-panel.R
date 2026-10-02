@@ -76,6 +76,51 @@ test_that("a rater-ID column is not analyzed as an item", {
   # An ordinary item name is left alone.
   ok <- cbind(Expertise = c(4, 3, 4), Identity = c(3, 4, 4))
   expect_silent(expert_validity(ok, agreement = "none"))
+
+  # Every function that takes a judge-by-item table checks.
+  wide <- data.frame(ID = 1:3, A = c(1, 0, 1), B = c(1, 1, 0))
+  expect_error(cvi(wide), "looks like a rater ID")
+  expect_error(gtheory_content(wide), "looks like a rater ID")
+  expect_error(panel_agreement(wide), "looks like a rater ID")
+})
+
+test_that("the row-number column of a CSV round trip is caught, and the message helps", {
+  df <- data.frame(Q1 = c(4, 4, 3, 4), Q2 = c(3, 4, 4, 4), Q3 = c(2, 3, 4, 4))
+  path <- tempfile(fileext = ".csv")
+  on.exit(unlink(path), add = TRUE)
+  utils::write.csv(df, path)
+  back <- utils::read.csv(path)
+  expect_identical(names(back)[1], "X")
+  # With four experts on a 1-4 scale, X held 1 to 4 and became an item.
+  expect_error(expert_validity(back, agreement = "none"),
+               "has a column named \"X\", which looks like a rater ID")
+  # A column called X that does not count the rows is an item.
+  x_item <- data.frame(X = c(4, 4, 3, 4), Q2 = c(3, 4, 4, 4))
+  expect_identical(expert_validity(x_item, agreement = "none")$results$item,
+                   c("X", "Q2"))
+
+  # Two ID columns: plural wording, and a fix that removes both.
+  two <- data.frame(I1 = c(3, 4, 4), I2 = c(4, 4, 3), rater = 1:3,
+                    I3 = c(4, 3, 4), coder_id = 1:3)
+  msg <- tryCatch(expert_validity(two, agreement = "none"),
+                  error = conditionMessage)
+  expect_match(msg, "has columns named \"rater\", \"coder_id\", which look like rater IDs",
+               fixed = TRUE)
+  expect_match(msg, "data[, -c(3, 5)]", fixed = TRUE)
+  expect_match(msg, "rename it", fixed = TRUE)
+})
+
+test_that("a Delphi item named like a rater ID is still an item", {
+  # delphi_validity() builds its own judge-by-item table from long data, so
+  # the columns are item labels and the check does not apply.
+  long <- expand.grid(expert = paste0("e", 1:5), item = c("Subject", "ID", "I3"),
+                      round = 1:2, stringsAsFactors = FALSE)
+  long$rating <- rep(c(4, 3, 4, 2, 4, 3), length.out = nrow(long))
+  fit <- delphi_validity(long, lo = 1, hi = 4, B = 0)
+  expect_setequal(fit$results$item, c("Subject", "ID", "I3"))
+  # The switch is off again afterwards.
+  expect_error(expert_validity(data.frame(ID = 1:3, A = c(4, 3, 4))),
+               "looks like a rater ID")
 })
 
 test_that("an out-of-range rating names its column and the scale", {
@@ -83,6 +128,14 @@ test_that("an out-of-range rating names its column and the scale", {
   expect_error(aikens_v(R, lo = 1, hi = 4),
                "bounds (1 to 4) in column \"B\"", fixed = TRUE)
   expect_error(expert_validity(R), "in column \"B\"", fixed = TRUE)
+  # It says what to do, counts the columns, and stops listing after five.
+  expect_error(expert_validity(cbind(A = c(5, 4, 5), B = c(4, 5, 5))),
+               "in columns \"A\", \"B\". Set `lo` and `hi`", fixed = TRUE)
+  many <- matrix(7, 3, 30, dimnames = list(NULL, paste0("Item", 1:30)))
+  expect_error(aikens_v(many, lo = 1, hi = 4),
+               "\"Item5\" and 25 more.", fixed = TRUE)
+  expect_error(aikens_v(matrix(c(4, 4, 9), 3, 1), lo = 1, hi = 4),
+               "in column 1.", fixed = TRUE)
 })
 
 test_that("aikens_v() needs the scale, and reports it", {
@@ -110,6 +163,13 @@ test_that("named essential counts keep their names, into the handoff", {
     c("x", "y")
   )
   expect_identical(as.data.frame(cvr(c(8, 5), N = 12))$item, c("Item1", "Item2"))
+  # Names that cannot serve (blank, missing or repeated) fall back to numbers.
+  for (bad in list(c("a", ""), c("a", NA), c("a", "a"))) {
+    expect_identical(
+      as.data.frame(cvr(stats::setNames(c(8, 9), bad), N = 10))$item,
+      c("Item1", "Item2")
+    )
+  }
 })
 
 test_that("a panel too small for the exact test gives no decision, and says why", {
@@ -143,10 +203,58 @@ test_that("a panel too small for the exact test gives no decision, and says why"
   # The component says the same.
   comp <- gsub("\\s+", " ",
                paste(capture.output(print(cvr(c(4, 3), N = 4))), collapse = " "))
-  expect_match(comp, "4/4 1.00 .062 none --", fixed = TRUE)
+  # .0625 is an exact tie at three decimals, so the last digit is not pinned.
+  expect_match(comp, "4/4 1\\.00 \\.06[23] none --")
+  expect_equal(cvr(4, N = 4)$p_value, 1 / 16)
   expect_match(comp, "With 4 or fewer experts, no count of essential ratings",
                fixed = TRUE)
   expect_false(grepl("NA", comp, fixed = TRUE))
+})
+
+test_that("a mixed panel shows every kind of decision without a raw NA count", {
+  # Twelve experts rated A to C, four rated D and E, none rated F.
+  M <- matrix(c(rep(1, 12), c(rep(1, 10), 0, 0), c(rep(1, 6), rep(0, 6)),
+                c(1, 1, 1, 1, rep(NA, 8)), c(1, 1, 0, 1, rep(NA, 8)),
+                rep(NA, 12)),
+              nrow = 12, dimnames = list(NULL, c("A", "B", "C", "D", "E", "F")))
+  fit <- expert_validity(M, mode = "essentiality", na.rm = TRUE)
+  expect_identical(fit$results$recommendation,
+                   c("Supported", "Supported", "Review", "Insufficient panel",
+                     "Insufficient panel", "Insufficient data"))
+
+  lines <- capture.output(print(fit))
+  row <- function(item) {
+    strsplit(trimws(grep(paste0("^ +", item, " "), lines, value = TRUE)[1]),
+             " +")[[1]]
+  }
+  # The needed column printed NA beside "Insufficient panel".
+  expect_identical(utils::tail(row("A"), 1), "10")
+  expect_identical(utils::tail(row("D"), 1), "none")
+  expect_identical(utils::tail(row("F"), 1), "--")
+  out <- gsub("\\s+", " ", paste(lines, collapse = " "))
+  expect_match(out, "Too few experts for the exact test: D, E.", fixed = TRUE)
+  expect_match(out, "Insufficient data: F", fixed = TRUE)
+
+  # The summary counts the two reasons for no decision apart.
+  sm <- gsub("\\s+", " ",
+             paste(capture.output(print(summary(fit))), collapse = " "))
+  expect_match(sm, "Supported: 2 | Review: 1 | Too few experts: 2 | Insufficient data: 1",
+               fixed = TRUE)
+
+  # Each kind of item has its own handoff rule, none with a missing count.
+  rule <- content_handoff(
+    fit, keep = c("Supported", "Review", "Insufficient data")
+  )$item_evidence$rule
+  expect_false(any(grepl("NA", rule, fixed = TRUE)))
+  expect_match(rule[1], "at least 10 of 12 judges", fixed = TRUE)
+  expect_match(rule[4], "no count of essential ratings out of 4 can meet",
+               fixed = TRUE)
+  expect_match(rule[6], "no expert rated the item", fixed = TRUE)
+
+  # The component marks both no-decision rows the same way.
+  comp <- capture.output(print(cvr(M, na.rm = TRUE)))
+  expect_true(any(grepl("^ +D +4/4 .* none +--$", comp)))
+  expect_true(any(grepl("^ +F +0/0 .* -- +--$", comp)))
 })
 
 test_that("a seeded call leaves the session's random stream as it found it", {

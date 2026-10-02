@@ -1,7 +1,7 @@
 # contentvalidR 0.10.1.9000 (development version)
 
 Fixes from the audit before 1.0. Some of them change values, so check any
-item sort that matches the cases below.
+analysis that matches the cases below.
 
 ## Item sort: values that change
 
@@ -92,8 +92,13 @@ item sort that matches the cases below.
 * **A rater-ID column is no longer analyzed as an item.** With four experts
   on a 1-4 scale, an `expert` column holding 1 to 4 was rated as an item and
   changed S-CVI, the agreement coefficient and the handoff. Every function
-  that takes a judge-by-item table now stops when a column name looks like a
-  rater ID and says which column to remove.
+  that takes a judge-by-item table now stops when a column looks like a
+  rater ID, and says which column to remove. The check goes by name
+  (`expert`, `judge`, `rater_id`, `ID` and the like), and also catches the
+  row-number column a CSV round trip adds (`X`) when it counts 1, 2, 3. It
+  cannot catch an ID column with an item-like name, and an item that really
+  is named `Subject` has to be renamed. `delphi_validity()` takes long data
+  and is not affected.
 * **An essentiality item rated by too few experts for the exact test gets no
   decision.** With four or fewer experts at the defaults no count can reach
   alpha. Such items were `"Review"`, with a legend saying too few experts had
@@ -103,7 +108,8 @@ item sort that matches the cases below.
 * **Named essential counts keep their names.** `cvr()` and
   `expert_validity(mode = "essentiality")` renamed the items of a named count
   vector to Item1, Item2, so the handoff carried names that matched no
-  response data.
+  response data. Names are used when every count has a distinct, non-blank
+  name; otherwise the items are numbered, as before.
 * **Lawshe's table at nine panelists.** In the comparison block, 8 of 9
   panelists (a CVR of .778) was reported as below his .78, and the vignette
   said his table asks for all nine. His .78 is 8 of 9 printed to two
@@ -126,9 +132,18 @@ item sort that matches the cases below.
 ## Expert panel: other fixes
 
 * The relevance printout states the rating scale and the cut it used.
-* A rating outside the scale names its column and the scale in the error.
-* `cvr()` prints "none" where no count can meet the test, with a sentence
-  saying why, where it printed `NA`.
+* In `aikens_v()` and `expert_validity()`, a rating outside the scale names
+  its column and the scale in the error, and says to set `lo` and `hi`.
+* `cvr()` and the essentiality table print "none" where no count can meet the
+  test, with a sentence saying why, where they printed `NA`. `summary()`
+  counts such items as "Too few experts", apart from items no expert rated.
+* The essentiality figure marks an item whose panel was too small to test
+  with a cross, and its legend lists only what is drawn.
+* With panels of different sizes, the Lawshe comparison says that his minimum
+  is applied as a count, and no longer reads an unrated first item as "no
+  minimum for this panel size".
+* `?cvr` no longer calls the step in Lawshe's table at eight experts a
+  defect.
 * `panel_agreement()` prints "undefined" for a coefficient that cannot be
   computed, where it printed "= NA" followed by a note about resamples.
 

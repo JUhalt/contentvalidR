@@ -13,7 +13,9 @@ gtheory_content(
 }
 \arguments{
 \item{ratings}{A judges-by-items numeric matrix or data frame: one row per
-judge, one column per item.}
+judge, one column per item. A column whose name looks like a rater ID
+(such as \code{expert} or \code{rater_id}) stops the function, so remove it, or
+rename an item that has such a name.}
 
 \item{na.rm}{If \code{TRUE}, judges with any missing rating are dropped so that a
 complete crossed design remains, and the number dropped is reported. If

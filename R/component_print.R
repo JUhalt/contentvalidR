@@ -193,7 +193,7 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
     notes = c(
       # V depends on the scale, so the scale it was computed on is stated.
       if (is.numeric(scale) && length(scale) == 2L) {
-        sprintf("Scale: %s to %s.", format(scale[1]), format(scale[2]))
+        sprintf("Scale: %s to %s.", .fmt_scale(scale)[1], .fmt_scale(scale)[2])
       },
       if (has_ci && length(methods) == 1L) {
         paste0("Interval: ", methods,
@@ -217,7 +217,9 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
                  needed = ifelse(unreachable, "none",
                                  ifelse(is.na(x$critical_ne), "--",
                                         as.character(x$critical_ne))),
-                 meets = ifelse(unreachable, "--", .yes_no(x$pass)),
+                 # No critical count means no decision, whether the panel is
+                 # too small or nobody rated the item.
+                 meets = ifelse(is.na(x$critical_ne), "--", .yes_no(x$pass)),
                  stringsAsFactors = FALSE)
     },
     notes = c(

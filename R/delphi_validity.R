@@ -701,9 +701,13 @@ delphi_validity <- function(ratings,
     m <- matrix(NA_real_, length(experts), length(its),
                 dimnames = list(experts, its))
     m[cbind(match(dr$expert, experts), match(dr$item, its))] <- dr$rating
-    expert_validity(m, mode = "relevance", lo = lo, hi = hi,
-                    relevance_cut = agree_cut, alpha = alpha,
-                    agreement = "none", na.rm = TRUE)
+    # The columns are the user's item labels, taken from the item column, so
+    # an item called "Subject" is an item, not a rater ID left in the data.
+    .without_id_check(
+      expert_validity(m, mode = "relevance", lo = lo, hi = hi,
+                      relevance_cut = agree_cut, alpha = alpha,
+                      agreement = "none", na.rm = TRUE)
+    )
   })
   names(round_fits) <- rounds
 

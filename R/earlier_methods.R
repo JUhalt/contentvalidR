@@ -370,27 +370,43 @@
 
   alpha <- .fmt_alpha(em$alpha)
   if (length(sizes) == 1L) {
-    lmin <- it$lawshe_minimum[1]
+    # The minimums of the one panel size in play, from an item that was rated:
+    # an unrated first item has none.
+    rated <- which(it$N >= 1L)[1]
+    lmin <- it$lawshe_minimum[rated]
     .say(if (is.na(lmin)) {
       paste0("Lawshe (1975, Table 1) lists no minimum for ", sizes,
              " panelists; the table covers 5 to 15, then every fifth size to ",
              "40.")
     } else {
-      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, digits),
-             " for ", sizes, " panelists, which ", .lawshe_count(sizes), " of ",
-             sizes, " meet, labeled a one-tailed test at .05. ",
-             "Wilson, Pan and Schumsky (2012) found the table closer to a ",
-             "two-tailed test.")
+      # His table gives two decimals, whatever `digits` the estimates use.
+      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, 2),
+             " for ", sizes, " panelists (", .lawshe_count(sizes), " of ",
+             sizes, "), which he labeled a one-tailed test at .05. ",
+             "Wilson et al. (2012) found the table closer to a two-tailed ",
+             "test.")
     })
     .say(paste0("Wilson et al. (2012, Table 2): minimum CVR ",
-                .fmt(it$wilson_critical[1], digits), ", the normal ",
+                .fmt(it$wilson_critical[rated], digits), ", the normal ",
                 "approximation z/sqrt(N) at one-tailed alpha = ", alpha, "."))
   } else {
     .say("Lawshe (1975, Table 1) and Wilson et al. (2012, Table 2) set the",
          "minimum CVR by panel size, so each item's minimum is shown. Lawshe",
-         "labeled his a one-tailed test at .05; Wilson, Pan and Schumsky",
-         "(2012) found it closer to a two-tailed test. Wilson's is z/sqrt(N)",
-         "at one-tailed alpha =", paste0(alpha, "."))
+         "labeled his a one-tailed test at .05; Wilson et al. (2012) found it",
+         "closer to a two-tailed test. Wilson's is z/sqrt(N) at one-tailed",
+         "alpha =", paste0(alpha, "."))
+    # Two rows can show a CVR equal to its minimum and get opposite verdicts,
+    # so the rule that separates them is stated.
+    .say(paste0(
+      "Lawshe's minimum is applied as the fewest essential ratings that reach ",
+      "it",
+      if (any(it$N == 9L)) {
+        paste0(": for 9 panelists his .78 is 8 of 9 (.778) printed to two ",
+               "decimals, so 8 of 9 meets it.")
+      } else {
+        "."
+      }
+    ))
   }
   .rounding_note(it$item, it$cvr, it$lawshe_minimum, it$lawshe_meets,
                  "Lawshe", digits)

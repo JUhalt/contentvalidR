@@ -51,12 +51,19 @@
 #' as a substitute for expert comments, construct coverage, comprehensibility,
 #' or other parts of a content-validity argument.
 #'
+#' In essentiality mode an item rated by so few experts that no count could
+#' meet the exact test (four or fewer at the default `alpha`) is labeled
+#' `"Insufficient panel"`, with status `"Insufficient data"`, as an item rated
+#' by fewer than three experts is in relevance mode. It is not `"Review"`,
+#' which would say the experts had disagreed.
+#'
 #' @param data Ratings data. For relevance, a judge-by-item numeric matrix/data
 #'   frame. For essentiality, either a judge-by-item 0/1 matrix/data frame or a
-#'   vector of essential counts, whose names, if it has any, become the item
-#'   names. For congruence, a long data frame accepted by [ioc()]. In a
-#'   judge-by-item table every column is an item, so remove a rater-ID column
-#'   first.
+#'   vector of essential counts, whose names become the item names when every
+#'   count has a distinct name. For congruence, a long data frame accepted by
+#'   [ioc()]. In a judge-by-item table every column is an item; a column whose
+#'   name looks like a rater ID (such as `expert` or `rater_id`) stops the
+#'   function, so remove it, or rename an item that has such a name.
 #' @param mode One of `"relevance"`, `"essentiality"`, or `"congruence"`.
 #' @param lo,hi Rating-scale bounds for relevance mode. The default is the
 #'   1-4 relevance scale; give the bounds for any other scale, because Aiken's
@@ -64,8 +71,9 @@
 #'   scale that was used.
 #' @param relevance_cut Lowest rating treated as relevant for CVI. Defaults to
 #'   `hi - 1`, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale, and to `hi` on a
-#'   two-point scale. It must lie above `lo`: at `lo` every rating would count
-#'   as relevant.
+#'   two-point scale. The default assumes scale points one unit apart, so set
+#'   the cut yourself on any other scale. It must lie above `lo`: at `lo`
+#'   every rating would count as relevant.
 #' @param N Panel size for essential-count vector input.
 #' @param alpha Inferential/CI alpha level.
 #' @param na.rm Permit itemwise/cellwise missing ratings where supported.
@@ -99,11 +107,14 @@
 #'
 #' * **Essentiality.** Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
 #'   panelists, then every fifth panel size to 40; other sizes have no minimum.
-#'   He labeled it a one-tailed test at .05. Wilson, Pan and Schumsky (2012)
-#'   found the table closer to a two-tailed test and recomputed it by the
-#'   normal approximation, `z / sqrt(N)` for a one-tailed test at `alpha`
-#'   (their Table 2). Lawshe's content validity index for the whole set is the
-#'   mean CVR of the items his table retains (Lawshe, 1975).
+#'   He labeled it a one-tailed test at .05. Wilson et al. (2012) found the
+#'   table closer to a two-tailed test and recomputed it by the normal
+#'   approximation, `z / sqrt(N)` for a one-tailed test at `alpha` (their
+#'   Table 2). An item meets Lawshe's minimum when its essential count reaches
+#'   the count that minimum implies: 8 of 9 for his .78, which is .778 printed
+#'   to two decimals (Ayre & Scally, 2014). Lawshe's content validity index
+#'   for the whole set is the mean CVR of the items his table retains (Lawshe,
+#'   1975).
 #' * **Relevance.** Fleiss' (1971) kappa, his kappa for many raters and nominal
 #'   categories, on the relevant/not-relevant decision. It needs every expert to
 #'   rate every item. The printout also notes that S-CVI/Ave is the average
@@ -571,7 +582,13 @@ expert_validity <- function(data,
                       essential = paste0(r$ne, "/", r$N),
                       CVR = .fmt(r$cvr, digits), p = .fmt_p(r$p_value),
                       stringsAsFactors = FALSE, check.names = FALSE)
-    if (length(unique(r$N)) > 1L) tab$needed <- r$critical_ne
+    # "none" where no count can meet the test at that panel size, and "--"
+    # where no expert rated the item, as cvr() prints them.
+    if (length(unique(r$N)) > 1L) {
+      tab$needed <- ifelse(is.na(r$critical_ne),
+                           ifelse(r$N >= 1L, "none", "--"),
+                           as.character(r$critical_ne))
+    }
     return(tab)
   }
   tab <- data.frame(item = r$item, stringsAsFactors = FALSE, check.names = FALSE)
@@ -672,8 +689,9 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     # The scale and the cut decide every index below, so they are stated.
     st <- x$settings
     if (is.numeric(st$lo) && is.numeric(st$hi) && is.numeric(st$relevance_cut)) {
-      .say(sprintf("Scale: %s to %s | Relevant: a rating of %s%s", format(st$lo),
-                   format(st$hi), format(st$relevance_cut),
+      pts <- .fmt_scale(c(st$lo, st$hi, st$relevance_cut))
+      .say(sprintf("Scale: %s to %s | Relevant: a rating of %s%s", pts[1],
+                   pts[2], pts[3],
                    if (st$relevance_cut < st$hi) " or higher" else ""))
     }
     cat("Mean Aiken V: ", .fmt(s$mean_Aiken_V, digits),
@@ -800,7 +818,17 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   cat(strrep("-", 47), "\n", sep = "")
   cat("Mode: ", x$mode, "\n", sep = "")
   cat("Supported: ", x$n_supported, " | Review: ", x$n_review, sep = "")
-  if (x$n_insufficient > 0L) cat(" | Insufficient data: ", x$n_insufficient, sep = "")
+  # Two reasons for no decision, counted apart: too few experts for any count
+  # to meet the exact test, and no usable rating at all.
+  n_few <- if (identical(x$mode, "essentiality")) {
+    sum(x$flagged$recommendation %in% "Insufficient panel")
+  } else {
+    0L
+  }
+  if (n_few > 0L) cat(" | Too few experts: ", n_few, sep = "")
+  if (x$n_insufficient - n_few > 0L) {
+    cat(" | Insufficient data: ", x$n_insufficient - n_few, sep = "")
+  }
   if (x$n_descriptive > 0L) cat(" | Descriptive only: ", x$n_descriptive, sep = "")
   cat("\n")
   if (identical(x$mode, "relevance") && is.character(x$settings$agreement) &&
@@ -951,11 +979,18 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     graphics::axis(2, at = y, labels = r$item, las = 1)
     .vline_below(0, 0.5, top)
     good <- is.finite(r$critical_cvr) & is.finite(r$cvr)
+    # A panel too small for the exact test has no needed value to draw, so its
+    # CVR is marked with a cross: no decision, as in the other figures.
+    undecided <- is.finite(r$cvr) & !is.finite(r$critical_cvr)
     graphics::segments(r$critical_cvr[good], y[good], r$cvr[good], y[good])
     graphics::points(r$critical_cvr[good], y[good], pch = 1)
-    graphics::points(r$cvr, y, pch = 19)
+    graphics::points(r$cvr[!undecided], y[!undecided], pch = 19)
+    graphics::points(r$cvr[undecided], y[undecided], pch = 4)
     if (isTRUE(show_legend)) {
-      .legend_top(c("Observed CVR", "Needed (exact test)"), c(19, 1))
+      # Only what was drawn is listed.
+      .legend_top(c(if (any(good)) c("Observed CVR", "Needed (exact test)"),
+                    if (any(undecided)) "Too few experts to test"),
+                  c(if (any(good)) c(19, 1), if (any(undecided)) 4))
     }
   } else {
     if (!"target_ioc" %in% names(r)) {

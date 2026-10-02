@@ -18,7 +18,9 @@ judge_validity(
 }
 \arguments{
 \item{ratings}{A judges-by-items numeric matrix or data frame of relevance
-ratings: one row per judge, one column per item.}
+ratings: one row per judge, one column per item. A column whose name
+looks like a rater ID (such as \code{expert} or \code{rater_id}) stops the
+function, so remove it, or rename an item that has such a name.}
 
 \item{lo, hi}{Rating-scale bounds.}
 

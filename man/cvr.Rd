@@ -9,7 +9,9 @@ cvr(essential, N = NULL, alpha = 0.05, na.rm = FALSE, item_names = NULL)
 \arguments{
 \item{essential}{Numeric/integer vector of essential counts, or a matrix/data
 frame with judges in rows, items in columns, coded \code{1 = essential} and
-\verb{0 = not essential}.}
+\verb{0 = not essential}. In a judge-by-item table every column is an item; a
+column whose name looks like a rater ID (such as \code{expert} or \code{rater_id})
+stops the function, so remove it, or rename an item that has such a name.}
 
 \item{N}{Panel size. Required for count-vector input. May be a scalar or a
 vector matching \code{essential}. Ignored for matrix input, where effective N is
@@ -20,8 +22,8 @@ calculated itemwise.}
 \item{na.rm}{Logical; for matrix input, permit itemwise missing ratings.}
 
 \item{item_names}{Optional item names for count-vector input. By default
-the names of \code{essential} are used when it has them, and \code{Item1}, \code{Item2},
-and so on otherwise.}
+the names of \code{essential} are used when every count has a distinct,
+non-blank name, and \code{Item1}, \code{Item2}, and so on otherwise.}
 }
 \value{
 A data.frame containing item, \code{ne}, effective \code{N}, CVR, exact
@@ -38,11 +40,13 @@ critical-value logic revisited by Ayre and Scally (2014). Input may be either
 counts of experts marking each item essential or a judge-by-item 0/1 matrix.
 
 Lawshe (1975) published a table of critical values computed by a colleague,
-Lowell Schipper, without saying how. Wilson, Pan and Schumsky (2012) found
-the table dips at eight experts where it should rise, and that it matches a
-normal approximation at a two-tailed .05 level rather than the one-tailed
-.05 it was labeled with. Ayre and Scally (2014) then derived exact binomial
-values, which are the ones used here.
+Lowell Schipper, without saying how. Wilson et al. (2012) read the step
+from .78 at nine experts to .75 at eight as an anomaly, and found that the
+table matches a normal approximation at a two-tailed .05 level rather than
+the one-tailed .05 it was labeled with. Ayre and Scally (2014) then derived
+exact binomial values, which are the ones used here, and showed that the
+step is not an anomaly: .78 is 8 of 9 and .75 is 7 of 8, the counts the
+exact test also requires.
 }
 \examples{
 cvr(essential = c(8, 10, 5), N = 12)
