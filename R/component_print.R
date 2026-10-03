@@ -211,7 +211,7 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
     },
     notes = sprintf(paste("needed: essential ratings the exact one-tailed binomial",
                           "test requires at alpha = %s (Ayre & Scally, 2014)."),
-                    .fmt(alpha))
+                    .fmt_alpha(alpha))
   )
 }
 
@@ -275,21 +275,32 @@ print.contentvalid_binom <- function(x, digits = 2, ...) {
   cat("\n")
   p_txt <- .p_phrase(x$p.value)
   has_counts <- all(c("n_target", "N", "p0", "alpha") %in% names(x))
-  if (has_counts) {
-    .say(sprintf(paste("%d of %d judges assigned the item to its target construct",
-                       "(Psa = %s). If judges chose the target at the rate p0 = %s,",
-                       "a count this high has probability %s."),
-                 as.integer(x$n_target), as.integer(x$N), .fmt(x$estimate, digits),
-                 .fmt(x$p0, digits), p_txt))
-    .say(sprintf("At alpha = %s an item needs at least %d of %d. Decision: %s.",
-                 .fmt(x$alpha), as.integer(x$critical_n_target), as.integer(x$N),
-                 x$decision))
+  # The verdict comes first, in the words the item-sort workflow uses.
+  .say(if (isTRUE(x$passes_chance)) {
+    "The item meets the exact target-assignment criterion."
   } else {
-    .say(sprintf("Psa = %s, %s. Decision: %s.", .fmt(x$estimate, digits),
-                 p_txt, x$decision))
+    "The item does not meet the exact target-assignment criterion."
+  })
+  if (has_counts) {
+    .say(sprintf(paste("%d of %s assigned the item to its target construct",
+                       "(Psa = %s). If each judge chose the target with",
+                       "probability p0 = %s, a count this high has probability %s."),
+                 as.integer(x$n_target), .n_noun(as.integer(x$N), "judge"),
+                 .fmt(x$estimate, digits), .fmt(x$p0, digits), p_txt))
+    if (is.na(x$critical_n_target)) {
+      .say(sprintf(paste("With %s, no count can reach alpha = %s, so no item",
+                         "can meet the criterion at this panel size."),
+                   .n_noun(as.integer(x$N), "judge"), .fmt_alpha(x$alpha)))
+    } else {
+      .say(sprintf("At alpha = %s an item needs at least %d of %d.",
+                   .fmt_alpha(x$alpha), as.integer(x$critical_n_target),
+                   as.integer(x$N)))
+    }
+  } else {
+    .say(sprintf("Psa = %s, %s.", .fmt(x$estimate, digits), p_txt))
   }
   if (length(x$conf.int) == 2L) {
-    .say(sprintf("One-sided %s%% interval for the target rate: %s.",
+    .say(sprintf("One-sided %s%% CI for the target rate: %s.",
                  format(100 * attr(x$conf.int, "conf.level")),
                  .fmt_ci(x$conf.int[1], x$conf.int[2], digits)))
   }

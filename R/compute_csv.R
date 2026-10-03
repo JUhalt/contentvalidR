@@ -45,7 +45,7 @@ compute_csv <- function(assignments,
     assignments, item_col, rater_col, assigned_col, target_col
   )
 
-  by_item <- split(d, d$item, drop = TRUE)
+  by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     valid <- !is.na(df$assigned)
     n_total <- nrow(df)
@@ -60,7 +60,7 @@ compute_csv <- function(assignments,
       csv <- NA_real_
     } else {
       tab <- table(df$assigned[valid], useNA = "no")
-      n_target <- if (target %in% names(tab)) unname(tab[target]) else 0L
+      n_target <- if (target %in% names(tab)) unname(tab[[target]]) else 0L
       other_counts <- tab[names(tab) != target]
       n_other <- if (length(other_counts) > 0L) max(other_counts) else 0L
       if (length(other_counts) > 0L && n_other > 0L) {

@@ -32,6 +32,28 @@
   out
 }
 
+# An alpha level keeps the digits it was given, with at least two: .05, .10,
+# .025, .001. Rounding to two decimals would print .001 as .00. A computed
+# level such as .05 / 3 is shown to three significant digits (.0167). The
+# text never depends on the session's `digits` or `OutDec` options, because
+# it also goes into the handoff.
+.fmt_alpha <- function(alpha) {
+  alpha <- as.numeric(alpha)
+  out <- vapply(alpha, function(a) {
+    if (is.na(a)) return("NA")
+    a <- signif(a, 3)
+    given <- format(a, digits = 15, scientific = FALSE, drop0trailing = TRUE,
+                    decimal.mark = ".")
+    decimals <- if (grepl(".", given, fixed = TRUE)) {
+      nchar(sub("^[^.]*\\.", "", given))
+    } else {
+      0L
+    }
+    formatC(a, format = "f", digits = max(2L, decimals), decimal.mark = ".")
+  }, character(1))
+  sub("^0\\.", ".", out)
+}
+
 # "p = .021", or "p < .001" when it is that small.
 .p_phrase <- function(p) {
   txt <- .fmt_p(p)

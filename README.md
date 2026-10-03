@@ -135,13 +135,14 @@ fit
 #>       tie).
 #>   competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the
+#>       competitor column shows where judges put it instead.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -260,6 +261,8 @@ Five deterministic example data sets, covering the item-sort,
 construct-rating, relevance, essentiality, and congruence input shapes,
 are installed as CSV files, for example
 `system.file("extdata", "sort_example.csv", package = "contentvalidR")`.
+Four more files hold the one item set the walkthrough follows through
+every stage: its items, the sort, the expert ratings, and the responses.
 `vignette("reporting-examples")` gives methods and results scaffolds and
 a minimum reproducibility statement.
 

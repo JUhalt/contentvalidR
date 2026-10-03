@@ -37,9 +37,12 @@
       term = "p_value", workflow = "item-sort",
       label = "Howard-Melloy exact test",
       definition = paste(
-        "Probability of seeing at least this many target assignments if judges",
-        "were assigning at the chance rate p0. Small values mean the item's",
-        "assignment pattern is unlikely to be chance."
+        "Probability of seeing at least this many target assignments if each",
+        "judge chose the intended construct with probability p0. The default,",
+        ".50, is the benchmark Howard and Melloy (2016) used; it is not the",
+        "rate expected from random assignment, which is 1 divided by the",
+        "number of constructs. Small values mean judges chose the intended",
+        "construct more often than that benchmark."
       ),
       range = "0 to 1; compared against alpha",
       stringsAsFactors = FALSE
@@ -319,7 +322,7 @@
     psa = "Share of judges who put the item in the construct it was written for (0 to 1; higher is stronger).",
     csv = "How much more often judges chose the intended construct than its closest rival (-1 to 1; 0 is a tie).",
     competitor = "The construct other than the intended one that judges chose most often.",
-    p_value = "Chance of at least this many target assignments if judges assigned at the rate p0; compared with alpha.",
+    p_value = "Probability of at least this many target assignments if each judge picked the target at rate p0; compare with alpha.",
     htc = "Mean rating against the intended definition, as a share of the rating scale (0 to 1).",
     htd = "How far that mean exceeds the closest rival's, as a share of the scale (usually small).",
     V = "Mean relevance rating rescaled to run from 0 (lowest possible) to 1 (highest).",
@@ -356,7 +359,8 @@
     workflow,
     "item-sort" = c(
       Retain = "met the exact target-assignment criterion.",
-      Review = "did not meet it; the competitor column shows where judges put it instead.",
+      Review = "did not meet the exact target-assignment criterion; the competitor column shows where judges put it instead.",
+      "Insufficient panel" = "too few judges sorted it for any count to meet the exact criterion.",
       "Insufficient data" = "no judge sorted it."
     ),
     "construct-rating" = c(

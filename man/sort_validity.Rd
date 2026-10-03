@@ -26,7 +26,12 @@ sort_validity(
 rater, assigned construct, and intended target construct.}
 
 \item{p0}{Null target-assignment probability for the exact binomial test.
-Default \code{0.5}, following Howard and Melloy (2016).}
+Default \code{0.5}, following Howard and Melloy (2016). It is not the rate
+expected from random assignment, which is 1 divided by the number of
+constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+suggest a higher value such as .6 or .75, chosen before data collection,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts.}
 
 \item{alpha}{Significance level. Default \code{0.05}.}
 
@@ -39,9 +44,11 @@ If omitted, the overall Colquitt et al. norms are used.}
 \code{"expert"}. Colquitt benchmark labels are not applied to expert judges.}
 
 \item{proportion_ci}{Interval method for Psa: \code{"wilson"} (default),
-\code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The interval uses the same
-\code{alpha} as the exact test. See \code{ci} in \code{\link[=cvi]{cvi()}} for the methods and the
-evidence for each.}
+\code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The interval is two-sided at
+level \code{1 - alpha}, while the exact test is one-sided, so the interval of
+an item that just meets the criterion can still include \code{p0}. The
+decision comes from the test, not from the interval. See \code{ci} in \code{\link[=cvi]{cvi()}}
+for the methods and the evidence for each.}
 
 \item{legacy}{Print the earlier published rules beside the decision, for
 comparison. Default \code{FALSE}. They are computed either way, stored in
@@ -66,7 +73,14 @@ item level, \code{sort_validity()} combines Anderson and Gerbing's (1991) Psa an
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 \code{"Retain"}; items that do not meet it are labeled \code{"Review"}, not
-automatically \code{"Delete"}.
+automatically \code{"Delete"}. An item sorted by so few judges that no count
+could meet the criterion (four or fewer at the defaults) is labeled
+\code{"Insufficient panel"}, with status \code{"Insufficient data"}.
+
+Construct and item labels are compared as text after leading and trailing
+spaces are removed, so constructs may be coded as numbers, text or factors.
+Results list the items in the order they first appear in the data, or in
+the order of the levels when the item column is a factor.
 
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).

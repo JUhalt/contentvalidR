@@ -70,7 +70,7 @@ compute_psa <- function(assignments,
     assignments, item_col, rater_col, assigned_col, target_col
   )
 
-  by_item <- split(d, d$item, drop = TRUE)
+  by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     valid <- !is.na(df$assigned)
     n_total <- nrow(df)

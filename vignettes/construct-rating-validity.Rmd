@@ -162,7 +162,7 @@ A correspondence-distinctiveness evidence map displays HTC and HTD together:
 plot(fit, type = "map")
 ```
 
-Target-scale averages are shown as diamonds and items needing review are labeled
+Target-scale averages are shown as triangles and items needing review are labeled
 by default. As with the item-sort map, Colquitt norm regions are not drawn across
 individual items because those benchmarks were constructed from scale averages.
 

@@ -140,7 +140,7 @@ The six workflows, the object contract they share, and the handoff to empirical 
 
 ## Examples, reporting, and citation
 
-Five deterministic example data sets, covering the item-sort, construct-rating, relevance, essentiality, and congruence input shapes, are installed as CSV files, for example `system.file("extdata", "sort_example.csv", package = "contentvalidR")`. `vignette("reporting-examples")` gives methods and results scaffolds and a minimum reproducibility statement.
+Five deterministic example data sets, covering the item-sort, construct-rating, relevance, essentiality, and congruence input shapes, are installed as CSV files, for example `system.file("extdata", "sort_example.csv", package = "contentvalidR")`. Four more files hold the one item set the walkthrough follows through every stage: its items, the sort, the expert ratings, and the responses. `vignette("reporting-examples")` gives methods and results scaffolds and a minimum reproducibility statement.
 
 Cite the package with `citation("contentvalidR")`. The reference list below is also installed in BibTeX form: `system.file("REFERENCES.bib", package = "contentvalidR")`.
 

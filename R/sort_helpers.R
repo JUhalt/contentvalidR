@@ -34,6 +34,19 @@
   .validate_labels(d$target, "target_construct")
   .validate_labels(d$assigned, "assigned_construct", allow_na = TRUE)
 
+  # Labels are compared as text. A construct coded as a number would index a
+  # table of counts by position, two factors with different levels cannot be
+  # compared at all, and a stray space would split one construct into two.
+  item_order <- if (is.factor(d$item)) {
+    .as_label(levels(droplevels(d$item)))
+  } else {
+    unique(.as_label(d$item))
+  }
+  d$item <- .as_label(d$item)
+  d$rater <- .as_label(d$rater)
+  d$assigned <- .as_label(d$assigned)
+  d$target <- .as_label(d$target)
+
   dup <- duplicated(d[c("item", "rater")])
   if (any(dup)) {
     bad <- unique(d$item[dup])
@@ -60,7 +73,34 @@
     )
   }
 
+  # Items keep the order of the data (or of a factor's levels), so numbered
+  # items are not rearranged as text (Q1, Q10, Q2).
+  attr(d, "item_order") <- unique(item_order)
   d
+}
+
+# A label as text, whatever it was stored as. A number is written without
+# scientific notation, so the integer 100000 and the double 1e5 are one label,
+# and one value at a time, so 1 is "1" whether or not 2.5 appears beside it.
+# Missing values, NaN included, stay missing. Leading and trailing whitespace
+# of any kind, non-breaking spaces included, is removed.
+.as_label <- function(x) {
+  missing <- is.na(x)
+  out <- if (is.numeric(x)) {
+    vapply(x, function(v) {
+      format(v, scientific = FALSE, trim = TRUE, digits = 15, decimal.mark = ".")
+    }, character(1), USE.NAMES = FALSE)
+  } else {
+    as.character(x)
+  }
+  out <- trimws(out, whitespace = "[\\h\\v]")
+  out[missing] <- NA_character_
+  out
+}
+
+# Splits prepared assignments by item, in the order the items were given.
+.split_by_item <- function(d) {
+  split(d, factor(d$item, levels = attr(d, "item_order")), drop = TRUE)
 }
 
 .critical_target_count <- function(N, p0 = 0.5, alpha = 0.05) {
@@ -78,6 +118,12 @@
   tail_p <- stats::pbinom(candidates - 1L, size = N, prob = p0, lower.tail = FALSE)
   passing <- candidates[tail_p <= alpha]
   if (length(passing) == 0L) NA_integer_ else min(passing)
+}
+
+# "4 or fewer judges": if no count can reach alpha with n judges, none can
+# with fewer, because the smallest attainable p value is p0^n.
+.or_fewer_judges <- function(n) {
+  if (n <= 1L) "1 judge" else paste(n, "or fewer judges")
 }
 
 .signed_phi <- function(tp, tn, fp, fn) {

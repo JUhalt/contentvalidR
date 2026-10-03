@@ -85,8 +85,9 @@ and which were flagged), then one row per item. Working across the item table:
 - **competitor** — the construct judges picked most often *instead*. This is
   the single most useful diagnostic column in the table, because it tells you
   *where* a weak item drifted, which points at the fix.
-- **p** — the Howard-Melloy exact test against chance assignment (`p_value` in
-  `results`).
+- **p** — the Howard-Melloy exact test against the benchmark rate `p0`, .50 by
+  default (`p_value` in `results`). That benchmark is not the rate random
+  sorting would give, which is 1 divided by the number of constructs.
 
 Numbers follow the APA style rules (seventh edition, Section 6.36). A statistic
 that cannot exceed 1, such as a proportion or a *p* value, is printed without a

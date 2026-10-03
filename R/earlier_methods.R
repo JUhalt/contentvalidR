@@ -238,7 +238,11 @@
   it <- em$items
   if (is.null(it) || !nrow(it)) return(invisible(NULL))
   .earlier_heading()
-  tab <- data.frame(item = it$item, decision = it$decision,
+  # The main table gives the full decision word. This one is wide, so the two
+  # "no decision" words are shortened to keep each row on one line.
+  decision <- ifelse(it$decision %in% c("Insufficient panel", "Insufficient data"),
+                     "No decision", it$decision)
+  tab <- data.frame(item = it$item, decision = decision,
                     Psa = .fmt(it$psa, digits), Csv = .fmt(it$csv, digits),
                     stringsAsFactors = FALSE, check.names = FALSE)
   sizes <- unique(it$n[it$n >= 1L])
@@ -253,7 +257,7 @@
   .print_table(tab)
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   worst_case <- paste(
     "Their critical value assumes every judge who misses the target picks the",
     "same rival. When those judges spread across several constructs, Csv can",
@@ -301,12 +305,19 @@
   ag <- .agreement_count(it$ag_meets, supported)
   yao <- .agreement_count(it$yao_meets, supported)
   ext <- .agreement_count(it$extension_meets, supported)
-  .say(paste0("Agreement with the decision above: Anderson and Gerbing on ",
-              ag[["agree"]], " of ", ag[["of"]], " items, Yao et al. on ",
-              yao[["agree"]], " of ", yao[["of"]],
-              if (show_ext) paste0(", the extension on ", ext[["agree"]],
-                                   " of ", ext[["of"]]),
-              "."))
+  if (!any(!is.na(supported))) {
+    # Every item is without a decision (too few judges, or none), so there is
+    # nothing for the earlier rules to agree with.
+    .say("No item has a Retain or Review decision above, so there is nothing",
+         "to compare the earlier rules with.")
+  } else {
+    .say(paste0("Agreement with the decision above: Anderson and Gerbing on ",
+                ag[["agree"]], " of ", ag[["of"]], " items, Yao et al. on ",
+                yao[["agree"]], " of ", yao[["of"]],
+                if (show_ext) paste0(", the extension on ", ext[["agree"]],
+                                     " of ", ext[["of"]]),
+                "."))
+  }
   # Each cut applies to both indices; name whichever one rounding hides.
   .rounding_note(it$item, it$psa, rep(.yao_cut, nrow(it)),
                  .meets(it$psa, .yao_cut), "Yao et al. Psa", digits)
@@ -342,7 +353,7 @@
   .print_table(tab)
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   if (length(sizes) == 1L) {
     lmin <- it$lawshe_minimum[1]
     .say(if (is.na(lmin)) {
