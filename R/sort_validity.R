@@ -42,7 +42,7 @@
 }
 
 .sort_scale_summary <- function(results, orbiting_r, judge_type,
-                                n_definitions = NULL) {
+                                n_definitions = NULL, how = "offered") {
   targets <- unique(as.character(results$target))
   r_map <- .resolve_orbiting_r(targets, orbiting_r)
   strength_rank <- c("Lack of" = 1L, Weak = 2L, Moderate = 3L, Strong = 4L, `Very Strong` = 5L)
@@ -87,7 +87,7 @@
         paste0(band, "; review item wording and construct overlap, and consider",
                " pretesting the revised items again.")
       }
-      evidence <- paste0(evidence, .colquitt_definitions_caution(n_definitions))
+      evidence <- paste0(evidence, .colquitt_definitions_caution(n_definitions, how))
     }
 
     if (nrow(z) == 1L && judge_type == "naive") {
@@ -107,6 +107,7 @@
       orbiting_r = if (is.null(r_arg)) NA_real_ else r,
       benchmark_set = psa_i$benchmark_label,
       benchmark_applicable = psa_i$applicable,
+      n_definitions = if (is.null(n_definitions)) NA_integer_ else as.integer(n_definitions),
       evidence = evidence,
       stringsAsFactors = FALSE
     )
@@ -165,10 +166,11 @@
 #'   comparison. Default `FALSE`. They are computed either way, stored in
 #'   `details$earlier_methods`, and never change the decision; `print(fit,
 #'   legacy = TRUE)` shows them for any fit.
-#' @param n_constructs Optional number of constructs judges could choose among,
-#'   used only by the comparison block's chance-based extension. By default it
-#'   is the number of constructs that appear in the data, which is too few
-#'   when judges were offered a construct none of them chose.
+#' @param n_constructs Optional number of constructs judges could choose among.
+#'   It is used by the comparison block's chance-based extension and by the
+#'   caution added to the Colquitt et al. (2019) bands when it is not three.
+#'   By default it is the number of constructs that appear in the data, which
+#'   is too few when judges were offered a construct none of them chose.
 #'
 #' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
 #'   All flagship workflow objects expose the common components `results`,
@@ -339,7 +341,8 @@ sort_validity <- function(assignments,
   }
   scale_summary <- .sort_scale_summary(results, orbiting_r = orbiting_r,
                                        judge_type = judge_type,
-                                       n_definitions = n_definitions)
+                                       n_definitions = n_definitions,
+                                       how = if (is.null(n_constructs)) "used" else "offered")
 
   results$status <- .workflow_status_from_recommendation(results$recommendation)
 
@@ -360,7 +363,10 @@ sort_validity <- function(assignments,
     n_judges_max = if (nrow(results)) max(results$n) else 0L,
     n_missing = sum(results$n_missing),
     n_target_scales = length(unique(d$target)),
-    n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
+    n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)])))),
+    # Whether the number of constructs offered was given, or is only what
+    # judges used.
+    n_constructs_given = !is.null(n_constructs)
   )
   if (!is.null(n_constructs) && n_constructs < design$n_constructs_observed) {
     stop("`n_constructs` is ", n_constructs, ", but the data use ",
@@ -410,8 +416,10 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   })
   cat("\n")
 
-  .say(sum(r$recommendation == "Retain"), "of", nrow(r),
-       "items meet the exact target-assignment criterion.")
+  met <- sum(r$recommendation == "Retain")
+  .say(met, "of", .n_noun(nrow(r), "item"),
+       if (met == 1L || nrow(r) == 1L) "meets" else "meet",
+       "the exact target-assignment criterion.")
   if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
   if (length(insufficient)) {
     .say("Insufficient data:", paste(insufficient, collapse = ", "))
@@ -470,6 +478,10 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
   .print_table(st)
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
+  if (!expert) {
+    how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
+    for (line in .colquitt_caution_lines(sc, how)) .say(line)
+  }
 
   cat("\n")
   if (identical(s$judge_type, "expert")) {

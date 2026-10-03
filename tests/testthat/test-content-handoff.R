@@ -208,7 +208,7 @@ test_that("essentiality and congruence modes hand off", {
   con <- content_handoff(congruence_fit(), keep = c("Supported", "Review"))
   expect_named(con$scales, c("A", "B"))
   expect_match(con$item_evidence$rule[1],
-               "congruence for the target objective >= .70")
+               "for the target objective >= .70, the criterion they applied", fixed = TRUE)
 
   desc <- content_handoff(congruence_fit(target = FALSE),
                           keep = "Descriptive only")

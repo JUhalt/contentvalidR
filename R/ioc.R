@@ -26,7 +26,11 @@
 #' Duplicate item-judge-objective ratings are rejected. Missing ratings may be
 #' removed cellwise with transparent effective judge counts; the index is then
 #' computed from the cell means, which is the same formula when no rating is
-#' missing.
+#' missing. The formula of Rovinelli and Hambleton assumes every judge rated
+#' every objective, so this handling of missing ratings is this package's own:
+#' each objective's mean counts once, however many judges rated it, and an
+#' objective no judge rated is left out of the item's comparison. Pooling
+#' every rating on the other objectives instead would give a different index.
 #'
 #' @param ratings Data frame with columns `item`, `judge`, `objective`, `score`.
 #' @param na.rm Logical. If `FALSE`, missing scores are an error; if `TRUE`,

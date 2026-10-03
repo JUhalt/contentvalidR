@@ -70,8 +70,8 @@ The workflow reports Lynn's (1986) panel-size criterion for the I-CVI as a
 disagree, and from nine two may (7 of 9, the .78 usually quoted). Lynn's table
 stops at ten experts; beyond that the package holds her lowest proportion, 7 of
 9, an extension of her rule that the printout and the handoff label as this
-package's own (Polit and Beck, 2006, restate her rule as no lower than .78 for
-six or more experts). The criterion is not presented as universal proof that an item is or is not
+package's own. Polit and Beck (2006) restate her rule as no lower than .78 for
+six or more experts, though their own recommendation covers six to ten. The criterion is not presented as universal proof that an item is or is not
 content valid. Modified kappa provides
 a chance-corrected complement to I-CVI.
 
@@ -214,7 +214,9 @@ measures it, 0 if unclear, -1 if it clearly does not. The index of Rovinelli and
 Hambleton (1977) for an objective is half the gap between the experts' mean rating
 on that objective and their mean rating on the item's other objectives, so it
 reaches 1 only when every expert gives +1 to the objective and -1 to every
-other. A target mapping says which objective each item was written for:
+other. Turner and Carlson (2003) extend the index to items written for more
+than one objective, which this package does not do. A target mapping says
+which objective each item was written for:
 
 ```{r congruence}
 d <- expand.grid(

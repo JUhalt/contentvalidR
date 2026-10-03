@@ -152,10 +152,11 @@ test_that("the item-sort and expert components print their notes", {
                "Interval: percentile bootstrap.", fixed = TRUE)
 
   d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"))
-  d$score <- ifelse((d$item == "I1") == (d$objective == "A"), 1, -1)
+  d$score <- ifelse((d$item == "I1") == (d$objective == "A"), 1, 0)
   out_ioc <- shown(ioc(d))
   expect_match(out_ioc, "Index of item-objective congruence (IOC", fixed = TRUE)
-  expect_match(out_ioc, "I1 A 4 1.00", fixed = TRUE)
+  # The mean rating, then the index: +1 on A and 0 on B gives .50.
+  expect_match(out_ioc, "I1 A 4 1.00 .50", fixed = TRUE)
 })
 
 test_that("the Colquitt functions print their bands", {

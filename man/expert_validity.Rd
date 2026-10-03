@@ -124,8 +124,9 @@ which would say the experts had disagreed.
 }
 \section{Earlier methods, for comparison}{
 
-The decisions use Lynn's (1986) criterion in relevance mode and the exact
-binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
+The decisions use Lynn's (1986) criterion in relevance mode (beyond the ten
+experts her table covers, this package's extension holding her 7 of 9) and
+the exact binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
 reported beside them for teaching, and none changes a decision:
 \itemize{
 \item \strong{Essentiality.} Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15

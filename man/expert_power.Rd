@@ -24,7 +24,8 @@ I-CVI: every expert must agree with three to five, one may disagree from
 six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 experts, where Lynn's table stops, the package holds her lowest proportion,
 7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
-Beck (2006) restate her rule as no lower than .78 for six or more experts.
+Beck (2006, p. 491) restate her rule as no lower than .78 for six or more
+experts, though their own recommendation covers 6 to 10 experts (p. 496).
 \code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
 
 \item{alpha}{Significance level for the CVR criterion. Ignored for CVI.}
@@ -78,9 +79,9 @@ validity ratio. \emph{Measurement and Evaluation in Counseling and Development,
 Lynn, M. R. (1986). Determination and quantification of content validity.
 \emph{Nursing Research, 35}(6), 382–385.
 
-Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459–467. \doi{10.1002/nur.20199}
+Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+sure you know what's being reported? Critique and recommendations.
+\emph{Research in Nursing & Health, 29}(5), 489–497. \doi{10.1002/nur.20147}
 }
 \seealso{
 \code{\link[=sort_power]{sort_power()}} for item-sort planning, and \code{\link[=gtheory_content]{gtheory_content()}} whose

@@ -496,12 +496,14 @@ analysis that matches the cases below.
   objective's mean rating, which applied work often reports as "the IOC" but
   which reaches 1 whenever every expert gives +1 to the objective, whatever
   they say about the others. It is now the index of Rovinelli and
-  Hambleton (1977): half the gap between the mean rating on the objective and the mean
-  on the item's other objectives, 1 only when every expert gives +1 to the
-  objective and -1 to every other. The mean is kept as `mean_rating`, and
-  `n_objectives` is added. The index is `NA` for an item rated against one
-  objective, because it compares objectives. Items and objectives keep the
-  order of the data.
+  Hambleton (1977): half the gap between the mean rating on the objective
+  and the mean on the item's other objectives, 1 only when every expert
+  gives +1 to the objective and -1 to every other. The mean is kept as
+  `mean_rating`, beside the index in the print, and `n_objectives` is added.
+  The index is `NA` for an item rated against one objective, because it
+  compares objectives. Items and objectives keep the order of the data.
+  With missing ratings each objective's mean counts once, the package's own
+  handling of an incomplete design, which `?ioc` and the printout say.
 * **Congruence decisions use the index and a criterion.** An item was
   `"Target favored"` when the mean on its target beat the mean on every other
   objective, or `"Tie / review"`, so a mean of .25 against -.25 passed. It is
@@ -510,7 +512,15 @@ analysis that matches the cases below.
   `"Review"` otherwise; `"Target described"` when only the target objective
   was rated. `results` holds `target_ioc` (the index), `target_mean`,
   `competitor_mean` and `margin` (the gap between the means, a description
-  beside the index); `competitor_ioc` is gone.
+  beside the index), with `n_judges`; `competitor_ioc` is gone. A criterion
+  set with `ioc_cut` is printed as set for the analysis; only .70 is
+  credited to Rovinelli and Hambleton. Because the index averages over
+  every other objective, an item can meet it while one rival is rated as
+  high as the target; its interpretation then says so.
+* **Congruence fits saved before 1.0 are not read as the index.** Their
+  `target_ioc` held a mean. They still print, with a note, but
+  `content_handoff()`, `content_report()` and `plot()` stop and ask for a
+  new fit, since anything else would present a mean as the index.
 * **Congruence without a target mapping has one row per item,** as every
   item-level table does: the objective the item matched best and its index.
   The item-by-objective table is in `details$cells`, and the printout shows
@@ -535,24 +545,44 @@ analysis that matches the cases below.
 
 * Lynn's (1986) table stops at ten experts. Beyond it the package holds her
   lowest tabled proportion, 7 of 9, and now says that this is its own
-  extension: in the printout, the handoff rule (which then also cites Polit
-  & Beck, 2006, who restate her rule as no lower than .78 for six or more
-  experts), the glossary, `?expert_power` and both vignettes.
+  extension wherever it applies it: the relevance printout and its closing
+  line and figure legend, the handoff rule (whose citations then also
+  include Polit & Beck, 2006, who restate her rule as no lower than .78 for
+  six or more experts, though their own recommendation covers six to ten),
+  the `expert_power()` printout, the fragile-item note of
+  `judge_validity()`, the glossary, the help pages and both vignettes. With
+  mixed panel sizes the relevance printout now states the criterion it
+  applies.
 * `expert_power()` is described as a contentvalidR planning tool, not a
   published method.
-* The Colquitt et al. (2019) bands carry a caution when judges saw a number
-  of definitions other than three: every one of their 112 scales was rated
-  against its own definition and two orbiting ones, and they did not examine
-  other numbers. The caution is this package's own, and
-  `?colquitt_benchmarks` describes their design.
+* The Colquitt et al. (2019) bands carry a caution, labeled as this
+  package's own, when judges saw a number of definitions other than three:
+  every one of their 112 scales was sorted into, or rated against, its own
+  definition and two orbiting ones, and they did not examine other numbers.
+  In a sort the count is `n_constructs`, or the constructs judges used when
+  it is not given; in ratings it is the constructs each scale's items were
+  rated against, so two focal scales with two orbiting constructs each get
+  no caution. The caution is printed under the benchmark table too, and
+  `scale_summary` gains `n_definitions`. `?colquitt_benchmarks` describes
+  their design.
 * The relevance handoff rule says that meeting the criterion also puts
   modified kappa above .74, in place of a separate kappa rule.
-* Verdicts agree in number: "1 of 3 items meets the exact essentiality
-  criterion."
+* Verdicts agree in number in every workflow: "1 of 3 items meets the exact
+  essentiality criterion."
 * `content_report()` for congruence shows the experts, the index, both means
   and the margin.
 * `?expert_validity` cites Rovinelli and Hambleton (1977) and Turner and
-  Carlson (2003), and documents `ioc_cut`.
+  Carlson (2003), and documents `ioc_cut`; the expert-panel vignette cites
+  Turner and Carlson too.
+* `plot()` for congruence shows each item's index against the criterion
+  line, with the two mean ratings below it in gray and a cross for an item
+  with no index; the legend gives the criterion's value.
+* When every item was rated against its target objective only, the
+  printout says so; it said no target objective was supplied. `summary()`
+  explains its congruence columns, and the handoff names tied rivals as
+  "Objectives B, C.".
+* The reporting vignette's congruence guidance reports the index against
+  its criterion, with the means and margin as description.
 
 ## Keys, help pages, figures and tables: values that change
 

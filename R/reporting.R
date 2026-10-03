@@ -305,6 +305,7 @@ content_report <- function(x,
   if (!inherits(x, "contentvalid_workflow")) {
     stop("`x` must be a fitted contentvalidR workflow object.", call. = FALSE)
   }
+  if (.congruence_pre10(x)) stop(.congruence_pre10_message(), call. = FALSE)
   format <- match.arg(format)
   include <- match.arg(include)
   .validate_digits(digits)

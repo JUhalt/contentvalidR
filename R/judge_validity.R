@@ -548,12 +548,17 @@ judge_validity <- function(ratings,
   unchecked <- sum(is.na(items$fragile))
   c(
     if (any(items$fragile %in% TRUE)) {
-      paste("changes without: removing any one of these judges changes the",
-            "item's status. Such an item is one judge away from the other",
-            "side of the CVI criterion for its panel size (Lynn, 1986): at the",
-            "criterion, or one short of it. This describes the item, not the",
-            "judges named, and is a contentvalidR check, not a published",
-            "index.")
+      big <- "n_raters" %in% names(items) &&
+        any(items$n_raters[items$fragile %in% TRUE] > 10L)
+      paste0("changes without: removing any one of these judges changes the ",
+             "item's status. Such an item is one judge away from the other ",
+             "side of the CVI criterion for its panel size (Lynn, 1986",
+             if (big) {
+               "; beyond ten judges, this package's extension holding her 7 of 9"
+             },
+             "): at the criterion, or one short of it. This describes the ",
+             "item, not the judges named, and is a contentvalidR check, not a ",
+             "published index.")
     },
     if (unchecked > 0L) {
       paste("Not checked:", .n_noun(unchecked, "item"),
