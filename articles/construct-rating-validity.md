@@ -73,6 +73,8 @@ htc(rating_dat, scale_min = 1, scale_max = 5)
 ```
 
 Higher HTC means stronger correspondence with the intended definition.
+Because the lowest rating still counts as one point, HTC cannot reach 0:
+it runs from $`1/a`$ to 1, so from .20 to 1 on a five-point scale.
 
 ## HTD: definitional distinctiveness
 
@@ -83,9 +85,11 @@ ratings:
 HTD = \frac{\text{average}(x_{target} - x_{orbiting})}{a - 1}.
 ```
 
-It ranges from -1 to 1. Positive values favor the intended definition;
-negative values indicate that orbiting definitions are rated more highly
-on average.
+The average runs over every judge and every orbiting definition, so HTD
+is the intended definition’s average lead over **all** the orbiting
+definitions, not its lead over the closest one. It ranges from -1 to 1.
+Positive values favor the intended definition; negative values indicate
+that orbiting definitions are rated more highly on average.
 
 ``` r
 
@@ -108,18 +112,34 @@ distinctiveness is weak.
 
 ## Repeated-measures item screening
 
-The same judges provide multiple construct ratings, so those
-observations are not independent.
+Hinkin and Tracey (1999) analyzed these ratings with a one-way ANOVA and
+Duncan’s multiple range test, treating the definitions as independent
+groups. The same judges provide multiple construct ratings, though, so
+those observations are not independent. MacKenzie et al. (2011)
+recommend a one-way repeated-measures ANOVA for this task, followed,
+when its *F* is significant, by a planned contrast of the intended
+definition against the others.
 [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
-uses a one-way repeated-measures ANOVA for the standard fully crossed
-design and follows it with planned paired comparisons of the intended
+uses that repeated-measures form for the standard fully crossed design
+and follows it with planned paired comparisons of the intended
 definition against every orbiting definition.
+
+An item is retained when the omnibus test and then its contrasts pass,
+which follows their sequence. Some details are this package’s choices,
+not taken from either source: the Greenhouse-Geisser (1959) corrected
+*p* is the screening *p* of the omnibus test; there is one one-sided
+contrast for each orbiting definition, and every one must pass, where
+MacKenzie et al. describe a single contrast; the contrasts are not
+adjusted for their number unless you ask (`adjust = "holm"`); and the
+tests need at least two judges who rated the item against every
+definition.
 
 ``` r
 
 aov_out <- anova_content(rating_dat, design = "within")
 aov_out
-#> Content-validity ANOVA (Hinkin & Tracey, 1999)
+#> Content-validity ANOVA
+#> Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).
 #> 
 #>  item target judges                  F test      p partial eta^2 contrast p met
 #>    A1      A     24  F(1.98, 45.65) = 72.64 < .001           .76     < .001 yes
@@ -127,12 +147,13 @@ aov_out
 #>    A3      A     24  F(2.00, 45.97) = 82.25 < .001           .78     < .001 yes
 #>    B1      B     24 F(1.85, 42.61) = 108.29 < .001           .82     < .001 yes
 #> 
-#> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
-#> of freedom are fractional.
-#> contrast p: the largest p among the planned target-versus-other contrasts;
-#> met: whether every one of them met the screening criterion. attr(x,
-#> "contrasts") holds each contrast, and `strongest_competitor` the construct
-#> rated closest to the target.
+#> Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces
+#> their degrees of freedom.
+#> contrast p: the largest p among the planned contrasts, each one-sided (the
+#> intended construct rated above one of the others), at alpha = .05 with no
+#> adjustment for their number. It is NA when a contrast has no p because every
+#> judge rated the two constructs the same. met: whether every contrast passed.
+#> attr(x, "contrasts") holds each one.
 attr(aov_out, "contrasts")
 #>   item design target competitor  n mean_target mean_competitor mean_diff
 #> 1   A1 within      A          B 24    4.375000        2.375000  2.000000
@@ -160,10 +181,11 @@ content-validity question: is the target mean higher than each orbiting
 mean?
 
 With more than two construct definitions, the conventional
-repeated-measures F test assumes sphericity. `contentvalidR` reports
-that historical omnibus test but does not hide the assumption. The
-planned target-versus-orbiting comparisons are therefore important
-diagnostic evidence rather than decorative post-hoc tests.
+repeated-measures F test assumes sphericity. `contentvalidR` prints the
+Greenhouse-Geisser corrected test, whose degrees of freedom are
+fractional; `as.data.frame(aov_out)$p` holds the uncorrected *p* value.
+The planned target-versus-orbiting comparisons are important diagnostic
+evidence rather than decorative post-hoc tests.
 
 ## Recommended workflow
 
@@ -182,6 +204,9 @@ fit
 #> Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus
 #> p) plus planned paired target-versus-orbiting contrasts; planned-contrast
 #> adjustment: none.
+#> Retain: the omnibus p and every contrast p at or below alpha = .05. The
+#> contrasts are one-sided: the intended construct rated above every other
+#> construct.
 #> Judges: naive, meaning drawn from the kind of people who will answer the
 #> items.
 #> 
@@ -214,13 +239,15 @@ fit
 #> 
 #> What these columns mean
 #>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
-#>       definition, as a share of the rating scale (0 to 1).
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
-#>       closest rival's, as a share of the scale (usually small).
+#>       definition, divided by the number of scale points (1/points to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the
+#>       other constructs' ratings on average, as a share of the scale
+#>       (usually small).
 #> 
 #> What the decisions mean
-#>   Retain -- rated highest against its intended construct, with every
-#>       planned contrast meeting the screening criterion.
+#>   Retain -- its ratings differed across constructs (the omnibus test) and
+#>       the intended construct was rated above every other (every planned
+#>       contrast).
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -256,11 +283,15 @@ summary(fit)
 The item-level recommendation has deliberately limited meaning:
 
 - **Retain:** the item cleared the package’s inferential screening rule
-  in this pretest.
+  in this pretest: its omnibus *p* and every contrast *p* are at or
+  below alpha.
 - **Review:** the full screening rule was not met; inspect wording,
   construct overlap, and judge feedback.
-- **Insufficient data:** too few complete judge profiles are available
-  for the repeated-measures comparison.
+- **Insufficient data:** fewer than two judges rated the item against
+  every definition, so the repeated-measures comparison cannot be made.
+  Its HTD, which rests on those judges, is left out of the scale’s mean
+  HTD. Its HTC stays in the scale’s mean HTC when at least two judges
+  rated the item against its intended definition.
 
 `Review` is not an instruction to delete an item. Content coverage can
 be harmed by mechanical item deletion.
@@ -358,6 +389,9 @@ rating_validity(rating_dat, judge_type = "expert")$scale_summary
 ```
 
 HTC/HTD are still computed, but the Colquitt labels are suppressed.
+[`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) leave out the columns
+that would hold them; the stored table, shown here, keeps them as `NA`.
 
 ## Missing ratings
 
@@ -422,10 +456,13 @@ review.](construct-rating-validity_files/figure-html/rating-profile-1.png)
 
 Filled points are intended-definition means, open points are the
 strongest orbiting-definition means, and the connecting segment is the
-observed content distinctiveness gap. A reversed segment immediately
-identifies an item whose strongest competitor outrates its intended
-definition. This is a graphical extension of the mean-rating tables used
-in the original procedure, not a new statistical cutoff.
+gap between them. Both means come from the judges who rated the item
+against every definition, so the two ends of a segment describe the same
+judges. A reversed segment immediately identifies an item whose
+strongest competitor outrates its intended definition. An item with too
+few complete judges for a decision is marked with a cross and has no
+segment. This is a graphical extension of the mean-rating tables used in
+the original procedure, not a new statistical cutoff.
 
 ## Reporting
 
@@ -452,6 +489,15 @@ Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
 Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
 
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+profile data. *Psychometrika, 24*(2), 95–112.
+<https://doi.org/10.1007/BF02289823>
+
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
 to content validation. *Organizational Research Methods, 2*(2), 175–186.
 <https://doi.org/10.1177/109442819922004>
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2),
+293–334. <https://doi.org/10.2307/23044045>

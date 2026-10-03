@@ -243,7 +243,11 @@ Added in contentvalidR 0.7.0 to `item_statistics` and
 degenerate, in the producing function's own words, so a reader need not
 re-derive method-specific semantics. For example, a Delphi stability row
 may carry "Kappa is undefined: every rating fell in the same category in
-both rounds."
+both rounds." It also says when a statistic that meets its criterion is
+not what decided: the construct-rating `p_value` is the omnibus *p*, and
+for an item held back by a planned contrast its note says so, with the
+largest contrast *p* or, when a contrast has none, the constructs that
+tied.
 
 Its contract, agreed with the `nomologR` maintainers:
 

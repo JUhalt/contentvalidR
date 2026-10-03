@@ -5,8 +5,11 @@ Provides three complementary views of a construct-rating pretest.
 against HTD to show correspondence and distinctiveness jointly, and
 `"profile"` draws a target-versus- strongest-competitor gap plot on the
 original response scale, first item at the top, with a dashed gap for
-items to review. The latter is a graphical analogue of the mean-rating
-tables used in Hinkin and Tracey (1999).
+items to review. The profile view is a graphical analogue of the
+mean-rating tables used in Hinkin and Tracey (1999). Both ends of a gap
+are means over the judges who rated the item against every construct,
+the judges the tests use. An item without a decision has no gap: a cross
+marks its mean target rating.
 
 ## Usage
 
@@ -53,6 +56,12 @@ plot(
 ## Value
 
 The input object invisibly.
+
+## References
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
+to content validation. *Organizational Research Methods, 2*(2), 175–186.
+[doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
 
 ## Examples
 

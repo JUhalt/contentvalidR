@@ -150,16 +150,20 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> construct-rating</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       its intended construct definition, expressed as a proportion of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rating scale. (0 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       its intended construct definition, divided by the number of scale</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       points. The lowest possible rating still counts as one point, so the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       index cannot reach 0. (1 / (scale points) to 1, so .20 to 1 on a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       5-point scale; higher is stronger)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       average rating exceeds the best competing construct's, as a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       proportion of the rating scale. It is a difference, so its typical</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       values are far smaller than HTC's. (usually a small positive number;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rating exceeds the other constructs' ratings, averaged over every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       other construct and every judge, as a proportion of the widest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       possible difference. It is a difference, so its typical values are</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       far smaller than HTC's. (-1 to 1, usually a small positive number;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       higher is stronger)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Retain -- rated highest against its intended construct, with every</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         planned contrast meeting the screening criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Retain -- its ratings differed across constructs (the omnibus test) and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         the intended construct was rated above every other (every planned</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         contrast).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet every criterion; the competitor column shows the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         closest rival.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two judges rated it against every</span>

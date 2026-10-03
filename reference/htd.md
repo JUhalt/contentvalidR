@@ -6,6 +6,10 @@ intended construct rating is contrasted with each orbiting-construct
 rating. The average of those difference scores is divided by `a - 1`,
 where `a` is the number of rating anchors. HTD ranges from -1 to 1.
 
+HTD is therefore the intended construct's average lead over **all** the
+orbiting constructs, not its lead over the closest one. The closest one
+is reported beside it as `strongest_competitor`.
+
 ## Usage
 
 ``` r
@@ -57,7 +61,9 @@ the plain data frame.
 ## References
 
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-*Journal of Applied Psychology, 104*(10), 1243–1265.
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. *Journal of Applied
+Psychology, 104*(10), 1243–1265.
 [doi:10.1037/apl0000406](https://doi.org/10.1037/apl0000406)
 
 ## Examples

@@ -107,6 +107,9 @@ rating_fit
 #> Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus
 #> p) plus planned paired target-versus-orbiting contrasts; planned-contrast
 #> adjustment: none.
+#> Retain: the omnibus p and every contrast p at or below alpha = .05. The
+#> contrasts are one-sided: the intended construct rated above every other
+#> construct.
 #> Judges: naive, meaning drawn from the kind of people who will answer the
 #> items.
 #> 
@@ -138,13 +141,15 @@ rating_fit
 #> 
 #> What these columns mean
 #>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
-#>       definition, as a share of the rating scale (0 to 1).
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
-#>       closest rival's, as a share of the scale (usually small).
+#>       definition, divided by the number of scale points (1/points to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the
+#>       other constructs' ratings on average, as a share of the scale
+#>       (usually small).
 #> 
 #> What the decisions mean
-#>   Retain -- rated highest against its intended construct, with every
-#>       planned contrast meeting the screening criterion.
+#>   Retain -- its ratings differed across constructs (the omnibus test) and
+#>       the intended construct was rated above every other (every planned
+#>       contrast).
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).

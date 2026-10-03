@@ -1,24 +1,27 @@
-# Hinkin-Tracey ANOVA content test
+# Repeated-measures ANOVA content test for construct ratings
 
 For each item, evaluates whether definitional-correspondence ratings
 differ across construct definitions and whether the intended construct
 is rated higher than every orbiting construct.
 
-The Hinkin and Tracey (1999) rating task is ordinarily a
-**within-judge** design: the same judge rates an item against multiple
-construct definitions. For that design, `anova_content()` uses a one-way
-repeated-measures ANOVA on judges with complete ratings for the item's
-construct set, followed by one-sided paired planned contrasts of the
-target against each orbiting construct. A between-judge path is retained
-for genuinely independent rating designs, but it is not the recommended
-Hinkin-Tracey protocol.
+The Hinkin and Tracey (1999) rating task is a **within-judge** design:
+the same judge rates an item against every construct definition. Hinkin
+and Tracey analyzed those ratings with a one-way ANOVA and Duncan's
+multiple range test at .05, treating the definitions as independent
+groups. Because the same judges rate every definition, `anova_content()`
+uses the repeated-measures form that MacKenzie et al. (2011) recommend
+for this task: a one-way repeated-measures ANOVA on the judges with
+complete ratings for the item, followed by planned contrasts of the
+intended construct against the others. A between-judge path is kept for
+designs in which different judges rate each definition, where a one-way
+ANOVA across groups is the fitting test.
 
-The repeated-measures output includes the conventional omnibus F/p and a
-Greenhouse-Geisser epsilon/corrected p-value. With more than two
-construct definitions, the corrected p-value is the safer default for
-omnibus screening when sphericity may not hold. Planned
-target-versus-orbiting contrasts provide the more direct item-level
-evidence.
+The repeated-measures output includes the conventional omnibus *F* and
+*p* and a Greenhouse-Geisser (1959) epsilon with its corrected *p*
+value. With more than two construct definitions, the corrected *p* value
+is the safer default for omnibus screening when sphericity may not hold.
+Planned target-versus-orbiting contrasts provide the more direct
+item-level evidence.
 
 ## Usage
 
@@ -71,33 +74,75 @@ anova_content(
 - adjust:
 
   Multiplicity adjustment for the target-versus-orbiting planned
-  contrast p values. Default `"none"` reproduces the planned-comparison
-  logic commonly used with the Hinkin-Tracey procedure; `"holm"` is a
-  conservative option.
+  contrast *p* values. Default `"none"` treats each contrast as a
+  planned comparison, in the spirit of MacKenzie et al. (2011); `"holm"`
+  is a conservative option. Hinkin and Tracey (1999) themselves used
+  Duncan's multiple range test, not planned contrasts.
 
 ## Value
 
 A data.frame with one row per item, including the omnibus F, raw p,
-Greenhouse-Geisser epsilon/corrected degrees of freedom and p-value for
-within-judge designs, partial eta-squared, and planned-contrast
+Greenhouse-Geisser epsilon/corrected degrees of freedom and *p* value
+for within-judge designs, partial eta-squared, and planned-contrast
 diagnostics. The full planned-contrast table is stored in
-`attr(result, "contrasts")`. It prints as a formatted table in APA
-style; the values themselves are unrounded, and
+`attr(result, "contrasts")`: for each contrast the two means, their
+difference, `t`, `df`, the one-sided `p`, the adjusted `p_adj`, and
+`pass`. Its `dz` column is a standardized mean difference: the mean
+difference over the standard deviation of the differences in a
+within-judge design, and Cohen's *d* with the pooled standard deviation
+in a between-judge design. `p_screen` is the *p* the screening uses: the
+Greenhouse-Geisser corrected `p_gg` in a within-judge design where a
+correction applies, and `p` otherwise. `max_contrast_p` is the largest
+contrast *p*, and `NA` when a contrast has no *p* because every judge
+rated the intended construct and another the same.
+
+When every judge's ratings differ across the constructs by the same
+amounts there is no error variance: `F` is `Inf`, `p` is 0, no
+sphericity correction applies (`epsilon_gg`, `df1_gg`, `df2_gg` and
+`p_gg` are `NA`), and `p_screen` is `p`. It prints as a formatted table
+in APA style; the values themselves are unrounded, and
 [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
 the plain data frame. `posthoc_pass`, a duplicate of `contrast_pass`
 deprecated in 0.7.0, was removed in 0.8.0; read `contrast_pass`.
 
+## What is published and what is this package's choice
+
+The rating task is Hinkin and Tracey's (1999). The repeated-measures
+ANOVA followed, when its *F* is significant, by a planned contrast of
+the intended construct against the others is MacKenzie et al.'s (2011)
+recommendation for it, so the rule that an item passes the omnibus test
+and then its contrasts follows their sequence. These details are
+contentvalidR choices, not taken from either source:
+
+- The Greenhouse-Geisser corrected *p* is the screening *p* of the
+  omnibus test.
+
+- There is one one-sided paired contrast for each orbiting construct,
+  and every one must pass, where MacKenzie et al. describe a single
+  contrast against the other constructs.
+
+- The contrasts are not adjusted for their number unless
+  `adjust = "holm"`.
+
+- The tests use the judges who rated the item against every construct,
+  and need at least two of them.
+
+- In a between-judge design the contrasts are one-sided Welch *t* tests.
+
 ## References
 
-Colquitt, J. A., Baer, M. D., Long, D. M., & Halvorsen-Ganepola, M. D.
-K. (2014). Scale indicators of social exchange relationships: A
-comparison of relative content validity. *Journal of Applied Psychology,
-99*(4), 599–618.
-[doi:10.1037/a0036374](https://doi.org/10.1037/a0036374)
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+profile data. *Psychometrika, 24*(2), 95–112.
+[doi:10.1007/BF02289823](https://doi.org/10.1007/BF02289823)
 
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
 to content validation. *Organizational Research Methods, 2*(2), 175–186.
 [doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2),
+293–334. [doi:10.2307/23044045](https://doi.org/10.2307/23044045)
 
 ## Examples
 
@@ -109,16 +154,18 @@ d$target_construct <- ifelse(d$item == "I1", "A", "B")
 d$rating <- ifelse(d$construct == d$target_construct,
                    rnorm(nrow(d), 4.5, .4), rnorm(nrow(d), 2.3, .5))
 anova_content(d)
-#> Content-validity ANOVA (Hinkin & Tracey, 1999)
+#> Content-validity ANOVA
+#> Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).
 #> 
 #>  item target judges                  F test      p partial eta^2 contrast p met
 #>    I1      A     12 F(1.89, 20.84) = 193.43 < .001           .95     < .001 yes
 #>    I2      B     12 F(1.77, 19.51) = 138.46 < .001           .93     < .001 yes
 #> 
-#> Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees
-#> of freedom are fractional.
-#> contrast p: the largest p among the planned target-versus-other contrasts;
-#> met: whether every one of them met the screening criterion. attr(x,
-#> "contrasts") holds each contrast, and `strongest_competitor` the construct
-#> rated closest to the target.
+#> Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces
+#> their degrees of freedom.
+#> contrast p: the largest p among the planned contrasts, each one-sided (the
+#> intended construct rated above one of the others), at alpha = .05 with no
+#> adjustment for their number. It is NA when a contrast has no p because every
+#> judge rated the two constructs the same. met: whether every contrast passed.
+#> attr(x, "contrasts") holds each one.
 ```

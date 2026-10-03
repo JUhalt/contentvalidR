@@ -175,6 +175,9 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus</span></span>
 <span><span class="co">#&gt; p) plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
 <span><span class="co">#&gt; adjustment: none.</span></span>
+<span><span class="co">#&gt; Retain: the omnibus p and every contrast p at or below alpha = .05. The</span></span>
+<span><span class="co">#&gt; contrasts are one-sided: the intended construct rated above every other</span></span>
+<span><span class="co">#&gt; construct.</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
 <span><span class="co">#&gt; items.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -206,13 +209,15 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended</span></span>
-<span><span class="co">#&gt;       definition, as a share of the rating scale (0 to 1).</span></span>
-<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the</span></span>
-<span><span class="co">#&gt;       closest rival's, as a share of the scale (usually small).</span></span>
+<span><span class="co">#&gt;       definition, divided by the number of scale points (1/points to 1).</span></span>
+<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the</span></span>
+<span><span class="co">#&gt;       other constructs' ratings on average, as a share of the scale</span></span>
+<span><span class="co">#&gt;       (usually small).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
-<span><span class="co">#&gt;   Retain -- rated highest against its intended construct, with every</span></span>
-<span><span class="co">#&gt;       planned contrast meeting the screening criterion.</span></span>
+<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and</span></span>
+<span><span class="co">#&gt;       the intended construct was rated above every other (every planned</span></span>
+<span><span class="co">#&gt;       contrast).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>

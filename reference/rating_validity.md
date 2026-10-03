@@ -14,11 +14,30 @@ construct definition and one or more orbiting definitions.
 
 - planned paired target-versus-orbiting contrasts.
 
+The rating task is Hinkin and Tracey's (1999). They analyzed it with a
+one-way ANOVA and Duncan's multiple range test; the repeated-measures
+form used here, with a planned contrast, follows MacKenzie et al.
+(2011). See
+[`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+for which details are published and which are this package's choices.
+
 Item-level output is diagnostic rather than a coefficient dump: it
 identifies the strongest competing construct, describes why an item was
 flagged, and labels statistical screening decisions `"Retain"`,
-`"Review"`, or `"Insufficient data"`. `"Review"` is not an instruction
-to delete the item.
+`"Review"`, or `"Insufficient data"`. An item is labeled `"Retain"` when
+its omnibus *p* and every contrast *p* are at or below `alpha`.
+`"Review"` is not an instruction to delete the item. An item with fewer
+than two judges who rated it against every construct is labeled
+`"Insufficient data"`.
+
+Each target-scale mean uses the items whose index rests on at least two
+judges, so that one judge cannot move a scale's band. HTC rests on every
+judge who rated the item against its intended construct (`n_target`);
+HTD and the tests rest on the judges who rated it against every
+construct (`n_complete`). An item can therefore count toward mean HTC
+and not toward mean HTD, and the printout says how many items are behind
+each mean when some are left out. The two-judge minimum is this
+package's choice.
 
 Colquitt et al. (2019) norms are applied only to **target-scale
 averages** of HTC and HTD, matching the level at which those empirical
@@ -73,8 +92,9 @@ rating_validity(
 
 - adjust:
 
-  Planned-contrast p-value adjustment: `"none"` (historical
-  planned-comparison logic) or `"holm"`.
+  Adjustment of the planned-contrast *p* values for the number of
+  contrasts: `"none"` (the default; each contrast is a planned
+  comparison) or `"holm"` (conservative).
 
 - orbiting_r:
 
@@ -94,7 +114,14 @@ All flagship workflow objects expose the common components `results`,
 live in `details$contrasts`; the historical top-level `contrasts`
 component is retained as a compatibility alias. Item-level `results`
 include a standardized `status` field while retaining the
-method-specific `recommendation` field.
+method-specific `recommendation` field. In `results`, `p_value` is the
+Greenhouse-Geisser corrected omnibus *p* and `df1_gg` and `df2_gg` are
+its degrees of freedom, where a correction applies (see
+[`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md));
+`p_omnibus`, `df1` and `df2` are the uncorrected test; and
+`max_contrast_p` is the largest *p* among the planned contrasts, `NA`
+when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd`
+count the items in each mean.
 
 ## References
 
@@ -107,6 +134,11 @@ Psychology, 104*(10), 1243–1265.
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
 to content validation. *Organizational Research Methods, 2*(2), 175–186.
 [doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2),
+293–334. [doi:10.2307/23044045](https://doi.org/10.2307/23044045)
 
 ## Examples
 
@@ -127,6 +159,9 @@ fit
 #> Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus
 #> p) plus planned paired target-versus-orbiting contrasts; planned-contrast
 #> adjustment: none.
+#> Retain: the omnibus p and every contrast p at or below alpha = .05. The
+#> contrasts are one-sided: the intended construct rated above every other
+#> construct.
 #> Judges: naive, meaning drawn from the kind of people who will answer the
 #> items.
 #> 
@@ -158,13 +193,15 @@ fit
 #> 
 #> What these columns mean
 #>   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended
-#>       definition, as a share of the rating scale (0 to 1).
-#>   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the
-#>       closest rival's, as a share of the scale (usually small).
+#>       definition, divided by the number of scale points (1/points to 1).
+#>   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the
+#>       other constructs' ratings on average, as a share of the scale
+#>       (usually small).
 #> 
 #> What the decisions mean
-#>   Retain -- rated highest against its intended construct, with every
-#>       planned contrast meeting the screening criterion.
+#>   Retain -- its ratings differed across constructs (the omnibus test) and
+#>       the intended construct was rated above every other (every planned
+#>       contrast).
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).

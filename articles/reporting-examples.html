@@ -217,41 +217,41 @@ rationale is documented.</p>
 <span><span class="va">rating_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rating_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
 <span><span class="va">rating_fit</span><span class="op">$</span><span class="va">results</span></span>
-<span><span class="co">#&gt;   item target n_raters n_complete n_incomplete n_constructs target_mean</span></span>
-<span><span class="co">#&gt; 1   A1      A       24         24            0            3    4.666667</span></span>
-<span><span class="co">#&gt; 2   A2      A       24         24            0            3    3.666667</span></span>
-<span><span class="co">#&gt; 3   B1      B       24         24            0            3    4.666667</span></span>
-<span><span class="co">#&gt; 4   B2      B       24         24            0            3    3.666667</span></span>
-<span><span class="co">#&gt; 5   C1      C       24         24            0            3    4.666667</span></span>
-<span><span class="co">#&gt; 6   C2      C       24         24            0            3    3.666667</span></span>
-<span><span class="co">#&gt;   target_mean_complete strongest_competitor competitor_mean       htc       htd</span></span>
-<span><span class="co">#&gt; 1             4.666667                    C        2.333333 0.9333333 0.6666667</span></span>
-<span><span class="co">#&gt; 2             3.666667                    B        3.333333 0.7333333 0.2083333</span></span>
-<span><span class="co">#&gt; 3             4.666667                    C        2.333333 0.9333333 0.6666667</span></span>
-<span><span class="co">#&gt; 4             3.666667                    A        3.333333 0.7333333 0.2083333</span></span>
-<span><span class="co">#&gt; 5             4.666667                    B        2.333333 0.9333333 0.6666667</span></span>
-<span><span class="co">#&gt; 6             3.666667                    B        3.333333 0.7333333 0.2083333</span></span>
-<span><span class="co">#&gt;          F df1 df2    p_omnibus epsilon_gg      p_value partial_eta2</span></span>
-<span><span class="co">#&gt; 1 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646</span></span>
-<span><span class="co">#&gt; 2  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476</span></span>
-<span><span class="co">#&gt; 3 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646</span></span>
-<span><span class="co">#&gt; 4  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476</span></span>
-<span><span class="co">#&gt; 5 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646</span></span>
-<span><span class="co">#&gt; 6  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476</span></span>
-<span><span class="co">#&gt;   min_mean_diff max_contrast_p contrast_pass recommendation</span></span>
-<span><span class="co">#&gt; 1     2.3333333   1.122784e-13          TRUE         Retain</span></span>
-<span><span class="co">#&gt; 2     0.3333333   5.173102e-02         FALSE         Review</span></span>
-<span><span class="co">#&gt; 3     2.3333333   1.122784e-13          TRUE         Retain</span></span>
-<span><span class="co">#&gt; 4     0.3333333   5.173102e-02         FALSE         Review</span></span>
-<span><span class="co">#&gt; 5     2.3333333   1.122784e-13          TRUE         Retain</span></span>
-<span><span class="co">#&gt; 6     0.3333333   5.173102e-02         FALSE         Review</span></span>
-<span><span class="co">#&gt;                                          issue</span></span>
-<span><span class="co">#&gt; 1                                    Supported</span></span>
-<span><span class="co">#&gt; 2 Target highest, planned contrasts incomplete</span></span>
-<span><span class="co">#&gt; 3                                    Supported</span></span>
-<span><span class="co">#&gt; 4 Target highest, planned contrasts incomplete</span></span>
-<span><span class="co">#&gt; 5                                    Supported</span></span>
-<span><span class="co">#&gt; 6 Target highest, planned contrasts incomplete</span></span>
+<span><span class="co">#&gt;   item target n_raters n_complete n_incomplete n_target n_constructs</span></span>
+<span><span class="co">#&gt; 1   A1      A       24         24            0       24            3</span></span>
+<span><span class="co">#&gt; 2   A2      A       24         24            0       24            3</span></span>
+<span><span class="co">#&gt; 3   B1      B       24         24            0       24            3</span></span>
+<span><span class="co">#&gt; 4   B2      B       24         24            0       24            3</span></span>
+<span><span class="co">#&gt; 5   C1      C       24         24            0       24            3</span></span>
+<span><span class="co">#&gt; 6   C2      C       24         24            0       24            3</span></span>
+<span><span class="co">#&gt;   target_mean target_mean_complete strongest_competitor competitor_mean</span></span>
+<span><span class="co">#&gt; 1    4.666667             4.666667                    C        2.333333</span></span>
+<span><span class="co">#&gt; 2    3.666667             3.666667                    B        3.333333</span></span>
+<span><span class="co">#&gt; 3    4.666667             4.666667                    C        2.333333</span></span>
+<span><span class="co">#&gt; 4    3.666667             3.666667                    A        3.333333</span></span>
+<span><span class="co">#&gt; 5    4.666667             4.666667                    B        2.333333</span></span>
+<span><span class="co">#&gt; 6    3.666667             3.666667                    B        3.333333</span></span>
+<span><span class="co">#&gt;         htc       htd        F df1 df2    p_omnibus epsilon_gg   df1_gg</span></span>
+<span><span class="co">#&gt; 1 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412</span></span>
+<span><span class="co">#&gt; 2 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304</span></span>
+<span><span class="co">#&gt; 3 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412</span></span>
+<span><span class="co">#&gt; 4 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304</span></span>
+<span><span class="co">#&gt; 5 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412</span></span>
+<span><span class="co">#&gt; 6 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304</span></span>
+<span><span class="co">#&gt;     df2_gg      p_value partial_eta2 min_mean_diff max_contrast_p contrast_pass</span></span>
+<span><span class="co">#&gt; 1 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE</span></span>
+<span><span class="co">#&gt; 2 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE</span></span>
+<span><span class="co">#&gt; 3 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE</span></span>
+<span><span class="co">#&gt; 4 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE</span></span>
+<span><span class="co">#&gt; 5 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE</span></span>
+<span><span class="co">#&gt; 6 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE</span></span>
+<span><span class="co">#&gt;   recommendation                                        issue</span></span>
+<span><span class="co">#&gt; 1         Retain                                    Supported</span></span>
+<span><span class="co">#&gt; 2         Review Target highest, planned contrasts incomplete</span></span>
+<span><span class="co">#&gt; 3         Retain                                    Supported</span></span>
+<span><span class="co">#&gt; 4         Review Target highest, planned contrasts incomplete</span></span>
+<span><span class="co">#&gt; 5         Retain                                    Supported</span></span>
+<span><span class="co">#&gt; 6         Review Target highest, planned contrasts incomplete</span></span>
 <span><span class="co">#&gt;                                                                                                                                                                                                        interpretation</span></span>
 <span><span class="co">#&gt; 1                                                               The intended construct is rated higher than all orbiting constructs and all planned contrasts meet the screening criterion (strongest competitor: C).</span></span>
 <span><span class="co">#&gt; 2 The intended construct has the highest mean but the full inferential screening criterion was not met (strongest competitor: B); review the weakest target-orbiting comparison before revising or removing the item.</span></span>
@@ -285,13 +285,15 @@ rationale is documented.</p>
 <blockquote>
 <p>Judges rated every candidate item against each focal and orbiting
 construct definition using the same response scale. We summarized
-correspondence with HTC and distinctiveness with HTD. Because the same
-judges rated the competing definitions, item-level inference used a
-repeated-measures design. Planned paired contrasts compared each item’s
-intended definition with every orbiting definition; omnibus
-Greenhouse-Geisser-corrected inference was used when applicable.
-Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated as
-empirical benchmarks rather than universal item cutoffs.</p>
+correspondence with HTC and distinctiveness with HTD (Hinkin &amp;
+Tracey, 1999; Colquitt et al., 2019). Because the same judges rated the
+competing definitions, item-level inference used a one-way
+repeated-measures ANOVA followed by planned contrasts (MacKenzie et al.,
+2011). The omnibus test was Greenhouse-Geisser corrected (Greenhouse
+&amp; Geisser, 1959), and one-sided paired contrasts compared each
+item’s intended definition with every orbiting definition. Scale-level
+HTC/HTD norms from Colquitt et al. (2019) were treated as empirical
+benchmarks rather than universal item cutoffs.</p>
 </blockquote>
 </div>
 <div class="section level3">
@@ -622,12 +624,21 @@ substantive item decisions.</p>
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
 <em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Greenhouse, S. W., &amp; Geisser, S. (1959). On methods in the
+analysis of profile data. <em>Psychometrika, 24</em>(2), 95–112. <a href="https://doi.org/10.1007/BF02289823" class="external-link uri">https://doi.org/10.1007/BF02289823</a></p>
+<p>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance
+approach to content validation. <em>Organizational Research Methods,
+2</em>(2), 175–186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a></p>
 <p>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task
 methods: The presentation of a new statistical significance formula and
 methodological best practices. <em>Journal of Business and Psychology,
 31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
 <p>Lynn, M. R. (1986). Determination and quantification of content
 validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
+<p>MacKenzie, S. B., Podsakoff, P. M., &amp; Podsakoff, N. P. (2011).
+Construct measurement and validation procedures in MIS and behavioral
+research: Integrating new and existing techniques. <em>MIS Quarterly,
+35</em>(2), 293–334. <a href="https://doi.org/10.2307/23044045" class="external-link uri">https://doi.org/10.2307/23044045</a></p>
 <p>Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann,
 T. C., Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A.,
 Brennan, S. E., Chou, R., Glanville, J., Grimshaw, J. M., Hróbjartsson,

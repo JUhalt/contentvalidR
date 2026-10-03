@@ -95,7 +95,7 @@ size.
 - [`htd()`](https://juhalt.github.io/contentvalidR/reference/htd.md) :
   Hinkin-Tracey distinctiveness (HTD)
 - [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
-  : Hinkin-Tracey ANOVA content test
+  : Repeated-measures ANOVA content test for construct ratings
 
 ## Expert-panel indices
 

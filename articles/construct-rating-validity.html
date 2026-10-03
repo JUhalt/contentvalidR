@@ -152,7 +152,10 @@ equivalent 1-to-5 anchor metric before computing HTC.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; HTC expresses the mean target rating as a share of the 5-point scale.</span></span></code></pre></div>
 <p>Higher HTC means stronger correspondence with the intended
-definition.</p>
+definition. Because the lowest rating still counts as one point, HTC
+cannot reach 0: it runs from
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><mi>a</mi></mrow><annotation encoding="application/x-tex">1/a</annotation></semantics></math>
+to 1, so from .20 to 1 on a five-point scale.</p>
 </div>
 <div class="section level2">
 <h2 id="htd-definitional-distinctiveness">HTD: definitional distinctiveness<a class="anchor" aria-label="anchor" href="#htd-definitional-distinctiveness"></a>
@@ -162,9 +165,12 @@ ratings:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mi>T</mi><mi>D</mi><mo>=</mo><mfrac><mrow><mtext mathvariant="normal">average</mtext><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mi>o</mi><mi>r</mi><mi>b</mi><mi>i</mi><mi>t</mi><mi>i</mi><mi>n</mi><mi>g</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>a</mi><mo>−</mo><mn>1</mn></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
 HTD = \frac{\text{average}(x_{target} - x_{orbiting})}{a - 1}.
 </annotation></semantics></math></p>
-<p>It ranges from -1 to 1. Positive values favor the intended
-definition; negative values indicate that orbiting definitions are rated
-more highly on average.</p>
+<p>The average runs over every judge and every orbiting definition, so
+HTD is the intended definition’s average lead over <strong>all</strong>
+the orbiting definitions, not its lead over the closest one. It ranges
+from -1 to 1. Positive values favor the intended definition; negative
+values indicate that orbiting definitions are rated more highly on
+average.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/htd.html">htd</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)</span></span>
@@ -184,15 +190,30 @@ that distinctiveness is weak.</p>
 <div class="section level2">
 <h2 id="repeated-measures-item-screening">Repeated-measures item screening<a class="anchor" aria-label="anchor" href="#repeated-measures-item-screening"></a>
 </h2>
-<p>The same judges provide multiple construct ratings, so those
-observations are not independent. <code><a href="../reference/anova_content.html">anova_content()</a></code> uses a
-one-way repeated-measures ANOVA for the standard fully crossed design
+<p>Hinkin and Tracey (1999) analyzed these ratings with a one-way ANOVA
+and Duncan’s multiple range test, treating the definitions as
+independent groups. The same judges provide multiple construct ratings,
+though, so those observations are not independent. MacKenzie et
+al. (2011) recommend a one-way repeated-measures ANOVA for this task,
+followed, when its <em>F</em> is significant, by a planned contrast of
+the intended definition against the others. <code><a href="../reference/anova_content.html">anova_content()</a></code>
+uses that repeated-measures form for the standard fully crossed design
 and follows it with planned paired comparisons of the intended
 definition against every orbiting definition.</p>
+<p>An item is retained when the omnibus test and then its contrasts
+pass, which follows their sequence. Some details are this package’s
+choices, not taken from either source: the Greenhouse-Geisser (1959)
+corrected <em>p</em> is the screening <em>p</em> of the omnibus test;
+there is one one-sided contrast for each orbiting definition, and every
+one must pass, where MacKenzie et al. describe a single contrast; the
+contrasts are not adjusted for their number unless you ask
+(<code>adjust = "holm"</code>); and the tests need at least two judges
+who rated the item against every definition.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aov_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/anova_content.html">anova_content</a></span><span class="op">(</span><span class="va">rating_dat</span>, design <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
 <span><span class="va">aov_out</span></span>
-<span><span class="co">#&gt; Content-validity ANOVA (Hinkin &amp; Tracey, 1999)</span></span>
+<span><span class="co">#&gt; Content-validity ANOVA</span></span>
+<span><span class="co">#&gt; Adapted from Hinkin &amp; Tracey (1999) and MacKenzie et al. (2011).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;  item target judges                  F test      p partial eta^2 contrast p met</span></span>
 <span><span class="co">#&gt;    A1      A     24  F(1.98, 45.65) = 72.64 &lt; .001           .76     &lt; .001 yes</span></span>
@@ -200,12 +221,13 @@ definition against every orbiting definition.</p>
 <span><span class="co">#&gt;    A3      A     24  F(2.00, 45.97) = 82.25 &lt; .001           .78     &lt; .001 yes</span></span>
 <span><span class="co">#&gt;    B1      B     24 F(1.85, 42.61) = 108.29 &lt; .001           .82     &lt; .001 yes</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees</span></span>
-<span><span class="co">#&gt; of freedom are fractional.</span></span>
-<span><span class="co">#&gt; contrast p: the largest p among the planned target-versus-other contrasts;</span></span>
-<span><span class="co">#&gt; met: whether every one of them met the screening criterion. attr(x,</span></span>
-<span><span class="co">#&gt; "contrasts") holds each contrast, and `strongest_competitor` the construct</span></span>
-<span><span class="co">#&gt; rated closest to the target.</span></span>
+<span><span class="co">#&gt; Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces</span></span>
+<span><span class="co">#&gt; their degrees of freedom.</span></span>
+<span><span class="co">#&gt; contrast p: the largest p among the planned contrasts, each one-sided (the</span></span>
+<span><span class="co">#&gt; intended construct rated above one of the others), at alpha = .05 with no</span></span>
+<span><span class="co">#&gt; adjustment for their number. It is NA when a contrast has no p because every</span></span>
+<span><span class="co">#&gt; judge rated the two constructs the same. met: whether every contrast passed.</span></span>
+<span><span class="co">#&gt; attr(x, "contrasts") holds each one.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">aov_out</span>, <span class="st">"contrasts"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   item design target competitor  n mean_target mean_competitor mean_diff</span></span>
 <span><span class="co">#&gt; 1   A1 within      A          B 24    4.375000        2.375000  2.000000</span></span>
@@ -231,9 +253,11 @@ content-validity question: is the target mean higher than each orbiting
 mean?</p>
 <p>With more than two construct definitions, the conventional
 repeated-measures F test assumes sphericity. <code>contentvalidR</code>
-reports that historical omnibus test but does not hide the assumption.
-The planned target-versus-orbiting comparisons are therefore important
-diagnostic evidence rather than decorative post-hoc tests.</p>
+prints the Greenhouse-Geisser corrected test, whose degrees of freedom
+are fractional; <code>as.data.frame(aov_out)$p</code> holds the
+uncorrected <em>p</em> value. The planned target-versus-orbiting
+comparisons are important diagnostic evidence rather than decorative
+post-hoc tests.</p>
 </div>
 <div class="section level2">
 <h2 id="recommended-workflow">Recommended workflow<a class="anchor" aria-label="anchor" href="#recommended-workflow"></a>
@@ -252,6 +276,9 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus</span></span>
 <span><span class="co">#&gt; p) plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
 <span><span class="co">#&gt; adjustment: none.</span></span>
+<span><span class="co">#&gt; Retain: the omnibus p and every contrast p at or below alpha = .05. The</span></span>
+<span><span class="co">#&gt; contrasts are one-sided: the intended construct rated above every other</span></span>
+<span><span class="co">#&gt; construct.</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
 <span><span class="co">#&gt; items.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -284,13 +311,15 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended</span></span>
-<span><span class="co">#&gt;       definition, as a share of the rating scale (0 to 1).</span></span>
-<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that mean exceeds the</span></span>
-<span><span class="co">#&gt;       closest rival's, as a share of the scale (usually small).</span></span>
+<span><span class="co">#&gt;       definition, divided by the number of scale points (1/points to 1).</span></span>
+<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the</span></span>
+<span><span class="co">#&gt;       other constructs' ratings on average, as a share of the scale</span></span>
+<span><span class="co">#&gt;       (usually small).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
-<span><span class="co">#&gt;   Retain -- rated highest against its intended construct, with every</span></span>
-<span><span class="co">#&gt;       planned contrast meeting the screening criterion.</span></span>
+<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and</span></span>
+<span><span class="co">#&gt;       the intended construct was rated above every other (every planned</span></span>
+<span><span class="co">#&gt;       contrast).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
@@ -325,13 +354,17 @@ diagnostic evidence rather than decorative post-hoc tests.</p>
 <ul>
 <li>
 <strong>Retain:</strong> the item cleared the package’s inferential
-screening rule in this pretest.</li>
+screening rule in this pretest: its omnibus <em>p</em> and every
+contrast <em>p</em> are at or below alpha.</li>
 <li>
 <strong>Review:</strong> the full screening rule was not met;
 inspect wording, construct overlap, and judge feedback.</li>
 <li>
-<strong>Insufficient data:</strong> too few complete judge profiles
-are available for the repeated-measures comparison.</li>
+<strong>Insufficient data:</strong> fewer than two judges rated the
+item against every definition, so the repeated-measures comparison
+cannot be made. Its HTD, which rests on those judges, is left out of the
+scale’s mean HTD. Its HTC stays in the scale’s mean HTC when at least
+two judges rated the item against its intended definition.</li>
 </ul>
 <p><code>Review</code> is not an instruction to delete an item. Content
 coverage can be harmed by mechanical item deletion.</p>
@@ -418,8 +451,10 @@ therefore separates calculation from norm applicability:</p>
 <span><span class="co">#&gt;                                                                                                        evidence</span></span>
 <span><span class="co">#&gt; 1 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.</span></span>
 <span><span class="co">#&gt; 2 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.</span></span></code></pre></div>
-<p>HTC/HTD are still computed, but the Colquitt labels are
-suppressed.</p>
+<p>HTC/HTD are still computed, but the Colquitt labels are suppressed.
+<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> leave out the columns
+that would hold them; the stored table, shown here, keeps them as
+<code>NA</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="missing-ratings">Missing ratings<a class="anchor" aria-label="anchor" href="#missing-ratings"></a>
@@ -456,10 +491,13 @@ Hinkin-Tracey mean-rating logic more directly visible:</p>
 <p><img src="construct-rating-validity_files/figure-html/rating-profile-1.png" class="r-plt" alt="Construct-rating profile: for each item, its mean rating against the intended definition (filled) and against the strongest competing definition (open), joined by a line that is dashed for items to review." width="672"></p>
 <p>Filled points are intended-definition means, open points are the
 strongest orbiting-definition means, and the connecting segment is the
-observed content distinctiveness gap. A reversed segment immediately
-identifies an item whose strongest competitor outrates its intended
-definition. This is a graphical extension of the mean-rating tables used
-in the original procedure, not a new statistical cutoff.</p>
+gap between them. Both means come from the judges who rated the item
+against every definition, so the two ends of a segment describe the same
+judges. A reversed segment immediately identifies an item whose
+strongest competitor outrates its intended definition. An item with too
+few complete judges for a decision is marked with a cross and has no
+segment. This is a graphical extension of the mean-rating tables used in
+the original procedure, not a new statistical cutoff.</p>
 </div>
 <div class="section level2">
 <h2 id="reporting">Reporting<a class="anchor" aria-label="anchor" href="#reporting"></a>
@@ -490,9 +528,15 @@ domain.</p>
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
 <em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Greenhouse, S. W., &amp; Geisser, S. (1959). On methods in the
+analysis of profile data. <em>Psychometrika, 24</em>(2), 95–112. <a href="https://doi.org/10.1007/BF02289823" class="external-link uri">https://doi.org/10.1007/BF02289823</a></p>
 <p>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance
 approach to content validation. <em>Organizational Research Methods,
 2</em>(2), 175–186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a></p>
+<p>MacKenzie, S. B., Podsakoff, P. M., &amp; Podsakoff, N. P. (2011).
+Construct measurement and validation procedures in MIS and behavioral
+research: Integrating new and existing techniques. <em>MIS Quarterly,
+35</em>(2), 293–334. <a href="https://doi.org/10.2307/23044045" class="external-link uri">https://doi.org/10.2307/23044045</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

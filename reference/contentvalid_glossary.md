@@ -84,16 +84,20 @@ contentvalid_glossary()
 #> 
 #> construct-rating
 #>   htc -- Hinkin-Tracey Correspondence. Average rating of the item against
-#>       its intended construct definition, expressed as a proportion of the
-#>       rating scale. (0 to 1; higher is stronger)
+#>       its intended construct definition, divided by the number of scale
+#>       points. The lowest possible rating still counts as one point, so the
+#>       index cannot reach 0. (1 / (scale points) to 1, so .20 to 1 on a
+#>       5-point scale; higher is stronger)
 #>   htd -- Hinkin-Tracey Distinctiveness. How far the intended construct's
-#>       average rating exceeds the best competing construct's, as a
-#>       proportion of the rating scale. It is a difference, so its typical
-#>       values are far smaller than HTC's. (usually a small positive number;
+#>       rating exceeds the other constructs' ratings, averaged over every
+#>       other construct and every judge, as a proportion of the widest
+#>       possible difference. It is a difference, so its typical values are
+#>       far smaller than HTC's. (-1 to 1, usually a small positive number;
 #>       higher is stronger)
 #>   decisions:
-#>     Retain -- rated highest against its intended construct, with every
-#>         planned contrast meeting the screening criterion.
+#>     Retain -- its ratings differed across constructs (the omnibus test) and
+#>         the intended construct was rated above every other (every planned
+#>         contrast).
 #>     Review -- did not meet every criterion; the competitor column shows the
 #>         closest rival.
 #>     Insufficient data -- fewer than two judges rated it against every

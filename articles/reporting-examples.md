@@ -136,41 +136,41 @@ rating_dat <- read_example("rating_example.csv")
 rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
 rating_sum <- summary(rating_fit)
 rating_fit$results
-#>   item target n_raters n_complete n_incomplete n_constructs target_mean
-#> 1   A1      A       24         24            0            3    4.666667
-#> 2   A2      A       24         24            0            3    3.666667
-#> 3   B1      B       24         24            0            3    4.666667
-#> 4   B2      B       24         24            0            3    3.666667
-#> 5   C1      C       24         24            0            3    4.666667
-#> 6   C2      C       24         24            0            3    3.666667
-#>   target_mean_complete strongest_competitor competitor_mean       htc       htd
-#> 1             4.666667                    C        2.333333 0.9333333 0.6666667
-#> 2             3.666667                    B        3.333333 0.7333333 0.2083333
-#> 3             4.666667                    C        2.333333 0.9333333 0.6666667
-#> 4             3.666667                    A        3.333333 0.7333333 0.2083333
-#> 5             4.666667                    B        2.333333 0.9333333 0.6666667
-#> 6             3.666667                    B        3.333333 0.7333333 0.2083333
-#>          F df1 df2    p_omnibus epsilon_gg      p_value partial_eta2
-#> 1 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646
-#> 2  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476
-#> 3 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646
-#> 4  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476
-#> 5 237.0769   2  46 5.921046e-25  0.7647059 1.274299e-19    0.9115646
-#> 6  37.3750   2  46 2.291004e-10  0.6956522 7.375102e-08    0.6190476
-#>   min_mean_diff max_contrast_p contrast_pass recommendation
-#> 1     2.3333333   1.122784e-13          TRUE         Retain
-#> 2     0.3333333   5.173102e-02         FALSE         Review
-#> 3     2.3333333   1.122784e-13          TRUE         Retain
-#> 4     0.3333333   5.173102e-02         FALSE         Review
-#> 5     2.3333333   1.122784e-13          TRUE         Retain
-#> 6     0.3333333   5.173102e-02         FALSE         Review
-#>                                          issue
-#> 1                                    Supported
-#> 2 Target highest, planned contrasts incomplete
-#> 3                                    Supported
-#> 4 Target highest, planned contrasts incomplete
-#> 5                                    Supported
-#> 6 Target highest, planned contrasts incomplete
+#>   item target n_raters n_complete n_incomplete n_target n_constructs
+#> 1   A1      A       24         24            0       24            3
+#> 2   A2      A       24         24            0       24            3
+#> 3   B1      B       24         24            0       24            3
+#> 4   B2      B       24         24            0       24            3
+#> 5   C1      C       24         24            0       24            3
+#> 6   C2      C       24         24            0       24            3
+#>   target_mean target_mean_complete strongest_competitor competitor_mean
+#> 1    4.666667             4.666667                    C        2.333333
+#> 2    3.666667             3.666667                    B        3.333333
+#> 3    4.666667             4.666667                    C        2.333333
+#> 4    3.666667             3.666667                    A        3.333333
+#> 5    4.666667             4.666667                    B        2.333333
+#> 6    3.666667             3.666667                    B        3.333333
+#>         htc       htd        F df1 df2    p_omnibus epsilon_gg   df1_gg
+#> 1 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
+#> 2 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
+#> 3 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
+#> 4 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
+#> 5 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
+#> 6 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
+#>     df2_gg      p_value partial_eta2 min_mean_diff max_contrast_p contrast_pass
+#> 1 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
+#> 2 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
+#> 3 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
+#> 4 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
+#> 5 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
+#> 6 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
+#>   recommendation                                        issue
+#> 1         Retain                                    Supported
+#> 2         Review Target highest, planned contrasts incomplete
+#> 3         Retain                                    Supported
+#> 4         Review Target highest, planned contrasts incomplete
+#> 5         Retain                                    Supported
+#> 6         Review Target highest, planned contrasts incomplete
 #>                                                                                                                                                                                                        interpretation
 #> 1                                                               The intended construct is rated higher than all orbiting constructs and all planned contrasts meet the screening criterion (strongest competitor: C).
 #> 2 The intended construct has the highest mean but the full inferential screening criterion was not met (strongest competitor: B); review the weakest target-orbiting comparison before revising or removing the item.
@@ -204,11 +204,13 @@ rating_fit$scale_summary
 
 > Judges rated every candidate item against each focal and orbiting
 > construct definition using the same response scale. We summarized
-> correspondence with HTC and distinctiveness with HTD. Because the same
-> judges rated the competing definitions, item-level inference used a
-> repeated-measures design. Planned paired contrasts compared each
-> item’s intended definition with every orbiting definition; omnibus
-> Greenhouse-Geisser-corrected inference was used when applicable.
+> correspondence with HTC and distinctiveness with HTD (Hinkin & Tracey,
+> 1999; Colquitt et al., 2019). Because the same judges rated the
+> competing definitions, item-level inference used a one-way
+> repeated-measures ANOVA followed by planned contrasts (MacKenzie et
+> al., 2011). The omnibus test was Greenhouse-Geisser corrected
+> (Greenhouse & Geisser, 1959), and one-sided paired contrasts compared
+> each item’s intended definition with every orbiting definition.
 > Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated as
 > empirical benchmarks rather than universal item cutoffs.
 
@@ -579,6 +581,14 @@ Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
 Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
 
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+profile data. *Psychometrika, 24*(2), 95–112.
+<https://doi.org/10.1007/BF02289823>
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
+to content validation. *Organizational Research Methods, 2*(2), 175–186.
+<https://doi.org/10.1177/109442819922004>
+
 Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
 methods: The presentation of a new statistical significance formula and
 methodological best practices. *Journal of Business and Psychology,
@@ -587,6 +597,11 @@ methodological best practices. *Journal of Business and Psychology,
 Lynn, M. R. (1986). Determination and quantification of content
 validity. *Nursing Research, 35*(6), 382–385.
 <https://doi.org/10.1097/00006199-198611000-00017>
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2),
+293–334. <https://doi.org/10.2307/23044045>
 
 Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann, T.
 C., Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A., Brennan,

@@ -9,6 +9,8 @@ published formula.
 
 HTC describes definitional correspondence. Higher values indicate that
 judges see the item as more representative of its intended construct.
+Because the lowest rating is 1 on the 1-to-`a` metric, HTC runs from
+`1 / a` to 1 (.20 to 1 on a five-point scale), not from 0.
 
 ## Usage
 
