@@ -310,19 +310,21 @@ test_that("the Markdown report is shown rendered, and the README says how", {
                fixed = TRUE)
 })
 
-test_that("the Scheibe et al. chapter names its issuing body everywhere", {
-  issuer <- "Murray Turoff and Harold A. Linstone"
+test_that("the Scheibe et al. chapter names no publisher that repeats its editors", {
+  # APA 7 omits the publisher when it is the same as the author or editors,
+  # as the 2002 web edition's issuers, its two editors, are.
   for (path in list(c("README.Rmd"), c("vignettes", "delphi-rounds.Rmd"),
                     c("R", "delphi_validity.R"))) {
     text <- prose(sub("^#' ?", "", do.call(src_lines, as.list(path))))
-    expect_match(text, paste0("(pp. 257", "–", "281). ", issuer, "."),
-                 fixed = TRUE, info = paste(path, collapse = "/"))
+    # The URL follows the page range directly (in Rd it is wrapped in \url{}).
+    expect_match(text, paste0("\\(pp\\. 257\u2013281\\)\\. ",
+                              "(\\\\url\\{)?https://"),
+                 info = paste(path, collapse = "/"))
   }
   bib <- src_lines("inst", "REFERENCES.bib")
   entry <- bib[seq(grep("^@incollection[{]scheibe2002", bib), length(bib))]
   entry <- entry[seq_len(grep("^[}]", entry)[1])]
-  expect_true(any(grepl(paste0("publisher = {{", issuer, "}}"), entry,
-                        fixed = TRUE)))
+  expect_false(any(grepl("publisher", entry, fixed = TRUE)))
 })
 
 test_that("Markdown lists in the vignettes and README start a new block", {

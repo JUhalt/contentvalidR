@@ -275,8 +275,7 @@ for categorical data. \emph{Biometrics, 33}(1), 159–174. \doi{10.2307/2529310}
 
 Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), \emph{The Delphi method:
-Techniques and applications} (pp. 257–281). Murray Turoff and Harold A.
-Linstone.
+Techniques and applications} (pp. 257–281).
 \url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
 (Original work published 1975)
 }

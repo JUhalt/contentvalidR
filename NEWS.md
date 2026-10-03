@@ -789,6 +789,144 @@ Stored text that changes so that it matches the printout:
 * The Markdown note of `content_report()` wraps at 79 columns, so it spans
   several elements of the returned vector.
 
+## Close-out of the audit: values that change
+
+A final check of every audit finding against the release branch found 85
+still open and 16 new ones. These are closed here.
+
+* **Modified kappa below .40 is labeled "Poor".** The `kappa_quality` column
+  of the relevance `results` read "Low" below .40, a word the cited scheme
+  does not use. The bands are those of Cicchetti and Sparrow (1981) and
+  Fleiss (1981), which Polit et al. (2007) apply to modified kappa:
+  Excellent above .74, Good from .60 to .74, Fair from .40 to .59, and Poor
+  below .40. `?expert_validity` documents them. Code that tests for "Low"
+  should test for "Poor".
+* **A stage that decided nothing holds nothing back.** In
+  `content_evidence()`, a stage whose every item is "Descriptive only" (a
+  Delphi study without a threshold, or congruence without targets) counted
+  as holding back every item, so nothing was carried. It is now named as
+  applying no decision rule and holds no item back; the headline, the
+  Result column, `carried` and the flow diagram follow. Its handoff is
+  unchanged.
+* **`compare_rounds()` names every unit's change and counts every
+  transition.** A unit present only between the first and last rounds had
+  `change` `NA`; it now reads "Not in first or last" and `summary()` lists
+  it. `summary` gains `n_changed`, for moves to or from "Descriptive only",
+  so `n_compared` is the sum of unchanged, strengthened, weakened and
+  changed. An alpha level in `settings_changes` reads `.05` and `.10`, where
+  it was `0.05` and `0.1`.
+* **The advice beside the Colquitt bands is labeled as this package's.** In
+  the item-sort and construct-rating `scale_summary$evidence`, the sentence
+  naming each index's band (Colquitt et al., 2019) ends there, and the advice
+  keyed to the lower band follows as "A contentvalidR suggestion for the
+  lower band ...". Expert judges get one sentence in both workflows: "Colquitt
+  benchmark labels are not applied because the analysis was marked as using
+  expert judges." The stored text changes.
+* **The relevance `interpretation` of a Strong support item** says that
+  meeting the criterion also puts its modified kappa above .74, where it said
+  the item "shows excellent chance-corrected agreement", which read as
+  separate evidence.
+* **`content_report()`.** A Delphi table for the chi-square and
+  percent-change methods has a Stable column; the essentiality
+  `format = "data.frame"` table keeps `ne` and `critical_ne`; the Markdown rule
+  row aligns text left and numbers right.
+* **Handoff notes.** Each Delphi stability row's `note` says which way its
+  criterion reads (the individual chi-square takes *p* below alpha as stable,
+  the group chi-square *p* at or above alpha, net percent change a value
+  below .15) and whether the fit read the item as stable. A zero-width
+  interval and a pair with fewer experts than the item's last round are
+  noted, and a panel interval with no width is described in words in
+  `panel_statistics$note`. No column changes.
+
+## Close-out of the audit: other fixes
+
+* **Delphi printout.** A zero-width kappa interval reads "none" with a note
+  saying every resample gave the same value. The item table heads its count
+  "Experts" and percent change "Net change", as the report does, and shows a
+  Paired column when stability rests on fewer experts than rated the item
+  last; the caution about fewer experts then prints whatever the panel size.
+  A share below the consensus threshold is never printed as equal to it
+  (6 of 9 against .667 reads 66.67% against 66.70%). The verdict names items
+  with too few experts and those the panel agreed in the other direction, and
+  a summary without a threshold no longer prints "Consensus: 0 of 1".
+  Quadratic-weighted kappa is said to equal the intraclass correlation in its
+  sums-of-squares form (Fleiss & Cohen, 1973). The consensus and stability
+  views draw in grays under `apa = TRUE`. `?delphi_validity` names the third
+  reason a stability statistic can be `NA` and says each item and pair is
+  resampled from the same seed.
+* **`compare_rounds()`** heads its change column "First to last", and a call
+  that names only some rounds warns that the names were not used.
+* **Handoff printout.** It says no decision rule was applied when every item
+  is "Descriptive only", and how to carry such items, instead of telling the
+  reader to carry an empty set. A "Keying:" line gives the reverse-keyed
+  items and the response scale; the "Constructs:" line wraps and reads "none
+  carried" when nothing is carried; the panel interval reads "95% CI".
+  `?content_handoff` covers the Delphi kappa interval, the statistics
+  without one, and all three reasons a stability statistic can be `NA`.
+* **`content_evidence()`.** A congruence handoff made before 1.0, whose
+  "target IOC" held a mean rating, is refused, as such fits already were.
+  Stage labels "item" and "result" are refused. The Result column gives
+  stage numbers, so long stage names no longer push the stages' columns off
+  the table, and the key explains only the columns shown. The evidence
+  profile draws at full size, fits its verdicts to the figure, draws the
+  promised cross, and keys a construct-rating panel by its decision rule.
+* **Expert panel.** The relevance printout keeps the `I-CVI needed` column on
+  an 80-column console and explains only the columns shown. Essentiality
+  states alpha, the exact one-sided test and Ayre and Scally (2014) whatever
+  the panel sizes. `summary()` states the scale, the cut and the criterion.
+  The verdict no longer repeats "with strong support (modified kappa above
+  .74)" in every analysis. Printouts call the raters experts ("Experts per
+  item", "Mean Aiken's V"). `expert_power()` says it is a contentvalidR
+  planning tool. With `proportion_ci = "none"` no sentence mentions an
+  interval that was not computed. A congruence report without targets explains
+  "Descriptive only" instead of stating a criterion no item was held to.
+  `?expert_validity` and `?expert_power` give complete references.
+* **Item sort and construct ratings.** The item-sort print explains a
+  retained item whose two-sided interval includes p0, gives the judges per
+  item when panels differ, and cautions when a scale's bands rest on a panel
+  too small to decide any item. The labels of Psa and Csv can be compared,
+  as percentile positions; their values cannot, and the prints and the
+  glossary now say so. A scale mean never prints as a band minimum it falls
+  below (".868 Moderate" where Strong starts at .87). A key that explains a
+  column the table left out for width says where to find it. The
+  construct-rating print heads its judge count "Judges". `?csv_binom_test` and
+  `?sort_validity` say that *p* equal to alpha meets the criterion,
+  `?sort_power` carries the caveat of Howard and Melloy about `p0 = .50`, `?htd`
+  and the construct-rating legend describe the competitor as the other
+  construct with the highest mean rating, and `?anova_content` says which
+  judges its means use.
+* **Judges.** A cut the analyst set prints as "set for this analysis" in the
+  printout and in the report note, not as a contentvalidR convention, and a
+  severity cut of 2 reads "2 logits". `?content_structure` gives the default
+  `k` the code uses.
+* **Figures.** Keys too wide for one row take more rows and sit in headroom
+  above the data, including the planning plots, whose axes tick whole
+  numbers of experts or judges and whose curves are solid and told apart by
+  markers. A long vertical axis title gives way to the index's name ("HTD").
+  The congruence plot fills an index that met the criterion and leaves one
+  below it open. A one-dimensional content map stacks the labels of items at
+  the same position. `plot()` stops before opening a device when given an
+  unknown `metric` or an invalid `reference_power`.
+* **Text.** "F test", "contrast p" and "omnibus p" are never split across
+  lines. An interval note says it reflects how few ratings an item received,
+  not whether the right people rated it.
+* **Documentation.** Every print, summary and plot method has a help page,
+  `?contentvalid-methods`. The help of each workflow lists its `results`
+  columns. `?content_report` says the Markdown lines render as a table only
+  with `results = "asis"` (`#| output: asis` in Quarto) and that a *p* below
+  .0005 becomes 0 in `format = "data.frame"`.
+* **Vignettes.** Getting started uses headings and real lists, restores the
+  Csv formula, retains two items in its toy sort, and points to every
+  workflow. The reading-output write-up reports intervals and exact *p*
+  values and cites Howard and Melloy (2016). The walkthrough counts its
+  items correctly and calls its first stage the item sort. The Delphi
+  vignette calls the threshold line dashed and qualifies kappa and the
+  intraclass correlation. The design guide's sentence about unreachable
+  targets is conditional. Tables in the construct-rating, item-sort and
+  reporting vignettes print rounded, and the reporting vignette shows the
+  Markdown report rendered. The README says a printout opens with a header,
+  then the facts, then the verdict.
+
 ## Release housekeeping
 
 * The lifecycle badge reads "stable".

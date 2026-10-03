@@ -660,8 +660,8 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #'
 #' The key sits above the data, in two or three rows when one row would not
 #' fit the figure's width. Where a vertical axis title would not fit the
-#' figure's height, as HTD's does at 7 by 4 inches, the axis shows the index's
-#' name alone and the key's heading gives the full definition.
+#' figure's height, as the HTD title does at 7 by 4 inches, the axis shows
+#' the index's name alone and the key's heading gives the full definition.
 #'
 #' @param x A `contentvalid_rating` object.
 #' @param metric Either `"htc"` or `"htd"` for `type = "item"`.

@@ -29,11 +29,11 @@ the terms are familiar.
 
 Strength labels such as \code{Strong} or \code{Weak} from \code{\link[=interpret_colquitt]{interpret_colquitt()}} are
 percentile positions relative to scales published in the measurement
-literature. They are not absolute judgments, and they are not comparable
-across indices: HTC and HTD sit on different scales with different typical
+literature. They are not absolute judgments. Each index is read against its
+own benchmark: HTC and HTD sit on different scales with different typical
 values, so an HTC of .83 can be labeled \code{Weak} in the same analysis where
-an HTD of .44 is labeled \verb{Very Strong}. Compare each index against its own
-benchmark, never against another index's number.
+an HTD of .44 is labeled \verb{Very Strong}. Two indices' labels can be compared,
+because each is a percentile position; their numbers cannot.
 }
 
 \examples{

@@ -196,6 +196,7 @@ test_that("new v0.2 workflows meet the same interpretive standard as existing on
 test_that("glossary print output warns against cross-index comparison", {
   out <- printed(contentvalid_glossary())
   expect_match(out, "percentile positions")
-  expect_match(out, "not\\s+comparable across different indices")
+  # Labels can be compared across indices; their numbers cannot.
+  expect_match(out, "Compare\\s+two\\s+indices\\s+by\\s+their\\s+labels,\\s+never\\s+by\\s+their\\s+numbers")
   expect_match(out, "Status labels")
 })

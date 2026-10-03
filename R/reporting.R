@@ -563,16 +563,18 @@ as.data.frame.contentvalid_workflow <- function(x,
   )
 }
 
-# The rules behind a judge's flag, for the decisions the table shows. They
-# are this package's conventions, which a manuscript table should say.
+# The rules behind a judge's flag, for the decisions the table shows. The
+# defaults are this package's conventions, which a manuscript table should
+# say; a cut the analyst changed is said to be set for the analysis.
 .report_judge_criterion <- function(st, decisions) {
   if (!is.list(st) || !is.numeric(st$severity_cut)) return(NULL)
   shown <- unique(as.character(decisions))
   rules <- c(
     if (any(shown %in% c("Severe", "Lenient"))) {
-      sprintf(paste("Severe or Lenient = severity beyond %s logit, or beyond",
+      sprintf(paste("Severe or Lenient = severity beyond %s %s, or beyond",
                     "%s rating points for a judge the model could not place"),
               format(st$severity_cut),
+              if (isTRUE(all.equal(st$severity_cut, 1))) "logit" else "logits",
               .fmt(st$severity_raw_cut, 2, bounded = FALSE))
     },
     if ("Erratic" %in% shown && is.numeric(st$fit_range)) {
@@ -586,8 +588,18 @@ as.data.frame.contentvalid_workflow <- function(x,
     }
   )
   if (!length(rules)) return(NULL)
-  paste0(paste(rules, collapse = "; "),
-         ". These cuts are contentvalidR conventions, not published standards.")
+  same <- function(a, b) is.null(a) || isTRUE(all.equal(a, b))
+  defaults <- same(st$severity_cut, 1) &&
+    (is.null(st$lo) || same(st$severity_raw_cut, 0.25 * (st$hi - st$lo))) &&
+    same(st$differentiation_cut, 0.5) && same(st$fit_range, c(0.5, 1.5)) &&
+    same(st$fit_min_ratings, 30L)
+  paste0(paste(rules, collapse = "; "), ". ",
+         if (defaults) {
+           "These cuts are contentvalidR conventions, not published standards."
+         } else {
+           paste("These cuts were set for this analysis; the package's",
+                 "defaults are its own conventions, not published standards.")
+         })
 }
 
 # The rules behind a cell's decision, for the decisions the table shows.

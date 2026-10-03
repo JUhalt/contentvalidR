@@ -111,7 +111,7 @@ fit
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -124,8 +124,9 @@ fit
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
@@ -513,8 +514,7 @@ Works cited in this README, the help pages, and the vignettes.
   validity. *Dutch Journal of Educational Research, 2*, 49–60.
 - Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
   methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-  Techniques and applications* (pp. 257–281). Murray Turoff and
-  Harold A. Linstone.
+  Techniques and applications* (pp. 257–281).
   <https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf>
   (Original work published 1975)
 - Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &
