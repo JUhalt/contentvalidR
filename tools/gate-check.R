@@ -48,12 +48,19 @@ if (length(res$errors) || length(res$warnings) || length(unexpected)) {
 cat("\n", length(res$notes), " note(s), all expected.\n", sep = "")
 
 # Not a failure, but worth seeing before a submission: CRAN asks that updates
-# come no more often than every one to two months.
+# come no more often than every one to two months. R reports "Days since last
+# update" only in the first week after a release, so the date of the last
+# CRAN release is kept in tools/cran-release-date (one line, YYYY-MM-DD, set
+# when CRAN accepts a version) and the days are counted from it. The note's
+# own count is used when R gives one.
 days <- regmatches(res$notes, regexpr("Days since last update: [0-9]+", res$notes))
-if (length(days)) {
-  n <- as.integer(sub("\\D+", "", days[1]))
-  if (n < 60L) {
-    cat("Reminder: CRAN last updated this package ", n, " day(s) ago. CRAN asks ",
-        "for updates no more often than every one to two months.\n", sep = "")
-  }
+n <- if (length(days)) as.integer(sub("\\D+", "", days[1])) else NA_integer_
+if (is.na(n) && file.exists(file.path("tools", "cran-release-date"))) {
+  released <- as.Date(trimws(readLines(file.path("tools", "cran-release-date"),
+                                       n = 1L, warn = FALSE)))
+  if (!is.na(released)) n <- as.integer(Sys.Date() - released)
+}
+if (!is.na(n) && n < 60L) {
+  cat("Reminder: CRAN last updated this package ", n, " day(s) ago. CRAN asks ",
+      "for updates no more often than every one to two months.\n", sep = "")
 }

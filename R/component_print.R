@@ -64,7 +64,8 @@ print.contentvalid_psa <- function(x, digits = 2, ...) {
   has_ci <- all(c("psa_low", "psa_high") %in% names(x)) && any(!is.na(x$psa_low))
   .print_component(
     x, c("item", "target", "n", "n_target", "psa"),
-    title = "Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)",
+    title = c("Proportion of substantive agreement (Psa)",
+              "Anderson and Gerbing (1991)."),
     build = function() {
       tab <- data.frame(item = x$item, target = x$target,
                         judges = paste0(x$n_target, "/", x$n),
@@ -88,7 +89,8 @@ print.contentvalid_csv <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "target", "n", "n_target", "competitor", "n_other_max", "csv"),
-    title = "Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)",
+    title = c("Coefficient of substantive validity (Csv)",
+              "Anderson and Gerbing (1991)."),
     build = function() {
       data.frame(item = x$item, target = x$target,
                  judges = paste0(x$n_target, "/", x$n),
@@ -107,7 +109,7 @@ print.contentvalid_htc <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "target", "n_target", "target_mean", "htc"),
-    title = "Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)",
+    title = c("Hinkin-Tracey correspondence (HTC)", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(item = x$item, target = x$target, judges = x$n_target,
                  `target mean` = .fmt(x$target_mean, digits, bounded = FALSE),
@@ -127,7 +129,7 @@ print.contentvalid_htd <- function(x, digits = 2, ...) {
   .print_component(
     x, c("item", "target", "n_complete", "target_mean_complete",
          "strongest_competitor", "competitor_mean", "htd"),
-    title = "Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)",
+    title = c("Hinkin-Tracey distinctiveness (HTD)", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
                  `target mean` = .fmt(x$target_mean_complete, digits, bounded = FALSE),
@@ -216,7 +218,7 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
   scale <- attr(x, "scale")
   .print_component(
     x, c("item", "N", "V"),
-    title = "Aiken's V (Aiken, 1980)",
+    title = c("Aiken's V", "Aiken (1980)."),
     build = function() {
       tab <- data.frame(item = x$item, experts = x$N, V = .fmt(x$V, digits),
                         stringsAsFactors = FALSE)
@@ -242,7 +244,7 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
   alpha <- .alpha_attr(x)
   .print_component(
     x, c("item", "ne", "N", "cvr", "p_value", "critical_ne", "pass"),
-    title = "Content validity ratio (CVR; Lawshe, 1975)",
+    title = c("Content validity ratio (CVR)", "Lawshe (1975)."),
     build = function() {
       unreachable <- is.na(x$critical_ne) & x$N >= 1L
       data.frame(item = x$item, essential = paste0(x$ne, "/", x$N),
@@ -274,7 +276,8 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "objective", "n_judges", "ioc"),
-    title = "Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)",
+    title = c("Index of item-objective congruence (IOC)",
+              "Rovinelli and Hambleton (1977)."),
     build = function() {
       tab <- data.frame(item = x$item, objective = x$objective,
                         judges = x$n_judges, stringsAsFactors = FALSE)
@@ -309,7 +312,7 @@ print.contentvalid_colquitt <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("statistic", "value", "interpretation", "benchmark_label"),
-    title = "Benchmark bands (Colquitt et al., 2019)",
+    title = c("Benchmark bands", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(statistic = .stat_heading(x$statistic),
                  value = .fmt(x$value, digits),
@@ -326,8 +329,9 @@ print.contentvalid_colquitt_norms <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("statistic", "benchmark_label", "interpretation", "percentile", "minimum"),
-    title = sprintf("Benchmarks for %s (Colquitt et al., 2019): %s",
-                    .stat_heading(x$statistic[1]), x$benchmark_label[1]),
+    title = c(sprintf("Benchmarks for %s", .stat_heading(x$statistic[1])),
+              sprintf("Colquitt et al. (2019). Benchmark set: %s.",
+                      x$benchmark_label[1])),
     build = function() {
       data.frame(band = x$interpretation, percentile = x$percentile,
                  minimum = ifelse(is.finite(x$minimum), .fmt(x$minimum, digits), "none"),

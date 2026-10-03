@@ -6,7 +6,7 @@
 \alias{contentvalidR-package}
 \title{contentvalidR: Tools for Substantive and Content Validity Pretesting}
 \description{
-Provides quantitative tools for substantive and content-oriented scale pretesting. Implements item-sort indices from Anderson and Gerbing (1991) \doi{10.1037/0021-9010.76.5.732}, exact item-sort inference following Howard and Melloy (2016) \doi{10.1007/s10869-015-9404-y}, empirical interpretation benchmarks from Colquitt et al. (2019) \doi{10.1037/apl0000406}, and the construct-rating procedure of Hinkin and Tracey (1999) \doi{10.1177/109442819922004} with HTC/HTD indices and repeated-measures item screening. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) \doi{10.1080/19312450709336664}. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) \doi{10.1111/j.1745-3984.1988.tb00309.x}, content-domain coverage and expert-perceived content structure following Sireci and Geisinger (1992) \doi{10.1177/014662169201600102}, consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) \doi{10.1186/1471-2288-7-52}, comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients.
+Provides quantitative tools for substantive and content-oriented scale pretesting. Implements item-sort indices from Anderson and Gerbing (1991) \doi{10.1037/0021-9010.76.5.732}, exact item-sort inference following Howard and Melloy (2016) \doi{10.1007/s10869-015-9404-y}, empirical interpretation benchmarks from Colquitt et al. (2019) \doi{10.1037/apl0000406}, and the construct-rating procedure of Hinkin and Tracey (1999) \doi{10.1177/109442819922004} with the Hinkin-Tracey correspondence and distinctiveness indices and repeated-measures item screening following MacKenzie et al. (2011) \doi{10.2307/23044045}. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) \doi{10.1080/19312450709336664}. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) \doi{10.1111/j.1745-3984.1988.tb00309.x}, content-domain coverage and expert-perceived content structure adapted from Sireci and Geisinger (1992) \doi{10.1177/014662169201600102}, consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) \doi{10.1186/1471-2288-7-52}, comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients.
 }
 \section{Reading the output}{
 
@@ -72,9 +72,8 @@ arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.
 
 \strong{Tier 3, auxiliary and compatibility helpers.}
-\code{\link[=agreement_summary]{agreement_summary()}}, \code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}},
-\code{\link[=signal_detection]{signal_detection()}}, \code{\link[=simulate_anova_power]{simulate_anova_power()}}, and
-\code{\link[=simulate_csv_power]{simulate_csv_power()}}.
+\code{\link[=qfactor_content]{qfactor_content()}}, \code{\link[=reproducibility_phi]{reproducibility_phi()}}, \code{\link[=signal_detection]{signal_detection()}},
+\code{\link[=simulate_anova_power]{simulate_anova_power()}}, and \code{\link[=simulate_csv_power]{simulate_csv_power()}}.
 
 These are kept for continuity with older analyses and for sensitivity
 checks. They are not recommended workflows, and they may be deprecated and
@@ -107,11 +106,10 @@ and was removed in 0.7.0. Its \code{posthoc_pass} returned column, a duplicate o
 deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
 \code{NEWS.md}.
 
-One deprecation is in progress. \code{\link[=agreement_summary]{agreement_summary()}}, a Tier 3 helper, is
-deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
-that takes items in rows rather than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does
-its job. It warns when called. Removing it at 1.0.0 means nothing
-deprecated is carried past 1.0.
+\code{agreement_summary()}, a Tier 3 helper, was deprecated in 0.9.0 and is
+removed in 1.0.0: it was the only function that took items in rows rather
+than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does its job. Nothing deprecated is
+carried past 1.0.
 }
 
 \section{Changing a default}{

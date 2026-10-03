@@ -12,8 +12,9 @@ Description: Provides quantitative tools for substantive and content-oriented
     following Howard and Melloy (2016) <doi:10.1007/s10869-015-9404-y>,
     empirical interpretation benchmarks from Colquitt et al. (2019)
     <doi:10.1037/apl0000406>, and the construct-rating procedure of Hinkin and
-    Tracey (1999) <doi:10.1177/109442819922004> with HTC/HTD indices and
-    repeated-measures item screening. The expert-panel workflow combines Aiken's
+    Tracey (1999) <doi:10.1177/109442819922004> with the Hinkin-Tracey
+    correspondence and distinctiveness indices and repeated-measures item
+    screening following MacKenzie et al. (2011) <doi:10.2307/23044045>. The expert-panel workflow combines Aiken's
     V with score confidence intervals, Lawshe content validity ratios with exact
     inference, content validity indices with modified kappa and score
     intervals, item-objective congruence, and panel-level agreement using
@@ -22,8 +23,8 @@ Description: Provides quantitative tools for substantive and content-oriented
     heterogeneity analysis following the generalizability-theory treatment of
     content-validity ratings in Crocker et al. (1988)
     <doi:10.1111/j.1745-3984.1988.tb00309.x>, content-domain coverage and
-    expert-perceived content structure following Sireci and Geisinger (1992)
-    <doi:10.1177/014662169201600102>, consensus and stability across Delphi
+    expert-perceived content structure adapted from Sireci and Geisinger
+    (1992) <doi:10.1177/014662169201600102>, consensus and stability across Delphi
     rounds with between-round weighted kappa following Holey et al. (2007)
     <doi:10.1186/1471-2288-7-52>, comparison across successive pretest rounds,
     and exact expert-panel planning. Where published methods compete,
@@ -38,7 +39,6 @@ Depends: R (>= 4.0.0)
 Imports:
     stats
 Suggests:
-    irr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)

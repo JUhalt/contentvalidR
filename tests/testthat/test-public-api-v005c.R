@@ -1,6 +1,5 @@
 test_that("the intended public API is exported from a clean namespace", {
   expected <- c(
-    "agreement_summary",
     "aikens_v",
     "anova_content",
     "colquitt_benchmarks",

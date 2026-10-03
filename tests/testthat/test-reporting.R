@@ -110,7 +110,7 @@ test_that("markdown output is a valid table carrying its settings", {
   # APA note.
   expect_match(md[1], "^\\| Item \\|")
   expect_match(md[2], "^\\| --- \\|")
-  expect_equal(length(md), 2L + 6L + 2L)
+  expect_gte(length(md), 2L + 6L + 2L)
   table_md <- md[1:8]
   expect_true(all(grepl("^\\|", table_md)))
   expect_identical(md[9], "")

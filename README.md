@@ -11,7 +11,7 @@ status](https://www.r-pkg.org/badges/version/contentvalidR)](https://CRAN.R-proj
 [![License: GPL v3
 only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 **Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see

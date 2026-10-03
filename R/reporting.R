@@ -74,7 +74,8 @@
 #' )
 #' fit <- sort_validity(sorts)
 #' head(as.data.frame(fit, include_interpretation = FALSE))
-#' as.data.frame(fit, component = "scale_summary")
+#' as.data.frame(fit, component = "scale_summary")[, c("target", "mean_psa",
+#'                                                   "psa_strength")]
 #' @export
 as.data.frame.contentvalid_workflow <- function(x,
                                                 row.names = NULL,
@@ -435,8 +436,10 @@ content_report <- function(x,
       note <- attr(tab, "note")
       c(.as_markdown_table(md),
         if (length(note)) {
-          c("", paste0("*Note.* ", gsub(.missing_mark, "\u2014", note,
-                                         fixed = TRUE)))
+          # A Markdown paragraph may break across lines, so the note is
+          # wrapped like the console.
+          c("", strwrap(paste0("*Note.* ", gsub(.missing_mark, "\u2014", note,
+                                                 fixed = TRUE)), width = 79))
         })
     })
     attr(lines, "settings") <- x$settings

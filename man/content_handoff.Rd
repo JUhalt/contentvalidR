@@ -365,8 +365,9 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
 handoff <- content_handoff(fit)
 handoff
 handoff$items
-handoff$item_evidence
-handoff$item_statistics
+handoff$item_evidence[, c("item", "status", "recommendation", "n_judges")]
+handoff$item_evidence$rule[1]
+handoff$item_statistics[, c("item", "statistic", "value", "criterion")]
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items

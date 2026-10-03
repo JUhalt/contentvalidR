@@ -128,7 +128,10 @@ test_that("a manuscript table carries an APA note", {
   expect_match(note, "Retain = at least the number of target assignments", fixed = TRUE)
   expect_match(paste(shown(tab), collapse = " "), "Note. Psa =", fixed = TRUE)
   md <- content_report(sort_fit(), format = "markdown")
-  expect_match(md[length(md)], "^[*]Note[.][*] Psa = ")
+  note_at <- which(startsWith(md, "*Note.*"))
+  expect_length(note_at, 1L)
+  expect_match(md[note_at], "^[*]Note[.][*] Psa = ")
+  expect_true(all(nchar(md[note_at:length(md)]) <= 79L))
   rel <- content_report(expert_validity(relevance(), lo = 1, hi = 4, agreement = "none"))
   expect_match(attr(rel, "note"),
                "Penfield-Giacobbi score confidence interval for V and Wilson score",

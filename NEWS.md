@@ -3,6 +3,15 @@
 Fixes from the audit before 1.0. Some of them change values, so check any
 analysis that matches the cases below.
 
+## Removed
+
+* `agreement_summary()` is removed, as announced when it was deprecated in
+  0.9.0. Use `panel_agreement()`, which takes raters in rows like every other
+  function in the package. The deprecation warning shipped only on GitHub and
+  R-universe, so a user updating from 0.4.0 on CRAN meets the removal
+  without it. The package no longer suggests irr, which only that function
+  used.
+
 ## Item sort: values that change
 
 * **Constructs coded as numbers or factors now give the right counts.** When
@@ -703,6 +712,19 @@ changes: no stored value, field, argument or handoff column.
   could not be computed is an em dash.
 * `?contentvalidR` describes the conventions and gives the crosswalk
   between the statuses of the two packages.
+
+## Release housekeeping
+
+* The lifecycle badge reads "stable".
+* DESCRIPTION names the Hinkin-Tracey correspondence and distinctiveness
+  indices in full, cites MacKenzie et al. (2011) for the repeated-measures
+  screening, and says the content-structure analysis is adapted from Sireci
+  and Geisinger (1992).
+* `?cvi` typesets the modified kappa formula with I-CVI as one symbol, and
+  gives a plain-text form of both formulas.
+* Component printouts put their source on the line beneath the header, so
+  every header fits in 80 columns; the help examples print no line wider
+  than that, and the Markdown note of `content_report()` wraps.
 
 ## Other changes
 
