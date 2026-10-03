@@ -435,7 +435,7 @@
     ),
     "construct-rating" = c(
       Retain = "its ratings differed across constructs (the omnibus test) and the intended construct was rated above every other (every planned contrast).",
-      Review = "did not meet every criterion; the competitor column shows the closest rival.",
+      Review = "did not meet every criterion; the competitor column shows the other construct with the highest mean rating.",
       "Insufficient data" = "fewer than two judges rated it against every construct."
     ),
     relevance = c(
@@ -555,7 +555,6 @@
     headings <- headings[on_screen]
     if (!length(terms)) return(invisible(NULL))
   }
-  heads <- stats::setNames(headings, terms)
   defs <- .term_defs()
   # A term with no definition would otherwise be dropped in silence, so a typo
   # in a print method's key would quietly stop explaining a column.
@@ -564,19 +563,25 @@
     stop("Unknown glossary term(s): ", paste(unknown, collapse = ", "), ".",
          call. = FALSE)
   }
-  defs <- defs[defs$term %in% terms, , drop = FALSE]
-  if (!nrow(defs)) return(invisible(NULL))
-  defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
+  # One line per heading the reader sees. Two headings can share a term
+  # ("Target IOC" and "Highest IOC" are both the index), and each is
+  # explained under its own name; a heading repeated for the same term is
+  # explained once.
+  once <- !duplicated(paste(terms, tolower(headings), sep = "\r"))
+  terms <- terms[once]
+  headings <- headings[once]
+  if (!length(terms)) return(invisible(NULL))
 
   short <- .term_short()
   .section("What these columns mean")
-  for (i in seq_len(nrow(defs))) {
-    body <- short[[defs$term[i]]]
-    head <- .sentence_case(heads[[defs$term[i]]])
-    label <- if (identical(tolower(head), tolower(defs$label[i]))) {
+  for (i in seq_along(terms)) {
+    def <- defs[match(terms[i], defs$term), , drop = FALSE]
+    body <- short[[terms[i]]]
+    head <- .sentence_case(headings[i])
+    label <- if (identical(tolower(head), tolower(def$label))) {
       ""
     } else {
-      paste0(defs$label[i], ". ")
+      paste0(def$label, ". ")
     }
     .say(paste0(head, " -- ", label, body), indent = 2L, exdent = 6L,
          width = width)

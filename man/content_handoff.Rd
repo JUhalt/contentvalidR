@@ -207,7 +207,9 @@ undefined: every rating fell in the same category in both rounds." It also
 says when a statistic that meets its criterion is not what decided: the
 construct-rating \code{p_value} is the omnibus \emph{p}, and for an item held back by
 a planned contrast its note says so, with the largest contrast \emph{p} or, when
-a contrast has none, the constructs that tied.
+a contrast has none, the constructs that tied. On a Delphi stability
+criterion it says which way the criterion reads and whether the fit read
+the item as stable, as described under "A Delphi handoff".
 
 Its contract, agreed with the \code{nomologR} maintainers:
 \itemize{
@@ -234,16 +236,26 @@ confidence level, for example \code{0.95}.
 \itemize{
 \item Aiken's V: the Penfield-Giacobbi score interval.
 \item I-CVI and Psa: the method chosen with \code{proportion_ci}, the Wilson score
-interval by default.
+interval by default. A Delphi handoff takes it from each item's last
+round.
 \item Panel agreement: the item-resampling percentile bootstrap of
 \code{\link[=panel_agreement]{panel_agreement()}}.
+\item Delphi weighted kappa: the expert-resampling percentile bootstrap of
+\code{\link[=delphi_validity]{delphi_validity()}}, at \code{1 - alpha}, when it was run with \code{B} above 0.
 }
 
 The four columns are \code{NA} together when a statistic has no interval. That
 happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-count, modified kappa, IOC, and p values), when intervals were switched off
-with \code{proportion_ci = "none"}, or when the statistic itself could not be
-computed. \code{NA} there never stands for missing data.
+count, modified kappa, IOC and the mean ratings beside it, proportion
+unchanged, lambda, the chi-squares, net percent change, and p values), when
+intervals were switched off with \code{proportion_ci = "none"} or \code{B = 0}, or
+when the statistic itself could not be computed. \code{NA} there never stands
+for missing data.
+
+A bootstrap interval can have zero width (\code{lower} equal to \code{upper}), when
+every resample gave the same value: a panel whose experts all kept their
+ratings, say. The bounds are kept as computed, and the row's \code{note} says
+that the width reflects how alike the ratings were, not precision.
 
 The handoff reports intervals only. It does not turn them into priors or
 weights for a later analysis; that is a question for the consuming package.
@@ -266,26 +278,44 @@ threshold rather than on the 0.74 rule that \code{\link[=expert_validity]{expert
 Two more statistics record whether the panel had stopped moving:
 \verb{proportion unchanged}, and the stability statistic that ran, named for its
 method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambda}.
-The chi-square methods add \verb{stability p_value} against \code{alpha}. Stability
-travels as evidence beside the decision; it never decides what is carried,
-exactly as it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+The chi-square methods add \verb{stability p_value} against \code{alpha}, and net
+percent change carries its own criterion, .15. Stability travels as
+evidence beside the decision; it never decides what is carried, exactly as
+it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+
+\strong{The stability criteria do not all read the same way.} The individual
+chi-square reads \emph{p} below \code{alpha} as stable, because Chaffin and Talley
+(1980) take dependence between the rounds' ratings as stability; the group
+chi-square reads \emph{p} at or above \code{alpha} as stable, because Dajani et al.
+(1979) take no detectable difference between the rounds' distributions as
+stability; and net percent change reads a value below .15 as stable
+(Scheibe et al., 1975/2002). The same \code{criterion} therefore cannot be read
+without the method. The row that carries the criterion (\verb{stability p_value}, or \verb{net percent change}) says in its \code{note} which way it reads
+and whether the fit read the item as stable ("Read as stable." or "Not
+read as stable."), the call \code{\link[=delphi_validity]{delphi_validity()}} records in \code{stable}. Kappa
+and lambda have no criterion and make no such call.
 
 The stability rows come from the item's last pair of consecutive rounds.
 For an item rated again after a gap (rounds 1, 2 and 4) that pair is
 earlier than the round the rows are dated by, and their \code{note} says which
-rounds they compare.
+rounds they compare. Stability uses only the experts who rated the item in
+both rounds of the pair; when they are fewer than \code{n_judges}, the experts
+in the item's last round, the \code{note} gives their number.
 }
 
 \section{When a stability statistic is NA}{
 
 A stability row is always present for a carried item, so an \code{NA} there is a
-statement about the data rather than a missing record. There are two cases,
-and they can be told apart from the object alone:
+statement about the data rather than a missing record. There are two kinds
+of case, and they can be told apart from the object alone:
 
 \describe{
-\item{\verb{proportion unchanged} is also \code{NA}}{The item has no pair of
-consecutive rounds: it was rated in one round only, so there was nothing
-to compare.}
+\item{\verb{proportion unchanged} is also \code{NA}}{No pair of ratings was
+compared, for one of three reasons: the item was rated in one round
+only; it was rated in rounds that are not consecutive (1 and 3), and
+only consecutive rounds are compared; or it was rated in two
+consecutive rounds, but no expert rated it in both, as when the panel
+was replaced between them. The \code{note} says which.}
 \item{\verb{proportion unchanged} has a value}{A pair exists, but the
 statistic is undefined for that data.}
 }

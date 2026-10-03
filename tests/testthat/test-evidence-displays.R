@@ -155,7 +155,8 @@ test_that("the print opens with the verdict and names who held what back", {
   expect_match(txt, "Held back: EF5 \\(Relevance panel\\), TF5 \\(Item sort\\)")
   expect_match(txt, "1\\. Relevance panel: 12 items, 8 experts\\. Shows I-CVI\\.")
   expect_match(txt, "2\\. Item sort: 11 items, 20 judges\\. Shows Psa\\.")
-  expect_match(txt, "Held back: Item sort")
+  # The result column names the stage by its number in the list above.
+  expect_match(txt, "TF5 .* Held back: 2")
   expect_match(txt, "Carried")
   expect_match(txt, "Result -- Carried when every stage")
   expect_match(txt, "What these columns mean")
@@ -165,8 +166,10 @@ test_that("the print opens with the verdict and names who held what back", {
   hidden <- gsub("\\s+", " ", paste(capture.output(print(wt_sequential())),
                                     collapse = " "))
   expect_no_match(hidden, "What these columns mean")
-  # The result stays readable with the key hidden.
-  expect_match(hidden, "Held back: Item sort")
+  # The result stays readable with the key hidden: the numbered list of
+  # stages is not part of the key.
+  expect_match(hidden, "2\\. Item sort:")
+  expect_match(hidden, "Held back: 2")
 })
 
 test_that("the profile and the flow draw in gray and in color", {
