@@ -117,7 +117,7 @@ test_that("fit is reported across dimensionalities, without Kruskal's labels", {
   expect_true(all(cs$fit$stress >= 0 | is.na(cs$fit$stress)))
 
   printed <- paste(capture.output(print(cs)), collapse = " ")
-  expect_match(printed, "raw stress", fixed = TRUE)
+  expect_match(printed, "distortion", fixed = TRUE)
   expect_match(printed, "not\\s+Kruskal's stress-1")
   expect_false(grepl("Kruskal-1", printed, fixed = TRUE))
   for (label in c("excellent", "fair", "poor")) {

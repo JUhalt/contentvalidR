@@ -30,10 +30,14 @@
 # The generalized linear model formulation of Rasch-family models follows
 # De Boeck & Wilson (2004). Estimation is joint maximum likelihood, which
 # stretches the judge severities by about J / (J - 1), J being the number of
-# judges in the model: every item parameter rests on J decisions. Wright and
-# Douglas's (1977) correction, (L - 1) / L for the L items of a test taken by
-# many persons, is applied with the judges in the place of the test items and
-# the rated items in the place of the persons.
+# decisions behind each item parameter: the judges who rated the item. Wright
+# and Douglas's (1977) correction, (L - 1) / L for the L items of a test taken
+# by many persons, is applied with the judges in the place of the test items
+# and the rated items in the place of the persons. With missing ratings J is
+# the mean number of judges per item in the model; with complete ratings it is
+# the number of judges in the model. Applying the correction to judges is this
+# package's choice, and Wright (1988) notes that it is slightly inexact for
+# very short tests, which a small panel is.
 .facets_severity <- function(B, bias_correct = TRUE) {
   n_j <- nrow(B)
   judge_names <- rownames(B)
@@ -124,11 +128,15 @@
 
   correction <- 1
   if (isTRUE(bias_correct)) {
-    # The count is the number of judges in the model, not the number of
-    # items: see the note above this function.
-    if (k > 1L) correction <- (k - 1L) / k
+    # The count is the judges behind each item, not the number of items: see
+    # the note above this function. With complete ratings it is exactly k.
+    per_item <- colSums(!is.na(sub))
+    j_bar <- if (all(per_item == k)) k else mean(per_item)
+    if (j_bar > 1) correction <- (j_bar - 1) / j_bar
     severity <- severity * correction
-    se <- se * correction
+    # The standard errors are stretched by about the square root of the same
+    # factor (Linacre, n.d.).
+    se <- se * sqrt(correction)
   }
 
   # Infit and outfit mean squares from standardized residuals.
@@ -193,11 +201,18 @@
   # judge's spread over the median spread. With missing ratings, a judge who
   # rated only the low-rated items exactly as everyone else did is not made
   # to look severe, or undiscriminating, by the items they did not rate.
-  severity_raw <- vapply(seq_len(n_j), function(j) {
-    rated <- !is.na(X[j, ])
-    if (!any(rated)) return(NA_real_)
-    mean(item_mean[rated] - X[j, rated])
-  }, numeric(1))
+  severity_raw <- if (!anyNA(X)) {
+    # The same quantity, computed as it always was, so that complete ratings
+    # give bit-identical values and a judge at a cut stays on the same side.
+    mean(X) - judge_mean
+  } else {
+    vapply(seq_len(n_j), function(j) {
+      rated <- !is.na(X[j, ])
+      if (!any(rated)) return(NA_real_)
+      mean(item_mean[rated] - X[j, rated])
+    }, numeric(1))
+  }
+  severity_raw <- unname(severity_raw)
   differentiation <- vapply(seq_len(n_j), function(j) {
     rated <- !is.na(X[j, ])
     if (is.na(judge_sd[j])) return(NA_real_)

@@ -218,8 +218,8 @@ fit_judge$results[, c("judge", "mean_rating", "severity_raw",
 `severity_raw` is signed so that **positive means harsher**: the judge rates
 lower than the panel. `differentiation` near 1 means the judge used the scale
 about as widely as everyone else. The cuts that turn these into a flag are
-conventions of this package, printed with the results so you can apply your
-own.
+conventions of this package; `print(fit_judge)` states them, and each one is
+an argument, so you can apply your own.
 
 A judge flagged here is not a judge to delete. A dissenting expert may be the
 one reading the construct definition correctly. The flag marks ratings worth
@@ -233,9 +233,10 @@ fit_judge$details$influence_items
 ```
 
 `fragile` is `TRUE` for an item whose review status would change if one judge
-were removed, which happens when the item sits exactly at the CVI criterion
-for its panel size. Every judge on the deciding side of such an item changes
-it alike, so it is a fact about the item and no judge is flagged for it.
+were removed, which happens when the item is one judge away from the other
+side of the CVI criterion for its panel size: at the criterion, or one short
+of it. Every judge on one side of such an item changes it alike, so it is a
+fact about the item and no judge is flagged for it.
 
 The panel-level dependability coefficient answers a planning question:
 

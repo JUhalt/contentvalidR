@@ -68,7 +68,7 @@
   }
   if (all(D == 0)) {
     stop("Every pair of items is equally similar, so there is no structure ",
-         "to scale or cluster.", call. = FALSE)
+         "to scale or cluster. Check `similarity`.", call. = FALSE)
   }
   D
 }
@@ -94,15 +94,15 @@
 #'
 #' @section What is published and what is this package's choice:
 #' Sireci and Geisinger scaled the experts' similarity ratings and then ran a
-#' hierarchical cluster analysis, with average linkage, on the items' scaling
-#' coordinates. `content_structure()` does the same, so the clusters depend
-#' on the number of dimensions retained. Three things differ from their
-#' procedure and are this package's choices:
+#' hierarchical cluster analysis on the items' scaling coordinates.
+#' `content_structure()` does the same, so the clusters depend on the number
+#' of dimensions retained. Four things differ from their procedure or are not
+#' stated in it, and are this package's choices:
 #'
 #' * In their 1995 study they scaled each expert's matrix with an
 #'   individual-differences model (INDSCAL). This function applies classical
-#'   (Torgerson) scaling to one similarity matrix, usually the experts' mean
-#'   ratings.
+#'   scaling to one similarity matrix, usually the experts' mean ratings.
+#' * The clusters are formed with average linkage.
 #' * They read the correspondence with the blueprint from the cluster table
 #'   and from regressions of relevance ratings on the coordinates. The
 #'   adjusted Rand index is added here to put a number on that
@@ -147,10 +147,12 @@
 #' The retained dimensionality is reported rather than chosen silently. For
 #' every dimensionality up to `max_dims`, the `fit` table gives two measures
 #' of how well the map reproduces the similarities. `gof` is the goodness of
-#' fit of classical scaling: the share of the eigenvalue total that the
-#' retained dimensions account for. `stress` is the root of the squared
-#' differences between the dissimilarities and the map distances, over the
-#' squared dissimilarities; 0 is an exact map.
+#' fit of classical scaling: the share of the sum of the absolute eigenvalues
+#' that the retained dimensions account for. `stress`, printed as
+#' "distortion", is the root of the squared differences between the
+#' dissimilarities and the map distances, over the squared dissimilarities;
+#' 0 is an exact map. It need not fall as dimensions are added, because
+#' classical scaling does not minimize it.
 #'
 #' That `stress` is not Kruskal's (1964) stress-1, which compares the map
 #' distances with monotonically transformed dissimilarities in a nonmetric
@@ -186,15 +188,15 @@
 #' items <- paste0("I", 1:9)
 #' blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
 #' sim <- matrix(c(
-#'   5, 4, 4, 2, 2, 1, 1, 2, 1,
-#'   4, 5, 4, 2, 1, 2, 2, 1, 1,
-#'   4, 4, 5, 1, 2, 2, 1, 1, 2,
-#'   2, 2, 1, 5, 4, 4, 2, 2, 1,
-#'   2, 1, 2, 4, 5, 4, 1, 2, 2,
-#'   1, 2, 2, 4, 4, 5, 2, 1, 2,
-#'   1, 2, 1, 2, 1, 2, 5, 4, 4,
-#'   2, 1, 1, 2, 2, 1, 4, 5, 4,
-#'   1, 1, 2, 1, 2, 2, 4, 4, 5
+#'   5, 4, 3, 2, 2, 1, 1, 2, 1,
+#'   4, 5, 4, 3, 1, 2, 2, 1, 1,
+#'   3, 4, 5, 1, 2, 2, 1, 1, 3,
+#'   2, 3, 1, 5, 4, 3, 2, 2, 1,
+#'   2, 1, 2, 4, 5, 4, 1, 3, 2,
+#'   1, 2, 2, 3, 4, 5, 2, 1, 2,
+#'   1, 2, 1, 2, 1, 2, 5, 3, 4,
+#'   2, 1, 1, 2, 3, 1, 3, 5, 4,
+#'   1, 1, 3, 1, 2, 2, 4, 4, 5
 #' ), 9, 9, dimnames = list(items, items))
 #' content_structure(sim, membership = blueprint)
 #' @export
@@ -250,7 +252,9 @@ content_structure <- function(similarity,
         stop("`membership` is named, but its names do not include item(s): ",
              paste(missing_items[seq_len(min(5L, length(missing_items)))],
                    collapse = ", "),
-             if (length(missing_items) > 5L) ", ..." else "",
+             if (length(missing_items) > 5L) {
+               paste0(" and ", length(missing_items) - 5L, " more")
+             },
              ". Name it by the items in `similarity`, or remove the names to ",
              "match by position.", call. = FALSE)
       }
@@ -300,8 +304,9 @@ content_structure <- function(similarity,
   retained_gof <- fit$gof[fit$dims == dims]
 
   # The items' coordinates on the retained dimensions are what is clustered,
-  # as in Sireci and Geisinger (1992, 1995), with their average linkage. So
-  # the clusters belong to the map that is reported and plotted.
+  # as in Sireci and Geisinger (1992, 1995); average linkage is this
+  # package's choice. So the clusters belong to the map that is reported and
+  # plotted.
   hc <- stats::hclust(stats::dist(pts), method = "average")
   cluster <- stats::cutree(hc, k = k)
 
@@ -349,7 +354,7 @@ content_structure <- function(similarity,
       "Rand index %s, where 0 is chance agreement and 1 is exact; at or above",
       "the %s set for this analysis). This supports the claim that the",
       "blueprint describes the domain as subject-matter experts see it."
-    ), .fmt(ari), .fmt(ari_cut))
+    ), .fmt_beside_cut(ari, ari_cut), .fmt(ari_cut))
   } else {
     sprintf(paste(
       "Expert-perceived item groupings fall short of the blueprint (adjusted",
@@ -359,7 +364,7 @@ content_structure <- function(similarity,
       "This is a reason to re-examine the blueprint or the item wording, not by",
       "itself a reason to delete items: experts may be responding to surface",
       "features such as shared vocabulary rather than the intended facets."
-    ), .fmt(ari), .fmt(ari_cut))
+    ), .fmt_beside_cut(ari, ari_cut), .fmt(ari_cut))
   }
 
   out <- list(
@@ -415,7 +420,8 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
     "Status: ", x$status,
     if (x$status %in% c("Supported", "Review")) {
       paste0(" (criterion: adjusted Rand index >= ", .fmt(ari_cut, digits),
-             ", a contentvalidR convention)")
+             if (ari_cut == 0.60) ", a contentvalidR convention" else
+               ", set for this analysis", ")")
     }), exdent = 2L)
   .say(x$interpretation)
 
@@ -423,14 +429,15 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
   f <- x$fit
   .print_table(data.frame(dimensions = f$dims,
                           GOF = .fmt(f$gof, digits),
-                          `raw stress` = .fmt(f$stress, digits),
+                          distortion = .fmt(f$stress, digits),
                           stringsAsFactors = FALSE, check.names = FALSE))
   cat("\n")
-  .say("GOF: goodness of fit from classical scaling, the share of the",
-       "eigenvalue total that the retained dimensions account for. raw",
-       "stress: how far the map's distances depart from the dissimilarities",
-       "(0 is an exact map). It is not Kruskal's stress-1, so his benchmarks",
-       "do not apply.")
+  .say("GOF: goodness of fit from classical scaling, the share of the sum",
+       "of the absolute eigenvalues that the retained dimensions account for.",
+       "distortion: how far the map's distances depart from the",
+       "dissimilarities (0 is an exact map); it need not fall as dimensions",
+       "are added. It is not Kruskal's stress-1, so his benchmarks do not",
+       "apply.")
 
   if (!is.null(x$cross_tab)) {
     cat("\nBlueprint cell by recovered cluster (counts of items)\n")

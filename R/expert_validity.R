@@ -932,6 +932,11 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     )
     return(invisible(x))
   }
+  # Checked before the margins are set, so a plot that cannot be drawn does
+  # not open a graphics device.
+  if (identical(x$mode, "congruence") && !"target_ioc" %in% names(x$results)) {
+    stop("Congruence plots require a target-objective mapping.", call. = FALSE)
+  }
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
@@ -993,9 +998,6 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
                   c(if (any(good)) c(19, 1), if (any(undecided)) 4))
     }
   } else {
-    if (!"target_ioc" %in% names(r)) {
-      stop("Congruence plots require a target-objective mapping.", call. = FALSE)
-    }
     graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
                    yaxt = "n", xlab = "IOC (-1 to 1)", ylab = "", ...)
     .axis_bounded(1, at = seq(-1, 1, 0.5))

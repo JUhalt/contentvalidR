@@ -9,7 +9,8 @@
 }
 
 # Which items change their CVI decision when one judge is removed. This is a
-# fact about the item: it sits at the criterion for its panel size. It is
+# fact about the item: it is one judge from the other side of the criterion
+# for its panel size (at the criterion, or one short of it). It is
 # reported item by item, and no judge is flagged for it, because every judge
 # on the deciding side of such an item "changes" it alike.
 #
@@ -142,9 +143,13 @@
 #'   `differentiation_cut` (0.5). The scale-use ratio itself is this
 #'   package's index of the differentiation Engelhard (1994) describes.
 #' * Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
-#'   guide to how productive data are for measurement, and describes values
-#'   below 0.5 as "less productive for measurement, but not degrading", so a
-#'   judge below the range is described and never flagged. A mean square from
+#'   guide to how productive data are for measurement: below 0.5 is "less
+#'   productive for measurement, but not degrading", 1.5 to 2.0 is
+#'   "unproductive for construction of measurement, but not degrading", and
+#'   only above 2.0 does misfit distort the measurement. The package flags
+#'   above 1.5 and never below 0.5 because a high mean square means noise in
+#'   a judge's decisions, which bears on whether to trust them, while a low
+#'   one means decisions more predictable than the model expects. A mean square from
 #'   a handful of yes-or-no decisions varies widely by chance even for a
 #'   judge who fits the model exactly, so a judge above the range is flagged
 #'   only when the model scored at least `fit_min_ratings` of their
@@ -153,10 +158,14 @@
 #'   element. With the item counts usual in content validation the fit
 #'   statistics are therefore shown and not flagged.
 #' * The fragile-item check. It reapplies Lynn's (1986) criterion with one
-#'   judge removed. An item at the criterion for its panel size changes
-#'   status when any judge on the deciding side is removed, so the check
-#'   describes the item and flags no judge. An item rated by three or fewer
-#'   judges is not checked, because one fewer leaves no criterion.
+#'   judge removed. An item one judge away from the other side of the
+#'   criterion for its panel size (at the criterion, or one short of it,
+#'   depending on the size) changes status when any judge on one side is
+#'   removed, so the check describes the item and flags no judge. An item
+#'   rated by three or fewer judges is not checked, because one fewer leaves
+#'   no criterion.
+#' * Applying the Wright-Douglas correction to judges (see the estimation
+#'   note).
 #'
 #' @section Estimation note:
 #' Logit severity comes from a many-facet Rasch model fitted by joint maximum
@@ -166,12 +175,19 @@
 #' multiplying item difficulties by `(L - 1) / L`, with `L` the number of
 #' items in the test, approximately removes the bias (see also Wright, 1988).
 #' Here the judges stand where the test items do, and the rated items where
-#' the persons do, so the severities are multiplied by `(J - 1) / J`, with
-#' `J` the number of judges in the model. The factor is reported in
+#' the persons do, so the package multiplies the severities by
+#' `(J - 1) / J`, with `J` the number of judges who rated each item in the
+#' model (with missing ratings, the mean of that number over the items), and
+#' the standard errors by its square root, as the Facets documentation
+#' describes for the standard errors (Linacre, n.d.). That application to
+#' judges is this package's choice. The factor is reported in
 #' `settings$bias_correction`. Versions before 1.0 counted items instead,
 #' which left most of the bias in place on a small panel. The correction is
-#' approximate: it reduces the bias, and with two or three judges no single
-#' factor is trustworthy. Where precise severity calibration matters,
+#' approximate: Wright and Douglas recommended it for tests of more than 20
+#' items, and Wright (1988) notes that it is slightly inexact for very short
+#' tests, which is what a panel of a few judges amounts to. With two or
+#' three judges no single factor is trustworthy. Where precise severity
+#' calibration matters,
 #' marginal maximum likelihood estimation is preferable, and the raw
 #' rating-unit severity in `severity_raw` is free of this particular issue.
 #'
@@ -193,15 +209,15 @@
 #' composition with a many-faceted Rasch model. *Journal of Educational
 #' Measurement, 31*(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
 #'
+#' Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias*
+#' \[Facets help\]. Winsteps.com. Retrieved October 2, 2026, from
+#' <https://www.winsteps.com/facetman/estimationconsiderations.htm>
+#'
 #' Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 #'
 #' Linacre, J. M. (2002). What do infit and outfit, mean-square and
 #' standardized mean? *Rasch Measurement Transactions, 16*(2), 878.
 #' <https://www.rasch.org/rmt/rmt162f.htm>
-#'
-#' Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias*
-#' (Facets help). Winsteps.com.
-#' <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 #'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
@@ -221,7 +237,7 @@
 #'
 #' @examples
 #' # Eight judges rate ten items for relevance on a 1-4 scale. Judge8 rates
-#' # lower than the rest, and Item4 sits at the CVI criterion.
+#' # lower than the rest, and Item4 is one judge short of the CVI criterion.
 #' ratings <- rbind(
 #'   c(4, 4, 3, 4, 3, 2, 3, 2, 4, 3), c(4, 3, 4, 3, 2, 3, 2, 3, 4, 2),
 #'   c(3, 4, 4, 3, 3, 2, 2, 2, 3, 3), c(4, 4, 3, 2, 3, 3, 3, 1, 4, 2),
@@ -278,11 +294,12 @@ judge_validity <- function(ratings,
 
   .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
-  if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
+  # Checked first: an empty data frame becomes a logical matrix.
   if (!nrow(X) || !ncol(X)) {
     stop("`ratings` must have at least one judge (row) and one item (column).",
          call. = FALSE)
   }
+  if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
   if (any(is.infinite(X))) stop("`ratings` cannot contain infinite values.", call. = FALSE)
   if (!na.rm && anyNA(X)) {
     stop("`ratings` contains missing values; set `na.rm = TRUE` to allow them.",
@@ -322,10 +339,13 @@ judge_validity <- function(ratings,
   # Logit severity is unavailable whenever the panel agrees almost completely,
   # which is common in relevance ratings. Fall back to rating-unit severity so
   # a plainly harsh or lenient judge is still flagged.
+  # A judge exactly at a cut is not beyond it, whatever the last bit of the
+  # arithmetic says.
+  tol <- sqrt(.Machine$double.eps)
   too_severe <- ifelse(
     !is.na(res$severity),
-    abs(res$severity) > severity_cut,
-    !is.na(res$severity_raw) & abs(res$severity_raw) > severity_raw_cut
+    abs(res$severity) > severity_cut + tol,
+    !is.na(res$severity_raw) & abs(res$severity_raw) > severity_raw_cut + tol
   )
   severity_shown <- ifelse(!is.na(res$severity), res$severity, res$severity_raw)
   severity_units <- ifelse(!is.na(res$severity), "logit", "rating points")
@@ -339,7 +359,8 @@ judge_validity <- function(ratings,
        (!is.na(res$infit) & res$infit < fit_range[1]))
   enough_for_fit <- res$n_scored >= fit_min_ratings
   erratic <- over_fit_range & enough_for_fit
-  low_diff <- !is.na(res$differentiation) & res$differentiation < differentiation_cut
+  low_diff <- !is.na(res$differentiation) &
+    res$differentiation < differentiation_cut - tol
   # One judge has no panel to be compared with.
   insufficient <- res$n_ratings < 2L | n_judges < 2L
 
@@ -371,23 +392,30 @@ judge_validity <- function(ratings,
       ), format(fit_range[2]), .n_noun(res$n_scored[i], "scored decision"),
          as.integer(fit_min_ratings))
     } else if (under_fit_range[i]) {
-      sprintf(paste(
+      paste0(sprintf(paste(
         " Their infit or outfit is below %s: their decisions follow the",
-        "panel's ordering of the items more closely than the model expects.",
-        "Linacre (2002) describes such values as less productive for",
-        "measurement but not degrading, so this is not a flag."
-      ), format(fit_range[1]))
+        "panel's ordering of the items more closely than the model expects,",
+        "which is not a flag."
+      ), format(fit_range[1])),
+      if (fit_range[1] == 0.5) {
+        paste(" Linacre (2002) describes such values as less productive for",
+              "measurement but not degrading.")
+      })
     } else {
       ""
     }
     if (erratic[i]) {
       return(sprintf(paste(
         "This judge's endorsements fit the model poorly (infit or outfit",
-        "above %s, the upper end of the range Linacre, 2002, calls productive",
-        "for measurement): their decisions depart from the panel's ordering",
+        "above %s, %s): their decisions depart from the panel's ordering",
         "of the items. Check whether they interpreted the construct",
         "definition differently."
-      ), format(fit_range[2])))
+      ), format(fit_range[2]),
+      if (fit_range[2] == 1.5) {
+        "the upper end of the range Linacre, 2002, calls productive for measurement"
+      } else {
+        "the upper bound set for this analysis"
+      }))
     }
     if (too_severe[i]) {
       return(paste0(sprintf(paste(
@@ -482,6 +510,11 @@ judge_validity <- function(ratings,
 # its status with the full panel, and whose removal changes it.
 .fragile_items_table <- function(items) {
   f <- items[items$fragile %in% TRUE, , drop = FALSE]
+  # An object saved before 1.0 holds only the item and its status.
+  if (!all(c("n_raters", "n_relevant", "status_full_panel", "changes_without") %in%
+           names(f))) {
+    return(data.frame(item = f$item, stringsAsFactors = FALSE))
+  }
   data.frame(
     item = f$item,
     relevant = paste(f$n_relevant, "of", f$n_raters),
@@ -516,9 +549,11 @@ judge_validity <- function(ratings,
   c(
     if (any(items$fragile %in% TRUE)) {
       paste("changes without: removing any one of these judges changes the",
-            "item's status. Such an item sits at the CVI criterion for its",
-            "panel size (Lynn, 1986). This describes the item, not the judges",
-            "named, and is a contentvalidR check, not a published index.")
+            "item's status. Such an item is one judge away from the other",
+            "side of the CVI criterion for its panel size (Lynn, 1986): at the",
+            "criterion, or one short of it. This describes the item, not the",
+            "judges named, and is a contentvalidR check, not a published",
+            "index.")
     },
     if (unchecked > 0L) {
       paste("Not checked:", .n_noun(unchecked, "item"),
@@ -526,6 +561,52 @@ judge_validity <- function(ratings,
             "CVI criterion to compare with.")
     }
   )
+}
+
+# How many judges Phi rests on when some judges left items unrated, as a
+# clause for the missing-ratings line.
+.phi_judges_clause <- function(n_judges, dropped) {
+  if (!isTRUE(dropped > 0L)) return("")
+  kept <- n_judges - dropped
+  if (kept < 2L) {
+    return("; fewer than two judges rated every item, so Phi is not estimable")
+  }
+  paste0("; Phi uses the ", .n_noun(kept, "judge"), " who rated every item")
+}
+
+# The fit rule as printed. Linacre is cited only for his own bound, and judges
+# above the bound on too few scored decisions are named, so that a high mean
+# square beside "Typical" is explained.
+.judge_fit_lines <- function(r, st) {
+  upper <- st$fit_range[2]
+  min_n <- st$fit_min_ratings
+  out <- paste0(
+    "Fit: a judge is flagged as erratic when infit or outfit is above ",
+    format(upper), ", ",
+    if (upper == 1.5) {
+      "the top of the range Linacre (2002) calls productive for measurement"
+    } else {
+      "the upper bound set for this analysis"
+    },
+    ", and the model scored at least ", min_n, " of their decisions. The ",
+    "flag and the minimum are contentvalidR conventions."
+  )
+  above <- (!is.na(r$infit) & r$infit > upper) |
+    (!is.na(r$outfit) & r$outfit > upper)
+  few <- above & r$n_scored < min_n
+  if (!any(r$n_scored >= min_n)) {
+    out <- c(out, paste0(
+      "Here the model scored at most ", max(r$n_scored), " of any judge's ",
+      "decisions (items every judge agreed on are set aside), so the fit ",
+      "statistics are shown and not flagged."
+    ))
+  } else if (any(few)) {
+    out <- c(out, paste0(
+      "Above ", format(upper), " on too few scored decisions to flag: ",
+      paste0(r$judge[few], " (", r$n_scored[few], ")", collapse = ", "), "."
+    ))
+  }
+  out
 }
 
 #' @export
@@ -552,16 +633,15 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
     .say(paste0(
       "Missing ratings: ", d$n_missing, ". Each judge is compared with the ",
       "panel on the items they rated",
-      if (isTRUE(d$gtheory_judges_dropped > 0L)) {
-        paste0("; Phi uses the ", .n_noun(s$n_judges - d$gtheory_judges_dropped,
-                                         "judge"), " who rated every item")
-      },
+      .phi_judges_clause(s$n_judges, d$gtheory_judges_dropped),
       "."))
   }
   cat("\n")
   n_ok <- sum(r$status == "Supported")
   if (s$n_judges < 2L) {
+    # Nothing below applies to a single judge: no flag, no model, no check.
     .say("One judge is not a panel: there is nothing to compare them with.")
+    return(invisible(x))
   } else {
     .say(paste0(n_ok, " of ", .n_noun(nrow(r), "judge is", "judges are"),
                 " consistent with the panel."))
@@ -590,9 +670,13 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   .say(paste0(
     "mean: the judge's mean rating. severity: how far the judge rates below ",
     "the panel, in rating points (negative is more lenient)",
-    if (estimable) paste0("; logit: the same from the facets model, which ",
-                          "the flags use") else "", "."
+    if (estimable) paste0("; logit: the same from the facets model, against ",
+                          "the judges it placed, which the flags use") else "",
+    "."
   ))
+  cat("\n")
+  # Objects saved before 1.0 carry no differentiation_cut or fit_min_ratings.
+  diff_cut <- if (is.null(st$differentiation_cut)) 0.5 else st$differentiation_cut
   points_rule <- paste0(.fmt(st$severity_raw_cut, digits, bounded = FALSE),
                         " rating points")
   .say(paste0(
@@ -603,19 +687,12 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
       paste0(" (", points_rule, " for a judge the model could not place)")
     },
     " or scale use is below ",
-    .fmt(st$differentiation_cut, digits, bounded = FALSE),
+    .fmt(diff_cut, digits, bounded = FALSE),
     ". These cuts are contentvalidR conventions, not published standards."
   ))
-  if (estimable) {
-    fit_flags <- any(r$n_scored >= st$fit_min_ratings)
-    .say(paste0(
-      "Fit: infit or outfit above ", format(st$fit_range[2]),
-      " (Linacre, 2002) flags a judge as erratic once the model has scored ",
-      st$fit_min_ratings, " of their decisions",
-      if (fit_flags) "." else paste0(
-        "; here it scored at most ", max(r$n_scored),
-        ", so the fit statistics are shown and not flagged.")
-    ))
+  if (estimable && !is.null(r$n_scored) && !is.null(st$fit_min_ratings)) {
+    cat("\n")
+    for (line in .judge_fit_lines(r, st)) .say(line)
   }
 
   if (!estimable) {
@@ -627,7 +704,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
 
   items <- x$details$influence_items
   if (isTRUE(s$n_fragile_items > 0L)) {
-    cat("\nItems whose status rests on a single judge\n")
+    cat("\nItems whose status changes if one judge is removed\n")
     .print_fragile_items(items)
     cat("\n")
   } else if (any(items$fragile %in% FALSE)) {
@@ -663,6 +740,8 @@ summary.contentvalid_judge <- function(object, ...) {
   core$severity_note <- object$details$severity_note
   core$gtheory <- object$details$gtheory
   core$influence_items <- object$details$influence_items
+  core$n_missing <- object$design$n_missing
+  core$gtheory_judges_dropped <- object$design$gtheory_judges_dropped
   core$reviewed_judges <- object$results[object$results$status == "Review", , drop = FALSE]
   class(core) <- "summary.contentvalid_judge"
   core
@@ -684,6 +763,11 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
       na_words(gt$coefficients$phi_coefficient), "\n", sep = "")
   cat("  Generalizability (rank ordering):   ",
       na_words(gt$coefficients$g_coefficient), "\n", sep = "")
+  if (isTRUE(x$n_missing > 0L)) {
+    .say(paste0("Missing ratings: ", x$n_missing,
+                .phi_judges_clause(x$n_judges, x$gtheory_judges_dropped), "."),
+         indent = 2L, exdent = 2L)
+  }
   if (nrow(gt$judges_needed) && !identical(gt$status, "Insufficient data")) {
     cat("\nJudges needed to reach each coefficient\n")
     .print_table(.judges_needed_table(gt$judges_needed, digits))
@@ -695,8 +779,9 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
     rj <- x$reviewed_judges
     for (txt in unique(rj$interpretation)) {
       same <- rj$interpretation == txt
-      cat("\n  ", paste0(rj$judge[same], collapse = ", "), " (",
-          rj$recommendation[same][1], ")\n", sep = "")
+      cat("\n")
+      .say(paste0(paste0(rj$judge[same], collapse = ", "), " (",
+                  rj$recommendation[same][1], ")"), indent = 2L, exdent = 4L)
       .say(txt, indent = 4L)
     }
   } else {
@@ -706,7 +791,7 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   fragile <- x$influence_items
   if (is.data.frame(fragile)) {
     if (any(fragile$fragile %in% TRUE)) {
-      cat("\nItems whose status rests on a single judge\n")
+      cat("\nItems whose status changes if one judge is removed\n")
       .print_fragile_items(fragile)
       cat("\n")
     } else if (any(is.na(fragile$fragile))) {

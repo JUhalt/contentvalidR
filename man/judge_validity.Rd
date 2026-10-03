@@ -110,9 +110,13 @@ standard behind the numbers:
 \code{differentiation_cut} (0.5). The scale-use ratio itself is this
 package's index of the differentiation Engelhard (1994) describes.
 \item Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
-guide to how productive data are for measurement, and describes values
-below 0.5 as "less productive for measurement, but not degrading", so a
-judge below the range is described and never flagged. A mean square from
+guide to how productive data are for measurement: below 0.5 is "less
+productive for measurement, but not degrading", 1.5 to 2.0 is
+"unproductive for construction of measurement, but not degrading", and
+only above 2.0 does misfit distort the measurement. The package flags
+above 1.5 and never below 0.5 because a high mean square means noise in
+a judge's decisions, which bears on whether to trust them, while a low
+one means decisions more predictable than the model expects. A mean square from
 a handful of yes-or-no decisions varies widely by chance even for a
 judge who fits the model exactly, so a judge above the range is flagged
 only when the model scored at least \code{fit_min_ratings} of their
@@ -121,10 +125,14 @@ decisions. Thirty follows the guidance in the Facets documentation
 element. With the item counts usual in content validation the fit
 statistics are therefore shown and not flagged.
 \item The fragile-item check. It reapplies Lynn's (1986) criterion with one
-judge removed. An item at the criterion for its panel size changes
-status when any judge on the deciding side is removed, so the check
-describes the item and flags no judge. An item rated by three or fewer
-judges is not checked, because one fewer leaves no criterion.
+judge removed. An item one judge away from the other side of the
+criterion for its panel size (at the criterion, or one short of it,
+depending on the size) changes status when any judge on one side is
+removed, so the check describes the item and flags no judge. An item
+rated by three or fewer judges is not checked, because one fewer leaves
+no criterion.
+\item Applying the Wright-Douglas correction to judges (see the estimation
+note).
 }
 }
 
@@ -137,12 +145,19 @@ likelihood stretches estimates. Wright and Douglas (1977) found that
 multiplying item difficulties by \code{(L - 1) / L}, with \code{L} the number of
 items in the test, approximately removes the bias (see also Wright, 1988).
 Here the judges stand where the test items do, and the rated items where
-the persons do, so the severities are multiplied by \code{(J - 1) / J}, with
-\code{J} the number of judges in the model. The factor is reported in
+the persons do, so the package multiplies the severities by
+\code{(J - 1) / J}, with \code{J} the number of judges who rated each item in the
+model (with missing ratings, the mean of that number over the items), and
+the standard errors by its square root, as the Facets documentation
+describes for the standard errors (Linacre, n.d.). That application to
+judges is this package's choice. The factor is reported in
 \code{settings$bias_correction}. Versions before 1.0 counted items instead,
 which left most of the bias in place on a small panel. The correction is
-approximate: it reduces the bias, and with two or three judges no single
-factor is trustworthy. Where precise severity calibration matters,
+approximate: Wright and Douglas recommended it for tests of more than 20
+items, and Wright (1988) notes that it is slightly inexact for very short
+tests, which is what a panel of a few judges amounts to. With two or
+three judges no single factor is trustworthy. Where precise severity
+calibration matters,
 marginal maximum likelihood estimation is preferable, and the raw
 rating-unit severity in \code{severity_raw} is free of this particular issue.
 
@@ -154,7 +169,7 @@ from the model, which is reported rather than silent.
 
 \examples{
 # Eight judges rate ten items for relevance on a 1-4 scale. Judge8 rates
-# lower than the rest, and Item4 sits at the CVI criterion.
+# lower than the rest, and Item4 is one judge short of the CVI criterion.
 ratings <- rbind(
   c(4, 4, 3, 4, 3, 2, 3, 2, 4, 3), c(4, 3, 4, 3, 2, 3, 2, 3, 4, 2),
   c(3, 4, 4, 3, 3, 2, 2, 2, 3, 3), c(4, 4, 3, 2, 3, 3, 3, 1, 4, 2),
@@ -179,15 +194,15 @@ Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. \emph{Journal of Educational
 Measurement, 31}(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
 
+Linacre, J. M. (n.d.). \emph{Estimation considerations: JMLE estimation bias}
+[Facets help]. Winsteps.com. Retrieved October 2, 2026, from
+\url{https://www.winsteps.com/facetman/estimationconsiderations.htm}
+
 Linacre, J. M. (1989). \emph{Many-facet Rasch measurement}. MESA Press.
 
 Linacre, J. M. (2002). What do infit and outfit, mean-square and
 standardized mean? \emph{Rasch Measurement Transactions, 16}(2), 878.
 \url{https://www.rasch.org/rmt/rmt162f.htm}
-
-Linacre, J. M. (n.d.). \emph{Estimation considerations: JMLE estimation bias}
-(Facets help). Winsteps.com.
-\url{https://www.winsteps.com/facetman/estimationconsiderations.htm}
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 \emph{Nursing Research, 35}(6), 382–385.

@@ -446,13 +446,13 @@ Works cited in this README, the help pages, and the vignettes.
 - Lawshe, C. H. (1975). A quantitative approach to content validity.
   *Personnel Psychology, 28*(4), 563–575.
   <https://doi.org/10.1111/j.1744-6570.1975.tb01393.x>
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
+  bias* $$Facets help$$. Winsteps.com. Retrieved October 2, 2026, from
+  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 - Linacre, J. M. (2002). What do infit and outfit, mean-square and
   standardized mean? *Rasch Measurement Transactions, 16*(2), 878.
   <https://www.rasch.org/rmt/rmt162f.htm>
-- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
-  bias* (Facets help). Winsteps.com.
-  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
   <https://doi.org/10.1097/00006199-198611000-00017>

@@ -346,7 +346,8 @@ analysis that matches the cases below.
 
 ## Judges, domain and structure: values that change
 
-* **An item at the criterion no longer flags its judges.** With five of six
+* **An item one judge from the criterion no longer flags its judges.** With
+  five of six
   judges rating an item relevant, removing any of the five changes the
   item's CVI status, so all five were `"Influential"` and flagged for
   review, and the lone dissenter was the only `"Typical"` judge. On a panel
@@ -357,54 +358,74 @@ analysis that matches the cases below.
   checked". `"Influential"` is no longer a decision, `scale_summary` loses
   `n_influential` and gains `n_items_unchecked`, and
   `details$influence_items` gains `n_raters`, `n_relevant` and
-  `changes_without`.
+  `changes_without`. Such an item sits at the criterion or one short of it,
+  depending on the panel size.
 * **Fit statistics flag a judge only above the range, and only with enough
   decisions.** Infit or outfit outside 0.5 to 1.5 sent a judge to review
   either way. That range is Linacre's (2002) guide to how productive data are
-  for measurement, and he describes values below 0.5 as "less productive for
-  measurement, but not degrading". On six to ten items, a third to a half of
+  for measurement: below 0.5 is "less productive for measurement, but not
+  degrading", and misfit distorts the measurement only above 2.0. On six to
+  ten items, a third to a half of
   judges who fit the model exactly fell outside it by chance. A judge below
   the range is now described and not flagged (`"Too predictable"` is no
   longer a decision), and a judge above it is `"Erratic"` only when the model
   scored at least `fit_min_ratings` of their decisions (default 30). With the
   item counts usual in content validation the fit statistics are shown and
-  not flagged.
+  not flagged, and a judge above the range on too few decisions is named
+  with the number scored. Linacre is cited only for his own bounds; a
+  `fit_range` set by the analyst is called that.
 * **Logit severity is corrected by the number of judges.** Joint maximum
   likelihood stretches the judge severities by about J / (J - 1), with J the
-  number of judges. The correction multiplied by (L - 1) / L with L the
-  number of items, which left nearly all of the stretch in place on a small
-  panel: about 1.4 times too large with four judges. It now uses the judges
-  in the model, so printed logits are smaller and fewer judges pass the
-  1-logit cut. Wright and Douglas (1977) and Wright (1988) are cited for the
-  correction.
+  number of judges behind each item parameter. The correction multiplied by
+  (L - 1) / L with L the number of items, which left nearly all of the
+  stretch in place on a small panel: about 1.4 times too large with four
+  judges. It now uses the judges who rated each item (their mean over the
+  items when ratings are missing). Printed logits change: smaller when the
+  model holds fewer judges than items, slightly larger when it holds more.
+  Standard errors are scaled by the square root of the factor, as the
+  Facets documentation describes. Applying the Wright and Douglas (1977)
+  correction to judges is labeled as this package's choice, with Wright's
+  (1988) note that it is inexact for very short tests.
 * **With missing ratings a judge is compared on the items they rated.** A
   judge who rated only the low-rated items, exactly as everyone else did, was
   flagged `"Severe"`. Severity in rating points and scale use now compare
-  each judge with the panel on the same items. With complete ratings nothing
-  changes.
+  each judge with the panel on the same items. With complete ratings the
+  values are computed as before.
+* **A judge exactly at a cut is not flagged.** Severity and scale use are
+  compared with their cuts allowing for rounding error in the last digit,
+  so a judge printed at 0.75 beside "exceeds 0.75" is no longer flagged.
 * **`content_structure()` clusters the map coordinates.** It named the
   procedure of Sireci and Geisinger (1992, 1995), who clustered the items'
   scaling coordinates, but clustered the original dissimilarities, so the
   number of dimensions never affected the clusters or the adjusted Rand
   index. It now clusters the coordinates on the retained dimensions with
-  average linkage, as they did. Clusters, the adjusted Rand index and the
-  status can change, and now depend on `dims`. The help says what still
-  differs from their procedure.
+  average linkage (this package's choice; the sources checked do not state
+  their linkage). Clusters, the adjusted Rand index and the status can
+  change, and now depend on `dims`. The help says what still differs from
+  their procedure.
 * **A one-cell blueprint, or one cluster, has no adjusted Rand index.** It
   was .00 and "Review: correspond only weakly". It is `NA`, with status
   `"Insufficient data"`, because nothing can be compared.
 * **The map's fit is no longer called Kruskal's stress-1.** The statistic
   compares the map's distances with the dissimilarities; Kruskal's (1964)
-  stress-1 belongs to nonmetric scaling and is computed differently (on an
-  example the printed value was about double his). It keeps its value and
-  its name in the object, `stress`, is printed as "raw stress", and loses
-  the labels "good", "fair" and "poor", which were his benchmarks for a
-  different quantity. The `fit` table loses `fit_label`.
+  stress-1 belongs to nonmetric scaling and is computed differently. It
+  keeps its value and its name in the object, `stress`, is printed as
+  "distortion", and loses the labels "good", "fair" and "poor", which were
+  his benchmarks for a different quantity. The `fit` table loses
+  `fit_label`. The goodness of fit, `gof`, is described as the share of the
+  sum of the absolute eigenvalues, which is what it is.
 * **`domain_validity()` with `targets`.** A cell far below its intended share
   was `"Covered"`: it is now `"Under-represented"` when its share is below
   the expected share divided by `over_factor`. A cell that met a target of
   one item was `"Thinly covered"`: the minimum is now the smaller of
-  `min_items` and the cell's target. Without `targets` nothing changes.
+  `min_items` and the cell's target (rounded up), and the printed criteria
+  say so. A cell named in `targets` that holds no item was left out, and
+  its target with it; it is now reported as `"Not covered"`. With `domain`,
+  a target for a cell not in `domain` is an error. Without `targets`
+  nothing changes.
+* **`similarity_from_sort()` keeps the items in the order of the data.**
+  It sorted them. A `membership` vector built by position to match the old
+  sorted order is now misaligned, so name it by item.
 * **`reproducibility_phi()` and `signal_detection()` report Fisher's exact
   *p* when an expected count is below 5.** They printed a chi-square *p* with
   R's warning suppressed, on tables of six to twenty items: .121 where the
@@ -417,6 +438,8 @@ analysis that matches the cases below.
   contentvalidR conventions: `phi_cut` in `gtheory_content()` (.80),
   `ari_cut` in `content_structure()` (.60), and `differentiation_cut` and
   `fit_min_ratings` in `judge_validity()`. No published standard sets them.
+  A cut the analyst sets is printed as "set for this analysis", and a value
+  that rounds to its cut gets a third decimal (".797, below the .80").
 * `gtheory_content(max_judges = 1)` no longer stops with "wrong sign in 'by'
   argument".
 * `gtheory_content()` states its coefficient against the criterion. It called
@@ -432,11 +455,23 @@ analysis that matches the cases below.
 * Equal similarities, repeated judge or item names, and a matrix with no
   rows stop with a message that says what is wrong.
 * `plot()` on a content structure accepts `xlab`, `pch`, `xlim` and the like:
-  they replace the method's own. A map with one dimension keeps its symbols
-  and legend.
+  they replace the method's own. A `pch` or `col` with one value per cell is
+  applied by cell and kept in the key. A map with one dimension keeps its
+  symbols and legend.
 * `judge_validity()` prints the scale and the relevance cut, the number of
-  missing ratings and how many judges Phi rests on, "not estimable" where it
-  printed `NA%`, and one judge as "Insufficient data".
+  missing ratings and how many judges Phi rests on (in `summary()` too),
+  "not estimable" where it printed `NA%`, and one judge as "Insufficient
+  data", with nothing after the verdict. `results` gains `n_scored`, the
+  decisions the facets model scored for each judge.
+* `domain_validity()`: `scale_summary` gains `n_under` and `settings` gains
+  `over_possible`; a cell named twice in `targets` stops; item labels in
+  `similarity` are trimmed like the assignments. `content_structure()`
+  accepts a factor `membership`. `reproducibility_phi()` and
+  `signal_detection()` return `n` and `p_method` (`NA` when no test can be
+  run), and no longer fail on tables of more than about 430 items.
+* `compare_rounds()` ignores the settings the data decide (`bias_correction`,
+  `over_possible`), so two rounds analyzed alike stay comparable.
+* Judge objects saved before 1.0 print and summarize again.
 * `content_report()` for judges shows logit severity, infit and outfit, and
   drops the count of flipped items.
 * `chi-square(1, N = 60) = 41.71`: the two-by-two comparators print the
@@ -446,10 +481,14 @@ analysis that matches the cases below.
   "stress", which that printout does not show.
 * `qfactor_content()` says its loadings are unrotated and how that differs
   from the published approach. The message about Kaiser's rule is wrapped.
-* `similarity_from_sort()` keeps items in the order of the data and compares
-  labels as trimmed text; `domain_validity()` trims cell and item labels.
+* `similarity_from_sort()` compares labels as trimmed text;
+  `domain_validity()` trims cell and item labels.
 * The examples for `judge_validity()` and `content_structure()` now show the
-  logit columns and a two-dimensional map.
+  logit columns and a two-dimensional map whose nine items are all visible.
+* `?domain_validity` says its structure analysis is adapted from Sireci and
+  Geisinger (1992, 1995), as `?content_structure` does.
+* A congruence plot without a target mapping stops before it opens a
+  graphics device, so the failed call leaves no empty `Rplots.pdf`.
 
 ## Other changes
 

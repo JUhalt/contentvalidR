@@ -62,7 +62,7 @@
 #' judges.
 #'
 #' This follows the generalizability-theory treatment of content-validity
-#' ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+#' ratings in Crocker et al. (1988). Items are the objects of
 #' measurement and judges are the facet of generalization, so the question the
 #' analysis answers is: *if a different panel of judges of the same size had
 #' rated these items, how similar would the conclusions be?*
@@ -329,9 +329,9 @@ gtheory_content <- function(ratings,
     where <- if (var_resid <= 0 && var_judge > 0) {
       "all of the variation is between judges, each of whom rated every item alike"
     } else if (var_judge <= 0) {
-      "all of the variation is disagreement within judge-item cells"
+      "all of the variation is residual: judges ordering the items differently, or error"
     } else {
-      "the variation is between judges and within judge-item cells"
+      "the variation is between judges and residual (judges ordering the items differently, or error)"
     }
     paste0(
       "No item-level true-score variance was detected: the judges did not ",
@@ -353,7 +353,8 @@ gtheory_content <- function(ratings,
       "to another panel of the same size at Phi = %s, at or above the %s set",
       "for this analysis. Judge differences account for %.1f%% of total",
       "variance."
-    ), .n_noun(n_judges, "judge"), .fmt(obs$phi), .fmt(phi_cut), judge_share)
+    ), .n_noun(n_judges, "judge"), .fmt_beside_cut(obs$phi, phi_cut),
+    .fmt(phi_cut), judge_share)
   } else {
     sprintf(paste(
       "With %s, absolute decisions about these items would generalize",
@@ -362,7 +363,8 @@ gtheory_content <- function(ratings,
       "variance. See `judges_needed` for the panel size a higher target",
       "implies, and review judge-level severity before treating borderline",
       "items as settled."
-    ), .n_noun(n_judges, "judge"), .fmt(obs$phi), .fmt(phi_cut), judge_share)
+    ), .n_noun(n_judges, "judge"), .fmt_beside_cut(obs$phi, phi_cut),
+    .fmt(phi_cut), judge_share)
   }
 
   out <- list(
@@ -411,11 +413,12 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
       na_words(cf$g_coefficient), "\n", sep = "")
   cat("  Dependability coefficient (absolute, fixed standard):   ",
       na_words(cf$phi_coefficient), "\n", sep = "")
-  cat("Status: ", x$status,
-      if (x$status %in% c("Supported", "Review")) {
-        paste0(" (criterion: Phi >= ", .fmt(phi_cut, digits),
-               ", a contentvalidR convention)")
-      }, "\n", sep = "")
+  .say(paste0("Status: ", x$status,
+              if (x$status %in% c("Supported", "Review")) {
+                paste0(" (criterion: Phi >= ", .fmt(phi_cut, digits),
+                       if (phi_cut == 0.80) ", a contentvalidR convention" else
+                         ", set for this analysis", ")")
+              }), exdent = 2L)
   .say(x$interpretation)
 
   # With too few judges or items there are no components and no projection to

@@ -227,7 +227,7 @@
     ),
     data.frame(
       term = "stress", workflow = "domain-coverage",
-      label = "Map distortion (raw stress)",
+      label = "Map distortion",
       definition = paste(
         "How far the distances on the content map depart from the experts'",
         "dissimilarities: the root of their squared differences over the",

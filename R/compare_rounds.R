@@ -14,9 +14,12 @@
   out
 }
 
-# Settings that govern resampling for an interval. They cannot move an item's
-# status, so two rounds that differ only in these are still comparable.
-.resampling_settings <- c("seed", "B", "agreement_B")
+# Settings that govern resampling for an interval, and settings the data
+# decide rather than the analyst (the judge workflow's bias-correction factor,
+# whether the domain data allow any cell to be over-represented). None is a
+# decision rule, so two rounds that differ only in these are still comparable.
+.resampling_settings <- c("seed", "B", "agreement_B", "bias_correction",
+                          "over_possible")
 
 # Whether the criterion a unit must meet moves with the number of judges. It
 # does for the exact tests (item sort, essentiality) and for Lynn's criterion
