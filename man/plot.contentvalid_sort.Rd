@@ -40,6 +40,11 @@ intended-construct correspondence and distinctiveness can be inspected together.
 Target-scale means are added as triangles when available. Colquitt benchmark bands
 are deliberately not drawn across item points because those norms were developed
 for scale-level averages rather than individual items.
+
+The key sits above the data, in two or three rows when one row would not
+fit the figure's width. Where a vertical axis title would not fit the
+figure's height, the axis shows the index's name alone (Psa or Csv) and the
+key's heading gives the full definition.
 }
 \examples{
 sort_dat <- data.frame(

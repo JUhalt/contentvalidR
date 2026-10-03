@@ -595,6 +595,11 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
 #' are deliberately not drawn across item points because those norms were developed
 #' for scale-level averages rather than individual items.
 #'
+#' The key sits above the data, in two or three rows when one row would not
+#' fit the figure's width. Where a vertical axis title would not fit the
+#' figure's height, the axis shows the index's name alone (Psa or Csv) and the
+#' key's heading gives the full definition.
+#'
 #' @param x A `contentvalid_sort` object.
 #' @param metric Either `"psa"` or `"csv"` for `type = "item"`.
 #' @param type Either `"item"` for the original one-index plot or `"map"` for the
@@ -627,6 +632,7 @@ plot.contentvalid_sort <- function(x,
                                    show_legend = TRUE,
                                    ...) {
   type <- .choose(type)
+  metric <- .choose(metric)
   label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
@@ -637,52 +643,68 @@ plot.contentvalid_sort <- function(x,
   csv_lab <- "Csv: lead of the target over its top rival"
 
   if (type == "item") {
-    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "psa") 0 else -1
-    # Headroom above 1 holds the legend, clear of the data.
-    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
-                    ylab = if (metric == "psa") psa_lab else csv_lab,
-                    xlim = c(0.5, length(y) + 0.5),
-                    ylim = c(lo, 1 + 0.2 * (1 - lo))), list(...))
-    graphics::axis(1, at = xs, labels = r$item, las = 2)
-    .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+    full <- if (metric == "psa") psa_lab else csv_lab
+    ylab <- .ylab_fit(full, if (metric == "psa") "Psa" else "Csv")
     leg <- .decision_legend(r$recommendation)
     lg <- leg$legend
     lp <- leg$pch
     ll <- rep(NA, length(lg))
+    # The exact test compares counts, so each item's criterion is the count
+    # it needs over the judges who sorted it.
+    ci <- is.finite(r$psa_low) & is.finite(r$psa_high)
+    crit <- r$critical_n_target / r$n
+    ok <- is.finite(crit)
+    if (metric == "psa" && any(ci)) {
+      lg <- c(lg, .ci_label(x$settings$alpha))
+      lp <- c(lp, NA)
+      ll <- c(ll, 1)
+    }
+    if (metric == "psa" && any(ok)) {
+      lg <- c(lg, "Criterion (exact test)")
+      lp <- c(lp, NA)
+      ll <- c(ll, 2)
+    }
+    # A shortened axis title is defined in the key's heading.
+    key <- if (isTRUE(show_legend)) {
+      .legend_fit(lg, lp, ll, title = if (!identical(ylab, full)) full)
+    }
+    # Headroom above 1 holds the legend, clear of the data.
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+                    ylab = ylab, xlim = c(0.5, length(y) + 0.5),
+                    ylim = c(lo, .legend_room(lo, 1, 1 + 0.2 * (1 - lo), key))),
+               list(...))
+    graphics::axis(1, at = xs, labels = r$item, las = 2)
+    .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
     if (metric == "psa") {
-      ci <- is.finite(r$psa_low) & is.finite(r$psa_high)
-      if (any(ci)) {
-        graphics::segments(xs[ci], r$psa_low[ci], xs[ci], r$psa_high[ci])
-        lg <- c(lg, .ci_label(x$settings$alpha))
-        lp <- c(lp, NA)
-        ll <- c(ll, 1)
-      }
-      # The exact test compares counts, so each item's criterion is the count
-      # it needs over the judges who sorted it.
-      crit <- r$critical_n_target / r$n
-      ok <- is.finite(crit)
-      if (any(ok)) {
-        graphics::segments(xs[ok] - 0.3, crit[ok], xs[ok] + 0.3, crit[ok], lty = 2)
-        lg <- c(lg, "Criterion (exact test)")
-        lp <- c(lp, NA)
-        ll <- c(ll, 2)
-      }
+      graphics::segments(xs[ci], r$psa_low[ci], xs[ci], r$psa_high[ci])
+      graphics::segments(xs[ok] - 0.3, crit[ok], xs[ok] + 0.3, crit[ok], lty = 2)
     } else {
       .hline(0)
     }
     has <- is.finite(y)
     graphics::points(xs[has], y[has], pch = pch[has])
     graphics::points(xs[!has], rep(lo, sum(!has)), pch = 4)
-    if (isTRUE(show_legend)) .legend_top(lg, lp, ll)
+    .legend_draw(key)
     return(invisible(x))
   }
 
   ok <- is.finite(r$psa) & is.finite(r$csv)
-  .plot_with(list(x = r$psa[ok], y = r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
-                  xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = csv_lab,
+  s <- x$scale_summary
+  s_ok <- is.finite(s$mean_psa) & is.finite(s$mean_csv)
+  ylab <- .ylab_fit(csv_lab, "Csv")
+  key <- if (isTRUE(show_legend)) {
+    leg <- .decision_legend(r$recommendation[ok])
+    .legend_fit(c(leg$legend, if (any(s_ok)) "Scale mean"),
+                c(leg$pch, if (any(s_ok)) 17),
+                title = if (!identical(ylab, csv_lab)) csv_lab)
+  }
+  # Item labels sit above their points, so the key clears them too.
+  .plot_with(list(x = r$psa[ok], y = r$csv[ok], xlim = c(0, 1),
+                  ylim = c(-1, .legend_room(-1, 1, 1.4, key, above_in = 0.2)),
+                  xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = ylab,
                   pch = pch[ok]), list(...),
              protect = c("type", "xaxt", "yaxt", "axes", "pch"))
   .axis_bounded(1, at = seq(0, 1, 0.25))
@@ -700,8 +722,6 @@ plot.contentvalid_sort <- function(x,
                    pos = 3, cex = 0.70, offset = 0.35)
   }
 
-  s <- x$scale_summary
-  s_ok <- is.finite(s$mean_psa) & is.finite(s$mean_csv)
   if (any(s_ok)) {
     sx <- s$mean_psa[s_ok]
     sy <- s$mean_csv[s_ok]
@@ -709,11 +729,6 @@ plot.contentvalid_sort <- function(x,
     label_y <- .map_scale_label_y(sx, sy)
     graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
   }
-
-  if (isTRUE(show_legend)) {
-    leg <- .decision_legend(r$recommendation[ok])
-    .legend_top(c(leg$legend, if (any(s_ok)) "Scale mean"),
-                c(leg$pch, if (any(s_ok)) 17))
-  }
+  .legend_draw(key)
   invisible(x)
 }

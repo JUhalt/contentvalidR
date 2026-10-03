@@ -21,7 +21,11 @@ method takes \code{type}.}
 \code{x}, invisibly. Called for the plot.
 }
 \description{
-Plot an expert-panel planning curve
+Draws the probability that an item clears the criterion against the number
+of experts on the panel, as a step function because the criterion itself
+changes with panel size. Each assumed endorsement probability is a solid
+line told apart by its marker. The key sits above the curves, and the
+panel-size axis is ticked at whole numbers of experts.
 }
 \examples{
 plot(expert_power(n_experts = 3:12, prob = c(0.7, 0.85)))
