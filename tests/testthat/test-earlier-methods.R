@@ -262,7 +262,7 @@ test_that("the printed comparison states each rule's source and agreement", {
   out <- gsub("[[:space:]]+", " ",
               paste(utils::capture.output(print(fit)), collapse = " "))
   expect_match(out, "Anderson and Gerbing (1991): Csv of at least .50", fixed = TRUE)
-  expect_match(out, "Yao, Wu and Yang (2008)", fixed = TRUE)
+  expect_match(out, "Yao et al. (2008): Psa and Csv", fixed = TRUE)
 
   it <- fit$details$earlier_methods$items
   keep <- it$decision == "Retain"

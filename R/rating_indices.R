@@ -1,8 +1,9 @@
 #' Hinkin-Tracey correspondence (HTC)
 #'
 #' @description
-#' Computes the Hinkin-Tracey correspondence index for each item. Following
-#' Colquitt et al. (2019), HTC is the average definitional-correspondence rating
+#' Computes the Hinkin-Tracey correspondence index for each item, named for
+#' the rating task of Hinkin and Tracey (1999). Following Colquitt et al.
+#' (2019), HTC is the average definitional-correspondence rating
 #' for the intended construct divided by `a`, the number of rating anchors.
 #' Ratings are internally shifted to a 1-to-`a` metric when a scale such as
 #' 0-to-4 is supplied, preserving the meaning of the published formula.

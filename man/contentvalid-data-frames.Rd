@@ -15,45 +15,15 @@
 \alias{as.data.frame.contentvalid_reproducibility}
 \title{Tables from contentvalidR results}
 \usage{
-\method{as.data.frame}{contentvalid_cvi}(
-  x,
-  row.names = NULL,
-  optional = FALSE,
-  component = c("item_level", "scale_level"),
-  ...
-)
+\method{as.data.frame}{contentvalid_cvi}(x, row.names = NULL, optional = FALSE, component = NULL, ...)
 
-\method{as.data.frame}{contentvalid_gtheory}(
-  x,
-  row.names = NULL,
-  optional = FALSE,
-  component = c("variance_components", "coefficients", "dstudy", "judges_needed"),
-  ...
-)
+\method{as.data.frame}{contentvalid_gtheory}(x, row.names = NULL, optional = FALSE, component = NULL, ...)
 
-\method{as.data.frame}{contentvalid_structure}(
-  x,
-  row.names = NULL,
-  optional = FALSE,
-  component = c("items", "fit", "cross_tab"),
-  ...
-)
+\method{as.data.frame}{contentvalid_structure}(x, row.names = NULL, optional = FALSE, component = NULL, ...)
 
-\method{as.data.frame}{contentvalid_rounds}(
-  x,
-  row.names = NULL,
-  optional = FALSE,
-  component = c("transitions", "summary", "settings_changes"),
-  ...
-)
+\method{as.data.frame}{contentvalid_rounds}(x, row.names = NULL, optional = FALSE, component = NULL, ...)
 
-\method{as.data.frame}{contentvalid_handoff}(
-  x,
-  row.names = NULL,
-  optional = FALSE,
-  component = c("item_evidence", "item_statistics", "panel_statistics"),
-  ...
-)
+\method{as.data.frame}{contentvalid_handoff}(x, row.names = NULL, optional = FALSE, component = NULL, ...)
 
 \method{as.data.frame}{contentvalid_sort_power}(x, row.names = NULL, optional = FALSE, ...)
 
@@ -73,7 +43,8 @@
 \item{row.names, optional}{Accepted for compatibility with
 \code{\link[base:as.data.frame]{base::as.data.frame()}} and ignored.}
 
-\item{component}{The table to return, where a result holds more than one:
+\item{component}{The table to return, where a result holds more than one
+(\code{NULL}, the default, gives the first listed):
 \itemize{
 \item \code{\link[=cvi]{cvi()}}: \code{"item_level"} (default) or \code{"scale_level"}.
 \item \code{\link[=gtheory_content]{gtheory_content()}}: \code{"variance_components"} (default),
@@ -92,7 +63,9 @@ or \code{"panel_statistics"}.
 A data frame. \code{\link[=csv_binom_test]{csv_binom_test()}}, \code{\link[=signal_detection]{signal_detection()}},
 \code{\link[=reproducibility_phi]{reproducibility_phi()}} and \code{\link[=panel_agreement]{panel_agreement()}} give one row: an
 interval becomes two columns, and a two-by-two table becomes its four
-counts.
+counts. For \code{\link[=panel_agreement]{panel_agreement()}} the interval's error rate is \code{ci_alpha},
+since \code{alpha} would read as Krippendorff's; for \code{\link[=csv_binom_test]{csv_binom_test()}} the
+one-sided interval is marked by \code{ci_sides} and \code{ci_level}.
 }
 \description{
 \code{as.data.frame()} returns a result's table as an ordinary data frame, for

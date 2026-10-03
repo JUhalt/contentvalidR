@@ -116,13 +116,15 @@ content_report(rating_fit)
 ```
 
 Report the repeated-measures design and target-versus-orbiting contrasts. For a
-review item, naming the strongest competitor is often more informative than a
-standalone p value.
+review item, naming the strongest competitor, which `rating_fit$results` holds
+as `strongest_competitor`, is often more informative than a standalone p
+value.
 
 ### Expert relevance
 
 ```{r expert-table}
 content_report(expert_fit)
+expert_fit$scale_summary[c("S_CVI_Ave", "S_CVI_UA", "agreement")]
 ```
 
 Essentiality and congruence require different expert tasks. Do not place CVR,

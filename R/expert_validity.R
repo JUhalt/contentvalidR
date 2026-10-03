@@ -42,7 +42,8 @@
 #' Provides a user-facing workflow for three common expert-panel tasks:
 #'
 #' * `mode = "relevance"`: bounded ordinal relevance ratings, combining Aiken's
-#'   V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+#'   V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
+#'   the modified kappa of Polit et al. (2007), and a
 #'   panel-level agreement coefficient.
 #' * `mode = "essentiality"`: Lawshe CVR with exact binomial critical values.
 #' * `mode = "congruence"`: the index of item-objective congruence of
@@ -293,7 +294,7 @@ expert_validity <- function(data,
     item$kappa_quality <- .kappa_quality(item$kappa_mod)
     item$ci_width <- item$ci_high - item$ci_low
     # Every count that meets the criterion gives modified kappa above .74, the
-    # band Polit, Beck, and Owen (2007) read as excellent: the lowest is .76,
+    # band Polit et al. (2007) read as excellent: the lowest is .76,
     # for 7 of 9. So an item that meets the criterion has strong support, and
     # no weaker tier can occur.
     item$recommendation <- ifelse(

@@ -104,7 +104,8 @@ while retaining mode-specific \code{recommendation} wording. In relevance mode,
 Provides a user-facing workflow for three common expert-panel tasks:
 \itemize{
 \item \code{mode = "relevance"}: bounded ordinal relevance ratings, combining Aiken's
-V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
+the modified kappa of Polit et al. (2007), and a
 panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
 \item \code{mode = "congruence"}: the index of item-objective congruence of

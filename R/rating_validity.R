@@ -672,7 +672,8 @@ plot.contentvalid_rating <- function(x,
     ok <- is.finite(r$htc) & is.finite(r$htd)
     .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
                     xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
-                    pch = pch[ok]), list(...))
+                    pch = pch[ok]), list(...),
+               protect = c("type", "xaxt", "yaxt", "axes", "pch"))
     .axis_bounded(1, at = seq(0, 1, 0.25))
     .axis_bounded(2, at = seq(-1, 1, 0.5))
     .hline(0)

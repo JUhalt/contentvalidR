@@ -675,8 +675,9 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   .say(paste0(
     "mean: the judge's mean rating. severity: how far the judge rates below ",
     "the panel, in rating points (negative is more lenient)",
-    if (estimable) paste0("; logit: the same from the facets model, against ",
-                          "the judges it placed, which the flags use") else "",
+    if (estimable) paste0("; logit: severity on the relevant/not-relevant ",
+                          "decision from the facets model, against the ",
+                          "judges it placed, which the flags use") else "",
     "."
   ))
   cat("\n")
@@ -720,10 +721,10 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   for (line in .fragile_items_notes(items)) .say(line)
 
   if (.show_key()) {
-    terms <- c("severity", "differentiation", "phi_coefficient")
+    terms <- c("severity_raw", "differentiation", "phi_coefficient")
     headings <- c("severity", "scale use", "Phi")
     if (estimable) {
-      terms <- append(terms, c("logit", "infit/outfit"), after = 1L)
+      terms <- append(terms, c("severity", "infit/outfit"), after = 1L)
       headings <- append(headings, c("logit", "infit, outfit"), after = 1L)
     }
     .print_key(terms, headings = headings)

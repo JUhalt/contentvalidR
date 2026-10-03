@@ -50,7 +50,7 @@
   }, integer(1))
 }
 
-# Yao, Wu and Yang (2008, p. 486): Psa and Csv both at least .30, chosen for a
+# Yao et al. (2008, p. 486): Psa and Csv both at least .30, chosen for a
 # four-domain sort, where an item assigned at random reaches its domain with
 # probability .25.
 .yao_cut <- .30
@@ -296,7 +296,7 @@
   }
   k <- em$n_constructs
   counted <- !isTRUE(em$constructs_given)
-  .say("Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a",
+  .say("Yao et al. (2008): Psa and Csv both at least .30, set for a",
        "four-domain sort where chance assignment is .25.")
   if (show_ext) {
     .say(paste0(
