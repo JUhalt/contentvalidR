@@ -54,10 +54,11 @@ for the methods and the evidence for each.}
 comparison. Default \code{FALSE}. They are computed either way, stored in
 \code{details$earlier_methods}, and never change the decision; \code{print(fit, legacy = TRUE)} shows them for any fit.}
 
-\item{n_constructs}{Optional number of constructs judges could choose among,
-used only by the comparison block's chance-based extension. By default it
-is the number of constructs that appear in the data, which is too few
-when judges were offered a construct none of them chose.}
+\item{n_constructs}{Optional number of constructs judges could choose among.
+It is used by the comparison block's chance-based extension and by the
+caution added to the Colquitt et al. (2019) bands when it is not three.
+By default it is the number of constructs that appear in the data, which
+is too few when judges were offered a construct none of them chose.}
 }
 \value{
 An object of class \code{contentvalid_sort} and \code{contentvalid_workflow}.

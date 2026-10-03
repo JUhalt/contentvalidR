@@ -283,7 +283,7 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
               "objective and -1 on every other. Rovinelli and Hambleton applied",
               "a criterion of .70.")
       },
-      if (anyNA(x$ioc) && !all(is.na(x$mean_rating))) {
+      if (any(is.na(x$ioc) & !is.na(x$mean_rating) & x$n_objectives == 1L)) {
         paste("IOC is NA for an item rated against one objective: the index",
               "compares objectives.")
       }

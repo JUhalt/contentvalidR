@@ -579,7 +579,12 @@
     ))
   }
 
+  if (.congruence_pre10(fit)) stop(.congruence_pre10_message(), call. = FALSE)
   cells <- if (is.list(fit$details)) fit$details$cells else NULL
+  # Tied objectives are listed together: "Objectives B, C."
+  .objective_word <- function(obj) {
+    ifelse(grepl(", ", obj, fixed = TRUE), "Objectives", "Objective")
+  }
   cut <- fit$settings$ioc_cut
   if (!is.numeric(cut)) cut <- 0.70
 
@@ -609,9 +614,14 @@
           paste("rated against its target objective only, so the index,",
                 "which compares objectives, could not be computed; described,",
                 "no decision"),
-          sprintf(paste("index of item-objective congruence for the target",
-                        "objective >= %s (Rovinelli & Hambleton, 1977)"),
-                  .fmt(cut))
+          sprintf(paste("index of item-objective congruence (Rovinelli &",
+                        "Hambleton, 1977) for the target objective >= %s%s"),
+                  .fmt(cut),
+                  if (isTRUE(all.equal(cut, 0.70))) {
+                    ", the criterion they applied"
+                  } else {
+                    ", set for this analysis (they applied .70)"
+                  })
         )
       ),
       citation = "Rovinelli & Hambleton (1977)",
@@ -624,7 +634,8 @@
                       note = ifelse(
                         is.na(.handoff_column(results, "strongest_competitor")),
                         "",
-                        paste0("Objective ", results$strongest_competitor, ".")
+                        paste0(.objective_word(results$strongest_competitor),
+                               " ", results$strongest_competitor, ".")
                       ))
       )
     ))
@@ -648,7 +659,8 @@
     statistics = if ("best_ioc" %in% names(results)) {
       .handoff_stat(results$item, "highest IOC", results$best_ioc,
                     note = ifelse(is.na(results$best_objective), "",
-                                  paste0("Objective ", results$best_objective,
+                                  paste0(.objective_word(results$best_objective),
+                                         " ", results$best_objective,
                                          ".")))
     } else {
       blank

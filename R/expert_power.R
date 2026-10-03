@@ -49,7 +49,8 @@
 #'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 #'   experts, where Lynn's table stops, the package holds her lowest proportion,
 #'   7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
-#'   Beck (2006) restate her rule as no lower than .78 for six or more experts.
+#'   Beck (2006, p. 491) restate her rule as no lower than .78 for six or more
+#'   experts, though their own recommendation covers 6 to 10 experts (p. 496).
 #'   `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 #' @param alpha Significance level for the CVR criterion. Ignored for CVI.
 #' @param response_rate Expected proportion of invited experts who return usable
@@ -77,9 +78,9 @@
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
 #'
-#' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-#' indicator of content validity? *Research in Nursing & Health, 30*(4),
-#' 459–467. \doi{10.1002/nur.20199}
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489–497. \doi{10.1002/nur.20147}
 #'
 #' @seealso [sort_power()] for item-sort planning, and [gtheory_content()] whose
 #'   decision study plans panel size against a generalizability target.
@@ -227,6 +228,12 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "a sixth expert relaxes the criterion while a fourth or fifth makes",
          "unanimity harder. That is a property of the guideline, not of the",
          "items.")
+  }
+  if (st$criterion == "cvi" && any(sizes > 10)) {
+    cat("\n")
+    .say("Beyond ten experts the criterion holds the lowest proportion in",
+         "Lynn's (1986) table, 7 of 9, which her table does not cover: a",
+         "contentvalidR extension.")
   }
 
   cat("\n")

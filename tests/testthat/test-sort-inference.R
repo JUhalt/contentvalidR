@@ -73,7 +73,7 @@ test_that("print and summary methods communicate decisions", {
   )
   fit <- sort_validity(d)
 
-  expect_output(print(fit), "meet the exact target-assignment criterion")
+  expect_output(print(fit), "1 of 1 item meets the exact target-assignment criterion")
   expect_output(print(fit), "not an automatic deletion decision")
   expect_s3_class(summary(fit), "summary.contentvalid_sort")
   expect_output(print(summary(fit)), "content-validity evidence")

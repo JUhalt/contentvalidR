@@ -55,7 +55,8 @@ forward.
 from the handoff:
 \itemize{
 \item an item sort: Psa, against the exact test's criterion;
-\item an expert relevance panel: the I-CVI, against Lynn's (1986) count;
+\item an expert relevance panel: the I-CVI, against Lynn's (1986) count
+(beyond ten experts, this package's extension holding her 7 of 9);
 \item a Delphi study: the share of experts agreeing, against the consensus
 threshold;
 \item an essentiality panel: the CVR, against the exact test's criterion;

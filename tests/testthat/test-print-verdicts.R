@@ -43,7 +43,7 @@ test_that("the essentiality and congruence prints state their verdicts", {
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   expect_match(printed(expert_validity(d, mode = "congruence")),
-               "2 of 2 items meet the congruence criterion for their target objective.",
+               "2 of 2 items meet the congruence criterion for the target objective.",
                fixed = TRUE)
 })
 
