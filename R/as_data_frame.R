@@ -10,7 +10,8 @@
 #' @param x A contentvalidR result.
 #' @param row.names,optional Accepted for compatibility with
 #'   [base::as.data.frame()] and ignored.
-#' @param component The table to return, where a result holds more than one:
+#' @param component The table to return, where a result holds more than one
+#'   (`NULL`, the default, gives the first listed):
 #'   * [cvi()]: `"item_level"` (default) or `"scale_level"`.
 #'   * [gtheory_content()]: `"variance_components"` (default),
 #'     `"coefficients"`, `"dstudy"`, or `"judges_needed"`.
@@ -25,7 +26,9 @@
 #' @return A data frame. [csv_binom_test()], [signal_detection()],
 #'   [reproducibility_phi()] and [panel_agreement()] give one row: an
 #'   interval becomes two columns, and a two-by-two table becomes its four
-#'   counts.
+#'   counts. For [panel_agreement()] the interval's error rate is `ci_alpha`,
+#'   since `alpha` would read as Krippendorff's; for [csv_binom_test()] the
+#'   one-sided interval is marked by `ci_sides` and `ci_level`.
 #'
 #' @examples
 #' R <- matrix(c(4, 3, 4, 4, 3, 4, 2, 3, 4, 4, 3, 2), 6,
@@ -83,30 +86,27 @@ NULL
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_cvi <- function(x, row.names = NULL, optional = FALSE,
-                                           component = c("item_level", "scale_level"),
-                                           ...) {
-  .as_df_part(x, component[1], c("item_level", "scale_level"))
+                                           component = NULL, ...) {
+  if (is.null(component)) component <- "item_level"
+  .as_df_part(x, component, c("item_level", "scale_level"))
 }
 
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_gtheory <- function(x, row.names = NULL, optional = FALSE,
-                                               component = c("variance_components",
-                                                             "coefficients", "dstudy",
-                                                             "judges_needed"),
-                                               ...) {
-  .as_df_part(x, component[1], c("variance_components", "coefficients",
-                                 "dstudy", "judges_needed"))
+                                               component = NULL, ...) {
+  if (is.null(component)) component <- "variance_components"
+  .as_df_part(x, component, c("variance_components", "coefficients",
+                              "dstudy", "judges_needed"))
 }
 
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_structure <- function(x, row.names = NULL,
                                                  optional = FALSE,
-                                                 component = c("items", "fit",
-                                                               "cross_tab"),
-                                                 ...) {
-  component <- .choose(component[1], c("items", "fit", "cross_tab"), "component")
+                                                 component = NULL, ...) {
+  if (is.null(component)) component <- "items"
+  component <- .choose(component, c("items", "fit", "cross_tab"), "component")
   if (component == "items") {
     # The clusters table already carries each item's coordinates.
     out <- x$clusters
@@ -128,21 +128,18 @@ as.data.frame.contentvalid_structure <- function(x, row.names = NULL,
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_rounds <- function(x, row.names = NULL, optional = FALSE,
-                                              component = c("transitions", "summary",
-                                                            "settings_changes"),
-                                              ...) {
-  .as_df_part(x, component[1], c("transitions", "summary", "settings_changes"))
+                                              component = NULL, ...) {
+  if (is.null(component)) component <- "transitions"
+  .as_df_part(x, component, c("transitions", "summary", "settings_changes"))
 }
 
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_handoff <- function(x, row.names = NULL, optional = FALSE,
-                                               component = c("item_evidence",
-                                                             "item_statistics",
-                                                             "panel_statistics"),
-                                               ...) {
-  .as_df_part(x, component[1], c("item_evidence", "item_statistics",
-                                 "panel_statistics"))
+                                               component = NULL, ...) {
+  if (is.null(component)) component <- "item_evidence"
+  .as_df_part(x, component, c("item_evidence", "item_statistics",
+                              "panel_statistics"))
 }
 
 #' @rdname contentvalid-data-frames
@@ -163,14 +160,23 @@ as.data.frame.contentvalid_expert_power <- function(x, row.names = NULL,
 #' @export
 as.data.frame.contentvalid_agreement <- function(x, row.names = NULL,
                                                  optional = FALSE, ...) {
-  .as_df_row(x)
+  out <- .as_df_row(x)
+  # `alpha` here is the interval's error rate, not Krippendorff's alpha.
+  names(out)[names(out) == "alpha"] <- "ci_alpha"
+  out
 }
 
 #' @rdname contentvalid-data-frames
 #' @export
 as.data.frame.contentvalid_binom <- function(x, row.names = NULL, optional = FALSE,
                                              ...) {
-  .as_df_row(x)
+  out <- .as_df_row(x)
+  # The interval is one-sided, as the printout says.
+  if ("ci_low" %in% names(out)) {
+    out$ci_sides <- "one-sided"
+    out$ci_level <- attr(x$conf.int, "conf.level")
+  }
+  out
 }
 
 #' @rdname contentvalid-data-frames

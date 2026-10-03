@@ -136,7 +136,7 @@ expert_fit$scale_summary
 
 > Experts rated the relevance of each candidate item on a bounded ordinal
 > scale. We summarized relevance using Aiken's V with Penfield-Giacobbi score
-> confidence intervals and calculated I-CVI with Polit-Beck-Owen modified kappa.
+> confidence intervals and calculated I-CVI with the modified kappa of Polit et al. (2007).
 > S-CVI/Ave and S-CVI/UA were reported at the scale level. Panel-size CVI
 > guidelines were used as review aids and were considered alongside written
 > expert feedback and construct coverage.

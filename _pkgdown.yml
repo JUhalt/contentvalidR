@@ -36,6 +36,7 @@ reference:
   contents:
   - contentvalid_glossary
   - as.data.frame.contentvalid_workflow
+  - contentvalid-data-frames
   - content_report
   - content_handoff
   - content_evidence

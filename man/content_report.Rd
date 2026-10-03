@@ -30,7 +30,9 @@ status is not \code{Supported}.}
 }
 \value{
 For \code{"apa"}, a data frame of character columns that prints without
-row names; \code{as.data.frame()} drops its print class. For \code{"data.frame"}, a
+row names; \code{as.data.frame()} drops its print class. An interval column is
+named after its estimate (\verb{V 95\% CI}, \verb{I-CVI 95\% CI}) and printed under
+the shared heading \verb{95\% CI}. For \code{"data.frame"}, a
 plain data frame with \code{recommendation} and \code{status} columns. For
 \code{"markdown"}, a character vector of Markdown lines that prints as the
 table, carrying the analysis provenance as its \code{"settings"} attribute.

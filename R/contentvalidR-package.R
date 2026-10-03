@@ -37,8 +37,9 @@
 #' \strong{Tier 1, the recommended workflows.} [sort_validity()],
 #' [rating_validity()], [expert_validity()], [delphi_validity()],
 #' [judge_validity()], and [domain_validity()]; their `print()` and
-#' `summary()` methods, and the `plot()` methods of the first four (a domain
-#' fit's content map is drawn with `plot(fit$details$structure)`); the object
+#' `summary()` methods, and the `plot()` methods of the first four (when
+#' similarity data were supplied, a domain fit's content map is drawn with
+#' `plot(fit$details$structure)`); the object
 #' contract they share (`results`,
 #' `scale_summary`, `settings`, `design`, `details`); the shared status
 #' vocabulary (`Supported`, `Review`, `Insufficient data`, `Descriptive

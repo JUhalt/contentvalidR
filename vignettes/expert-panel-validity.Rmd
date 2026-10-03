@@ -22,8 +22,8 @@ interchangeable.
 
 The three modes are:
 
-- **relevance**: Aiken's V plus CVI and modified kappa, with a panel-level
-  agreement coefficient;
+- **relevance**: Aiken's (1980) V plus CVI and the modified kappa of Polit
+  et al. (2007), with a panel-level agreement coefficient;
 - **essentiality**: Lawshe's CVR with exact binomial inference; and
 - **congruence**: the index of item-objective congruence (IOC) of Rovinelli
   and Hambleton (1977).
@@ -90,9 +90,10 @@ fit$scale_summary[, c("agreement", "agreement_low", "agreement_high")]
 fit$details$agreement
 ```
 
-The default coefficient is Krippendorff's alpha. It accepts any number of
-experts and missing ratings, and Zapf et al. (2016) recommend it when ratings
-are ordinal or incomplete, which describes most expert panels. It is a general
+The default coefficient is Krippendorff's alpha (Krippendorff, 2011). It
+accepts any number of experts and missing ratings, and Zapf et al. (2016)
+recommend it when ratings are ordinal or incomplete, which describes most
+expert panels. It is a general
 reliability coefficient (Hayes & Krippendorff, 2007) rather than one developed
 for content validity; no publication applying it specifically to
 content-validity panels was found.

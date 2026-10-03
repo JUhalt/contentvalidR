@@ -103,7 +103,7 @@ assumes every judge who misses the target picks the same rival. When those
 judges spread across several constructs, the leading rival's count falls,
 so Csv can reach the critical value with fewer target assignments than
 the exact test requires. That is why it is not used for the decision.
-\item \strong{Yao, Wu and Yang (2008)} required Psa and Csv both to reach .30, which
+\item \strong{Yao et al. (2008)} required Psa and Csv both to reach .30, which
 they chose for a four-domain sort, where an item assigned at random lands
 in its domain with probability .25 (p. 486). They give no rule for other
 numbers of domains.

@@ -389,8 +389,8 @@ test_that("results carry the corrected degrees of freedom of the screening p", {
 test_that("content_report() carries the F test, within 80 columns", {
   fit <- rating_validity(rating_data())
   rep <- content_report(fit)
-  expect_identical(names(rep), c("item", "target", "judges", "HTC", "HTD",
-                                 "F test", "p", "contrast p", "decision"))
+  expect_identical(names(rep), c("Item", "Target", "Judges", "HTC", "HTD",
+                                 "F test", "p", "Contrast p", "Decision"))
   r <- fit$results
   expect_identical(
     rep$`F test`[1],
@@ -402,7 +402,10 @@ test_that("content_report() carries the F test, within 80 columns", {
   old <- options(width = 80)
   on.exit(options(old), add = TRUE)
   lines <- utils::capture.output(print(rep))
-  expect_length(lines, nrow(rep) + 1L)
+  table_lines <- lines[seq_len(nrow(rep) + 1L)]
+  expect_true(all(grepl("^  [A-Z0-9]", table_lines)))
+  expect_identical(lines[nrow(rep) + 2L], "")
+  expect_match(lines[nrow(rep) + 3L], "^Note[.] ")
   expect_lte(max(nchar(lines)), 80L)
   # The closest competitor and the effect size are in the numeric table.
   num <- content_report(fit, format = "data.frame")
@@ -425,7 +428,7 @@ test_that("content_report() carries the F test, within 80 columns", {
   undecided$rating[undecided$item == "I3" & undecided$rater != 1 &
                      undecided$construct == "B"] <- NA
   und <- content_report(rating_validity(undecided))
-  expect_identical(und$`F test`[und$item == "I3"], "--")
+  expect_identical(und$`F test`[und$Item == "I3"], "--")
 })
 
 test_that("the profile figure draws complete-judge means and marks no decision", {

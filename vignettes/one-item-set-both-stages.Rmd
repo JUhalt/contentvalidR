@@ -205,7 +205,8 @@ round(unclass(fa$loadings)["EF4", ], 2)
 
 **`TF4` passed content review and belongs to both facets.** "I keep working
 through a task without taking breaks" is as much effort as focus, and the
-response data say so even though the judges saw only one of the two:
+response data say so, though only four of the twenty judges sorted it under
+effort regulation:
 
 ```{r tf4}
 round(unclass(fa$loadings)["TF4", ], 2)

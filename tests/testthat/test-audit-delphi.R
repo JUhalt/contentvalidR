@@ -221,18 +221,18 @@ test_that("content_report() writes a Delphi chi-square as APA does", {
                          consensus_threshold = .75, stability = "chisq_group")
   tab <- as.data.frame(content_report(fit))
   # It was headed "stability", lost its leading zero, and had no df.
-  expect_true(all(c("df", "chi-square", "p") %in% names(tab)))
-  expect_false("stability" %in% names(tab))
+  expect_true(all(c("df", "Chi-square", "p") %in% names(tab)))
+  expect_false("Stability" %in% names(tab))
   below_one <- fit$results$stability < 1 & !is.na(fit$results$stability)
   expect_true(any(below_one))
-  expect_true(all(grepl("^0\\.", tab$`chi-square`[below_one])))
+  expect_true(all(grepl("^0\\.", tab$`Chi-square`[below_one])))
   expect_identical(tab$df, as.character(fit$results$stability_df))
 
   kap <- as.data.frame(content_report(
     delphi_validity(three_rounds(), lo = 1, hi = 4, consensus_threshold = .75,
                     B = 0)
   ))
-  expect_true("kappa" %in% names(kap))
+  expect_true("Kappa" %in% names(kap))
   expect_false("df" %in% names(kap))
 })
 

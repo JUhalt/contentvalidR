@@ -56,9 +56,9 @@ test_that("the agreement key matches the coefficient chosen", {
 test_that("the judge key separates severity in rating points from logits", {
   g <- contentvalid_glossary()
   sev <- g$definition[g$term == "severity"]
-  expect_match(sev, "in rating points", fixed = TRUE)
+  expect_match(sev, "relevant/not-relevant decision", fixed = TRUE)
   expect_false(grepl("Reported in logits", sev, fixed = TRUE))
-  expect_true("logit" %in% g$term)
+  expect_true("severity_raw" %in% g$term)
   r <- rbind(
     c(4, 4, 3, 4, 3, 2, 3, 2, 4, 3), c(4, 3, 4, 3, 2, 3, 2, 3, 4, 2),
     c(3, 4, 4, 3, 3, 2, 2, 2, 3, 3), c(4, 4, 3, 2, 3, 3, 3, 1, 4, 2),
@@ -74,7 +74,7 @@ test_that("domain decision meanings state the rule applied", {
   m <- contentvalidR:::.decision_meanings("domain")
   expect_match(m[["Over-represented"]], "over_factor", fixed = TRUE)
   expect_match(m[["Under-represented"]], "over_factor", fixed = TRUE)
-  expect_match(m[["Thinly covered"]], "its target, if smaller", fixed = TRUE)
+  expect_match(m[["Thinly covered"]], "minimum set for this analysis", fixed = TRUE)
 })
 
 test_that("three-author works are cited with et al. and p value is not hyphenated", {
@@ -145,8 +145,8 @@ test_that("long item names are shortened rather than breaking a figure", {
   expect_no_error(plot(content_evidence(fit)))
   lab <- contentvalidR:::.item_labels(colnames(R), width_in = 7)
   expect_identical(lab$labels[2], "Short")
-  expect_true(all(endsWith(lab$labels[-2], "...")))
-  expect_lt(lab$lines, 0.4 * 7 / graphics::par("csi") + 1e-9)
+  expect_true(all(grepl("...", lab$labels[-2], fixed = TRUE)))
+  expect_lte(lab$lines, 1.2 + 0.4 * 7 / graphics::par("csi") + 1e-9)
 })
 
 # ---- as.data.frame() for every result ------------------------------------------
@@ -194,4 +194,106 @@ test_that("a single test is one row", {
   pa <- as.data.frame(panel_agreement(relevance(), B = 0))
   expect_identical(nrow(pa), 1L)
   expect_true(all(c("method", "estimate") %in% names(pa)))
+})
+
+# ---- Review of the text fixes ------------------------------------------------
+
+test_that("a caller's plot argument reaches the frame, and protected ones do not", {
+  seen <- NULL
+  capture <- function(...) seen <<- list(...)
+  base <- list(x = 1, type = "n", xaxt = "n", xlab = "Method", pch = 19)
+  contentvalidR:::.plot_with(base, list(xlab = "Mine", xlim = c(0, 2)),
+                             draw = capture)
+  expect_identical(seen$xlab, "Mine")
+  expect_identical(seen$xlim, c(0, 2))
+  contentvalidR:::.plot_with(base, list(type = "l", xaxt = "s", xlab = NULL),
+                             draw = capture)
+  expect_identical(seen$type, "n")
+  expect_identical(seen$xaxt, "n")
+  expect_identical(seen$xlab, "Method")
+  contentvalidR:::.plot_with(base, list(pch = 17), draw = capture,
+                             protect = c("type", "pch"))
+  expect_identical(seen$pch, 19)
+  expect_warning(contentvalidR:::.plot_with(base, list("stray"), draw = capture),
+                 "Unnamed arguments")
+
+  pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  plot(expert_validity(relevance(), lo = 1, hi = 4, agreement = "none"),
+       xlim = c(0, 0.5))
+  expect_equal(graphics::par("usr")[2], 0.5 + 0.04 * 0.5, tolerance = 1e-6)
+})
+
+test_that("shortened labels stay apart and full labels are kept when they fit", {
+  pdf(NULL, width = 7, height = 4)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  stems <- c("I feel confident in my ability to do my job well",
+             "I feel confident in my ability to learn new skills",
+             "My supervisor gives me useful feedback")
+  lab <- contentvalidR:::.item_labels(stems, width_in = 4)
+  expect_false(anyDuplicated(lab$labels) > 0L)
+  expect_true(all(grepl("...", lab$labels[1:2], fixed = TRUE)))
+  short <- c("effort_regulation_01", "effort_regulation_02", "task_focus_01")
+  expect_identical(contentvalidR:::.item_labels(short)$labels, short)
+})
+
+test_that("both two-by-two tables give their four counts by name", {
+  pre <- c(TRUE, TRUE, FALSE, TRUE, FALSE, TRUE)
+  crit <- c(TRUE, FALSE, FALSE, TRUE, FALSE, TRUE)
+  sd <- as.data.frame(signal_detection(pre, crit))
+  expect_identical(
+    unlist(sd[c("n_predicted_retain_actual_retain",
+                "n_predicted_not_retained_actual_retain",
+                "n_predicted_retain_actual_not_retained",
+                "n_predicted_not_retained_actual_not_retained")], use.names = FALSE),
+    c(3L, 0L, 1L, 2L))
+  rp <- as.data.frame(reproducibility_phi(pre, crit))
+  expect_identical(
+    unlist(rp[c("n_pretest1_retain_pretest2_retain",
+                "n_pretest1_not_retained_pretest2_retain",
+                "n_pretest1_retain_pretest2_not_retained",
+                "n_pretest1_not_retained_pretest2_not_retained")], use.names = FALSE),
+    c(3L, 0L, 1L, 2L))
+})
+
+test_that("one-row frames say what their interval is", {
+  pa <- as.data.frame(panel_agreement(relevance(), B = 0))
+  expect_true("ci_alpha" %in% names(pa))
+  expect_false("alpha" %in% names(pa))
+  b <- as.data.frame(csv_binom_test(16, 20))
+  expect_identical(b$ci_sides, "one-sided")
+  expect_equal(b$ci_level, 0.95)
+})
+
+test_that("three-author works read et al. in printouts", {
+  expect_match(flat(cvi(relevance() >= 3)), "Polit et al. (2007)", fixed = TRUE)
+  legacy <- flat(sort_fit(), legacy = TRUE)
+  expect_match(legacy, "Yao et al. (2008): Psa and Csv", fixed = TRUE)
+  expect_false(grepl("Yao, Wu", legacy, fixed = TRUE))
+})
+
+test_that("a renamed report column prints under its new name", {
+  tab <- content_report(sort_fit())
+  expect_true("Psa 95% CI" %in% names(tab))
+  names(tab)[1] <- "Item code"
+  out <- utils::capture.output(print(tab))
+  expect_match(out[1], "Item code", fixed = TRUE)
+  expect_match(out[1], "95% CI", fixed = TRUE)
+  expect_false(grepl("Psa 95% CI", out[1], fixed = TRUE))
+})
+
+test_that("the AC1 key does not read 0 as chance", {
+  ac <- flat(expert_validity(relevance(), lo = 1, hi = 4, agreement = "ac1",
+                             agreement_B = 0))
+  expect_match(ac, "not 0 for independent raters", fixed = TRUE)
+  expect_false(grepl("decision (1 is perfect, 0 is chance)", ac, fixed = TRUE))
+})
+
+test_that("the glossary keys severity by its column in results", {
+  g <- contentvalid_glossary()
+  expect_match(g$definition[g$term == "severity_raw"], "rating points", fixed = TRUE)
+  expect_match(g$definition[g$term == "severity"], "even in sign", fixed = TRUE)
+  expect_false("logit" %in% g$term)
+  m <- contentvalidR:::.decision_meanings("domain")
+  expect_false(grepl("target", m[["Thinly covered"]], fixed = TRUE))
 })

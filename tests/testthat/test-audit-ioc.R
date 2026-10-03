@@ -140,15 +140,15 @@ test_that("the congruence handoff carries the index, both means and the criterio
 
 test_that("the congruence report shows the index, the means and the decision", {
   tab <- content_report(expert_validity(congruence_data(), mode = "congruence"))
-  expect_identical(names(tab), c("item", "target", "experts", "IOC", "mean",
-                                 "competitor", "competitor mean", "margin",
-                                 "decision"))
+  expect_identical(names(tab), c("Item", "Target", "Experts", "IOC", "Mean",
+                                 "Competitor", "Competitor mean", "Margin",
+                                 "Decision"))
   expect_identical(tab$IOC, c("1.00", ".50", "-.50"))
-  expect_identical(tab$margin, c("2.00", "1.00", "-1.00"))
+  expect_identical(tab$Margin, c("2.00", "1.00", "-1.00"))
   d <- congruence_data()
   d$target_objective <- NULL
   desc <- content_report(expert_validity(d, mode = "congruence"))
-  expect_true(all(c("best objective", "best IOC") %in% names(desc)))
+  expect_true(all(c("Best objective", "Best IOC") %in% names(desc)))
 })
 
 # ---- Relevance: Lynn's criterion and the package's extension of it ----------

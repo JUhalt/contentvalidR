@@ -45,9 +45,9 @@ It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
-Computes Aiken's V per item for bounded ordinal expert ratings. By default,
-confidence intervals use the score method described by Penfield and
-Giacobbi (2004). Percentile bootstrap intervals remain available for
+Computes Aiken's (1980) V per item for bounded ordinal expert ratings. By
+default, confidence intervals use the score method described by Penfield
+and Giacobbi (2004). Percentile bootstrap intervals remain available for
 compatibility and sensitivity analysis.
 }
 \examples{

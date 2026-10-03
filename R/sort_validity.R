@@ -193,7 +193,7 @@
 #'   judges spread across several constructs, the leading rival's count falls,
 #'   so Csv can reach the critical value with fewer target assignments than
 #'   the exact test requires. That is why it is not used for the decision.
-#' * **Yao, Wu and Yang (2008)** required Psa and Csv both to reach .30, which
+#' * **Yao et al. (2008)** required Psa and Csv both to reach .30, which
 #'   they chose for a four-domain sort, where an item assigned at random lands
 #'   in its domain with probability .25 (p. 486). They give no rule for other
 #'   numbers of domains.
@@ -679,7 +679,8 @@ plot.contentvalid_sort <- function(x,
   ok <- is.finite(r$psa) & is.finite(r$csv)
   .plot_with(list(x = r$psa[ok], y = r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
                   xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = csv_lab,
-                  pch = pch[ok]), list(...))
+                  pch = pch[ok]), list(...),
+             protect = c("type", "xaxt", "yaxt", "axes", "pch"))
   .axis_bounded(1, at = seq(0, 1, 0.25))
   .axis_bounded(2, at = seq(-1, 1, 0.5))
   .hline(0)

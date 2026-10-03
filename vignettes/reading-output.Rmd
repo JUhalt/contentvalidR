@@ -89,7 +89,8 @@ and which were flagged), then one row per item. Working across the item table:
   default (`p_value` in `results`). That benchmark is not the rate random
   sorting would give, which is 1 divided by the number of constructs.
 
-Numbers follow the APA style rules (seventh edition, Section 6.36). A statistic
+Numbers follow the APA style rules (American Psychological Association, 2020,
+Section 6.36). A statistic
 that cannot exceed 1, such as a proportion or a *p* value, is printed without a
 leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
 .001 is printed as < .001. The `results` table keeps every value at full
@@ -349,6 +350,11 @@ contentvalid_glossary("expert-panel")
 American Psychological Association. (2020). *Publication manual of the
 American Psychological Association* (7th ed.).
 https://doi.org/10.1037/0000165-000
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content
+validation guidelines: Evaluation criteria for definitional correspondence and
+definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
+1243–1265. https://doi.org/10.1037/apl0000406
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 *Nursing Research, 35*(6), 382–385.
