@@ -130,9 +130,9 @@ test_that("each workflow shows the statistic its decision rule reads", {
   }
   expect_identical(stat_of(ess), "CVR")
   expect_identical(stat_of(expert_validity(con_t, mode = "congruence")),
-                   "IOC margin")
+                   "target IOC")
   expect_identical(stat_of(expert_validity(con_d, mode = "congruence"),
-                           keep = "Descriptive only"), "IOC")
+                           keep = "Descriptive only"), "highest IOC")
   expect_identical(stat_of(rating_validity(rd, scale_min = 1, scale_max = 5)),
                    "HTC")
   expect_identical(stat_of(delphi), "Share agreeing")

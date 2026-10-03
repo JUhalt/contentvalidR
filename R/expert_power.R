@@ -34,6 +34,12 @@
 #' recommends a panel size. It reports the consequences of the sizes you ask
 #' about, so the choice stays yours and stays documented.
 #'
+#' This is a contentvalidR planning tool, not a published method: the
+#' probability is binomial, assuming that experts endorse the item
+#' independently and with the same probability. The criteria it applies are
+#' published (Lynn, 1986; Ayre & Scally, 2014), except Lynn's beyond ten
+#' experts, which is this package's extension (see `criterion`).
+#'
 #' @param n_experts Panel sizes to evaluate.
 #' @param prob Probability that one expert endorses the item, as relevant
 #'   (`criterion = "cvi"`) or essential (`criterion = "cvr"`). Values well below
@@ -42,7 +48,10 @@
 #'   I-CVI: every expert must agree with three to five, one may disagree from
 #'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 #'   experts, where Lynn's table stops, the package holds her lowest proportion,
-#'   7 of 9. `"cvr"` uses the exact Lawshe critical count at level `alpha`.
+#'   7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
+#'   Beck (2006, p. 491) restate her rule as no lower than .78 for six or more
+#'   experts, though their own recommendation covers 6 to 10 experts (p. 496).
+#'   `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 #' @param alpha Significance level for the CVR criterion. Ignored for CVI.
 #' @param response_rate Expected proportion of invited experts who return usable
 #'   ratings. When below 1, `n_experts` is treated as the number invited and the
@@ -69,9 +78,9 @@
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
 #'
-#' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-#' indicator of content validity? *Research in Nursing & Health, 30*(4),
-#' 459–467. \doi{10.1002/nur.20199}
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489–497. \doi{10.1002/nur.20147}
 #'
 #' @seealso [sort_power()] for item-sort planning, and [gtheory_content()] whose
 #'   decision study plans panel size against a generalizability target.
@@ -219,6 +228,12 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "a sixth expert relaxes the criterion while a fourth or fifth makes",
          "unanimity harder. That is a property of the guideline, not of the",
          "items.")
+  }
+  if (st$criterion == "cvi" && any(sizes > 10)) {
+    cat("\n")
+    .say("Beyond ten experts the criterion holds the lowest proportion in",
+         "Lynn's (1986) table, 7 of 9, which her table does not cover: a",
+         "contentvalidR extension.")
   }
 
   cat("\n")

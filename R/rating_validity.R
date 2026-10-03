@@ -1,4 +1,11 @@
-.rating_scale_summary <- function(results, orbiting_r = NULL, judge_type = "naive") {
+.rating_scale_summary <- function(results, orbiting_r = NULL, judge_type = "naive",
+                                  n_definitions = NULL) {
+  # The definitions each target's items were rated against, by target name.
+  defs_for <- function(target) {
+    if (is.null(n_definitions)) return(NA_integer_)
+    if (is.null(names(n_definitions))) return(as.integer(n_definitions[1]))
+    as.integer(n_definitions[target])
+  }
   targets <- unique(results$target)
   r_map <- .resolve_rating_orbiting_r(targets, orbiting_r)
   rank <- c("Lack of" = 1L, Weak = 2L, Moderate = 3L, Strong = 4L, `Very Strong` = 5L)
@@ -22,7 +29,10 @@
     htd_i <- .untag_component(interpret_colquitt(mean_htd, "htd", orbiting_r = r_arg, judge_type = judge_type))
     hs <- htc_i$interpretation[1]
     ds <- htd_i$interpretation[1]
-    overall <- if (is.na(hs) || is.na(ds)) NA_character_ else {
+    # Each index is read against its own benchmark, as Colquitt et al. (2019)
+    # publish them; they publish no combined band. The advice follows the
+    # weaker of the two.
+    weaker <- if (is.na(hs) || is.na(ds)) NA_character_ else {
       if (unname(rank[hs]) <= unname(rank[ds])) hs else ds
     }
 
@@ -32,20 +42,28 @@
     } else ""
     evidence <- if (judge_type == "expert") {
       paste0("HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.", partial_note)
-    } else if (is.na(overall)) {
+    } else if (is.na(weaker)) {
       paste0("Insufficient scale-level rating evidence is available for normative interpretation.", partial_note)
     } else {
-      band <- sprintf(paste("The weaker of HTC and HTD falls in the %s band of",
-                            "published scales (Colquitt et al., 2019)"), overall)
-      advice <- if (overall %in% c("Very Strong", "Strong")) {
+      band <- if (identical(hs, ds)) {
+        sprintf(paste("Mean HTC and mean HTD both fall in the %s band of",
+                      "published scales (Colquitt et al., 2019)"), hs)
+      } else {
+        sprintf(paste("Mean HTC falls in the %s band and mean HTD in the %s",
+                      "band of published scales (Colquitt et al., 2019)"),
+                hs, ds)
+      }
+      advice <- if (weaker %in% c("Very Strong", "Strong")) {
         "."
-      } else if (overall == "Moderate") {
+      } else if (weaker == "Moderate") {
         "; inspect the weaker items and construct overlap before finalizing the scale."
       } else {
         paste("; review item wording, construct boundaries, and the choice of",
               "orbiting constructs, and consider pretesting the revised items again.")
       }
-      paste0(band, advice, partial_note)
+      paste0(band, advice,
+             .colquitt_definitions_caution(defs_for(target), "rated"),
+             partial_note)
     }
 
     data.frame(
@@ -60,7 +78,7 @@
       htc_strength = hs,
       mean_htd = mean_htd,
       htd_strength = ds,
-      overall_strength = overall,
+      n_definitions = defs_for(target),
       orbiting_r = r,
       benchmark_set = htc_i$benchmark_set[1],
       evidence = evidence,
@@ -337,8 +355,14 @@ rating_validity <- function(ratings,
            comp, "); review the weakest target-orbiting comparison before revising or removing the item.")
   }, character(1))
 
+  # Each item's own design: the constructs it was rated against. A scale's
+  # count is the largest among its items.
+  per_item <- tapply(d$construct, d$item, function(z) length(unique(z)))
+  item_target <- results$target[match(names(per_item), as.character(results$item))]
+  n_defs <- tapply(as.integer(per_item), item_target, max)
   scale_summary <- .rating_scale_summary(results, orbiting_r = orbiting_r,
-                                         judge_type = judge_type)
+                                         judge_type = judge_type,
+                                         n_definitions = n_defs)
   contrasts <- attr(anova_out, "contrasts")
 
   results$status <- .workflow_status_from_recommendation(results$recommendation)
@@ -472,6 +496,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   # How many items are behind each mean, said only when some were left out.
   for (line in .rating_partial_means(sc)) .say(line)
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
+  if (!expert) for (line in .colquitt_caution_lines(sc, "rated")) .say(line)
 
   cat("\n")
   if (identical(s$judge_type, "expert")) {
@@ -531,12 +556,11 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   tab$`HTC level` <- s$htc_strength
   tab$`mean HTD` <- .fmt(s$mean_htd, digits)
   tab$`HTD level` <- s$htd_strength
-  tab$overall <- s$overall_strength
   # Expert-judge analyses carry no benchmark labels, so the columns that
   # would hold them are left out. The judge type decides, as in the main
   # print, so a naive-judge analysis keeps the columns even when empty.
   if (identical(x$settings$judge_type, "expert")) {
-    tab <- tab[!names(tab) %in% c("HTC level", "HTD level", "overall")]
+    tab <- tab[!names(tab) %in% c("HTC level", "HTD level")]
   }
   .print_table(tab)
   cat("\n")

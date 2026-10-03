@@ -502,20 +502,31 @@
 
   if (identical(mode, "relevance")) {
     # Stated as counts, because the decision compares counts (Lynn, 1986).
+    # Past ten experts the count is the package's extension of Lynn's table,
+    # and the rule says so.
     required <- .cvi_required_count(results$N)
+    source <- ifelse(
+      !is.na(results$N) & results$N > 10L,
+      paste("contentvalidR extension of Lynn, 1986, holding her 7 of 9",
+            "beyond her ten-expert table"),
+      "Lynn, 1986"
+    )
     rule <- ifelse(
       is.na(results$cvi_criterion),
       "fewer than three usable expert ratings; treated as insufficient",
       sprintf(paste("at least %d of %d experts rate the item relevant (I-CVI",
-                    ">= %s; Lynn, 1986); modified kappa > .74 for strong",
-                    "support (Polit et al., 2007)"),
-              required, as.integer(results$N), .fmt(results$cvi_criterion))
+                    ">= %s; %s), which also puts modified kappa above .74",
+                    "(Polit et al., 2007)"),
+              required, as.integer(results$N), .fmt(results$cvi_criterion),
+              source)
     )
+    extended <- any(!is.na(results$N) & results$N > 10L)
     return(list(
       scale = rep(NA_character_, n),
       n_judges = as.integer(results$N),
       rule = rule,
       citation = c("Aiken (1980)", "Penfield & Giacobbi (2004)", "Lynn (1986)",
+                   if (extended) "Polit & Beck (2006)",
                    "Polit et al. (2007)"),
       statistics = rbind(
         .handoff_stat(results$item, "Aiken's V", results$V,
@@ -568,38 +579,89 @@
     ))
   }
 
-  # Congruence, with a target mapping: the target objective is the construct.
+  if (.congruence_pre10(fit)) stop(.congruence_pre10_message(), call. = FALSE)
+  cells <- if (is.list(fit$details)) fit$details$cells else NULL
+  # Tied objectives are listed together: "Objectives B, C."
+  .objective_word <- function(obj) {
+    ifelse(grepl(", ", obj, fixed = TRUE), "Objectives", "Objective")
+  }
+  cut <- fit$settings$ioc_cut
+  if (!is.numeric(cut)) cut <- 0.70
+
+  # Congruence, with a target mapping: the target objective is the construct,
+  # and the decision is the index against Rovinelli and Hambleton's criterion.
   if ("target_ioc" %in% names(results)) {
-    cells <- if (is.list(fit$details)) fit$details$cells else NULL
-    n_judges <- rep(NA_integer_, n)
-    if (is.data.frame(cells) && all(c("item", "objective", "n_judges") %in% names(cells))) {
-      idx <- match(paste(results$item, results$target),
-                   paste(cells$item, cells$objective))
-      n_judges <- as.integer(cells$n_judges[idx])
+    n_judges <- if ("n_judges" %in% names(results)) {
+      as.integer(results$n_judges)
+    } else if (is.data.frame(cells) &&
+               all(c("item", "objective", "n_judges") %in% names(cells))) {
+      as.integer(cells$n_judges[match(paste(results$item, results$target),
+                                       paste(cells$item, cells$objective))])
+    } else {
+      rep(NA_integer_, n)
     }
+    target_mean <- .handoff_column(results, "target_mean")
     return(list(
       scale = as.character(results$target),
       n_judges = n_judges,
-      rule = rep(paste("target-objective IOC exceeds the strongest competing",
-                       "objective (Rovinelli & Hambleton, 1977)"), n),
-      citation = c("Rovinelli & Hambleton (1977)", "Turner & Carlson (2003)"),
+      # A rule explains the decision beside it, so the two cases without one
+      # say why.
+      rule = ifelse(
+        is.na(target_mean),
+        "no usable expert ratings on the target objective; no decision",
+        ifelse(
+          is.na(results$target_ioc),
+          paste("rated against its target objective only, so the index,",
+                "which compares objectives, could not be computed; described,",
+                "no decision"),
+          sprintf(paste("index of item-objective congruence (Rovinelli &",
+                        "Hambleton, 1977) for the target objective >= %s%s"),
+                  .fmt(cut),
+                  if (isTRUE(all.equal(cut, 0.70))) {
+                    ", the criterion they applied"
+                  } else {
+                    ", set for this analysis (they applied .70)"
+                  })
+        )
+      ),
+      citation = "Rovinelli & Hambleton (1977)",
       statistics = rbind(
-        .handoff_stat(results$item, "target IOC", results$target_ioc),
-        .handoff_stat(results$item, "competitor IOC", results$competitor_ioc),
-        .handoff_stat(results$item, "IOC margin", results$margin, 0)
+        .handoff_stat(results$item, "target IOC", results$target_ioc, cut),
+        .handoff_stat(results$item, "target mean rating",
+                      .handoff_column(results, "target_mean")),
+        .handoff_stat(results$item, "competitor mean rating",
+                      .handoff_column(results, "competitor_mean"),
+                      note = ifelse(
+                        is.na(.handoff_column(results, "strongest_competitor")),
+                        "",
+                        paste0(.objective_word(results$strongest_competitor),
+                               " ", results$strongest_competitor, ".")
+                      ))
       )
     ))
   }
 
-  # Congruence without a target mapping: descriptive cells, no decision rule.
+  # Congruence without a target mapping: one row per item, no decision rule.
+  # The index is given for the objective each item matched best.
   list(
     scale = rep(NA_character_, n),
-    n_judges = if ("n_judges" %in% names(results)) as.integer(results$n_judges) else rep(NA_integer_, n),
-    rule = rep(paste("no target-objective mapping was supplied; IOC is reported",
-                     "descriptively"), n),
-    citation = c("Rovinelli & Hambleton (1977)", "Turner & Carlson (2003)"),
-    statistics = if ("ioc" %in% names(results)) {
-      .handoff_stat(results$item, "IOC", results$ioc)
+    n_judges = if (is.data.frame(cells) && "n_judges" %in% names(cells)) {
+      as.integer(vapply(results$item, function(it) {
+        max(c(0L, cells$n_judges[cells$item == it]))
+      }, numeric(1)))
+    } else {
+      rep(NA_integer_, n)
+    },
+    rule = rep(paste("no target-objective mapping was supplied; the index of",
+                     "item-objective congruence is described, with no",
+                     "decision"), n),
+    citation = "Rovinelli & Hambleton (1977)",
+    statistics = if ("best_ioc" %in% names(results)) {
+      .handoff_stat(results$item, "highest IOC", results$best_ioc,
+                    note = ifelse(is.na(results$best_objective), "",
+                                  paste0(.objective_word(results$best_objective),
+                                         " ", results$best_objective,
+                                         ".")))
     } else {
       blank
     }

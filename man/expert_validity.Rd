@@ -14,6 +14,7 @@ expert_validity(
   alpha = 0.05,
   na.rm = FALSE,
   target_col = "target_objective",
+  ioc_cut = 0.7,
   proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
   agreement = c("krippendorff", "ac1", "none"),
   agreement_level = c("ordinal", "nominal", "interval"),
@@ -51,7 +52,14 @@ every rating would count as relevant.}
 \item{na.rm}{Permit itemwise/cellwise missing ratings where supported.}
 
 \item{target_col}{In congruence mode, optional column identifying each
-item's intended objective. If absent, IOC cells are returned descriptively.}
+item's intended objective. If absent, every item-objective index is
+described and no decision is made.}
+
+\item{ioc_cut}{In congruence mode, the lowest index of item-objective
+congruence that counts as congruent. The default, .70, is the criterion
+Rovinelli and Hambleton (1977) applied. Turner and Carlson (2003) extend
+the index to items written for more than one objective, which this
+package does not do.}
 
 \item{proportion_ci}{Interval method for I-CVI in relevance mode:
 \code{"wilson"} (default), \code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The
@@ -97,7 +105,9 @@ Provides a user-facing workflow for three common expert-panel tasks:
 V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
-\item \code{mode = "congruence"}: Rovinelli-Hambleton item-objective congruence.
+\item \code{mode = "congruence"}: the index of item-objective congruence of
+Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+objective (see \code{\link[=ioc]{ioc()}}).
 }
 
 Quantitative results are presented as evidence for item review rather than
@@ -112,8 +122,9 @@ which would say the experts had disagreed.
 }
 \section{Earlier methods, for comparison}{
 
-The decisions use Lynn's (1986) criterion in relevance mode and the exact
-binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
+The decisions use Lynn's (1986) criterion in relevance mode (beyond the ten
+experts her table covers, this package's extension holding her 7 of 9) and
+the exact binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier rules are
 reported beside them for teaching, and none changes a decision:
 \itemize{
 \item \strong{Essentiality.} Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
@@ -218,6 +229,14 @@ sure you know what's being reported? Critique and recommendations.
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
 459–467. \doi{10.1002/nur.20199}
+
+Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+specialists in the assessment of criterion-referenced test item validity.
+\emph{Dutch Journal of Educational Research, 2}, 49–60.
+
+Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence
+for multidimensional items. \emph{International Journal of Testing, 3}(2),
+163–171. \doi{10.1207/S15327574IJT0302_5}
 
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
 critical values for Lawshe's content validity ratio. \emph{Measurement and

@@ -41,7 +41,8 @@
   stats::setNames(as.numeric(orbiting_r[targets]), targets)
 }
 
-.sort_scale_summary <- function(results, orbiting_r, judge_type) {
+.sort_scale_summary <- function(results, orbiting_r, judge_type,
+                                n_definitions = NULL, how = "offered") {
   targets <- unique(as.character(results$target))
   r_map <- .resolve_orbiting_r(targets, orbiting_r)
   strength_rank <- c("Lack of" = 1L, Weak = 2L, Moderate = 3L, Strong = 4L, `Very Strong` = 5L)
@@ -65,10 +66,19 @@
       }
       weakest <- NA_character_
     } else {
+      # Each index is read against its own benchmark, as Colquitt et al.
+      # (2019) publish them; they publish no combined band. The advice
+      # follows the weaker of the two.
       labels <- c(psa_i$interpretation, csv_i$interpretation)
       weakest <- labels[which.min(strength_rank[labels])]
-      band <- sprintf(paste("The weaker of Psa and Csv falls in the %s band of",
-                            "published scales (Colquitt et al., 2019)"), weakest)
+      band <- if (identical(labels[1], labels[2])) {
+        sprintf(paste("Mean Psa and mean Csv both fall in the %s band of",
+                      "published scales (Colquitt et al., 2019)"), labels[1])
+      } else {
+        sprintf(paste("Mean Psa falls in the %s band and mean Csv in the %s",
+                      "band of published scales (Colquitt et al., 2019)"),
+                labels[1], labels[2])
+      }
       evidence <- if (strength_rank[weakest] >= 4L) {
         paste0(band, ".")
       } else if (strength_rank[weakest] == 3L) {
@@ -77,6 +87,7 @@
         paste0(band, "; review item wording and construct overlap, and consider",
                " pretesting the revised items again.")
       }
+      evidence <- paste0(evidence, .colquitt_definitions_caution(n_definitions, how))
     }
 
     if (nrow(z) == 1L && judge_type == "naive") {
@@ -96,7 +107,7 @@
       orbiting_r = if (is.null(r_arg)) NA_real_ else r,
       benchmark_set = psa_i$benchmark_label,
       benchmark_applicable = psa_i$applicable,
-      overall_strength = weakest,
+      n_definitions = if (is.null(n_definitions)) NA_integer_ else as.integer(n_definitions),
       evidence = evidence,
       stringsAsFactors = FALSE
     )
@@ -155,10 +166,11 @@
 #'   comparison. Default `FALSE`. They are computed either way, stored in
 #'   `details$earlier_methods`, and never change the decision; `print(fit,
 #'   legacy = TRUE)` shows them for any fit.
-#' @param n_constructs Optional number of constructs judges could choose among,
-#'   used only by the comparison block's chance-based extension. By default it
-#'   is the number of constructs that appear in the data, which is too few
-#'   when judges were offered a construct none of them chose.
+#' @param n_constructs Optional number of constructs judges could choose among.
+#'   It is used by the comparison block's chance-based extension and by the
+#'   caution added to the Colquitt et al. (2019) bands when it is not three.
+#'   By default it is the number of constructs that appear in the data, which
+#'   is too few when judges were offered a construct none of them chose.
 #'
 #' @return An object of class `contentvalid_sort` and `contentvalid_workflow`.
 #'   All flagship workflow objects expose the common components `results`,
@@ -320,7 +332,17 @@ sort_validity <- function(assignments,
   }, character(1))
 
   d <- .prepare_sort_assignments(assignments, item_col, rater_col, assigned_col, target_col)
-  scale_summary <- .sort_scale_summary(results, orbiting_r = orbiting_r, judge_type = judge_type)
+  # The definitions judges could choose among: what Colquitt et al.'s norms
+  # assume to be three.
+  n_definitions <- if (!is.null(n_constructs)) {
+    as.integer(n_constructs)
+  } else {
+    length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
+  }
+  scale_summary <- .sort_scale_summary(results, orbiting_r = orbiting_r,
+                                       judge_type = judge_type,
+                                       n_definitions = n_definitions,
+                                       how = if (is.null(n_constructs)) "used" else "offered")
 
   results$status <- .workflow_status_from_recommendation(results$recommendation)
 
@@ -341,7 +363,10 @@ sort_validity <- function(assignments,
     n_judges_max = if (nrow(results)) max(results$n) else 0L,
     n_missing = sum(results$n_missing),
     n_target_scales = length(unique(d$target)),
-    n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)]))))
+    n_constructs_observed = length(unique(c(as.character(d$target), as.character(d$assigned[!is.na(d$assigned)])))),
+    # Whether the number of constructs offered was given, or is only what
+    # judges used.
+    n_constructs_given = !is.null(n_constructs)
   )
   if (!is.null(n_constructs) && n_constructs < design$n_constructs_observed) {
     stop("`n_constructs` is ", n_constructs, ", but the data use ",
@@ -391,8 +416,10 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   })
   cat("\n")
 
-  .say(sum(r$recommendation == "Retain"), "of", nrow(r),
-       "items meet the exact target-assignment criterion.")
+  met <- sum(r$recommendation == "Retain")
+  .say(met, "of", .n_noun(nrow(r), "item"),
+       if (met == 1L || nrow(r) == 1L) "meets" else "meet",
+       "the exact target-assignment criterion.")
   if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
   if (length(insufficient)) {
     .say("Insufficient data:", paste(insufficient, collapse = ", "))
@@ -451,6 +478,10 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
   .print_table(st)
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
+  if (!expert) {
+    how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
+    for (line in .colquitt_caution_lines(sc, how)) .say(line)
+  }
 
   cat("\n")
   if (identical(s$judge_type, "expert")) {
@@ -513,14 +544,14 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
     target = s$target, items = s$n_items, retain = s$n_retain,
     review = s$n_review, `mean Psa` = .fmt(s$mean_psa, digits),
     `Psa level` = s$psa_strength, `mean Csv` = .fmt(s$mean_csv, digits),
-    `Csv level` = s$csv_strength, overall = s$overall_strength,
+    `Csv level` = s$csv_strength,
     stringsAsFactors = FALSE, check.names = FALSE
   )
   # Expert-judge analyses carry no benchmark labels, so the columns that
   # would hold them are left out. The judge type decides, as in the main
   # print.
   if (identical(x$settings$judge_type, "expert")) {
-    tab <- tab[!names(tab) %in% c("Psa level", "Csv level", "overall")]
+    tab <- tab[!names(tab) %in% c("Psa level", "Csv level")]
   }
   .print_table(tab)
   cat("\n")

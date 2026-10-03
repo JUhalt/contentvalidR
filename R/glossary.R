@@ -84,7 +84,9 @@
       term = "I_CVI", workflow = "expert-panel",
       label = "Item-level Content Validity Index",
       definition = "Proportion of experts who rated the item as relevant, after applying the relevance cut.",
-      range = "0 to 1; compared against a panel-size guideline",
+      range = paste("0 to 1; compared with Lynn's (1986) criterion for the",
+                    "panel size, which this package extends past ten experts",
+                    "at her 7 of 9"),
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -144,9 +146,15 @@
     ),
     data.frame(
       term = "ioc", workflow = "expert-panel",
-      label = "Item-Objective Congruence",
-      definition = "How consistently experts linked the item to the objective it was written for rather than to another objective.",
-      range = "-1 to 1; higher is stronger",
+      label = "Index of item-objective congruence",
+      definition = paste(
+        "Whether experts matched the item to an objective and not to the",
+        "item's other objectives: half the gap between their mean rating on",
+        "the objective and their mean rating on the others (Rovinelli &",
+        "Hambleton, 1977). It is 1 only when every expert rates the item +1 on",
+        "the objective and -1 on every other."
+      ),
+      range = "-1 to 1; Rovinelli and Hambleton applied a criterion of .70",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -333,13 +341,13 @@
     htc = "Mean rating against the intended definition, divided by the number of scale points (1/points to 1).",
     htd = "How far that rating exceeds the other constructs' ratings on average, as a share of the scale (usually small).",
     V = "Mean relevance rating rescaled to run from 0 (lowest possible) to 1 (highest).",
-    I_CVI = "Share of experts rating the item relevant, compared with Lynn's criterion for the panel size.",
+    I_CVI = "Share of experts rating the item relevant, against Lynn's criterion for the panel size (beyond ten, this package's).",
     `I_CVI_low/I_CVI_high` = "Wide because expert panels are small; the method is named above.",
     `psa_low/psa_high` = "Wider when fewer judges sorted the item; the method is named above.",
     kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 when agreement is below chance).",
     agreement = "One coefficient for the whole panel (1 is perfect, 0 is chance); it can be low when nearly every rating is the same.",
     cvr = "Lean of the panel toward calling the item essential (-1 to 1; above 0 means more than half did).",
-    ioc = "How consistently experts linked the item to its own objective rather than another (-1 to 1).",
+    ioc = "Whether experts matched the item to this objective and not to the others (-1 to 1; Rovinelli and Hambleton used .70).",
     severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel.",
     `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is more predictable than expected.",
     differentiation = "Spread of the judge's ratings compared with a typical judge (1 is typical; low means few distinctions).",
@@ -376,8 +384,7 @@
       "Insufficient data" = "fewer than two judges rated it against every construct."
     ),
     relevance = c(
-      "Strong support" = "met the I-CVI criterion, with modified kappa above .74.",
-      Support = "met the I-CVI criterion.",
+      "Strong support" = "met the I-CVI criterion, which also puts modified kappa above .74.",
       Review = "did not meet the I-CVI criterion.",
       "Insufficient panel" = "fewer than three experts rated it."
     ),
@@ -388,12 +395,11 @@
       "Insufficient data" = "no expert rated it."
     ),
     congruence = c(
-      "Target favored" = "experts linked it most strongly to its intended objective.",
-      "Tie / review" = "its intended objective tied with another.",
-      Review = "experts linked it more strongly to another objective.",
+      Congruent = "its index of item-objective congruence met the criterion.",
+      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the closest other.",
       "Target described" = "only its intended objective was rated, so there is nothing to compare.",
       "Insufficient data" = "no usable ratings for its intended objective.",
-      "Descriptive only" = "no intended objective was given, so IOC is only described."
+      "Descriptive only" = "no intended objective was given, so the index is only described."
     ),
     delphi = c(
       Consensus = "reached the consensus threshold in its last round.",

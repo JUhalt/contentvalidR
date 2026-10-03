@@ -55,12 +55,14 @@ forward.
 from the handoff:
 \itemize{
 \item an item sort: Psa, against the exact test's criterion;
-\item an expert relevance panel: the I-CVI, against Lynn's (1986) count;
+\item an expert relevance panel: the I-CVI, against Lynn's (1986) count
+(beyond ten experts, this package's extension holding her 7 of 9);
 \item a Delphi study: the share of experts agreeing, against the consensus
 threshold;
 \item an essentiality panel: the CVR, against the exact test's criterion;
-\item congruence ratings: the IOC margin over the strongest competing
-objective, or the IOC when there is no target mapping;
+\item congruence ratings: the index of item-objective congruence for the
+target objective, against the criterion, or the highest index when there
+is no target mapping;
 \item construct ratings: HTC, with no criterion, because that workflow decides
 on its planned contrasts.
 }

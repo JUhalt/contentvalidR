@@ -11,7 +11,7 @@ test_that("CVR reproduces its defining transformation", {
   expect_true(out$pass[1])
 })
 
-test_that("IOC reproduces means by item and objective", {
+test_that("IOC reproduces means and the index by item and objective", {
   d <- data.frame(
     item = rep("I1", 6),
     judge = rep(1:3, 2),
@@ -19,6 +19,8 @@ test_that("IOC reproduces means by item and objective", {
     score = c(1, 1, 0, -1, 0, 1)
   )
   out <- ioc(d)
-  expect_equal(out$ioc[out$objective == "A"], 2/3)
-  expect_equal(out$ioc[out$objective == "B"], 0)
+  expect_equal(out$mean_rating[out$objective == "A"], 2/3)
+  expect_equal(out$mean_rating[out$objective == "B"], 0)
+  expect_equal(out$ioc[out$objective == "A"], 1/3)
+  expect_equal(out$ioc[out$objective == "B"], -1/3)
 })

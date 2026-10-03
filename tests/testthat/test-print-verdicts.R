@@ -35,7 +35,7 @@ test_that("items rated by too few experts are named, not left out", {
 test_that("the essentiality and congruence prints state their verdicts", {
   ess <- expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
   out <- printed(ess)
-  expect_match(out, "1 of 3 items meet the exact essentiality criterion.",
+  expect_match(out, "1 of 3 items meets the exact essentiality criterion.",
                fixed = TRUE)
   expect_match(out, "Flagged for review: Item2, Item3", fixed = TRUE)
 
@@ -43,7 +43,7 @@ test_that("the essentiality and congruence prints state their verdicts", {
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   expect_match(printed(expert_validity(d, mode = "congruence")),
-               "2 of 2 items are linked most strongly to their target objective.",
+               "2 of 2 items meet the congruence criterion for the target objective.",
                fixed = TRUE)
 })
 

@@ -134,7 +134,7 @@ test_that("the rule states the decision criterion each workflow applied", {
   expect_match(h$item_evidence$rule[1],
                sprintf("at least %d of %d experts rate the item relevant",
                        contentvalidR:::.cvi_required_count(N), N), fixed = TRUE)
-  expect_match(h$item_evidence$rule[1], "modified kappa > .74", fixed = TRUE)
+  expect_match(h$item_evidence$rule[1], "modified kappa above .74", fixed = TRUE)
   expect_true("Lynn (1986)" %in% h$provenance$citation)
 })
 
@@ -207,13 +207,14 @@ test_that("essentiality and congruence modes hand off", {
 
   con <- content_handoff(congruence_fit(), keep = c("Supported", "Review"))
   expect_named(con$scales, c("A", "B"))
-  expect_match(con$item_evidence$rule[1], "target-objective IOC exceeds")
+  expect_match(con$item_evidence$rule[1],
+               "for the target objective >= .70, the criterion they applied", fixed = TRUE)
 
   desc <- content_handoff(congruence_fit(target = FALSE),
                           keep = "Descriptive only")
   expect_null(desc$scales)
   expect_match(desc$item_evidence$rule[1], "no target-objective mapping")
-  expect_true(all(desc$item_statistics$statistic == "IOC"))
+  expect_true(all(desc$item_statistics$statistic == "highest IOC"))
 })
 
 test_that("keep widens what travels and round is recorded", {
@@ -450,8 +451,8 @@ test_that("other workflows carry an empty note, and zero-row blocks survive", {
     expect_type(h$item_statistics$note, "character")
     expect_true(all(h$item_statistics$note == ""))
   }
-  # A congruence fit with no target mapping emits a zero-row statistics block;
-  # the note default must not force it to one row.
+  # A congruence fit with no target mapping carries one row per item, each
+  # with a note naming the objective.
   desc <- content_handoff(congruence_fit(target = FALSE),
                           keep = "Descriptive only")
   expect_true(is.data.frame(desc$item_statistics))

@@ -25,7 +25,8 @@ The three modes are:
 - **relevance**: Aiken's V plus CVI and modified kappa, with a panel-level
   agreement coefficient;
 - **essentiality**: Lawshe's CVR with exact binomial inference; and
-- **congruence**: Rovinelli-Hambleton IOC.
+- **congruence**: the index of item-objective congruence (IOC) of Rovinelli
+  and Hambleton (1977).
 
 All three are quantitative complements to qualitative expert comments, construct
 coverage, comprehensibility review, and other parts of the content-validity
@@ -68,7 +69,9 @@ The workflow reports Lynn's (1986) panel-size criterion for the I-CVI as a
 **review aid**: with three to five experts all must agree, from six one may
 disagree, and from nine two may (7 of 9, the .78 usually quoted). Lynn's table
 stops at ten experts; beyond that the package holds her lowest proportion, 7 of
-9. The criterion is not presented as universal proof that an item is or is not
+9, an extension of her rule that the printout and the handoff label as this
+package's own. Polit and Beck (2006) restate her rule as no lower than .78 for
+six or more experts, though their own recommendation covers six to ten. The criterion is not presented as universal proof that an item is or is not
 content valid. Modified kappa provides
 a chance-corrected complement to I-CVI.
 
@@ -206,8 +209,14 @@ these with page references.
 
 ## Congruence: item-objective alignment
 
-IOC uses expert ratings of -1, 0, and +1 for item-objective congruence. A target
-mapping lets the workflow compare intended and competing objectives:
+Each expert rates each item against every objective: +1 if the item clearly
+measures it, 0 if unclear, -1 if it clearly does not. The index of Rovinelli and
+Hambleton (1977) for an objective is half the gap between the experts' mean rating
+on that objective and their mean rating on the item's other objectives, so it
+reaches 1 only when every expert gives +1 to the objective and -1 to every
+other. Turner and Carlson (2003) extend the index to items written for more
+than one objective, which this package does not do. A target mapping says
+which objective each item was written for:
 
 ```{r congruence}
 d <- expand.grid(
@@ -221,9 +230,15 @@ d$score <- ifelse(d$objective == d$target_objective, 1, -1)
 expert_validity(d, mode = "congruence")
 ```
 
-The workflow reports target IOC, the strongest competitor, and their margin.
-This is a diagnostic comparison, not a manufactured significance test. If no
-target mapping is provided, all IOC cells are returned descriptively.
+An item is `"Congruent"` when its index for the target objective reaches
+`ioc_cut`, by default the .70 Rovinelli and Hambleton applied. The printout
+also shows the experts' mean rating on the target and on the closest other
+objective, and the margin between those means. Applied work often reports
+the mean rating on the target as "the IOC"; it is an ingredient of the index,
+not the index, because it reaches 1 whatever the experts say about the other
+objectives. The margin is a description beside the index, not part of its
+criterion. Without a target mapping, each item's index on every objective is
+described, with no decision.
 
 ## Missing ratings
 
@@ -237,7 +252,7 @@ actual panel size.
 Each mode uses a plot matched to the expert task rather than forcing unlike
 indices into one generic chart.
 
-```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's IOC for its intended objective (filled) joined to its IOC for the strongest competing objective (open), with a dotted line at zero.")}
+```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's index of item-objective congruence for its intended objective (filled), with the experts' mean rating on the intended objective (triangle) and on the closest other objective (open circle) in gray, a dotted line at zero, and a dashed line at the .70 criterion.")}
 plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
 plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 plot(expert_validity(d, mode = "congruence"))
@@ -246,8 +261,8 @@ plot(expert_validity(d, mode = "congruence"))
 Relevance mode displays Aiken's V with its score interval and overlays I-CVI as
 a separate marker. Essentiality mode displays observed CVR against the exact
 panel-specific critical CVR, and marks with a cross an item whose panel was too
-small to test. Congruence mode connects target IOC to the strongest
-competitor so the alignment margin is visually explicit. These displays are
+small to test. Congruence mode places each item's index against the
+criterion, with the two mean ratings behind it in gray. These displays are
 diagnostic summaries; they do not create new validity thresholds.
 
 An index reduces each item's ratings to one number, and the relevance plot
