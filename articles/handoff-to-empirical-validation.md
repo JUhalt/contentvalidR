@@ -87,12 +87,12 @@ handoff$item_evidence
 #> 3 Item3  <NA>    TRUE Supported Strong support        4
 #> 4 Item4  <NA>   FALSE    Review         Review        4
 #> 5 Item5  <NA>   FALSE    Review         Review        4
-#>                                                                                                                                             rule
-#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 5 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#>                                                                                                                                       rule
+#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 5 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
 #>   round keying response_min response_max
 #> 1     1     NA           NA           NA
 #> 2     1     NA           NA           NA
@@ -134,7 +134,7 @@ str(handoff$provenance[c("schema_version", "workflow", "mode", "keep",
 #>  $ mode          : chr "relevance"
 #>  $ keep          : chr "Supported"
 #>  $ method        : chr "Aiken V with score intervals plus CVI/modified kappa"
-#>  $ citation      : chr [1:4] "Aiken (1980)" "Penfield & Giacobbi (2004)" "Lynn (1986)" "Polit, Beck & Owen (2007)"
+#>  $ citation      : chr [1:4] "Aiken (1980)" "Penfield & Giacobbi (2004)" "Lynn (1986)" "Polit et al. (2007)"
 ```
 
 By default only items with a `Supported` status travel. Some protocols

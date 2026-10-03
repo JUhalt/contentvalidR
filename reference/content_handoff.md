@@ -40,7 +40,7 @@ content_handoff(
   Pretest round this analysis represents. One fit is one round, so this
   defaults to `1` and matters only when stacking rounds by hand. It
   cannot be set for a Delphi fit, which dates each item by the round it
-  settled in.
+  was last rated in.
 
 - reverse_keyed:
 
@@ -316,6 +316,11 @@ never decides what is carried, exactly as it never sets an item's status
 in
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
 
+The stability rows come from the item's last pair of consecutive rounds.
+For an item rated again after a gap (rounds 1, 2 and 4) that pair is
+earlier than the round the rows are dated by, and their `note` says
+which rounds they compare.
+
 ## When a stability statistic is NA
 
 A stability row is always present for a carried item, so an `NA` there
@@ -454,11 +459,11 @@ handoff$item_evidence
 #> 2 Item2  <NA>    TRUE Supported Strong support        4
 #> 3 Item3  <NA>    TRUE Supported Strong support        4
 #> 4 Item4  <NA>   FALSE    Review         Review        4
-#>                                                                                                                                             rule
-#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
-#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit, Beck & Owen, 2007)
+#>                                                                                                                                       rule
+#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
 #>   round keying response_min response_max
 #> 1     1     NA           NA           NA
 #> 2     1     NA           NA           NA

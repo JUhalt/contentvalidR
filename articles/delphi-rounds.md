@@ -11,9 +11,8 @@ come out of that process:
 - **Stability**: are experts still changing their ratings?
 
 A panel can agree while still shifting, and it can hold steady without
-agreeing. Dajani, Sincoff and Talley (1979) argued that a level of
-agreement is only worth interpreting once responses have stopped
-changing.
+agreeing. Dajani et al. (1979) argued that a level of agreement is only
+worth interpreting once responses have stopped changing.
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
 therefore reports the two questions side by side and never folds one
 into the other.
@@ -29,10 +28,13 @@ arrive, not in the analysis afterwards.
     it is `agree_cut`.
 2.  **The consensus threshold.** Diamond et al. (2014) reviewed 100
     Delphi studies and recommend defining consensus before the study
-    begins. The median threshold in the studies they reviewed was 75%.
-    That figure describes common practice; it is not a validated
-    cut-off. For this reason `consensus_threshold` has no default.
-    Without one, results are reported descriptively.
+    begins. Among the 25 studies that defined it as a percentage of
+    agreement, the median threshold was 75%. That figure describes
+    common practice; it is not a validated cutoff. For this reason
+    `consensus_threshold` has no default. Without one, results are
+    reported descriptively. The function cannot know when a threshold
+    was chosen, so its output says only that one was supplied; say in
+    your report that it was fixed in advance.
 3.  **How stability will be measured.** The default is weighted kappa
     (below). Cohen (1968) points out that the weights are part of how
     agreement is defined, and so they must be chosen before the data are
@@ -106,8 +108,8 @@ fit
 #> -----------------------------
 #> Items: 6 | Experts: 10 | Rounds: 3 (1, 2, 3)
 #> Experts per round: 10, 10, 9
-#> Agreement: a rating of 3 or higher on the 1-4 scale. Consensus threshold:
-#> 75%, fixed before the study.
+#> Agreement: a rating of 3 or higher on the 1 to 4 scale.
+#> Consensus threshold: 75%, as supplied.
 #> Stability: weighted kappa (quadratic weights) between consecutive rounds
 #> 
 #> 3 of 6 items reached consensus in their last round.
@@ -123,7 +125,7 @@ fit
 #>    S6 No consensus          3  9   .56       .00  -.99 [-1.00, -.30]
 #> 
 #> agree: share of experts agreeing in the item's last round. unchanged: share
-#> who kept their rating between the last two rounds.
+#> who kept their rating between the item's last pair of consecutive rounds.
 #> 
 #> Stability trend (kappa) by pair of rounds
 #>  item  1->2 2->3
@@ -153,13 +155,17 @@ fit
 #> details$stability), so treat them as rough.
 #> 
 #> Read kappa as a trend across rounds, beside the share of experts who kept
-#> their rating (unchanged), not against a cut-off: kappa falls as a panel
-#> converges on one category, so a stable panel can show a low kappa (Holey et
-#> al., 2007).
+#> their rating (unchanged), not against a cutoff. Kappa can be low when ratings
+#> concentrate in one category (Feinstein & Cicchetti, 1990), so an agreeing
+#> panel can show a low kappa; Holey et al. (2007) suggest this for their
+#> Statement 7.
 #> 
 #> The kappa intervals resample the experts (Klar et al., 2002). With fewer than
 #> about 40 experts they cover less than their stated 95%, so read them as rough
 #> indications of precision, not as tests.
+#> 
+#> Diamond et al. (2014) recommend fixing the consensus threshold before the
+#> study. Report whether this one was.
 #> 
 #> The panel changed size across rounds (10, 10, 9 experts). Stability uses only
 #> the experts who rated an item in both rounds, and a result from fewer experts
@@ -171,9 +177,12 @@ fit
 #>   points counts four times a change of one. With these weights kappa equals
 #>   the intraclass correlation of the two rounds' ratings, so a shift of the
 #>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
-#>   such as 'substantial' are shown, because kappa falls when ratings converge,
-#>   which is what a Delphi aims for: Holey et al. saw a low kappa for their
-#>   most-agreed statement.
+#>   such as 'substantial' are shown, because kappa can be low when ratings
+#>   concentrate in one category, which is where a Delphi aims to end. Feinstein
+#>   and Cicchetti (1990) showed it for kappa on two categories, and the same
+#>   arithmetic applies to weighted kappa. In Holey et al. (2007), the statement
+#>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2
+#>   (.31).
 #> 
 #>   The intervals are percentile bootstraps that resample the experts, the
 #>   units the two rounds cross-classify: the procedure Klar et al. (2002)
@@ -183,14 +192,14 @@ fit
 #> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the
-#>       agreement cut in a round; consensus means reaching the preset
+#>       agreement cut in a round; consensus means reaching the consensus
 #>       threshold.
 #>   unchanged -- Share of experts keeping their rating. Share of experts
 #>       giving the same rating in two consecutive rounds (1 means nobody
 #>       changed).
 #>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of
 #>       each expert's ratings across two rounds; read it as a trend, not
-#>       against a cut-off.
+#>       against a cutoff.
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.
@@ -204,13 +213,13 @@ fit
 ```
 
 The printout ends with a key: how the stability statistic works, and
-what each column and decision means. The two caveats above the key print
+what each column and decision means. The caveats above the key print
 either way. The rest of this article turns the key off, to keep the
 output short:
 
 ``` r
 
-options(contentvalidR.show_key = FALSE)
+old <- options(contentvalidR.show_key = FALSE)
 ```
 
 ## Reading consensus
@@ -236,8 +245,8 @@ writeLines(strwrap(paste0(shown$item, ": ", shown$interpretation),
 #>     75%. The panel did agree in the other direction: 100% rated it
 #>     below the agreement cut. Whether that is consensus to exclude is
 #>     for your protocol to say.
-#> S4: No consensus in the last round: 56% agreed, against a threshold of
-#>     75%. Consider another round, rewording, or reporting the item as
+#> S4: No consensus in the last round: 55.6% agreed, against a threshold
+#>     of 75%. Consider another round, rewording, or reporting the item as
 #>     without consensus.
 ```
 
@@ -267,18 +276,21 @@ The six statements show the main patterns:
   steady. The output flags this and points you to the share who kept
   their rating.
 - **S5 formed consensus while kappa fell,** from .63 to .53. As ratings
-  bunch near 3, kappa has less room to show agreement. This is the same
-  pattern Holey et al. (2007) reported: their most-agreed statement had
-  their lowest kappa. With nine or ten experts, the intervals run from
-  about 0 to 1.
+  bunch near 3, kappa has less room to show agreement (Feinstein &
+  Cicchetti, 1990). Holey et al. (2007) give an example: the statement
+  nearly all of their experts agreed with had their lowest kappa between
+  rounds 1 and 2 (.31), which they suggest may be due to its narrow
+  range of answers. Their kappas, computed on importance rankings, rose
+  overall as the rounds went on, and they read that rise as stability.
+  With nine or ten experts, the intervals here run from about 0 to 1.
 - **S6 is unstable.** No expert kept their rating, and kappa is negative
   because experts swapped positions.
 
 These patterns are why the output gives kappa no verbal labels such as
 “moderate” or “substantial”. Landis and Koch (1977), who introduced
 those labels, called their divisions clearly arbitrary. And a label
-would tend to get *worse* as a Delphi succeeds, because convergence
-lowers kappa. Read kappa as a trend, next to the `unchanged` column.
+would tend to get *worse* as a Delphi succeeds, because convergence can
+lower kappa. Read kappa as a trend, next to the `unchanged` column.
 
 The full table, with every pair of rounds, is in `details$stability`:
 
@@ -325,7 +337,7 @@ threshold set, no line is drawn, because the analysis applies none.
 
 ``` r
 
-plot(fit, which = "stability")
+plot(fit, type = "stability")
 ```
 
 ![Weighted kappa for each statement across pairs of rounds, with open
@@ -345,7 +357,7 @@ against the dashed consensus threshold:
 
 ``` r
 
-plot(fit, which = "distribution")
+plot(fit, type = "distribution")
 ```
 
 ![Rating distributions for six statements over three rounds, one bar per
@@ -386,7 +398,7 @@ through `stability`, and each one prints its own limits:
 
 | `stability` | What it measures | Reads as stable when | Main limitation |
 |----|----|----|----|
-| `"kappa"` (default) | Each expert’s agreement with their own earlier rating, corrected for chance | Read as a trend; no cut-off | Falls as ratings converge |
+| `"kappa"` (default) | Each expert’s agreement with their own earlier rating, corrected for chance | Read as a trend; no cutoff | Can fall as ratings converge |
 | `"lambda"` | How well an earlier rating predicts the later one | Read as a trend | Predictability, not agreement; undefined if the later round is unanimous |
 | `"chisq_individual"` | Whether later ratings depend on earlier ones | p \< alpha | Association, not agreement; needs expected counts of 5 or more |
 | `"chisq_group"` | Whether the two rounds’ distributions differ | p \>= alpha | Small panels look stable by default; misses experts swapping answers |
@@ -412,6 +424,19 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 #> ----------------------------------------------
 #> Workflow: expert-panel | Rounds: 3 | Units compared: 6
 #> 
+#> 1 of 5 units in both the first and last round changed status (1 stronger, 0
+#> weaker).
+#> 
+#> !! The rounds were not analyzed under the same decision rule.
+#> The panel changed size, and the criterion an item must meet depends on the
+#> number of judges. A change in status may reflect the changed criterion rather
+#> than changed evidence, so compare each round's index values before reporting
+#> a change as progress.
+#> 
+#> What differs
+#>     from      to    setting previous current
+#>  Round 2 Round 3 panel size       10       9
+#> 
 #> Status by round
 #>  item   Round 1   Round 2   Round 3       change
 #>    S1 Supported Supported      <NA>      Removed
@@ -422,12 +447,9 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 #>    S6    Review    Review    Review    Unchanged
 #> 
 #> Round-to-round summary
-#>     from      to compared unchanged stronger weaker added removed same settings
-#>  Round 1 Round 2        6         5        1      0     0       0           yes
-#>  Round 2 Round 3        5         5        0      0     0       1           yes
-#> 
-#> Settings were identical across rounds, so these transitions can be read as
-#> changes in evidence.
+#>     from      to compared unchanged stronger weaker added removed same rule
+#>  Round 1 Round 2        6         5        1      0     0       0       yes
+#>  Round 2 Round 3        5         5        0      0     0       1        no
 #> 
 #> A status change means the evidence crossed a criterion, not that an item
 #> improved by a measurable amount. An item sitting near a boundary can move on
@@ -435,7 +457,12 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 ```
 
 S1 shows as `Removed` in round 3 because it was set aside after reaching
-consensus. S5 strengthened once experts converged.
+consensus. S5 strengthened once experts converged. These are relevance
+fits, so each round is read against Lynn’s (1986) I-CVI criterion for
+its panel, not against the 75% consensus threshold. The comparison also
+says that the panel changed size, from ten experts to nine: Lynn’s
+criterion depends on the number of experts, so a change of status
+between those rounds may reflect the criterion as much as the ratings.
 
 ## Reporting
 
@@ -445,13 +472,13 @@ gives a compact table for a manuscript:
 ``` r
 
 content_report(fit)
-#>  item last round experts agree unchanged stability        95% CI     decision
-#>    S1          2      10  1.00       .80       .71   [.20, 1.00]    Consensus
-#>    S2          3       9  1.00       .89       .00            NA    Consensus
-#>    S3          3       9   .00      1.00      1.00  [1.00, 1.00] No consensus
-#>    S4          3       9   .56       .89       .96   [.84, 1.00] No consensus
-#>    S5          3       9  1.00       .78       .53   [.00, 1.00]    Consensus
-#>    S6          3       9   .56       .00      -.99 [-1.00, -.30] No consensus
+#>  item last round experts agree unchanged kappa        95% CI     decision
+#>    S1          2      10  1.00       .80   .71   [.20, 1.00]    Consensus
+#>    S2          3       9  1.00       .89   .00            NA    Consensus
+#>    S3          3       9   .00      1.00  1.00  [1.00, 1.00] No consensus
+#>    S4          3       9   .56       .89   .96   [.84, 1.00] No consensus
+#>    S5          3       9  1.00       .78   .53   [.00, 1.00]    Consensus
+#>    S6          3       9   .56       .00  -.99 [-1.00, -.30] No consensus
 ```
 
 Diamond et al. (2014) recommend that a Delphi report state the
@@ -483,9 +510,9 @@ handoff$item_evidence[c("item", "carried", "status", "n_judges", "round")]
 #> 6   S6   FALSE    Review        9     3
 ```
 
-`round` is the round each item settled in, so S1 carries round 2: it
-reached consensus there and was set aside. Every other workflow writes
-one constant into that column, because one fit is one round.
+`round` is the round each item was last rated in, so S1 carries round 2:
+it reached consensus there and was set aside. Every other workflow
+writes one constant into that column, because one fit is one round.
 
 Each item’s relevance evidence comes from its own last round, with
 intervals, and the stability evidence travels beside it:
@@ -536,6 +563,11 @@ systematic review recommends methodologic criteria for reporting of
 Delphi studies. *Journal of Clinical Epidemiology, 67*(4), 401–409.
 <https://doi.org/10.1016/j.jclinepi.2013.12.002>
 
+Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
+kappa: I. The problems of two paradoxes. *Journal of Clinical
+Epidemiology, 43*(6), 543–549.
+<https://doi.org/10.1016/0895-4356(90)90158-L>
+
 Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
 *Educational and Psychological Measurement, 33*(3), 613–619.
@@ -548,12 +580,16 @@ Statistical Software, 57*(5), 1–32.
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
 exploration of the use of simple statistics to measure consensus and
-stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52.
-<https://doi.org/10.1186/1471-2288-7-52>
+stability in Delphi studies. *BMC Medical Research Methodology, 7*,
+Article 52. <https://doi.org/10.1186/1471-2288-7-52>
 
 Landis, J. R., & Koch, G. G. (1977). The measurement of observer
 agreement for categorical data. *Biometrics, 33*(1), 159–174.
 <https://doi.org/10.2307/2529310>
+
+Lynn, M. R. (1986). Determination and quantification of content
+validity. *Nursing Research, 35*(6), 382–385.
+<https://doi.org/10.1097/00006199-198611000-00017>
 
 Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:

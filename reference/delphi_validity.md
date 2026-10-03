@@ -40,9 +40,14 @@ delphi_validity(
   A data frame with one row per expert, item, and round. Rows with a
   missing rating are ignored.
 
-- expert_col, item_col, round_col, rating_col:
+- expert_col, item_col, rating_col:
 
   Column names in `ratings`.
+
+- round_col:
+
+  Name of the round column. Rounds may be numbers, a factor, or text
+  labels that carry a number; see *Round order* in Details.
 
 - lo, hi:
 
@@ -57,8 +62,9 @@ delphi_validity(
 
 - consensus_threshold:
 
-  Share of experts that must agree for consensus, between 0 and 1, fixed
-  before the study. `NULL` (default) reports agreement descriptively.
+  Share of experts that must agree for consensus, between 0 and 1. Fix
+  it before the study (Diamond et al., 2014). `NULL` (default) reports
+  agreement descriptively.
 
 - stability:
 
@@ -89,13 +95,13 @@ An object of class `contentvalid_delphi` and `contentvalid_workflow`.
 `results` has one row per item: its last round, `n_experts` there,
 `prop_agree`, `consensus`, and, for the last pair of consecutive rounds,
 `prop_unchanged`, `stability` with `stability_low` and `stability_high`
-where an interval exists, `stability_p` for the chi-square methods, and
-`stable` for the methods that make a decision. `details` holds
-`consensus` (every item and round), `stability` (every item and pair of
-rounds, including `n_paired`, `min_expected` for the chi-square methods,
-`n_boot_usable` for the kappa interval, and a `note` where a statistic
-is undefined or unreliable), `panel` (experts per round), and
-`round_fits`, the
+where an interval exists, `stability_df` and `stability_p` for the
+chi-square methods, and `stable` for the methods that make a decision.
+`details` holds `consensus` (every item and round), `stability` (every
+item and pair of rounds, including `n_paired`, `min_expected` for the
+chi-square methods, `n_boot_usable` for the kappa interval, and a `note`
+where a statistic is undefined or unreliable), `panel` (experts per
+round), and `round_fits`, the
 [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
 fit for each round.
 
@@ -106,9 +112,12 @@ least `agree_cut`. `prop_agree` is the share of responding experts who
 agree, which on a relevance scale is the I-CVI. An item reaches
 consensus when `prop_agree` meets `consensus_threshold`. There is
 deliberately no default threshold: Diamond et al. (2014) recommend
-fixing it before the study, and the 75% median they report describes
-common practice rather than a validated cut-off. Without a threshold,
-items are reported as `Descriptive only`.
+fixing it before the study. Among the 25 studies in their review that
+defined consensus as a percentage of agreement, the median threshold was
+75%, which describes common practice rather than a validated cutoff. The
+function cannot know when a threshold was chosen, so its output says
+only that one was supplied. Without a threshold, items are reported as
+`Descriptive only`.
 
 **Stability** is computed for each item and each pair of consecutive
 rounds, on the experts who rated the item in both. `prop_unchanged`, the
@@ -116,7 +125,7 @@ share who kept their rating, is always reported. The `stability`
 argument chooses the statistic reported beside it:
 
 - `"kappa"` (default): weighted kappa between each expert's ratings in
-  the two rounds (Holey et al., 2007), read as a trend with no cut-off.
+  the two rounds (Holey et al., 2007), read as a trend with no cutoff.
   Quadratic weights (the default) make kappa the intraclass correlation
   of the two rounds' ratings (Fleiss & Cohen, 1973); linear weights
   count a two-point change twice a one-point change (Cohen, 1968). The
@@ -129,9 +138,8 @@ argument chooses the statistic reported beside it:
 - `"chisq_individual"`: Chaffin and Talley's (1980) chi-square test on
   each expert's pair of ratings; a significant result is read as stable.
 
-- `"chisq_group"`: Dajani, Sincoff and Talley's (1979) chi-square test
-  on the two rounds' distributions; a non-significant result is read as
-  stable.
+- `"chisq_group"`: the chi-square test of Dajani et al. (1979) on the
+  two rounds' distributions; a non-significant result is read as stable.
 
 - `"percent_change"`: the net change of Scheibe et al. (1975/2002),
   stable below 15%.
@@ -143,15 +151,29 @@ read beside it.
 
 Items may enter or leave between rounds. An item's last round is the
 last one in which anyone rated it, and stability is computed only
-between consecutive rounds in which it was rated.
+between consecutive rounds in which it was rated. An item rated in
+rounds 1 and 3 but not 2 therefore has no pair to compare, and an item
+rated in rounds 1, 2 and 4 reports the stability of rounds 1 and 2
+beside its round 4 consensus. `details$stability` names the rounds of
+every pair.
+
+**Round order.** Numbered rounds are put in numeric order, dates in date
+order, and a factor keeps the order of its levels. Text labels are
+ordered by the number each carries (`"R1"`, `"Round 2"`, `"wave 10"`),
+whatever order the rows are in, when that number is all that differs
+between them. Text labels without a number (`"pre"`, `"post"`), or that
+differ in more than one number (`"Q4 2023"`, `"Q1 2024"`), cannot be
+ordered from the text, so they stop with a request for a factor. The
+printout lists the rounds in the order used.
 
 ## When a stability statistic is undefined
 
-A stability statistic can be `NA` for two different reasons, and
+A stability statistic can be `NA` for different reasons, and
 `prop_unchanged` tells them apart. When `prop_unchanged` is also `NA`,
 the item has no pair of consecutive rounds: it was rated in one round
-only. When `prop_unchanged` has a value, a pair exists but the statistic
-is undefined for that data, and `details$stability$note` says why.
+only, or in rounds that are not consecutive. When `prop_unchanged` has a
+value, a pair exists but the statistic is undefined for that data, and
+`details$stability$note` says why.
 
 The common case is the one that reads worst if reported bare. Kappa is
 chance-corrected, so when every paired rating in both rounds falls in
@@ -166,11 +188,14 @@ than two occupied rows or columns.
 
 Landis and Koch (1977) introduced the familiar labels (slight, fair,
 moderate, substantial, almost perfect) and called their divisions
-clearly arbitrary. Kappa also falls when ratings converge on one
-category, which is what a Delphi aims for: in Holey et al. (2007), the
-statement experts agreed on most had the lowest kappa. A label would
-therefore tend to worsen as a panel succeeds. Read kappa as a trend,
-next to `prop_unchanged`.
+clearly arbitrary. Kappa is also low when ratings concentrate in one
+category (Feinstein & Cicchetti, 1990), which is where a Delphi aims to
+end. In Holey et al. (2007), the statement nearly every expert agreed
+with, and ranked most important in every round, had the lowest kappa
+between rounds 1 and 2 (.31) and one of the highest between rounds 2 and
+3 (.71); they suggest the narrow range of answers as the reason. A label
+could therefore worsen as a panel succeeds. Read kappa as a trend, next
+to `prop_unchanged`.
 
 ## Reading the kappa interval
 
@@ -223,6 +248,11 @@ systematic review recommends methodologic criteria for reporting of
 Delphi studies. *Journal of Clinical Epidemiology, 67*(4), 401–409.
 [doi:10.1016/j.jclinepi.2013.12.002](https://doi.org/10.1016/j.jclinepi.2013.12.002)
 
+Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low
+kappa: I. The problems of two paradoxes. *Journal of Clinical
+Epidemiology, 43*(6), 543–549.
+[doi:10.1016/0895-4356(90)90158-L](https://doi.org/10.1016/0895-4356%2890%2990158-L)
+
 Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
 *Educational and Psychological Measurement, 33*(3), 613–619.
@@ -230,7 +260,8 @@ the intraclass correlation coefficient as measures of reliability.
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
 exploration of the use of simple statistics to measure consensus and
-stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52.
+stability in Delphi studies. *BMC Medical Research Methodology, 7*,
+Article 52.
 [doi:10.1186/1471-2288-7-52](https://doi.org/10.1186/1471-2288-7-52)
 
 Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
@@ -280,8 +311,8 @@ fit
 #> -----------------------------
 #> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)
 #> Experts per round: 8, 8, 8
-#> Agreement: a rating of 3 or higher on the 1-4 scale. Consensus threshold:
-#> 75%, fixed before the study.
+#> Agreement: a rating of 3 or higher on the 1 to 4 scale.
+#> Consensus threshold: 75%, as supplied.
 #> Stability: weighted kappa (quadratic weights) between consecutive rounds
 #> 
 #> 3 of 4 items reached consensus in their last round.
@@ -295,7 +326,7 @@ fit
 #>    S4    Consensus          3 8  1.00       .88   .75 [.00, 1.00]
 #> 
 #> agree: share of experts agreeing in the item's last round. unchanged: share
-#> who kept their rating between the last two rounds.
+#> who kept their rating between the item's last pair of consecutive rounds.
 #> 
 #> Stability trend (kappa) by pair of rounds
 #>  item 1->2 2->3
@@ -316,13 +347,17 @@ fit
 #> details$stability), so treat them as rough.
 #> 
 #> Read kappa as a trend across rounds, beside the share of experts who kept
-#> their rating (unchanged), not against a cut-off: kappa falls as a panel
-#> converges on one category, so a stable panel can show a low kappa (Holey et
-#> al., 2007).
+#> their rating (unchanged), not against a cutoff. Kappa can be low when ratings
+#> concentrate in one category (Feinstein & Cicchetti, 1990), so an agreeing
+#> panel can show a low kappa; Holey et al. (2007) suggest this for their
+#> Statement 7.
 #> 
 #> The kappa intervals resample the experts (Klar et al., 2002). With fewer than
 #> about 40 experts they cover less than their stated 95%, so read them as rough
 #> indications of precision, not as tests.
+#> 
+#> Diamond et al. (2014) recommend fixing the consensus threshold before the
+#> study. Report whether this one was.
 #> 
 #> How the stability statistic works
 #>   Stability is weighted kappa between each expert's ratings in consecutive
@@ -330,9 +365,12 @@ fit
 #>   points counts four times a change of one. With these weights kappa equals
 #>   the intraclass correlation of the two rounds' ratings, so a shift of the
 #>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
-#>   such as 'substantial' are shown, because kappa falls when ratings converge,
-#>   which is what a Delphi aims for: Holey et al. saw a low kappa for their
-#>   most-agreed statement.
+#>   such as 'substantial' are shown, because kappa can be low when ratings
+#>   concentrate in one category, which is where a Delphi aims to end. Feinstein
+#>   and Cicchetti (1990) showed it for kappa on two categories, and the same
+#>   arithmetic applies to weighted kappa. In Holey et al. (2007), the statement
+#>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2
+#>   (.31).
 #> 
 #>   The intervals are percentile bootstraps that resample the experts, the
 #>   units the two rounds cross-classify: the procedure Klar et al. (2002)
@@ -342,14 +380,14 @@ fit
 #> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the
-#>       agreement cut in a round; consensus means reaching the preset
+#>       agreement cut in a round; consensus means reaching the consensus
 #>       threshold.
 #>   unchanged -- Share of experts keeping their rating. Share of experts
 #>       giving the same rating in two consecutive rounds (1 means nobody
 #>       changed).
 #>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of
 #>       each expert's ratings across two rounds; read it as a trend, not
-#>       against a cut-off.
+#>       against a cutoff.
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.
@@ -387,8 +425,8 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> -----------------------------
 #> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)
 #> Experts per round: 8, 8, 8
-#> Agreement: a rating of 3 or higher on the 1-4 scale. Consensus threshold:
-#> 75%, fixed before the study.
+#> Agreement: a rating of 3 or higher on the 1 to 4 scale.
+#> Consensus threshold: 75%, as supplied.
 #> Stability: net percent change (Scheibe et al., 1975/2002) between consecutive
 #> rounds
 #> 
@@ -403,7 +441,7 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #>    S4    Consensus          3 8  1.00       .88    .12    yes
 #> 
 #> agree: share of experts agreeing in the item's last round. unchanged: share
-#> who kept their rating between the last two rounds.
+#> who kept their rating between the item's last pair of consecutive rounds.
 #> 
 #> Stability trend (change) by pair of rounds
 #>  item 1->2 2->3
@@ -422,14 +460,17 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> Stability is the net change of Scheibe et al. (1975/2002): half the summed
 #> differences between the two rounds' rating distributions, as a share of the
 #> experts compared, with change below 15% read as stable. The authors say the
-#> measure has no statistical theory behind it; the 15% cut-off came from the
+#> measure has no statistical theory behind it; the 15% cutoff came from the
 #> movement they observed in one classroom Delphi. Experts swapping answers
 #> cancel out, and in a small panel one expert is a large share: with 10 experts
 #> one net change is already 10%.
 #> 
+#> Diamond et al. (2014) recommend fixing the consensus threshold before the
+#> study. Report whether this one was.
+#> 
 #> What these columns mean
 #>   agree -- Share of experts agreeing. Share of experts at or above the
-#>       agreement cut in a round; consensus means reaching the preset
+#>       agreement cut in a round; consensus means reaching the consensus
 #>       threshold.
 #>   unchanged -- Share of experts keeping their rating. Share of experts
 #>       giving the same rating in two consecutive rounds (1 means nobody

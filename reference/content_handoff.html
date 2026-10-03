@@ -108,7 +108,7 @@ installed.</p>
 <dd><p>Pretest round this analysis represents. One fit is one round, so
 this defaults to <code>1</code> and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
-settled in.</p></dd>
+was last rated in.</p></dd>
 
 
 <dt id="arg-reverse-keyed">reverse_keyed<a class="anchor" aria-label="anchor" href="#arg-reverse-keyed"></a></dt>
@@ -336,6 +336,10 @@ method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal
 The chi-square methods add <code>stability p_value</code> against <code>alpha</code>. Stability
 travels as evidence beside the decision; it never decides what is carried,
 exactly as it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+<p>The stability rows come from the item's last pair of consecutive rounds.
+For an item rated again after a gap (rounds 1, 2 and 4) that pair is
+earlier than the round the rows are dated by, and their <code>note</code> says which
+rounds they compare.</p>
     </div>
     <div class="section level2">
     <h2 id="when-a-stability-statistic-is-na">When a stability statistic is NA<a class="anchor" aria-label="anchor" href="#when-a-stability-statistic-is-na"></a></h2>
@@ -468,11 +472,11 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 Item2  &lt;NA&gt;    TRUE Supported Strong support        4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 Item3  &lt;NA&gt;    TRUE Supported Strong support        4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 Item4  &lt;NA&gt;   FALSE    Review         Review        4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                             rule</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit, Beck &amp; Owen, 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                       rule</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit et al., 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit et al., 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit et al., 2007)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986); modified kappa &gt; .74 for strong support (Polit et al., 2007)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   round keying response_min response_max</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1     1     NA           NA           NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2     1     NA           NA           NA</span>

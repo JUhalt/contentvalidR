@@ -6,16 +6,26 @@ Scale development is iterative: items get revised and re-tested. The risk in
 reporting that process is attributing a status change to improved items when
 it actually came from a changed decision rule, a different panel size, or a
 different criterion. This function makes that distinction visible by
-comparing the settings of each round alongside its results, and flagging
-rounds whose analysis settings differ."><meta property="og:description" content="Compares two or more fitted workflow objects from successive rounds of the
+comparing the settings of each round alongside its results and flagging
+rounds that differ. For the item sort and for expert relevance and
+essentiality it compares the panel size too, because the exact tests and
+Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+item-sort criterion, while the same share, 10 of 12, does. Where the rule
+is a fixed share or cut, as in a Delphi fit, the panel size is not
+compared: the criterion did not move."><meta property="og:description" content="Compares two or more fitted workflow objects from successive rounds of the
 same pretest, reporting which items changed status, which held steady, and
 which entered or left the item set.
 Scale development is iterative: items get revised and re-tested. The risk in
 reporting that process is attributing a status change to improved items when
 it actually came from a changed decision rule, a different panel size, or a
 different criterion. This function makes that distinction visible by
-comparing the settings of each round alongside its results, and flagging
-rounds whose analysis settings differ."></head><body>
+comparing the settings of each round alongside its results and flagging
+rounds that differ. For the item sort and for expert relevance and
+essentiality it compares the panel size too, because the exact tests and
+Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+item-sort criterion, while the same share, 10 of 12, does. Where the rule
+is a fixed share or cut, as in a Delphi fit, the panel size is not
+compared: the criterion did not move."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -78,8 +88,13 @@ which entered or left the item set.</p>
 reporting that process is attributing a status change to improved items when
 it actually came from a changed decision rule, a different panel size, or a
 different criterion. This function makes that distinction visible by
-comparing the <code>settings</code> of each round alongside its results, and flagging
-rounds whose analysis settings differ.</p>
+comparing the <code>settings</code> of each round alongside its results and flagging
+rounds that differ. For the item sort and for expert relevance and
+essentiality it compares the panel size too, because the exact tests and
+Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+item-sort criterion, while the same share, 10 of 12, does. Where the rule
+is a fixed share or cut, as in a Delphi fit, the panel size is not
+compared: the criterion did not move.</p>
     </div>
 
     <div class="section level2">
@@ -93,13 +108,15 @@ rounds whose analysis settings differ.</p>
 
 <dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Two or more fitted workflow objects, in round order. All must come
-from the same workflow, since status labels from different workflows rest
-on different criteria and are not comparable.</p></dd>
+from the same workflow, and from the same mode of <code><a href="expert_validity.html">expert_validity()</a></code>,
+since status labels from different workflows rest on different criteria
+and are not comparable.</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
 <dd><p>Optional round labels. Defaults to <code>Round 1</code>, <code>Round 2</code>, and so
-on, or to the names supplied in <code>...</code>.</p></dd>
+on, or to the names supplied in <code>...</code>. A label cannot be the name of the
+unit column (<code>item</code>, <code>judge</code> or <code>cell</code>) or <code>change</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -114,11 +131,19 @@ units for each consecutive pair of rounds.</p></dd>
 
 <dt>settings_changes</dt>
 <dd><p>Analysis settings that differ between consecutive
-rounds, which is the audit trail for whether a status change can be
-read as an evidence change at all.</p></dd>
+rounds, and a changed panel size, which is the audit trail for whether
+a status change can be read as an evidence change at all.</p></dd>
 
 <dt>comparable</dt>
-<dd><p><code>FALSE</code> when any consecutive pair differs in settings.</p></dd>
+<dd><p><code>FALSE</code> when any consecutive pair differs in settings
+or, where the criterion depends on it, in panel size. The seed and
+the number of bootstrap resamples are ignored, because they cannot
+change a status.</p></dd>
+
+<dt>panel_compared</dt>
+<dd><p>Whether the panel size was part of the
+comparison: <code>TRUE</code> for the item sort and for expert relevance and
+essentiality.</p></dd>
 
 
 </dl></div>
@@ -132,8 +157,13 @@ improved by a measurable amount. An item can move from <code>Review</code> to
 the boundary. Read the transitions together with the underlying index values
 in each round's own results.</p>
 <p>When <code>comparable</code> is <code>FALSE</code>, the rounds were analyzed under different rules,
-and a status change may reflect only that. Re-analyze the earlier round under
-the current settings before reporting a change as progress.</p>
+and a status change may reflect only that. Where a setting differs,
+re-analyze the earlier round under the current settings before reporting a
+change as progress. Where the panel size differs, compare the index values
+themselves, since the criterion moved with the panel.</p>
+<p>The fits in <code>delphi_validity()$details$round_fits</code> are relevance fits, so
+comparing them reads each round against Lynn's I-CVI criterion, not against
+the consensus threshold of the Delphi.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -157,17 +187,20 @@ samples analyzed under identical settings.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: item-sort | Rounds: 2 | Units compared: 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 of 2 units in both the first and last round changed status (1 stronger, 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> weaker).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Status by round</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  item Round 1   Round 2       change</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    I1  Review Supported Strengthened</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    I2  Review    Review    Unchanged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round-to-round summary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     from      to compared unchanged stronger weaker added removed same settings</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Round 1 Round 2        2         1        1      0     0       0           yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     from      to compared unchanged stronger weaker added removed same rule</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Round 1 Round 2        2         1        1      0     0       0       yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Settings were identical across rounds, so these transitions can be read as</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> changes in evidence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> The settings and the panel size were the same in every round, so these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> transitions can be read as changes in evidence.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A status change means the evidence crossed a criterion, not that an item</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> improved by a measurable amount. An item sitting near a boundary can move on</span>

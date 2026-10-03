@@ -208,7 +208,7 @@ contentvalid_glossary()
 #>   prop_agree -- Share of experts agreeing. Share of the experts rating an
 #>       item in a round whose rating was at or above the agreement cut. On a
 #>       relevance scale this is the I-CVI. Consensus means it reached the
-#>       threshold set before the study. (0 to 1; higher is broader agreement)
+#>       consensus threshold supplied. (0 to 1; higher is broader agreement)
 #>   prop_unchanged -- Share of experts keeping their rating. Among experts
 #>       who rated the item in both of two consecutive rounds, the share who
 #>       gave exactly the same rating again. It is the plainest reading of
@@ -216,9 +216,9 @@ contentvalid_glossary()
 #>       means no expert changed their rating)
 #>   kappa_w -- Weighted kappa between rounds. Agreement between each expert's
 #>       ratings in two consecutive rounds, corrected for chance, with larger
-#>       changes counting more. Read it as a trend across rounds. It falls
-#>       when ratings bunch in one category, so a converged panel can show a
-#>       low kappa even when almost no one changed their rating. (-1 to 1; 1
+#>       changes counting more. Read it as a trend across rounds. It can be
+#>       low when ratings bunch in one category, so a converged panel can show
+#>       a low kappa even when almost no one changed their rating. (-1 to 1; 1
 #>       is perfect stability, 0 is no better than chance)
 #>   lambda -- Goodman-Kruskal lambda, an index of predictive association. How
 #>       much knowing an expert's earlier rating improves a guess at their
@@ -236,7 +236,7 @@ contentvalid_glossary()
 #>       read with its p-value)
 #>   percent_change -- Net change in the rating distribution. How far the
 #>       panel's rating distribution moved between two rounds, as a share of
-#>       the experts compared. Change below 15% is read as stable, a cut-off
+#>       the experts compared. Change below 15% is read as stable, a cutoff
 #>       its authors set from one study without statistical theory. (0 to 1;
 #>       stable below .15)
 #>   decisions:

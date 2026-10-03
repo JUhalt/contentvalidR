@@ -274,7 +274,7 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   prop_agree -- Share of experts agreeing. Share of the experts rating an</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       item in a round whose rating was at or above the agreement cut. On a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       relevance scale this is the I-CVI. Consensus means it reached the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       threshold set before the study. (0 to 1; higher is broader agreement)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       consensus threshold supplied. (0 to 1; higher is broader agreement)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   prop_unchanged -- Share of experts keeping their rating. Among experts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       who rated the item in both of two consecutive rounds, the share who</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       gave exactly the same rating again. It is the plainest reading of</span>
@@ -282,9 +282,9 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       means no expert changed their rating)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_w -- Weighted kappa between rounds. Agreement between each expert's</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       ratings in two consecutive rounds, corrected for chance, with larger</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       changes counting more. Read it as a trend across rounds. It falls</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       when ratings bunch in one category, so a converged panel can show a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       low kappa even when almost no one changed their rating. (-1 to 1; 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       changes counting more. Read it as a trend across rounds. It can be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       low when ratings bunch in one category, so a converged panel can show</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       a low kappa even when almost no one changed their rating. (-1 to 1; 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       is perfect stability, 0 is no better than chance)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   lambda -- Goodman-Kruskal lambda, an index of predictive association. How</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       much knowing an expert's earlier rating improves a guess at their</span>
@@ -302,7 +302,7 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       read with its p-value)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   percent_change -- Net change in the rating distribution. How far the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       panel's rating distribution moved between two rounds, as a share of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the experts compared. Change below 15% is read as stable, a cut-off</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the experts compared. Change below 15% is read as stable, a cutoff</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       its authors set from one study without statistical theory. (0 to 1;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       stable below .15)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
