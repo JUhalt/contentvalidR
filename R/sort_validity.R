@@ -453,7 +453,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   tab$Csv <- .fmt(r$csv, digits)
   tab$competitor <- r$competitor
   tab$p <- .fmt_p(r$p_value)
-  .print_table(tab)
+  shown <- .print_table(tab)
   cat("\n")
   .say("Judges: assignments to the target construct, out of the judges who",
        "sorted the item.")
@@ -475,7 +475,9 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert) st$`Csv level` <- sc$csv_strength
   # A benchmark set shared by every scale is stated once, not on every row.
   if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
-  .print_table(st)
+  # The benchmark set explains each level, so it is never dropped for width.
+  .print_table(st, keep = c(.table_keep, "benchmarks"),
+               more = 'as.data.frame(x, component = "scale_summary")')
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
   if (!expert) {
     how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
@@ -500,7 +502,8 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
 
   if (.show_key()) {
     .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"),
-               headings = c("Psa", ci, "Csv", "competitor", "p"))
+               headings = c("Psa", ci, "Csv", "competitor", "p"),
+               shown = shown)
     .print_decision_legend(x$results$recommendation, "item-sort")
     .print_key_footer()
   }
@@ -551,8 +554,10 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   if (identical(x$settings$judge_type, "expert")) {
     tab <- tab[!names(tab) %in% c("Psa level", "Csv level")]
   }
-  .print_table(tab)
+  .print_table(tab, more = "x$scale_summary")
   cat("\n")
+  .say("Psa = proportion of substantive agreement; Csv = coefficient of",
+       "substantive validity (Anderson & Gerbing, 1991).")
   .say_grouped(s$target, s$evidence)
 
   f <- x$reviewed_items
@@ -563,8 +568,9 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
       Psa = .fmt(f$psa, digits), Csv = .fmt(f$csv, digits),
       competitor = f$competitor, p = .fmt_p(f$p_value),
       stringsAsFactors = FALSE, check.names = FALSE
-    ))
+    ), more = "x$reviewed_items")
     cat("\n")
+    .say("p = Howard-Melloy exact test of the target assignments.")
     .say_flagged(f$item, f$recommendation, f$interpretation)
   } else {
     .end_section()

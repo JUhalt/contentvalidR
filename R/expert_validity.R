@@ -651,7 +651,7 @@ expert_validity <- function(data,
 .expert_item_table <- function(r, mode, digits, alpha) {
   if (mode == "relevance") {
     ci <- .ci_label(alpha)
-    tab <- data.frame(item = r$item, decision = r$recommendation, N = r$N,
+    tab <- data.frame(item = r$item, decision = r$recommendation, experts = r$N,
                       V = .fmt(r$V, digits),
                       stringsAsFactors = FALSE, check.names = FALSE)
     # Objects saved before the interval columns existed still print.
@@ -942,7 +942,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cells <- if (is.list(x$details)) x$details$cells else NULL
     if (!targeted && is.data.frame(cells) && "mean_rating" %in% names(cells)) {
       # Without targets the item-by-objective table is the result.
-      .print_table(.ioc_cells_table(cells, digits))
+      .print_table(.ioc_cells_table(cells, digits), more = "x$details$cells")
     } else {
       .print_table(.expert_item_table(r, "congruence", digits,
                                       x$settings$alpha))
@@ -1040,12 +1040,19 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
     .say("No items were flagged by the workflow's quantitative review rules.")
   } else {
     .section("Flagged")
-    .print_table(.expert_item_table(f, x$mode, digits, x$settings$alpha))
+    .print_table(.expert_item_table(f, x$mode, digits, x$settings$alpha),
+                 more = "x$flagged")
+    cat("\n")
     if (identical(x$mode, "congruence") && "target_mean" %in% names(f)) {
-      cat("\n")
-      .say("IOC: the index for the target objective, which decides. Mean: the",
-           "experts' mean rating on it. Margin: mean less competitor mean, a",
-           "description.")
+      .say("IOC: the index of item-objective congruence for the target",
+           "objective, which decides. Mean: the experts' mean rating on it.",
+           "Margin: mean less competitor mean, a description.")
+    } else {
+      .say(switch(x$mode,
+                  relevance = paste("V = Aiken's content validity coefficient;",
+                                    "I-CVI = item-level content validity index."),
+                  essentiality = "CVR = content validity ratio.",
+                  "IOC = index of item-objective congruence."))
     }
     if ("interpretation" %in% names(f)) {
       cat("\n")

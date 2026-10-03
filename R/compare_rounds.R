@@ -361,11 +361,11 @@ print.contentvalid_rounds <- function(x, ...) {
       if (any(size)) .say(size_text)
     }
     .section("What differs")
-    .print_table(x$settings_changes)
+    .print_table(x$settings_changes, more = "x$settings_changes")
   }
 
   .section("Status by round")
-  .print_table(x$transitions)
+  .print_table(x$transitions, more = "x$transitions")
 
   .section("Round-to-round summary")
   s <- x$summary
@@ -375,7 +375,7 @@ print.contentvalid_rounds <- function(x, ...) {
     weaker = s$n_weakened, added = s$n_added, removed = s$n_removed,
     `same rule` = ifelse(s$settings_changed, "no", "yes"),
     stringsAsFactors = FALSE, check.names = FALSE
-  ))
+  ), more = "x$summary")
 
   if (x$comparable) {
     cat("\n")
@@ -423,17 +423,21 @@ print.summary.contentvalid_rounds <- function(x, ...) {
 
   if (!x$comparable) {
     .section("What differs between rounds")
-    .print_table(x$settings_changes)
+    .print_table(x$settings_changes, more = "x$settings_changes")
   }
 
   if (nrow(x$changed)) {
     .section("Units whose status changed")
-    .print_table(x$changed)
+    .print_table(x$changed, more = "x$changed")
   } else {
     .end_section()
     cat("\n")
     .say("No unit changed status between the first and last round.")
   }
-  .closing(pointer = "See x$changed for those units as a data frame.")
+  .closing(pointer = if (nrow(x$changed)) {
+    "See x$changed for those units as a data frame."
+  } else {
+    "See x$summary for the round-to-round counts."
+  })
   invisible(x)
 }

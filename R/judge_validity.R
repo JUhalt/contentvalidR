@@ -674,7 +674,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   .say(paste0(
     "Mean: the judge's mean rating. Severity: how far the judge rates below ",
     "the panel, in rating points (negative is more lenient)",
-    if (estimable) paste0("; Logit: severity on the relevant/not-relevant ",
+    if (estimable) paste0(". Logit: severity on the relevant/not-relevant ",
                           "decision from the facets model, against the ",
                           "judges it placed, which the flags use") else "",
     "."
@@ -776,7 +776,8 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   }
   if (nrow(gt$judges_needed) && !identical(gt$status, "Insufficient data")) {
     .section("Judges needed to reach each coefficient")
-    .print_table(.judges_needed_table(gt$judges_needed, digits))
+    .print_table(.judges_needed_table(gt$judges_needed, digits),
+                 more = "x$gtheory$judges_needed")
   }
 
   if (nrow(x$reviewed_judges)) {
@@ -805,6 +806,6 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   .closing(c("This analysis describes how much conclusions depend on these judges.",
              "It does not establish that the items cover the intended content",
              "domain."),
-           "See x$reviewed_items for the flagged judges as a data frame.")
+           "See x$reviewed_judges for the flagged judges as a data frame.")
   invisible(x)
 }

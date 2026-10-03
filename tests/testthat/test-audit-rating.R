@@ -389,8 +389,8 @@ test_that("results carry the corrected degrees of freedom of the screening p", {
 test_that("content_report() carries the F test, within 80 columns", {
   fit <- rating_validity(rating_data())
   rep <- content_report(fit)
-  expect_identical(names(rep), c("Item", "Target", "Judges", "HTC", "HTD",
-                                 "F test", "p", "Contrast p", "Decision"))
+  expect_identical(names(rep), c("item", "target", "judges", "HTC", "HTD",
+                                 "F test", "p", "contrast p", "decision"))
   r <- fit$results
   expect_identical(
     rep$`F test`[1],
@@ -402,10 +402,11 @@ test_that("content_report() carries the F test, within 80 columns", {
   old <- options(width = 80)
   on.exit(options(old), add = TRUE)
   lines <- utils::capture.output(print(rep))
-  table_lines <- lines[seq_len(nrow(rep) + 1L)]
+  expect_match(lines[1], "^<contentvalid_report> ")
+  table_lines <- lines[2L + seq_len(nrow(rep) + 1L)]
   expect_true(all(grepl("^  [A-Z0-9]", table_lines)))
-  expect_identical(lines[nrow(rep) + 2L], "")
-  expect_match(lines[nrow(rep) + 3L], "^Note[.] ")
+  expect_identical(lines[nrow(rep) + 4L], "")
+  expect_match(lines[nrow(rep) + 5L], "^Note[.] ")
   expect_lte(max(nchar(lines)), 80L)
   # The closest competitor and the effect size are in the numeric table.
   num <- content_report(fit, format = "data.frame")
@@ -428,7 +429,14 @@ test_that("content_report() carries the F test, within 80 columns", {
   undecided$rating[undecided$item == "I3" & undecided$rater != 1 &
                      undecided$construct == "B"] <- NA
   und <- content_report(rating_validity(undecided))
-  expect_identical(und$`F test`[und$Item == "I3"], "--")
+  expect_identical(und$`F test`[und$item == "I3"], "--")
+  # The decision column is never dropped for width, nor for being "--".
+  for (w in c(80, 60)) {
+    options(width = w)
+    und_lines <- utils::capture.output(print(und))
+    expect_match(und_lines[3], "Decision$")
+    expect_false(any(grepl("Not shown for width: .*Decision", und_lines)))
+  }
 })
 
 test_that("the profile figure draws complete-judge means and marks no decision", {

@@ -324,7 +324,8 @@ print.contentvalid_evidence <- function(x, ...) {
                          rows$recommendation[i]))
     tab[[lab]] <- cell
   }
-  tab$result <- verdict
+  # Status words start with a capital, as in every other table.
+  tab$result <- .sentence_case(verdict)
   .print_table(tab)
 
   if (.show_key()) {
@@ -334,14 +335,14 @@ print.contentvalid_evidence <- function(x, ...) {
               `IOC margin` = "ioc", IOC = "ioc", HTC = "htc")
     known <- stats[stats %in% names(term)]
     .print_key(unname(term[known]), headings = known)
-    cat(strwrap(paste("result -- carried when every stage that reviewed the",
-                      "item carried it; otherwise the stages that held it",
-                      "back. -- marks a stage that did not review the item."),
-                width = 76, initial = "  ", prefix = "      "), sep = "\n")
+    .say("Result -- Carried when every stage that reviewed the item carried",
+         "it; otherwise the stages that held it back. -- marks a stage that",
+         "did not review the item.", indent = 2L, exdent = 6L)
     .print_key_footer()
   }
   .closing(pointer = paste("See plot(x) for the evidence profile and",
-                           "plot(x, type = \"flow\") for the flow diagram."))
+                           "plot(x, type = \"flow\") for the flow diagram;",
+                           "add apa = FALSE for color."))
   invisible(x)
 }
 

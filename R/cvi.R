@@ -172,6 +172,9 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   cat("S-CVI/Ave: ", .fmt(sl$S_CVI_Ave, digits), " | S-CVI/UA: ",
       .fmt(sl$S_CVI_UA, digits), "\n", sep = "")
+  .say("I-CVI = item-level content validity index; S-CVI/Ave = scale-level",
+       "CVI, the mean I-CVI; S-CVI/UA = scale-level CVI, the share of items",
+       "every judge rated relevant (Polit & Beck, 2006).")
 
   .section("Item-level results")
   tab <- data.frame(item = it$item, agree = paste0(it$A, "/", it$N),
@@ -184,7 +187,7 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   tab$Pc <- .fmt_p(it$Pc)
   tab$kappa <- .fmt(it$kappa_mod, digits)
-  .print_table(tab)
+  .print_table(tab, more = "x$item_level")
   cat("\n")
   .say("Agree: judges rating the item relevant, out of those who rated it.",
        "Pc: the probability that this many judges would agree by chance.",

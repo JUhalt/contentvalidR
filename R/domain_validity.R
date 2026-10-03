@@ -203,6 +203,9 @@ domain_validity <- function(assignments,
   }
 
   share <- counts / n_items
+  # Shares in the interpretations are written as the printed table writes
+  # them.
+  pct <- function(p) .fmt_pct(p, base = n_items)
   empty <- counts == 0L
   # A cell the blueprint gives one item is not thin with one: with targets,
   # the floor is the smaller of `min_items` and the cell's own target.
@@ -245,23 +248,24 @@ domain_validity <- function(assignments,
     }
     if (under[i]) {
       return(sprintf(paste(
-        "This cell holds %.0f%% of the items, less than 1/%s of its intended",
-        "share of %.0f%% (a target of %s). The blueprint weights this cell",
+        "This cell holds %s of the items, less than 1/%s of its intended",
+        "share of %s (a target of %s). The blueprint weights this cell",
         "more heavily than the item set does. Either write more items for it",
         "or revise the target."
-      ), share[i] * 100, format(over_factor), expected_share[i] * 100,
+      ), pct(share[i]), format(over_factor), pct(expected_share[i]),
          .n_noun(format(target_n[i]), "item")))
     }
     if (over[i]) {
       return(sprintf(paste(
-        "This cell holds %.0f%% of the items, more than %.1f times its expected",
-        "share of %.0f%%. Over-representation is not an error, but it weights",
-        "the instrument toward this cell, which should be a deliberate choice",
-        "rather than an accident of item writing."
-      ), share[i] * 100, over_factor, expected_share[i] * 100))
+        "This cell holds %s of the items (%s), more than %.1f times its",
+        "expected share of %s. Over-representation is not an error, but it",
+        "weights the instrument toward this cell, which should be a deliberate",
+        "choice rather than an accident of item writing."
+      ), pct(share[i]), .n_noun(counts[i], "item"), over_factor,
+         pct(expected_share[i])))
     }
-    sprintf("This cell holds %s, %.0f%% of the instrument, which meets the coverage criteria set for this analysis.",
-            .n_noun(counts[i], "item"), share[i] * 100)
+    sprintf("This cell holds %s, %s of the instrument, which meets the coverage criteria set for this analysis.",
+            .n_noun(counts[i], "item"), pct(share[i]))
   }, character(1))
 
   results <- data.frame(

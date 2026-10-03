@@ -194,5 +194,5 @@ test_that("glossary print output warns against cross-index comparison", {
   out <- printed(contentvalid_glossary())
   expect_match(out, "percentile positions")
   expect_match(out, "not\\s+comparable across different indices")
-  expect_match(out, "status labels")
+  expect_match(out, "Status labels")
 })

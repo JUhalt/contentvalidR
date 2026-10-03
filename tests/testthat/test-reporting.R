@@ -87,7 +87,9 @@ test_that("content_report selects reporting columns and keeps status", {
 
 test_that("content_report rounds to the requested digits", {
   tab <- content_report(sort_fit(), digits = 1, format = "data.frame")
-  expect_equal(tab$psa, round(sort_fit()$results$psa, 1))
+  # Half up, as the APA table rounds: .85 is .9, where round() gives .8.
+  expect_equal(tab$psa, .half_up(sort_fit()$results$psa, 1))
+  expect_identical(tab$psa[sort_fit()$results$item == "B1"], 0.9)
   # p values keep three decimals whatever `digits` is.
   expect_equal(tab$p_value, round(sort_fit()$results$p_value, 3))
   expect_error(content_report(sort_fit(), digits = -1), "nonnegative integer")
@@ -180,7 +182,7 @@ test_that("content_report works for every flagship workflow", {
     expect_gt(ncol(tab), 2L)
     apa <- content_report(fit)
     expect_s3_class(apa, "contentvalid_report")
-    expect_true("Decision" %in% names(apa))
+    expect_true("decision" %in% names(apa))
     expect_true(all(vapply(apa, is.character, logical(1))))
   }
 })
@@ -192,18 +194,22 @@ test_that("content_report rejects non-workflow input", {
 
 test_that("the default report is an APA table", {
   tab <- content_report(sort_fit())
-  expect_identical(names(tab), c("Item", "Target", "Judges", "Competitor",
-                                 "Psa", "Psa 95% CI", "Csv", "p", "Decision"))
+  # The names on the object are the ones code relies on; sentence case is
+  # applied only where the table is shown.
+  expect_identical(names(tab), c("item", "target", "judges", "competitor",
+                                 "Psa", "Psa 95% CI", "Csv", "p", "decision"))
   r <- sort_fit()$results
   i <- which(r$item == "A1")
-  expect_identical(tab$Judges[i], paste0(r$n_target[i], "/", r$n[i]))
+  expect_identical(tab$judges[i], paste0(r$n_target[i], "/", r$n[i]))
   expect_false(any(grepl("^0[.]", tab$Psa)))
   expect_match(tab$`Psa 95% CI`[i], "^[[][.][0-9]{2}, (1[.]00|[.][0-9]{2})[]]$")
-  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|1[.]000)$", tab$p)))
+  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|> [.]999)$", tab$p)))
 
   # It prints without row names, and as.data.frame() gives a plain data frame.
   out <- utils::capture.output(print(tab))
-  expect_match(out[1], "^ *Item")
+  expect_identical(out[1], "<contentvalid_report> Results table in APA style")
+  expect_match(out[3], "^  Item  Target  Judges")
+  expect_match(paste(out, collapse = " "), 'format = "markdown"', fixed = TRUE)
   expect_identical(class(as.data.frame(tab)), "data.frame")
 })
 
@@ -223,21 +229,21 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   rd$rating <- ifelse(rd$construct == rd$target_construct,
                       sample(4:5, nrow(rd), TRUE), sample(1:3, nrow(rd), TRUE))
   rating <- content_report(rating_validity(rd))
-  expect_identical(names(rating), c("Item", "Target", "Judges", "HTC", "HTD",
-                                    "F test", "p", "Contrast p", "Decision"))
+  expect_identical(names(rating), c("item", "target", "judges", "HTC", "HTD",
+                                    "F test", "p", "contrast p", "decision"))
 
   ess <- content_report(expert_validity(c(10, 8), mode = "essentiality", N = 12))
-  expect_identical(names(ess), c("Item", "Essential", "CVR", "p", "Decision"))
-  expect_identical(ess$Essential, c("10/12", "8/12"))
+  expect_identical(names(ess), c("item", "essential", "CVR", "p", "decision"))
+  expect_identical(ess$essential, c("10/12", "8/12"))
 
   d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"))
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   con <- content_report(expert_validity(d, mode = "congruence"))
-  expect_identical(names(con), c("Item", "Target", "Experts", "IOC", "Mean",
-                                 "Competitor", "Competitor mean", "Margin",
-                                 "Decision"))
-  expect_identical(con$Margin, c("2.00", "2.00"))
+  expect_identical(names(con), c("item", "target", "experts", "IOC", "mean",
+                                 "competitor", "competitor mean", "margin",
+                                 "decision"))
+  expect_identical(con$margin, c("2.00", "2.00"))
 
   long <- function(m, round) {
     data.frame(expert = paste0("E", seq_len(nrow(m))),
@@ -248,14 +254,14 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(4, 4, 4, 4, 4, 3))
   delphi <- content_report(delphi_validity(rbind(long(r1, 1), long(r2, 2)),
                                            lo = 1, hi = 4, B = 0))
-  expect_true(all(c("Item", "Last round", "Experts", "Agree", "Unchanged",
-                    "Decision") %in% names(delphi)))
+  expect_true(all(c("item", "last round", "experts", "agree", "unchanged",
+                    "decision") %in% names(delphi)))
 
   dom <- content_report(domain_validity(
     data.frame(item = paste0("I", 1:3), cell = c("A", "A", "B"),
                stringsAsFactors = FALSE),
     domain = c("A", "B", "C")))
-  expect_identical(dom$Share, c("67%", "33%", "0%"))
+  expect_identical(dom$share, c("67%", "33%", "0%"))
 })
 
 test_that("an APA report with no rows prints a note rather than an empty table", {
@@ -265,5 +271,6 @@ test_that("an APA report with no rows prints a note rather than an empty table",
     stringsAsFactors = FALSE
   ))
   out <- utils::capture.output(print(content_report(clean, include = "flagged")))
-  expect_identical(out, "No units matched the requested selection.")
+  expect_identical(out[1:3], c("<contentvalid_report> Results table in APA style",
+                               "", "No units matched the requested selection."))
 })

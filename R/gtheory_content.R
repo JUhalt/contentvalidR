@@ -436,18 +436,20 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
                      MS = .fmt(vc$ms, digits, bounded = FALSE),
                      estimate = .fmt(vc$variance_raw, digits, bounded = FALSE),
                      used = .fmt(vc$variance, digits, bounded = FALSE),
-                     `% of total` = formatC(vc$percent, format = "f",
-                                            digits = 1),
+                     `% of total` = formatC(.half_up(vc$percent, 1),
+                                            format = "f", digits = 1),
                      stringsAsFactors = FALSE, check.names = FALSE)
-  .print_table(show)
+  .print_table(show, more = "x$variance_components")
   cat("\n")
-  .say("Estimate: the ANOVA estimate of each variance component. Used: the",
+  .say("MS: mean square.",
+       "Estimate: the ANOVA estimate of each variance component. Used: the",
        "same with a negative estimate set to 0, which the coefficients use",
        "(Brennan, 2001).")
 
   if (nrow(x$judges_needed)) {
     .section("Judges needed to reach each coefficient")
-    .print_table(.judges_needed_table(x$judges_needed, digits))
+    .print_table(.judges_needed_table(x$judges_needed, digits),
+                 more = "x$judges_needed")
     if (anyNA(unlist(x$judges_needed[c("n_judges_relative",
                                        "n_judges_absolute")]))) {
       vc_item <- x$variance_components$variance[

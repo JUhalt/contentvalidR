@@ -46,6 +46,19 @@
   if (total == 0) NA_real_ else same / total
 }
 
+# The number of within-item rating pairs, the base of that share.
+.pair_count <- function(X) {
+  m <- colSums(!is.na(X))
+  sum(m * (m - 1) / 2)
+}
+
+# The share of identical pairs as printed: whole numbers on fewer than 100
+# pairs. An object saved before `n_pairs` existed prints whole numbers.
+.pairs_percent <- function(ag) {
+  .fmt_pct(ag$percent_agreement,
+           base = if (is.null(ag$n_pairs)) NA else ag$n_pairs)
+}
+
 # Percentile bootstrap resampling items with every rater's rating intact
 # (Zapf et al., 2016).
 .unit_bootstrap <- function(X, stat, B, alpha, seed = NULL) {
@@ -258,6 +271,7 @@ panel_agreement <- function(ratings,
     n_items = n_items,
     n_raters = nrow(X),
     percent_agreement = pct,
+    n_pairs = .pair_count(X),
     interpretation = interpretation,
     critique = if (method == "ac1") .ac1_critique() else NA_character_
   )
@@ -287,9 +301,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   }
   .say(line)
   if (is.finite(x$percent_agreement)) {
-    cat("Identical rating pairs: ",
-        formatC(100 * x$percent_agreement, format = "f", digits = 1), "%\n",
-        sep = "")
+    cat("Identical rating pairs: ", .pairs_percent(x), "\n", sep = "")
   }
 
   cat("\n")
@@ -355,8 +367,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
                   .fmt_ci(ag$ci_low, ag$ci_high, digits))
   }
   if (is.finite(ag$percent_agreement)) {
-    out <- paste0(out, ". Identical rating pairs: ",
-                  format(round(100 * ag$percent_agreement, 1), nsmall = 1), "%")
+    out <- paste0(out, ". Identical rating pairs: ", .pairs_percent(ag))
   }
   paste0(out, ".")
 }

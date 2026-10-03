@@ -155,16 +155,16 @@
 }
 
 # One value from a fixed set of choices, as match.arg() picks it (a unique
-# partial match is enough, and the default is the first choice), with the
-# error the style shared with nomologR uses: `format` must be one of "apa",
-# "data.frame", or "markdown", not "latex". With no `choices`, they are the
-# default of the calling function's argument, as in match.arg().
+# partial match is enough, and the default or NULL gives the first choice),
+# with the error the style shared with nomologR uses: `format` must be one of
+# "apa", "data.frame", or "markdown", not "latex". With no `choices`, they are
+# the default of the calling function's argument, as in match.arg().
 .choose <- function(arg, choices = NULL, name = deparse(substitute(arg))) {
   if (is.null(choices)) {
     fn <- sys.function(sys.parent())
     choices <- eval(formals(fn)[[name]], envir = parent.frame())
   }
-  if (identical(arg, choices)) return(choices[1L])
+  if (is.null(arg) || identical(arg, choices)) return(choices[1L])
   ok <- is.character(arg) && length(arg) == 1L && !is.na(arg)
   i <- if (ok) pmatch(arg, choices) else NA_integer_
   if (is.na(i)) {

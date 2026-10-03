@@ -128,14 +128,12 @@ fit
 #>   so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
 #>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
 #>       method is named above.
-#>   Csv -- Coefficient of Substantive Validity. How much more often judges
-#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
-#>       tie).
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
 #>   Competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
 #>   p -- Howard-Melloy exact test. Probability of at least this many target
@@ -144,8 +142,8 @@ fit
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet the exact target-assignment criterion; the
-#>       competitor column shows where judges put it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
 #> 
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
@@ -158,8 +156,8 @@ fit
 ```
 
 The first line names the object, `<contentvalid_sort>`, and what it
-holds; after the facts of the design, the verdict comes first: two items
-meet the exact test of Howard and Melloy (2016), and one is flagged for
+holds; then, after the facts of the design, the verdict: two items meet
+the exact test of Howard and Melloy (2016), and one is flagged for
 review. `Review` is not a decision to delete; it marks an item to look
 at again, together with what the judges wrote about it.
 
@@ -173,6 +171,8 @@ table, and `format = "markdown"` writes it for Quarto or R Markdown:
 
 ``` r
 content_report(fit)
+#> <contentvalid_report> Results table in APA style
+#> 
 #>   Item         Target Judges Competitor Psa     95% CI Csv      p Decision
 #>   Clear 1      A       18/20 B          .90 [.70, .97] .80 < .001 Retain
 #>   Clear 2      A       16/20 B          .80 [.58, .92] .60   .006 Retain
@@ -183,6 +183,9 @@ content_report(fit)
 #> interval. Retain = at least the number of target assignments the exact
 #> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
 #> 2016).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
 
 `plot()` draws each item’s share of judges with its interval, against
@@ -234,11 +237,12 @@ started](https://juhalt.github.io/contentvalidR/articles/getting-started.html).
 
 ## Reading the output
 
-Every print opens with its verdict and reports numbers as the APA
-Publication Manual (7th ed.) prescribes: no leading zero on values that
-cannot exceed 1, *p* to three decimals, and intervals as \[LL, UL\]. A
-short key under each result explains only the columns and decisions it
-shows. `contentvalid_glossary()` has the full definitions, and
+Every print opens with a header naming the object, then the facts of the
+design and the verdict, and reports numbers as the APA Publication
+Manual (7th ed.) prescribes: no leading zero on values that cannot
+exceed 1, *p* to three decimals, and intervals as \[LL, UL\]. A short
+key under each result explains only the columns and decisions it shows.
+`contentvalid_glossary()` has the full definitions, and
 `options(contentvalidR.show_key = FALSE)` hides the key once the terms
 are familiar. See [Reading the
 output](https://juhalt.github.io/contentvalidR/articles/reading-output.html).
