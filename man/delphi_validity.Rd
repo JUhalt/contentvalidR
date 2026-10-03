@@ -60,17 +60,53 @@ is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_delphi} and
-\code{contentvalid_workflow}. \code{results} has one row per item: its last round,
-\code{n_experts} there, \code{prop_agree}, \code{consensus}, and, for the last pair of
-consecutive rounds, \code{prop_unchanged}, \code{stability} with \code{stability_low}
-and \code{stability_high} where an interval exists, \code{stability_df} and
-\code{stability_p} for the chi-square methods, and \code{stable} for the methods
-that make a decision.
-\code{details} holds \code{consensus} (every item and round), \code{stability} (every
-item and pair of rounds, including \code{n_paired}, \code{min_expected} for the
-chi-square methods, \code{n_boot_usable} for the kappa interval, and a
-\code{note} where a statistic is undefined or unreliable), \code{panel} (experts
-per round), and \code{round_fits}, the \code{\link[=expert_validity]{expert_validity()}} fit for each round.
+\code{contentvalid_workflow}. \code{details} holds \code{consensus} (every item and
+round), \code{stability} (every item and pair of rounds, including
+\code{n_paired}, \code{min_expected} for the chi-square methods, \code{n_boot_usable}
+for the kappa interval, and a \code{note} where a statistic is undefined or
+unreliable), \code{panel} (experts per round), and \code{round_fits}, the
+\code{\link[=expert_validity]{expert_validity()}} fit for each round.
+
+\strong{Results columns.} \code{results} has one row per item. Consensus is read
+in the item's last round, and stability in its last pair of consecutive
+rounds:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{n_rounds}}{Rounds in which the item was rated.}
+\item{\code{last_round}}{The last of them.}
+\item{\code{n_experts}}{Experts who rated the item in its last round.}
+\item{\code{prop_agree}}{The share of them rating it \code{agree_cut} or
+higher.}
+\item{\code{consensus}}{Whether \code{prop_agree} meets \code{consensus_threshold};
+\code{NA} when no threshold was set.}
+\item{\code{prop_unchanged}}{The share of experts who kept their rating
+between the two rounds of the last pair, among those who rated the
+item in both (\code{n_paired} in \code{details$stability}); \code{NA} when no
+expert's ratings could be paired.}
+\item{\code{stability}}{The statistic chosen in \code{stability} for that pair:
+weighted kappa, lambda, a chi-square, or the net change.}
+\item{\code{stability_low}, \code{stability_high}}{The bootstrap interval for
+kappa at level \code{1 - alpha}; \code{NA} for the other methods, with
+\code{B = 0}, and where kappa has no interval.}
+\item{\code{stability_df}, \code{stability_p}}{The degrees of freedom and \emph{p} of
+a chi-square; \code{NA} for the other methods.}
+\item{\code{stable}}{The stability rule's decision for the chi-square and
+net-change methods (see Details); \code{NA} for kappa and lambda, which
+apply no rule, where the item has no pair, and where the individual
+chi-square cannot be computed.}
+\item{\code{recommendation}}{\code{"Consensus"}, \code{"No consensus"},
+\code{"Descriptive only"} (no \code{consensus_threshold} was set), or
+\code{"Insufficient panel"} (fewer than three experts rated the item in
+its last round, whether or not a threshold was set). Stability never
+changes it.}
+\item{\code{interpretation}}{The decision explained in a sentence. Shares
+and the threshold are percentages to at most one decimal (66.7\%), as
+in the handoff; \code{print()} and \code{summary()} give a share just under the
+threshold, and the threshold, the decimals that tell them apart.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Consensus"},
+\code{"Review"} for \code{"No consensus"}, \code{"Descriptive only"}, or
+\code{"Insufficient data"} for \code{"Insufficient panel"}.}
+}
 }
 \description{
 Analyzes an expert panel rated over successive Delphi rounds. For each item

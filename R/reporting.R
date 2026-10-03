@@ -194,10 +194,15 @@ as.data.frame.contentvalid_workflow <- function(x,
       # statistic alone does not give: the two chi-squares read p in
       # opposite directions.
       ruled <- chisq || identical(method, "percent_change")
+      # A share just under the consensus threshold gets the decimals that
+      # keep it from printing as the threshold (.6667 against .667), as in
+      # print().
+      agree <- s("agree", "prop", "prop_agree")
+      agree$cut <- x$settings$consensus_threshold
       c(
         list(
           s("item", "text", "item"), s("last round", "text", "last_round"),
-          s("experts", "int", "n_experts"), s("agree", "prop", "prop_agree"),
+          s("experts", "int", "n_experts"), agree,
           s("unchanged", "prop", "prop_unchanged")
         ),
         if (chisq) list(s("df", "int", "stability_df")),
@@ -222,7 +227,10 @@ as.data.frame.contentvalid_workflow <- function(x,
     int = ifelse(is.na(v[[1]]), .missing_mark, format(v[[1]], trim = TRUE)),
     count = ifelse(is.na(v[[1]]) | is.na(v[[2]]), .missing_mark,
                    paste0(v[[1]], "/", v[[2]])),
-    prop = .fmt(v[[1]], digits),
+    # A proportion read against a cut (`cut` in the entry) is not printed as
+    # equal to the cut it falls short of.
+    prop = if (is.null(entry$cut)) .fmt(v[[1]], digits) else
+      .delphi_fmt_share(v[[1]], entry$cut, digits),
     num = .fmt(v[[1]], digits, bounded = FALSE),
     percent = .fmt_pct(v[[1]], base = base),
     p = .fmt_p(v[[1]]),
@@ -370,8 +378,13 @@ as.data.frame.contentvalid_workflow <- function(x,
       congruence = .report_congruence_criterion(st, decisions)
     ),
     contentvalid_delphi = if (is.numeric(st$consensus_threshold)) {
+      # With the decimals that tell it apart from a share in the table just
+      # below it, as the Agree column gives that share.
+      thr <- st$consensus_threshold
+      shares <- if (is.data.frame(res)) res$prop_agree else NULL
       sprintf("Consensus = at least %s of experts agreeing in the last round.",
-              .delphi_percent(st$consensus_threshold))
+              .delphi_percent(thr, max(c(1L, .delphi_beside_digits(
+                shares, thr, 1L, .delphi_percent)))))
     },
     contentvalid_judge = .report_judge_criterion(st, decisions),
     contentvalid_domain = .report_domain_criterion(st, decisions),
@@ -470,6 +483,7 @@ as.data.frame.contentvalid_workflow <- function(x,
         },
         NULL
       ),
+      .report_delphi_paired(x, headings, res),
       if (has("stable")) .report_delphi_stable(st, res)
     ),
     contentvalid_judge = c(
@@ -504,6 +518,32 @@ as.data.frame.contentvalid_workflow <- function(x,
     NULL
   )
   if (length(out)) paste(out, collapse = " ")
+}
+
+# The experts a Delphi item's Unchanged and stability statistic rest on, when
+# they are fewer than the Experts column shows: replaced experts, or experts
+# who skipped the item in one of the two rounds. Grouped by count, so a panel
+# that lost the same experts for every item reads once ("7 for S1, S2 and
+# S3").
+.report_delphi_paired <- function(x, headings, res) {
+  if (!is.data.frame(res) || !nrow(res) || is.null(res$n_experts)) return(NULL)
+  rests <- intersect(c("unchanged", "kappa", "lambda", "chi-square",
+                       "net change"), tolower(headings))
+  if (!length(rests)) return(NULL)
+  paired <- .delphi_last_paired(x, res$item)
+  # An item no expert rated in both rounds has nothing resting on them.
+  short <- !is.na(paired) & paired > 0L & paired < res$n_experts
+  if (!any(short)) return(NULL)
+  counts <- factor(paired[short], levels = unique(paired[short]))
+  groups <- if (all(short) && nlevels(counts) == 1L) {
+    stats::setNames("every item", levels(counts))
+  } else {
+    vapply(split(res$item[short], counts), .and_list, character(1))
+  }
+  rests <- sub("^unchanged$", "Unchanged", rests)
+  paste0(.and_list(rests), " rest on the experts who rated the item in both ",
+         "of those rounds, fewer than the Experts column shows: ",
+         paste(names(groups), "for", groups, collapse = "; "), ".")
 }
 
 # Which way the Delphi stability rule reads, since the two chi-squares read
@@ -803,8 +843,14 @@ print.contentvalid_report <- function(x, ...) {
   if (!nrow(x)) {
     .say("No units matched the requested selection.")
   } else {
+    # A Delphi table keeps what its decisions rest on at any width: Agree for
+    # consensus, and the stability statistic, which Stable reads, with the df
+    # APA reports beside a chi-square. Kappa is not listed, because the
+    # relevance table's modified kappa shares the heading; a Delphi kappa
+    # table gives up its interval first.
     .print_table(.report_display(x),
-                 keep = c(.table_keep, "I-CVI", "IOC", "stable"))
+                 keep = c(.table_keep, "I-CVI", "IOC", "stable", "agree", "df",
+                          "chi-square", "net change", "lambda"))
     note <- attr(x, "note")
     if (length(note)) {
       cat("\n")

@@ -35,7 +35,7 @@ closeout_steady <- function() {
   rbind(closeout_long(r1, 1), closeout_long(r2, 2))
 }
 
-test_that("a zero-width kappa interval is described in words, not printed", {
+test_that("a zero-width kappa interval is printed with a note on its meaning", {
   fit <- delphi_validity(closeout_steady(), lo = 1, hi = 4,
                          consensus_threshold = .75, B = 50, seed = 1)
   r <- fit$results
@@ -46,12 +46,18 @@ test_that("a zero-width kappa interval is described in words, not printed", {
 
   lines <- capture.output(print(fit))
   out <- gsub("\\s+", " ", paste(lines, collapse = " "))
-  # It printed "[1.00, 1.00]" as if nine experts gave certainty.
-  expect_false(grepl("[1.00, 1.00]", out, fixed = TRUE))
-  expect_identical(utils::tail(closeout_row(lines, "A"), 1), "none")
-  expect_match(out, paste("A (1->2): No 95% CI, because every expert kept",
-                          "their rating, so every resample of the experts",
-                          "gave the same kappa."), fixed = TRUE)
+  # It printed "[1.00, 1.00]" with no word on what it meant, and then
+  # "none", where content_report() printed the bounds. Both now print the
+  # bounds, and a note says the interval has no width.
+  row <- closeout_row(lines, "A")
+  expect_identical(utils::tail(row, 2), c("[1.00,", "1.00]"))
+  expect_false(grepl(" none", paste(row, collapse = " "), fixed = TRUE))
+  expect_match(out, paste("A (1->2): The 95% CI has no width because every",
+                          "expert kept their rating, so every resample of the",
+                          "experts gave the same kappa; it does not mean kappa",
+                          "is known exactly."), fixed = TRUE)
+  rep <- content_report(fit)
+  expect_identical(rep[["kappa 95% CI"]][rep$item == "A"], "[1.00, 1.00]")
   # An interval with width is printed as before.
   b <- r[r$item == "B", ]
   expect_match(out, contentvalidR:::.fmt_ci(b$stability_low, b$stability_high),
@@ -257,11 +263,15 @@ test_that("a share just under a three-decimal threshold is not printed as equal 
   r <- fit$results
   expect_equal(r$prop_agree[r$item == "S1"], 6 / 9)
   expect_false(r$consensus[r$item == "S1"])
-  # It read "66.7% agreed, against a threshold of 66.7%".
+  # The stored interpretation keeps one decimal, as the handoff rule does;
+  # the printouts give the decimals that tell the two apart.
   expect_match(r$interpretation[r$item == "S1"],
-               "66.67% agreed, against a threshold of 66.70%", fixed = TRUE)
-  expect_match(r$interpretation[r$item == "S2"], "against a threshold of 66.70%",
+               "66.7% agreed, against a threshold of 66.7%", fixed = TRUE)
+  expect_match(r$interpretation[r$item == "S2"], "against a threshold of 66.7%",
                fixed = TRUE)
+  # It read "66.7% agreed, against a threshold of 66.7%".
+  expect_match(closeout_squash(summary(fit)),
+               "66.67% agreed, against a threshold of 66.70%", fixed = TRUE)
   lines <- capture.output(print(fit))
   out <- gsub("\\s+", " ", paste(lines, collapse = " "))
   expect_match(out, "Consensus threshold: 66.70%, as supplied.", fixed = TRUE)

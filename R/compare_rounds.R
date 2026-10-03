@@ -49,6 +49,37 @@
   if (is.numeric(n) && length(n) == 1L && is.finite(n)) format(n) else NA_character_
 }
 
+# Settings that are proportions between 0 and 1: an alpha level, the Delphi
+# consensus threshold, the congruence cut and the item-sort null rate. A
+# cut on the rating scale, such as agree_cut, is not one.
+.proportion_settings <- c("alpha", "consensus_threshold", "ioc_cut", "p0")
+
+# Two values of a proportion setting as APA writes them, .05 and .75 rather
+# than 0.05 and 0.75, each to the digits it was given with at least two, as
+# .fmt_alpha() writes an alpha level (to three significant digits). Two
+# values that would still read alike there (2/3 and .667) get the
+# significant digits that tell them apart.
+.fmt_setting_pair <- function(a, b) {
+  one <- function(v, sig) {
+    v <- signif(v, sig)
+    given <- format(v, digits = 15, scientific = FALSE, drop0trailing = TRUE,
+                    decimal.mark = ".")
+    decimals <- if (grepl(".", given, fixed = TRUE)) {
+      nchar(sub("^[^.]*[.]", "", given))
+    } else {
+      0L
+    }
+    txt <- formatC(v, format = "f", digits = max(2L, decimals),
+                   decimal.mark = ".")
+    sub("^(-?)0[.]", "\\1.", txt)
+  }
+  for (sig in 3:15) {
+    out <- c(one(a, sig), one(b, sig))
+    if (!identical(out[1], out[2])) break
+  }
+  out
+}
+
 .settings_diff <- function(a, b) {
   keys <- union(names(a), names(b))
   keys <- setdiff(keys, c("method", .resampling_settings))
@@ -58,18 +89,25 @@
     vb <- b[[k]]
     same <- isTRUE(all.equal(va, vb))
     if (same) next
+    # A proportion is written as APA writes it, .05 and .75 rather than 0.05
+    # and 0.75, so a threshold reads like the alpha beside it.
+    prop <- function(v) {
+      k %in% .proportion_settings && is.numeric(v) && length(v) == 1L &&
+        is.finite(v)
+    }
     fmt <- function(v) {
       if (is.null(v)) return("(not set)")
-      # An alpha level is written as APA writes it: .05 and .10, not 0.05
-      # and 0.1.
-      if (identical(k, "alpha") && is.numeric(v) && length(v) == 1L) {
-        return(.fmt_alpha(v))
-      }
+      if (prop(v)) return(.fmt_alpha(v))
       if (is.atomic(v) && length(v) <= 4L) return(paste(format(v), collapse = ", "))
       paste0("<", class(v)[1], ">")
     }
+    shown <- if (prop(va) && prop(vb)) {
+      .fmt_setting_pair(va, vb)
+    } else {
+      c(fmt(va), fmt(vb))
+    }
     rows[[length(rows) + 1L]] <- data.frame(
-      setting = k, previous = fmt(va), current = fmt(vb),
+      setting = k, previous = shown[[1]], current = shown[[2]],
       stringsAsFactors = FALSE
     )
   }
@@ -128,7 +166,9 @@
 #'       added and removed.}
 #'     \item{settings_changes}{Analysis settings that differ between consecutive
 #'       rounds, and a changed panel size, which is the audit trail for whether
-#'       a status change can be read as an evidence change at all.}
+#'       a status change can be read as an evidence change at all. The values
+#'       are text; a proportion (`alpha`, `consensus_threshold`, `ioc_cut`,
+#'       `p0`) is written as APA writes it, `.05` or `.75`.}
 #'     \item{comparable}{`FALSE` when any consecutive pair differs in settings
 #'       or, where the criterion depends on it, in panel size. The seed and
 #'       the number of bootstrap resamples are ignored, because they cannot

@@ -142,6 +142,30 @@ test_that("each workflow's help lists every column of its results", {
   expect_true(all(domain_cols %in% documented("domain_validity")),
               info = paste(setdiff(domain_cols, documented("domain_validity")),
                            collapse = ", "))
+
+  # Delphi fits with and without a threshold, and with an item too few
+  # experts rated, so every recommendation occurs and is named.
+  long <- function(m, round) {
+    data.frame(expert = paste0("E", seq_len(nrow(m))),
+               item = rep(colnames(m), each = nrow(m)), round = round,
+               rating = as.vector(m))
+  }
+  r1 <- cbind(S1 = c(4, 4, 3, 4, 2, 4), S2 = c(2, 3, 2, 1, 3, 2))
+  r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(2, 2, 2, 1, 3, 2))
+  thin <- data.frame(expert = c("E1", "E2", "E1", "E2"), item = "S3",
+                     round = c(1, 1, 2, 2), rating = 4)
+  d <- rbind(long(r1, 1), long(r2, 2), thin)
+  set <- delphi_validity(d, lo = 1, hi = 4, consensus_threshold = .75, B = 0)
+  none <- delphi_validity(d, lo = 1, hi = 4, B = 0)
+  delphi_cols <- unique(c(names(set$results), names(none$results)))
+  expect_true(all(delphi_cols %in% documented("delphi_validity")),
+              info = paste(setdiff(delphi_cols, documented("delphi_validity")),
+                           collapse = ", "))
+  recs <- unique(c(set$results$recommendation, none$results$recommendation))
+  expect_setequal(recs, c("Consensus", "No consensus", "Descriptive only",
+                          "Insufficient panel"))
+  expect_true(all(paste0('"', recs, '"') %in% documented("delphi_validity")),
+              info = paste(recs, collapse = ", "))
 })
 
 test_that("getting started covers every workflow and its toy sort retains items", {
