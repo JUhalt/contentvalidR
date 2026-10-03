@@ -21,12 +21,14 @@
 
 \item{show_legend}{Draw the legend. Defaults to \code{TRUE}.}
 
-\item{apa}{Used by \code{type = "distribution"}. \code{TRUE} (default) draws in
-gray, with darker meaning a higher rating, as an APA figure is printed.
-\code{FALSE} draws ratings below the agreement cut in brown and ratings at or
-above it in teal, a colorblind-safe scheme for slides and posters. The
-consensus and stability views color each item's line so the lines can be
-told apart.}
+\item{apa}{\code{TRUE} (default) draws in black, white and gray, as an APA
+figure is printed: in the distribution view darker means a higher
+rating, and in the consensus and stability views each item's line is a
+shade of gray from black to mid gray, named by the label at its end.
+\code{FALSE} draws for slides and posters: the distribution view shows
+ratings below the agreement cut in brown and ratings at or above it in
+teal, a colorblind-safe scheme, and the consensus and stability views
+give each item's line its own color.}
 
 \item{labels}{For \code{type = "distribution"}, one label per rating category,
 lowest first. Defaults to \code{"Rated 1"}, \code{"Rated 2"}, and so on.}
@@ -59,6 +61,12 @@ shaded regions are drawn behind kappa: its verbal benchmarks are
 arbitrary, and kappa can be low when ratings concentrate in one category,
 so a shaded "good" region would mislead exactly when a Delphi is
 succeeding. See \code{\link[=delphi_validity]{delphi_validity()}}.
+
+In both line views each item's line is labeled at its last point. Items
+with the same values throughout share one line: their labels are set
+apart, but the lines lie on top of each other, so only the stacked labels
+show that more than one item is there. \code{type = "distribution"} draws every
+item on its own.
 
 \code{type = "distribution"} draws every rating in every round as a diverging
 stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,

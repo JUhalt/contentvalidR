@@ -10,19 +10,30 @@ compare_rounds(..., labels = NULL)
 \item{...}{Two or more fitted workflow objects, in round order. All must come
 from the same workflow, and from the same mode of \code{\link[=expert_validity]{expert_validity()}},
 since status labels from different workflows rest on different criteria
-and are not comparable.}
+and are not comparable. Name them to label the rounds:
+\code{compare_rounds(pilot = f1, revised = f2)}.}
 
-\item{labels}{Optional round labels. Defaults to \verb{Round 1}, \verb{Round 2}, and so
-on, or to the names supplied in \code{...}. A label cannot be the name of the
-unit column (\code{item}, \code{judge} or \code{cell}) or \code{change}.}
+\item{labels}{Optional round labels. Defaults to the names supplied in
+\code{...} when every round is named, and otherwise to \verb{Round 1}, \verb{Round 2},
+and so on, with a warning when only some rounds were named. A label
+cannot be the name of the unit column (\code{item}, \code{judge} or \code{cell}) or
+\code{change}.}
 }
 \value{
 An object of class \code{contentvalid_rounds}, a list containing:
 \describe{
-\item{transitions}{One row per unit, with its status in each round and
-the direction of any change.}
-\item{summary}{Counts of stable, improved, weakened, added, and removed
-units for each consecutive pair of rounds.}
+\item{transitions}{One row per unit, with its status in each round and,
+in \code{change}, how its status in the last round compares with the
+first: \code{Unchanged}, \code{Strengthened}, \code{Weakened}, \code{Changed} (to or
+from \verb{Descriptive only}, which is neither stronger nor weaker),
+\code{Added}, \code{Removed}, or \verb{Not in first or last} for a unit present
+only in the rounds between. A unit that changed and changed back
+reads \code{Unchanged}; the round columns show the path.}
+\item{summary}{For each consecutive pair of rounds, the units compared
+(present in both) and how they split: unchanged, strengthened,
+weakened, and otherwise changed (\code{n_changed}, to or from
+\verb{Descriptive only}), which add up to \code{n_compared}; and the units
+added and removed.}
 \item{settings_changes}{Analysis settings that differ between consecutive
 rounds, and a changed panel size, which is the audit trail for whether
 a status change can be read as an evidence change at all.}

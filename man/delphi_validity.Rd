@@ -52,8 +52,11 @@ between 0 and 1. Fix it before the study (Diamond et al., 2014). \code{NULL}
 
 \item{B}{Bootstrap resamples for the kappa interval. Use \code{0} to skip it.}
 
-\item{seed}{Optional seed for the bootstrap. The random-number stream of
-the session is left as it was.}
+\item{seed}{Optional seed for the bootstrap. Every item and pair of rounds
+is resampled from this same seed, so pairs with the same number of
+paired experts draw the same resample indices, and their intervals are
+not independent of one another. The random-number stream of the session
+is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_delphi} and
@@ -99,10 +102,13 @@ chooses the statistic reported beside it:
 \item \code{"kappa"} (default): weighted kappa between each expert's ratings in the
 two rounds (Holey et al., 2007), read as a trend with no cutoff.
 Quadratic weights (the default) make kappa the intraclass correlation of
-the two rounds' ratings (Fleiss & Cohen, 1973); linear weights count a
-two-point change twice a one-point change (Cohen, 1968). The interval is
-a percentile bootstrap over the experts; see \emph{Reading the kappa interval}
-below.
+the two rounds' ratings in its sums-of-squares form (Fleiss & Cohen,
+1973). The intraclass correlation computed from mean squares, the form
+most software reports, differs from it by a term that shrinks as the
+panel grows, so with a Delphi-sized panel the two do not match exactly.
+Linear weights count a two-point change twice a one-point change (Cohen,
+1968). The interval is a percentile bootstrap over the experts; see
+\emph{Reading the kappa interval} below.
 \item \code{"lambda"}: Chaffin and Talley's (1980) index of predictive association.
 \item \code{"chisq_individual"}: Chaffin and Talley's (1980) chi-square test on
 each expert's pair of ratings; a significant result is read as stable.
@@ -137,11 +143,15 @@ rounds in the order used.
 \section{When a stability statistic is undefined}{
 
 A stability statistic can be \code{NA} for different reasons, and
-\code{prop_unchanged} tells them apart. When \code{prop_unchanged} is also \code{NA}, the
-item has no pair of consecutive rounds: it was rated in one round only, or
-in rounds that are not consecutive. When \code{prop_unchanged} has a value, a
-pair exists but the statistic is undefined for that data, and
-\code{details$stability$note} says why.
+\code{prop_unchanged} tells them apart. When \code{prop_unchanged} is also \code{NA}, no
+expert's ratings could be paired, for one of three reasons: the item was
+rated in one round only; it was rated in rounds that are not consecutive;
+or it was rated in consecutive rounds, but by different experts, so no
+expert rated it in both (two disjoint panels, for example). Only the last
+case has a row in \code{details$stability}, with \code{n_paired} 0 and a \code{note}
+saying so. When \code{prop_unchanged} has a value, a pair exists but the
+statistic is undefined for that data, and \code{details$stability$note} says
+why.
 
 The common case is the one that reads worst if reported bare. Kappa is
 chance-corrected, so when every paired rating in both rounds falls in one
