@@ -72,11 +72,13 @@
 #'
 #' @references
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-#' validity ratio. *Measurement and Evaluation in Counseling and Development,
-#' 47*(1), 79–86. \doi{10.1177/0748175613513808}
+#' validity ratio: Revisiting the original methods of calculation.
+#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
+#' \doi{10.1177/0748175613513808}
 #'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
+#' \doi{10.1097/00006199-198611000-00017}
 #'
 #' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
 #' sure you know what's being reported? Critique and recommendations.
@@ -235,7 +237,19 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "contentvalidR extension.")
   }
 
-  .closing(c("This table reports the consequences of the panel sizes you asked",
+  # The calculation is the package's own, which a report should say.
+  .closing(c("This is a contentvalidR planning tool, not a published power",
+             "method: it treats the experts as endorsing the item",
+             "independently, each with probability `prob`, while the criterion",
+             "it applies is",
+             if (st$criterion == "cvi" && any(sizes > 10)) {
+               "Lynn's (1986), extended past ten experts as stated above."
+             } else if (st$criterion == "cvi") {
+               "Lynn's (1986)."
+             } else {
+               "the exact test of Ayre and Scally (2014)."
+             },
+             "This table reports the consequences of the panel sizes you asked",
              "about. It does not recommend one. `prob` is an assumption you supply,",
              "so treat the result as conditional on it and report the value you",
              "assumed."),
