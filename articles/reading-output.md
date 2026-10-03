@@ -124,13 +124,14 @@ fit_sort
 #>       tie).
 #>   competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the
+#>       competitor column shows where judges put it instead.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -162,8 +163,10 @@ across the item table:
 - **competitor** — the construct judges picked most often *instead*.
   This is the single most useful diagnostic column in the table, because
   it tells you *where* a weak item drifted, which points at the fix.
-- **p** — the Howard-Melloy exact test against chance assignment
-  (`p_value` in `results`).
+- **p** — the Howard-Melloy exact test against the benchmark rate `p0`,
+  .50 by default (`p_value` in `results`). That benchmark is not the
+  rate random sorting would give, which is 1 divided by the number of
+  constructs.
 
 Numbers follow the APA style rules (seventh edition, Section 6.36). A
 statistic that cannot exceed 1, such as a proportion or a *p* value, is

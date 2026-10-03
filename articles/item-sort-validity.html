@@ -173,13 +173,14 @@ comprehensively covers the construct domain.</p>
 <span><span class="co">#&gt;       tie).</span></span>
 <span><span class="co">#&gt;   competitor -- Strongest competing construct. The construct other than the</span></span>
 <span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
-<span><span class="co">#&gt;   p -- Howard-Melloy exact test. Chance of at least this many target</span></span>
-<span><span class="co">#&gt;       assignments if judges assigned at the rate p0; compared with alpha.</span></span>
+<span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
+<span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
+<span><span class="co">#&gt;       alpha.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
 <span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt;   Review -- did not meet it; the competitor column shows where judges put</span></span>
-<span><span class="co">#&gt;       it instead.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the</span></span>
+<span><span class="co">#&gt;       competitor column shows where judges put it instead.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
@@ -228,19 +229,21 @@ the one-sided exact criterion.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">15</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Howard-Melloy exact test (one-tailed)</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The item meets the exact target-assignment criterion.</span></span>
 <span><span class="co">#&gt; 15 of 20 judges assigned the item to its target construct (Psa = .75). If</span></span>
-<span><span class="co">#&gt; judges chose the target at the rate p0 = .50, a count this high has</span></span>
+<span><span class="co">#&gt; each judge chose the target with probability p0 = .50, a count this high has</span></span>
 <span><span class="co">#&gt; probability p = .021.</span></span>
-<span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20. Decision: significant.</span></span>
-<span><span class="co">#&gt; One-sided 95% interval for the target rate: [.54, 1.00].</span></span>
+<span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20.</span></span>
+<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.54, 1.00].</span></span>
 <span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">14</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Howard-Melloy exact test (one-tailed)</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The item does not meet the exact target-assignment criterion.</span></span>
 <span><span class="co">#&gt; 14 of 20 judges assigned the item to its target construct (Psa = .70). If</span></span>
-<span><span class="co">#&gt; judges chose the target at the rate p0 = .50, a count this high has</span></span>
+<span><span class="co">#&gt; each judge chose the target with probability p0 = .50, a count this high has</span></span>
 <span><span class="co">#&gt; probability p = .058.</span></span>
-<span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20. Decision: n.s..</span></span>
-<span><span class="co">#&gt; One-sided 95% interval for the target rate: [.49, 1.00].</span></span></code></pre></div>
+<span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20.</span></span>
+<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.49, 1.00].</span></span></code></pre></div>
 <p><code><a href="../reference/sort_validity.html">sort_validity()</a></code> therefore uses <strong>Retain</strong>
 to mean “meets this exact statistical screening criterion” and
 <strong>Review</strong> to mean “does not meet it.” Revision or removal
@@ -370,9 +373,9 @@ plausible true target-assignment probability.</p>
 <span><span class="co">#&gt;      40    26/40         .65          .32          .81          .99</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
-<span><span class="co">#&gt; same as a proportion. power at p: the exact probability of reaching the</span></span>
-<span><span class="co">#&gt; required count if each judge assigns the item to its target with probability</span></span>
-<span><span class="co">#&gt; p.</span></span></code></pre></div>
+<span><span class="co">#&gt; same as a proportion. power at a value: the exact probability of reaching the</span></span>
+<span><span class="co">#&gt; required count if each judge assigns the item to its target with that</span></span>
+<span><span class="co">#&gt; probability.</span></span></code></pre></div>
 <p>This is preferable to treating a rule such as “20-40 judges” as a
 universal sample-size requirement. Power depends on the assumed
 target-assignment probability, <code>N</code>, the null probability, and
@@ -394,7 +397,7 @@ alpha.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"map"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-map-1.png" class="r-plt" alt="Item-sort evidence map: each item's Psa, the share of judges choosing its target, on the horizontal axis against its Csv, the lead of the target over its top rival, on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean." width="672"></p>
 <p>Psa and Csv are shown jointly, review items are labeled by default,
-and target- scale averages are added as diamonds. This makes it easier
+and target- scale averages are added as triangles. This makes it easier
 to distinguish a correspondence problem (low Psa) from a
 construct-overlap problem (low or negative Csv). The map does not draw
 Colquitt cutoff regions across individual items because those empirical

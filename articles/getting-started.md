@@ -76,8 +76,10 @@ psa; csv
 ```
 
 **Interpretation** - **Psa** = share assigning the intended construct. -
-**Csv** = margin of wins: \$ \$. - Binomial test (H0: \$ p ≤ .5 \$)
-flags items with above-chance targeting.
+**Csv** = margin of wins: \$ \$. - The exact binomial test (null
+hypothesis: a target rate of .5 or less) flags items whose target count
+meets the criterion. The .5 is a benchmark rate, not the rate random
+sorting would give.
 
 **Construct-rating workflow (HTC, HTD, repeated-measures ANOVA)**
 
@@ -422,9 +424,9 @@ sort_power(N = c(20, 30), true_p = c(.65, .75))
 #>      30    20/30         .67          .51          .89
 #> 
 #> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at p: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with probability
-#> p.
+#> same as a proportion. power at a value: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with that
+#> probability.
 ```
 
 ## References

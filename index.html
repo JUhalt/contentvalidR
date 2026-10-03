@@ -164,13 +164,14 @@
 <span><span class="co">#&gt;       tie).</span></span>
 <span><span class="co">#&gt;   competitor -- Strongest competing construct. The construct other than the</span></span>
 <span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
-<span><span class="co">#&gt;   p -- Howard-Melloy exact test. Chance of at least this many target</span></span>
-<span><span class="co">#&gt;       assignments if judges assigned at the rate p0; compared with alpha.</span></span>
+<span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
+<span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
+<span><span class="co">#&gt;       alpha.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
 <span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt;   Review -- did not meet it; the competitor column shows where judges put</span></span>
-<span><span class="co">#&gt;       it instead.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the</span></span>
+<span><span class="co">#&gt;       competitor column shows where judges put it instead.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
@@ -281,7 +282,7 @@
 <div class="section level2">
 <h2 id="examples-reporting-and-citation">Examples, reporting, and citation<a class="anchor" aria-label="anchor" href="#examples-reporting-and-citation"></a>
 </h2>
-<p>Five deterministic example data sets, covering the item-sort, construct-rating, relevance, essentiality, and congruence input shapes, are installed as CSV files, for example <code>system.file("extdata", "sort_example.csv", package = "contentvalidR")</code>. <code><a href="articles/reporting-examples.html">vignette("reporting-examples")</a></code> gives methods and results scaffolds and a minimum reproducibility statement.</p>
+<p>Five deterministic example data sets, covering the item-sort, construct-rating, relevance, essentiality, and congruence input shapes, are installed as CSV files, for example <code>system.file("extdata", "sort_example.csv", package = "contentvalidR")</code>. Four more files hold the one item set the walkthrough follows through every stage: its items, the sort, the expert ratings, and the responses. <code><a href="articles/reporting-examples.html">vignette("reporting-examples")</a></code> gives methods and results scaffolds and a minimum reproducibility statement.</p>
 <p>Cite the package with <code>citation("contentvalidR")</code>. The reference list below is also installed in BibTeX form: <code>system.file("REFERENCES.bib", package = "contentvalidR")</code>.</p>
 </div>
 <div class="section level2">

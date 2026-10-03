@@ -5,7 +5,15 @@ the item level, `sort_validity()` combines Anderson and Gerbing's (1991)
 Psa and Csv statistics with the exact target-count significance test
 recommended by Howard and Melloy (2016). Items meeting the exact
 criterion are labeled `"Retain"`; items that do not meet it are labeled
-`"Review"`, not automatically `"Delete"`.
+`"Review"`, not automatically `"Delete"`. An item sorted by so few
+judges that no count could meet the criterion (four or fewer at the
+defaults) is labeled `"Insufficient panel"`, with status
+`"Insufficient data"`.
+
+Construct and item labels are compared as text after leading and
+trailing spaces are removed, so constructs may be coded as numbers, text
+or factors. Results list the items in the order they first appear in the
+data, or in the order of the levels when the item column is a factor.
 
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al.
@@ -45,7 +53,12 @@ sort_validity(
 - p0:
 
   Null target-assignment probability for the exact binomial test.
-  Default `0.5`, following Howard and Melloy (2016).
+  Default `0.5`, following Howard and Melloy (2016). It is not the rate
+  expected from random assignment, which is 1 divided by the number of
+  constructs. Howard and Melloy describe .5 as arbitrary and lenient,
+  and suggest a higher value such as .6 or .75, chosen before data
+  collection, when the alternative constructs are clearly different from
+  the target or the judges are subject-matter experts.
 
 - alpha:
 
@@ -66,8 +79,10 @@ sort_validity(
 - proportion_ci:
 
   Interval method for Psa: `"wilson"` (default), `"agresti_coull"`,
-  `"exact"`, or `"none"`. The interval uses the same `alpha` as the
-  exact test. See `ci` in
+  `"exact"`, or `"none"`. The interval is two-sided at level
+  `1 - alpha`, while the exact test is one-sided, so the interval of an
+  item that just meets the criterion can still include `p0`. The
+  decision comes from the test, not from the interval. See `ci` in
   [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) for
   the methods and the evidence for each.
 
@@ -214,13 +229,14 @@ fit
 #>       tie).
 #>   competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the
+#>       competitor column shows where judges put it instead.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -320,13 +336,14 @@ print(fit, legacy = TRUE)
 #>       tie).
 #>   competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the
+#>       competitor column shows where judges put it instead.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).

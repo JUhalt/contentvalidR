@@ -147,8 +147,9 @@ substantively identical.</p>
 <span><span class="co">#&gt; divided by the number of judges.</span></span></code></pre></div>
 <p><strong>Interpretation</strong> - <strong>Psa</strong> = share
 assigning the intended construct. - <strong>Csv</strong> = margin of
-wins: $ $. - Binomial test (H0: $ p ≤ .5 $) flags items with
-above-chance targeting.</p>
+wins: $ $. - The exact binomial test (null hypothesis: a target rate of
+.5 or less) flags items whose target count meets the criterion. The .5
+is a benchmark rate, not the rate random sorting would give.</p>
 <p><strong>Construct-rating workflow (HTC, HTD, repeated-measures
 ANOVA)</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -469,9 +470,9 @@ files.</p>
 <span><span class="co">#&gt;      30    20/30         .67          .51          .89</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
-<span><span class="co">#&gt; same as a proportion. power at p: the exact probability of reaching the</span></span>
-<span><span class="co">#&gt; required count if each judge assigns the item to its target with probability</span></span>
-<span><span class="co">#&gt; p.</span></span></code></pre></div>
+<span><span class="co">#&gt; same as a proportion. power at a value: the exact probability of reaching the</span></span>
+<span><span class="co">#&gt; required count if each judge assigns the item to its target with that</span></span>
+<span><span class="co">#&gt; probability.</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

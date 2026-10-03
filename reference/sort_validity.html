@@ -4,7 +4,13 @@ item level, sort_validity() combines Anderson and Gerbing's (1991) Psa and
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 &quot;Retain&quot;; items that do not meet it are labeled &quot;Review&quot;, not
-automatically &quot;Delete&quot;.
+automatically &quot;Delete&quot;. An item sorted by so few judges that no count
+could meet the criterion (four or fewer at the defaults) is labeled
+&quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;.
+Construct and item labels are compared as text after leading and trailing
+spaces are removed, so constructs may be coded as numbers, text or factors.
+Results list the items in the order they first appear in the data, or in
+the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
@@ -13,7 +19,13 @@ item level, sort_validity() combines Anderson and Gerbing's (1991) Psa and
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 &quot;Retain&quot;; items that do not meet it are labeled &quot;Review&quot;, not
-automatically &quot;Delete&quot;.
+automatically &quot;Delete&quot;. An item sorted by so few judges that no count
+could meet the criterion (four or fewer at the defaults) is labeled
+&quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;.
+Construct and item labels are compared as text after leading and trailing
+spaces are removed, so constructs may be coded as numbers, text or factors.
+Results list the items in the order they first appear in the data, or in
+the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
@@ -78,7 +90,13 @@ item level, <code>sort_validity()</code> combines Anderson and Gerbing's (1991) 
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 <code>"Retain"</code>; items that do not meet it are labeled <code>"Review"</code>, not
-automatically <code>"Delete"</code>.</p>
+automatically <code>"Delete"</code>. An item sorted by so few judges that no count
+could meet the criterion (four or fewer at the defaults) is labeled
+<code>"Insufficient panel"</code>, with status <code>"Insufficient data"</code>.</p>
+<p>Construct and item labels are compared as text after leading and trailing
+spaces are removed, so constructs may be coded as numbers, text or factors.
+Results list the items in the order they first appear in the data, or in
+the order of the levels when the item column is a factor.</p>
 <p>At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
@@ -118,7 +136,12 @@ rater, assigned construct, and intended target construct.</p></dd>
 
 <dt id="arg-p-">p0<a class="anchor" aria-label="anchor" href="#arg-p-"></a></dt>
 <dd><p>Null target-assignment probability for the exact binomial test.
-Default <code>0.5</code>, following Howard and Melloy (2016).</p></dd>
+Default <code>0.5</code>, following Howard and Melloy (2016). It is not the rate
+expected from random assignment, which is 1 divided by the number of
+constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+suggest a higher value such as .6 or .75, chosen before data collection,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
@@ -139,9 +162,11 @@ If omitted, the overall Colquitt et al. norms are used.</p></dd>
 
 <dt id="arg-proportion-ci">proportion_ci<a class="anchor" aria-label="anchor" href="#arg-proportion-ci"></a></dt>
 <dd><p>Interval method for Psa: <code>"wilson"</code> (default),
-<code>"agresti_coull"</code>, <code>"exact"</code>, or <code>"none"</code>. The interval uses the same
-<code>alpha</code> as the exact test. See <code>ci</code> in <code><a href="cvi.html">cvi()</a></code> for the methods and the
-evidence for each.</p></dd>
+<code>"agresti_coull"</code>, <code>"exact"</code>, or <code>"none"</code>. The interval is two-sided at
+level <code>1 - alpha</code>, while the exact test is one-sided, so the interval of
+an item that just meets the criterion can still include <code>p0</code>. The
+decision comes from the test, not from the interval. See <code>ci</code> in <code><a href="cvi.html">cvi()</a></code>
+for the methods and the evidence for each.</p></dd>
 
 
 <dt id="arg-legacy">legacy<a class="anchor" aria-label="anchor" href="#arg-legacy"></a></dt>
@@ -273,13 +298,14 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>       tie).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   competitor -- Strongest competing construct. The construct other than the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       intended one that judges chose most often.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   p -- Howard-Melloy exact test. Chance of at least this many target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       assignments if judges assigned at the rate p0; compared with alpha.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   p -- Howard-Melloy exact test. Probability of at least this many target</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       assignments if each judge picked the target at rate p0; compare with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       alpha.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Retain -- met the exact target-assignment criterion.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- did not meet it; the competitor column shows where judges put</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       it instead.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- did not meet the exact target-assignment criterion; the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       competitor column shows where judges put it instead.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
@@ -379,13 +405,14 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>       tie).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   competitor -- Strongest competing construct. The construct other than the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       intended one that judges chose most often.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   p -- Howard-Melloy exact test. Chance of at least this many target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       assignments if judges assigned at the rate p0; compared with alpha.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   p -- Howard-Melloy exact test. Probability of at least this many target</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       assignments if each judge picked the target at rate p0; compare with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       alpha.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Retain -- met the exact target-assignment criterion.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- did not meet it; the competitor column shows where judges put</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       it instead.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- did not meet the exact target-assignment criterion; the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       competitor column shows where judges put it instead.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>

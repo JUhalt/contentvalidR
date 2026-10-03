@@ -261,9 +261,9 @@ sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
 #>      40    26/40         .65          .32          .81          .99
 #> 
 #> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at p: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with probability
-#> p.
+#> same as a proportion. power at a value: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with that
+#> probability.
 ```
 
 For an expert panel,

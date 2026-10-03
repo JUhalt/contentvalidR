@@ -33,7 +33,10 @@ sort_power(N, true_p, p0 = 0.5, alpha = 0.05)
 ## Value
 
 An object of class `contentvalid_sort_power` containing an exact
-planning table.
+planning table. When a panel is too small for any count to reach `alpha`
+(four or fewer judges at the defaults), `critical_n_target` and
+`minimum_observed_psa` are `NA` and `power` is 0: no item can be
+retained at that size.
 
 ## References
 
@@ -57,9 +60,9 @@ sort_power(N = c(20, 30, 40), true_p = .70)
 #>      40    26/40         .65          .81
 #> 
 #> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at p: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with probability
-#> p.
+#> same as a proportion. power at a value: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with that
+#> probability.
 sort_power(N = 30, true_p = c(.60, .70, .80))
 #> contentvalidR item-sort planning
 #> --------------------------------
@@ -69,7 +72,7 @@ sort_power(N = 30, true_p = c(.60, .70, .80))
 #>      30    20/30         .67          .29          .73          .97
 #> 
 #> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at p: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with probability
-#> p.
+#> same as a proportion. power at a value: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with that
+#> probability.
 ```

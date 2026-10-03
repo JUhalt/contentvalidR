@@ -63,9 +63,12 @@ contentvalid_glossary()
 #>   competitor -- Strongest competing construct. The construct, other than
 #>       the intended one, that judges chose most often for this item.
 #>   p_value -- Howard-Melloy exact test. Probability of seeing at least this
-#>       many target assignments if judges were assigning at the chance rate
-#>       p0. Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>       many target assignments if each judge chose the intended construct
+#>       with probability p0. The default, .50, is the benchmark Howard and
+#>       Melloy (2016) used; it is not the rate expected from random
+#>       assignment, which is 1 divided by the number of constructs. Small
+#>       values mean judges chose the intended construct more often than that
+#>       benchmark. (0 to 1; compared against alpha)
 #>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
 #>       interval around Psa. A wide interval means few judges sorted the
 #>       item, so a different sample of judges could plausibly give a quite
@@ -73,8 +76,10 @@ contentvalid_glossary()
 #>       the output)
 #>   decisions:
 #>     Retain -- met the exact target-assignment criterion.
-#>     Review -- did not meet it; the competitor column shows where judges put
-#>         it instead.
+#>     Review -- did not meet the exact target-assignment criterion; the
+#>         competitor column shows where judges put it instead.
+#>     Insufficient panel -- too few judges sorted it for any count to meet
+#>         the exact criterion.
 #>     Insufficient data -- no judge sorted it.
 #> 
 #> construct-rating
@@ -269,9 +274,12 @@ contentvalid_glossary("item-sort")
 #>   competitor -- Strongest competing construct. The construct, other than
 #>       the intended one, that judges chose most often for this item.
 #>   p_value -- Howard-Melloy exact test. Probability of seeing at least this
-#>       many target assignments if judges were assigning at the chance rate
-#>       p0. Small values mean the item's assignment pattern is unlikely to be
-#>       chance. (0 to 1; compared against alpha)
+#>       many target assignments if each judge chose the intended construct
+#>       with probability p0. The default, .50, is the benchmark Howard and
+#>       Melloy (2016) used; it is not the rate expected from random
+#>       assignment, which is 1 divided by the number of constructs. Small
+#>       values mean judges chose the intended construct more often than that
+#>       benchmark. (0 to 1; compared against alpha)
 #>   psa_low/psa_high -- Interval for Psa. Lower and upper limits of an
 #>       interval around Psa. A wide interval means few judges sorted the
 #>       item, so a different sample of judges could plausibly give a quite
@@ -279,8 +287,10 @@ contentvalid_glossary("item-sort")
 #>       the output)
 #>   decisions:
 #>     Retain -- met the exact target-assignment criterion.
-#>     Review -- did not meet it; the competitor column shows where judges put
-#>         it instead.
+#>     Review -- did not meet the exact target-assignment criterion; the
+#>         competitor column shows where judges put it instead.
+#>     Insufficient panel -- too few judges sorted it for any count to meet
+#>         the exact criterion.
 #>     Insufficient data -- no judge sorted it.
 #> 
 #> status labels

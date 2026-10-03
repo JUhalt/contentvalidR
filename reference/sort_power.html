@@ -96,7 +96,10 @@ intended construct. May be scalar or vector.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>contentvalid_sort_power</code> containing an exact
-planning table.</p>
+planning table. When a panel is too small for any count to reach <code>alpha</code>
+(four or fewer judges at the defaults), <code>critical_n_target</code> and
+<code>minimum_observed_psa</code> are <code>NA</code> and <code>power</code> is 0: no item can be retained
+at that size.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -119,9 +122,9 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
 <span class="r-out co"><span class="r-pr">#&gt;</span>      40    26/40         .65          .81</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at p: the exact probability of reaching the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with probability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> p.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at a value: the exact probability of reaching the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with that</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability.</span>
 <span class="r-in"><span><span class="fu">sort_power</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">30</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort planning</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
@@ -131,9 +134,9 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
 <span class="r-out co"><span class="r-pr">#&gt;</span>      30    20/30         .67          .29          .73          .97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at p: the exact probability of reaching the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with probability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> p.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at a value: the exact probability of reaching the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with that</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> probability.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

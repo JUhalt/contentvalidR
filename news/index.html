@@ -55,8 +55,48 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.1.9000" id="contentvalidr-01019000-development-version">contentvalidR 0.10.1.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-01019000-development-version"></a></h2>
+<p>Fixes from the audit before 1.0. Some of them change values, so check any item sort that matches the cases below.</p>
+<div class="section level3">
+<h3 id="item-sort-values-that-change-0-10-1-9000">Item sort: values that change<a class="anchor" aria-label="anchor" href="#item-sort-values-that-change-0-10-1-9000"></a></h3>
+<ul><li>
+<strong>Constructs coded as numbers or factors now give the right counts.</strong> When the target construct was a number (1, 2, 3) or a factor, <code><a href="../reference/compute_csv.html">compute_csv()</a></code> read the target’s count by position in its table, not by label. The target count, Csv, the exact <em>p</em> value, the Retain or Review decision, and the items <code><a href="../reference/content_handoff.html">content_handoff()</a></code> carried could all be wrong, with no error: an item with 16 of 20 judges on target could print 4/20, Csv .00, and Review. Every earlier release had this, including 0.4.0, the version on CRAN. Constructs stored as text in both columns were always right. Rerun any sort whose construct columns are numbers or factors. Labels are now compared as text, whatever they are stored as, so <code>target</code> in <code>results</code> is always text, and tied competitors are listed in alphabetical order.</li>
+<li>
+<strong>An item sorted by too few judges for the exact test gets no decision.</strong> With four or fewer judges at the defaults no count can reach alpha (4 of 4 gives <em>p</em> = .0625). Such items were labeled <code>"Review"</code>, as if judges had disagreed. They are now <code>"Insufficient panel"</code>, with status <code>"Insufficient data"</code>; the printout and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> say why; and the <code>rule</code> text in the handoff says that no count can meet the test, where it used to read “target assignments &gt;= NA of 4”. Scale means are unchanged: they still average every item that has a Psa and a Csv.</li>
+<li>
+<strong>The <code><a href="../reference/csv_binom_test.html">csv_binom_test()</a></code> interval follows <code>alpha</code>.</strong> It was always a 95% interval, so at <code>alpha = .10</code> a significant result could sit beside an interval that included <code>p0</code>. It is now one-sided at <code>1 - alpha</code>, the level of the test, so its lower limit is above <code>p0</code> whenever <em>p</em> is below alpha. At the default alpha nothing changes.</li>
+<li>
+<strong><code><a href="../reference/sort_power.html">sort_power()</a></code> reports a power of 0, not <code>NA</code>,</strong> for a panel too small for any count to reach alpha, and says so under the table.</li>
+<li>
+<strong>Leading and trailing spaces in labels are ignored,</strong> non-breaking spaces included, in item, judge and construct labels. <code>"A"</code> and <code>" A"</code> were counted as two constructs.</li>
+<li>
+<strong>Items are listed in the order of the data,</strong> or of the levels when the item column is a factor. They used to be sorted as text, so Q10 came before Q2. The order reaches <code>results</code>, the figures, and <code>items</code> in the handoff, and the rows of <code>scale_summary</code> follow the order in which each scale first appears. Item names in <code>results</code> are always text.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="every-workflow-values-that-change-0-10-1-9000">Every workflow: values that change<a class="anchor" aria-label="anchor" href="#every-workflow-values-that-change-0-10-1-9000"></a></h3>
+<ul><li>
+<strong>A scale mean exactly on a published Colquitt band minimum now falls in that band.</strong> A mean such as 4.35 / 5 is stored a hair under .87 and was put in the band below. This affects <code><a href="../reference/interpret_colquitt.html">interpret_colquitt()</a></code> and the scale labels of both <code><a href="../reference/sort_validity.html">sort_validity()</a></code> and <code><a href="../reference/rating_validity.html">rating_validity()</a></code>.</li>
+<li>
+<strong>An alpha with more than two decimals is printed in full.</strong> <code>alpha = .001</code> printed as “alpha = .00” in every workflow and in the <code>rule</code> text of the handoff. A computed level such as .05 / 3 prints to three significant digits (.0167).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="item-sort-other-fixes-0-10-1-9000">Item sort: other fixes<a class="anchor" aria-label="anchor" href="#item-sort-other-fixes-0-10-1-9000"></a></h3>
+<ul><li>Two factor construct columns with different level sets no longer stop <code><a href="../reference/compute_psa.html">compute_psa()</a></code> and <code><a href="../reference/sort_validity.html">sort_validity()</a></code> with “level sets of factors are different”.</li>
+<li>
+<code><a href="../reference/csv_binom_test.html">csv_binom_test()</a></code> prints its verdict first, in the item-sort workflow’s words (“meets the exact target-assignment criterion”). It printed “Decision: n.s..” at the end. The stored <code>decision</code> values are unchanged; the stored <code>interpretation</code> text now says “meet the exact criterion” where it said “exceed the exact chance criterion”.</li>
+<li>The <code><a href="../reference/sort_power.html">sort_power()</a></code> printout and figure no longer call the assumed target-assignment probability “p”, which APA reserves for a <em>p</em> value: the note says “power at a value” and the legend “Target rate”.</li>
+<li>The legacy comparison says so when no item has a decision to compare with, where it printed “0 of 0 items”.</li>
+<li>“Missing assignments: 2 across 1 items” now reads “1 item”.</li>
+<li>The help for <code>p0</code> no longer calls it a chance rate. It is the null probability of a target assignment; random assignment would give 1 divided by the number of constructs. The help now passes on the caution Howard and Melloy (2016) give themselves: that .5 is arbitrary and lenient.</li>
+<li>The help for <code>proportion_ci</code> says the interval is two-sided while the test is one-sided, so a retained item’s interval can include <code>p0</code>.</li>
+<li>The item-sort and construct-rating vignettes said scale means are drawn as diamonds; the figures draw triangles.</li>
+<li>
+<code><a href="../reference/interpret_colquitt.html">?interpret_colquitt</a></code> gives the full reference for Colquitt et al. (2019).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="other-changes-0-10-1-9000">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-10-1-9000"></a></h3>
 <ul><li>The reader in nomologR is now tested against handoffs from contentvalidR 0.6.0 through 0.10.1, and the README says so.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.1" id="contentvalidr-0101">contentvalidR 0.10.1<a class="anchor" aria-label="anchor" href="#contentvalidr-0101"></a></h2>
 <p>A documentation release. The README now documents the handoff to nomologR in its own section, matching the one the nomologR README carries for the handoff from contentvalidR, so either front page explains how the two packages connect. Released on GitHub and R-universe; CRAN keeps 0.4.0 until the joint 1.0.</p>

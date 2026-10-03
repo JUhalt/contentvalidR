@@ -402,9 +402,9 @@ against its HTD on the vertical axis. Filled points are retained items,
 open points are items to review, and triangles mark each target scale's
 mean.](construct-rating-validity_files/figure-html/rating-map-1.png)
 
-Target-scale averages are shown as diamonds and items needing review are
-labeled by default. As with the item-sort map, Colquitt norm regions are
-not drawn across individual items because those benchmarks were
+Target-scale averages are shown as triangles and items needing review
+are labeled by default. As with the item-sort map, Colquitt norm regions
+are not drawn across individual items because those benchmarks were
 constructed from scale averages.
 
 The **target-versus-competitor gap plot** makes the Hinkin-Tracey

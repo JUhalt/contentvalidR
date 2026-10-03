@@ -88,13 +88,14 @@ fit
 #>       tie).
 #>   competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the
+#>       competitor column shows where judges put it instead.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -147,19 +148,21 @@ assignments to meet the one-sided exact criterion.
 csv_binom_test(n_c = 15, N = 20)
 #> Howard-Melloy exact test (one-tailed)
 #> 
+#> The item meets the exact target-assignment criterion.
 #> 15 of 20 judges assigned the item to its target construct (Psa = .75). If
-#> judges chose the target at the rate p0 = .50, a count this high has
+#> each judge chose the target with probability p0 = .50, a count this high has
 #> probability p = .021.
-#> At alpha = .05 an item needs at least 15 of 20. Decision: significant.
-#> One-sided 95% interval for the target rate: [.54, 1.00].
+#> At alpha = .05 an item needs at least 15 of 20.
+#> One-sided 95% CI for the target rate: [.54, 1.00].
 csv_binom_test(n_c = 14, N = 20)
 #> Howard-Melloy exact test (one-tailed)
 #> 
+#> The item does not meet the exact target-assignment criterion.
 #> 14 of 20 judges assigned the item to its target construct (Psa = .70). If
-#> judges chose the target at the rate p0 = .50, a count this high has
+#> each judge chose the target with probability p0 = .50, a count this high has
 #> probability p = .058.
-#> At alpha = .05 an item needs at least 15 of 20. Decision: n.s..
-#> One-sided 95% interval for the target rate: [.49, 1.00].
+#> At alpha = .05 an item needs at least 15 of 20.
+#> One-sided 95% CI for the target rate: [.49, 1.00].
 ```
 
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
@@ -301,9 +304,9 @@ sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
 #>      40    26/40         .65          .32          .81          .99
 #> 
 #> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at p: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with probability
-#> p.
+#> same as a proportion. power at a value: the exact probability of reaching the
+#> required count if each judge assigns the item to its target with that
+#> probability.
 ```
 
 This is preferable to treating a rule such as “20-40 judges” as a
@@ -349,7 +352,7 @@ target scale's
 mean.](item-sort-validity_files/figure-html/sort-map-1.png)
 
 Psa and Csv are shown jointly, review items are labeled by default, and
-target- scale averages are added as diamonds. This makes it easier to
+target- scale averages are added as triangles. This makes it easier to
 distinguish a correspondence problem (low Psa) from a construct-overlap
 problem (low or negative Csv). The map does not draw Colquitt cutoff
 regions across individual items because those empirical norms were
