@@ -635,8 +635,16 @@ judge_validity <- function(ratings,
 # contentvalidR conventions, ...", "These cuts were set for this analysis.",
 # or each named when some are of each kind ("The logit severity cut was set
 # for this analysis; the scale-use cut is ..."). `cuts` names each cut as the
-# sentence calls it; `default` says which are the defaults.
+# sentence calls it; `default` says which are the defaults. A single cut, as
+# a report note can state, is "This cut".
 .judge_cut_source <- function(cuts, default) {
+  if (length(cuts) == 1L) {
+    return(if (default) {
+      "This cut is a contentvalidR convention, not a published standard."
+    } else {
+      "This cut was set for this analysis."
+    })
+  }
   if (all(default)) {
     return("These cuts are contentvalidR conventions, not published standards.")
   }

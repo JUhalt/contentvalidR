@@ -111,9 +111,10 @@
 # empty in every row is dropped, except the status and the tests a decision
 # rests on, whose "--" the notes explain (`keep`, matched in any case). A
 # table wider than the console tightens its columns, then drops trailing
-# ones, never the stub or a `keep` column, and names them with the call that
-# shows them (`more`). Returns the headings it printed, invisibly, so a key
-# can leave out a column that was not shown.
+# ones, never the stub or a `keep` column, and names them, a shared heading
+# after the estimate it follows, with the call that shows them (`more`).
+# Returns the headings it printed, invisibly, so a key can leave out a
+# column that was not shown.
 .print_table <- function(tab, keep = .table_keep, more = "as.data.frame(x)",
                          indent = 2L, gap = 2L, as_is = character(0)) {
   tab <- as.data.frame(tab, stringsAsFactors = FALSE, check.names = FALSE)
@@ -143,15 +144,21 @@
   total <- function() indent + sum(widths) + gap * (length(widths) - 1L)
   # Tighter columns before fewer columns.
   if (total() > room && gap > 1L) gap <- 1L
+  # A column left out is named by its heading, or, where two share one,
+  # after the estimate it follows ("95% CI for V, 95% CI for I-CVI").
+  named <- shown
+  shared <- which(shown %in% shown[duplicated(shown)] & seq_along(shown) > 1L)
+  named[shared] <- paste(shown[shared], "for", shown[shared - 1L])
   dropped <- character(0)
   while (total() > room) {
     can_go <- which(seq_along(heads) > 1L & !kept(heads))
     if (!length(can_go)) break
     j <- max(can_go)
-    dropped <- c(shown[j], dropped)
+    dropped <- c(named[j], dropped)
     cells <- cells[-j]
     heads <- heads[-j]
     shown <- shown[-j]
+    named <- named[-j]
     right <- right[-j]
     widths <- widths[-j]
   }

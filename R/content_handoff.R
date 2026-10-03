@@ -1088,9 +1088,24 @@
 #' evidence rather than as a bare list of names.
 #'
 #' @references
+#' Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
+#' studies. *Technological Forecasting and Social Change, 16*(1), 67–73.
+#' \doi{10.1016/0040-1625(80)90074-8}
+#'
+#' Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
+#' agreement criteria for the termination of Delphi studies. *Technological
+#' Forecasting and Social Change, 13*(1), 83–90.
+#' \doi{10.1016/0040-1625(79)90007-6}
+#'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
 #' \doi{10.1097/00006199-198611000-00017}
+#'
+#' Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
+#' methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
+#' Techniques and applications* (pp. 257–281).
+#' \url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
+#' (Original work published 1975)
 #'
 #' @param fit A fitted `contentvalid_sort`, `contentvalid_rating`,
 #'   `contentvalid_expert`, or `contentvalid_delphi` object.

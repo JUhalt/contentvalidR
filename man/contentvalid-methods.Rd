@@ -56,8 +56,11 @@
 \alias{as.data.frame.contentvalid_evidence}
 \title{Printing, summarizing, and plotting contentvalidR results}
 \description{
-Every contentvalidR result has a \code{print()} method, and nearly every one
-has \code{as.data.frame()}. The six workflows and \code{\link[=compare_rounds]{compare_rounds()}} also have
+Every contentvalidR result has a \code{print()} method, except those of three
+auxiliary helpers: \code{\link[=qfactor_content]{qfactor_content()}} returns a plain list, and
+\code{\link[=simulate_csv_power]{simulate_csv_power()}} and \code{\link[=simulate_anova_power]{simulate_anova_power()}} return a number.
+Nearly every result with a \code{print()} method also has \code{as.data.frame()}.
+The six workflows and \code{\link[=compare_rounds]{compare_rounds()}} also have
 \code{summary()}, and the results that have a figure have \code{plot()}. This page
 says what each method does for each kind of result. The function that
 made a result documents the result itself, such as the columns of a
@@ -121,9 +124,9 @@ expert-panel summary \code{mode} and \code{agreement}; the judge summary \code{g
 the cells under review.
 
 \code{summary()} of a \code{\link[=compare_rounds]{compare_rounds()}} result returns a
-\code{summary.contentvalid_rounds} list whose \code{changed} holds the units whose
-status changed between the first and last rounds, with the counts in
-\code{summary}.
+\code{summary.contentvalid_rounds} list whose \code{changed} holds the units that
+changed status between the first and last rounds, entered or left, or
+appeared only in between, with the counts in \code{summary}.
 }
 
 \section{plot()}{

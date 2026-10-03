@@ -202,10 +202,13 @@
 #'     \item{`kappa_mod`}{Modified kappa.}
 #'     \item{`cvi_criterion`}{The I-CVI that Lynn's (1986) criterion requires
 #'       for the item's panel size, as a proportion; `NA` below three
-#'       experts.}
-#'     \item{`kappa_quality`}{The band of `kappa_mod`: `"Excellent"` above
-#'       .74, `"Good"` from .60, and `"Fair"` from .40, the criteria Polit et
-#'       al. (2007) use, and `"Poor"` below .40.}
+#'       experts. It is shown for reading: the decision compares counts.}
+#'     \item{`kappa_quality`}{The band of `kappa_mod` in the guidelines of
+#'       Cicchetti and Sparrow (1981) and Fleiss (1981), as cited in Polit et
+#'       al. (2007), who apply them to modified kappa: `"Excellent"` above
+#'       .74, `"Good"` from .60 to .74, `"Fair"` from .40 to .59, and
+#'       `"Poor"` below .40. The band describes the item and decides nothing;
+#'       every item that meets the I-CVI criterion is `"Excellent"`.}
 #'     \item{`ci_width`}{The width of the interval for V,
 #'       `ci_high - ci_low`.}
 #'     \item{`recommendation`}{`"Strong support"` (the item meets the I-CVI
@@ -253,15 +256,6 @@
 #'   `n_objectives` (objectives the item was rated on), `best_objective` and
 #'   `best_ioc` (the objective with the highest index, and that index), and
 #'   `recommendation`, which is `"Descriptive only"`.
-#'
-#'   In relevance mode, `results` also holds `cvi_criterion`, the I-CVI that
-#'   Lynn's criterion asks of the item's panel size, shown for reading (the
-#'   decision compares counts), and `kappa_quality`, the band of `kappa_mod`
-#'   in the guidelines of Cicchetti and Sparrow (1981) and Fleiss (1981), as
-#'   cited in Polit et al. (2007), who apply them to modified kappa:
-#'   `"Excellent"` above .74, `"Good"` from .60 to .74, `"Fair"` from .40 to
-#'   .59, and `"Poor"` below .40. The band describes the item and decides
-#'   nothing; every item that meets the I-CVI criterion is `"Excellent"`.
 #'
 #' @references
 #' Aiken, L. R. (1980). Content validity and reliability of single items or
@@ -613,8 +607,8 @@ expert_validity <- function(data,
         competitors <- g[g$objective != target, , drop = FALSE]
         target_mean <- target_row$mean_rating
         target_ioc <- target_row$ioc
-        # The closest other objective, by the judges' mean rating on it. The
-        # margin over it is a description beside the index, not a rule.
+        # The other objective with the highest mean rating. The margin over
+        # it is a description beside the index, not a rule.
         if (nrow(competitors) > 0L && any(is.finite(competitors$mean_rating))) {
           mx <- max(competitors$mean_rating, na.rm = TRUE)
           strongest <- paste(
@@ -1125,7 +1119,11 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     }
     cut <- x$settings$ioc_cut
     targeted <- "target_mean" %in% names(x$results)
-    if (targeted && is.numeric(cut)) {
+    # The criterion is stated when some item was held to it, as in the
+    # summary and the report: not when every item was rated on its target
+    # alone.
+    if (targeted && is.numeric(cut) &&
+        any(x$results$recommendation %in% c("Congruent", "Review"))) {
       .say(paste0("Criterion: IOC at or above ", .ioc_cut_source(cut, digits),
                   "."))
     }
@@ -1250,10 +1248,18 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   if (x$n_insufficient - n_few > 0L) {
     cat(" | Insufficient data: ", x$n_insufficient - n_few, sep = "")
   }
-  if (x$n_descriptive > 0L) cat(" | Descriptive only: ", x$n_descriptive, sep = "")
+  # With target objectives, the only undecided status is an item rated on
+  # its target alone, which the printout calls "Target described".
+  targeted <- identical(x$mode, "congruence") &&
+    "target_mean" %in% names(x$flagged)
+  if (x$n_descriptive > 0L) {
+    cat(" | ", if (targeted) "Target described" else "Descriptive only", ": ",
+        x$n_descriptive, sep = "")
+  }
   cat("\n")
   # The criterion the decisions applied, as the printout states it: with
-  # panels of several sizes, the flagged table gives each item's.
+  # panels of several sizes, the flagged table gives each item's. A
+  # congruence fit states it only when some item was held to it.
   cr <- x$criterion
   several <- FALSE
   if (relevance && length(cr$sizes)) {
@@ -1262,8 +1268,7 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   } else if (essentiality && length(cr$n)) {
     several <- length(unique(cr$n)) > 1L
     .say(.essentiality_criterion_text(cr$n, cr$critical, x$settings$alpha))
-  } else if (identical(x$mode, "congruence") &&
-             "target_mean" %in% names(x$flagged) &&
+  } else if (targeted && x$n_supported + x$n_review > 0L &&
              is.numeric(x$settings$ioc_cut)) {
     .say(paste0("Criterion: IOC at or above ",
                 .ioc_cut_source(x$settings$ioc_cut, digits), "."))

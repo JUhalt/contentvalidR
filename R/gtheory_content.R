@@ -317,6 +317,13 @@ gtheory_content <- function(ratings,
   }
 
   judge_share <- if (total > 0) var_judge / total * 100 else NA_real_
+  # The default cut is the package's convention, a changed one the analyst's,
+  # as the printed Status line says.
+  cut_txt <- if (.phi_cut_is_default(phi_cut)) {
+    paste(.fmt(phi_cut), "criterion")
+  } else {
+    paste(.fmt(phi_cut), "set for this analysis")
+  }
   interpretation <- if (is.na(obs$phi)) {
     paste(
       "Every rating was effectively identical, so no variance could be",
@@ -350,21 +357,20 @@ gtheory_content <- function(ratings,
   } else if (obs$phi >= phi_cut) {
     sprintf(paste(
       "With %s, absolute decisions about these items would generalize",
-      "to another panel of the same size at Phi = %s, at or above the %s set",
-      "for this analysis. Judge differences account for %.1f%% of total",
-      "variance."
+      "to another panel of the same size at Phi = %s, at or above the %s.",
+      "Judge differences account for %.1f%% of total variance."
     ), .n_noun(n_judges, "judge"), .fmt_beside_cut(obs$phi, phi_cut),
-    .fmt(phi_cut), judge_share)
+    cut_txt, judge_share)
   } else {
     sprintf(paste(
       "With %s, absolute decisions about these items would generalize",
-      "to another panel of the same size at Phi = %s, below the %s set for",
-      "this analysis. Judge differences account for %.1f%% of total",
-      "variance. See `judges_needed` for the panel size a higher target",
-      "implies, and review judge-level severity before treating borderline",
-      "items as settled."
+      "to another panel of the same size at Phi = %s, below the %s.",
+      "Judge differences account for %.1f%% of total variance. See",
+      "`judges_needed` for the panel size a higher target implies, and",
+      "review judge-level severity before treating borderline items as",
+      "settled."
     ), .n_noun(n_judges, "judge"), .fmt_beside_cut(obs$phi, phi_cut),
-    .fmt(phi_cut), judge_share)
+    cut_txt, judge_share)
   }
 
   out <- list(
@@ -379,6 +385,12 @@ gtheory_content <- function(ratings,
   )
   class(out) <- "contentvalid_gtheory"
   out
+}
+
+# Whether `phi_cut` is the default .80, the package's convention, however it
+# was given; any other cut was set for the analysis.
+.phi_cut_is_default <- function(phi_cut) {
+  isTRUE(all.equal(phi_cut, 0.80))
 }
 
 # The D-study targets as a printable table. A target no realistic panel can
@@ -415,8 +427,11 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
   .say(paste0("Status: ", x$status,
               if (x$status %in% c("Supported", "Review")) {
                 paste0(" (criterion: Phi >= ", .fmt(phi_cut, digits),
-                       if (phi_cut == 0.80) ", a contentvalidR convention" else
-                         ", set for this analysis", ")")
+                       if (.phi_cut_is_default(phi_cut)) {
+                         ", a contentvalidR convention"
+                       } else {
+                         ", set for this analysis"
+                       }, ")")
               }), exdent = 2L)
   .say(x$interpretation)
 
