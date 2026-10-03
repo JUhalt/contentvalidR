@@ -30,8 +30,8 @@ The statuses read across the two packages as follows:\tabular{ll}{
 }
 
 
-"Review" always means look again, never delete. In contentvalidR's
-\code{results} and handoff, \code{recommendation} is the decision word (such as
+"Review" always means look again, never delete. In the \code{results} and
+the handoff of this package, \code{recommendation} is the decision word (such as
 \code{"Retain"} or \code{"Strong support"}); \code{status} is the shared vocabulary
 above.
 }

@@ -21,8 +21,8 @@
 #' | Insufficient data | not computed |
 #' | Descriptive only | note |
 #'
-#' "Review" always means look again, never delete. In contentvalidR's
-#' `results` and handoff, `recommendation` is the decision word (such as
+#' "Review" always means look again, never delete. In the `results` and
+#' the handoff of this package, `recommendation` is the decision word (such as
 #' `"Retain"` or `"Strong support"`); `status` is the shared vocabulary
 #' above.
 #'

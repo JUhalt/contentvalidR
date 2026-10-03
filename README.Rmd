@@ -87,7 +87,7 @@ fit <- sort_validity(sort_dat)
 fit
 ```
 
-The verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. `Review` is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.
+The first line names the object, `<contentvalid_sort>`, and what it holds; after the facts of the design, the verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. `Review` is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.
 
 The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.
 

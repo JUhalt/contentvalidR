@@ -702,7 +702,7 @@ changes: no stored value, field, argument or handoff column.
   sentence case. In Markdown the note reads "*Note.* ..." and a value that
   could not be computed is an em dash.
 * `?contentvalidR` describes the conventions and gives the crosswalk
-  between contentvalidR's statuses and nomologR's.
+  between the statuses of the two packages.
 
 ## Other changes
 
