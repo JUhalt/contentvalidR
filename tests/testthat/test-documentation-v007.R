@@ -111,12 +111,14 @@ test_that("the README reference list and REFERENCES.bib list the same works", {
                            grep("^\\s*doi = ", bib_text, value = TRUE)))
   expect_setequal(readme_dois, bib_dois)
 
-  # APA 7 orders the reference list alphabetically by author.
-  authors <- sub("\\s\\(\\d{4}\\).*$", "", sub("^- ", "", entries))
+  # APA 7 orders the reference list alphabetically by author, and an
+  # author's undated work before the dated ones (Section 9.47).
+  authors <- sub("\\s\\((\\d{4}|n\\.d\\.)\\).*$", "", sub("^- ", "", entries))
   plain <- tolower(iconv(authors, "UTF-8", "ASCII//TRANSLIT"))
   plain <- gsub("[^a-z ]", " ", gsub("(eds.)", "", plain, fixed = TRUE))
   plain <- trimws(gsub("\\s+", " ", plain))
-  years <- sub("^.*\\((\\d{4})\\).*$", "\\1", entries)
+  years <- sub("^.*\\((\\d{4}|n\\.d\\.)\\).*$", "\\1", entries)
+  years[years == "n.d."] <- "0000"
   expect_identical(order(plain, years, method = "radix"), seq_along(entries))
 })
 

@@ -191,8 +191,8 @@ belongs in your own visible code.
 | How well does each item match each construct definition? | `rating_validity()` | Hinkin & Tracey (1999); MacKenzie et al. (2011); Colquitt et al. (2019) | [Construct ratings](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.html) |
 | Is each item relevant, essential, or matched to its objective? | `expert_validity()` | Aiken (1980); Lawshe (1975); Lynn (1986); Polit et al. (2007); Rovinelli & Hambleton (1977) | [Expert panels](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.html) |
 | Has a Delphi panel reached consensus, and stopped changing? | `delphi_validity()` | Holey et al. (2007) | [Delphi rounds](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.html) |
-| Do the conclusions depend on the particular judges? | `judge_validity()` | Crocker et al. (1988); Engelhard (1994) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
-| Do the items cover the blueprint? | `domain_validity()` | Sireci & Geisinger (1992) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
+| Do the conclusions depend on the particular judges? | `judge_validity()` | Crocker et al. (1988); Linacre (1989); Engelhard (1994) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
+| Do the items cover the blueprint? | `domain_validity()` | A blueprint tally; Sireci & Geisinger (1992, 1995) for the optional structure analysis | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
 
 The first four ask whether each **item** behaves as intended or, in a
 Delphi study, whether the panel has settled on it. The last two ask
@@ -202,9 +202,10 @@ covers the **domain** you set out to measure. An item can only be rated
 if someone wrote it, so a perfect relevance index says nothing about the
 facet you forgot.
 
-How many judges or experts to recruit is answered exactly, rather than
-by a rule of thumb, by `sort_power()`, `expert_power()`, and
-`gtheory_content()`; see [Design and
+How many judges or experts to recruit is answered from the design rather
+than by a rule of thumb: exactly by `sort_power()` and `expert_power()`,
+and as an estimate from a panel’s ratings by `gtheory_content()`; see
+[Design and
 reporting](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.html).
 When the items move on to response data, `content_handoff()` carries
 them and their evidence; see [the handoff
@@ -436,13 +437,22 @@ Works cited in this README, the help pages, and the vignettes.
 - Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability*.
   Annenberg School for Communication, University of Pennsylvania.
   <https://www.asc.upenn.edu/sites/default/files/2021-03/Computing%20Krippendorff%27s%20Alpha-Reliability.pdf>
+- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness
+  of fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27.
+  <https://doi.org/10.1007/BF02289565>
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer
   agreement for categorical data. *Biometrics, 33*(1), 159–174.
   <https://doi.org/10.2307/2529310>
 - Lawshe, C. H. (1975). A quantitative approach to content validity.
   *Personnel Psychology, 28*(4), 563–575.
   <https://doi.org/10.1111/j.1744-6570.1975.tb01393.x>
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
+  bias* $$Facets help$$. Winsteps.com. Retrieved October 2, 2026, from
+  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
+- Linacre, J. M. (2002). What do infit and outfit, mean-square and
+  standardized mean? *Rasch Measurement Transactions, 16*(2), 878.
+  <https://www.rasch.org/rmt/rmt162f.htm>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
   <https://doi.org/10.1097/00006199-198611000-00017>
@@ -521,6 +531,13 @@ Works cited in this README, the help pages, and the vignettes.
   inter-rater reliability coefficients: A study conducted with
   personality disorder samples. *BMC Medical Research Methodology,
   13*, 61. <https://doi.org/10.1186/1471-2288-13-61>
+- Wright, B. D. (1988). The efficacy of unconditional maximum likelihood
+  bias correction: Comment on Jansen, van den Wollenberg, and Wierda.
+  *Applied Psychological Measurement, 12*(3), 315–318.
+  <https://doi.org/10.1177/014662168801200309>
+- Wright, B. D., & Douglas, G. A. (1977). Best procedures for
+  sample-free item analysis. *Applied Psychological Measurement, 1*(2),
+  281–295. <https://doi.org/10.1177/014662167700100216>
 - Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content
   validity of the WHOQOL-BREF from respondents’ perspective by
   quantitative methods. *Social Indicators Research, 85*(3), 483–498.

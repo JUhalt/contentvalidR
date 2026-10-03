@@ -131,6 +131,10 @@
 }
 
 .signed_phi <- function(tp, tn, fp, fn) {
+  # Doubles, because the product of four integer margins overflows past
+  # about 430 items.
+  tp <- as.numeric(tp); tn <- as.numeric(tn)
+  fp <- as.numeric(fp); fn <- as.numeric(fn)
   denom <- sqrt((tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
   if (denom == 0) return(NA_real_)
   (tp * tn - fp * fn) / denom

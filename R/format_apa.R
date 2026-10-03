@@ -66,6 +66,16 @@
   out
 }
 
+# A value printed beside its cut. Two decimals can make a value just below the
+# cut print as the cut itself ("Phi = .80, below the .80"), so such a value
+# gets a third decimal.
+.fmt_beside_cut <- function(x, cut, digits = 2L) {
+  if (!is.na(x) && x < cut && .fmt(x, digits) == .fmt(cut, digits)) {
+    return(.fmt(x, digits + 1L))
+  }
+  .fmt(x, digits)
+}
+
 # The heading for an interval column, such as "95% CI".
 .ci_label <- function(alpha) {
   paste0(format(100 * (1 - alpha)), "% CI")

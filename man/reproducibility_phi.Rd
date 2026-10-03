@@ -12,13 +12,20 @@ reproducibility_phi(sig1, sig2)
 \item{sig2}{Logical vector of retention decisions from pretest 2.}
 }
 \value{
-A list containing the 2 x 2 table, signed phi, chi-square, and p-value.
+A list containing the 2 x 2 table (\code{table}), signed \code{phi}, the
+chi-square statistic (\code{chisq}), the number of items (\code{n}), and \code{p} with
+the test it comes from in \code{p_method}: \code{"chi-square"}, or \code{"Fisher's exact test"} when an expected count is below 5. \code{p_chisq} always holds
+the chi-square \emph{p} value.
 It prints as a short report in APA style; the elements themselves are
 unrounded.
 }
 \description{
 Auxiliary compatibility diagnostic. Cross-tabulates retention decisions for
-the same items across two pretests and reports signed phi and Pearson's chi-square test without Yates correction.
+the same items across two pretests and reports signed phi with a test of
+association: Pearson's chi-square test without Yates correction, or
+Fisher's exact test when an expected count is below 5, where the
+chi-square approximation is unreliable. Pretests compare a handful of
+items, so the exact test is the usual case.
 The full 2 x 2 table is retained even when one response level is absent.
 }
 \examples{

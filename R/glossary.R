@@ -153,10 +153,10 @@
       term = "severity", workflow = "judge-heterogeneity",
       label = "Judge severity",
       definition = paste(
-        "How harsh or lenient a judge is compared with the rest of the panel.",
-        "Positive means the judge rates lower than the panel. Reported in logits",
-        "from the facets model when it can be estimated, otherwise in rating",
-        "points."
+        "How harsh or lenient a judge is compared with the panel, on the items",
+        "that judge rated. Positive means the judge rates lower than the panel.",
+        "Reported in logits from the facets model when it can be estimated,",
+        "otherwise in rating points."
       ),
       range = "0 means typical of this panel",
       stringsAsFactors = FALSE
@@ -167,9 +167,11 @@
       definition = paste(
         "Whether a judge's pattern of decisions is as predictable as the model",
         "expects. Around 1 is expected; high values mean erratic ratings, low",
-        "values mean ratings more predictable than expected."
+        "values mean ratings more predictable than expected. Linacre (2002)",
+        "calls 0.5 to 1.5 productive for measurement. Only a value above that",
+        "range is flagged, and only when it rests on enough decisions."
       ),
-      range = "around 1.0 is expected",
+      range = "around 1.0 is expected; 0.5 to 1.5 is productive for measurement",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -225,12 +227,15 @@
     ),
     data.frame(
       term = "stress", workflow = "domain-coverage",
-      label = "Kruskal stress-1",
+      label = "Map distortion",
       definition = paste(
-        "How much distortion was introduced by squeezing the similarity data",
-        "into the chosen number of dimensions. Lower is a closer fit."
+        "How far the distances on the content map depart from the experts'",
+        "dissimilarities: the root of their squared differences over the",
+        "squared dissimilarities. Lower is a closer map. It is not Kruskal's",
+        "(1964) stress-1, which belongs to nonmetric scaling, so his verbal",
+        "benchmarks do not apply to it."
       ),
-      range = "0 is perfect; below .10 is conventionally called fair or better",
+      range = "0 is an exact map; no published benchmark applies",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -336,13 +341,13 @@
     cvr = "Lean of the panel toward calling the item essential (-1 to 1; above 0 means more than half did).",
     ioc = "How consistently experts linked the item to its own objective rather than another (-1 to 1).",
     severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel.",
-    `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is too predictable.",
+    `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is more predictable than expected.",
     differentiation = "Spread of the judge's ratings compared with a typical judge (1 is typical; low means few distinctions).",
     g_coefficient = "How well the ranking of items would reproduce with another panel of this size (0 to 1).",
     phi_coefficient = "How well the absolute ratings would reproduce with another panel of this size (0 to 1).",
     share = "Percentage of all items in this cell.",
     adjusted_rand = "Match between the experts' groupings and the blueprint, corrected for chance (0 is chance, 1 is exact).",
-    stress = "Distortion from fitting the similarities into few dimensions (0 is perfect; below .10 is fair or better).",
+    stress = "How far the map's distances depart from the experts' dissimilarities (0 is an exact map; no benchmark applies).",
     prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the consensus threshold.",
     prop_unchanged = "Share of experts giving the same rating in two consecutive rounds (1 means nobody changed).",
     kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cutoff.",
@@ -400,16 +405,15 @@
       Typical = "consistent with the panel.",
       Severe = "rates markedly lower than the panel.",
       Lenient = "rates markedly higher than the panel.",
-      Erratic = "decisions noisier than the model expects.",
-      "Too predictable" = "decisions more predictable than the model expects.",
+      Erratic = "decisions noisier than the model expects (infit or outfit above the range).",
       "Low differentiation" = "draws few distinctions among items compared with other judges.",
-      Influential = "at least one item's review status changes without this judge.",
-      "Insufficient data" = "fewer than two usable ratings."
+      "Insufficient data" = "fewer than two usable ratings, or no other judge to compare with."
     ),
     domain = c(
       Covered = "met the coverage criteria.",
       "Thinly covered" = "fewer items than the minimum set.",
       "Over-represented" = "a larger share of the items than expected.",
+      "Under-represented" = "a much smaller share of the items than its target calls for.",
       "Not covered" = "the blueprint includes it, but no item addresses it."
     ),
     stop("No decision meanings for workflow '", workflow, "'.", call. = FALSE)

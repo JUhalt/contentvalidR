@@ -358,13 +358,28 @@ print.contentvalid_binom <- function(x, digits = 2, ...) {
   cat("\n")
   print(tab)
   cat("\n")
+  # APA reports a chi-square test of association with its degrees of freedom
+  # and the sample size. Objects saved before `n` existed take it from the
+  # table.
+  n <- if (is.null(x$n)) sum(tab) else x$n
+  chisq_txt <- sprintf("chi-square(1, N = %d) = %s", as.integer(n),
+                       .fmt(x$chisq, digits, bounded = FALSE))
+  exact <- identical(x$p_method, "Fisher's exact test")
   stats <- c(extra,
              paste0("phi = ", .fmt(x$phi, digits)),
              if (!is.na(x$chisq)) {
-               sprintf("chi-square(1) = %s, %s",
-                       .fmt(x$chisq, digits, bounded = FALSE), .p_phrase(x$p))
+               if (exact) {
+                 paste0("Fisher's exact ", .p_phrase(x$p))
+               } else {
+                 paste0(chisq_txt, ", ", .p_phrase(x$p))
+               }
              })
   .say(paste0(paste(stats, collapse = ", "), "."))
+  if (exact && !is.na(x$chisq)) {
+    .say(paste0("An expected count is below 5, so the exact test is reported ",
+                "in place of the chi-square approximation (", chisq_txt, ", ",
+                .p_phrase(x$p_chisq), ")."))
+  }
   invisible(x)
 }
 

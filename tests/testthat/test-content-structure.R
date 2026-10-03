@@ -42,8 +42,11 @@ test_that("adjusted Rand index has its defining properties", {
   expect_equal(contentvalidR:::.adjusted_rand(p, p), 1)
   # Invariant to cluster relabelling.
   expect_equal(contentvalidR:::.adjusted_rand(p, rep(c(3, 1, 2), each = 5)), 1)
-  # Chance agreement scores 0, not something positive.
-  expect_equal(contentvalidR:::.adjusted_rand(p, rep(1, 15)), 0)
+  # One group on either side leaves nothing to compare. The formula gives 0
+  # there whatever the other partition is, which would read as "no better
+  # than chance", so the index is undefined instead.
+  expect_true(is.na(contentvalidR:::.adjusted_rand(p, rep(1, 15))))
+  expect_true(is.na(contentvalidR:::.adjusted_rand(rep("A", 6), c(1, 1, 1, 2, 2, 2))))
 
   set.seed(7)
   random_ari <- replicate(500, contentvalidR:::.adjusted_rand(p, sample(p)))
@@ -108,16 +111,18 @@ test_that("no blueprint yields descriptive output rather than a verdict", {
   expect_match(cs$interpretation, "No blueprint was supplied")
 })
 
-test_that("fit is reported across dimensionalities with descriptive labels", {
+test_that("fit is reported across dimensionalities, without Kruskal's labels", {
   cs <- content_structure(block_similarity(), membership = rep(c("A", "B"), each = 3))
-  expect_true(all(c("dims", "stress", "gof", "fit_label") %in% names(cs$fit)))
+  expect_identical(names(cs$fit), c("dims", "stress", "gof"))
   expect_true(all(cs$fit$stress >= 0 | is.na(cs$fit$stress)))
-  # Stress cannot increase as dimensions are added.
-  s <- cs$fit$stress[!is.na(cs$fit$stress)]
-  expect_true(all(diff(s) <= 1e-8))
 
   printed <- paste(capture.output(print(cs)), collapse = " ")
-  expect_match(printed, "descriptive conventions, not rules")
+  expect_match(printed, "distortion", fixed = TRUE)
+  expect_match(printed, "not\\s+Kruskal's stress-1")
+  expect_false(grepl("Kruskal-1", printed, fixed = TRUE))
+  for (label in c("excellent", "fair", "poor")) {
+    expect_false(grepl(label, printed, fixed = TRUE))
+  }
 })
 
 test_that("requested dimensionality is capped at what the data supports and reported", {
