@@ -43,9 +43,19 @@ interval, and a dashed line at the I-CVI criterion when every item had the
 same number of experts. Essentiality mode shows each observed CVR against the
 CVR the exact test needs for that item. Congruence mode shows each item's
 index for its intended objective against the \code{ioc_cut} criterion (dashed),
-with the experts' mean ratings on the target and on the closest other
-objective in gray, when a target mapping is available; an item with no
-index is marked with a cross.
+with the experts' mean ratings on the target (a triangle pointing up) and
+on the closest other objective (pointing down) in gray, when a target
+mapping is available; an item with no index is marked with a cross.
+
+Filled and open symbols mean what the key says. In congruence mode, as in
+the item-sort and construct-rating figures, a filled index met the
+criterion and an open one fell below it. In relevance and essentiality
+mode they tell apart the two values drawn on each row: Aiken's V (filled)
+from I-CVI (open), and the observed CVR (filled) from the CVR the exact test
+needs (open). There, an item met the criterion when its I-CVI reaches the
+dashed criterion line, or its observed CVR reaches the CVR needed. The key
+sits above the first item, in two or three rows when one row would not fit
+the figure's width.
 
 In relevance mode, \code{type = "distribution"} draws every expert's rating as
 a diverging stacked bar (Heiberger & Robbins, 2014), split at the relevance

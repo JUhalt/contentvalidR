@@ -1087,9 +1087,19 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' same number of experts. Essentiality mode shows each observed CVR against the
 #' CVR the exact test needs for that item. Congruence mode shows each item's
 #' index for its intended objective against the `ioc_cut` criterion (dashed),
-#' with the experts' mean ratings on the target and on the closest other
-#' objective in gray, when a target mapping is available; an item with no
-#' index is marked with a cross.
+#' with the experts' mean ratings on the target (a triangle pointing up) and
+#' on the closest other objective (pointing down) in gray, when a target
+#' mapping is available; an item with no index is marked with a cross.
+#'
+#' Filled and open symbols mean what the key says. In congruence mode, as in
+#' the item-sort and construct-rating figures, a filled index met the
+#' criterion and an open one fell below it. In relevance and essentiality
+#' mode they tell apart the two values drawn on each row: Aiken's V (filled)
+#' from I-CVI (open), and the observed CVR (filled) from the CVR the exact test
+#' needs (open). There, an item met the criterion when its I-CVI reaches the
+#' dashed criterion line, or its observed CVR reaches the CVR needed. The key
+#' sits above the first item, in two or three rows when one row would not fit
+#' the figure's width.
 #'
 #' In relevance mode, `type = "distribution"` draws every expert's rating as
 #' a diverging stacked bar (Heiberger & Robbins, 2014), split at the relevance
@@ -1176,15 +1186,35 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
   top <- n + 0.5
   ci_label <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
 
+  # The key is laid out before the frame, so the frame can hold it above the
+  # first item's row.
+  dots <- list(...)
+  frame <- function(xlim, xlab, key) {
+    .plot_with(list(x = NA, xlim = xlim,
+                    ylim = c(0.5, .legend_room(0.5, n + 0.25, n + 1.35, key)),
+                    xaxt = "n", yaxt = "n", xlab = xlab, ylab = ""), dots)
+  }
+
   if (x$mode == "relevance") {
-    .plot_with(list(x = NA, xlim = c(0, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "Relevance (0 to 1)", ylab = ""), list(...))
-    .axis_bounded(1, at = seq(0, 1, 0.25))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
     # The I-CVI criterion depends on the panel size, so it is drawn as a line
     # only when every item had the same number of experts.
     crit <- unique(r$cvi_criterion[is.finite(r$cvi_criterion)])
     one_crit <- length(crit) == 1L
+    key <- if (isTRUE(show_legend)) {
+      need <- if (one_crit) {
+        size <- unique(r$N[is.finite(r$cvi_criterion)])
+        if (length(size) == 1L) {
+          sprintf("I-CVI criterion (%d of %d%s)", .cvi_required_count(size), size,
+                  if (size > 10L) ", package extension" else "")
+        } else "I-CVI criterion"
+      }
+      .legend_fit(c("Aiken's V", "I-CVI", ci_label, need),
+                  c(19, 1, NA, if (one_crit) NA),
+                  c(NA, NA, 1, if (one_crit) 2))
+    }
+    frame(c(0, 1), "Relevance (0 to 1)", key)
+    .axis_bounded(1, at = seq(0, 1, 0.25))
+    graphics::axis(2, at = y, labels = r$item, las = 1)
     if (one_crit) .vline_below(crit, 0.5, top, lty = 2)
     # Aiken's V just above each item's row, I-CVI just below, each with its
     # interval, so the two never hide each other.
@@ -1196,80 +1226,79 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     graphics::segments(r$I_CVI_low[c_ci], yc[c_ci], r$I_CVI_high[c_ci], yc[c_ci])
     graphics::points(r$V, yv, pch = 19)
     graphics::points(r$I_CVI, yc, pch = 1)
-    if (isTRUE(show_legend)) {
-      need <- if (one_crit) {
-        size <- unique(r$N[is.finite(r$cvi_criterion)])
-        if (length(size) == 1L) {
-          sprintf("I-CVI criterion (%d of %d%s)", .cvi_required_count(size), size,
-                  if (size > 10L) ", package extension" else "")
-        } else "I-CVI criterion"
-      }
-      .legend_top(c("Aiken's V", "I-CVI", ci_label, need),
-                  c(19, 1, NA, if (one_crit) NA),
-                  c(NA, NA, 1, if (one_crit) 2))
-    }
+    .legend_draw(key)
   } else if (x$mode == "essentiality") {
-    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "CVR (-1 to 1)", ylab = ""), list(...))
-    .axis_bounded(1, at = seq(-1, 1, 0.5))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
-    .vline_below(0, 0.5, top)
     good <- is.finite(r$critical_cvr) & is.finite(r$cvr)
     # A panel too small for the exact test has no needed value to draw, so its
     # CVR is marked with a cross: no decision, as in the other figures.
     undecided <- is.finite(r$cvr) & !is.finite(r$critical_cvr)
+    # Only what is drawn is listed.
+    key <- if (isTRUE(show_legend)) {
+      .legend_fit(c(if (any(good)) c("Observed CVR", "Needed (exact test)"),
+                    if (any(undecided)) "Too few experts to test"),
+                  c(if (any(good)) c(19, 1), if (any(undecided)) 4))
+    }
+    frame(c(-1, 1), "CVR (-1 to 1)", key)
+    .axis_bounded(1, at = seq(-1, 1, 0.5))
+    graphics::axis(2, at = y, labels = r$item, las = 1)
+    .vline_below(0, 0.5, top)
     graphics::segments(r$critical_cvr[good], y[good], r$cvr[good], y[good])
     graphics::points(r$critical_cvr[good], y[good], pch = 1)
     graphics::points(r$cvr[!undecided], y[!undecided], pch = 19)
     graphics::points(r$cvr[undecided], y[undecided], pch = 4)
-    if (isTRUE(show_legend)) {
-      # Only what was drawn is listed.
-      .legend_top(c(if (any(good)) c("Observed CVR", "Needed (exact test)"),
-                    if (any(undecided)) "Too few experts to test"),
-                  c(if (any(good)) c(19, 1), if (any(undecided)) 4))
-    }
+    .legend_draw(key)
   } else {
     # Each item's index against the criterion, with the experts' mean rating
     # on the target objective and on the closest other objective for context.
+    # As in the other figures, a filled index met the criterion and an open
+    # one fell below it; the means are triangles, pointing up for the target
+    # and down for the competitor.
     cut <- x$settings$ioc_cut
-    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "IOC and mean rating (-1 to 1)",
-                    ylab = ""), list(...))
+    has_ioc <- is.finite(r$target_ioc)
+    ioc_pch <- .decision_pch(r$recommendation)
+    met <- has_ioc & ioc_pch == 19L
+    below <- has_ioc & !met
+    t_mean <- is.finite(r$target_mean)
+    c_mean <- is.finite(r$competitor_mean)
+    both <- t_mean & c_mean
+    key <- if (isTRUE(show_legend)) {
+      crit_lab <- if (is.numeric(cut)) paste0("Criterion (", .fmt(cut), ")")
+      .legend_fit(c(if (any(met)) "IOC: meets criterion",
+                    if (any(below)) "IOC: below criterion",
+                    if (any(t_mean)) "Mean: target",
+                    if (any(c_mean)) "Mean: competitor",
+                    if (any(!has_ioc)) "No index",
+                    crit_lab),
+                  c(if (any(met)) 19, if (any(below)) 1, if (any(t_mean)) 2,
+                    if (any(c_mean)) 6, if (any(!has_ioc)) 4,
+                    if (is.numeric(cut)) NA),
+                  c(if (any(met)) NA, if (any(below)) NA, if (any(t_mean)) NA,
+                    if (any(c_mean)) NA, if (any(!has_ioc)) NA,
+                    if (is.numeric(cut)) 2),
+                  col = c(if (any(met)) "black", if (any(below)) "black",
+                          if (any(t_mean)) "grey40", if (any(c_mean)) "grey40",
+                          if (any(!has_ioc)) "black",
+                          if (is.numeric(cut)) "black"))
+    }
+    frame(c(-1, 1), "IOC and mean rating (-1 to 1)", key)
     .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
     .vline_below(0, 0.5, top)
     if (is.numeric(cut)) .vline_below(cut, 0.5, top, lty = 2)
     # The index on the item's row; the two means just below it, so a mean
     # equal to the index stays visible.
-    has_ioc <- is.finite(r$target_ioc)
-    t_mean <- is.finite(r$target_mean)
-    c_mean <- is.finite(r$competitor_mean)
-    both <- t_mean & c_mean
     ym <- y - 0.22
     graphics::segments(r$competitor_mean[both], ym[both], r$target_mean[both],
                        ym[both], col = "grey60")
-    graphics::points(r$competitor_mean[c_mean], ym[c_mean], pch = 1, col = "grey40")
+    graphics::points(r$competitor_mean[c_mean], ym[c_mean], pch = 6,
+                     col = "grey40")
     graphics::points(r$target_mean[t_mean], ym[t_mean], pch = 2, col = "grey40")
-    graphics::points(r$target_ioc[has_ioc], y[has_ioc], pch = 19)
+    graphics::points(r$target_ioc[met], y[met], pch = 19)
+    graphics::points(r$target_ioc[below], y[below], pch = 1)
     # An item with no index has no decision: a cross at 0, as in the other
     # expert figures.
     graphics::points(rep(0, sum(!has_ioc)), y[!has_ioc], pch = 4)
-    if (isTRUE(show_legend)) {
-      crit_lab <- if (is.numeric(cut)) paste0("Criterion (", .fmt(cut), ")")
-      .legend_top(c(if (any(has_ioc)) "IOC", if (any(t_mean)) "Mean: target",
-                    if (any(c_mean)) "Mean: competitor",
-                    if (any(!has_ioc)) "No index",
-                    crit_lab),
-                  c(if (any(has_ioc)) 19, if (any(t_mean)) 2,
-                    if (any(c_mean)) 1, if (any(!has_ioc)) 4,
-                    if (is.numeric(cut)) NA),
-                  c(if (any(has_ioc)) NA, if (any(t_mean)) NA,
-                    if (any(c_mean)) NA, if (any(!has_ioc)) NA,
-                    if (is.numeric(cut)) 2),
-                  col = c(if (any(has_ioc)) "black", if (any(t_mean)) "grey40",
-                          if (any(c_mean)) "grey40", if (any(!has_ioc)) "black",
-                          if (is.numeric(cut)) "black"))
-    }
+    .legend_draw(key)
   }
   invisible(x)
 }

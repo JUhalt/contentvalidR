@@ -602,6 +602,11 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' against every construct, the judges the tests use. An item without a
 #' decision has no gap: a cross marks its mean target rating.
 #'
+#' The key sits above the data, in two or three rows when one row would not
+#' fit the figure's width. Where a vertical axis title would not fit the
+#' figure's height, as HTD's does at 7 by 4 inches, the axis shows the index's
+#' name alone and the key's heading gives the full definition.
+#'
 #' @param x A `contentvalid_rating` object.
 #' @param metric Either `"htc"` or `"htd"` for `type = "item"`.
 #' @param type One of `"item"`, `"map"`, or `"profile"`.
@@ -637,6 +642,7 @@ plot.contentvalid_rating <- function(x,
                                      show_legend = TRUE,
                                      ...) {
   type <- .choose(type)
+  metric <- .choose(metric)
   label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
@@ -647,31 +653,45 @@ plot.contentvalid_rating <- function(x,
   htd_lab <- "HTD: lead of the target over the other constructs"
 
   if (type == "item") {
-    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "htc") 0 else -1
+    full <- if (metric == "htc") htc_lab else htd_lab
+    ylab <- .ylab_fit(full, toupper(metric))
+    # A shortened axis title is defined in the key's heading.
+    key <- if (isTRUE(show_legend)) {
+      leg <- .decision_legend(r$recommendation)
+      .legend_fit(leg$legend, leg$pch, title = if (!identical(ylab, full)) full)
+    }
     .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
-                    ylab = if (metric == "htc") htc_lab else htd_lab,
-                    xlim = c(0.5, length(y) + 0.5),
-                    ylim = c(lo, 1 + 0.2 * (1 - lo))), list(...))
+                    ylab = ylab, xlim = c(0.5, length(y) + 0.5),
+                    ylim = c(lo, .legend_room(lo, 1, 1 + 0.2 * (1 - lo), key))),
+               list(...))
     graphics::axis(1, at = xs, labels = r$item, las = 2)
     .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
     if (metric == "htd") .hline(0)
     has <- is.finite(y)
     graphics::points(xs[has], y[has], pch = pch[has])
     graphics::points(xs[!has], rep(lo, sum(!has)), pch = 4)
-    if (isTRUE(show_legend)) {
-      leg <- .decision_legend(r$recommendation)
-      .legend_top(leg$legend, leg$pch)
-    }
+    .legend_draw(key)
     return(invisible(x))
   }
 
   if (type == "map") {
     ok <- is.finite(r$htc) & is.finite(r$htd)
-    .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
-                    xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
+    s <- x$scale_summary
+    s_ok <- is.finite(s$mean_htc) & is.finite(s$mean_htd)
+    ylab <- .ylab_fit(htd_lab, "HTD")
+    key <- if (isTRUE(show_legend)) {
+      leg <- .decision_legend(r$recommendation[ok])
+      .legend_fit(c(leg$legend, if (any(s_ok)) "Scale mean"),
+                  c(leg$pch, if (any(s_ok)) 17),
+                  title = if (!identical(ylab, htd_lab)) htd_lab)
+    }
+    # Item labels sit above their points, so the key clears them too.
+    .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1),
+                    ylim = c(-1, .legend_room(-1, 1, 1.4, key, above_in = 0.2)),
+                    xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = ylab,
                     pch = pch[ok]), list(...),
                protect = c("type", "xaxt", "yaxt", "axes", "pch"))
     .axis_bounded(1, at = seq(0, 1, 0.25))
@@ -689,8 +709,6 @@ plot.contentvalid_rating <- function(x,
                      pos = 3, cex = 0.70, offset = 0.35)
     }
 
-    s <- x$scale_summary
-    s_ok <- is.finite(s$mean_htc) & is.finite(s$mean_htd)
     if (any(s_ok)) {
       sx <- s$mean_htc[s_ok]
       sy <- s$mean_htd[s_ok]
@@ -698,11 +716,7 @@ plot.contentvalid_rating <- function(x,
       label_y <- .map_scale_label_y(sx, sy)
       graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
     }
-    if (isTRUE(show_legend)) {
-      leg <- .decision_legend(r$recommendation[ok])
-      .legend_top(c(leg$legend, if (any(s_ok)) "Scale mean"),
-                  c(leg$pch, if (any(s_ok)) 17))
-    }
+    .legend_draw(key)
     return(invisible(x))
   }
 

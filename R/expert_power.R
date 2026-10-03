@@ -245,6 +245,13 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 
 #' Plot an expert-panel planning curve
 #'
+#' @description
+#' Draws the probability that an item clears the criterion against the number
+#' of experts on the panel, as a step function because the criterion itself
+#' changes with panel size. Each assumed endorsement probability is a solid
+#' line told apart by its marker. The key sits above the curves, and the
+#' panel-size axis is ticked at whole numbers of experts.
+#'
 #' @param x A `contentvalid_expert_power` object.
 #' @param type `"probability"`, the only view, accepted so that every plot
 #'   method takes `type`.
@@ -263,10 +270,19 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   probs <- sort(unique(r$prob))
+  # Every curve is a solid line told apart by its marker, since a dashed
+  # line marks a reference value in the other figures.
+  marks <- (seq_along(probs) - 1L) %% 25L + 1L
+  key <- if (isTRUE(show_legend)) {
+    .legend_fit(paste("prob =", .fmt(probs)), marks, 1)
+  }
 
-  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", yaxt = "n",
+  # Headroom above 1 holds the key, clear of the curves.
+  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", xaxt = "n",
+                  yaxt = "n", ylim = c(0, .legend_room(0, 1, 1, key)),
                   xlab = "Experts on the panel",
                   ylab = "Probability of clearing the criterion"), list(...))
+  .axis_counts(1)
   .axis_bounded(2, at = seq(0, 1, 0.25))
   for (i in seq_along(probs)) {
     sub <- r[r$prob == probs[i], , drop = FALSE]
@@ -274,15 +290,9 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
     # Drawn as a step function: the criterion itself changes with panel size,
     # so joining the points with straight lines would imply smooth behavior
     # the decision rule does not have.
-    graphics::lines(sub$n_experts, sub$power, type = "s",
-                    lty = (i - 1L) %% 5L + 1L)
-    graphics::points(sub$n_experts, sub$power, pch = (i - 1L) %% 25L + 1L)
+    graphics::lines(sub$n_experts, sub$power, type = "s")
+    graphics::points(sub$n_experts, sub$power, pch = marks[i])
   }
-  if (isTRUE(show_legend)) {
-    graphics::legend("bottomright", legend = paste("prob =", .fmt(probs)),
-                     lty = (seq_along(probs) - 1L) %% 5L + 1L,
-                     pch = (seq_along(probs) - 1L) %% 25L + 1L,
-                     bty = "n", cex = 0.7)
-  }
+  .legend_draw(key)
   invisible(x)
 }

@@ -523,9 +523,16 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #'
 #' @description
 #' Plots the multidimensional scaling content map from [content_structure()],
-#' with each item positioned by expert-perceived similarity and labeled by its
-#' blueprint cell. Items that sit away from others sharing their cell are the
-#' ones experts did not group as the blueprint expects.
+#' with each item positioned by expert-perceived similarity, labeled by its
+#' name, and drawn with its blueprint cell's symbol (its recovered cluster's,
+#' when no blueprint was supplied), which the key names. Items that sit away
+#' from others sharing their cell are the ones experts did not group as the
+#' blueprint expects.
+#'
+#' A map with one usable dimension is drawn as a strip, each name to the right
+#' of its point. Items whose names would run into each other, such as items at
+#' the same position, are stacked one above another; on a strip the height
+#' carries no meaning.
 #'
 #' @param x A `contentvalid_structure` object.
 #' @param show_legend Draw the blueprint-cell key.
@@ -567,39 +574,100 @@ plot.contentvalid_structure <- function(x, show_legend = TRUE, type = "map", ...
   sym <- .structure_symbols(group, user)
   user$pch <- NULL
   user$col <- NULL
-  # A map with one usable dimension is a strip: every item at height 0.
+  labels <- rownames(pts)
+  # Name what the symbols stand for: the blueprint's cells when one was
+  # supplied, otherwise the clusters recovered from the similarities. The key
+  # is laid out first, so the frame can hold it above the items.
+  key <- if (isTRUE(show_legend) && !is.null(sym$key_pch)) {
+    .legend_fit(levels(group), sym$key_pch,
+                col = if (!is.null(sym$key_col)) sym$key_col else "black",
+                title = if (!is.null(cl$blueprint_cell)) {
+                  "Blueprint cell"
+                } else {
+                  "Cluster"
+                })
+  }
   one_dim <- ncol(pts) < 2L
   px <- pts[, 1]
-  py <- if (one_dim) rep(0, nrow(pts)) else pts[, 2]
+  xr <- range(px)
+  pad <- 0.15 * diff(xr)
+  if (!is.finite(pad) || pad == 0) pad <- 1
 
-  xr <- range(px); yr <- range(py)
-  pad <- 0.15 * c(diff(xr), diff(yr))
-  pad[!is.finite(pad) | pad == 0] <- 1
+  if (one_dim) {
+    # A map with one usable dimension is a strip. Each name is set to the
+    # right of its point, and items whose names would run into each other
+    # are stacked, so none overprints another; the height means nothing.
+    strip <- .strip_layout(px, labels, xr, pad, user$xlim)
+    xlim <- strip$xlim
+    py <- strip$rows
+    top <- max(py)
+    ylim <- c(-1, .legend_room(-1, top, top + 1.6, key, above_in = 0.1))
+  } else {
+    xlim <- xr + c(-pad, pad)
+    py <- pts[, 2]
+    yr <- range(py)
+    pad_y <- 0.15 * diff(yr)
+    if (!is.finite(pad_y) || pad_y == 0) pad_y <- 1
+    # Names sit above their points, so the key clears them too.
+    ylim <- c(yr[1] - pad_y,
+              .legend_room(yr[1] - pad_y, yr[2], yr[2] + 1.6 * pad_y, key,
+                           above_in = 0.2))
+  }
 
   # What the caller passes replaces what the method would set, so `xlab`
   # or `xlim` never collide with it.
   args <- list(
-    x = px, y = py, pch = sym$pch,
-    xlim = xr + c(-pad[1], pad[1]),
-    ylim = yr + c(-pad[2], pad[2] * 1.6),
+    x = px, y = py, pch = sym$pch, xlim = xlim, ylim = ylim,
     xlab = "Dimension 1", ylab = if (one_dim) "" else "Dimension 2"
   )
   if (!is.null(sym$col)) args$col <- sym$col
   if (one_dim) args$yaxt <- "n"
   args[names(user)] <- user
   do.call(graphics::plot, args)
-  graphics::text(px, py, labels = rownames(pts), pos = 3, cex = 0.7)
-
-  if (isTRUE(show_legend) && !is.null(sym$key_pch)) {
-    # Name what the symbols stand for: the blueprint's cells when one was
-    # supplied, otherwise the clusters recovered from the similarities.
-    key <- list("top", legend = levels(group), pch = sym$key_pch,
-                title = if (!is.null(cl$blueprint_cell)) "Blueprint cell" else "Cluster",
-                bty = "n", horiz = TRUE, cex = 0.72, x.intersp = 0.7)
-    if (!is.null(sym$key_col)) key$col <- sym$key_col
-    do.call(graphics::legend, key)
+  if (one_dim) {
+    graphics::text(px, py, labels = labels, pos = 4, cex = 0.7, offset = 0.5)
+  } else {
+    graphics::text(px, py, labels = labels, pos = 3, cex = 0.7)
   }
+  .legend_draw(key)
   invisible(x)
+}
+
+# The rows and x range of a one-dimensional content map. Each name is drawn
+# to the right of its point; taken from left to right, each item goes in the
+# lowest row where it clears the name before it, so coincident items stack.
+# The right end of the range is widened so the last names fit. Widths are
+# measured in inches on the open device, before the frame is drawn; a range
+# from the caller (`xlim`) is kept as given.
+.strip_layout <- function(px, labels, xr, pad, xlim = NULL, cex = 0.7) {
+  width_in <- graphics::par("pin")[1]
+  # A name starts half a character from its point's center (offset = 0.5).
+  reach <- graphics::strwidth(labels, units = "inches", cex = cex) +
+    0.5 * cex * graphics::par("cex") * graphics::par("cin")[1]
+  if (is.null(xlim)) {
+    # A name reaching `reach` inches right of `px` ends inside the frame,
+    # whose x range R's 4% padding widens on each side, when the right pad
+    # meets this bound. A tenth of an inch spare absorbs the difference
+    # between measured and drawn text on bitmap devices.
+    span <- diff(xr) + pad
+    a <- 1.08 * (reach + 0.1) / width_in
+    need <- (px - xr[2] - (0.04 - a) * span) / pmax(1.04 - a, 0.2)
+    xlim <- c(xr[1] - pad, xr[2] + max(pad, need))
+  }
+  per_in <- width_in / (1.08 * abs(diff(xlim)))
+  at <- (px - min(xlim)) * per_in
+  half <- 0.08  # half a plotting symbol, in inches
+  rows <- integer(length(px))
+  ends <- numeric(0)
+  # Positions equal but for rounding count as tied, and ties keep data order.
+  for (i in order(round(at, 3), seq_along(px))) {
+    free <- which(ends + 0.05 <= at[i] - half)
+    k <- if (length(free)) free[1] else length(ends) + 1L
+    rows[i] <- k - 1L
+    ends[k] <- at[i] + max(half, reach[i])
+  }
+  # The first row is drawn at the top, so a stack reads down in data order.
+  list(rows = max(rows) - rows, xlim = xlim)
 }
 
 # A coverage analysis has no figure of its own; its content map, when
