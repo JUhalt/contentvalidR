@@ -89,11 +89,6 @@ reference:
   - simulate_anova_power
   - simulate_csv_power
 
-- title: Deprecated
-  desc: Still works in 0.9.0, with a warning naming its replacement; removed in 1.0.0.
-  contents:
-  - agreement_summary
-
 articles:
 - title: Start here
   navbar: Start here
