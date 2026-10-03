@@ -155,7 +155,9 @@ test_that("the print opens with the verdict and names who held what back", {
   expect_match(txt, "Held back: EF5 \\(Relevance panel\\), TF5 \\(Item sort\\)")
   expect_match(txt, "1\\. Relevance panel: 12 items, 8 experts\\. Shows I-CVI\\.")
   expect_match(txt, "2\\. Item sort: 11 items, 20 judges\\. Shows Psa\\.")
-  expect_match(txt, "held back: Item sort")
+  expect_match(txt, "Held back: Item sort")
+  expect_match(txt, "Carried")
+  expect_match(txt, "Result -- Carried when every stage")
   expect_match(txt, "What these columns mean")
 
   old <- options(contentvalidR.show_key = FALSE)
@@ -164,7 +166,7 @@ test_that("the print opens with the verdict and names who held what back", {
                                     collapse = " "))
   expect_no_match(hidden, "What these columns mean")
   # The result stays readable with the key hidden.
-  expect_match(hidden, "held back: Item sort")
+  expect_match(hidden, "Held back: Item sort")
 })
 
 test_that("the profile and the flow draw in gray and in color", {

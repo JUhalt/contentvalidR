@@ -429,7 +429,8 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
   .print_table(data.frame(dimensions = f$dims,
                           GOF = .fmt(f$gof, digits),
                           distortion = .fmt(f$stress, digits),
-                          stringsAsFactors = FALSE, check.names = FALSE))
+                          stringsAsFactors = FALSE, check.names = FALSE),
+               more = "x$fit")
   cat("\n")
   .say("GOF: goodness of fit from classical scaling, the share of the sum",
        "of the absolute eigenvalues that the retained dimensions account for.",

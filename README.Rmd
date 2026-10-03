@@ -87,7 +87,7 @@ fit <- sort_validity(sort_dat)
 fit
 ```
 
-The first line names the object, `<contentvalid_sort>`, and what it holds; after the facts of the design, the verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. `Review` is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.
+The first line names the object, `<contentvalid_sort>`, and what it holds; then, after the facts of the design, the verdict: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. `Review` is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.
 
 The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.
 
@@ -122,7 +122,7 @@ How many judges or experts to recruit is answered from the design rather than by
 
 ## Reading the output
 
-Every print opens with its verdict and reports numbers as the APA Publication Manual (7th ed.) prescribes: no leading zero on values that cannot exceed 1, *p* to three decimals, and intervals as [LL, UL]. A short key under each result explains only the columns and decisions it shows. `contentvalid_glossary()` has the full definitions, and `options(contentvalidR.show_key = FALSE)` hides the key once the terms are familiar. See [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html).
+Every print opens with a header naming the object, then the facts of the design and the verdict, and reports numbers as the APA Publication Manual (7th ed.) prescribes: no leading zero on values that cannot exceed 1, *p* to three decimals, and intervals as [LL, UL]. A short key under each result explains only the columns and decisions it shows. `contentvalid_glossary()` has the full definitions, and `options(contentvalidR.show_key = FALSE)` hides the key once the terms are familiar. See [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html).
 
 ## What every workflow returns
 

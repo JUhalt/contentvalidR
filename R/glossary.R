@@ -372,7 +372,7 @@
       definition = paste(
         "How far the panel's rating distribution moved between two rounds, as",
         "a share of the experts compared. Change below 15% is read as stable,",
-        "a cutoff its authors set from one study without statistical theory."
+        "a threshold its authors set from one study without statistical theory."
       ),
       range = "0 to 1; stable below .15",
       stringsAsFactors = FALSE
@@ -482,14 +482,15 @@
 }
 
 # Explains the decision words present in `decisions`, in the order defined.
-.print_decision_legend <- function(decisions, workflow, width = 76) {
+# Entries wrap like all prose, to min(width, 80) - 1 unless `width` is given.
+.print_decision_legend <- function(decisions, workflow, width = NULL) {
   meanings <- .decision_meanings(workflow)
   present <- meanings[names(meanings) %in% as.character(decisions)]
   if (!length(present)) return(invisible(NULL))
   .section("What the decisions mean")
   for (nm in names(present)) {
-    cat(strwrap(paste0(nm, " -- ", present[[nm]]), width = width,
-                initial = "  ", prefix = "      "), sep = "\n")
+    .say(paste0(nm, " -- ", present[[nm]]), indent = 2L, exdent = 6L,
+         width = width)
   }
   invisible(NULL)
 }
@@ -513,10 +514,17 @@
 
 # `terms` are glossary ids. When a table prints a column under a different
 # heading, pass `headings` (same length as `terms`) so the key names the column
-# the reader can see, not the id behind it.
-.print_key <- function(terms, width = 76, headings = terms) {
+# the reader can see, not the id behind it. `shown`, the headings a table
+# printed (.print_table() returns them), leaves out a column it did not show.
+.print_key <- function(terms, width = NULL, headings = terms, shown = NULL) {
   stopifnot(length(headings) == length(terms))
-  shown <- stats::setNames(headings, terms)
+  if (!is.null(shown)) {
+    on_screen <- tolower(headings) %in% tolower(.sentence_case(shown))
+    terms <- terms[on_screen]
+    headings <- headings[on_screen]
+    if (!length(terms)) return(invisible(NULL))
+  }
+  heads <- stats::setNames(headings, terms)
   defs <- .term_defs()
   # A term with no definition would otherwise be dropped in silence, so a typo
   # in a print method's key would quietly stop explaining a column.
@@ -533,9 +541,8 @@
   .section("What these columns mean")
   for (i in seq_len(nrow(defs))) {
     body <- short[[defs$term[i]]]
-    cat(strwrap(paste0(.sentence_case(shown[[defs$term[i]]]), " -- ",
-                       defs$label[i], ". ", body),
-                width = width, initial = "  ", prefix = "      "), sep = "\n")
+    .say(paste0(.sentence_case(heads[[defs$term[i]]]), " -- ", defs$label[i],
+                ". ", body), indent = 2L, exdent = 6L, width = width)
   }
   invisible(NULL)
 }
@@ -587,11 +594,7 @@ contentvalid_glossary <- function(workflow = NULL) {
     if (!is.character(workflow) || length(workflow) != 1L || is.na(workflow)) {
       stop("`workflow` must be one workflow name or NULL.", call. = FALSE)
     }
-    known <- unique(defs$workflow)
-    if (!workflow %in% known) {
-      stop("`workflow` must be one of: ", paste(known, collapse = ", "), ".",
-           call. = FALSE)
-    }
+    workflow <- .choose(workflow, unique(defs$workflow), "workflow")
     defs <- defs[defs$workflow == workflow, , drop = FALSE]
   }
   rownames(defs) <- NULL
@@ -601,16 +604,16 @@ contentvalid_glossary <- function(workflow = NULL) {
 }
 
 #' @export
-print.contentvalid_glossary <- function(x, width = 76, ...) {
+print.contentvalid_glossary <- function(x, width = NULL, ...) {
   .print_header(x, "Glossary")
   for (wf in unique(x$workflow)) {
-    cat("\n", wf, "\n", sep = "")
+    .section(paste0(.sentence_case(wf), " workflow (\"", wf, "\")"))
     sub <- x[x$workflow == wf, , drop = FALSE]
     for (i in seq_len(nrow(sub))) {
       body <- sub$definition[i]
       if (nzchar(sub$range[i])) body <- paste0(body, " (", sub$range[i], ")")
-      cat(strwrap(paste0(sub$term[i], " -- ", sub$label[i], ". ", body),
-                  width = width, initial = "  ", prefix = "      "), sep = "\n")
+      .say(paste0(sub$term[i], " -- ", sub$label[i], ". ", body),
+           indent = 2L, exdent = 6L, width = width)
     }
     # The words each workflow prints in its decision column.
     sets <- switch(wf,
@@ -619,26 +622,25 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
                    "domain-coverage" = "domain",
                    wf)
     for (s in sets) {
-      cat("  decisions", if (length(sets) > 1L) paste0(" (", s, ")"), ":\n",
+      cat("  Decisions", if (length(sets) > 1L) paste0(" (", s, ")"), "\n",
           sep = "")
       meanings <- .decision_meanings(s)
       for (nm in names(meanings)) {
-        cat(strwrap(paste0(nm, " -- ", meanings[[nm]]), width = width,
-                    initial = "    ", prefix = "        "), sep = "\n")
+        .say(paste0(nm, " -- ", meanings[[nm]]), indent = 4L, exdent = 8L,
+             width = width)
       }
     }
   }
 
   st <- attr(x, "statuses")
   if (is.data.frame(st) && nrow(st)) {
-    cat("\nstatus labels\n")
+    .section("Status labels")
     for (i in seq_len(nrow(st))) {
-      cat(strwrap(paste0(st$status[i], " -- ", st$meaning[i]),
-                  width = width, initial = "  ", prefix = "      "), sep = "\n")
+      .say(paste0(st$status[i], " -- ", st$meaning[i]), indent = 2L,
+           exdent = 6L, width = width)
     }
-    cat(strwrap(paste("Each decision word above maps onto one of these",
-                      "statuses, stored in the `status` column of `results`."),
-                width = width, initial = "  ", prefix = "  "), sep = "\n")
+    .say("Each decision word above maps onto one of these statuses, stored",
+         "in the `status` column of `results`.", indent = 2L, width = width)
   }
   .closing(c("Strength labels such as Strong or Weak are percentile positions",
              "relative to published scales, not absolute judgments, and are not",

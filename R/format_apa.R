@@ -109,15 +109,17 @@
 # headings in sentence case (standard abbreviations kept). Two columns may
 # share a heading, such as "95% CI" after each of two estimates. A column
 # empty in every row is dropped, except the status and the tests a decision
-# rests on, whose "--" the notes explain (`keep`). A table wider than the
-# console tightens its columns, then drops trailing ones, never the stub or a
-# `keep` column, and names them with the call that shows them (`more`).
-.print_table <- function(tab, keep = c("decision", "status", "result", "p",
-                                       "omnibus p", "contrast p", "F test"),
-                         more = "as.data.frame(x)", indent = 2L, gap = 2L) {
+# rests on, whose "--" the notes explain (`keep`, matched in any case). A
+# table wider than the console tightens its columns, then drops trailing
+# ones, never the stub or a `keep` column, and names them with the call that
+# shows them (`more`). Returns the headings it printed, invisibly, so a key
+# can leave out a column that was not shown.
+.print_table <- function(tab, keep = .table_keep, more = "as.data.frame(x)",
+                         indent = 2L, gap = 2L) {
   tab <- as.data.frame(tab, stringsAsFactors = FALSE, check.names = FALSE)
-  if (!ncol(tab)) return(invisible(tab))
+  if (!ncol(tab)) return(invisible(character(0)))
   heads <- names(tab)
+  kept <- function(h) tolower(h) %in% tolower(keep)
   cells <- lapply(tab, function(v) {
     v <- as.character(v)
     v[is.na(v)] <- .missing_mark
@@ -128,7 +130,7 @@
     length(v) > 0L && all(v %in% c("", .missing_mark))
   }, logical(1))
   empty[1L] <- FALSE
-  empty[heads %in% keep] <- FALSE
+  empty[kept(heads)] <- FALSE
   cells <- cells[!empty]
   heads <- heads[!empty]
   shown <- .sentence_case(heads)
@@ -141,7 +143,7 @@
   if (total() > room && gap > 1L) gap <- 1L
   dropped <- character(0)
   while (total() > room) {
-    can_go <- which(seq_along(heads) > 1L & !(heads %in% keep))
+    can_go <- which(seq_along(heads) > 1L & !kept(heads))
     if (!length(can_go)) break
     j <- max(can_go)
     dropped <- c(shown[j], dropped)
@@ -171,8 +173,11 @@
                 ". See ", more, " for every column."), indent = indent,
          exdent = indent)
   }
-  invisible(tab)
+  invisible(heads)
 }
+
+.table_keep <- c("decision", "status", "result", "p", "omnibus p",
+                 "contrast p", "F test", "met", "meets")
 
 # A percentage: whole numbers when the base is under 100, one decimal
 # otherwise, rounded half up, with the missing marker for NA.
@@ -257,27 +262,33 @@
 
 # Wraps a sentence or paragraph to the console, never wider than 79 columns
 # (min(width, 80) - 1). A test statistic, a sample size or an interval is
-# never broken across lines: "p < .001", "N = 473", "[.65, .99]", "F(2, 14)".
-# Inside a section the default indent is the section's.
-.say <- function(..., indent = NULL, exdent = NULL) {
+# never broken across lines: "p < .001", "N = 473", "[.65, .99]", "F(2, 14)
+# = 3.21". Inside a section the default indent is the section's.
+.say <- function(..., indent = NULL, exdent = NULL, width = NULL) {
   if (is.null(indent)) indent <- .cv_print$indent
   if (is.null(exdent)) exdent <- indent
-  width <- min(getOption("width", 80L), 80L) - 1L
+  if (is.null(width)) width <- .say_width()
   txt <- .bind_phrases(paste(...))
   out <- strwrap(txt, width = width, indent = indent, exdent = exdent)
   cat(gsub(.nbsp, " ", out, fixed = TRUE), sep = "\n")
   invisible(NULL)
 }
 
+.say_width <- function() min(getOption("width", 80L), 80L) - 1L
+
 .nbsp <- "\u00a0"
 
 # Joins the parts of a phrase that must stay on one line with no-break
 # spaces, which strwrap() does not split at; .say() turns them back.
 .bind_phrases <- function(x) {
-  # "p < .001", "N = 473", "alpha = .05", "CI = confidence": a name, its
+  # "p < .001", "N = 473", "Phi >= .80", "CI = confidence": a name, its
   # relation and the next word.
-  x <- gsub("\\b([A-Za-z][A-Za-z0-9-]*) ([<>=]) ",
+  rel <- "([<>]=?|!?=)"
+  x <- gsub(paste0("\\b([A-Za-z][A-Za-z0-9-]*) ", rel, " "),
             paste0("\\1", .nbsp, "\\2", .nbsp), x, perl = TRUE)
+  # "F(2, 14) = 3.21": a test statistic and its value.
+  x <- gsub(paste0("\\) ", rel, " "), paste0(")", .nbsp, "\\1", .nbsp), x,
+            perl = TRUE)
   # "[.65, .99]" and "F(2, 14)" or "chi-square(1, N = 40)"
   x <- gsub("\\[([^]\\[]*), ([^]\\[]*)\\]", paste0("[\\1,", .nbsp, "\\2]"),
             x, perl = TRUE)

@@ -28,7 +28,10 @@ as.data.frame.contentvalid_component <- function(x, ...) {
 
 # Prints a titled table with notes beneath it. When a user has dropped the
 # columns a display needs (by subsetting), the plain data frame prints instead.
-.print_component <- function(x, needed, build, title, notes = NULL) {
+# `keep` names the statistic the component exists to show, which a narrow
+# console never drops.
+.print_component <- function(x, needed, build, title, notes = NULL,
+                             keep = NULL) {
   if (!all(needed %in% names(x))) {
     print(.untag_component(x))
     return(invisible(x))
@@ -38,7 +41,7 @@ as.data.frame.contentvalid_component <- function(x, ...) {
   .print_header(x, title[1])
   for (line in title[-1]) .say(line)
   cat("\n")
-  .print_table(build())
+  .print_table(build(), keep = c(.table_keep, keep))
   notes <- notes[!is.na(notes) & nzchar(notes)]
   on.exit(.closing(pointer = "See as.data.frame(x) for the unrounded values."),
           add = TRUE)
@@ -80,7 +83,8 @@ print.contentvalid_psa <- function(x, digits = 2, ...) {
         paste("Missing assignments:", sum(x$n_missing, na.rm = TRUE),
               "in all; each item uses the judges who sorted it.")
       }
-    )
+    ),
+    keep = "Psa"
   )
 }
 
@@ -100,7 +104,8 @@ print.contentvalid_csv <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = paste("Csv is the target count minus the count for the most-chosen",
-                  "other construct, divided by the number of judges.")
+                  "other construct, divided by the number of judges."),
+    keep = "Csv"
   )
 }
 
@@ -119,7 +124,8 @@ print.contentvalid_htc <- function(x, digits = 2, ...) {
     notes = if ("anchors" %in% names(x) && length(unique(x$anchors)) == 1L) {
       sprintf("HTC expresses the mean target rating as a share of the %d-point scale.",
               as.integer(x$anchors[1]))
-    }
+    },
+    keep = "HTC"
   )
 }
 
@@ -139,7 +145,8 @@ print.contentvalid_htd <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = paste("Competitor: the other construct with the highest mean rating.",
-                  "HTD itself averages the gap over every other construct.")
+                  "HTD itself averages the gap over every other construct."),
+    keep = "HTD"
   )
 }
 
@@ -234,7 +241,8 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
         paste0("Interval: ", methods,
                if (identical(methods, "Penfield-Giacobbi score")) " (Penfield & Giacobbi, 2004)", ".")
       }
-    )
+    ),
+    keep = "V"
   )
 }
 
@@ -267,7 +275,8 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
                 .or_fewer(max(x$N[is.na(x$critical_ne) & x$N >= 1L]), "expert"),
                 .fmt_alpha(alpha))
       }
-    )
+    ),
+    keep = "CVR"
   )
 }
 
@@ -298,7 +307,8 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
         paste("IOC is -- for an item rated against one objective: the index",
               "compares objectives.")
       }
-    )
+    ),
+    keep = "IOC"
   )
 }
 
@@ -346,7 +356,7 @@ print.contentvalid_colquitt_norms <- function(x, digits = 2, ...) {
 #' @export
 print.contentvalid_binom <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  .say("Howard-Melloy exact test (one-tailed)")
+  .print_header(x, "Howard-Melloy exact test (one-tailed)")
   cat("\n")
   p_txt <- .p_phrase(x$p.value)
   has_counts <- all(c("n_target", "N", "p0", "alpha") %in% names(x))
@@ -439,11 +449,25 @@ print.contentvalid_similarity <- function(x, digits = 2, ...) {
   pairs <- attr(m, "n_pairs")
   attr(m, "n_pairs") <- NULL
   shown <- matrix(.fmt(m, digits), nrow(m), dimnames = dimnames(m))
-  diag(shown) <- "-"
-  .say("Item similarity: the share of judges who sorted both items and put",
-       "them in the same construct")
+  # An item's similarity with itself is not a result, so it is left blank.
+  diag(shown) <- ""
+  .print_header(x, "Item similarity")
+  .say("The share of judges who sorted both items and put them in the same",
+       "construct.")
   cat("\n")
-  print(noquote(shown), right = TRUE)
+  tab <- data.frame(item = rownames(m), shown, stringsAsFactors = FALSE,
+                    check.names = FALSE)
+  # A wide matrix prints in blocks of columns, each under the item labels,
+  # rather than losing columns to the console width.
+  stub <- max(nchar(c("Item", rownames(m)), type = "width"))
+  cell <- max(nchar(c(colnames(m), shown), type = "width"))
+  per_block <- max(1L, (getOption("width", 80L) - 2L - stub) %/% (cell + 2L))
+  blocks <- split(seq_len(ncol(m)), ceiling(seq_len(ncol(m)) / per_block))
+  for (b in seq_along(blocks)) {
+    if (b > 1L) cat("\n")
+    .print_table(tab[, c(1L, blocks[[b]] + 1L), drop = FALSE],
+                 keep = names(tab))
+  }
   if (is.matrix(pairs)) {
     off <- pairs[upper.tri(pairs)]
     cat("\n")

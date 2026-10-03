@@ -290,8 +290,8 @@ test_that("the judges table stays within 80 columns with long names", {
 
 test_that("content_report() for judges has no flipped column", {
   rep <- content_report(judge_validity(varied_panel()))
-  expect_false("Flipped" %in% names(rep))
-  expect_true(all(c("Logit", "Infit", "Outfit", "Scale use", "Decision") %in%
+  expect_false("flipped" %in% names(rep))
+  expect_true(all(c("logit", "infit", "outfit", "scale use", "decision") %in%
                     names(rep)))
 })
 

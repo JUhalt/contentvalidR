@@ -24,7 +24,7 @@ this defaults to \code{1} and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
 was last rated in.}
 
-\item{reverse_keyed}{Names of the reverse-worded items, \code{character(0)} if
+\item{reverse_keyed}{Names of the reverse-keyed items, \code{character(0)} if
 none is, or \code{NULL} (the default) to leave keying unrecorded. See
 "Instrument metadata".}
 
@@ -124,9 +124,9 @@ package itself compares counts of experts. Read \code{carried}, which holds what
 each release decided.
 
 Keying is read the same way, from the field and not from a default:
-\code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+\code{keying} is \code{1} for a forward-keyed item, \code{-1} for a reverse-keyed one,
 and \code{NA} when nobody said, as described under "Instrument metadata". Treat
-\code{NA} as unknown, never as forward-worded.
+\code{NA} as unknown, never as forward-keyed.
 }
 
 \section{What version 1 freezes}{
@@ -310,9 +310,9 @@ of \code{item_statistics}, described under "The note column".
 Added in contentvalidR 0.7.0, at the request of the \code{nomologR} maintainers,
 because two empirical computations cannot be done correctly without them.
 \itemize{
-\item \code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+\item \code{keying} is \code{1} for a forward-keyed item, \code{-1} for a reverse-keyed one,
 and \code{NA} when nobody said. An even-odd consistency index must recode
-reverse-worded items before splitting the scale, or a perfectly consistent
+reverse-keyed items before splitting the scale, or a perfectly consistent
 respondent looks careless. And a negative corrected item-total correlation
 means opposite things in the two cases: on an item that was never recoded
 it is a coding error, and on a correctly coded item it is evidence against
@@ -330,15 +330,15 @@ not the scale respondents will answer the items on. Copying a fit's \code{lo} an
 \code{hi} into \code{response_min} and \code{response_max} would give a downstream reader
 the wrong limits, and it would then reject every legitimate top-category
 answer. So both default to \code{NA}, which means \emph{unknown}, and a reader should
-treat \code{NA} that way rather than assume a forward-worded item or an observed
+treat \code{NA} that way rather than assume a forward-keyed item or an observed
 range.
 
 Supplying \code{reverse_keyed} is a statement about every item: the ones named
-are reverse-worded and the rest are not. Pass \code{character(0)} to record that
+are reverse-keyed and the rest are not. Pass \code{character(0)} to record that
 you checked and none is. So \code{keying} is either \code{NA} for every item or for
 none of them, and the same holds for the response scale.
 
-Naming a reverse-worded item without \code{response_scale} gives a warning,
+Naming a reverse-keyed item without \code{response_scale} gives a warning,
 because such an item cannot be recoded without the scale's limits. A reader
 that recodes would otherwise have to refuse later, where the problem is
 harder to fix.

@@ -31,7 +31,10 @@
 
 .as_markdown_table <- function(df) {
   if (!nrow(df)) return(character(0))
-  cells <- lapply(df, function(col) .md_escape(format(col, trim = TRUE)))
+  # Text is not padded: a Markdown cell needs no alignment.
+  cells <- lapply(df, function(col) {
+    .md_escape(if (is.character(col)) col else format(col, trim = TRUE))
+  })
   header <- paste0("| ", paste(names(df), collapse = " | "), " |")
   rule <- paste0("| ", paste(rep("---", length(df)), collapse = " | "), " |")
   rows <- vapply(seq_len(nrow(df)), function(i) {
@@ -193,18 +196,17 @@ as.data.frame.contentvalid_workflow <- function(x,
   )
 }
 
-.report_cells <- function(res, entry, digits) {
+.report_cells <- function(res, entry, digits, base = NA) {
   v <- lapply(entry$cols, function(cl) res[[cl]])
   switch(
     entry$type,
-    text = ifelse(is.na(v[[1]]), "", as.character(v[[1]])),
+    text = ifelse(is.na(v[[1]]), .missing_mark, as.character(v[[1]])),
     int = ifelse(is.na(v[[1]]), .missing_mark, format(v[[1]], trim = TRUE)),
     count = ifelse(is.na(v[[1]]) | is.na(v[[2]]), .missing_mark,
                    paste0(v[[1]], "/", v[[2]])),
     prop = .fmt(v[[1]], digits),
     num = .fmt(v[[1]], digits, bounded = FALSE),
-    percent = ifelse(is.na(v[[1]]), .missing_mark,
-                     paste0(.half_up(100 * v[[1]], 0), "%")),
+    percent = .fmt_pct(v[[1]], base = base),
     p = .fmt_p(v[[1]]),
     # Corrected degrees of freedom where a correction applied, the plain
     # ones otherwise (an F of Inf has no error variance to correct).
@@ -218,13 +220,20 @@ as.data.frame.contentvalid_workflow <- function(x,
 
 .report_apa_table <- function(x, res, digits) {
   spec <- .report_spec(x)
+  # A share is read against every item in the analysis, also when the table
+  # keeps only the flagged cells.
+  base <- if ("n_items" %in% names(x$results)) {
+    sum(x$results$n_items, na.rm = TRUE)
+  } else {
+    NA
+  }
   cols <- list()
   headings <- character(0)
   is_ci <- logical(0)
   for (entry in spec) {
     if (!all(entry$cols %in% names(res))) next
     if (nrow(res) && all(is.na(res[[entry$cols[1]]]))) next
-    cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits)
+    cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits, base)
     headings <- c(headings, entry$heading)
     is_ci <- c(is_ci, identical(entry$type, "ci"))
   }
@@ -232,8 +241,8 @@ as.data.frame.contentvalid_workflow <- function(x,
   # "I-CVI 95% CI"), whatever else the table holds, while the printed table
   # and the Markdown head it "95% CI", beside that estimate. The map from
   # name to printed heading is kept, so a column the user renames prints
-  # under the new name.
-  headings <- .sentence_case(headings)
+  # under the new name. Headings are put in sentence case only where they
+  # are shown, so the names on the object stay the ones code relies on.
   names_out <- headings
   at <- which(is_ci & seq_along(headings) > 1L)
   names_out[at] <- paste(headings[at - 1L], headings[at])
@@ -283,6 +292,8 @@ as.data.frame.contentvalid_workflow <- function(x,
       contentvalid_expert = if (!is.na(prop)) {
         sprintf(paste("%s = Penfield-Giacobbi score confidence interval for V",
                       "and %s confidence interval for I-CVI."), ci, prop)
+      } else {
+        sprintf("%s = Penfield-Giacobbi score confidence interval for V.", ci)
       },
       contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci),
       NULL
@@ -295,8 +306,10 @@ as.data.frame.contentvalid_workflow <- function(x,
       "binomial test needs at alpha = %s with p0 = %s (Howard & Melloy, 2016)."),
       .fmt_alpha(alpha), .fmt(st$p0)),
     contentvalid_rating = sprintf(paste(
-      "Retain = omnibus p and every one-sided contrast p at or below alpha =",
-      "%s (MacKenzie et al., 2011)."), .fmt_alpha(alpha)),
+      "Retain = omnibus p and every one-sided %scontrast p at or below alpha =",
+      "%s (MacKenzie et al., 2011)."),
+      if (identical(st$adjust, "holm")) "Holm-adjusted " else "",
+      .fmt_alpha(alpha)),
     contentvalid_expert = switch(
       x$mode,
       relevance = paste0(
@@ -309,8 +322,14 @@ as.data.frame.contentvalid_workflow <- function(x,
         "Supported = an essential count that meets the exact one-sided",
         "binomial test at alpha = %s (Ayre & Scally, 2014)."), .fmt_alpha(alpha)),
       congruence = if (is.numeric(st$ioc_cut)) {
-        paste0("Congruent = IOC at or above ", .ioc_cut_source(st$ioc_cut),
-               " (Rovinelli & Hambleton, 1977).")
+        cut <- .fmt(st$ioc_cut)
+        if (isTRUE(all.equal(st$ioc_cut, 0.70))) {
+          paste0("Congruent = IOC at or above ", cut, ", the criterion ",
+                 "Rovinelli and Hambleton (1977) applied.")
+        } else {
+          paste0("Congruent = IOC at or above ", cut, ", set for this ",
+                 "analysis; Rovinelli and Hambleton (1977) applied .70.")
+        }
       }
     ),
     contentvalid_delphi = if (is.numeric(st$consensus_threshold)) {
@@ -319,7 +338,7 @@ as.data.frame.contentvalid_workflow <- function(x,
     },
     NULL
   )
-  missing <- if (has_missing) "-- = not computed; the printout says why."
+  missing <- if (has_missing) "-- = not computed."
   txt <- c(defs, interval, criterion, missing)
   if (!length(txt)) return(NULL)
   paste(txt, collapse = " ")
@@ -431,6 +450,7 @@ content_report <- function(x,
       "_No units matched the requested selection._"
     } else {
       md <- .report_display(tab)
+      names(md) <- .sentence_case(names(md))
       # APA marks a value that could not be computed with an em dash.
       md[] <- lapply(md, function(v) ifelse(v == .missing_mark, "\u2014", v))
       note <- attr(tab, "note")
@@ -463,16 +483,20 @@ content_report <- function(x,
 
   num <- vapply(tab, is.numeric, logical(1))
   # p values keep the three decimals APA asks for, whatever `digits` is.
+  # Rounding is half up, as in the APA table, so the two formats agree on an
+  # exact tie such as 5 of 8 (.63).
   is_p <- names(tab) %in% c("p_value", "max_contrast_p", "stability_p")
-  tab[num & !is_p] <- lapply(tab[num & !is_p], round, digits = digits)
-  tab[num & is_p] <- lapply(tab[num & is_p], round, digits = max(3L, digits))
+  tab[num & !is_p] <- lapply(tab[num & !is_p], .half_up, digits = digits)
+  tab[num & is_p] <- lapply(tab[num & is_p], .half_up, digits = max(3L, digits))
   tab
 }
 
 #' @export
 print.contentvalid_report <- function(x, ...) {
+  .print_header(x, "Results table in APA style")
+  cat("\n")
   if (!nrow(x)) {
-    cat("No units matched the requested selection.\n")
+    .say("No units matched the requested selection.")
   } else {
     .print_table(.report_display(x))
     note <- attr(x, "note")
@@ -481,6 +505,8 @@ print.contentvalid_report <- function(x, ...) {
       .say(paste("Note.", note))
     }
   }
+  .closing(pointer = paste('See content_report(fit, format = "markdown") for',
+                           "the table as Markdown, ready for a manuscript."))
   invisible(x)
 }
 

@@ -98,13 +98,14 @@
   if (!is.null(reverse_keyed)) {
     if (!is.character(reverse_keyed) || anyNA(reverse_keyed)) {
       stop("`reverse_keyed` must be a character vector of item names, or ",
-           "`character(0)` to state that no item is reverse-worded.",
+           "`character(0)` to state that no item is reverse-keyed.",
            call. = FALSE)
     }
     unknown <- setdiff(reverse_keyed, items)
     if (length(unknown)) {
-      stop("`reverse_keyed` names item(s) not in this analysis: ",
-           paste(unknown, collapse = ", "), ".", call. = FALSE)
+      stop("`reverse_keyed` names ", .n_noun(length(unknown), "item"),
+           " not in this analysis: ", paste(unknown, collapse = ", "), ".",
+           call. = FALSE)
     }
     # Supplying the argument at all is a statement about every item: the ones
     # named are reversed and the rest are not.
@@ -127,14 +128,15 @@
     response_max <- rep(as.integer(response_scale[2]), n)
   }
 
-  # Recoding a reverse-worded item needs the scale's limits, so keying without
+  # Recoding a reverse-keyed item needs the scale's limits, so keying without
   # them is almost always an oversight. Say so here, where it can still be
   # fixed, rather than let a reader refuse later. `character(0)` reverses
   # nothing, so it needs no scale and draws no warning.
   n_reversed <- sum(keying == -1L, na.rm = TRUE)
   if (n_reversed > 0L && is.null(response_scale)) {
-    warning(n_reversed, " item(s) are marked reverse-worded, but ",
-            "`response_scale` was not given. A reverse-worded item cannot be ",
+    warning(.n_noun(n_reversed, "item is", "items are"),
+            " marked reverse-keyed, but ",
+            "`response_scale` was not given. A reverse-keyed item cannot be ",
             "recoded without the lowest and highest answer a respondent can ",
             "give, so add, for example, `response_scale = c(1, 5)`.",
             call. = FALSE)
@@ -755,9 +757,9 @@
 #' each release decided.
 #'
 #' Keying is read the same way, from the field and not from a default:
-#' `keying` is `1` for a forward-worded item, `-1` for a reverse-worded one,
+#' `keying` is `1` for a forward-keyed item, `-1` for a reverse-keyed one,
 #' and `NA` when nobody said, as described under "Instrument metadata". Treat
-#' `NA` as unknown, never as forward-worded.
+#' `NA` as unknown, never as forward-keyed.
 #'
 #' @section What version 1 freezes:
 #' Schema version 1 is frozen as of contentvalidR 0.7.0. Code that reads a
@@ -924,9 +926,9 @@
 #' Added in contentvalidR 0.7.0, at the request of the `nomologR` maintainers,
 #' because two empirical computations cannot be done correctly without them.
 #'
-#' * `keying` is `1` for a forward-worded item, `-1` for a reverse-worded one,
+#' * `keying` is `1` for a forward-keyed item, `-1` for a reverse-keyed one,
 #'   and `NA` when nobody said. An even-odd consistency index must recode
-#'   reverse-worded items before splitting the scale, or a perfectly consistent
+#'   reverse-keyed items before splitting the scale, or a perfectly consistent
 #'   respondent looks careless. And a negative corrected item-total correlation
 #'   means opposite things in the two cases: on an item that was never recoded
 #'   it is a coding error, and on a correctly coded item it is evidence against
@@ -943,15 +945,15 @@
 #' `hi` into `response_min` and `response_max` would give a downstream reader
 #' the wrong limits, and it would then reject every legitimate top-category
 #' answer. So both default to `NA`, which means *unknown*, and a reader should
-#' treat `NA` that way rather than assume a forward-worded item or an observed
+#' treat `NA` that way rather than assume a forward-keyed item or an observed
 #' range.
 #'
 #' Supplying `reverse_keyed` is a statement about every item: the ones named
-#' are reverse-worded and the rest are not. Pass `character(0)` to record that
+#' are reverse-keyed and the rest are not. Pass `character(0)` to record that
 #' you checked and none is. So `keying` is either `NA` for every item or for
 #' none of them, and the same holds for the response scale.
 #'
-#' Naming a reverse-worded item without `response_scale` gives a warning,
+#' Naming a reverse-keyed item without `response_scale` gives a warning,
 #' because such an item cannot be recoded without the scale's limits. A reader
 #' that recodes would otherwise have to refuse later, where the problem is
 #' harder to fix.
@@ -977,7 +979,7 @@
 #'   this defaults to `1` and matters only when stacking rounds by hand. It
 #'   cannot be set for a Delphi fit, which dates each item by the round it
 #'   was last rated in.
-#' @param reverse_keyed Names of the reverse-worded items, `character(0)` if
+#' @param reverse_keyed Names of the reverse-keyed items, `character(0)` if
 #'   none is, or `NULL` (the default) to leave keying unrecorded. See
 #'   "Instrument metadata".
 #' @param response_scale The lowest and highest answer respondents can give,
@@ -1028,8 +1030,10 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
 
   valid <- .status_definitions()$status
   if (!is.character(keep) || !length(keep) || anyNA(keep) || !all(keep %in% valid)) {
-    stop("`keep` must be one or more of: ", paste(valid, collapse = ", "), ".",
-         call. = FALSE)
+    bad <- if (is.character(keep)) setdiff(keep, valid) else character(0)
+    stop("`keep` must be one or more of ", paste0('"', valid, '"', collapse = ", "),
+         if (length(bad)) paste0(", not ", paste0('"', bad, '"', collapse = ", ")),
+         ".", call. = FALSE)
   }
   if (!is.numeric(round) || length(round) != 1L || !is.finite(round) ||
       round < 1 || round != floor(round)) {
@@ -1169,27 +1173,28 @@ print.contentvalid_handoff <- function(x, ...) {
                        stringsAsFactors = FALSE)
     # The shared status adds nothing when it repeats the workflow's own word.
     if (any(held$recommendation != held$status)) show$status <- held$status
-    .print_table(show)
+    .print_table(show, more = "x$item_evidence")
+    .end_section()
   }
 
   cat("\n")
   .say("Carry these items into the empirical workflow once response data are",
        "collected. In nomologR that is")
-  cat("  nomo_screen(data, items = handoff)\n")
+  cat("    nomo_screen(data, items = handoff)\n")
   .say("which screens the items carried here. Passing the whole handoff,",
        "rather than handoff$items, keeps the keying and the reasons for",
        "anything held back.")
 
-  cat("\n")
-  .say("Surviving content review is evidence about relevance, representation,",
-       "and expert judgment. It does not establish that an item will behave",
-       "well empirically: an item can be clearly relevant and still correlate",
-       "poorly with its construct or load on an unintended factor.",
-       if (nrow(held)) {
-         paste("Items held back are listed above rather than deleted, so the",
-               "record stays complete.")
-       })
-  cat("\n")
-  .closing(pointer = "See as.data.frame(x) for the item evidence and x$item_statistics for the statistics.")
+  .closing(c("Surviving content review is evidence about relevance,",
+             "representation, and expert judgment. It does not establish that",
+             "an item will behave well empirically: an item can be clearly",
+             "relevant and still correlate poorly with its construct or load on",
+             "an unintended factor.",
+             if (nrow(held)) {
+               paste("Items held back are listed above rather than deleted, so",
+                     "the record stays complete.")
+             }),
+           paste("See as.data.frame(x) for the item evidence and",
+                 "x$item_statistics for the statistics."))
   invisible(x)
 }

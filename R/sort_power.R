@@ -79,12 +79,13 @@ print.contentvalid_sort_power <- function(x, digits = 2, ...) {
       .fmt(sel$power[match(sizes, sel$N)], digits)
   }
   cat("\n")
-  .print_table(tab)
+  .print_table(tab, more = "x$table")
   cat("\n")
   .say("Required: target assignments an item needs to be retained. Minimum",
-       "Psa: the same as a proportion. power at a value: the exact probability",
-       "of reaching the required count if each judge assigns the item to its",
-       "target with that probability.")
+       "Psa: the same as a proportion (Psa = proportion of substantive",
+       "agreement). Power at a value: the exact probability of reaching the",
+       "required count if each judge assigns the item to its target with that",
+       "probability.")
   if (any(unreachable)) {
     cat("\n")
     .say(sprintf(paste("With %s, no count of target assignments reaches",
@@ -159,15 +160,23 @@ plot.contentvalid_sort_power <- function(x,
   .plot_with(list(x = xr, y = c(0, 1), type = "n", yaxt = "n",
                   xlab = "Judges (N)", ylab = "Exact retention power"), list(...))
   .axis_bounded(2, at = seq(0, 1, 0.25))
-  if (!is.null(reference_power)) graphics::abline(h = reference_power, lty = 3)
+  # A dashed line marks the reference value, so the curves are solid and
+  # told apart by their markers.
+  if (!is.null(reference_power)) graphics::abline(h = reference_power, lty = 2)
+  marks <- ((seq_along(ps) - 1L) %% 6L) + 1L
   for (i in seq_along(ps)) {
     z <- tab[tab$true_p == ps[i], , drop = FALSE]
     z <- z[order(z$N), , drop = FALSE]
-    graphics::lines(z$N, z$power, type = "b", lty = i, pch = ((i - 1L) %% 6L) + 1L)
+    graphics::lines(z$N, z$power, type = "b", lty = 1, pch = marks[i])
   }
   if (isTRUE(show_legend)) {
-    graphics::legend("topleft", legend = paste0("Target rate ", .fmt(ps)),
-                     lty = seq_along(ps), pch = ((seq_along(ps) - 1L) %% 6L) + 1L,
+    ref <- !is.null(reference_power)
+    graphics::legend("topleft",
+                     legend = c(paste0("Target rate ", .fmt(ps)),
+                                if (ref) paste0("Reference power ",
+                                                .fmt(reference_power))),
+                     lty = c(rep(1, length(ps)), if (ref) 2),
+                     pch = c(marks, if (ref) NA),
                      bty = "n", cex = 0.72)
   }
   invisible(x)

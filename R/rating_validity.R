@@ -491,7 +491,9 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   st$`mean HTD` <- .fmt(sc$mean_htd, digits)
   if (!expert) st$`HTD level` <- sc$htd_strength
   if (!expert && length(sets) > 1L) st$benchmarks <- labels
-  .print_table(st)
+  # The benchmark set explains each level, so it is never dropped for width.
+  .print_table(st, keep = c(.table_keep, "benchmarks"),
+               more = 'as.data.frame(x, component = "scale_summary")')
   # How many items are behind each mean, said only when some were left out.
   for (line in .rating_partial_means(sc)) .say(line)
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
@@ -560,8 +562,10 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   if (identical(x$settings$judge_type, "expert")) {
     tab <- tab[!names(tab) %in% c("HTC level", "HTD level")]
   }
-  .print_table(tab)
+  .print_table(tab, more = "x$scale_summary")
   cat("\n")
+  .say("HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey",
+       "distinctiveness (Colquitt et al., 2019).")
   .say_grouped(s$target, s$evidence)
 
   f <- x$reviewed_items

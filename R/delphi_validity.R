@@ -363,7 +363,7 @@
       "summed differences between the two rounds' rating distributions, as a",
       "share of the experts compared, with change below 15% read as stable.",
       "The authors say the measure has no statistical theory behind it; the",
-      "15% cutoff came from the movement they observed in one classroom",
+      "15% threshold came from the movement they observed in one classroom",
       "Delphi. Experts swapping answers cancel out, and in a small panel one",
       "expert is a large share: with 10 experts one net change is already 10%."
     )
@@ -844,10 +844,11 @@ delphi_validity <- function(ratings,
 }
 
 # A share as a percentage: whole when it is whole (75%), and to one decimal
-# otherwise (66.7%, not 66.66667%). The text goes into the handoff, so it does
-# not depend on the session's `digits` or `OutDec` options.
+# otherwise (66.7%, not 66.66667%), rounded half up like every printed
+# number. The text goes into the handoff, so it does not depend on the
+# session's `digits` or `OutDec` options.
 .delphi_percent <- function(p) {
-  txt <- formatC(round(100 * p, 1), format = "f", digits = 1,
+  txt <- formatC(.half_up(100 * p, 1), format = "f", digits = 1,
                  decimal.mark = ".")
   paste0(sub("\\.0$", "", txt), "%")
 }
@@ -1006,7 +1007,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (s$stability %in% c("chisq_individual", "chisq_group", "percent_change")) {
     tab$stable <- ifelse(is.na(r$stable), .missing_mark, ifelse(r$stable, "yes", "no"))
   }
-  .print_table(tab)
+  shown <- .print_table(tab)
   cat("\n")
   .say("Agree: share of experts agreeing in the item's last round. Unchanged:",
        "share who kept their rating between the item's last pair of",
@@ -1090,7 +1091,8 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                     chisq_group = "chi_sq_group",
                     percent_change = "percent_change"))
     .print_key(key, headings = c("agree", "unchanged",
-                                 if (val == "chi_sq") "chi-square" else val))
+                                 if (val == "chi_sq") "chi-square" else val),
+               shown = shown)
     .print_decision_legend(x$results$recommendation, "delphi")
     .print_key_footer()
   }
@@ -1331,7 +1333,7 @@ plot.contentvalid_delphi <- function(x,
     .axis_bounded(2, at = seq(0, 1, by = 0.25))
     graphics::axis(1, at = seq_along(rounds), labels = rounds)
     threshold <- x$settings$consensus_threshold
-    if (!is.null(threshold)) graphics::abline(h = threshold, lty = 3)
+    if (!is.null(threshold)) graphics::abline(h = threshold, lty = 2)
     for (i in seq_along(items)) {
       graphics::lines(xs[[i]], ys[[i]], col = colours[i], lwd = 1.5)
       graphics::points(xs[[i]], ys[[i]], col = colours[i], pch = 19, cex = 0.8)
@@ -1341,7 +1343,7 @@ plot.contentvalid_delphi <- function(x,
       graphics::legend("top",
                        legend = paste0("Consensus threshold (",
                                        .delphi_percent(threshold), ")"),
-                       lty = 3, bty = "n", cex = 0.7, horiz = TRUE)
+                       lty = 2, bty = "n", cex = 0.7, horiz = TRUE)
     }
     return(invisible(x))
   }
@@ -1433,6 +1435,10 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (length(med) && !is.na(med)) {
     cat("Median share of experts keeping their rating (last pair): ",
         .fmt(med, digits), "\n", sep = "")
+  }
+  if (is.data.frame(f) && nrow(f) && "interpretation" %in% names(f)) {
+    .section("Flagged")
+    .say_flagged(f$item, f$recommendation, f$interpretation)
   }
   .closing(c("Consensus is not correctness, and 'No consensus' is not an instruction",
              "to drop an item. Read these results with the experts' comments."),
