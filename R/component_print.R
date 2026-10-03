@@ -33,7 +33,8 @@ as.data.frame.contentvalid_component <- function(x, ...) {
     print(.untag_component(x))
     return(invisible(x))
   }
-  .say(title)
+  # A title may run to a second line, such as the line naming its sources.
+  for (line in title) .say(line)
   cat("\n")
   .print_table(build())
   notes <- notes[!is.na(notes) & nzchar(notes)]
@@ -142,17 +143,18 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
   needed <- c("item", "target", "n_complete", "F", "df1", "df2", "p_screen",
               "partial_eta2", "strongest_competitor", "max_contrast_p",
               "contrast_pass")
+  st <- attr(x, "settings")
+  # Contrasts exist only where an item has a target.
+  has_contrasts <- any(!is.na(x$target))
   .print_component(
     x, needed,
-    title = "Content-validity ANOVA (Hinkin & Tracey, 1999)",
+    title = c("Content-validity ANOVA",
+              "Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011)."),
     build = function() {
       gg <- !is.na(x$df1_gg)
       d1 <- ifelse(gg, x$df1_gg, x$df1)
       d2 <- ifelse(gg, x$df2_gg, x$df2)
-      test <- ifelse(is.na(x$F), "NA",
-                     sprintf("F(%s, %s) = %s", .fmt(d1, digits, bounded = FALSE),
-                             .fmt(d2, digits, bounded = FALSE),
-                             .fmt(x$F, digits, bounded = FALSE)))
+      test <- ifelse(is.na(x$F), "--", .fmt_f_test(x$F, d1, d2, digits))
       # Narrow enough for an 80-column console; the strongest competitor
       # stays in the `strongest_competitor` column.
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
@@ -163,13 +165,36 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = c(
-      if (any(!is.na(x$df1_gg))) {
-        "Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees of freedom are fractional."
+      # Only a correction that changed the degrees of freedom is mentioned:
+      # with two constructs there is nothing to correct.
+      if (any(!is.na(x$df1_gg) & abs(x$df1_gg - x$df1) > 1e-8)) {
+        paste("Within-judge omnibus tests are Greenhouse-Geisser corrected,",
+              "which reduces their degrees of freedom.")
       },
-      paste("contrast p: the largest p among the planned target-versus-other",
-            "contrasts; met: whether every one of them met the screening",
-            "criterion. attr(x, \"contrasts\") holds each contrast, and",
-            "`strongest_competitor` the construct rated closest to the target.")
+      if (any(is.infinite(x$F))) {
+        paste("F = Inf: the judges' rating profiles were exactly parallel,",
+              "leaving no error variance, so the constructs differ for every",
+              "judge alike and no sphericity correction applies.")
+      },
+      # The level and the adjustment the `met` column was decided at, said
+      # only when there are contrasts to describe.
+      if (has_contrasts) {
+        paste0(
+          "contrast p: the largest p among the planned contrasts, each ",
+          "one-sided (the intended construct rated above one of the others)",
+          if (is.list(st) && is.numeric(st$alpha)) {
+            paste0(", at alpha = ", .fmt_alpha(st$alpha),
+                   if (identical(st$adjust, "holm")) {
+                     ", Holm-adjusted for their number"
+                   } else {
+                     " with no adjustment for their number"
+                   })
+          },
+          ". It is NA when a contrast has no p because every judge rated the ",
+          "two constructs the same. met: whether every contrast passed. ",
+          "attr(x, \"contrasts\") holds each one."
+        )
+      }
     )
   )
 }

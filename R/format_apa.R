@@ -93,6 +93,29 @@
   paste(n, ifelse(n == 1, noun, plural))
 }
 
+# The two degrees of freedom of an F test as APA writes them: whole numbers
+# without decimals, "F(2, 15)", and corrected ones with them, "F(1.89,
+# 20.84)". The pair is decided together, so a correction that happens to
+# leave one of the two whole still prints both to the same precision:
+# "F(1.39, 32.00)", never "F(1.39, 32)".
+.fmt_df <- function(df1, df2, digits = 2) {
+  is_whole <- function(v) is.na(v) | abs(v - round(v)) < 1e-8
+  whole <- is_whole(df1) & is_whole(df2)
+  one <- function(v) {
+    out <- .fmt(v, digits, bounded = FALSE)
+    w <- whole & !is.na(v)
+    out[w] <- format(round(v[w]), trim = TRUE, scientific = FALSE)
+    out
+  }
+  paste0(one(df1), ", ", one(df2))
+}
+
+# An F test as text: "F(2, 15) = 4.21". `Inf` is written without padding.
+.fmt_f_test <- function(f, df1, df2, digits = 2) {
+  value <- ifelse(is.infinite(f), "Inf", .fmt(f, digits, bounded = FALSE))
+  sprintf("F(%s) = %s", .fmt_df(df1, df2, digits), value)
+}
+
 # Scale points as text, written alike: "1" and "4", or "0.333" and "1.333" on
 # a scale with fractional points, never seven digits on one and six on another.
 .fmt_scale <- function(x) {

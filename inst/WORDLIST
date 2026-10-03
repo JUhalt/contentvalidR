@@ -19,7 +19,6 @@ al
 anonymized
 Arabie
 Ayre
-Baer
 Boeck
 cellwise
 CFA
@@ -47,7 +46,6 @@ et
 evidentiary
 Fleiss
 frac
-Ganepola
 Geisinger
 Geisser
 generalizability
@@ -56,7 +54,6 @@ Gerbing
 Gerbing's
 Giacobbi
 GPLv
-Halvorsen
 Hambleton
 Hinkin
 HTC
@@ -76,8 +73,10 @@ Lawshe's
 Lifecycle
 Linacre
 Llabre
+MacKenzie
 MDS
 Melloy
+MIS
 miscalibrated
 naïve
 normed
@@ -89,6 +88,7 @@ Pc
 Penfield
 pkgdown
 plottable
+Podsakoff
 Polit
 pre
 Pre
@@ -197,6 +197,7 @@ Glanville
 Grimshaw
 Heiberger
 Hoffmann
+Holm
 Hróbjartsson
 Lalu
 Likert
@@ -206,3 +207,4 @@ Mulrow
 PRISMA
 Shamseer
 Tetzlaff
+Welch

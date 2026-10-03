@@ -9,6 +9,8 @@
 #'
 #' HTC describes definitional correspondence. Higher values indicate that
 #' judges see the item as more representative of its intended construct.
+#' Because the lowest rating is 1 on the 1-to-`a` metric, HTC runs from
+#' `1 / a` to 1 (.20 to 1 on a five-point scale), not from 0.
 #'
 #' @param ratings A long-format data.frame containing item, rater, construct,
 #'   and rating columns.
@@ -50,7 +52,7 @@ htc <- function(ratings,
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
   a <- .validate_rating_scale(scale_min, scale_max, d$rating)
-  by_item <- split(d, d$item, drop = TRUE)
+  by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     target <- unique(df$target)[1]
     x <- df$rating[df$construct == target & !is.na(df$rating)]
@@ -78,6 +80,10 @@ htc <- function(ratings,
 #' average of those difference scores is divided by `a - 1`, where `a` is the
 #' number of rating anchors. HTD ranges from -1 to 1.
 #'
+#' HTD is therefore the intended construct's average lead over **all** the
+#' orbiting constructs, not its lead over the closest one. The closest one is
+#' reported beside it as `strongest_competitor`.
+#'
 #' @param ratings A long-format data.frame containing item, rater, construct,
 #'   and rating columns.
 #' @param item_col,rater_col,construct_col,rating_col Column names.
@@ -93,8 +99,9 @@ htc <- function(ratings,
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-#' *Journal of Applied Psychology, 104*(10), 1243–1265.
-#' \doi{10.1037/apl0000406}
+#' Content validation guidelines: Evaluation criteria for definitional
+#' correspondence and definitional distinctiveness. *Journal of Applied
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
 #'
 #' @examples
 #' d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B", "C"))
@@ -126,7 +133,7 @@ htd <- function(ratings,
     stop("`htd()` requires a within-judge/fully crossed rating design. Between-judge item(s): ",
          paste(between_items, collapse = ", "), ".", call. = FALSE)
   }
-  by_item <- split(d, d$item, drop = TRUE)
+  by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     target <- unique(df$target)[1]
     mat <- .item_rating_matrix(df)

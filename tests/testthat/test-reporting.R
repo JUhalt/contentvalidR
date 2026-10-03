@@ -219,9 +219,8 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   rd$rating <- ifelse(rd$construct == rd$target_construct,
                       sample(4:5, nrow(rd), TRUE), sample(1:3, nrow(rd), TRUE))
   rating <- content_report(rating_validity(rd))
-  expect_identical(names(rating), c("item", "target", "judges", "competitor",
-                                    "HTC", "HTD", "omnibus p", "contrast p",
-                                    "decision"))
+  expect_identical(names(rating), c("item", "target", "judges", "HTC", "HTD",
+                                    "F test", "p", "contrast p", "decision"))
 
   ess <- content_report(expert_validity(c(10, 8), mode = "essentiality", N = 12))
   expect_identical(names(ess), c("item", "essential", "CVR", "p", "decision"))

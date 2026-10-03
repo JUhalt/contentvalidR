@@ -34,8 +34,9 @@ scale.}
 
 \item{alpha}{Significance level for item-level inferential screening.}
 
-\item{adjust}{Planned-contrast p-value adjustment: \code{"none"} (historical
-planned-comparison logic) or \code{"holm"}.}
+\item{adjust}{Adjustment of the planned-contrast \emph{p} values for the number
+of contrasts: \code{"none"} (the default; each contrast is a planned
+comparison) or \code{"holm"} (conservative).}
 
 \item{orbiting_r}{Optional average focal-orbiting correlation. For multiple
 target scales, use a named numeric vector keyed by target.}
@@ -50,7 +51,13 @@ components \code{results}, \code{scale_summary}, \code{settings}, \code{design},
 Planned contrasts live in \code{details$contrasts}; the historical top-level
 \code{contrasts} component is retained as a compatibility alias. Item-level
 \code{results} include a standardized \code{status} field while retaining the
-method-specific \code{recommendation} field.
+method-specific \code{recommendation} field. In \code{results}, \code{p_value} is the
+Greenhouse-Geisser corrected omnibus \emph{p} and \code{df1_gg} and \code{df2_gg} are its
+degrees of freedom, where a correction applies (see \code{\link[=anova_content]{anova_content()}});
+\code{p_omnibus}, \code{df1} and \code{df2} are the uncorrected test; and
+\code{max_contrast_p} is the largest \emph{p} among the planned contrasts, \code{NA}
+when a contrast has no \emph{p}. In \code{scale_summary}, \code{n_htc} and \code{n_htd} count
+the items in each mean.
 }
 \description{
 Provides the recommended user-facing workflow for a fully crossed
@@ -63,10 +70,27 @@ definition and one or more orbiting definitions. \code{rating_validity()} combin
 \item planned paired target-versus-orbiting contrasts.
 }
 
+The rating task is Hinkin and Tracey's (1999). They analyzed it with a
+one-way ANOVA and Duncan's multiple range test; the repeated-measures form
+used here, with a planned contrast, follows MacKenzie et al. (2011). See
+\code{\link[=anova_content]{anova_content()}} for which details are published and which are this
+package's choices.
+
 Item-level output is diagnostic rather than a coefficient dump: it identifies
 the strongest competing construct, describes why an item was flagged, and
 labels statistical screening decisions \code{"Retain"}, \code{"Review"}, or
-\code{"Insufficient data"}. \code{"Review"} is not an instruction to delete the item.
+\code{"Insufficient data"}. An item is labeled \code{"Retain"} when its omnibus \emph{p}
+and every contrast \emph{p} are at or below \code{alpha}. \code{"Review"} is not an
+instruction to delete the item. An item with fewer than two judges who
+rated it against every construct is labeled \code{"Insufficient data"}.
+
+Each target-scale mean uses the items whose index rests on at least two
+judges, so that one judge cannot move a scale's band. HTC rests on every
+judge who rated the item against its intended construct (\code{n_target}); HTD
+and the tests rest on the judges who rated it against every construct
+(\code{n_complete}). An item can therefore count toward mean HTC and not toward
+mean HTD, and the printout says how many items are behind each mean when
+some are left out. The two-judge minimum is this package's choice.
 
 Colquitt et al. (2019) norms are applied only to \strong{target-scale averages} of
 HTC and HTD, matching the level at which those empirical benchmarks were
@@ -93,4 +117,9 @@ Psychology, 104}(10), 1243–1265. \doi{10.1037/apl0000406}
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
 content validation. \emph{Organizational Research Methods, 2}(2), 175–186.
 \doi{10.1177/109442819922004}
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. \emph{MIS Quarterly, 35}(2), 293–334.
+\doi{10.2307/23044045}
 }

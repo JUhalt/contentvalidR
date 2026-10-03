@@ -29,6 +29,16 @@
   .validate_labels(d$item, "item")
   .validate_labels(d$rater, "rater")
   .validate_labels(d$construct, "construct")
+  # Labels are compared as text, trimmed, as in the item sort, and items keep
+  # the order of the data (or of a factor's levels), not text order.
+  item_order <- if (is.factor(d$item)) {
+    .as_label(levels(droplevels(d$item)))
+  } else {
+    unique(.as_label(d$item))
+  }
+  d$item <- .as_label(d$item)
+  d$rater <- .as_label(d$rater)
+  d$construct <- .as_label(d$construct)
   if (!is.numeric(d$rating)) {
     stop("`rating` must be numeric.", call. = FALSE)
   }
@@ -47,15 +57,22 @@
         anyDuplicated(names(target_map)) || anyNA(target_map) || any(trimws(target_map) == "")) {
       stop("`target_map` must uniquely map each item name to one non-missing, non-empty target construct.", call. = FALSE)
     }
-    item_chr <- as.character(d$item)
+    names(target_map) <- .as_label(names(target_map))
+    if (anyDuplicated(names(target_map))) {
+      stop("`target_map` names the same item more than once after spaces ",
+           "around the names are removed: ",
+           paste(unique(names(target_map)[duplicated(names(target_map))]),
+                 collapse = ", "), ". Give each item one entry.", call. = FALSE)
+    }
+    item_chr <- d$item
     missing_targets <- setdiff(unique(item_chr), names(target_map))
     if (length(missing_targets)) {
       stop("`target_map` is missing item(s): ", paste(missing_targets, collapse = ", "), ".", call. = FALSE)
     }
-    d$target <- unname(target_map[item_chr])
+    d$target <- .as_label(unname(target_map[item_chr]))
   } else if (!is.null(target_col) && target_col %in% names(ratings)) {
-    d$target <- as.character(ratings[[target_col]])
-    if (anyNA(d$target) || any(!nzchar(trimws(d$target)))) {
+    d$target <- .as_label(ratings[[target_col]])
+    if (anyNA(d$target) || any(!nzchar(d$target))) {
       stop("`target_col` cannot contain missing or empty target labels.", call. = FALSE)
     }
   } else if (isTRUE(require_target)) {
@@ -83,11 +100,9 @@
     }
   }
 
-  d$item <- as.character(d$item)
-  d$rater <- as.character(d$rater)
-  d$construct <- as.character(d$construct)
   d$target <- as.character(d$target)
   rownames(d) <- NULL
+  attr(d, "item_order") <- unique(item_order)
   d
 }
 
@@ -171,6 +186,14 @@
   ss_within <- ss_total - ss_subject
   ss_construct <- n * sum((colMeans(y) - gm)^2)
   ss_error <- max(0, ss_within - ss_construct)
+  # When every judge's profile is parallel there is no error variance. In
+  # floating point that leaves a sum of squares near 1e-15, not 0, which would
+  # give an F of 1e16 and an epsilon built from rounding noise. A sum of
+  # squares this small against the total is zero. The tolerance is relative,
+  # so it does not depend on the units of the ratings.
+  tiny <- 1e-12 * ss_total
+  if (ss_error <= tiny) ss_error <- 0
+  if (ss_construct <= tiny) ss_construct <- 0
   df1 <- k - 1
   df2 <- (n - 1) * (k - 1)
   ms_construct <- ss_construct / df1
@@ -181,7 +204,8 @@
     ms_construct / ms_error
   }
   p <- if (is.na(Fv)) NA_real_ else if (is.infinite(Fv)) 0 else stats::pf(Fv, df1, df2, lower.tail = FALSE)
-  eps <- .gg_epsilon(y)
+  # With no error variance there is no covariance structure to correct for.
+  eps <- if (ss_error == 0) NA_real_ else .gg_epsilon(y)
   df1_gg <- if (is.na(eps)) NA_real_ else eps * df1
   df2_gg <- if (is.na(eps)) NA_real_ else eps * df2
   p_gg <- if (is.na(Fv) || is.na(eps)) NA_real_ else if (is.infinite(Fv)) 0 else
@@ -205,6 +229,13 @@
     n <- length(diff)
     md <- mean(diff)
     sd_d <- stats::sd(diff)
+    # The same judge-to-judge gap for every judge leaves a standard deviation
+    # of rounding noise (about 1e-16 at fractional ratings), which would give
+    # a t in the quadrillions beside an omnibus F of Inf. A spread or a mean
+    # this small against the ratings themselves is zero.
+    tiny <- 1e-8 * max(abs(c(y[, target], y[, other])))
+    if (!is.na(sd_d) && sd_d <= tiny) sd_d <- 0
+    if (abs(md) <= tiny) md <- 0
     if (is.na(sd_d) || sd_d == 0) {
       tval <- if (md > 0) Inf else if (md < 0) -Inf else NA_real_
       p <- if (md > 0) 0 else if (md < 0) 1 else NA_real_
@@ -288,7 +319,12 @@
     stop("`orbiting_r` must contain finite correlations between -1 and 1.", call. = FALSE)
   }
   if (length(targets) == 1L && length(orbiting_r) == 1L) {
+    .check_single_orbiting_r(orbiting_r, targets)
     return(stats::setNames(as.numeric(orbiting_r), targets))
+  }
+  # Target labels are trimmed, so the names that key this vector are too.
+  if (!is.null(names(orbiting_r))) {
+    names(orbiting_r) <- trimws(names(orbiting_r), whitespace = "[\\h\\v]")
   }
   if (is.null(names(orbiting_r)) || any(names(orbiting_r) == "") || anyDuplicated(names(orbiting_r))) {
     stop("For multiple target scales, `orbiting_r` must be a uniquely named numeric vector keyed by target.", call. = FALSE)

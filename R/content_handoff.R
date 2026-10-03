@@ -372,6 +372,53 @@
   )
 }
 
+# The construct-rating `p_value` is the omnibus p. An item can meet it and
+# still be held back by a planned contrast, so that row says so: a reader who
+# sees a statistic meeting its criterion beside a "Review" decision is told
+# which test decided.
+#
+# The note names what held the item back. A contrast with no p (every judge
+# rated the intended construct and another the same) is said in words: quoting
+# the largest p among the other contrasts would give a p that meets alpha
+# beside a decision that says a contrast did not. A missing omnibus p is
+# explained too, as the note column promises.
+.handoff_rating_notes <- function(fit, results, alpha) {
+  pass <- .handoff_column(results, "contrast_pass")
+  largest <- .handoff_column(results, "max_contrast_p")
+  holm <- identical(fit$settings$adjust, "holm")
+  contrasts <- if (is.list(fit$details)) fit$details$contrasts else NULL
+  no_p <- is.na(results$p_value)
+  held <- !no_p & results$p_value <= alpha & !(pass %in% TRUE) &
+    results$recommendation %in% "Review"
+
+  out <- character(nrow(results))
+  for (i in which(held)) {
+    tied <- character(0)
+    if (is.data.frame(contrasts) && nrow(contrasts)) {
+      own <- contrasts[contrasts$item == results$item[i], , drop = FALSE]
+      tied <- as.character(own$competitor[is.na(own$p_adj)])
+    }
+    reason <- if (length(tied)) {
+      paste0("; every judge rated the intended construct and ",
+             paste(tied, collapse = ", "),
+             " the same, so that contrast has no p.")
+    } else if (is.na(largest[i])) {
+      ", and not every one did."
+    } else {
+      paste0("; the largest ", if (holm) "Holm-adjusted " else "", "contrast ",
+             .p_phrase(largest[i]), ".")
+    }
+    out[i] <- paste0("This omnibus p meets alpha, but the rule also needs ",
+                     "every planned contrast to pass", reason)
+  }
+  insufficient <- results$recommendation %in% "Insufficient data"
+  out[no_p & insufficient] <- paste(
+    "No test: fewer than two judges rated the item against every construct."
+  )
+  out[no_p & !insufficient] <- "No test: the ratings left no variance to test."
+  out
+}
+
 # Per-workflow evidence: the construct each item belongs to, the effective judge
 # count, the decision rule in words, the citations for the method that ran, and
 # the statistics that rule was applied to.
@@ -427,15 +474,26 @@
     return(list(
       scale = as.character(results$target),
       n_judges = as.integer(results$n_complete),
+      # The statistics carry the omnibus p only (schema 1 is frozen), so the
+      # rule says in words that every contrast must pass as well.
       rule = rep(sprintf(
-        paste("Greenhouse-Geisser corrected omnibus test plus planned",
-              "target-versus-orbiting contrasts (Hinkin & Tracey, 1999),",
-              "alpha = %s"), .fmt_alpha(alpha)), n),
-      citation = c("Hinkin & Tracey (1999)", "Colquitt et al. (2019)"),
+        paste("Greenhouse-Geisser corrected omnibus test and every planned",
+              "target-versus-orbiting contrast significant%s",
+              "(repeated-measures ANOVA adapted from Hinkin & Tracey, 1999,",
+              "following MacKenzie et al., 2011), alpha = %s"),
+        if (identical(fit$settings$adjust, "holm")) {
+          " after Holm adjustment"
+        } else {
+          ""
+        },
+        .fmt_alpha(alpha)), n),
+      citation = c("Hinkin & Tracey (1999)", "MacKenzie et al. (2011)",
+                   "Colquitt et al. (2019)"),
       statistics = rbind(
         .handoff_stat(results$item, "HTC", results$htc),
         .handoff_stat(results$item, "HTD", results$htd),
-        .handoff_stat(results$item, "p_value", results$p_value, alpha)
+        .handoff_stat(results$item, "p_value", results$p_value, alpha,
+                      note = .handoff_rating_notes(fit, results, alpha))
       )
     ))
   }
@@ -707,7 +765,11 @@
 #' It says why a value or interval is absent or degenerate, in the producing
 #' function's own words, so a reader need not re-derive method-specific
 #' semantics. For example, a Delphi stability row may carry "Kappa is
-#' undefined: every rating fell in the same category in both rounds."
+#' undefined: every rating fell in the same category in both rounds." It also
+#' says when a statistic that meets its criterion is not what decided: the
+#' construct-rating `p_value` is the omnibus *p*, and for an item held back by
+#' a planned contrast its note says so, with the largest contrast *p* or, when
+#' a contrast has none, the constructs that tied.
 #'
 #' Its contract, agreed with the `nomologR` maintainers:
 #'

@@ -52,20 +52,22 @@
       label = "Hinkin-Tracey Correspondence",
       definition = paste(
         "Average rating of the item against its intended construct definition,",
-        "expressed as a proportion of the rating scale."
+        "divided by the number of scale points. The lowest possible rating",
+        "still counts as one point, so the index cannot reach 0."
       ),
-      range = "0 to 1; higher is stronger",
+      range = "1 / (scale points) to 1, so .20 to 1 on a 5-point scale; higher is stronger",
       stringsAsFactors = FALSE
     ),
     data.frame(
       term = "htd", workflow = "construct-rating",
       label = "Hinkin-Tracey Distinctiveness",
       definition = paste(
-        "How far the intended construct's average rating exceeds the best",
-        "competing construct's, as a proportion of the rating scale. It is a",
-        "difference, so its typical values are far smaller than HTC's."
+        "How far the intended construct's rating exceeds the other constructs'",
+        "ratings, averaged over every other construct and every judge, as a",
+        "proportion of the widest possible difference. It is a difference, so",
+        "its typical values are far smaller than HTC's."
       ),
-      range = "usually a small positive number; higher is stronger",
+      range = "-1 to 1, usually a small positive number; higher is stronger",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -323,8 +325,8 @@
     csv = "How much more often judges chose the intended construct than its closest rival (-1 to 1; 0 is a tie).",
     competitor = "The construct other than the intended one that judges chose most often.",
     p_value = "Probability of at least this many target assignments if each judge picked the target at rate p0; compare with alpha.",
-    htc = "Mean rating against the intended definition, as a share of the rating scale (0 to 1).",
-    htd = "How far that mean exceeds the closest rival's, as a share of the scale (usually small).",
+    htc = "Mean rating against the intended definition, divided by the number of scale points (1/points to 1).",
+    htd = "How far that rating exceeds the other constructs' ratings on average, as a share of the scale (usually small).",
     V = "Mean relevance rating rescaled to run from 0 (lowest possible) to 1 (highest).",
     I_CVI = "Share of experts rating the item relevant, compared with Lynn's criterion for the panel size.",
     `I_CVI_low/I_CVI_high` = "Wide because expert panels are small; the method is named above.",
@@ -364,7 +366,7 @@
       "Insufficient data" = "no judge sorted it."
     ),
     "construct-rating" = c(
-      Retain = "rated highest against its intended construct, with every planned contrast meeting the screening criterion.",
+      Retain = "its ratings differed across constructs (the omnibus test) and the intended construct was rated above every other (every planned contrast).",
       Review = "did not meet every criterion; the competitor column shows the closest rival.",
       "Insufficient data" = "fewer than two judges rated it against every construct."
     ),

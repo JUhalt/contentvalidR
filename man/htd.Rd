@@ -41,6 +41,10 @@ crossed, within-judge rating design. For every complete judge, the intended
 construct rating is contrasted with each orbiting-construct rating. The
 average of those difference scores is divided by \code{a - 1}, where \code{a} is the
 number of rating anchors. HTD ranges from -1 to 1.
+
+HTD is therefore the intended construct's average lead over \strong{all} the
+orbiting constructs, not its lead over the closest one. The closest one is
+reported beside it as \code{strongest_competitor}.
 }
 \examples{
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B", "C"))
@@ -49,6 +53,7 @@ htd(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
 }
 \references{
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-\emph{Journal of Applied Psychology, 104}(10), 1243–1265.
-\doi{10.1037/apl0000406}
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. \emph{Journal of Applied
+Psychology, 104}(10), 1243–1265. \doi{10.1037/apl0000406}
 }

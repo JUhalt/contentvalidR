@@ -122,9 +122,10 @@ The two indices are not on the same scale and their numbers are not comparable:
 - **HTC is an average rating** expressed as a proportion of the scale. Across
   published scales the Moderate band starts at .84 and Very Strong at .91, so
   .83 genuinely sits low *against that distribution*.
-- **HTD is a difference** between the target rating and the best competitor's,
-  so it is much smaller by construction. Its Moderate band starts at .18 and
-  Very Strong at .35, so .44 genuinely sits high.
+- **HTD is a difference** between the target rating and the other constructs'
+  ratings, averaged over all of them, so it is much smaller by construction.
+  Its Moderate band starts at .18 and Very Strong at .35, so .44 genuinely
+  sits high.
 
 Compare each index against its own benchmark. Never compare an HTC number with
 an HTD number, and never treat a benchmark label as a cutoff for retention.

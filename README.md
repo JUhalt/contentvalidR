@@ -188,7 +188,7 @@ belongs in your own visible code.
 | Question put to judges or experts | Workflow | Built on | Guide |
 |----|----|----|----|
 | Which construct does each item belong to? | `sort_validity()` | Anderson & Gerbing (1991); Howard & Melloy (2016); Colquitt et al. (2019) | [Item sorts](https://juhalt.github.io/contentvalidR/articles/item-sort-validity.html) |
-| How well does each item match each construct definition? | `rating_validity()` | Hinkin & Tracey (1999); Colquitt et al. (2019) | [Construct ratings](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.html) |
+| How well does each item match each construct definition? | `rating_validity()` | Hinkin & Tracey (1999); MacKenzie et al. (2011); Colquitt et al. (2019) | [Construct ratings](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.html) |
 | Is each item relevant, essential, or matched to its objective? | `expert_validity()` | Aiken (1980); Lawshe (1975); Lynn (1986); Polit et al. (2007); Rovinelli & Hambleton (1977) | [Expert panels](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.html) |
 | Has a Delphi panel reached consensus, and stopped changing? | `delphi_validity()` | Holey et al. (2007) | [Delphi rounds](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.html) |
 | Do the conclusions depend on the particular judges? | `judge_validity()` | Crocker et al. (1988); Engelhard (1994) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
@@ -352,11 +352,6 @@ Works cited in this README, the help pages, and the vignettes.
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
   for scaled disagreement or partial credit. *Psychological Bulletin,
   70*(4), 213–220. <https://doi.org/10.1037/h0026256>
-- Colquitt, J. A., Baer, M. D., Long, D. M., &
-  Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social
-  exchange relationships: A comparison of relative content validity.
-  *Journal of Applied Psychology, 99*(4), 599–618.
-  <https://doi.org/10.1037/a0036374>
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
   Content validation guidelines: Evaluation criteria for definitional
   correspondence and definitional distinctiveness. *Journal of Applied
@@ -399,6 +394,9 @@ Works cited in this README, the help pages, and the vignettes.
   methodology for selecting the correct number of factors to retain.
   *Educational and Psychological Measurement, 55*(3), 377–393.
   <https://doi.org/10.1177/0013164495055003002>
+- Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+  profile data. *Psychometrika, 24*(2), 95–112.
+  <https://doi.org/10.1007/BF02289823>
 - Gwet, K. L. (2008). Computing inter-rater reliability and its variance
   in the presence of high agreement. *British Journal of Mathematical
   and Statistical Psychology, 61*(1), 29–48.
@@ -448,6 +446,10 @@ Works cited in this README, the help pages, and the vignettes.
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
   <https://doi.org/10.1097/00006199-198611000-00017>
+- MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011).
+  Construct measurement and validation procedures in MIS and behavioral
+  research: Integrating new and existing techniques. *MIS Quarterly,
+  35*(2), 293–334. <https://doi.org/10.2307/23044045>
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single
   proportion: Comparison of seven methods. *Statistics in Medicine,
   17*(8), 857–872. <https://doi.org/10/cpchjg>
