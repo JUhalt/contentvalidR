@@ -55,8 +55,9 @@ test_that("changed analysis settings mark the comparison as not comparable", {
   expect_false(cmp$comparable)
   expect_true(any(cmp$settings_changes$setting == "p0"))
   changed <- cmp$settings_changes[cmp$settings_changes$setting == "p0", ]
-  expect_equal(changed$previous, "0.5")
-  expect_equal(changed$current, "0.7")
+  # A proportion is written as APA writes it, as alpha is.
+  expect_equal(changed$previous, ".50")
+  expect_equal(changed$current, ".70")
   expect_true(cmp$summary$settings_changed)
 
   # The warning must appear in the output, not only in the object.

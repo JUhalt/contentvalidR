@@ -36,7 +36,9 @@ weakened, and otherwise changed (\code{n_changed}, to or from
 added and removed.}
 \item{settings_changes}{Analysis settings that differ between consecutive
 rounds, and a changed panel size, which is the audit trail for whether
-a status change can be read as an evidence change at all.}
+a status change can be read as an evidence change at all. The values
+are text; a proportion (\code{alpha}, \code{consensus_threshold}, \code{ioc_cut},
+\code{p0}) is written as APA writes it, \code{.05} or \code{.75}.}
 \item{comparable}{\code{FALSE} when any consecutive pair differs in settings
 or, where the criterion depends on it, in panel size. The seed and
 the number of bootstrap resamples are ignored, because they cannot
