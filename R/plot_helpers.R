@@ -10,7 +10,10 @@
 # * reference lines stop below that headroom;
 # * a vertical axis title too long for the figure gives way to the index's
 #   name, which the legend's heading defines;
-# * an axis of counts, such as experts or judges, ticks whole numbers only.
+# * an axis of counts, such as experts or judges, ticks whole numbers only;
+# * item names get the margin they need, shortened in the middle when long;
+# * the tick labels of a vertical statistic axis are set horizontally, so a
+#   short figure drops none of them.
 
 # Narrows the top margin unless the caller asked for a title. Returns the old
 # settings for on.exit(graphics::par(op)).
@@ -75,6 +78,30 @@
   list(labels = out, lines = base + max(wide(out), 0) / csi)
 }
 
+# Item names down the left of a horizontal figure: shortened by
+# .item_labels(), with the left margin widened to hold them. Called before the
+# frame is drawn; returns the labels to draw.
+.item_axis_left <- function(items) {
+  lab <- .item_labels(items, width_in = graphics::par("din")[1])
+  mar <- graphics::par("mar")
+  graphics::par(mar = c(mar[1], max(mar[2], lab$lines + 0.2), mar[3:4]))
+  lab$labels
+}
+
+# Item names set upright under a vertical figure (axis(1, las = 2)):
+# shortened by .item_labels() to 40% of the figure's height less an inch kept
+# for the data, with the bottom margin widened to hold them and the axis
+# title moved below them. Called before the frame is drawn; returns the
+# labels and the title's line.
+.item_axis_below <- function(items) {
+  lab <- .item_labels(items, width_in = graphics::par("din")[2],
+                      reserve_in = 1)
+  mar <- graphics::par("mar")
+  line <- max(graphics::par("mgp")[1], lab$lines + 0.2)
+  graphics::par(mar = c(max(mar[1], line + 1.2), mar[-1]))
+  list(labels = lab$labels, line = line)
+}
+
 # Tick labels in APA style for a bounded statistic: 0, .25, .50, .75, 1.00.
 .tick_labels <- function(at, digits = 2) {
   out <- formatC(at, format = "f", digits = digits)
@@ -83,8 +110,13 @@
   out
 }
 
+# On a vertical axis the labels are set horizontally unless the caller says
+# otherwise: set along the axis, each needs its width between ticks, and a
+# short figure under a tall key would drop some of them.
 .axis_bounded <- function(side, at, digits = 2, ...) {
-  graphics::axis(side, at = at, labels = .tick_labels(at, digits), ...)
+  args <- list(side, at = at, labels = .tick_labels(at, digits), ...)
+  if (side %in% c(2, 4) && is.null(args$las)) args$las <- 1
+  do.call(graphics::axis, args)
 }
 
 # One plotting symbol per decision: met (filled), review (open), no decision
@@ -103,12 +135,13 @@
 }
 
 # How a legend in the headroom at the top of the plot fits the plot's width:
-# one row at the usual size when it fits, else two rows, else three, and only
-# then smaller type, so the text keeps its size wherever rows can hold it.
-# Rows read across in the order given. NA in `pch` or `lty` marks "no symbol"
-# or "no line"; `title` is a heading above the entries. Widths follow
-# legend()'s own arithmetic in inches on the open device, so a figure can
-# size its headroom (.legend_room()) before its frame is drawn.
+# one row at the usual size when it fits, else two rows, else three, and so
+# on up to a single column, and only then smaller type, never below 8 points,
+# so the text keeps its size wherever rows can hold it. Rows read across in
+# the order given. NA in `pch` or `lty` marks "no symbol" or "no line";
+# `title` is a heading above the entries. Widths follow legend()'s own
+# arithmetic in inches on the open device, so a figure can size its headroom
+# (.legend_room()) before its frame is drawn.
 .legend_fit <- function(legend, pch = NA, lty = NA, col = "black", title = NULL,
                         width_in = graphics::par("pin")[1], cex = 0.72) {
   n <- length(legend)
@@ -154,15 +187,18 @@
   # A tenth of an inch spare absorbs the difference between measured and
   # drawn text on bitmap devices.
   room <- width_in - 0.1
-  most <- min(n, 3L)
-  for (rows in seq_len(most)) {
+  for (rows in seq_len(n)) {
     fit <- layout(rows, cex)
     if (fit$width <= room) return(fit)
   }
-  # Still too wide in three rows: the same rows in type shrunk to fit. Some
-  # devices set text in whole points, so the width is checked again.
-  fit <- layout(most, cex * room / fit$width)
-  while (fit$width > room && fit$cex > 0.3) fit <- layout(most, 0.95 * fit$cex)
+  # Too wide even in one column: that column in type shrunk to fit, to no
+  # less than 8 points. Some devices set text in whole points, so the width
+  # is checked again.
+  smallest <- min(cex, 8 / (graphics::par("ps") * graphics::par("cex")))
+  fit <- layout(n, max(smallest, cex * room / fit$width))
+  while (fit$width > room && fit$cex > smallest) {
+    fit <- layout(n, max(smallest, 0.95 * fit$cex))
+  }
   fit
 }
 
@@ -178,20 +214,11 @@
 }
 
 # A legend in the headroom at the top of the plot, laid out to fit the plot's
-# width. A fixed `ncol` fills that many columns, column by column, instead.
-.legend_top <- function(legend, pch = NA, lty = NA, col = "black", ncol = NULL,
+# width. A figure that sizes its headroom for the key lays it out with
+# .legend_fit() and draws it with .legend_draw() instead.
+.legend_top <- function(legend, pch = NA, lty = NA, col = "black",
                         title = NULL) {
-  if (is.null(ncol)) {
-    return(invisible(.legend_draw(.legend_fit(legend, pch, lty, col, title))))
-  }
-  n <- length(legend)
-  if (!n) return(invisible(NULL))
-  args <- list("top", legend = legend, pch = rep_len(pch, n),
-               col = rep_len(col, n), bty = "n", ncol = ncol, cex = 0.72,
-               x.intersp = 0.7, seg.len = 1.6, title = title)
-  lty <- rep_len(lty, n)
-  if (any(!is.na(lty))) args$lty <- lty
-  do.call(graphics::legend, args)
+  invisible(.legend_draw(.legend_fit(legend, pch, lty, col, title)))
 }
 
 # The top of a frame's y range that keeps a legend laid out by .legend_fit()

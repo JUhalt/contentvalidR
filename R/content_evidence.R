@@ -45,17 +45,20 @@
 #' When two methods reviewed the same items side by side, a stage's box says
 #' how many of its items an earlier stage had already held back, and its side
 #' box lists only the items it held back itself. Either way, an item is carried
-#' forward when every stage that reviewed it carried it.
+#' forward when every stage that applied a decision rule to it carried it.
 #'
-#' **A stage that applied no decision rule holds nothing back.** When every
-#' item of a stage is "Descriptive only", as in a Delphi study run without a
-#' consensus threshold or congruence ratings without a target mapping, the
-#' stage described its items and decided nothing. Its handoff carries none of
-#' them, but that is not a judgment against any, so here it does not count as
-#' holding them back: an item is carried when every stage that reviewed it
-#' and applied a decision rule carried it. The printout names such a stage,
-#' and its statistic is still shown. To carry the items of a single such stage
-#' on its own, use `keep = "Descriptive only"` in [content_handoff()].
+#' **A stage holds back only the items it decided on.** An item whose status
+#' in a stage is "Descriptive only" was described there, not judged, as in a
+#' Delphi study run without a consensus threshold or congruence ratings
+#' without a target mapping. That stage's handoff does not carry the item, but
+#' that is not a judgment against it, so here the stage does not hold it back,
+#' even when it decided on its other items: a Delphi study without a threshold
+#' still holds back an item it found to have too few experts. An item is
+#' carried when at least one stage applied a decision rule to it and every
+#' such stage carried it. An item that no stage applied a decision rule to is
+#' neither carried nor held back: its result is "No decision", and `carried`
+#' leaves it out. Its statistic is still shown. To carry such items on, hand
+#' the stage off with `keep = "Descriptive only"` in [content_handoff()].
 #'
 #' @section Where the displays come from:
 #' The flow diagram is modeled on the PRISMA 2020 flow diagram for systematic
@@ -84,10 +87,11 @@
 #'       it.}
 #'     \item{`flow`}{for each stage, the items it reviewed, those an earlier
 #'       stage had already held back, those it held back itself, those
-#'       carried so far that it did not review, and `decided`, whether it
-#'       applied a decision rule.}
-#'     \item{`carried`}{the items carried by every stage that reviewed them
-#'       and applied a decision rule.}
+#'       not held back so far that it did not review, and `decided`, whether
+#'       it applied a decision rule to any of its items.}
+#'     \item{`carried`}{the items that at least one stage applied a decision
+#'       rule to and that every such stage carried. An item no stage decided
+#'       on is left out.}
 #'   }
 #'
 #' @references
@@ -229,12 +233,26 @@ content_evidence <- function(..., keep = "Supported") {
     !any(c("target mean rating", "highest IOC") %in% have)
 }
 
-# Whether a stage applied a decision rule. A stage whose every item is
-# "Descriptive only" (a Delphi study without a consensus threshold,
-# congruence ratings without a target mapping) made no decision, so the items
-# it did not carry were not held back by it: they were only described.
+# Whether a stage applied a decision rule to any item. A stage whose every
+# item is "Descriptive only" (a Delphi study without a consensus threshold,
+# congruence ratings without a target mapping) made no decision at all.
 .evidence_decided <- function(h) {
-  !all(as.character(h$item_evidence$status) %in% "Descriptive only")
+  !all(.evidence_described(h$item_evidence$status))
+}
+
+# Which statuses record an item that a stage only described. The rule is
+# applied item by item: a stage never holds back an item it only described,
+# even when it decided on its other items (a Delphi study without a threshold
+# still decides that an item had too few experts).
+.evidence_described <- function(status) {
+  as.character(status) %in% "Descriptive only"
+}
+
+# The items no stage applied a decision rule to: neither carried nor held
+# back, their result is "No decision".
+.evidence_undecided <- function(x) {
+  ev <- x$evidence
+  setdiff(x$items, ev$item[!.evidence_described(ev$status)])
 }
 
 # The statistic each workflow's decision rule reads, as the handoff names it.
@@ -290,11 +308,13 @@ content_evidence <- function(..., keep = "Supported") {
 }
 
 # What each stage reviewed and held back, reading the stages in order. An item
-# stays in play until a stage that reviews it holds it back. A stage that
-# applied no decision rule holds nothing back.
+# stays in play until a stage that decides on it holds it back; a stage never
+# holds back an item it only described. Carried at the end are the items in
+# play that some stage decided on; the rest were only ever described.
 .evidence_flow <- function(stages) {
   in_play <- character(0)
   seen <- character(0)
+  ruled_on <- character(0)
   out <- vector("list", length(stages))
   for (k in seq_along(stages)) {
     ev <- stages[[k]]$item_evidence
@@ -304,20 +324,18 @@ content_evidence <- function(..., keep = "Supported") {
     added <- if (k == 1L) character(0) else setdiff(reviewed, seen)
     not_reviewed <- setdiff(in_play, reviewed)
     in_play <- if (k == 1L) reviewed else union(in_play, added)
-    held <- if (decided) {
-      intersect(as.character(ev$item[!ev$carried]), in_play)
-    } else {
-      character(0)
-    }
+    ruled <- !.evidence_described(ev$status)
+    held <- intersect(as.character(ev$item[ruled & !ev$carried]), in_play)
     in_play <- setdiff(in_play, held)
     seen <- union(seen, reviewed)
+    ruled_on <- union(ruled_on, as.character(ev$item[ruled]))
     out[[k]] <- list(reviewed = reviewed, already_out = already_out,
                      added = added, not_reviewed = not_reviewed, held = held,
                      decided = decided, n_judges = ev$n_judges,
                      workflow = stages[[k]]$provenance$workflow)
   }
   names(out) <- names(stages)
-  list(stages = out, carried = in_play)
+  list(stages = out, carried = intersect(in_play, ruled_on))
 }
 
 # "8 experts", "12 to 20 judges", or "judges not recorded".
@@ -340,23 +358,27 @@ content_evidence <- function(..., keep = "Supported") {
   names(x$stages)[vapply(x$stages, .evidence_decided, logical(1))]
 }
 
-# The stages that held each item back, in order: only stages that applied a
-# decision rule hold anything back.
+# The stages that held each item back, in order: a stage holds back only an
+# item it applied a decision rule to.
 .evidence_holders <- function(x) {
   ev <- x$evidence
-  deciding <- .evidence_deciding(x)
+  ruled <- !.evidence_described(ev$status)
   lapply(x$items, function(it) {
     if (it %in% x$carried) return(character(0))
-    ev$stage[ev$item == it & !ev$carried & ev$stage %in% deciding]
+    ev$stage[ev$item == it & !ev$carried & ruled]
   })
 }
 
-# Each item's result across the stages: "carried", or "held back:" and the
-# stages, by name for the figure and by number for the table, where the
-# numbered list of stages above it gives the names.
+# Each item's result across the stages: "carried", "no decision" when no
+# stage applied a decision rule to it, or "held back:" and the stages, by name
+# for the figure and by number for the table, where the numbered list of
+# stages above it gives the names.
 .evidence_verdicts <- function(x, numbered = FALSE) {
   holders <- .evidence_holders(x)
-  vapply(holders, function(held_by) {
+  undecided <- x$items %in% .evidence_undecided(x)
+  vapply(seq_along(holders), function(i) {
+    held_by <- holders[[i]]
+    if (undecided[i]) return("no decision")
     if (!length(held_by)) return("carried")
     if (numbered) {
       paste("held back:", paste(match(held_by, names(x$stages)),
@@ -367,6 +389,33 @@ content_evidence <- function(..., keep = "Supported") {
   }, character(1), USE.NAMES = FALSE)
 }
 
+# Whether the evidence table fits the console with its stage columns headed
+# by the stages' names, at the tightest spacing .print_table() uses before it
+# leaves a column out.
+.evidence_names_fit <- function(tab) {
+  width <- vapply(seq_along(tab), function(j) {
+    max(nchar(c(names(tab)[j], as.character(tab[[j]])), type = "width"))
+  }, numeric(1))
+  2 + sum(width) + length(width) - 1 <= getOption("width", 80L)
+}
+
+# What the handoffs do with the items no stage decided on, said once: a
+# stage's handoff carries an item it only described only when `keep` asks for
+# "Descriptive only".
+.evidence_undecided_note <- function(x, undecided) {
+  carried <- x$evidence$carried[x$evidence$item %in% undecided]
+  if (!any(carried)) {
+    paste("A stage's own handoff carries none of the items it only described;",
+          "keep = \"Descriptive only\" in content_handoff() carries them.")
+  } else if (all(carried)) {
+    paste("Their stages' handoffs carry them, because keep included",
+          "\"Descriptive only\".")
+  } else {
+    paste("A stage's own handoff carries the items it only described only",
+          "when keep includes \"Descriptive only\", as it did for some here.")
+  }
+}
+
 #' @export
 print.contentvalid_evidence <- function(x, ...) {
   ns <- length(x$stages)
@@ -375,21 +424,25 @@ print.contentvalid_evidence <- function(x, ...) {
   stage_names <- names(x$stages)
   holders <- .evidence_holders(x)
   held <- lengths(holders) > 0L
-  # A stage that applied no decision rule holds nothing back, so the headline
-  # names it rather than count its items as held back.
+  # A stage holds back only the items it applied a decision rule to. A stage
+  # that applied none is named rather than counted as holding items back, and
+  # an item no stage decided on is "No decision", never "Carried": its
+  # handoffs carry it only when `keep` asked for "Descriptive only".
   quiet <- setdiff(stage_names, .evidence_deciding(x))
+  described <- .evidence_described(x$evidence$status)
+  undecided <- .evidence_undecided(x)
   n_items <- length(x$items)
-  .say(
-    if (length(quiet) == ns) {
+  # The sentences that apply, joined with one space between them.
+  .say(paste(c(
+    if (length(undecided) == n_items) {
       sprintf(paste("No stage applied a decision rule (every item is",
-                    "Descriptive only), so none held an item back: %s",
-                    "carried."),
+                    "Descriptive only), so %s marked No decision."),
               if (n_items == 1L) "the item is" else
                 sprintf("all %d items are", n_items))
     } else {
       sprintf("%d of %s carried by every stage that %s %s.",
               length(x$carried), .n_noun(n_items, "item"),
-              if (length(quiet)) "applied a decision rule to" else "reviewed",
+              if (any(described)) "applied a decision rule to" else "reviewed",
               if (n_items == 1L) "it" else "them")
     },
     if (any(held)) {
@@ -399,22 +452,35 @@ print.contentvalid_evidence <- function(x, ...) {
                                   collapse = "; ")),
                    collapse = ", "), ".")
     },
+    if (length(undecided) && length(undecided) < n_items) {
+      sprintf("No decision: %s (no stage applied a decision rule to %s).",
+              paste(undecided, collapse = ", "),
+              if (length(undecided) == 1L) "it" else "them")
+    },
+    if (length(undecided)) .evidence_undecided_note(x, undecided),
     if (length(quiet) && length(quiet) < ns) {
       sprintf(paste("%s applied no decision rule (every item is Descriptive",
                     "only), so %s no item back."),
               .and_list(quiet),
               if (length(quiet) == 1L) "it holds" else "they hold")
     }
-  )
+  ), collapse = " "))
 
   .section("Stages, in order")
   for (k in seq_len(ns)) {
     f <- x$flow[[k]]
-    stat <- x$evidence$statistic[x$evidence$stage == stage_names[k]][1]
+    on_stage <- x$evidence$stage == stage_names[k]
+    stat <- x$evidence$statistic[on_stage][1]
+    n_described <- sum(described & on_stage)
     .say(sprintf("%d. %s: %s, %s. Shows %s%s.", k, stage_names[k],
                  .n_noun(length(f$reviewed), "item"), .evidence_judges(f),
                  stat,
-                 if (stage_names[k] %in% quiet) "; no decision rule" else ""),
+                 if (stage_names[k] %in% quiet) {
+                   "; no decision rule"
+                 } else if (n_described) {
+                   paste("; no decision rule for",
+                         .n_noun(n_described, "item"))
+                 } else ""),
          indent = 2L, exdent = 5L)
   }
 
@@ -432,39 +498,69 @@ print.contentvalid_evidence <- function(x, ...) {
   # that held an item back are given by number, as listed above, so that
   # long stage names do not crowd the stages' own columns off the table.
   tab$result <- .sentence_case(.evidence_verdicts(x, numbered = TRUE))
-  shown <- .print_table(tab, as_is = stage_names)
+  # Stage names too long for the console head their columns by number
+  # instead, as the list above numbers them, so the columns stay on screen.
+  numbered <- !.evidence_names_fit(tab)
+  heads <- if (numbered) as.character(seq_len(ns)) else stage_names
+  names(tab)[seq_len(ns) + 1L] <- heads
+  shown <- .print_table(tab, as_is = heads)
 
   if (.show_key()) {
     # The key explains only the columns the table could show.
-    on_screen <- stage_names[stage_names %in% shown]
+    on_screen <- stage_names[heads %in% shown]
     stats <- unique(x$evidence$statistic[x$evidence$stage %in% on_screen])
     term <- c(Psa = "psa", `I-CVI` = "I_CVI", `Share agreeing` = "prop_agree",
-              CVR = "cvr", `target IOC` = "ioc", `highest IOC` = "ioc",
-              HTC = "htc")
+              CVR = "cvr", `target IOC` = "ioc", HTC = "htc")
     known <- stats[stats %in% names(term)]
     if (length(known)) {
       .print_key(unname(term[known]), headings = known)
     } else {
       .section("What these columns mean")
     }
-    cells <- as.character(unlist(tab[on_screen], use.names = FALSE))
+    # The highest index is described, not held to a criterion, so it is not
+    # given the target index's definition, which names one.
+    if ("highest IOC" %in% stats) {
+      .say(paste("Highest IOC -- Index of item-objective congruence. The",
+                 "item's index on its best objective, the one with the",
+                 "highest index (-1 to 1)."),
+           indent = 2L, exdent = 6L)
+    }
+    if (numbered && length(on_screen)) {
+      cols <- heads[stage_names %in% on_screen]
+      .say(sprintf(paste("%s -- The stages, numbered as listed above; each",
+                         "cell gives the stage's statistic and decision."),
+                   if (length(cols) > 2L) {
+                     paste(cols[1], "to", cols[length(cols)])
+                   } else {
+                     paste(cols, collapse = ", ")
+                   }),
+           indent = 2L, exdent = 6L)
+    }
+    cells <- as.character(unlist(tab[heads[stage_names %in% on_screen]],
+                                 use.names = FALSE))
     alone <- any(cells == .missing_mark)
     before <- any(startsWith(cells, paste0(.missing_mark, " ")))
-    .say("Result -- Carried when every stage that reviewed the item carried",
-         "it; otherwise the numbers of the stages that held it back, as",
-         "listed above.",
-         if (length(quiet)) {
-           "A stage that applied no decision rule holds nothing back."
-         },
-         if (alone) {
-           sprintf("A \"%s\"%s marks a stage that did not review the item.",
-                   .missing_mark, if (before) " alone" else "")
-         },
-         if (before) {
-           sprintf(paste("A \"%s\" before a decision marks a statistic that",
-                         "could not be computed."), .missing_mark)
-         },
-         indent = 2L, exdent = 6L)
+    .say(paste(c(
+      sprintf(paste("Result -- Carried when every stage that %s the item",
+                    "carried it%s; otherwise the numbers of the stages that",
+                    "held it back, as listed above."),
+              if (any(described)) "applied a decision rule to" else "reviewed",
+              if (length(undecided)) {
+                ", and No decision when no stage applied one"
+              } else ""),
+      if (any(described)) {
+        paste("A stage that applied no decision rule to an item does not",
+              "hold it back.")
+      },
+      if (alone) {
+        sprintf("A \"%s\"%s marks a stage that did not review the item.",
+                .missing_mark, if (before) " alone" else "")
+      },
+      if (before) {
+        sprintf(paste("A \"%s\" before a decision marks a statistic that",
+                      "could not be computed."), .missing_mark)
+      }
+    ), collapse = " "), indent = 2L, exdent = 6L)
     .print_key_footer()
   }
   .closing(pointer = paste("See plot(x) for the evidence profile and",
@@ -494,18 +590,27 @@ as.data.frame.contentvalid_evidence <- function(x, row.names = NULL,
 #' shown. A filled symbol met the stage's decision rule, an open one was
 #' flagged for review, and a cross marks no decision. "no value" marks an item
 #' the stage reviewed without a statistic, and "not reviewed" one it did not
-#' see. The last column says whether each item was carried, or names the
-#' stages that held it back; when the names would not fit beside their item,
-#' it gives the stages' numbers instead, and the panel titles are numbered to
-#' match. Faint lines separate the constructs. The legend lists only what was
-#' drawn, and no text is smaller than 8 points: text that does not fit is
-#' wrapped rather than run off the figure.
+#' see. The last column says whether each item was carried, names the stages
+#' that held it back, or reads "no decision" for an item no stage applied a
+#' decision rule to. When the stages' names would not fit beside their item,
+#' it gives their numbers instead, and the panel titles are numbered to match;
+#' numbers that would still wrap into the next row are set on one line at 8
+#' points in a wider column. Every item is named down the side, in type sized
+#' to the rows. Faint lines separate the constructs. The legend lists only
+#' what was drawn, and no text is smaller than 8 points: text that does not
+#' fit is wrapped rather than run off the figure.
 #'
 #' `type = "flow"`, the item flow diagram, follows the items through the
 #' stages, modeled on the PRISMA 2020 flow diagram (Page et al., 2021). Each
 #' stage's box gives how many items it reviewed and by how many judges; its
 #' side box lists each item it held back, with the decision and the number
-#' behind it; and the last box lists the items carried forward, by construct.
+#' behind it; and the last box lists the items carried forward, by construct,
+#' with any item no stage applied a decision rule to in a box beside it. Its
+#' text is set at 8 points or more, with a line too wide for its box wrapped,
+#' wherever the device is tall enough to hold the whole diagram at that size;
+#' a shorter device sets it smaller. At 7 by 4 inches that holds three stages
+#' with short names, and at 5 by 3.5 inches one or two; three stages with
+#' long names or long item names want about 7.5 by 5.5 inches.
 #'
 #' @param x A `contentvalid_evidence` object.
 #' @param type `"profile"` or `"flow"`.
@@ -591,6 +696,9 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   smallest <- 8 / graphics::par("ps")
   small <- max(0.72, smallest)
   lab <- .item_labels(items, width_in = graphics::par("din")[1])
+  # The key is centered over the panels, right of the item labels' margin,
+  # so it is fitted to that width, not the device's.
+  graphics::par(oma = c(0, lab$lines, 0, 0.5))
   key <- if (isTRUE(show_legend)) {
     .evidence_profile_key(ev, small, smallest)
   } else {
@@ -604,7 +712,7 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
                         0.5),
                 mar = c(4.1, 0.6, 1.9, 0.6))
   plan <- .evidence_profile_plan(x, n, smallest)
-  held <- plan$verdict != "carried"
+  held <- startsWith(plan$verdict, "held back")
   graphics::par(mar = c(4.1, 0.6, plan$mar_top, 0.6))
   graphics::layout(matrix(seq_len(ns + 1L), 1),
                    widths = c(rep(1, ns), plan$share))
@@ -620,7 +728,7 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
                     yaxt = "n", xlab = stat, ylab = ""), dots,
                protect = c("type", "xaxt", "yaxt", "axes", "main", "ylab"))
     .axis_bounded(1, at = .evidence_ticks(xlim))
-    if (k == 1L) graphics::axis(2, at = y, labels = lab$labels, las = 1)
+    if (k == 1L) .evidence_item_axis(y, lab$labels, smallest)
     if (length(breaks)) graphics::abline(h = y[breaks] - 0.5, col = "grey80")
     row <- match(s$item, items)
     crit <- unique(s$criterion[is.finite(s$criterion)])
@@ -662,9 +770,11 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   .evidence_panel_title(plan$across$lines[[1]], plan$across$cex,
                         plan$title_step)
   if (length(breaks)) graphics::abline(h = y[breaks] - 0.5, col = "grey80")
+  carried <- plan$verdict == "carried"
   .evidence_draw_verdicts(plan$verdict, y, font = plan$font,
-                          col = ifelse(held, pal$review, pal$met),
-                          smallest = smallest)
+                          col = ifelse(held, pal$review,
+                                       ifelse(carried, pal$met, pal$none)),
+                          smallest = smallest, one_line = plan$one_line)
 
   for (j in seq_along(key$lines)) {
     graphics::mtext(key$lines[j], side = 3, outer = TRUE,
@@ -680,9 +790,13 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 # item with a value, a dashed line for each criterion, a bar for each
 # interval. A filled symbol "met the criterion" only where its panel has one;
 # construct ratings decide on their contrasts, not on the HTC shown. Fitted
-# to the figure's width as the verdicts are: shrunk, to no less than
-# `smallest`, then split over two lines. Returns the lines and their size.
-.evidence_profile_key <- function(ev, cex, smallest) {
+# to `room`, the width it is centered on (the panels', inside the outer
+# margins that hold the item labels): on one line, shrunk to no less than
+# `smallest` where that is enough, else on two lines, three, and so on.
+# Returns the lines and their size.
+.evidence_profile_key <- function(ev, cex, smallest,
+                                  room = graphics::par("din")[1] -
+                                    sum(graphics::par("omi")[c(2, 4)]) - 0.2) {
   value <- is.finite(ev$value)
   drawn <- ev$status[value]
   no_criterion <- !ev$stage %in% ev$stage[is.finite(ev$criterion)]
@@ -707,17 +821,18 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
     }
   )
   if (!length(parts)) return(list(lines = character(0), cex = cex))
-  room <- graphics::par("din")[1] - 0.2
-  wide <- function(s) graphics::strwidth(s, units = "inches", cex = cex)
-  one <- paste(parts, collapse = "   ")
-  if (wide(one) > room) cex <- max(smallest, cex * room / wide(one))
-  if (wide(one) <= room || length(parts) < 2L) {
-    return(list(lines = one, cex = cex))
+  for (rows in seq_along(parts)) {
+    per <- ceiling(length(parts) / rows)
+    lines <- unname(vapply(split(parts, ceiling(seq_along(parts) / per)),
+                           paste, character(1), collapse = "   "))
+    need <- max(graphics::strwidth(lines, units = "inches", cex = cex))
+    if (need <= room) return(list(lines = lines, cex = cex))
+    if (cex * room / need >= smallest) {
+      return(list(lines = lines, cex = cex * room / need))
+    }
   }
-  half <- seq_len(ceiling(length(parts) / 2))
-  list(lines = c(paste(parts[half], collapse = "   "),
-                 paste(parts[-half], collapse = "   ")),
-       cex = cex)
+  # One part to a line, and still too wide: the smallest size.
+  list(lines = lines, cex = smallest)
 }
 
 # Five ticks across a panel, or three when five labels would crowd it, so no
@@ -739,15 +854,19 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 # * Verdicts name the stages that held an item back. When even wrapped at
 #   8 points they would spill into the next row, they give the stages'
 #   numbers instead, as the printed table does, and the panel titles are
-#   numbered to match.
+#   numbered to match. When numbered verdicts would still spill, each is set
+#   on one line at 8 points, and the column widens (up to 2.5 panels) to
+#   hold it.
 # * Titles are fitted to their panels and wrapped when they must be, and the
-#   top margin grows to hold them.
+#   top margin grows to hold them, but never so far that a row is shorter
+#   than a line of 8-point text. The rows are measured below those titles.
 .evidence_profile_plan <- function(x, n, smallest) {
   stages <- names(x$stages)
   ns <- length(stages)
   din <- graphics::par("din")
   omi <- graphics::par("omi")
   mai <- graphics::par("mai")
+  line_in <- graphics::par("csi") * graphics::par("mex")
   inner <- din[1] - omi[2] - omi[4]
   column_in <- function(share) inner * share / (ns + share)
   # The verdicts start near the left of their plot region (x = 0.02 on an
@@ -756,42 +875,99 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   room_in <- function(share) {
     (column_in(share) - mai[2] - mai[4]) * 1.02 / 1.08 + edge
   }
-  row_in <- (din[2] - omi[1] - omi[3] - mai[1] - mai[3]) / ((n + 0.2) * 1.08)
   start <- max(0.78, smallest)
 
-  verdicts <- function(numbered) {
+  plan_for <- function(numbered, one_line = FALSE) {
     verdict <- .evidence_verdicts(x, numbered = numbered)
-    font <- ifelse(verdict != "carried", 2, 1)
+    font <- ifelse(startsWith(verdict, "held back"), 2, 1)
+    size <- if (one_line) smallest else start
     need <- max(0, mapply(function(v, f) {
-      graphics::strwidth(v, units = "inches", cex = start, font = f)
+      graphics::strwidth(v, units = "inches", cex = size, font = f)
     }, verdict, font))
     column <- (need - edge) * 1.08 / 1.02 + mai[2] + mai[4]
+    most <- if (one_line) 2.5 else 1.25
     share <- if (column >= inner) {
-      1.25
+      most
     } else {
-      min(1.25, max(0.75, column * ns / (inner - column)))
+      min(most, max(0.75, column * ns / (inner - column)))
     }
-    fit <- .evidence_fit_text(verdict, font, room_in(share), start, smallest,
-                              units = "inches")
+    fit <- if (one_line) {
+      list(cex = smallest, lines = as.list(verdict))
+    } else {
+      .evidence_fit_text(verdict, font, room_in(share), start, smallest,
+                         units = "inches")
+    }
+
+    titles <- if (numbered) paste0(seq_len(ns), ". ", stages) else stages
+    panel_room <- inner / (ns + share) - 0.05
+    across_room <- column_in(share) - 0.05
+    panel <- .evidence_fit_text(titles, 2, panel_room, 0.8, smallest,
+                                units = "inches")
+    across <- .evidence_fit_text("Across stages", 2, across_room, 0.8,
+                                 smallest, units = "inches")
+    # Title lines are stacked upward from the usual line, a little more than
+    # their own height apart. They never take the rows' room: each row keeps
+    # the height of a line of 8-point text, and a title that would wrap past
+    # that is cut short with "...".
+    title_step <- 1.15 * max(panel$cex, across$cex)
+    row_need <- graphics::strheight("Mg", units = "inches", cex = smallest) *
+      1.3 / 0.9
+    mar_most <- (din[2] - omi[1] - omi[3] - mai[1] -
+                   row_need * (n + 0.2) * 1.08) / line_in
+    most <- max(1L, 1L + floor((mar_most - graphics::par("mar")[3]) /
+                                 title_step))
+    panel$lines <- lapply(panel$lines, .evidence_clip_lines, most = most,
+                          room = panel_room, cex = panel$cex)
+    across$lines <- lapply(across$lines, .evidence_clip_lines, most = most,
+                           room = across_room, cex = across$cex)
+    extra <- max(lengths(panel$lines), lengths(across$lines)) - 1L
+    mar_top <- graphics::par("mar")[3] + extra * title_step
+    row_in <- (din[2] - omi[1] - omi[3] - mai[1] - mar_top * line_in) /
+      ((n + 0.2) * 1.08)
     step <- graphics::strheight("Mg", units = "inches", cex = fit$cex) * 1.3
     list(verdict = verdict, font = font, share = share, numbered = numbered,
-         fits = max(0L, lengths(fit$lines)) * step <= 0.9 * row_in)
+         one_line = one_line,
+         fits = max(0L, lengths(fit$lines)) * step <= 0.9 * row_in,
+         titles = panel, across = across, title_step = title_step,
+         mar_top = mar_top)
   }
-  plan <- verdicts(FALSE)
-  if (!plan$fits) plan <- verdicts(TRUE)
+  plan <- plan_for(FALSE)
+  if (!plan$fits) plan <- plan_for(TRUE)
+  if (!plan$fits) plan <- plan_for(TRUE, one_line = TRUE)
+  plan
+}
 
-  titles <- if (plan$numbered) paste0(seq_len(ns), ". ", stages) else stages
-  panel <- .evidence_fit_text(titles, 2, inner / (ns + plan$share) - 0.05, 0.8,
-                              smallest, units = "inches")
-  across <- .evidence_fit_text("Across stages", 2,
-                               column_in(plan$share) - 0.05, 0.8, smallest,
-                               units = "inches")
-  # Title lines are stacked upward from the usual line, a little more than
-  # their own height apart.
-  step <- 1.15 * max(panel$cex, across$cex)
-  extra <- max(lengths(panel$lines), lengths(across$lines)) - 1L
-  c(plan, list(titles = panel, across = across, title_step = step,
-               mar_top = graphics::par("mar")[3] + extra * step))
+# The first `most` lines of a wrapped bold title, the last ending in "..."
+# when lines were cut, shortened as needed to stay within `room` inches.
+.evidence_clip_lines <- function(lines, most, room, cex) {
+  if (length(lines) <= most) return(lines)
+  lines <- lines[seq_len(most)]
+  last <- lines[most]
+  wide <- function(s) {
+    graphics::strwidth(s, units = "inches", cex = cex, font = 2)
+  }
+  while (nchar(last) > 1L && wide(paste0(last, "...")) > room) {
+    last <- substr(last, 1L, nchar(last) - 1L)
+  }
+  lines[most] <- paste0(sub(" +$", "", last), "...")
+  lines
+}
+
+# The item names down the left of the first panel, in type sized to the row
+# height (no smaller than 8 points), one axis() call per row so that none is
+# skipped for crowding its neighbor.
+.evidence_item_axis <- function(y, labels, smallest) {
+  per_row <- graphics::par("pin")[2] / diff(graphics::par("usr")[3:4])
+  # A name reaches from its descenders to its capitals, about 1.35 times the
+  # height R gives a line of text (that of "M").
+  tall <- 1.35 * graphics::strheight("M", units = "inches", cex = 1)
+  cex <- max(smallest, min(graphics::par("cex.axis"), per_row / tall))
+  graphics::axis(2, at = y, labels = FALSE)
+  for (i in seq_along(y)) {
+    graphics::axis(2, at = y[i], labels = labels[i], las = 1, tick = FALSE,
+                   cex.axis = cex)
+  }
+  invisible(cex)
 }
 
 # A title above a panel, line by line from the bottom up.
@@ -804,16 +980,22 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 }
 
 # The verdicts of the last column, each fitted between its start and the
-# right edge of the figure.
-.evidence_draw_verdicts <- function(verdict, y, font, col, smallest) {
+# right edge of the figure, or each on one line at 8 points (`one_line`) when
+# the plan found that wrapping would run into the next row.
+.evidence_draw_verdicts <- function(verdict, y, font, col, smallest,
+                                    one_line = FALSE) {
   usr <- graphics::par("usr")
   per_inch <- diff(usr[1:2]) / graphics::par("pin")[1]
   start <- 0.02
   # From the start to the device's edge, less a small pad.
   edge_in <- (usr[2] - start) / per_inch + graphics::par("mai")[4] +
     graphics::par("omi")[4] - 0.05
-  fit <- .evidence_fit_text(verdict, font, edge_in * per_inch,
-                            max(0.78, smallest), smallest)
+  fit <- if (isTRUE(one_line)) {
+    list(cex = smallest, lines = as.list(verdict))
+  } else {
+    .evidence_fit_text(verdict, font, edge_in * per_inch, max(0.78, smallest),
+                       smallest)
+  }
   step <- graphics::strheight("Mg", cex = fit$cex) * 1.3
   for (i in seq_along(verdict)) {
     lines <- fit$lines[[i]]
@@ -874,7 +1056,11 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   graphics::plot.new()
   graphics::plot.window(xlim = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i")
 
-  # Every box's text first, so the diagram can be sized to the page.
+  # Every box's text first, so the diagram can be sized to the page. An item
+  # a stage only described is not held back by it; one that no stage decided
+  # on is listed apart from the items carried forward.
+  described <- .evidence_described(ev$status)
+  undecided <- .evidence_undecided(x)
   rows <- lapply(seq_along(x$flow), function(k) {
     f <- x$flow[[k]]
     main <- c(sprintf("Stage %d: %s", k, names(x$flow)[k]),
@@ -889,8 +1075,17 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
                               .n_noun(length(f$added), "item")))
     }
     if (length(f$not_reviewed)) {
-      main <- c(main, sprintf("%s carried so far not reviewed here",
-                              .n_noun(length(f$not_reviewed), "item")))
+      # Items that no stage so far decided on were not carried, only not
+      # held back.
+      earlier <- ev$stage %in% names(x$flow)[seq_len(k - 1L)]
+      ruled <- unique(ev$item[earlier & !described])
+      main <- c(main, sprintf("%s %s so far not reviewed here",
+                              .n_noun(length(f$not_reviewed), "item"),
+                              if (all(f$not_reviewed %in% ruled)) {
+                                "carried"
+                              } else {
+                                "not held back"
+                              }))
     }
     s <- ev[ev$stage == names(x$flow)[k], , drop = FALSE]
     side <- sprintf("Held back: %d", length(f$held))
@@ -903,10 +1098,12 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
     }
     for (it in f$held) {
       r <- s[s$item == it, , drop = FALSE][1, ]
+      # A number stays on the line of its name when the line is wrapped.
       number <- if (is.finite(r$value)) {
-        txt <- paste(r$statistic, .evidence_value_text(r$value, r$statistic))
+        txt <- paste0(r$statistic, .nbsp,
+                      .evidence_value_text(r$value, r$statistic))
         if (is.finite(r$criterion)) {
-          txt <- paste0(txt, ", criterion ",
+          txt <- paste0(txt, ", criterion", .nbsp,
                         .evidence_value_text(r$criterion, r$statistic))
         }
         txt
@@ -914,8 +1111,15 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
       side <- c(side, sprintf("%s (%s)%s", it, r$recommendation,
                               if (nzchar(number)) paste0(": ", number) else ""))
     }
+    # A stage that decided on some items and only described others says so.
+    n_described <- sum(.evidence_described(s$status))
+    if (isTRUE(f$decided) && n_described) {
+      side <- c(side, sprintf("%s with no decision rule, not held back",
+                              .n_noun(n_described, "item")))
+    }
     list(main = main, side = side)
   })
+  # The lists of items are wrapped to their box when it is drawn.
   final <- sprintf("Carried forward: %s", .n_noun(length(x$carried), "item"))
   scale <- ev$scale[match(x$carried, ev$item)]
   if (any(!is.na(scale))) {
@@ -923,68 +1127,113 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
     for (g in groups) {
       its <- x$carried[if (is.na(g)) is.na(scale) else scale %in% g]
       lab <- if (is.na(g)) "Unmapped" else g
-      final <- c(final, strwrap(sprintf("%s (%d): %s", lab, length(its),
-                                        paste(its, collapse = ", ")),
-                                width = 52, exdent = 4))
+      final <- c(final, sprintf("%s (%d): %s", lab, length(its),
+                                paste(its, collapse = ", ")))
     }
   } else if (length(x$carried)) {
-    final <- c(final, strwrap(paste(x$carried, collapse = ", "), width = 52))
+    final <- c(final, paste(x$carried, collapse = ", "))
+  }
+  # Beside it, the items no stage decided on: neither carried nor held back.
+  final_side <- if (length(undecided)) {
+    c(sprintf("No decision: %d", length(undecided)),
+      paste(undecided, collapse = ", "), "no stage applied a decision rule")
   }
 
   main_x <- c(0.02, 0.47)
   side_x <- c(0.54, 0.98)
-  # Shrink the text until the widest line fits its box and the whole diagram
-  # fits the page.
+  # The text is shrunk until the widest line fits its box, to no less than
+  # 8 points; a line still too wide at 8 points is wrapped instead, as the
+  # lists of items always are. Then the text is shrunk, again to no less
+  # than 8 points, until the diagram fits the page's height. Only a device
+  # too short for the diagram even at 8 points sets it smaller.
+  smallest <- 8 / graphics::par("ps")
   cex <- 0.85
   widest <- function(lines, width) {
     max(graphics::strwidth(lines, cex = cex, font = 2)) / width
   }
-  need <- max(unlist(lapply(rows, function(r) {
-    c(widest(r$main, diff(main_x)), widest(r$side, diff(side_x)))
-  })), widest(final, diff(main_x)))
-  if (need > 0.94) cex <- cex * 0.94 / need
+  need <- function() {
+    max(unlist(lapply(rows, function(r) {
+      c(widest(r$main, diff(main_x)), widest(r$side, diff(side_x)))
+    })), widest(final[1], diff(main_x)),
+    if (length(final_side)) widest(final_side[-2], diff(side_x)))
+  }
+  # Some devices set text in whole points, so the width is checked again
+  # after each step.
+  if (need() > 0.94) cex <- max(smallest, cex * 0.94 / need())
+  while (need() > 0.94 && cex > smallest) cex <- max(smallest, 0.97 * cex)
+  # A box's lines wrapped to its width at the current size, each marked bold
+  # when it comes from the box's first line, its title.
+  wrap_box <- function(lines, width) {
+    parts <- lapply(seq_along(lines), function(i) {
+      .evidence_fit_text(lines[i], 2, 0.94 * width, cex, cex)$lines[[1]]
+    })
+    list(text = unlist(parts), bold = rep(seq_along(lines) == 1L,
+                                          lengths(parts)))
+  }
   line_h <- function() {
     graphics::par("cin")[2] * cex * 1.3 / graphics::par("pin")[2]
   }
-  box_h <- function(nl) line_h() * (nl + 0.7)
-  heights <- function() {
-    row_h <- vapply(rows, function(r) max(box_h(length(r$main)),
-                                          box_h(length(r$side))), numeric(1))
-    list(row = row_h, gap = line_h() * 2.2,
+  box_h <- function(b) line_h() * (length(b$text) + 0.7)
+  lay_out <- function() {
+    boxes <- lapply(rows, function(r) {
+      list(main = wrap_box(r$main, diff(main_x)),
+           side = wrap_box(r$side, diff(side_x)))
+    })
+    fin <- wrap_box(final, diff(main_x))
+    fin_side <- wrap_box(final_side, diff(side_x))
+    row_h <- vapply(boxes, function(b) max(box_h(b$main), box_h(b$side)),
+                    numeric(1))
+    list(boxes = boxes, final = fin, final_side = fin_side, row = row_h,
+         gap = line_h() * 2.2,
          total = sum(row_h) + line_h() * 2.2 * length(rows) +
-           box_h(length(final)))
+           max(box_h(fin), if (length(final_side)) box_h(fin_side) else 0))
   }
-  hs <- heights()
+  hs <- lay_out()
   if (hs$total > 0.96) {
-    cex <- cex * 0.96 / hs$total
-    hs <- heights()
+    cex <- max(smallest, cex * 0.96 / hs$total)
+    hs <- lay_out()
+  }
+  # Below 8 points smaller type also wraps fewer lines, so the largest size
+  # that fits is found by halving the interval.
+  if (hs$total > 0.96) {
+    lo <- 0.2
+    hi <- cex
+    for (i in seq_len(14L)) {
+      cex <- (lo + hi) / 2
+      if (lay_out()$total <= 0.96) lo <- cex else hi <- cex
+    }
+    cex <- lo
+    hs <- lay_out()
   }
 
-  draw_box <- function(x0, x1, top, lines, fill) {
+  draw_box <- function(x0, x1, top, b, fill) {
     lh <- line_h()
-    h <- lh * (length(lines) + 0.7)
+    h <- box_h(b)
     graphics::rect(x0, top - h, x1, top, col = fill, border = pal$border)
-    for (i in seq_along(lines)) {
-      graphics::text((x0 + x1) / 2, top - lh * (i - 0.15), lines[i], cex = cex,
-                     font = if (i == 1L) 2 else 1)
+    for (i in seq_along(b$text)) {
+      graphics::text((x0 + x1) / 2, top - lh * (i - 0.15),
+                     gsub(.nbsp, " ", b$text[i], fixed = TRUE), cex = cex,
+                     font = if (b$bold[i]) 2 else 1)
     }
     top - h
   }
 
   top <- 0.5 + hs$total / 2
   for (k in seq_along(rows)) {
-    r <- rows[[k]]
+    b <- hs$boxes[[k]]
     mid <- top - hs$row[k] / 2
-    bottom <- draw_box(main_x[1], main_x[2], mid + box_h(length(r$main)) / 2,
-                       r$main, pal$stage)
-    draw_box(side_x[1], side_x[2], mid + box_h(length(r$side)) / 2, r$side,
-             pal$held)
+    bottom <- draw_box(main_x[1], main_x[2], mid + box_h(b$main) / 2, b$main,
+                       pal$stage)
+    draw_box(side_x[1], side_x[2], mid + box_h(b$side) / 2, b$side, pal$held)
     graphics::arrows(main_x[2], mid, side_x[1], mid, length = 0.07)
     next_top <- top - hs$row[k] - hs$gap
     graphics::arrows(mean(main_x), bottom, mean(main_x), next_top,
                      length = 0.07)
     top <- next_top
   }
-  draw_box(main_x[1], main_x[2], top, final, pal$final)
+  draw_box(main_x[1], main_x[2], top, hs$final, pal$final)
+  if (length(final_side)) {
+    draw_box(side_x[1], side_x[2], top, hs$final_side, pal$stage)
+  }
   invisible(NULL)
 }

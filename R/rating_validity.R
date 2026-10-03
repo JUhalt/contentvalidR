@@ -658,10 +658,12 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' against every construct, the judges the tests use. An item without a
 #' decision has no gap: a cross marks its mean target rating.
 #'
-#' The key sits above the data, in two or three rows when one row would not
-#' fit the figure's width. Where a vertical axis title would not fit the
-#' figure's height, as the HTD title does at 7 by 4 inches, the axis shows
-#' the index's name alone and the key's heading gives the full definition.
+#' The key sits above the data, in as many rows as the figure's width needs.
+#' Where a vertical axis title would not fit the figure's height, as the HTD
+#' title does at 7 by 4 inches, the axis shows the index's name alone and the
+#' key's heading gives the full definition. The item plot widens its bottom
+#' margin for long item names, shortening a name in the middle with "..."
+#' when it would take more than about 40% of the figure's height.
 #'
 #' @param x A `contentvalid_rating` object.
 #' @param metric Either `"htc"` or `"htd"` for `type = "item"`.
@@ -713,18 +715,25 @@ plot.contentvalid_rating <- function(x,
     xs <- seq_along(y)
     lo <- if (metric == "htc") 0 else -1
     full <- if (metric == "htc") htc_lab else htd_lab
+    # The item names set the bottom margin, so they come first.
+    below <- .item_axis_below(r$item)
     ylab <- .ylab_fit(full, toupper(metric))
     # A shortened axis title is defined in the key's heading.
     key <- if (isTRUE(show_legend)) {
       leg <- .decision_legend(r$recommendation)
       .legend_fit(leg$legend, leg$pch, title = if (!identical(ylab, full)) full)
     }
-    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+    # The axis title is set below the item names.
+    dots <- list(...)
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "",
                     ylab = ylab, xlim = c(0.5, length(y) + 0.5),
                     ylim = c(lo, .legend_room(lo, 1, 1 + 0.2 * (1 - lo), key))),
-               list(...))
-    graphics::axis(1, at = xs, labels = r$item, las = 2)
-    .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+               dots, protect = c("type", "xaxt", "yaxt", "axes", "xlab"))
+    graphics::axis(1, at = xs, labels = below$labels, las = 2)
+    graphics::title(xlab = if (is.null(dots$xlab)) "Item" else dots$xlab,
+                    line = below$line)
+    .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5),
+                  las = 1)
     if (metric == "htd") .hline(0)
     has <- is.finite(y)
     graphics::points(xs[has], y[has], pch = pch[has])
@@ -751,7 +760,7 @@ plot.contentvalid_rating <- function(x,
                     pch = pch[ok]), list(...),
                protect = c("type", "xaxt", "yaxt", "axes", "pch"))
     .axis_bounded(1, at = seq(0, 1, 0.25))
-    .axis_bounded(2, at = seq(-1, 1, 0.5))
+    .axis_bounded(2, at = seq(-1, 1, 0.5), las = 1)
     .hline(0)
 
     lab_idx <- switch(
@@ -781,11 +790,13 @@ plot.contentvalid_rating <- function(x,
   n <- nrow(r)
   y <- rev(seq_len(n))
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
-  # A key of five entries takes two rows, and the headroom to hold them.
-  two_rows <- length(lay$legend) > 4L
+  # The key takes as many rows as the width needs, and the frame holds them
+  # above the first item's row.
+  key <- if (isTRUE(show_legend)) .legend_fit(lay$legend, lay$pch, lay$lty)
   .plot_with(list(x = NA, xlim = xlim,
-                  ylim = c(0.5, n + if (two_rows) 1.7 else 1.25), yaxt = "n",
-                  xlab = "Mean rating against each definition", ylab = ""), list(...))
+                  ylim = c(0.5, .legend_room(0.5, n + 0.25, n + 0.5, key)),
+                  yaxt = "n", xlab = "Mean rating against each definition",
+                  ylab = ""), list(...))
   graphics::axis(2, at = y, labels = r$item, las = 1)
   both <- lay$both
   if (any(both)) {
@@ -795,10 +806,7 @@ plot.contentvalid_rating <- function(x,
     graphics::points(lay$target[both], y[both], pch = 19)
   }
   graphics::points(lay$cross[lay$loose], y[lay$loose], pch = 4)
-  if (isTRUE(show_legend)) {
-    .legend_top(lay$legend, lay$pch, lay$lty,
-                ncol = if (two_rows) 3L else NULL)
-  }
+  .legend_draw(key)
   invisible(x)
 }
 

@@ -1334,8 +1334,9 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' CVR the exact test needs for that item. Congruence mode shows each item's
 #' index for its intended objective against the `ioc_cut` criterion (dashed),
 #' with the experts' mean ratings on the target (a triangle pointing up) and
-#' on the closest other objective (pointing down) in gray, when a target
-#' mapping is available; an item with no index is marked with a cross.
+#' on the other objective with the highest mean (pointing down) in gray, when
+#' a target mapping is available; an item with no index is marked with a
+#' cross.
 #'
 #' Filled and open symbols mean what the key says. In congruence mode, as in
 #' the item-sort and construct-rating figures, a filled index met the
@@ -1344,8 +1345,10 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' from I-CVI (open), and the observed CVR (filled) from the CVR the exact test
 #' needs (open). There, an item met the criterion when its I-CVI reaches the
 #' dashed criterion line, or its observed CVR reaches the CVR needed. The key
-#' sits above the first item, in two or three rows when one row would not fit
-#' the figure's width.
+#' sits above the first item and the reference lines, in as many rows as the
+#' figure's width needs. The left margin widens for long item names, and a
+#' name that would take more than about 40% of the figure's width is
+#' shortened in the middle with "...".
 #'
 #' In relevance mode, `type = "distribution"` draws every expert's rating as
 #' a diverging stacked bar (Heiberger & Robbins, 2014), split at the relevance
@@ -1427,17 +1430,19 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   n <- nrow(r)
-  # The first item is drawn at the top, in the order of the results table.
+  # The first item is drawn at the top, in the order of the results table,
+  # with the left margin sized to its name.
   y <- rev(seq_len(n))
   top <- n + 0.5
+  item_labels <- .item_axis_left(r$item)
   ci_label <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
 
   # The key is laid out before the frame, so the frame can hold it above the
-  # first item's row.
+  # first item's row and above the reference lines, which reach `top`.
   dots <- list(...)
   frame <- function(xlim, xlab, key) {
     .plot_with(list(x = NA, xlim = xlim,
-                    ylim = c(0.5, .legend_room(0.5, n + 0.25, n + 1.35, key)),
+                    ylim = c(0.5, .legend_room(0.5, top, n + 1.35, key)),
                     xaxt = "n", yaxt = "n", xlab = xlab, ylab = ""), dots)
   }
 
@@ -1460,7 +1465,7 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     }
     frame(c(0, 1), "Relevance (0 to 1)", key)
     .axis_bounded(1, at = seq(0, 1, 0.25))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
     if (one_crit) .vline_below(crit, 0.5, top, lty = 2)
     # Aiken's V just above each item's row, I-CVI just below, each with its
     # interval, so the two never hide each other.
@@ -1486,7 +1491,7 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     }
     frame(c(-1, 1), "CVR (-1 to 1)", key)
     .axis_bounded(1, at = seq(-1, 1, 0.5))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
     .vline_below(0, 0.5, top)
     graphics::segments(r$critical_cvr[good], y[good], r$cvr[good], y[good])
     graphics::points(r$critical_cvr[good], y[good], pch = 1)
@@ -1495,7 +1500,8 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     .legend_draw(key)
   } else {
     # Each item's index against the criterion, with the experts' mean rating
-    # on the target objective and on the closest other objective for context.
+    # on the target objective and on the other objective with the highest
+    # mean for context.
     # As in the other figures, a filled index met the criterion and an open
     # one fell below it; the means are triangles, pointing up for the target
     # and down for the competitor.
@@ -1528,7 +1534,7 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     }
     frame(c(-1, 1), "IOC and mean rating (-1 to 1)", key)
     .axis_bounded(1, at = seq(-1, 1, 0.5))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
     .vline_below(0, 0.5, top)
     if (is.numeric(cut)) .vline_below(cut, 0.5, top, lty = 2)
     # The index on the item's row; the two means just below it, so a mean
