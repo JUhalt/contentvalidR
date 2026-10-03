@@ -29,12 +29,19 @@ each panel of the profile. The flow diagram does not use them.}
 Draws the two figures of \code{\link[=content_evidence]{content_evidence()}}.
 
 \code{type = "profile"} (default), the item evidence profile, gives one panel
-per stage with the items down the side. Each panel shows the statistic that
-stage's decision read, its interval as a bar, and its criterion as a dashed
-line. A filled symbol met the criterion, an open one was flagged for review,
-and a cross marks no decision. "not reviewed" marks an item a stage did not
+per stage with the items down the side. Each panel shows the statistic
+behind that stage's decisions, its interval as a bar, and, where the
+stage's rule has one, its criterion as a dashed line. Construct ratings
+have none: that workflow decides on planned contrasts, not on the HTC
+shown. A filled symbol met the stage's decision rule, an open one was
+flagged for review, and a cross marks no decision. "no value" marks an item
+the stage reviewed without a statistic, and "not reviewed" one it did not
 see. The last column says whether each item was carried, or names the
-stages that held it back. Faint lines separate the constructs.
+stages that held it back; when the names would not fit beside their item,
+it gives the stages' numbers instead, and the panel titles are numbered to
+match. Faint lines separate the constructs. The legend lists only what was
+drawn, and no text is smaller than 8 points: text that does not fit is
+wrapped rather than run off the figure.
 
 \code{type = "flow"}, the item flow diagram, follows the items through the
 stages, modeled on the PRISMA 2020 flow diagram (Page et al., 2021). Each
