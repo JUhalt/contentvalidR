@@ -135,8 +135,11 @@ the plainest measure: the share of experts who gave exactly the same rating
 again. Then read the kappa trend beside it.
 Kappa is weighted kappa between each expert's ratings in two consecutive rounds
 (Holey et al., 2007). With the default quadratic weights, it equals the
-intraclass correlation of the two rounds' ratings (Fleiss & Cohen, 1973). A
-shift of the whole panel after feedback therefore counts as instability.
+intraclass correlation of the two rounds' ratings computed from sums of
+squares (Fleiss & Cohen, 1973). The intraclass correlation usually computed
+from mean squares differs from it by a term that shrinks as the panel grows;
+with ten experts the two can differ in the second decimal. Either way, a shift
+of the whole panel after feedback counts as instability.
 
 The six statements show the main patterns:
 
@@ -185,12 +188,12 @@ in the second pair because E10 left.
 Both questions are trends across rounds, which a plot reads better than a table
 of round pairs:
 
-```{r plot-consensus, fig.width = 7, fig.height = 4.5, fig.alt = "Share of experts agreeing with each statement, by round, with a dotted line at the 75% consensus threshold."}
+```{r plot-consensus, fig.width = 7, fig.height = 4.5, fig.alt = "Share of experts agreeing with each statement, by round, with a dashed line at the 75% consensus threshold."}
 plot(fit)
 ```
 
 S1's line stops at round 2, because that is where it settled and was set aside.
-The dotted line is the threshold you fixed in advance; with no threshold set,
+The dashed line is the threshold you fixed in advance; with no threshold set,
 no line is drawn, because the analysis applies none.
 
 ```{r plot-stability, fig.width = 7, fig.height = 4.5, fig.alt = "Weighted kappa for each statement across pairs of rounds, with open circles showing the share of experts who kept their rating."}
@@ -372,6 +375,6 @@ https://doi.org/10.1097/00006199-198611000-00017
 
 Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
 methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-Techniques and applications* (pp. 257–281).
-https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf
+Techniques and applications* (pp. 257–281). Murray Turoff and Harold A.
+Linstone. https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf
 (Original work published 1975)

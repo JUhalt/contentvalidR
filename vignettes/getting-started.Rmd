@@ -16,44 +16,93 @@ set.seed(1)
 library(contentvalidR)
 ```
 
-**Overview**
+## Overview
 
-This vignette introduces the package's three recommended content-pretesting workflows—**item sorting**, **construct ratings**, and **expert panels**. `sort_validity()`, `rating_validity()`, and `expert_validity()` organize quantitative evidence while keeping substantive decisions separate from statistical flags.
+contentvalidR analyzes the evidence that judges and experts provide about a
+scale's content before anyone answers it. Each kind of study has its own
+workflow function, and each workflow has a guide:
 
-**A common workflow contract**
+| The study | Workflow | Guide |
+|---|---|---|
+| Judges sort each item into the construct it best represents | `sort_validity()` | `vignette("item-sort-validity")` |
+| Judges rate each item against every construct definition | `rating_validity()` | `vignette("construct-rating-validity")` |
+| Experts rate each item's relevance, essentiality, or congruence with an objective | `expert_validity()` | `vignette("expert-panel-validity")` |
+| A panel rates the items over several Delphi rounds | `delphi_validity()` | `vignette("delphi-rounds")` |
+| Do the conclusions depend on the particular judges? | `judge_validity()` | "Reading judge heterogeneity" in `vignette("reading-output")` |
+| Do the items cover every cell of the blueprint? | `domain_validity()` | "Reading domain coverage" in `vignette("reading-output")` |
 
-All three fitted workflow objects expose `results`, `scale_summary`, `settings`, `design`, and `details`. Their result tables also contain a common `status` field: `Supported`, `Review`, `Insufficient data`, or `Descriptive only`. Method-specific recommendation wording is preserved alongside that common status. This makes it possible to write reusable code across workflows without pretending that a Howard-Melloy retention decision, Hinkin-Tracey screening result, and expert-panel judgment are substantively identical.
+Two functions work across the workflows. `content_evidence()` sets several
+review stages side by side, item by item, and draws them as figures
+(`vignette("reporting-examples")`). `content_handoff()` carries the items a
+review kept, with the evidence behind each decision, into the analysis of
+response data (`vignette("handoff-to-empirical-validation")`, and
+`vignette("one-item-set-both-stages")` for one item set followed through both
+stages).
 
-**Sort-based (Psa, Csv, binomial)**
-```{r}
+This vignette runs the first three workflows on small examples and points to
+the rest. `vignette("reading-output")` explains every part of a printout, and
+`vignette("design-and-reporting")` covers how many judges to recruit and what
+to report.
+
+## A common workflow contract
+
+All six workflow objects expose `results`, `scale_summary`, `settings`,
+`design`, and `details`. Their `results` tables also contain a common `status`
+field: `Supported`, `Review`, `Insufficient data`, or `Descriptive only`. The
+method's own decision word, such as `Retain` in an item sort, is kept beside it
+as `recommendation`. This makes it possible to write reusable code across
+workflows without pretending that a Howard-Melloy retention decision, a
+construct-rating screening result, and an expert-panel judgment are
+substantively identical.
+
+## Item sort: Psa, Csv, and the exact test
+
+Twelve judges sorted four items into three constructs, A, B, and C. Items I1
+and I2 were written for A, and I3 and I4 for B:
+
+```{r sort}
 toy_sort <- data.frame(
   item = rep(paste0("I", 1:4), each = 12),
   rater = rep(1:12, 4),
-  target_construct   = rep(c("A","A","B","B"), each = 12),
+  target_construct = rep(c("A", "A", "B", "B"), each = 12),
   assigned_construct = c(
-    sample(c("A","B"), 12, TRUE, c(.80,.20)),
-    sample(c("A","B"), 12, TRUE, c(.65,.35)),
-    sample(c("A","B"), 12, TRUE, c(.70,.30)),
-    sample(c("A","B"), 12, TRUE, c(.45,.55))
+    rep("A", 11), "C",
+    rep("A", 10), "B", "C",
+    rep("B", 7), rep("A", 4), "C",
+    rep("B", 4), rep("A", 6), rep("C", 2)
   )
 )
-psa <- compute_psa(toy_sort)
-csv <- compute_csv(toy_sort)
-csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
-  csv_binom_test(csv$n_target[i], csv$n[i])$decision
-}, character(1))
-psa; csv
+sort_fit <- sort_validity(toy_sort)
+sort_fit
 ```
 
-**Interpretation**
-- **Psa** = share assigning the intended construct.
-- **Csv** = margin of wins: $ \frac{n_{target} - max_{other}}{N} $.
-- The exact binomial test (null hypothesis: a target rate of .5 or less)
-  flags items whose target count meets the criterion. The .5 is a benchmark
-  rate, not the rate random sorting would give.
+### Interpretation
 
-**Construct-rating workflow (HTC, HTD, repeated-measures ANOVA)**
-```{r}
+- **Psa**, the proportion of substantive agreement, is the share of judges who
+  assign the item to its intended construct: \(\text{Psa} = n_{target} / N\).
+- **Csv**, the substantive-validity coefficient, is the intended construct's
+  margin over its strongest competitor:
+  \(\text{Csv} = (n_{target} - n_{competitor}) / N\). Here \(n_{target}\)
+  counts the assignments to the intended construct, \(n_{competitor}\) those
+  to the most-chosen other construct, and \(N\) the judges who sorted the item
+  (Anderson & Gerbing, 1991). A negative Csv, as for I4, means a competing
+  construct drew more judges than the intended one.
+- The exact binomial test of Howard and Melloy (2016) asks whether the target
+  count is too large for a target rate of .50 or less. With twelve judges an
+  item needs ten target assignments, so I1 and I2 are retained and I3 and I4
+  are flagged for review. The .50 is a benchmark rate, not the rate random
+  sorting would give, which is 1 divided by the number of constructs.
+
+The components are also available on their own:
+
+```{r sort-components}
+compute_csv(toy_sort)
+csv_binom_test(n_c = 10, N = 12)
+```
+
+## Construct ratings: HTC, HTD, and the repeated-measures test
+
+```{r rating}
 set.seed(2)
 toy_ratings <- expand.grid(
   item = c("I1", "I2", "I3"),
@@ -72,15 +121,24 @@ rating_fit
 summary(rating_fit)
 ```
 
-**Interpretation**
-- **HTC** summarizes definitional correspondence with the intended construct.
-- **HTD** summarizes distinctiveness from orbiting constructs.
-- The repeated-measures ANOVA tests whether construct-definition ratings differ for an item.
-- Planned paired contrasts ask the direct screening question: is the target rating significantly higher than every orbiting rating?
-- Scale-level HTC/HTD averages can be interpreted using Colquitt et al. (2019) empirical norms when the judge population matches their intended use.
+### Interpretation
 
-**Expert-panel workflow**
-```{r}
+- **HTC** summarizes definitional correspondence: how highly judges rated the
+  item against its intended construct (Hinkin & Tracey, 1999; Colquitt et al.,
+  2019).
+- **HTD** summarizes definitional distinctiveness: how far the intended
+  construct's ratings lead the orbiting constructs' ratings, on average.
+- The repeated-measures ANOVA tests whether the construct-definition ratings
+  differ for an item.
+- Planned paired contrasts ask the direct screening question: is the target
+  rating significantly higher than every orbiting rating?
+- Scale-level HTC and HTD averages can be read against the empirical norms of
+  Colquitt et al. (2019) when the judges are like the naive judges those norms
+  came from.
+
+## Expert panels: relevance, essentiality, and congruence
+
+```{r expert}
 expert_ratings <- matrix(
   c(4,4,4,4,4,4,
     4,4,4,3,4,4,
@@ -93,11 +151,50 @@ expert_fit
 summary(expert_fit)
 ```
 
-Relevance, essentiality, and congruence are intentionally separate expert tasks.
-Use `mode = "relevance"` for Aiken V + CVI/modified kappa, `mode =
-"essentiality"` for Lawshe CVR, and `mode = "congruence"` for IOC.
+Relevance, essentiality, and congruence are intentionally separate expert
+tasks. Use `mode = "relevance"` for Aiken's V with the I-CVI and modified
+kappa, `mode = "essentiality"` for Lawshe's CVR, and `mode = "congruence"` for
+the index of item-objective congruence (IOC). `vignette("expert-panel-validity")`
+walks through all three.
 
-**Bundled reproducible examples**
+## Delphi rounds
+
+When the same panel rates the items over several rounds, with anonymous
+feedback in between, `delphi_validity()` answers two questions side by side:
+whether enough experts agree about an item now (consensus, against a threshold
+you fix before the study), and whether experts are still changing their
+ratings (stability). It never folds one into the other. See
+`vignette("delphi-rounds")`.
+
+## Judges and domain coverage
+
+Two workflows ask questions that no item-level index can reach.
+`judge_validity()` returns one row per judge and asks whether the conclusions
+depend on the particular judges who served. `domain_validity()` returns one row
+per cell of the content blueprint and asks whether the items cover every cell,
+including a cell no item was written for. Both are read in
+`vignette("reading-output")`.
+
+## From review to response data
+
+`content_evidence()` brings several review stages together, such as a
+relevance panel followed by an item sort, and draws a flow diagram and an
+evidence profile for a paper or poster (`vignette("reporting-examples")`).
+`content_handoff()` packages a review's decision for the empirical stage: the
+items carried forward, the items held back and why, and two facts only you
+know, the reverse-worded items and the response scale:
+
+```{r handoff}
+handoff <- content_handoff(sort_fit, reverse_keyed = character(0),
+                           response_scale = c(1, 5))
+handoff$items
+```
+
+`vignette("handoff-to-empirical-validation")` describes what the handoff
+holds, and `vignette("one-item-set-both-stages")` follows one item set through
+content review and the analysis of responses.
+
+## Bundled reproducible examples
 
 The package also installs deterministic CSV examples for the three workflow
 families and all expert-panel modes. They are synthetic, contain no participant
@@ -121,8 +218,9 @@ file.exists(paths)
 See `vignette("reporting-examples", package = "contentvalidR")` for
 manuscript-ready reporting scaffolds built from those same files.
 
-**Classic indices**
-```{r}
+## Classic indices
+
+```{r classic}
 R <- matrix(sample(1:5, 5*6, replace = TRUE), nrow = 5)
 aikens_v(R, lo = 1, hi = 5)
 
@@ -140,23 +238,53 @@ ioc_df <- data.frame(
 ioc(ioc_df)
 ```
 
-**Diagnostics & reproducibility**
-```{r}
-truth <- c(TRUE, TRUE, TRUE, FALSE)  # pretend "kept" after CFA
-signal_detection(csv$decision == "significant", truth)
+## Diagnostics and reproducibility
 
-csv2_sig <- sample(c(TRUE, FALSE), nrow(csv), replace = TRUE)
-reproducibility_phi(csv$decision == "significant", csv2_sig)
+Two auxiliary helpers compare the sort's decisions with a later outcome. Here
+the later outcome is invented: suppose a confirmatory factor analysis kept I1,
+I2, and I3, and a second, independent sort supported I1, I2, and I4.
+
+```{r diagnostics}
+pretest_supported <- sort_fit$results$status == "Supported"
+later_retained <- c(TRUE, TRUE, TRUE, FALSE)
+signal_detection(pretest_supported, later_retained)
+
+replication_supported <- c(TRUE, TRUE, FALSE, TRUE)
+reproducibility_phi(pretest_supported, replication_supported)
 ```
 
-**Power quick-checks**
-```{r}
+Four items are far too few for either coefficient to mean much; the example
+shows the calls. With so few items every expected count is below 5, so both
+helpers report Fisher's exact *p*.
+
+## Power quick-checks
+
+`sort_power()` gives the exact probability that an item reaches the retention
+count, for each number of judges and each rate at which you expect judges to
+choose the target. `expert_power()` does the same for the I-CVI criterion of an
+expert panel; see `vignette("design-and-reporting")`.
+
+```{r power}
 sort_power(N = c(20, 30), true_p = c(.65, .75))
 ```
 
 ## References
 
+Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
+measures in a confirmatory factor analysis with a pretest assessment of their
+substantive validities. *Journal of Applied Psychology, 76*(5), 732–740.
+https://doi.org/10.1037/0021-9010.76.5.732
+
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content
 validation guidelines: Evaluation criteria for definitional correspondence and
 definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
 1243–1265. https://doi.org/10.1037/apl0000406
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. *Organizational Research Methods, 2*(2), 175–186.
+https://doi.org/10.1177/109442819922004
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
+presentation of a new statistical significance formula and methodological best
+practices. *Journal of Business and Psychology, 31*(1), 173–186.
+https://doi.org/10.1007/s10869-015-9404-y

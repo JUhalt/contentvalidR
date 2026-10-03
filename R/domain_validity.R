@@ -61,7 +61,27 @@
 #'
 #' @return An object of class `contentvalid_domain` and `contentvalid_workflow`.
 #'   `results` has **one row per blueprint cell**. `details$structure` holds the
-#'   content-structure analysis when similarity data was supplied.
+#'   content-structure analysis when similarity data was supplied. `print()`
+#'   and `summary()` are described in [contentvalid-methods].
+#'
+#'   **Results columns.**
+#'   \describe{
+#'     \item{`cell`}{The blueprint cell; with `facet_col`, the two labels
+#'       joined by `" / "`.}
+#'     \item{`n_items`}{Items assigned to the cell.}
+#'     \item{`share`}{`n_items` as a share of all the items.}
+#'     \item{`target_items`}{The cell's entry in `targets`; `NA` without
+#'       `targets`.}
+#'     \item{`expected_share`}{The cell's share of `targets`, or one over the
+#'       number of cells without them.}
+#'     \item{`recommendation`}{`"Covered"`, `"Not covered"` (no item),
+#'       `"Thinly covered"` (below the floor `min_items` sets),
+#'       `"Over-represented"`,
+#'       or `"Under-represented"` (judged only against `targets`).}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Covered"`, and
+#'       `"Review"` otherwise.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'   }
 #'
 #' @section What coverage evidence can and cannot establish:
 #' A fully covered blueprint shows that items exist for every intended cell. It

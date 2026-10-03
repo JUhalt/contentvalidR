@@ -185,7 +185,39 @@
 #'   `scale_summary`, `settings`, `design`, and `details`. Item-level `results`
 #'   include a standardized `status` field while retaining the method-specific
 #'   `recommendation` field. `print()`, `summary()`, and `plot()` provide
-#'   user-facing interpretation.
+#'   user-facing interpretation; see [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per item:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`target`}{The construct the item was written for.}
+#'     \item{`n_total`}{Rows for the item, missing assignments included.}
+#'     \item{`n`}{Judges who sorted the item: its assignments that are not
+#'       missing.}
+#'     \item{`n_missing`}{Missing assignments, `n_total - n`.}
+#'     \item{`n_target`}{Assignments to the target construct.}
+#'     \item{`competitor`}{The other construct judges chose most often, with
+#'       ties joined by `"; "`; `NA` when no judge chose another construct.}
+#'     \item{`n_other_max`}{Assignments to the competitor.}
+#'     \item{`psa`}{Psa, `n_target / n`.}
+#'     \item{`psa_low`, `psa_high`}{The interval for Psa at level
+#'       `1 - alpha`, by the method in `proportion_ci`; `NA` with `"none"`.}
+#'     \item{`csv`}{Csv, `(n_target - n_other_max) / n`.}
+#'     \item{`p_value`}{The one-sided exact binomial *p* of the target count
+#'       against `p0`.}
+#'     \item{`critical_n_target`}{The fewest target assignments that meet the
+#'       criterion with `n` judges; `NA` when no count can.}
+#'     \item{`passes_chance`}{Whether `n_target` reaches
+#'       `critical_n_target`.}
+#'     \item{`recommendation`}{`"Retain"`, `"Review"`, `"Insufficient panel"`
+#'       (no count could meet the test), or `"Insufficient data"` (no judge
+#'       sorted the item).}
+#'     \item{`issue`}{The reason in a few words, such as `"Competing construct
+#'       favored"`.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Retain"`,
+#'       `"Review"`, or `"Insufficient data"`.}
+#'   }
 #'
 #' @section Earlier methods, for comparison:
 #' The decision uses the exact test of Howard and Melloy (2016). Two earlier

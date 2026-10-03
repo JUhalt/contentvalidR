@@ -57,7 +57,50 @@ degrees of freedom, where a correction applies (see \code{\link[=anova_content]{
 \code{p_omnibus}, \code{df1} and \code{df2} are the uncorrected test; and
 \code{max_contrast_p} is the largest \emph{p} among the planned contrasts, \code{NA}
 when a contrast has no \emph{p}. In \code{scale_summary}, \code{n_htc} and \code{n_htd} count
-the items in each mean.
+the items in each mean. \code{print()}, \code{summary()}, and \code{plot()} are
+described in \link{contentvalid-methods}.
+
+\strong{Results columns.} \code{results} has one row per item:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{target}}{The construct the item was written for.}
+\item{\code{n_raters}}{Judges who rated the item.}
+\item{\code{n_complete}}{Judges who rated it against every construct, on
+whom HTD and the tests rest.}
+\item{\code{n_incomplete}}{\code{n_raters - n_complete}.}
+\item{\code{n_target}}{Judges who rated it against its intended construct,
+on whom HTC rests.}
+\item{\code{n_constructs}}{Construct definitions the item was rated
+against.}
+\item{\code{target_mean}}{The mean rating on the intended construct, from
+the \code{n_target} judges, on the scale as given.}
+\item{\code{target_mean_complete}}{The same mean from the \code{n_complete}
+judges.}
+\item{\code{strongest_competitor}}{The other construct with the highest
+mean rating among the \code{n_complete} judges, ties joined by \code{" / "}.}
+\item{\code{competitor_mean}}{That construct's mean rating.}
+\item{\code{htc}}{HTC, the intended construct's mean rating as a share of
+the scale.}
+\item{\code{htd}}{HTD, the intended construct's average lead over every
+other construct, -1 to 1.}
+\item{\code{F}, \code{df1}, \code{df2}, \code{p_omnibus}}{The uncorrected repeated-measures
+\emph{F} test.}
+\item{\code{epsilon_gg}}{The Greenhouse-Geisser epsilon.}
+\item{\code{df1_gg}, \code{df2_gg}}{The corrected degrees of freedom.}
+\item{\code{p_value}}{The omnibus \emph{p} the decision reads: corrected where a
+correction applies.}
+\item{\code{partial_eta2}}{Partial eta-squared of the omnibus test.}
+\item{\code{min_mean_diff}}{The smallest lead of the intended construct's
+mean over another construct's, among the planned contrasts.}
+\item{\code{max_contrast_p}}{The largest planned-contrast \emph{p}.}
+\item{\code{contrast_pass}}{Whether every planned contrast met \code{alpha}.}
+\item{\code{recommendation}}{\code{"Retain"}, \code{"Review"}, or
+\code{"Insufficient data"} (fewer than two complete judges).}
+\item{\code{issue}}{The reason in a few words, such as \code{"Orbiting construct rated higher"}.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Retain"},
+\code{"Review"}, or \code{"Insufficient data"}.}
+}
 }
 \description{
 Provides the recommended user-facing workflow for a fully crossed

@@ -202,7 +202,51 @@
 #'   `p_omnibus`, `df1` and `df2` are the uncorrected test; and
 #'   `max_contrast_p` is the largest *p* among the planned contrasts, `NA`
 #'   when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd` count
-#'   the items in each mean.
+#'   the items in each mean. `print()`, `summary()`, and `plot()` are
+#'   described in [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per item:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`target`}{The construct the item was written for.}
+#'     \item{`n_raters`}{Judges who rated the item.}
+#'     \item{`n_complete`}{Judges who rated it against every construct, on
+#'       whom HTD and the tests rest.}
+#'     \item{`n_incomplete`}{`n_raters - n_complete`.}
+#'     \item{`n_target`}{Judges who rated it against its intended construct,
+#'       on whom HTC rests.}
+#'     \item{`n_constructs`}{Construct definitions the item was rated
+#'       against.}
+#'     \item{`target_mean`}{The mean rating on the intended construct, from
+#'       the `n_target` judges, on the scale as given.}
+#'     \item{`target_mean_complete`}{The same mean from the `n_complete`
+#'       judges.}
+#'     \item{`strongest_competitor`}{The other construct with the highest
+#'       mean rating among the `n_complete` judges, ties joined by `" / "`.}
+#'     \item{`competitor_mean`}{That construct's mean rating.}
+#'     \item{`htc`}{HTC, the intended construct's mean rating as a share of
+#'       the scale.}
+#'     \item{`htd`}{HTD, the intended construct's average lead over every
+#'       other construct, -1 to 1.}
+#'     \item{`F`, `df1`, `df2`, `p_omnibus`}{The uncorrected repeated-measures
+#'       *F* test.}
+#'     \item{`epsilon_gg`}{The Greenhouse-Geisser epsilon.}
+#'     \item{`df1_gg`, `df2_gg`}{The corrected degrees of freedom.}
+#'     \item{`p_value`}{The omnibus *p* the decision reads: corrected where a
+#'       correction applies.}
+#'     \item{`partial_eta2`}{Partial eta-squared of the omnibus test.}
+#'     \item{`min_mean_diff`}{The smallest lead of the intended construct's
+#'       mean over another construct's, among the planned contrasts.}
+#'     \item{`max_contrast_p`}{The largest planned-contrast *p*.}
+#'     \item{`contrast_pass`}{Whether every planned contrast met `alpha`.}
+#'     \item{`recommendation`}{`"Retain"`, `"Review"`, or
+#'       `"Insufficient data"` (fewer than two complete judges).}
+#'     \item{`issue`}{The reason in a few words, such as `"Orbiting construct
+#'       rated higher"`.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Retain"`,
+#'       `"Review"`, or `"Insufficient data"`.}
+#'   }
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).

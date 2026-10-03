@@ -32,7 +32,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 Development plans: [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open issues](https://github.com/JUhalt/contentvalidR/issues).
 Documentation: [Package website](https://juhalt.github.io/contentvalidR/) · [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
-**contentvalidR** analyzes the content-validity evidence that judges and experts provide before a scale reaches respondents: whether each item represents the construct it was written for, whether a panel agrees on it, whether the conclusions depend on who sat on the panel, and whether the items cover the domain at all. Every analysis prints its verdict first, reports its numbers in APA style, and explains each index it shows, so the output can be read without first consulting the source papers.
+**contentvalidR** analyzes the content-validity evidence that judges and experts provide before a scale reaches respondents: whether each item represents the construct it was written for, whether a panel agrees on it, whether the conclusions depend on who sat on the panel, and whether the items cover the domain at all. Every analysis prints a header naming what it holds, then the facts of the design, then its verdict; it reports its numbers in APA style and explains each index it shows, so the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader validity argument. They complement, rather than replace, construct definition, domain coverage, qualitative expert feedback, cognitive interviewing, and other evidence about relevance, comprehensiveness, and comprehensibility.
 
@@ -91,11 +91,13 @@ The first line names the object, `<contentvalid_sort>`, and what it holds; then,
 
 The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.
 
-For a manuscript, `content_report()` gives the same evidence as an APA table, with a general note that defines its abbreviations and columns and states the criterion behind each decision; `format = "markdown"` writes it for Quarto or R Markdown:
+For a manuscript, `content_report()` gives the same evidence as an APA table, with a general note that defines its abbreviations and columns and states the criterion behind each decision:
 
 ```{r first-report}
 content_report(fit)
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown; print it from a chunk with the option `results = "asis"`, so that it renders as a table.
 
 `plot()` draws each item's share of judges with its interval, against the share the exact test needs for that item:
 
@@ -221,7 +223,7 @@ Works cited in this README, the help pages, and the vignettes.
 - Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you sure you know what's being reported? Critique and recommendations. *Research in Nursing & Health, 29*(5), 489–497. https://doi.org/10.1002/nur.20147
 - Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable indicator of content validity? Appraisal and recommendations. *Research in Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
 - Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content specialists in the assessment of criterion-referenced test item validity. *Dutch Journal of Educational Research, 2*, 49–60.
-- Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method: Techniques and applications* (pp. 257–281). https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf (Original work published 1975)
+- Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method: Techniques and applications* (pp. 257–281). Murray Turoff and Harold A. Linstone. https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf (Original work published 1975)
 - Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., & Powers, K. J. (1999). An empirical comparison of approaches for quantitatively assessing the content adequacy of paper-and-pencil measurement instruments. *Organizational Research Methods, 2*(2), 140–156. https://doi.org/10.1177/109442819922002
 - Schriesheim, C. A., Powers, K. J., Scandura, T. A., Gardiner, C. C., & Lankau, M. J. (1993). Improving construct measurement in management research: Comments and a quantitative approach for assessing the theoretical content adequacy of paper-and-pencil survey-type instruments. *Journal of Management, 19*(2), 385–417. https://doi.org/10.1177/014920639301900208
 - Sireci, S. G. (1998). The construct of content validity. *Social Indicators Research, 45*(1–3), 83–117. https://doi.org/10.1023/A:1006985528729

@@ -32,8 +32,9 @@ reference:
   - plot.contentvalid_evidence
 
 - title: Reading and reporting results
-  desc: Definitions of every index and status label, plus extraction into reports and downstream workflows.
+  desc: What print(), summary(), plot(), and as.data.frame() do for each result; definitions of every index and status label, plus extraction into reports and downstream workflows.
   contents:
+  - contentvalid-methods
   - contentvalid_glossary
   - as.data.frame.contentvalid_workflow
   - contentvalid-data-frames
