@@ -29,10 +29,10 @@ website](https://juhalt.github.io/contentvalidR/) ·
 experts provide before a scale reaches respondents: whether each item
 represents the construct it was written for, whether a panel agrees on
 it, whether the conclusions depend on who sat on the panel, and whether
-the items cover the domain at all. Every analysis prints its verdict
-first, reports its numbers in APA style, and explains each index it
-shows, so the output can be read without first consulting the source
-papers.
+the items cover the domain at all. Every analysis prints a header naming
+what it holds, then the facts of the design, then its verdict; it
+reports its numbers in APA style and explains each index it shows, so
+the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader
 > validity argument. They complement, rather than replace, construct
@@ -168,8 +168,7 @@ comparison is approximate.
 
 For a manuscript, `content_report()` gives the same evidence as an APA
 table, with a general note that defines its abbreviations and columns
-and states the criterion behind each decision; `format = "markdown"`
-writes it for Quarto or R Markdown:
+and states the criterion behind each decision:
 
 ``` r
 content_report(fit)
@@ -189,6 +188,10 @@ content_report(fit)
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown;
+print it from a chunk with the option `results = "asis"`, so that it
+renders as a table.
 
 `plot()` draws each item’s share of judges with its interval, against
 the share the exact test needs for that item:
@@ -510,7 +513,8 @@ Works cited in this README, the help pages, and the vignettes.
   validity. *Dutch Journal of Educational Research, 2*, 49–60.
 - Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
   methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
-  Techniques and applications* (pp. 257–281).
+  Techniques and applications* (pp. 257–281). Murray Turoff and
+  Harold A. Linstone.
   <https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf>
   (Original work published 1975)
 - Schriesheim, C. A., Cogliser, C. C., Scandura, T. A., Lankau, M. J., &

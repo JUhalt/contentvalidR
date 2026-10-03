@@ -87,10 +87,21 @@ An item is retained when the omnibus test and then its contrasts pass, which fol
 ```{r anova}
 aov_out <- anova_content(rating_dat, design = "within")
 aov_out
-attr(aov_out, "contrasts")
 ```
 
-The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean?
+The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean? `attr(aov_out, "contrasts")` holds each contrast at full precision. Rounded for reading, with *p* values written the APA way:
+
+```{r contrasts}
+contrasts <- attr(aov_out, "contrasts")
+shown <- contrasts[c("item", "target", "competitor", "mean_diff", "t", "df",
+                     "p", "dz", "pass")]
+shown[c("mean_diff", "t", "dz")] <- round(shown[c("mean_diff", "t", "dz")], 2)
+shown$p <- ifelse(shown$p < .001, "< .001",
+                  sub("^0", "", sprintf("%.3f", shown$p)))
+shown
+```
+
+`mean_diff` is the target mean less the competitor mean, `t` and `df` the paired *t* test, and `dz` the mean difference divided by the standard deviation of the differences. `p` is one-sided, and `pass` says whether the contrast met alpha, after an adjustment for their number when one was asked for (`p_adj`).
 
 With more than two construct definitions, the conventional repeated-measures F test assumes sphericity. `contentvalidR` prints the Greenhouse-Geisser corrected test, whose degrees of freedom are fractional; `as.data.frame(aov_out)$p` holds the uncorrected *p* value. The planned target-versus-orbiting comparisons are important diagnostic evidence rather than decorative post-hoc tests.
 
@@ -119,8 +130,12 @@ The item-level recommendation has deliberately limited meaning:
 Colquitt et al. (2019) created empirical norms from **scale-level averages** of HTC and HTD across 112 published scales. `rating_validity()` therefore averages item HTC/HTD within each target scale before assigning those descriptive normative labels.
 
 ```{r scale}
-fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
-                      "mean_htd", "htd_strength")]
+scale_means <- fit$scale_summary[, c("target", "n_items", "mean_htc",
+                                     "htc_strength", "mean_htd",
+                                     "htd_strength")]
+scale_means[c("mean_htc", "mean_htd")] <-
+  round(scale_means[c("mean_htc", "mean_htd")], 2)
+scale_means
 colquitt_benchmarks("htc")
 colquitt_benchmarks("htd")
 ```
@@ -143,11 +158,14 @@ A given level of distinctiveness can be more impressive when the focal and orbit
 Colquitt et al.'s normative distributions were developed using naive judges representative of substantive target populations. Their paper cautions against applying those norms to expert panels. The package therefore separates calculation from norm applicability:
 
 ```{r expert}
-rating_validity(rating_dat, judge_type = "expert")$scale_summary[
+expert_scale <- rating_validity(rating_dat, judge_type = "expert")$scale_summary[
   , c("target", "mean_htc", "htc_strength", "mean_htd", "htd_strength")]
+expert_scale[c("mean_htc", "mean_htd")] <-
+  round(expert_scale[c("mean_htc", "mean_htd")], 2)
+expert_scale
 ```
 
-HTC/HTD are still computed, but the Colquitt labels are suppressed. `print()` and `summary()` leave out the columns that would hold them; the stored table, shown here, keeps them as `NA`.
+HTC/HTD are still computed, but the Colquitt labels are suppressed. `print()` and `summary()` leave out the columns that would hold them; the stored table, shown here with its means rounded, keeps them as `NA`.
 
 ## Missing ratings
 

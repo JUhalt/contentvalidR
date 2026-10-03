@@ -310,9 +310,10 @@ flagged item optimizes a statistic at the cost of the content domain, which is
 the opposite of content validity.
 
 **"Strong means good."** Benchmark labels are percentile positions against
-published scales. `Strong` places a scale's mean between the 60th and 79th
-percentiles of the scales Colquitt et al. (2019) collected, not that the item
-is fit for your purpose.
+published scales, and they describe a scale's mean, not an item. `Strong` says
+that the scale's mean falls between the 60th and 79th percentiles of the
+scales Colquitt et al. (2019) collected. It does not say that the scale, or any
+item in it, is fit for your purpose.
 
 **"One index is enough."** No single coefficient establishes content validity.
 These are components of an argument that also rests on construct definitions,
@@ -337,11 +338,18 @@ A defensible sentence reports the estimate, its precision, the decision rule you
 applied, and what you concluded, without implying the statistic made the
 decision:
 
-> Six items were sorted by 20 naive judges. Four items met the Howard-Melloy
-> exact target-assignment criterion (*p* < .05). Items B2 and C2 did not
-> (*Psa* = .65 and .70), and in both cases the competing construct was the
-> adjacent scale. Rather than removing them, we revised their wording to
-> sharpen the distinction from that scale and re-sorted.
+> Six items were sorted by 20 naive judges into three constructs. We applied
+> the exact target-assignment test of Howard and Melloy (2016), with a null
+> target rate of .50 and an alpha of .05, under which an item needs 15 of 20
+> target assignments. Four items met the criterion: A1 and C1 (*Psa* = .90,
+> 95% CI [.70, .97], *p* < .001), B1 (*Psa* = .85, 95% CI [.64, .95],
+> *p* = .001), and A2 (*Psa* = .75, 95% CI [.53, .89], *p* = .021). Items B2
+> (*Psa* = .65, 95% CI [.43, .82], *p* = .132) and C2 (*Psa* = .70, 95% CI
+> [.48, .85], *p* = .058) did not, and judges who missed the target chose a
+> single competing construct most often: A for B2 and B for C2. Rather than
+> removing them, we revised their wording to sharpen the distinction from that
+> construct and re-sorted. Intervals are Wilson score intervals (Newcombe,
+> 1998).
 
 Report what you cannot establish as well:
 
@@ -380,6 +388,11 @@ Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content
 validation guidelines: Evaluation criteria for definitional correspondence and
 definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
 1243–1265. https://doi.org/10.1037/apl0000406
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
+presentation of a new statistical significance formula and methodological best
+practices. *Journal of Business and Psychology, 31*(1), 173–186.
+https://doi.org/10.1007/s10869-015-9404-y
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 *Nursing Research, 35*(6), 382–385.

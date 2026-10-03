@@ -74,6 +74,15 @@ unrounded values stay in `sort_fit$results`.
 content_report(sort_fit)
 ```
 
+In an R Markdown or Quarto document, print the Markdown form from a chunk with
+the option `results = "asis"`, so the lines reach the document as Markdown and
+render as a table with its note. Without that option they print as code
+output. This chunk uses it:
+
+```{r sort-markdown, results = "asis"}
+content_report(sort_fit, format = "markdown")
+```
+
 Do not report `Review` as synonymous with deletion. A review flag identifies an
 item for substantive inspection; retaining an item for domain coverage can be a
 reasonable decision when that rationale is documented.

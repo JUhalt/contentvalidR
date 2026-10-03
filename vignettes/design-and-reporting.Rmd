@@ -198,10 +198,11 @@ The dependability coefficient (Phi) concerns the absolute level of the ratings
 and is lowered by differences in judge severity, which is usually what a
 content-validity decision rests on. The status beside it compares Phi with
 `phi_cut` (.80 by default), a convention of this package, not a published
-standard. A target no realistic panel reaches prints as "unreachable" (`NA` in
-the data): the judges barely distinguished the items. The projected panel
-sizes come from one panel's variance components and carry no interval, so
-read them as planning figures.
+standard. Here every target is reached with five judges or fewer, because the
+items account for most of the variance. Had the judges barely distinguished the
+items, a target no realistic panel reaches would print as "unreachable" (`NA`
+in the data). The projected panel sizes come from one panel's variance
+components and carry no interval, so read them as planning figures.
 
 Across pretest rounds, `compare_rounds()` sets each item's status side by side
 and checks whether the analysis settings changed between rounds, so a relaxed
