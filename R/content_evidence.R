@@ -448,7 +448,8 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 
   op <- graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(op), add = TRUE)
-  graphics::par(oma = c(0, 1.2 + 0.62 * max(nchar(items)),
+  lab <- .item_labels(items, width_in = graphics::par("din")[1])
+  graphics::par(oma = c(0, lab$lines,
                         if (show_legend) 1.6 else 0.3, 0.5),
                 mar = c(4.1, 0.6, 1.9, 0.6))
   graphics::layout(matrix(seq_len(ns + 1L), 1), widths = c(rep(1, ns), 0.75))
@@ -461,14 +462,14 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
     stat <- s$statistic[1]
     xlim <- switch(stat, CVR = c(-1, 1), IOC = c(-1, 1), `target IOC` = c(-1, 1),
                    `highest IOC` = c(-1, 1), `IOC margin` = c(-2, 2), c(0, 1))
-    graphics::plot(NA, xlim = xlim, ylim = c(0.4, n + 0.6), xaxt = "n",
-                   yaxt = "n", xlab = stat, ylab = "", ...)
+    .plot_with(list(x = NA, xlim = xlim, ylim = c(0.4, n + 0.6), xaxt = "n",
+                    yaxt = "n", xlab = stat, ylab = ""), list(...))
     if (stat == "IOC margin") {
       graphics::axis(1, at = seq(-2, 2))
     } else {
       .axis_bounded(1, at = seq(xlim[1], xlim[2], length.out = 5))
     }
-    if (k == 1L) graphics::axis(2, at = y, labels = items, las = 1)
+    if (k == 1L) graphics::axis(2, at = y, labels = lab$labels, las = 1)
     if (length(breaks)) graphics::abline(h = y[breaks] - 0.5, col = "grey80")
     row <- match(s$item, items)
     crit <- unique(s$criterion[is.finite(s$criterion)])

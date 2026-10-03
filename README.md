@@ -418,8 +418,8 @@ Works cited in this README, the help pages, and the vignettes.
   2*(2), 175–186. <https://doi.org/10.1177/109442819922004>
 - Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
   exploration of the use of simple statistics to measure consensus and
-  stability in Delphi studies. *BMC Medical Research Methodology,
-  7*, 52. <https://doi.org/10.1186/1471-2288-7-52>
+  stability in Delphi studies. *BMC Medical Research Methodology, 7*,
+  Article 52. <https://doi.org/10.1186/1471-2288-7-52>
 - Horn, J. L. (1965). A rationale and test for the number of factors in
   factor analysis. *Psychometrika, 30*(2), 179–185.
   <https://doi.org/10.1007/BF02289447>
@@ -516,8 +516,8 @@ Works cited in this README, the help pages, and the vignettes.
   congruence for multidimensional items. *International Journal of
   Testing, 3*(2), 163–171. <https://doi.org/10.1207/S15327574IJT0302_5>
 - Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for
-  Cohen’s kappa: A comparison of basic properties. *MethodsX,
-  10*, 102212. <https://doi.org/10.1016/j.mex.2023.102212>
+  Cohen’s kappa: A comparison of basic properties. *MethodsX, 10*,
+  Article 102212. <https://doi.org/10.1016/j.mex.2023.102212>
 - Wilson, E. B. (1927). Probable inference, the law of succession, and
   statistical inference. *Journal of the American Statistical
   Association, 22*(158), 209–212.
@@ -529,8 +529,8 @@ Works cited in this README, the help pages, and the vignettes.
 - Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
   comparison of Cohen’s kappa and Gwet’s AC1 when calculating
   inter-rater reliability coefficients: A study conducted with
-  personality disorder samples. *BMC Medical Research Methodology,
-  13*, 61. <https://doi.org/10.1186/1471-2288-13-61>
+  personality disorder samples. *BMC Medical Research Methodology, 13*,
+  Article 61. <https://doi.org/10.1186/1471-2288-13-61>
 - Wright, B. D. (1988). The efficacy of unconditional maximum likelihood
   bias correction: Comment on Jansen, van den Wollenberg, and Wierda.
   *Applied Psychological Measurement, 12*(3), 315–318.
@@ -545,7 +545,8 @@ Works cited in this README, the help pages, and the vignettes.
 - Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
   inter-rater reliability for nominal data: Which coefficients and
   confidence intervals are appropriate? *BMC Medical Research
-  Methodology, 16*, 93. <https://doi.org/10.1186/s12874-016-0200-9>
+  Methodology, 16*, Article 93.
+  <https://doi.org/10.1186/s12874-016-0200-9>
 - Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for
   determining the number of components to retain. *Psychological
   Bulletin, 99*(3), 432–442.

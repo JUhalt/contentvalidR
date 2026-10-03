@@ -90,7 +90,9 @@
 #'   Krippendorff, 2007); no publication applying it specifically to
 #'   content-validity panels was found.
 #' * `"ac1"`: Gwet's (2008) AC1, designed for high-agreement data where
-#'   kappa-type coefficients fall. It is never the default: Vach and Gerke
+#'   kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
+#'   affected than Cohen's kappa by how often each category is used. It is
+#'   never the default: Vach and Gerke
 #'   (2023) show that it rises as ratings concentrate in one category even at a
 #'   fixed level of agreement, and that it can be non-zero when raters are
 #'   independent. Its printed output always repeats that critique. AC1 treats
@@ -101,7 +103,8 @@
 #'
 #' @section Why a close-agreeing panel can have a low alpha:
 #' Alpha compares observed disagreement with the disagreement expected if the
-#' same ratings were assigned to items at random. When ratings cluster on a few
+#' same ratings were assigned to items at random. Feinstein and Cicchetti
+#' (1990) described the same paradox for kappa. When ratings cluster on a few
 #' values, as they do when nearly every item is rated relevant, very little
 #' disagreement is expected by chance, so even a few disagreements pull alpha
 #' down. The output reports the share of identical rating pairs alongside the
@@ -152,18 +155,18 @@
 #' \url{https://www.asc.upenn.edu/sites/default/files/2021-03/Computing\%20Krippendorff\%27s\%20Alpha-Reliability.pdf}
 #'
 #' Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
-#' kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+#' kappa: A comparison of basic properties. *MethodsX, 10*, Article 102212.
 #' \doi{10.1016/j.mex.2023.102212}
 #'
 #' Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
 #' comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater
 #' reliability coefficients: A study conducted with personality disorder
-#' samples. *BMC Medical Research Methodology, 13*, 61.
+#' samples. *BMC Medical Research Methodology, 13*, Article 61.
 #' \doi{10.1186/1471-2288-13-61}
 #'
 #' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 #' inter-rater reliability for nominal data: Which coefficients and confidence
-#' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
+#' intervals are appropriate? *BMC Medical Research Methodology, 16*, Article 93.
 #' \doi{10.1186/s12874-016-0200-9}
 #'
 #' @seealso [expert_validity()] for item-level expert-panel evidence.

@@ -28,7 +28,7 @@
 # `status`: a list parallel to `rounds` of named character vectors, item to
 # shared status, for the symbol beside each bar.
 .plot_rating_distribution <- function(rounds, items, lo, hi, cut, criterion,
-                                      status, value_label, xlab, labels, apa,
+                                      status, value_label, axis_label, labels, apa,
                                       show_legend, ...) {
   k <- as.integer(hi - lo + 1)
   cats <- seq(lo, hi)
@@ -49,16 +49,17 @@
   top <- n * step + 0.2
   round_names <- names(rounds)
 
+  lab <- .item_labels(items)
   mar <- graphics::par("mar")
-  mar[2] <- 1.2 + 0.62 * max(nchar(items)) +
+  mar[2] <- lab$lines +
     if (nr > 1L) 0.55 * max(nchar(round_names)) + 0.6 else 0
   mar[3] <- if (isTRUE(show_legend)) 3.4 else 1.1
   mar[4] <- 4.2
   op <- graphics::par(mar = mar)
   on.exit(graphics::par(op), add = TRUE)
 
-  graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
-                 yaxt = "n", xlab = xlab, ylab = "", bty = "n", ...)
+  .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
+                  yaxt = "n", xlab = axis_label, ylab = "", bty = "n"), list(...))
   at <- seq(-1, 1, 0.25)
   graphics::axis(1, at = at, labels = .tick_labels(abs(at)))
   graphics::segments(0, 0.4, 0, top, col = "grey30")
@@ -102,7 +103,7 @@
       graphics::text(1.11, yc, .fmt(right), adj = 0, cex = 0.75, xpd = NA)
     }
     mid <- mean(c(ypos(i, 1), ypos(i, nr)))
-    graphics::axis(2, at = mid, labels = items[i], las = 1, tick = FALSE,
+    graphics::axis(2, at = mid, labels = lab$labels[i], las = 1, tick = FALSE,
                    line = if (nr > 1L) 0.55 * max(nchar(round_names)) - 0.2 else -0.4)
   }
   # Drawn over the bars, so a bar that stops short of it can be seen to.

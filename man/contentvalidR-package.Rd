@@ -19,8 +19,10 @@ The public API is in three tiers.
 
 \strong{Tier 1, the recommended workflows.} \code{\link[=sort_validity]{sort_validity()}},
 \code{\link[=rating_validity]{rating_validity()}}, \code{\link[=expert_validity]{expert_validity()}}, \code{\link[=delphi_validity]{delphi_validity()}},
-\code{\link[=judge_validity]{judge_validity()}}, and \code{\link[=domain_validity]{domain_validity()}}; their \code{print()}, \code{summary()},
-and \code{plot()} methods; the object contract they share (\code{results},
+\code{\link[=judge_validity]{judge_validity()}}, and \code{\link[=domain_validity]{domain_validity()}}; their \code{print()} and
+\code{summary()} methods, and the \code{plot()} methods of the first four (a domain
+fit's content map is drawn with \code{plot(fit$details$structure)}); the object
+contract they share (\code{results},
 \code{scale_summary}, \code{settings}, \code{design}, \code{details}); the shared status
 vocabulary (\code{Supported}, \code{Review}, \verb{Insufficient data}, \verb{Descriptive only}); and \code{\link[=content_handoff]{content_handoff()}}, \code{\link[=content_evidence]{content_evidence()}}, \code{\link[=content_report]{content_report()}},
 \code{\link[=compare_rounds]{compare_rounds()}}, \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}}, and

@@ -36,8 +36,8 @@ It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
-Computes the Hinkin-Tracey distinctiveness index for each item in a fully
-crossed, within-judge rating design. For every complete judge, the intended
+Computes the Hinkin-Tracey distinctiveness index of Colquitt et al. (2019)
+for each item in a fully crossed, within-judge rating design. For every complete judge, the intended
 construct rating is contrasted with each orbiting-construct rating. The
 average of those difference scores is divided by \code{a - 1}, where \code{a} is the
 number of rating anchors. HTD ranges from -1 to 1.

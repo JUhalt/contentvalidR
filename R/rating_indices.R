@@ -74,8 +74,8 @@ htc <- function(ratings,
 #' Hinkin-Tracey distinctiveness (HTD)
 #'
 #' @description
-#' Computes the Hinkin-Tracey distinctiveness index for each item in a fully
-#' crossed, within-judge rating design. For every complete judge, the intended
+#' Computes the Hinkin-Tracey distinctiveness index of Colquitt et al. (2019)
+#' for each item in a fully crossed, within-judge rating design. For every complete judge, the intended
 #' construct rating is contrasted with each orbiting-construct rating. The
 #' average of those difference scores is divided by `a - 1`, where `a` is the
 #' number of rating anchors. HTD ranges from -1 to 1.

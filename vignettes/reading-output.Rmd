@@ -284,7 +284,8 @@ flagged item optimizes a statistic at the cost of the content domain, which is
 the opposite of content validity.
 
 **"Strong means good."** Benchmark labels are percentile positions against
-published scales. `Strong` means typical of published work, not that the item
+published scales. `Strong` places a scale's mean between the 60th and 79th
+percentiles of the scales Colquitt et al. (2019) collected, not that the item
 is fit for your purpose.
 
 **"One index is enough."** No single coefficient establishes content validity.

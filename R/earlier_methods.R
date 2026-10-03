@@ -28,7 +28,7 @@
 
 .lawshe_count <- function(N) unname(.lawshe_minimum_count[as.character(N)])
 
-# Wilson, Pan and Schumsky (2012, Table 2): the normal approximation to the
+# Wilson et al. (2012, Table 2): the normal approximation to the
 # binomial, z(1 - alpha) / sqrt(N) for a one-tailed test, with a value of 1 or
 # more listed as .99.
 .wilson_critical_cvr <- function(N, alpha) {

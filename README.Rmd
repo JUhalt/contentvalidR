@@ -199,7 +199,7 @@ Works cited in this README, the help pages, and the vignettes.
 - Heiberger, R. M., & Robbins, N. B. (2014). Design of diverging stacked bar charts for Likert scales and other applications. *Journal of Statistical Software, 57*(5), 1–32. https://doi.org/10.18637/jss.v057.i05
 - Hernández-Nieto, R. (2002). *Contributions to statistical analysis: The coefficients of proportional variance, content validity and kappa*. BookSurge.
 - Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
-- Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An exploration of the use of simple statistics to measure consensus and stability in Delphi studies. *BMC Medical Research Methodology, 7*, 52. https://doi.org/10.1186/1471-2288-7-52
+- Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An exploration of the use of simple statistics to measure consensus and stability in Delphi studies. *BMC Medical Research Methodology, 7*, Article 52. https://doi.org/10.1186/1471-2288-7-52
 - Horn, J. L. (1965). A rationale and test for the number of factors in factor analysis. *Psychometrika, 30*(2), 179–185. https://doi.org/10.1007/BF02289447
 - Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The presentation of a new statistical significance formula and methodological best practices. *Journal of Business and Psychology, 31*(1), 173–186. https://doi.org/10.1007/s10869-015-9404-y
 - Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of Classification, 2*(1), 193–218. https://doi.org/10.1007/BF01908075
@@ -226,14 +226,14 @@ Works cited in this README, the help pages, and the vignettes.
 - Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using cluster analysis and multidimensional scaling. *Applied Psychological Measurement, 16*(1), 17–31. https://doi.org/10.1177/014662169201600102
 - Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to assess content representation: An MDS analysis. *Applied Psychological Measurement, 19*(3), 241–255. https://doi.org/10.1177/014662169501900303
 - Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence for multidimensional items. *International Journal of Testing, 3*(2), 163–171. https://doi.org/10.1207/S15327574IJT0302_5
-- Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa: A comparison of basic properties. *MethodsX, 10*, 102212. https://doi.org/10.1016/j.mex.2023.102212
+- Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa: A comparison of basic properties. *MethodsX, 10*, Article 102212. https://doi.org/10.1016/j.mex.2023.102212
 - Wilson, E. B. (1927). Probable inference, the law of succession, and statistical inference. *Journal of the American Statistical Association, 22*(158), 209–212. https://doi.org/10.1080/01621459.1927.10502953
 - Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the critical values for Lawshe's content validity ratio. *Measurement and Evaluation in Counseling and Development, 45*(3), 197–210. https://doi.org/10.1177/0748175612440286
-- Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater reliability coefficients: A study conducted with personality disorder samples. *BMC Medical Research Methodology, 13*, 61. https://doi.org/10.1186/1471-2288-13-61
+- Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater reliability coefficients: A study conducted with personality disorder samples. *BMC Medical Research Methodology, 13*, Article 61. https://doi.org/10.1186/1471-2288-13-61
 - Wright, B. D. (1988). The efficacy of unconditional maximum likelihood bias correction: Comment on Jansen, van den Wollenberg, and Wierda. *Applied Psychological Measurement, 12*(3), 315–318. https://doi.org/10.1177/014662168801200309
 - Wright, B. D., & Douglas, G. A. (1977). Best procedures for sample-free item analysis. *Applied Psychological Measurement, 1*(2), 281–295. https://doi.org/10.1177/014662167700100216
 - Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content validity of the WHOQOL-BREF from respondents' perspective by quantitative methods. *Social Indicators Research, 85*(3), 483–498. https://doi.org/10.1007/s11205-007-9112-8
-- Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? *BMC Medical Research Methodology, 16*, 93. https://doi.org/10.1186/s12874-016-0200-9
+- Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater reliability for nominal data: Which coefficients and confidence intervals are appropriate? *BMC Medical Research Methodology, 16*, Article 93. https://doi.org/10.1186/s12874-016-0200-9
 - Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for determining the number of components to retain. *Psychological Bulletin, 99*(3), 432–442. https://doi.org/10.1037/0033-2909.99.3.432
 
 ## License

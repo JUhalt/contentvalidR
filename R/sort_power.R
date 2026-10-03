@@ -139,9 +139,9 @@ plot.contentvalid_sort_power <- function(x,
       p0 = x$settings$p0,
       alpha = x$settings$alpha
     )
-    graphics::plot(curve$N, curve$minimum_observed_psa, type = "s", ylim = c(0, 1),
-                   yaxt = "n", xlab = "Judges (N)",
-                   ylab = "Minimum Psa for retention", ...)
+    .plot_with(list(x = curve$N, y = curve$minimum_observed_psa, type = "s", ylim = c(0, 1),
+                    yaxt = "n", xlab = "Judges (N)",
+                    ylab = "Minimum Psa for retention"), list(...))
     .axis_bounded(2, at = seq(0, 1, 0.25))
     graphics::points(requested$N, requested$minimum_observed_psa, pch = 1)
     return(invisible(x))
@@ -156,8 +156,8 @@ plot.contentvalid_sort_power <- function(x,
   }
   xr <- range(tab$N)
   if (diff(xr) == 0) xr <- xr + c(-0.5, 0.5)
-  graphics::plot(xr, c(0, 1), type = "n", yaxt = "n",
-                 xlab = "Judges (N)", ylab = "Exact retention power", ...)
+  .plot_with(list(x = xr, y = c(0, 1), type = "n", yaxt = "n",
+                  xlab = "Judges (N)", ylab = "Exact retention power"), list(...))
   .axis_bounded(2, at = seq(0, 1, 0.25))
   if (!is.null(reference_power)) graphics::abline(h = reference_power, lty = 3)
   for (i in seq_along(ps)) {

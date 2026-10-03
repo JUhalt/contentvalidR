@@ -119,8 +119,8 @@
         "rating at random. With small panels, chance agreement is substantial,",
         "which is why the raw I-CVI alone can overstate consensus."
       ),
-      range = paste("at most 1; below 0 when fewer experts agree than chance",
-                    "predicts; higher is stronger"),
+      range = paste("at most 1; below 0 only when no expert, or one of three,",
+                    "rated the item relevant; higher is stronger"),
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -135,6 +135,42 @@
         "1 is perfect agreement and 0 is agreement no better than chance; it can",
         "be low on a close-agreeing panel whose ratings cluster on one value"
       ),
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "agreement_ac1", workflow = "expert-panel",
+      label = "Panel-level agreement (Gwet's AC1)",
+      definition = paste(
+        "One coefficient describing how consistently the whole panel made the",
+        "relevant/not-relevant decision, with chance agreement estimated so",
+        "that it stays small when nearly every rating falls in one category.",
+        "It is separate from modified kappa, which describes one item at a time."
+      ),
+      range = paste(
+        "1 is perfect agreement and 0 is agreement no better than chance; it",
+        "stays high when nearly every rating is the same"
+      ),
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "S_CVI_Ave", workflow = "expert-panel",
+      label = "Scale-level CVI, averaging method",
+      definition = paste(
+        "The mean of the items' I-CVIs, the same quantity as the average",
+        "congruency percentage. Polit and Beck (2006) recommend .90 or higher."
+      ),
+      range = "0 to 1",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "S_CVI_UA", workflow = "expert-panel",
+      label = "Scale-level CVI, universal agreement",
+      definition = paste(
+        "The share of items that every expert rated relevant. It falls as",
+        "experts are added, so Polit and Beck (2006) recommend reporting it",
+        "beside S-CVI/Ave."
+      ),
+      range = "0 to 1",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -162,11 +198,23 @@
       label = "Judge severity",
       definition = paste(
         "How harsh or lenient a judge is compared with the panel, on the items",
-        "that judge rated. Positive means the judge rates lower than the panel.",
-        "Reported in logits from the facets model when it can be estimated,",
-        "otherwise in rating points."
+        "that judge rated, in rating points. Positive means the judge rates",
+        "lower than the panel. The logit column gives the same from the facets",
+        "model when it can be estimated, and the flags then use it."
       ),
       range = "0 means typical of this panel",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "logit", workflow = "judge-heterogeneity",
+      label = "Judge severity in logits",
+      definition = paste(
+        "Severity estimated by the many-facet Rasch model on the",
+        "relevant/not-relevant decision, against the judges the model placed,",
+        "and corrected for the bias of joint maximum likelihood. Positive means",
+        "harsher."
+      ),
+      range = "0 means typical of the judges placed; flagged beyond the logit cut",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -300,7 +348,7 @@
         "A significant result is read as stability. It needs expected counts",
         "of at least 5, which small panels rarely have."
       ),
-      range = "0 or more; read with its p-value",
+      range = "0 or more; read with its p value",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -312,7 +360,7 @@
         "look stable because the test has little power, and experts swapping",
         "ratings go unseen."
       ),
-      range = "0 or more; read with its p-value",
+      range = "0 or more; read with its p value",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -344,11 +392,15 @@
     I_CVI = "Share of experts rating the item relevant, against Lynn's criterion for the panel size (extended past ten experts).",
     `I_CVI_low/I_CVI_high` = "Wide because expert panels are small; the method is named above.",
     `psa_low/psa_high` = "Wider when fewer judges sorted the item; the method is named above.",
-    kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 when agreement is below chance).",
+    kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 only when no expert, or one of three, rated it relevant).",
     agreement = "One coefficient for the whole panel (1 is perfect, 0 is chance); it can be low when nearly every rating is the same.",
+    agreement_ac1 = "Panel agreement on the relevant/not-relevant decision (1 is perfect, 0 is chance); stays high as ratings concentrate.",
+    S_CVI_Ave = "Mean of the items' I-CVIs; Polit and Beck (2006) recommend .90 or higher.",
+    S_CVI_UA = "Share of items every expert rated relevant; it falls as experts are added.",
     cvr = "Lean of the panel toward calling the item essential (-1 to 1; above 0 means more than half did).",
     ioc = "Whether experts matched the item to this objective and not to the others (-1 to 1; criterion .70).",
-    severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel.",
+    severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel, in rating points.",
+    logit = "The same from the facets model, against the judges it placed; the flags use it when it is estimable.",
     `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is more predictable than expected.",
     differentiation = "Spread of the judge's ratings compared with a typical judge (1 is typical; low means few distinctions).",
     g_coefficient = "How well the ranking of items would reproduce with another panel of this size (0 to 1).",
@@ -417,9 +469,9 @@
     ),
     domain = c(
       Covered = "met the coverage criteria.",
-      "Thinly covered" = "fewer items than the minimum set.",
-      "Over-represented" = "a larger share of the items than expected.",
-      "Under-represented" = "a much smaller share of the items than its target calls for.",
+      "Thinly covered" = "fewer items than the minimum set (or its target, if smaller).",
+      "Over-represented" = "more than `over_factor` times its expected share of the items.",
+      "Under-represented" = "less than its target share divided by `over_factor`.",
       "Not covered" = "the blueprint includes it, but no item addresses it."
     ),
     stop("No decision meanings for workflow '", workflow, "'.", call. = FALSE)

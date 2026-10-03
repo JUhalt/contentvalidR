@@ -365,7 +365,7 @@ multidimensional items. *International Journal of Testing, 3*(2), 163–171.
 https://doi.org/10.1207/S15327574IJT0302_5
 
 Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa:
-A comparison of basic properties. *MethodsX, 10*, 102212.
+A comparison of basic properties. *MethodsX, 10*, Article 102212.
 https://doi.org/10.1016/j.mex.2023.102212
 
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the critical
@@ -375,5 +375,5 @@ https://doi.org/10.1177/0748175612440286
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater
 reliability for nominal data: Which coefficients and confidence intervals are
-appropriate? *BMC Medical Research Methodology, 16*, 93.
+appropriate? *BMC Medical Research Methodology, 16*, Article 93.
 https://doi.org/10.1186/s12874-016-0200-9

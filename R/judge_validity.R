@@ -718,8 +718,8 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
     terms <- c("severity", "differentiation", "phi_coefficient")
     headings <- c("severity", "scale use", "Phi")
     if (estimable) {
-      terms <- append(terms, "infit/outfit", after = 1L)
-      headings <- append(headings, "infit, outfit", after = 1L)
+      terms <- append(terms, c("logit", "infit/outfit"), after = 1L)
+      headings <- append(headings, c("logit", "infit, outfit"), after = 1L)
     }
     .print_key(terms, headings = headings)
     .print_decision_legend(x$results$recommendation, "judge")

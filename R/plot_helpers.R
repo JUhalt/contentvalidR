@@ -17,6 +17,29 @@
   graphics::par(mar = mar)
 }
 
+# Draws a figure's frame from the method's own arguments, with any named
+# argument the caller passed in `...` taking the place of the method's, so
+# `xlab`, `xlim` or `main` never collide with it.
+.plot_with <- function(args, dots) {
+  named <- if (is.null(names(dots))) list() else dots[nzchar(names(dots))]
+  args[names(named)] <- named
+  do.call(graphics::plot, args)
+}
+
+# Item labels for the left margin of a horizontal figure, and the margin they
+# need, in lines. A label is shortened with "..." when the full one would take
+# more than 40% of the width (`width_in`, in inches), so a long item name never
+# leaves the plot region too small to draw.
+.item_labels <- function(items, width_in = graphics::par("fin")[1],
+                         base = 1.2, per_char = 0.62) {
+  items <- as.character(items)
+  cap <- 0.4 * width_in / graphics::par("csi")
+  max_chars <- max(4L, as.integer(floor((cap - base) / per_char)))
+  long <- nchar(items) > max_chars
+  items[long] <- paste0(substr(items[long], 1L, max_chars - 3L), "...")
+  list(labels = items, lines = base + per_char * max(nchar(items), 1L))
+}
+
 # Tick labels in APA style for a bounded statistic: 0, .25, .50, .75, 1.00.
 .tick_labels <- function(at, digits = 2) {
   out <- formatC(at, format = "f", digits = digits)

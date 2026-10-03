@@ -241,7 +241,7 @@ interval by default.
 
 The four columns are \code{NA} together when a statistic has no interval. That
 happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-count, modified kappa, IOC, and p-values), when intervals were switched off
+count, modified kappa, IOC, and p values), when intervals were switched off
 with \code{proportion_ci = "none"}, or when the statistic itself could not be
 computed. \code{NA} there never stands for missing data.
 

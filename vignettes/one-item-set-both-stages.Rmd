@@ -52,8 +52,8 @@ items[c("item", "facet", "stem")]
 
 Each item was also given a job, and the file records what it is, so you can
 check the stages against the design rather than take this vignette's word for
-anything. Two are simply written the other way round; five more are meant to
-cause trouble:
+anything. Two are simply written the other way round; seven more each set a
+particular test for one stage or the other:
 
 ```{r roles}
 subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
@@ -63,8 +63,8 @@ subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
 
 Twenty judges sorted each item into `EF`, `TF`, or `TA`. `sort_validity()`
 applies the exact target-count test of Howard and Melloy (2016): with twenty
-judges and two plausible answers, an item needs fifteen assignments to its
-target to meet the criterion.
+judges and the default null probability of .50, an item needs fifteen
+assignments to its target to meet the criterion.
 
 ```{r sort}
 sorted <- read.csv(path("walkthrough_sort.csv"), stringsAsFactors = FALSE)
@@ -82,8 +82,9 @@ read it as test anxiety. Its target wins and the criterion is not met.
 
 `TF5` ("I work hard to stay on top of my reading") is worse: thirteen judges
 put it under effort regulation and only six under task focus, so a competing
-facet beat the target outright. Its content validity index for sorting is
-negative, which is what a negative `csv` means.
+facet beat the target outright. Its substantive validity coefficient, `csv`,
+is negative, which means judges chose a competing construct more often than
+the intended one.
 
 ```{r flagged}
 panel$results[panel$results$recommendation == "Review",
@@ -316,8 +317,8 @@ shows the same calls on a handoff, in the section
 Surviving content review is evidence about relevance, representation, and
 whether experts read an item the way it was meant. It is not evidence that the
 item measures anything. Of the ten items this panel carried forward, one
-carries almost no common variance and one belongs to a facet the judges never
-considered. Both read well. That is not a failure of the panel; it is the
+carries almost no common variance and one also loads on a second facet that
+only four of the twenty judges saw in it. Both read well. That is not a failure of the panel; it is the
 boundary of what a panel can see.
 
 The reverse holds just as firmly. A screening index is a number about a sample,

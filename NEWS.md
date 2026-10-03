@@ -554,6 +554,67 @@ analysis that matches the cases below.
 * `?expert_validity` cites Rovinelli and Hambleton (1977) and Turner and
   Carlson (2003), and documents `ioc_cut`.
 
+## Keys, help pages, figures and tables: values that change
+
+* **The relevance report names its two intervals apart.** `content_report()`
+  returned two columns both named "95% CI", one after V and one after I-CVI,
+  so `tab$"95% CI"` found only the first. The object now names them
+  `V 95% CI` and `I-CVI 95% CI`; the printed table and the Markdown keep the
+  shared heading, each beside its estimate.
+* **`plot()` takes `xlab`, `ylab`, `xlim`, `ylim` and `main` everywhere.**
+  Most plot methods set these themselves and also passed `...` on, so giving
+  one stopped with "formal argument matched by multiple actual arguments".
+  An argument the caller gives now replaces the method's own.
+* **Long item names no longer stop a figure.** The distribution views and
+  the evidence profile sized the label margin to the longest name, and a
+  long one left no room to draw ("figure margins too large"). A label longer
+  than 40% of the figure's width is shortened with "...".
+
+## Keys, help pages, figures and tables: other fixes
+
+* `as.data.frame()` works on every result: `cvi()`, `gtheory_content()`,
+  `content_structure()`, `compare_rounds()`, `content_handoff()`,
+  `sort_power()`, `expert_power()` and `panel_agreement()` had no method, and
+  `csv_binom_test()`, `signal_detection()` and `reproducibility_phi()` gave
+  two to four rows for one test. A result holding several tables takes
+  `component`; a single test is one row, with an interval as two columns and
+  a two-by-two table as four named counts. See `?"contentvalid-data-frames"`.
+* The key said modified kappa falls below 0 "when agreement is below
+  chance". It does so only when no expert, or one of three, rated the item
+  relevant: 2 of 8 gives .16.
+* The relevance key defines S-CVI/Ave and S-CVI/UA, which the header prints.
+* With `agreement = "ac1"`, the key describes AC1, which stays high when
+  ratings concentrate; it repeated the Krippendorff caution that the
+  coefficient "can be low when nearly every rating is the same".
+* The glossary said judge severity is in logits when the model is
+  estimable. The printed `severity` column is always in rating points; the
+  logit column, now in the key, holds the model's estimate.
+* The domain decision meanings state the rules: more than `over_factor`
+  times the expected share, less than the target share divided by it, and
+  the thin-coverage minimum or the cell's target.
+* Three-author works are cited with "et al." in the relevance printout and
+  `cvi()`; "p value" is no longer hyphenated; article numbers read "Article
+  93".
+* Help pages cite every work they list: the interval methods in
+  `?compute_psa`, Colquitt et al. (2019) in `?htd`, Howard and Melloy (2016)
+  in `?simulate_csv_power`, Feinstein and Cicchetti (1990) and Wongpakaran
+  et al. (2013) in `?panel_agreement`, Hayes and Krippendorff (2007) and
+  Zapf et al. (2016) in `?expert_validity`.
+* `?contentvalidR` promised `plot()` for all six workflows; judge and domain
+  fits have none, and it now says how to draw a domain fit's content map.
+* The reporting vignettes build their tables with `content_report()` rather
+  than from raw `results` columns.
+* `reading-output` says what `Strong` means: the 60th to 79th percentile of
+  the scales Colquitt et al. (2019) collected, not "typical of published
+  work".
+* The walkthrough says seven items, not five, each set a test for one
+  stage; that the fifteen assignments follow from the null probability of
+  .50, not from "two plausible answers"; calls `csv` the substantive validity
+  coefficient; and no longer says the judges "never considered" a facet that
+  four of them chose.
+* The handoff vignette's nomologR install line names CRAN as well as
+  R-universe, so it works in a fresh library.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

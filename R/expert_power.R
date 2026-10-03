@@ -254,9 +254,9 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
   r <- x$results
   probs <- sort(unique(r$prob))
 
-  graphics::plot(range(r$n_experts), c(0, 1), type = "n", yaxt = "n",
-                 xlab = "Experts on the panel",
-                 ylab = "Probability of clearing the criterion", ...)
+  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", yaxt = "n",
+                  xlab = "Experts on the panel",
+                  ylab = "Probability of clearing the criterion"), list(...))
   .axis_bounded(2, at = seq(0, 1, 0.25))
   for (i in seq_along(probs)) {
     sub <- r[r$prob == probs[i], , drop = FALSE]

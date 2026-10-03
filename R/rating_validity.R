@@ -637,10 +637,10 @@ plot.contentvalid_rating <- function(x,
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "htc") 0 else -1
-    graphics::plot(xs, y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
-                   ylab = if (metric == "htc") htc_lab else htd_lab,
-                   xlim = c(0.5, length(y) + 0.5),
-                   ylim = c(lo, 1 + 0.2 * (1 - lo)), ...)
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+                    ylab = if (metric == "htc") htc_lab else htd_lab,
+                    xlim = c(0.5, length(y) + 0.5),
+                    ylim = c(lo, 1 + 0.2 * (1 - lo))), list(...))
     graphics::axis(1, at = xs, labels = r$item, las = 2)
     .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
     if (metric == "htd") .hline(0)
@@ -656,9 +656,9 @@ plot.contentvalid_rating <- function(x,
 
   if (type == "map") {
     ok <- is.finite(r$htc) & is.finite(r$htd)
-    graphics::plot(r$htc[ok], r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
-                   xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
-                   pch = pch[ok], ...)
+    .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
+                    xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
+                    pch = pch[ok]), list(...))
     .axis_bounded(1, at = seq(0, 1, 0.25))
     .axis_bounded(2, at = seq(-1, 1, 0.5))
     .hline(0)
@@ -698,9 +698,9 @@ plot.contentvalid_rating <- function(x,
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
   # A key of five entries takes two rows, and the headroom to hold them.
   two_rows <- length(lay$legend) > 4L
-  graphics::plot(NA, xlim = xlim,
-                 ylim = c(0.5, n + if (two_rows) 1.7 else 1.25), yaxt = "n",
-                 xlab = "Mean rating against each definition", ylab = "", ...)
+  .plot_with(list(x = NA, xlim = xlim,
+                  ylim = c(0.5, n + if (two_rows) 1.7 else 1.25), yaxt = "n",
+                  xlab = "Mean rating against each definition", ylab = ""), list(...))
   graphics::axis(2, at = y, labels = r$item, las = 1)
   both <- lay$both
   if (any(both)) {

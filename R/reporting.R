@@ -223,9 +223,24 @@ as.data.frame.contentvalid_workflow <- function(x,
     cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits)
     headings <- c(headings, entry$heading)
   }
+  # Two interval columns can share a heading ("95% CI" after V and after
+  # I-CVI). The object keeps names that tell them apart; the printed table
+  # and the Markdown show the shared heading, each beside its estimate.
+  display <- headings
+  shared <- which(duplicated(headings) | duplicated(headings, fromLast = TRUE))
+  for (i in shared[shared > 1L]) headings[i] <- paste(display[i - 1L], display[i])
   tab <- as.data.frame(cols, stringsAsFactors = FALSE)
   names(tab) <- headings
+  attr(tab, "display") <- display
   tab
+}
+
+# The headings a reader sees: the shared ones restored.
+.report_display <- function(tab) {
+  display <- attr(tab, "display")
+  out <- as.data.frame(tab)
+  if (length(display) == ncol(out)) names(out) <- display
+  out
 }
 
 #' Build a manuscript-ready results table
@@ -315,7 +330,7 @@ content_report <- function(x,
     lines <- c(lines, if (!nrow(tab)) {
       "_No units matched the requested selection._"
     } else {
-      .as_markdown_table(tab)
+      .as_markdown_table(.report_display(tab))
     })
     attr(lines, "settings") <- x$settings
     class(lines) <- "contentvalid_markdown"
@@ -349,7 +364,7 @@ print.contentvalid_report <- function(x, ...) {
   if (!nrow(x)) {
     cat("No units matched the requested selection.\n")
   } else {
-    .print_table(as.data.frame(x))
+    .print_table(.report_display(x))
   }
   invisible(x)
 }
@@ -357,6 +372,7 @@ print.contentvalid_report <- function(x, ...) {
 #' @export
 as.data.frame.contentvalid_report <- function(x, ...) {
   class(x) <- "data.frame"
+  attr(x, "display") <- NULL
   x
 }
 

@@ -849,7 +849,7 @@
 #'
 #' The four columns are `NA` together when a statistic has no interval. That
 #' happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-#' count, modified kappa, IOC, and p-values), when intervals were switched off
+#' count, modified kappa, IOC, and p values), when intervals were switched off
 #' with `proportion_ci = "none"`, or when the statistic itself could not be
 #' computed. `NA` there never stands for missing data.
 #'
