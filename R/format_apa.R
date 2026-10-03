@@ -221,7 +221,7 @@
 # estimates, intervals, counts such as "18/20", percentages, "< .001". The
 # missing marker (an em dash in Markdown) and "none" do not decide it.
 .looks_numeric <- function(v) {
-  v <- v[!(v %in% c("", .missing_mark, "—", "none", "NA"))]
+  v <- v[!(v %in% c("", .missing_mark, "\u2014", "none", "NA"))]
   if (!length(v)) return(TRUE)
   num <- "^([<>] )?-?([0-9]+([.][0-9]+)?|[.][0-9]+)%?$"
   all(grepl(num, v) | grepl("^\\[.*\\]$", v) | grepl("^[0-9]+/[0-9]+$", v) |

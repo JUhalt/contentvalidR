@@ -304,7 +304,7 @@ test_that("the Markdown rule aligns text left and numbers right", {
   expect_identical(md[1], "| Item | Target | Judges | Competitor | Psa | 95% CI | Csv | *p* | Decision |")
   expect_identical(md[2], "| :--- | :--- | ---: | :--- | ---: | ---: | ---: | ---: | :--- |")
   # A missing cell, an em dash in Markdown, does not decide the alignment.
-  d <- data.frame(a = c("x", "y"), b = c(".50", "—"), stringsAsFactors = FALSE)
+  d <- data.frame(a = c("x", "y"), b = c(".50", "\u2014"), stringsAsFactors = FALSE)
   expect_identical(contentvalidR:::.as_markdown_table(d)[2], "| :--- | ---: |")
 })
 
@@ -377,7 +377,7 @@ test_that("a zero-width interval in a report is explained in its note", {
 test_that("the rating report note keeps 'F test' on one line", {
   bound <- contentvalidR:::.bind_phrases("F test = within-judge omnibus test")
   expect_false(grepl("F test", bound, fixed = TRUE))
-  expect_match(bound, "F test", fixed = TRUE)
+  expect_match(bound, "F\u00a0test", fixed = TRUE)
   rating <- utils::read.csv(system.file("extdata", "rating_example.csv",
                                         package = "contentvalidR"),
                             stringsAsFactors = FALSE)
