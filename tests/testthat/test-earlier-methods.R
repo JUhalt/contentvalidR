@@ -56,9 +56,27 @@ test_that("essentiality compares CVR with Lawshe and Wilson, and computes Lawshe
   # 7 of 8 is exactly Lawshe's .75, and meets it despite floating point.
   eight <- expert_validity(7, mode = "essentiality", N = 8)$details$earlier_methods
   expect_true(eight$items$lawshe_meets)
-  # 8 of 9 is .778, short of his .78: the table needs all nine.
-  nine <- expert_validity(c(9, 8), mode = "essentiality", N = 9)$details$earlier_methods
-  expect_identical(nine$items$lawshe_meets, c(TRUE, FALSE))
+  # 8 of 9 is .778, which is what his .78 for nine panelists is: the only CVR
+  # values nine panelists can give near it are .556, .778 and 1. So 8 of 9
+  # meets, 7 of 9 does not, and his CVI averages both retained items.
+  nine <- expert_validity(c(9, 8, 7), mode = "essentiality", N = 9)$details$earlier_methods
+  expect_identical(nine$items$lawshe_meets, c(TRUE, TRUE, FALSE))
+  expect_equal(nine$lawshe_cvi, mean(c(1, 7 / 9)))
+  expect_identical(nine$lawshe_n_retained, 2L)
+
+  # The implied minimum count at every tabled size, as Ayre and Scally (2014)
+  # read the table: it matches the exact test everywhere except 13 panelists.
+  counts <- c(`5` = 5L, `6` = 6L, `7` = 7L, `8` = 7L, `9` = 8L, `10` = 9L,
+              `11` = 9L, `12` = 10L, `13` = 11L, `14` = 11L, `15` = 12L,
+              `20` = 15L, `25` = 18L, `30` = 20L, `35` = 23L, `40` = 26L)
+  for (n in names(counts)) {
+    N <- as.integer(n)
+    em <- expert_validity(c(counts[[n]], counts[[n]] - 1L), mode = "essentiality",
+                          N = N)$details$earlier_methods
+    expect_identical(em$items$lawshe_meets, c(TRUE, FALSE), info = n)
+    exact <- cvr(counts[[n]], N = N)$critical_ne
+    expect_identical(exact, if (N == 13L) 10L else counts[[n]], info = n)
+  }
 
   # A panel size Lawshe did not tabulate has no minimum and no CVI.
   sixteen <- expert_validity(c(16, 13), mode = "essentiality", N = 16)
@@ -252,11 +270,48 @@ test_that("the printed comparison states each rule's source and agreement", {
                            sum(it$ag_meets == keep), " of ", nrow(it)),
                fixed = TRUE)
 
-  # A value that rounds to its cutoff but misses it is explained.
+  # A value that rounds to its cutoff but misses it is explained: 10 of 13 is
+  # .538 against Lawshe's .54, the one size where his table and the exact test
+  # differ (Ayre & Scally, 2014).
+  thirteen <- expert_validity(c(11, 10), mode = "essentiality", N = 13,
+                              legacy = TRUE)
+  out13 <- gsub("[[:space:]]+", " ",
+                paste(utils::capture.output(print(thirteen)), collapse = " "))
+  expect_match(out13, "Item2 (.538) prints at the Lawshe cutoff of .54",
+               fixed = TRUE)
+
+  # 8 of 9 meets Lawshe's .78, so no such note is printed for it.
   nine <- expert_validity(c(9, 8), mode = "essentiality", N = 9, legacy = TRUE)
   out9 <- gsub("[[:space:]]+", " ",
                paste(utils::capture.output(print(nine)), collapse = " "))
-  expect_match(out9, "Item2 (.778) prints at the Lawshe cutoff of .78", fixed = TRUE)
+  expect_false(grepl("falls short", out9, fixed = TRUE))
+  expect_match(out9, "minimum CVR .78 for 9 panelists (8 of 9), which he labeled",
+               fixed = TRUE)
+
+  # With panels of 9 and 13 together, two rows show a CVR equal to its
+  # minimum and get opposite verdicts, so the printout says how the minimum
+  # is applied.
+  M <- cbind(A = c(rep(1, 8), 0, rep(NA, 4)), B = c(rep(1, 10), 0, 0, 0),
+             C = c(rep(1, 11), 0, 0))
+  mixed <- expert_validity(M, mode = "essentiality", na.rm = TRUE, legacy = TRUE)
+  expect_identical(mixed$details$earlier_methods$items$lawshe_meets,
+                   c(TRUE, FALSE, TRUE))
+  out_mixed <- gsub("[[:space:]]+", " ",
+                    paste(utils::capture.output(print(mixed)), collapse = " "))
+  expect_match(out_mixed,
+               "for 9 panelists his .78 is 8 of 9 (.778) printed to two decimals",
+               fixed = TRUE)
+  expect_match(out_mixed, "B (.538) prints at the Lawshe cutoff of .54",
+               fixed = TRUE)
+
+  # An unrated first item does not hide the minimum of the panel size in use.
+  Z <- cbind(Z = rep(NA_real_, 10), A = c(rep(1, 9), 0), B = rep(1, 10))
+  out_z <- gsub("[[:space:]]+", " ", paste(utils::capture.output(print(
+    expert_validity(Z, mode = "essentiality", na.rm = TRUE, legacy = TRUE)
+  )), collapse = " "))
+  expect_match(out_z, "minimum CVR .62 for 10 panelists (9 of 10)", fixed = TRUE)
+  expect_false(grepl("lists no minimum", out_z, fixed = TRUE))
+  expect_false(grepl("minimum CVR NA", out_z, fixed = TRUE))
 })
 
 # Hernandez-Nieto (2002): the book's worked examples are the reference, and

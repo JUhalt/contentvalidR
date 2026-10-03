@@ -3,17 +3,19 @@
 # summarized by Horn's (1965) mean or Glorfeld's (1995) upper percentile.
 .parallel_eigen <- function(mat, n_iter, seed = NULL, criterion = "mean",
                             percentile = 95) {
-  if (!is.null(seed)) set.seed(seed)
   missing <- is.na(mat)
-  sims <- matrix(NA_real_, nrow = n_iter, ncol = ncol(mat))
-  for (i in seq_len(n_iter)) {
-    Z <- matrix(stats::rnorm(length(mat)), nrow = nrow(mat))
-    Z[missing] <- NA
-    C <- suppressWarnings(stats::cor(Z, use = "pairwise.complete.obs"))
-    if (all(is.finite(C))) {
-      sims[i, ] <- eigen(C, symmetric = TRUE, only.values = TRUE)$values
+  sims <- .with_seed(seed, {
+    draws <- matrix(NA_real_, nrow = n_iter, ncol = ncol(mat))
+    for (i in seq_len(n_iter)) {
+      Z <- matrix(stats::rnorm(length(mat)), nrow = nrow(mat))
+      Z[missing] <- NA
+      C <- suppressWarnings(stats::cor(Z, use = "pairwise.complete.obs"))
+      if (all(is.finite(C))) {
+        draws[i, ] <- eigen(C, symmetric = TRUE, only.values = TRUE)$values
+      }
     }
-  }
+    draws
+  })
   usable <- stats::complete.cases(sims)
   if (!any(usable)) {
     stop("Parallel analysis could not simulate usable correlation matrices; ",
@@ -94,7 +96,8 @@
 #' @param percentile Upper percentile used when
 #'   `parallel_criterion = "percentile"`. Default 95, as in Glorfeld (1995).
 #' @param n_iter Number of random data sets for parallel analysis.
-#' @param seed Optional seed that makes parallel analysis reproducible.
+#' @param seed Optional seed that makes parallel analysis reproducible. The
+#'   random-number stream of the session is left as it was.
 #'
 #' @return A list with components:
 #'   - `cor_Q`: item-by-item correlation matrix,

@@ -426,11 +426,23 @@
     return(list(
       scale = rep(NA_character_, n),
       n_judges = as.integer(results$N),
-      rule = sprintf(
-        paste("CVR >= %s, i.e. at least %d of %d judges rating the item",
-              "essential (exact binomial; Ayre & Scally, 2014), alpha = %s"),
-        .fmt(results$critical_cvr), as.integer(results$critical_ne),
-        as.integer(results$N), .fmt_alpha(alpha)
+      # As for the sort, a rule never carries a missing count.
+      rule = ifelse(
+        results$N < 1L,
+        sprintf(paste("no expert rated the item, so the exact binomial test",
+                      "(Ayre & Scally, 2014) was not applied, alpha = %s"),
+                .fmt_alpha(alpha)),
+        ifelse(
+          is.na(results$critical_ne),
+          sprintf(paste("no count of essential ratings out of %d can meet the",
+                        "exact binomial test (Ayre & Scally, 2014), alpha = %s"),
+                  as.integer(results$N), .fmt_alpha(alpha)),
+          sprintf(paste("CVR >= %s, i.e. at least %d of %d judges rating the",
+                        "item essential (exact binomial; Ayre & Scally, 2014),",
+                        "alpha = %s"),
+                  .fmt(results$critical_cvr), as.integer(results$critical_ne),
+                  as.integer(results$N), .fmt_alpha(alpha))
+        )
       ),
       citation = c("Lawshe (1975)", "Ayre & Scally (2014)"),
       statistics = rbind(

@@ -14,6 +14,20 @@
 
 .lawshe_minimum <- function(N) unname(.lawshe_minimum_cvr[as.character(N)])
 
+# The fewest essential ratings that meet each tabled minimum. Up to nine
+# panelists the tabled value is a reachable CVR printed to two decimals: .75
+# is 7 of 8 and .78 is 8 of 9 (.778), the only values near them that nine
+# panelists can produce. From ten up the table follows a normal approximation
+# (Ayre & Scally, 2014), so the count is the first whose CVR reaches the
+# printed value: 11 of 13, because 10 of 13 is .538 against .54. Comparing
+# counts keeps 8 of 9 from failing a .78 that is itself 8 of 9 rounded.
+.lawshe_minimum_count <- c(`5` = 5L, `6` = 6L, `7` = 7L, `8` = 7L, `9` = 8L,
+                           `10` = 9L, `11` = 9L, `12` = 10L, `13` = 11L,
+                           `14` = 11L, `15` = 12L, `20` = 15L, `25` = 18L,
+                           `30` = 20L, `35` = 23L, `40` = 26L)
+
+.lawshe_count <- function(N) unname(.lawshe_minimum_count[as.character(N)])
+
 # Wilson, Pan and Schumsky (2012, Table 2): the normal approximation to the
 # binomial, z(1 - alpha) / sqrt(N) for a one-tailed test, with a value of 1 or
 # more listed as .99.
@@ -111,7 +125,8 @@
 .essentiality_earlier_methods <- function(res, alpha, show) {
   lawshe_min <- .lawshe_minimum(res$N)
   wilson <- ifelse(res$N < 1L, NA_real_, .wilson_critical_cvr(res$N, alpha))
-  lawshe_meets <- .meets(res$cvr, lawshe_min)
+  lawshe_need <- .lawshe_count(res$N)
+  lawshe_meets <- ifelse(is.na(lawshe_need), NA, res$ne >= lawshe_need)
   retained <- which(lawshe_meets %in% TRUE)
   list(
     show = isTRUE(show),
@@ -204,9 +219,9 @@
   cat("\nEarlier methods, for comparison (not used for the decision)\n")
 }
 
-# An estimate can print as equal to its cutoff and still miss it, such as 8 of
-# 9 experts (a CVR of .778) against Lawshe's .78. Say so with three decimals,
-# so the table does not appear to contradict itself.
+# An estimate can print as equal to its cutoff and still miss it, such as 10
+# of 13 experts (a CVR of .538) against Lawshe's .54. Say so with three
+# decimals, so the table does not appear to contradict itself.
 .rounding_note <- function(items, value, cut, meets, rule, digits) {
   hit <- which(meets %in% FALSE & .fmt(value, digits) == .fmt(cut, digits))
   if (!length(hit)) return(invisible(NULL))
@@ -355,26 +370,43 @@
 
   alpha <- .fmt_alpha(em$alpha)
   if (length(sizes) == 1L) {
-    lmin <- it$lawshe_minimum[1]
+    # The minimums of the one panel size in play, from an item that was rated:
+    # an unrated first item has none.
+    rated <- which(it$N >= 1L)[1]
+    lmin <- it$lawshe_minimum[rated]
     .say(if (is.na(lmin)) {
       paste0("Lawshe (1975, Table 1) lists no minimum for ", sizes,
              " panelists; the table covers 5 to 15, then every fifth size to ",
              "40.")
     } else {
-      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, digits),
-             " for ", sizes, " panelists, labeled a one-tailed test at .05. ",
-             "Wilson, Pan and Schumsky (2012) found the table closer to a ",
-             "two-tailed test.")
+      # His table gives two decimals, whatever `digits` the estimates use.
+      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, 2),
+             " for ", sizes, " panelists (", .lawshe_count(sizes), " of ",
+             sizes, "), which he labeled a one-tailed test at .05. ",
+             "Wilson et al. (2012) found the table closer to a two-tailed ",
+             "test.")
     })
     .say(paste0("Wilson et al. (2012, Table 2): minimum CVR ",
-                .fmt(it$wilson_critical[1], digits), ", the normal ",
+                .fmt(it$wilson_critical[rated], digits), ", the normal ",
                 "approximation z/sqrt(N) at one-tailed alpha = ", alpha, "."))
   } else {
     .say("Lawshe (1975, Table 1) and Wilson et al. (2012, Table 2) set the",
          "minimum CVR by panel size, so each item's minimum is shown. Lawshe",
-         "labeled his a one-tailed test at .05; Wilson, Pan and Schumsky",
-         "(2012) found it closer to a two-tailed test. Wilson's is z/sqrt(N)",
-         "at one-tailed alpha =", paste0(alpha, "."))
+         "labeled his a one-tailed test at .05; Wilson et al. (2012) found it",
+         "closer to a two-tailed test. Wilson's is z/sqrt(N) at one-tailed",
+         "alpha =", paste0(alpha, "."))
+    # Two rows can show a CVR equal to its minimum and get opposite verdicts,
+    # so the rule that separates them is stated.
+    .say(paste0(
+      "Lawshe's minimum is applied as the fewest essential ratings that reach ",
+      "it",
+      if (any(it$N == 9L)) {
+        paste0(": for 9 panelists his .78 is 8 of 9 (.778) printed to two ",
+               "decimals, so 8 of 9 meets it.")
+      } else {
+        "."
+      }
+    ))
   }
   .rounding_note(it$item, it$cvr, it$lawshe_minimum, it$lawshe_meets,
                  "Lawshe", digits)

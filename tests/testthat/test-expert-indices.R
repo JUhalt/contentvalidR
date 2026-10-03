@@ -34,7 +34,7 @@ test_that("Aiken V handles itemwise missingness explicitly", {
 test_that("Aiken V rejects invalid scale and ratings", {
   expect_error(aikens_v(matrix(1:4, ncol = 1), lo = 5, hi = 1), "hi > lo")
   expect_error(aikens_v(matrix(c(1, 6), ncol = 1), lo = 1, hi = 5), "outside")
-  expect_error(aikens_v(matrix(c("a", "b"), ncol = 1)), "numeric")
+  expect_error(aikens_v(matrix(c("a", "b"), ncol = 1), lo = 1, hi = 4), "numeric")
 })
 
 test_that("bootstrap Aiken intervals remain available", {

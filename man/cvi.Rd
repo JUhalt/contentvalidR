@@ -13,7 +13,9 @@ cvi(
 }
 \arguments{
 \item{binary}{Matrix/data.frame with judges in rows and items in columns,
-coded \code{1 = relevant} and \verb{0 = not relevant}.}
+coded \code{1 = relevant} and \verb{0 = not relevant}. Every column is an item; a
+column whose name looks like a rater ID (such as \code{expert} or \code{rater_id})
+stops the function, so remove it, or rename an item that has such a name.}
 
 \item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
 If \code{TRUE}, missing ratings are removed itemwise and each item's effective

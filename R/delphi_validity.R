@@ -440,7 +440,9 @@
 #' @param lo,hi Lowest and highest points of the rating scale, as whole
 #'   numbers.
 #' @param agree_cut Rating at or above which an expert counts as agreeing.
-#'   Defaults to `hi - 1`, the usual relevance cut on a 4-point scale.
+#'   Defaults to `hi - 1`, the usual relevance cut on a 4-point scale, and to
+#'   `hi` on a two-point scale. It must lie above `lo`: at `lo` every rating
+#'   would count as agreement.
 #' @param consensus_threshold Share of experts that must agree for consensus,
 #'   between 0 and 1, fixed before the study. `NULL` (default) reports
 #'   agreement descriptively.
@@ -450,7 +452,8 @@
 #' @param alpha Significance level for the chi-square methods, and
 #'   `1 - alpha` is the interval level.
 #' @param B Bootstrap resamples for the kappa interval. Use `0` to skip it.
-#' @param seed Optional seed for the bootstrap.
+#' @param seed Optional seed for the bootstrap. The random-number stream of
+#'   the session is left as it was.
 #'
 #' @return An object of class `contentvalid_delphi` and
 #'   `contentvalid_workflow`. `results` has one row per item: its last round,
@@ -563,11 +566,8 @@ delphi_validity <- function(ratings,
   rounds <- prep$rounds
   k <- as.integer(hi - lo + 1)
 
-  if (is.null(agree_cut)) agree_cut <- hi - 1
-  if (!is.numeric(agree_cut) || length(agree_cut) != 1L || !is.finite(agree_cut) ||
-      agree_cut < lo || agree_cut > hi) {
-    stop("`agree_cut` must lie within the rating scale.", call. = FALSE)
-  }
+  if (is.null(agree_cut)) agree_cut <- .default_cut(lo, hi)
+  .validate_cut(agree_cut, lo, hi, "agree_cut")
   if (!is.null(consensus_threshold) &&
       (!is.numeric(consensus_threshold) || length(consensus_threshold) != 1L ||
        !is.finite(consensus_threshold) || consensus_threshold <= 0 ||
@@ -701,9 +701,13 @@ delphi_validity <- function(ratings,
     m <- matrix(NA_real_, length(experts), length(its),
                 dimnames = list(experts, its))
     m[cbind(match(dr$expert, experts), match(dr$item, its))] <- dr$rating
-    expert_validity(m, mode = "relevance", lo = lo, hi = hi,
-                    relevance_cut = agree_cut, alpha = alpha,
-                    agreement = "none", na.rm = TRUE)
+    # The columns are the user's item labels, taken from the item column, so
+    # an item called "Subject" is an item, not a rater ID left in the data.
+    .without_id_check(
+      expert_validity(m, mode = "relevance", lo = lo, hi = hi,
+                      relevance_cut = agree_cut, alpha = alpha,
+                      agreement = "none", na.rm = TRUE)
+    )
   })
   names(round_fits) <- rounds
 
