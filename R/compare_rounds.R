@@ -120,6 +120,8 @@
 #'     \item{panel_compared}{Whether the panel size was part of the
 #'       comparison: `TRUE` for the item sort and for expert relevance and
 #'       essentiality.}
+#'     \item{mode}{The mode of [expert_validity()] fits, `NA` for other
+#'       workflows.}
 #'   }
 #'
 #' @section Reading a comparison:
@@ -310,7 +312,8 @@ compare_rounds <- function(..., labels = NULL) {
     labels = labels,
     id_col = id_col,
     workflow = .workflow_name(rounds[[1]]),
-    n_rounds = length(rounds)
+    n_rounds = length(rounds),
+    mode = unname(modes[1])
   )
   class(out) <- "contentvalid_rounds"
   out
@@ -327,7 +330,8 @@ print.contentvalid_rounds <- function(x, ...) {
   moved <- sum(change %in% c("Strengthened", "Weakened", "Changed"))
   both <- sum(change %in% c("Strengthened", "Weakened", "Changed", "Unchanged"))
   cat("\n")
-  .say(sprintf("Of the %s present in the first and last rounds, %d changed status%s.",
+  .say(sprintf(paste("Of the %s present in the first and last rounds, %d",
+                     "changed status%s."),
                .n_noun(both, "unit"), moved,
                if (moved > 0L) {
                  sprintf(" (%d stronger, %d weaker%s)",
@@ -341,6 +345,7 @@ print.contentvalid_rounds <- function(x, ...) {
                } else {
                  ""
                }))
+  .say(.status_meaning(NULL, NULL, workflow = x$workflow, mode = x$mode))
 
   if (!x$comparable) {
     size <- x$settings_changes$setting == "panel size"
@@ -402,6 +407,7 @@ summary.contentvalid_rounds <- function(object, ...) {
   out <- list(
     workflow = object$workflow,
     n_rounds = object$n_rounds,
+    mode = object$mode,
     labels = object$labels,
     n_units = nrow(t),
     comparable = object$comparable,
@@ -421,8 +427,7 @@ print.summary.contentvalid_rounds <- function(x, ...) {
   cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",
       sep = "")
 
-  t <- x$transitions
-  .say(.status_meaning(NULL, NULL, workflow = x$workflow))
+  .say(.status_meaning(NULL, NULL, workflow = x$workflow, mode = x$mode))
 
   if (!x$comparable) {
     .section("What differs between rounds")

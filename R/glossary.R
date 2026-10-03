@@ -496,8 +496,9 @@
 }
 
 # One sentence relating the shared status words to a workflow's decision
-# words: from the decisions on hand, or from the workflow's name.
-.status_meaning <- function(recommendation, status, workflow = NULL) {
+# words: from the decisions on hand, or from the workflow's name and mode.
+.status_meaning <- function(recommendation, status, workflow = NULL,
+                            mode = NULL) {
   passing <- if (length(recommendation)) {
     unique(recommendation[!is.na(status) & status == "Supported"])
   } else {
@@ -507,7 +508,13 @@
     passing <- switch(as.character(workflow)[1],
                       "item-sort" = "Retain", "construct-rating" = "Retain",
                       "delphi" = "Consensus", "judge-heterogeneity" = "Typical",
-                      "domain-coverage" = "Covered", character(0))
+                      "domain-coverage" = "Covered",
+                      "expert-panel" = switch(
+                        if (length(mode) && !is.na(mode[1])) mode[1] else "",
+                        relevance = "Strong support",
+                        essentiality = "Supported", congruence = "Congruent",
+                        character(0)),
+                      character(0))
   }
   paste0("Status uses the words shared with nomologR: Supported is ",
          if (length(passing)) {

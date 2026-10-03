@@ -426,3 +426,25 @@ test_that("results without a figure say so when plotted", {
   expect_error(plot(judge_validity(ratings, lo = 1, hi = 4)), "no figure",
                fixed = TRUE)
 })
+
+test_that("a round comparison says what the status words mean, in print and summary", {
+  r1 <- cbind(I1 = c(4, 4, 4, 3, 4), I2 = c(2, 3, 2, 4, 3))
+  r2 <- cbind(I1 = c(4, 4, 4, 4, 4), I2 = c(4, 3, 4, 4, 3))
+  cr <- compare_rounds(expert_validity(r1, lo = 1, hi = 4, agreement = "none"),
+                       expert_validity(r2, lo = 1, hi = 4, agreement = "none"))
+  expect_identical(cr$mode, "relevance")
+  for (out in list(shown(cr), shown(summary(cr)))) {
+    expect_match(gsub("[[:space:]]+", " ", paste(out, collapse = " ")),
+                 "Supported is this analysis's passing decision (Strong support)",
+                 fixed = TRUE)
+  }
+})
+
+test_that("the Delphi verdict agrees in number with one item", {
+  d <- data.frame(expert = rep(paste0("E", 1:6), 2), item = "S1",
+                  round = rep(1:2, each = 6),
+                  rating = c(4, 4, 3, 4, 3, 4, 4, 4, 4, 4, 3, 4))
+  fit <- delphi_validity(d, lo = 1, hi = 4, consensus_threshold = .75, B = 0)
+  txt <- gsub("[[:space:]]+", " ", paste(shown(fit), collapse = " "))
+  expect_match(txt, "of 1 item reached consensus in its last round", fixed = TRUE)
+})

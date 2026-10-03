@@ -101,16 +101,19 @@
 #' than raters, and [panel_agreement()] does its job. Nothing deprecated is
 #' carried past 1.0.
 #'
-#' Four returned fields were removed at 1.0.0 without that notice, because
+#' Five returned fields were removed at 1.0.0 without that notice, because
 #' the audit before 1.0 found them wrong or unreachable, and a release that
 #' kept them would have kept wrong values in use: `overall_strength` in the
 #' `scale_summary` of [sort_validity()] and [rating_validity()] (a
 #' combination of the two Colquitt et al. levels that they do not publish),
 #' `n_support` in that of [expert_validity()] (a count of a decision that
-#' could not occur), `n_influential` in that of [judge_validity()] (a flag
-#' that was withdrawn), and `fit_label` in the `fit` table of
-#' [content_structure()] (Kruskal's labels, which belong to a different
-#' statistic). `NEWS.md` gives the reason for each.
+#' could not occur), `competitor_ioc` in its congruence `results` (a mean
+#' labeled as the index), `n_influential` in the `scale_summary` of
+#' [judge_validity()] (a flag that was withdrawn), and `fit_label` in the
+#' `fit` table of [content_structure()] (Kruskal's labels, which belong to a
+#' different statistic). With the congruence index corrected, its handoff
+#' statistics `competitor IOC` and `IOC margin` gave way to `target IOC` and
+#' the two mean ratings. `NEWS.md` gives the reason for each.
 #'
 #' @section Changing a default:
 #' A changed default can silently change published numbers, so it is treated

@@ -10,7 +10,7 @@ analysis that matches the cases below.
   ratings function. The deprecation warning shipped only on GitHub and
   R-universe, so a user updating from 0.4.0 on CRAN meets the removal
   without it.
-* Four returned fields are removed without a notice period, because the
+* Five returned fields are removed without a notice period, because the
   audit found them wrong or unreachable; `?contentvalidR` records the
   exception to the deprecation policy. Each is explained in the section
   named:
@@ -19,6 +19,10 @@ analysis that matches the cases below.
     change");
   * `n_support` in the `scale_summary` of `expert_validity()` (same
     section);
+  * `competitor_ioc` in the congruence `results` of `expert_validity()`,
+    whose results without a target mapping now have one row per item (same
+    section; the congruence handoff statistics `competitor IOC` and `IOC
+    margin` give way to `target IOC` and the two mean ratings);
   * `n_influential` in the `scale_summary` of `judge_validity()` ("Judges,
     domain and structure: values that change");
   * `fit_label` in the `fit` table of `content_structure()` (same section).
@@ -733,8 +737,9 @@ same rules (listed at the end), and two plot methods gain `type`.
   `content_report()` prints only the lines to paste.
 * **Status words.** The handoff and `compare_rounds()` printouts say what
   the shared status words mean in the workflow's own terms ("Supported is
-  this analysis's passing decision (Retain)"), and the expert-panel summary
-  counts its own decision word ("Strong support: 3 of 5").
+  this analysis's passing decision (Retain)"); `compare_rounds()` keeps the
+  expert-panel `mode` for this. The expert-panel summary counts its own
+  decision word ("Strong support: 3 of 5").
 * **Errors** for a wrong choice name the argument and the choices:
   `` `format` must be one of "apa", "data.frame", or "markdown", not
   "latex". `` As with `match.arg()`, `NULL` still selects the default.

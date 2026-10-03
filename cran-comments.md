@@ -12,10 +12,11 @@ This is an update of contentvalidR from 0.4.0, on CRAN since 2026-09-28, to
   `anova_content()`'s `posthoc` argument (deprecated from the first release,
   removed in 0.7.0) and its `posthoc_pass` column (removed in 0.8.0);
   `overall_strength` in the `scale_summary` of `sort_validity()` and
-  `rating_validity()`, `n_support` in that of `expert_validity()`,
-  `n_influential` in that of `judge_validity()`, and `fit_label` in the
-  `fit` table of `content_structure()`. These four fields were removed in
-  1.0.0 without a notice period because they were wrong or unreachable;
+  `rating_validity()`, `n_support` in that of `expert_validity()` and
+  `competitor_ioc` in its congruence results, `n_influential` in the
+  `scale_summary` of `judge_validity()`, and `fit_label` in the `fit`
+  table of `content_structure()`. These five fields were removed in 1.0.0
+  without a notice period because they were wrong or unreachable;
   `?contentvalidR` says so beside the deprecation policy.
 * `content_report()` returns an APA table by default since 0.9.0;
   `format = "data.frame"` gives the numeric table.

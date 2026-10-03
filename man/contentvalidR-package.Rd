@@ -114,16 +114,19 @@ removed in 1.0.0: it was the only function that took items in rows rather
 than raters, and \code{\link[=panel_agreement]{panel_agreement()}} does its job. Nothing deprecated is
 carried past 1.0.
 
-Four returned fields were removed at 1.0.0 without that notice, because
+Five returned fields were removed at 1.0.0 without that notice, because
 the audit before 1.0 found them wrong or unreachable, and a release that
 kept them would have kept wrong values in use: \code{overall_strength} in the
 \code{scale_summary} of \code{\link[=sort_validity]{sort_validity()}} and \code{\link[=rating_validity]{rating_validity()}} (a
 combination of the two Colquitt et al. levels that they do not publish),
 \code{n_support} in that of \code{\link[=expert_validity]{expert_validity()}} (a count of a decision that
-could not occur), \code{n_influential} in that of \code{\link[=judge_validity]{judge_validity()}} (a flag
-that was withdrawn), and \code{fit_label} in the \code{fit} table of
-\code{\link[=content_structure]{content_structure()}} (Kruskal's labels, which belong to a different
-statistic). \code{NEWS.md} gives the reason for each.
+could not occur), \code{competitor_ioc} in its congruence \code{results} (a mean
+labeled as the index), \code{n_influential} in the \code{scale_summary} of
+\code{\link[=judge_validity]{judge_validity()}} (a flag that was withdrawn), and \code{fit_label} in the
+\code{fit} table of \code{\link[=content_structure]{content_structure()}} (Kruskal's labels, which belong to a
+different statistic). With the congruence index corrected, its handoff
+statistics \verb{competitor IOC} and \verb{IOC margin} gave way to \verb{target IOC} and
+the two mean ratings. \code{NEWS.md} gives the reason for each.
 }
 
 \section{Changing a default}{
