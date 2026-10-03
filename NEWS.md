@@ -9,8 +9,7 @@ analysis that matches the cases below.
   0.9.0. Use `panel_agreement()`, which takes raters in rows like every other
   function in the package. The deprecation warning shipped only on GitHub and
   R-universe, so a user updating from 0.4.0 on CRAN meets the removal
-  without it. The package no longer suggests irr, which only that function
-  used.
+  without it.
 
 ## Item sort: values that change
 

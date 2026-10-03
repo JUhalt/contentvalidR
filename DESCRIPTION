@@ -39,6 +39,7 @@ Depends: R (>= 4.0.0)
 Imports:
     stats
 Suggests:
+    irr,
     knitr,
     rmarkdown,
     testthat (>= 3.0.0)
