@@ -45,6 +45,15 @@ multiple range test, not planned contrasts.}
 A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and \emph{p} value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
+\code{target_mean} and \code{competitor_mean}, and \code{strongest_competitor} (the
+other construct with the highest mean rating), use every available
+rating of the item. In a within-judge design \code{F}, the contrasts and HTD
+use only the judges who rated the item against every construct
+(\code{n_complete}), so with missing ratings the two sets of means can differ,
+even in which construct leads. The intended construct's mean over those
+judges is \code{target_mean_complete} in \code{\link[=htd]{htd()}} and in \code{\link[=rating_validity]{rating_validity()}}'s
+\code{results}, and the contrast table below holds each contrast's means over
+them.
 The full planned-contrast table is stored in \code{attr(result, "contrasts")}:
 for each contrast the two means, their difference, \code{t}, \code{df}, the
 one-sided \code{p}, the adjusted \code{p_adj}, and \code{pass}. Its \code{dz} column is a

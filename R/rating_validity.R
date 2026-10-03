@@ -31,7 +31,7 @@
     ds <- htd_i$interpretation[1]
     # Each index is read against its own benchmark, as Colquitt et al. (2019)
     # publish them; they publish no combined band. The advice follows the
-    # weaker of the two.
+    # lower of the two and is labeled as this package's.
     weaker <- if (is.na(hs) || is.na(ds)) NA_character_ else {
       if (unname(rank[hs]) <= unname(rank[ds])) hs else ds
     }
@@ -41,27 +41,29 @@
              .rating_left_out, ".")
     } else ""
     evidence <- if (judge_type == "expert") {
-      paste0("HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.", partial_note)
+      paste0(.colquitt_expert_sentence, partial_note)
     } else if (is.na(weaker)) {
       paste0("Insufficient scale-level rating evidence is available for normative interpretation.", partial_note)
     } else {
       band <- if (identical(hs, ds)) {
         sprintf(paste("Mean HTC and mean HTD both fall in the %s band of",
-                      "published scales (Colquitt et al., 2019)"), hs)
+                      "published scales (Colquitt et al., 2019)."), hs)
       } else {
         sprintf(paste("Mean HTC falls in the %s band and mean HTD in the %s",
-                      "band of published scales (Colquitt et al., 2019)"),
+                      "band of published scales (Colquitt et al., 2019)."),
                 hs, ds)
       }
       advice <- if (weaker %in% c("Very Strong", "Strong")) {
-        "."
+        ""
       } else if (weaker == "Moderate") {
-        "; inspect the weaker items and construct overlap before finalizing the scale."
+        paste("inspect the weaker items and construct overlap before",
+              "finalizing the scale")
       } else {
-        paste("; review item wording, construct boundaries, and the choice of",
-              "orbiting constructs, and consider pretesting the revised items again.")
+        paste("review item wording, construct boundaries, and the choice of",
+              "orbiting constructs, and consider pretesting the revised items",
+              "again")
       }
-      paste0(band, advice,
+      paste0(band, .colquitt_advice(c(hs, ds), advice),
              .colquitt_definitions_caution(defs_for(target), "rated"),
              partial_note)
     }
@@ -102,6 +104,24 @@
            .rating_means_used(sc$n_htc[i], sc$n_htd[i], sc$n_items[i]),
            "; ", .rating_left_out, ".")
   }, character(1))
+}
+
+# The scale-level table shared by print and summary. A mean is printed with
+# a third decimal when two would round it up to the minimum of a band it is
+# below (.868 beside Moderate, where Strong starts at .87); expert judges get
+# means and no levels.
+.rating_scale_table <- function(sc, expert, digits) {
+  fmt_mean <- function(v, statistic) {
+    if (expert) .fmt(v, digits) else
+      .fmt_band_mean(v, statistic, sc$orbiting_r, digits)
+  }
+  st <- data.frame(target = sc$target, items = sc$n_items,
+                   `mean HTC` = fmt_mean(sc$mean_htc, "htc"),
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  if (!expert) st$`HTC level` <- sc$htc_strength
+  st$`mean HTD` <- fmt_mean(sc$mean_htd, "htd")
+  if (!expert) st$`HTD level` <- sc$htd_strength
+  st
 }
 
 # "mean HTC and mean HTD use 2 of 3 items".
@@ -150,7 +170,10 @@
 #'
 #' Colquitt et al. (2019) norms are applied only to **target-scale averages** of
 #' HTC and HTD, matching the level at which those empirical benchmarks were
-#' constructed. The labels are suppressed for expert judges.
+#' constructed. The labels are not applied to expert judges. Each index is
+#' read against its own band; the advice in `scale_summary$evidence`, keyed to
+#' the lower of the two bands, is labeled as this package's suggestion, not
+#' Colquitt et al.'s.
 #'
 #' @param ratings Long-format rating data.
 #' @param item_col,rater_col,construct_col,rating_col Column names.
@@ -448,17 +471,19 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   }
 
   .section("Item-level evidence")
+  # The judge count is headed as content_report() heads it.
   tab <- data.frame(item = r$item, target = r$target,
-                    decision = r$recommendation, n = r$n_complete,
+                    decision = r$recommendation, judges = r$n_complete,
                     HTC = .fmt(r$htc, digits), HTD = .fmt(r$htd, digits),
                     `omnibus p` = .fmt_p(r$p_value),
                     `contrast p` = .fmt_p(r$max_contrast_p),
                     competitor = r$strongest_competitor,
                     stringsAsFactors = FALSE, check.names = FALSE)
-  .print_table(tab)
+  shown <- .print_table(tab)
   cat("\n")
   .say(paste0(
-    "n: judges who rated the item against every construct. Omnibus p: do ",
+    "Judges: the number who rated the item against every construct. ",
+    "Omnibus p: do ",
     "the item's ratings differ across constructs (Greenhouse-Geisser ",
     "corrected). Contrast p: the largest ",
     if (identical(s$adjust, "holm")) "Holm-adjusted ",
@@ -481,14 +506,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
     if (is.null(lab)) s else lab
   }, character(1), USE.NAMES = FALSE)
-  st <- data.frame(target = sc$target, items = sc$n_items,
-                   `mean HTC` = .fmt(sc$mean_htc, digits),
-                   stringsAsFactors = FALSE, check.names = FALSE)
-  # No benchmark is applied for expert judges, so no level columns and no
-  # benchmark set are shown for them.
-  if (!expert) st$`HTC level` <- sc$htc_strength
-  st$`mean HTD` <- .fmt(sc$mean_htd, digits)
-  if (!expert) st$`HTD level` <- sc$htd_strength
+  st <- .rating_scale_table(sc, expert, digits)
   .print_table(st, more = 'as.data.frame(x, component = "scale_summary")')
   # How many items are behind each mean, said only when some were left out.
   for (line in .rating_partial_means(sc)) .say(line)
@@ -496,9 +514,8 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   if (!expert) for (line in .colquitt_caution_lines(sc, "rated")) .say(line)
 
   cat("\n")
-  if (identical(s$judge_type, "expert")) {
-    .say("Colquitt benchmark labels are suppressed because the analysis was",
-         "marked as using expert judges.")
+  if (expert) {
+    .say(.colquitt_expert_sentence)
   } else {
     .say("Colquitt labels are empirical percentile norms for scale-level HTC",
          "and HTD averages, not universal cutoffs. HTC is an average rating",
@@ -512,6 +529,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   if (.show_key()) {
     .print_key(c("htc", "htd"), headings = c("HTC", "HTD"))
     .print_decision_legend(x$results$recommendation, "construct-rating")
+    .say_competitor_hidden(r$recommendation, shown)
     .print_key_footer()
   }
 
@@ -542,26 +560,20 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 
   .section("Scale-level evidence")
   s <- x$scale_summary
-  tab <- data.frame(target = s$target, items = s$n_items,
-                    stringsAsFactors = FALSE, check.names = FALSE)
-  # The sentence under the table says how many items are behind each mean
-  # when some were left out.
-  tab$retain <- s$n_retain
-  tab$review <- s$n_review
-  tab$`mean HTC` <- .fmt(s$mean_htc, digits)
-  tab$`HTC level` <- s$htc_strength
-  tab$`mean HTD` <- .fmt(s$mean_htd, digits)
-  tab$`HTD level` <- s$htd_strength
   # Expert-judge analyses carry no benchmark labels, so the columns that
   # would hold them are left out. The judge type decides, as in the main
   # print, so a naive-judge analysis keeps the columns even when empty.
-  if (identical(x$settings$judge_type, "expert")) {
-    tab <- tab[!names(tab) %in% c("HTC level", "HTD level")]
-  }
+  st <- .rating_scale_table(s, identical(x$settings$judge_type, "expert"),
+                            digits)
+  tab <- cbind(st[c("target", "items")],
+               data.frame(retain = s$n_retain, review = s$n_review),
+               st[setdiff(names(st), c("target", "items"))])
   .print_table(tab, more = "x$scale_summary")
   cat("\n")
   .say("HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey",
        "distinctiveness (Colquitt et al., 2019).")
+  # Each sentence also says how many items are behind each mean when some
+  # were left out.
   .say_grouped(s$target, s$evidence)
 
   f <- x$reviewed_items

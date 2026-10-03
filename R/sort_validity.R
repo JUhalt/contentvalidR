@@ -60,7 +60,7 @@
 
     if (!psa_i$applicable || !csv_i$applicable || is.na(mean_psa) || is.na(mean_csv)) {
       evidence <- if (judge_type == "expert") {
-        "Colquitt norms not applied because this workflow was marked as using expert judges."
+        .colquitt_expert_sentence
       } else {
         "Insufficient usable item-level statistics for a scale-level benchmark summary."
       }
@@ -68,26 +68,27 @@
     } else {
       # Each index is read against its own benchmark, as Colquitt et al.
       # (2019) publish them; they publish no combined band. The advice
-      # follows the weaker of the two.
+      # follows the lower of the two and is labeled as this package's.
       labels <- c(psa_i$interpretation, csv_i$interpretation)
       weakest <- labels[which.min(strength_rank[labels])]
       band <- if (identical(labels[1], labels[2])) {
         sprintf(paste("Mean Psa and mean Csv both fall in the %s band of",
-                      "published scales (Colquitt et al., 2019)"), labels[1])
+                      "published scales (Colquitt et al., 2019)."), labels[1])
       } else {
         sprintf(paste("Mean Psa falls in the %s band and mean Csv in the %s",
-                      "band of published scales (Colquitt et al., 2019)"),
+                      "band of published scales (Colquitt et al., 2019)."),
                 labels[1], labels[2])
       }
-      evidence <- if (strength_rank[weakest] >= 4L) {
-        paste0(band, ".")
+      advice <- if (strength_rank[weakest] >= 4L) {
+        ""
       } else if (strength_rank[weakest] == 3L) {
-        paste0(band, "; review the weaker items before finalizing.")
+        "review the weaker items before finalizing"
       } else {
-        paste0(band, "; review item wording and construct overlap, and consider",
-               " pretesting the revised items again.")
+        paste("review item wording and construct overlap, and consider",
+              "pretesting the revised items again")
       }
-      evidence <- paste0(evidence, .colquitt_definitions_caution(n_definitions, how))
+      evidence <- paste0(band, .colquitt_advice(labels, advice),
+                         .colquitt_definitions_caution(n_definitions, how))
     }
 
     if (nrow(z) == 1L && judge_type == "naive") {
@@ -125,7 +126,9 @@
 #' Csv statistics with the exact target-count significance test recommended by
 #' Howard and Melloy (2016). Items meeting the exact criterion are labeled
 #' `"Retain"`; items that do not meet it are labeled `"Review"`, not
-#' automatically `"Delete"`. An item sorted by so few judges that no count
+#' automatically `"Delete"`. An item meets the criterion when its exact *p*
+#' is at or below `alpha`, so a *p* equal to `alpha` counts as meeting it;
+#' see [csv_binom_test()]. An item sorted by so few judges that no count
 #' could meet the criterion (four or fewer at the defaults) is labeled
 #' `"Insufficient panel"`, with status `"Insufficient data"`.
 #'
@@ -137,7 +140,10 @@
 #' At the target-scale level, Psa and Csv are averaged across items and
 #' interpreted using the empirical percentile norms from Colquitt et al. (2019).
 #' This mirrors how those norms were constructed. The Colquitt categories are
-#' descriptive benchmarks rather than pass/fail rules.
+#' descriptive benchmarks rather than pass/fail rules. Each index is read
+#' against its own band; the advice in `scale_summary$evidence`, keyed to the
+#' lower of the two bands, is labeled as this package's suggestion, not
+#' Colquitt et al.'s.
 #'
 #' @param assignments A data.frame containing item-sort responses.
 #' @param item_col,rater_col,assigned_col,target_col Column names for the item,
@@ -149,7 +155,8 @@
 #'   suggest a higher value such as .6 or .75, chosen before data collection,
 #'   when the alternative constructs are clearly different from the target or
 #'   the judges are subject-matter experts.
-#' @param alpha Significance level. Default `0.05`.
+#' @param alpha Significance level. Default `0.05`. A *p* equal to `alpha`
+#'   meets the criterion.
 #' @param orbiting_r Optional average correlation between each focal/target
 #'   scale and its orbiting scales. For one target, supply one correlation. For
 #'   multiple targets, supply a named numeric vector keyed by target construct.
@@ -160,8 +167,9 @@
 #'   `"agresti_coull"`, `"exact"`, or `"none"`. The interval is two-sided at
 #'   level `1 - alpha`, while the exact test is one-sided, so the interval of
 #'   an item that just meets the criterion can still include `p0`. The
-#'   decision comes from the test, not from the interval. See `ci` in [cvi()]
-#'   for the methods and the evidence for each.
+#'   decision comes from the test, not from the interval, and the printout
+#'   says so when a retained item's interval includes `p0`. See `ci` in
+#'   [cvi()] for the methods and the evidence for each.
 #' @param legacy Print the earlier published rules beside the decision, for
 #'   comparison. Default `FALSE`. They are computed either way, stored in
 #'   `details$earlier_methods`, and never change the decision; `print(fit,
@@ -392,6 +400,89 @@ sort_validity <- function(assignments,
   )
 }
 
+# The decisions that leave an item undecided: too few judges for any count to
+# meet the exact test, or no judge at all.
+.sort_undecided <- c("Insufficient panel", "Insufficient data")
+
+# How many judges sorted each item, beside the panel size in the header, when
+# that is not every judge for every item: " (14 to 23 per item)". Objects
+# saved before the range was stored print the panel size alone.
+.sort_judges_per_item <- function(design) {
+  lo <- design$n_judges_min
+  hi <- design$n_judges_max
+  n <- design$n_raters
+  if (is.null(lo) || is.null(hi) || is.null(n) || anyNA(c(lo, hi, n))) {
+    return("")
+  }
+  if (lo == n && hi == n) return("")
+  if (lo == hi) paste0(" (", lo, " per item)") else
+    paste0(" (", lo, " to ", hi, " per item)")
+}
+
+# The interval is two-sided at 1 - alpha and the exact test one-sided at
+# alpha, so the interval of an item that just meets the criterion can reach
+# p0. Said when a retained item's printed interval does.
+.sort_interval_note <- function(r, s) {
+  low <- r$recommendation == "Retain" & !is.na(r$psa_low) &
+    r$psa_low <= s$p0
+  if (!any(low)) return(NULL)
+  one <- sum(low) == 1L
+  paste0(paste(r$item[low], collapse = ", "),
+         if (one) " is retained although its " else
+           " are retained although their ",
+         format(100 * (1 - s$alpha)), "% ",
+         if (one) "interval includes" else "intervals include",
+         " p0 = ", .fmt(s$p0), ": the interval is two-sided, while the ",
+         "exact test is one-sided at alpha = ", .fmt_alpha(s$alpha),
+         ". The decision comes from the test.")
+}
+
+# The scale-level table shared by print and summary. A mean is printed with
+# a third decimal when two would round it up to the minimum of a band it is
+# below; expert judges get means and no levels.
+.sort_scale_table <- function(sc, expert, digits) {
+  fmt_mean <- function(v, statistic) {
+    if (expert) .fmt(v, digits) else
+      .fmt_band_mean(v, statistic, sc$orbiting_r, digits)
+  }
+  st <- data.frame(target = sc$target, items = sc$n_items,
+                   `mean Psa` = fmt_mean(sc$mean_psa, "psa"),
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  if (!expert) st$`Psa level` <- sc$psa_strength
+  st$`mean Csv` <- fmt_mean(sc$mean_csv, "csv")
+  if (!expert) st$`Csv level` <- sc$csv_strength
+  st
+}
+
+# A caution for each scale whose every item was left undecided by the exact
+# test: its bands rest on a panel too small to decide a single item. A
+# printed caution only; the scale summary is unchanged. `undecided` counts
+# each scale's undecided items.
+.sort_thin_panel_lines <- function(sc, undecided) {
+  thin <- sc$n_items > 0L & undecided == sc$n_items &
+    !is.na(sc$psa_strength)
+  if (!any(thin)) return(character(0))
+  txt <- paste("No item had enough judges for the exact test to decide it,",
+               "so this comparison with published scales rests on too few",
+               "judges to mean much.")
+  if (!all(thin)) {
+    txt <- paste0(paste(sc$target[thin], collapse = ", "), ": ", txt)
+  }
+  txt
+}
+
+# The Review entry of the decision key points to the competitor column. When
+# the table left that column out for width, the key says where it is. Used
+# by the item-sort and construct-rating printouts.
+.say_competitor_hidden <- function(decisions, shown) {
+  if (!"Review" %in% decisions || "competitor" %in% tolower(shown)) {
+    return(invisible(NULL))
+  }
+  .say("The competitor column is not shown above for width: summary(x)",
+       "names it for each flagged item, and as.data.frame(x) has it for",
+       "every item.")
+}
+
 #' @export
 print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
@@ -405,6 +496,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
 
   .print_header(x, "Item-sort analysis")
   cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
+      .sort_judges_per_item(x$design),
       " | Target constructs: ", x$design$n_target_scales, "\n", sep = "")
   .say("Test: ", s$item_inference, " (p0 = ", .fmt(s$p0), ", alpha = ",
        .fmt_alpha(s$alpha), ")", sep = "")
@@ -458,20 +550,15 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   .say("Judges: assignments to the target construct, out of the judges who",
        "sorted the item.")
   if (!is.null(s$proportion_ci)) .say(.proportion_ci_note(s$proportion_ci, s$alpha))
+  ci_note <- if (has_ci) .sort_interval_note(r, s)
+  if (length(ci_note)) .say(ci_note)
 
   sc <- x$scale_summary
   expert <- identical(s$judge_type, "expert")
   # Without benchmarks the table holds means only, and is headed as such.
   .section(if (expert) "Scale-level means" else
     "Scale-level Colquitt benchmarks")
-  st <- data.frame(target = sc$target, items = sc$n_items,
-                   `mean Psa` = .fmt(sc$mean_psa, digits),
-                   stringsAsFactors = FALSE, check.names = FALSE)
-  # No benchmark is applied for expert judges, so no level columns and no
-  # benchmark set are shown for them.
-  if (!expert) st$`Psa level` <- sc$psa_strength
-  st$`mean Csv` <- .fmt(sc$mean_csv, digits)
-  if (!expert) st$`Csv level` <- sc$csv_strength
+  st <- .sort_scale_table(sc, expert, digits)
   .print_table(st, more = 'as.data.frame(x, component = "scale_summary")')
   # The benchmark set explains each level. One shared by every scale is
   # stated once; different ones are named for their targets beneath the
@@ -480,18 +567,22 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert) {
     how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
     for (line in .colquitt_caution_lines(sc, how)) .say(line)
+    undecided <- vapply(sc$target, function(t) {
+      sum(r$target == t & r$recommendation %in% .sort_undecided)
+    }, numeric(1))
+    for (line in .sort_thin_panel_lines(sc, undecided)) .say(line)
   }
 
   cat("\n")
-  if (identical(s$judge_type, "expert")) {
-    .say("Colquitt benchmark labels are not applied because the analysis was",
-         "marked as using expert judges.")
+  if (expert) {
+    .say(.colquitt_expert_sentence)
   } else {
     .say("Colquitt labels are empirical percentile norms derived from",
          "scale-level averages, not universal cutoffs or automatic",
-         "scale-retention rules. They place a scale against published scales;",
-         "Psa and Csv sit on different scales, so their labels are not",
-         "comparable with each other.")
+         "scale-retention rules. They place a scale against published scales.",
+         "Psa and Csv sit on different scales, so their values cannot be",
+         "compared with each other; their labels can, because each is a",
+         "percentile position among published scales.")
   }
 
   if (show_earlier) {
@@ -503,6 +594,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
                headings = c("Psa", ci, "Csv", "competitor", "p"),
                shown = shown)
     .print_decision_legend(x$results$recommendation, "item-sort")
+    .say_competitor_hidden(r$recommendation, shown)
     .print_key_footer()
   }
 
@@ -539,26 +631,29 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
 
   .section("Scale-level evidence")
   s <- x$scale_summary
-  tab <- data.frame(
-    target = s$target, items = s$n_items, retain = s$n_retain,
-    review = s$n_review, `mean Psa` = .fmt(s$mean_psa, digits),
-    `Psa level` = s$psa_strength, `mean Csv` = .fmt(s$mean_csv, digits),
-    `Csv level` = s$csv_strength,
-    stringsAsFactors = FALSE, check.names = FALSE
-  )
   # Expert-judge analyses carry no benchmark labels, so the columns that
   # would hold them are left out. The judge type decides, as in the main
   # print.
-  if (identical(x$settings$judge_type, "expert")) {
-    tab <- tab[!names(tab) %in% c("Psa level", "Csv level")]
-  }
+  expert <- identical(x$settings$judge_type, "expert")
+  st <- .sort_scale_table(s, expert, digits)
+  tab <- cbind(st[c("target", "items")],
+               data.frame(retain = s$n_retain, review = s$n_review),
+               st[setdiff(names(st), c("target", "items"))])
   .print_table(tab, more = "x$scale_summary")
   cat("\n")
   .say("Psa = proportion of substantive agreement; Csv = coefficient of",
        "substantive validity (Anderson & Gerbing, 1991).")
   .say_grouped(s$target, s$evidence)
-
+  # The undecided items are among the flagged ones, so the caution for a
+  # scale with no decided item can be counted from them.
   f <- x$reviewed_items
+  if (!expert) {
+    undecided <- vapply(s$target, function(t) {
+      sum(f$target == t & f$recommendation %in% .sort_undecided)
+    }, numeric(1))
+    for (line in .sort_thin_panel_lines(s, undecided)) .say(line)
+  }
+
   if (nrow(f) > 0L) {
     .section("Flagged")
     .print_table(data.frame(

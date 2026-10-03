@@ -94,7 +94,10 @@ some are left out. The two-judge minimum is this package's choice.
 
 Colquitt et al. (2019) norms are applied only to \strong{target-scale averages} of
 HTC and HTD, matching the level at which those empirical benchmarks were
-constructed. The labels are suppressed for expert judges.
+constructed. The labels are not applied to expert judges. Each index is
+read against its own band; the advice in \code{scale_summary$evidence}, keyed to
+the lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s.
 }
 \examples{
 set.seed(12)

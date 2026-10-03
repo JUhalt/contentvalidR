@@ -91,6 +91,54 @@
                 "discuss other numbers."), here)
 }
 
+# What the item-sort and construct-rating workflows say, in print and in
+# their scale evidence, when expert judges leave the bands unapplied.
+.colquitt_expert_sentence <- paste(
+  "Colquitt benchmark labels are not applied because the analysis was",
+  "marked as using expert judges."
+)
+
+# The advice that follows a scale's two Colquitt bands. Colquitt et al.
+# (2019) publish a band for each index and no combined one, so advice keyed
+# to the lower of the two bands is this package's, and it is set apart from
+# the cited sentence and labeled as such. `labels` holds the two bands;
+# `advice` is empty when the lower band needs none.
+.colquitt_advice <- function(labels, advice) {
+  if (!nzchar(advice)) return("")
+  rank <- c("Lack of" = 1L, Weak = 2L, Moderate = 3L, Strong = 4L,
+            `Very Strong` = 5L)
+  if (identical(labels[1], labels[2])) {
+    return(paste0(" A contentvalidR suggestion for that band: ", advice, "."))
+  }
+  lower <- labels[which.min(rank[labels])]
+  paste0(" A contentvalidR suggestion for the lower band, ", lower, ": ",
+         advice, ".")
+}
+
+# A scale mean printed beside its Colquitt band. A mean just below a band's
+# minimum can round to it (.868 prints .87, where the overall HTC Strong band
+# starts), which would print ".87 Moderate" beside a benchmark table that puts
+# .87 in Strong. Such a mean gets more decimals, as .fmt_beside_cut() gives a
+# value beside its cut. `orbiting_r` picks the benchmark set, as it does for
+# the label.
+.fmt_band_mean <- function(value, statistic, orbiting_r = NA_real_,
+                           digits = 2L) {
+  orbiting_r <- rep_len(as.numeric(orbiting_r), length(value))
+  vapply(seq_along(value), function(i) {
+    v <- value[i]
+    if (is.na(v)) return(.fmt(v, digits))
+    r <- orbiting_r[i]
+    cp <- .colquitt_cutpoints(statistic,
+                              .colquitt_norm(if (is.na(r)) NULL else r))
+    # Only a band the mean is below can be confused with its own: the same
+    # tolerance as interpret_colquitt() decides which those are.
+    above <- unname(cp[v < cp - 1e-9])
+    d <- digits
+    while (d < digits + 6L && any(.fmt(v, d) == .fmt(above, d))) d <- d + 1L
+    .fmt(v, d)
+  }, character(1), USE.NAMES = FALSE)
+}
+
 # The same caution under a printed benchmark table, once for each count that
 # is not three, naming the scales when they differ.
 .colquitt_caution_lines <- function(sc, how) {
