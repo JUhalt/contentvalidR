@@ -82,7 +82,8 @@ qfactor_content(
 
 - seed:
 
-  Optional seed that makes parallel analysis reproducible.
+  Optional seed that makes parallel analysis reproducible. The
+  random-number stream of the session is left as it was.
 
 ## Value
 

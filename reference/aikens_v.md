@@ -10,8 +10,8 @@ compatibility and sensitivity analysis.
 ``` r
 aikens_v(
   ratings,
-  lo = 1,
-  hi = 5,
+  lo,
+  hi,
   ci = c("score", "none", "bootstrap"),
   B = 500,
   alpha = 0.05,
@@ -24,11 +24,16 @@ aikens_v(
 
 - ratings:
 
-  Matrix/data.frame with judges in rows and items in columns.
+  Matrix/data.frame with judges in rows and items in columns. Every
+  column is an item; a column whose name looks like a rater ID (such as
+  `expert` or `rater_id`) stops the function, so remove it, or rename an
+  item that has such a name.
 
 - lo, hi:
 
-  Numeric lower and upper bounds of the rating scale.
+  Lowest and highest points of the rating scale. Both are required: V
+  rescales the mean rating by the range of the scale, so the same
+  ratings give a different V on a 1-4 scale than on a 1-5 scale.
 
 - ci:
 
@@ -45,7 +50,8 @@ aikens_v(
 
 - seed:
 
-  Optional integer seed for bootstrap reproducibility.
+  Optional integer seed for bootstrap reproducibility. The random-number
+  stream of the session is left as it was.
 
 - na.rm:
 
@@ -85,5 +91,6 @@ aikens_v(R, lo = 1, hi = 4)
 #>  Item2       4 .92 [.65, .99]
 #>  Item3       4 .83 [.55, .95]
 #> 
+#> Scale: 1 to 4.
 #> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
 ```

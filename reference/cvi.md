@@ -41,7 +41,10 @@ cvi(
 - binary:
 
   Matrix/data.frame with judges in rows and items in columns, coded
-  `1 = relevant` and `0 = not relevant`.
+  `1 = relevant` and `0 = not relevant`. Every column is an item; a
+  column whose name looks like a rater ID (such as `expert` or
+  `rater_id`) stops the function, so remove it, or rename an item that
+  has such a name.
 
 - na.rm:
 

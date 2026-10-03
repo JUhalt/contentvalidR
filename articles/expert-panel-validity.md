@@ -43,6 +43,7 @@ fit
 #> -----------------------------------
 #> Mode: relevance
 #> Items: 4 | Experts/item: 6
+#> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
 #>   Identical rating pairs: 63.3%.
@@ -127,6 +128,7 @@ aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 200, seed = 1)
 #>  Item3       6  .89  [.78, 1.00]
 #>  Item4       6  .67   [.50, .83]
 #> 
+#> Scale: 1 to 4.
 #> Interval: percentile bootstrap.
 ```
 
@@ -354,11 +356,16 @@ automatic deletion. Expert rationales and domain coverage matter when
 deciding whether an item should be rewritten, retained for breadth, or
 removed.
 
+With four or fewer experts no count can clear the criterion at the
+default alpha: all four calling an item essential gives *p* = .0625.
+Such an item is labeled `Insufficient panel`, not `Review`, because the
+panel is too small to decide, whatever the experts said.
+
 ### Lawshe’s table and its recalculation, for comparison
 
-Lawshe (1975) published a table of minimum CVR values, and Wilson, Pan
-and Schumsky (2012) recalculated it. `legacy = TRUE` prints both beside
-the exact decision, without changing it:
+Lawshe (1975) published a table of minimum CVR values, and Wilson et al.
+(2012) recalculated it. `legacy = TRUE` prints both beside the exact
+decision, without changing it:
 
 ``` r
 
@@ -385,30 +392,29 @@ expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
 #> Earlier methods, for comparison (not used for the decision)
 #>   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)
 #>  Item1 Supported       9/9 1.00         meets                meets
-#>  Item2 Supported       8/9  .78         below                meets
+#>  Item2 Supported       8/9  .78         meets                meets
 #>  Item3    Review       7/9  .56         below                meets
 #> 
-#> Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists, labeled a one-tailed
-#> test at .05. Wilson, Pan and Schumsky (2012) found the table closer to a
-#> two-tailed test.
+#> Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists (8 of 9), which he
+#> labeled a one-tailed test at .05. Wilson et al. (2012) found the table closer
+#> to a two-tailed test.
 #> Wilson et al. (2012, Table 2): minimum CVR .55, the normal approximation
 #> z/sqrt(N) at one-tailed alpha = .05.
-#> Item2 (.778) prints at the Lawshe cutoff of .78 but falls short of it before
-#> rounding.
 #> The decision above uses the exact binomial test (Ayre & Scally, 2014).
 #> Lawshe's content validity index, the mean CVR of the items his table retains:
-#> 1.00 (1 item).
+#> .89 (2 items).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
 options(old)
 ```
 
-Nine experts show why the table was questioned. Eight of nine gives a
-CVR of .778, just under Lawshe’s .78, so his table asks for all nine,
-while with eight experts it accepts seven. Wilson et al. describe the
-anomaly: the minimum rises steadily from 40 experts down to nine, then
-drops at eight. The exact test needs eight of nine.
+Nine experts show why the table was questioned. Its minimum rises
+steadily from 40 experts down to nine, then drops from .78 at nine to
+.75 at eight, which Wilson et al. (2012) treated as an anomaly. Ayre and
+Scally (2014) showed it is not one. With so few experts only a few CVR
+values are possible: .75 is 7 of 8, and .78 is 8 of 9 (.778) printed to
+two decimals, the same counts the exact test requires.
 
 In relevance mode, `legacy = TRUE` adds Fleiss’ (1971) kappa on the
 relevant/not-relevant decision and the Polit and Beck (2006) benchmarks
@@ -521,10 +527,11 @@ zero.](expert-panel-validity_files/figure-html/expert-plots-3.png)
 
 Relevance mode displays Aiken’s V with its score interval and overlays
 I-CVI as a separate marker. Essentiality mode displays observed CVR
-against the exact panel-specific critical CVR. Congruence mode connects
-target IOC to the strongest competitor so the alignment margin is
-visually explicit. These displays are diagnostic summaries; they do not
-create new validity thresholds.
+against the exact panel-specific critical CVR, and marks with a cross an
+item whose panel was too small to test. Congruence mode connects target
+IOC to the strongest competitor so the alignment margin is visually
+explicit. These displays are diagnostic summaries; they do not create
+new validity thresholds.
 
 An index reduces each item’s ratings to one number, and the relevance
 plot shows that number. The distribution view shows the ratings behind

@@ -51,7 +51,9 @@ delphi_validity(
 - agree_cut:
 
   Rating at or above which an expert counts as agreeing. Defaults to
-  `hi - 1`, the usual relevance cut on a 4-point scale.
+  `hi - 1`, the usual relevance cut on a 4-point scale, and to `hi` on a
+  two-point scale. It must lie above `lo`: at `lo` every rating would
+  count as agreement.
 
 - consensus_threshold:
 
@@ -78,7 +80,8 @@ delphi_validity(
 
 - seed:
 
-  Optional seed for the bootstrap.
+  Optional seed for the bootstrap. The random-number stream of the
+  session is left as it was.
 
 ## Value
 

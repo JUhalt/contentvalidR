@@ -116,7 +116,9 @@ numbers.</p></dd>
 
 <dt id="arg-agree-cut">agree_cut<a class="anchor" aria-label="anchor" href="#arg-agree-cut"></a></dt>
 <dd><p>Rating at or above which an expert counts as agreeing.
-Defaults to <code>hi - 1</code>, the usual relevance cut on a 4-point scale.</p></dd>
+Defaults to <code>hi - 1</code>, the usual relevance cut on a 4-point scale, and to
+<code>hi</code> on a two-point scale. It must lie above <code>lo</code>: at <code>lo</code> every rating
+would count as agreement.</p></dd>
 
 
 <dt id="arg-consensus-threshold">consensus_threshold<a class="anchor" aria-label="anchor" href="#arg-consensus-threshold"></a></dt>
@@ -144,7 +146,8 @@ agreement descriptively.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Optional seed for the bootstrap.</p></dd>
+<dd><p>Optional seed for the bootstrap. The random-number stream of
+the session is left as it was.</p></dd>
 
 </dl></div>
     <div class="section level2">

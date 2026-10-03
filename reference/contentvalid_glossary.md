@@ -137,6 +137,8 @@ contentvalid_glossary()
 #>   decisions (essentiality):
 #>     Supported -- enough experts rated it essential to pass the exact test.
 #>     Review -- too few experts rated it essential to pass the exact test.
+#>     Insufficient panel -- too few experts rated it for any count to pass
+#>         the exact test.
 #>     Insufficient data -- no expert rated it.
 #>   decisions (congruence):
 #>     Target favored -- experts linked it most strongly to its intended

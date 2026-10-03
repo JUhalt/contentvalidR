@@ -6,11 +6,13 @@ be either counts of experts marking each item essential or a
 judge-by-item 0/1 matrix.
 
 Lawshe (1975) published a table of critical values computed by a
-colleague, Lowell Schipper, without saying how. Wilson, Pan and Schumsky
-(2012) found the table dips at eight experts where it should rise, and
-that it matches a normal approximation at a two-tailed .05 level rather
-than the one-tailed .05 it was labeled with. Ayre and Scally (2014) then
-derived exact binomial values, which are the ones used here.
+colleague, Lowell Schipper, without saying how. Wilson et al. (2012)
+read the step from .78 at nine experts to .75 at eight as an anomaly,
+and found that the table matches a normal approximation at a two-tailed
+.05 level rather than the one-tailed .05 it was labeled with. Ayre and
+Scally (2014) then derived exact binomial values, which are the ones
+used here, and showed that the step is not an anomaly: .78 is 8 of 9 and
+.75 is 7 of 8, the counts the exact test also requires.
 
 ## Usage
 
@@ -24,7 +26,10 @@ cvr(essential, N = NULL, alpha = 0.05, na.rm = FALSE, item_names = NULL)
 
   Numeric/integer vector of essential counts, or a matrix/data frame
   with judges in rows, items in columns, coded `1 = essential` and
-  `0 = not essential`.
+  `0 = not essential`. In a judge-by-item table every column is an item;
+  a column whose name looks like a rater ID (such as `expert` or
+  `rater_id`) stops the function, so remove it, or rename an item that
+  has such a name.
 
 - N:
 
@@ -42,13 +47,17 @@ cvr(essential, N = NULL, alpha = 0.05, na.rm = FALSE, item_names = NULL)
 
 - item_names:
 
-  Optional item names for count-vector input.
+  Optional item names for count-vector input. By default the names of
+  `essential` are used when every count has a distinct, non-blank name,
+  and `Item1`, `Item2`, and so on otherwise.
 
 ## Value
 
-A data.frame containing item, `ne`, effective `N`, CVR, exact p-value,
-critical essential count/CVR, and `pass`. It prints as a formatted table
-in APA style; the values themselves are unrounded, and
+A data.frame containing item, `ne`, effective `N`, CVR, exact *p* value,
+critical essential count/CVR, and `pass`. With very few experts no count
+can reach `alpha` (4 of 4 gives *p* = .0625), so the critical count and
+CVR are `NA` and `pass` is `FALSE`; the printout says so. It prints as a
+formatted table in APA style; the values themselves are unrounded, and
 [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
 the plain data frame.
 

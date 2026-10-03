@@ -9,7 +9,12 @@ mode = &quot;congruence&quot;: Rovinelli-Hambleton item-objective congruence.
 
 Quantitative results are presented as evidence for item review rather than
 as a substitute for expert comments, construct coverage, comprehensibility,
-or other parts of a content-validity argument."><meta property="og:description" content="Provides a user-facing workflow for three common expert-panel tasks:
+or other parts of a content-validity argument.
+In essentiality mode an item rated by so few experts that no count could
+meet the exact test (four or fewer at the default alpha) is labeled
+&quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;, as an item rated
+by fewer than three experts is in relevance mode. It is not &quot;Review&quot;,
+which would say the experts had disagreed."><meta property="og:description" content="Provides a user-facing workflow for three common expert-panel tasks:
 mode = &quot;relevance&quot;: bounded ordinal relevance ratings, combining Aiken's
 V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 panel-level agreement coefficient.
@@ -19,7 +24,12 @@ mode = &quot;congruence&quot;: Rovinelli-Hambleton item-objective congruence.
 
 Quantitative results are presented as evidence for item review rather than
 as a substitute for expert comments, construct coverage, comprehensibility,
-or other parts of a content-validity argument."></head><body>
+or other parts of a content-validity argument.
+In essentiality mode an item rated by so few experts that no count could
+meet the exact test (four or fewer at the default alpha) is labeled
+&quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;, as an item rated
+by fewer than three experts is in relevance mode. It is not &quot;Review&quot;,
+which would say the experts had disagreed."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -83,6 +93,11 @@ panel-level agreement coefficient.</p></li>
 </ul><p>Quantitative results are presented as evidence for item review rather than
 as a substitute for expert comments, construct coverage, comprehensibility,
 or other parts of a content-validity argument.</p>
+<p>In essentiality mode an item rated by so few experts that no count could
+meet the exact test (four or fewer at the default <code>alpha</code>) is labeled
+<code>"Insufficient panel"</code>, with status <code>"Insufficient data"</code>, as an item rated
+by fewer than three experts is in relevance mode. It is not <code>"Review"</code>,
+which would say the experts had disagreed.</p>
     </div>
 
     <div class="section level2">
@@ -113,8 +128,11 @@ or other parts of a content-validity argument.</p>
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>Ratings data. For relevance, a judge-by-item numeric matrix/data
 frame. For essentiality, either a judge-by-item 0/1 matrix/data frame or a
-vector of essential counts. For congruence, a long data frame accepted by
-<code><a href="ioc.html">ioc()</a></code>.</p></dd>
+vector of essential counts, whose names become the item names when every
+count has a distinct name. For congruence, a long data frame accepted by
+<code><a href="ioc.html">ioc()</a></code>. In a judge-by-item table every column is an item; a column whose
+name looks like a rater ID (such as <code>expert</code> or <code>rater_id</code>) stops the
+function, so remove it, or rename an item that has such a name.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
@@ -122,12 +140,18 @@ vector of essential counts. For congruence, a long data frame accepted by
 
 
 <dt id="arg-lo-hi">lo, hi<a class="anchor" aria-label="anchor" href="#arg-lo-hi"></a></dt>
-<dd><p>Rating-scale bounds for relevance mode.</p></dd>
+<dd><p>Rating-scale bounds for relevance mode. The default is the
+1-4 relevance scale; give the bounds for any other scale, because Aiken's
+V and the relevance cut both depend on them. The printout states the
+scale that was used.</p></dd>
 
 
 <dt id="arg-relevance-cut">relevance_cut<a class="anchor" aria-label="anchor" href="#arg-relevance-cut"></a></dt>
 <dd><p>Lowest rating treated as relevant for CVI. Defaults to
-<code>hi - 1</code>, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale.</p></dd>
+<code>hi - 1</code>, e.g., 3 on a 1-4 scale or 4 on a 1-5 scale, and to <code>hi</code> on a
+two-point scale. The default assumes scale points one unit apart, so set
+the cut yourself on any other scale. It must lie above <code>lo</code>: at <code>lo</code>
+every rating would count as relevant.</p></dd>
 
 
 <dt id="arg-n">N<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -174,7 +198,8 @@ the interval.</p></dd>
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Optional seed that makes the agreement interval reproducible.</p></dd>
+<dd><p>Optional seed that makes the agreement interval reproducible.
+The random-number stream of the session is left as it was.</p></dd>
 
 
 <dt id="arg-legacy">legacy<a class="anchor" aria-label="anchor" href="#arg-legacy"></a></dt>
@@ -204,11 +229,14 @@ while retaining mode-specific <code>recommendation</code> wording. In relevance 
 binomial test (Ayre &amp; Scally, 2014) in essentiality mode. Earlier rules are
 reported beside them for teaching, and none changes a decision:</p><ul><li><p><strong>Essentiality.</strong> Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
 panelists, then every fifth panel size to 40; other sizes have no minimum.
-He labeled it a one-tailed test at .05. Wilson, Pan and Schumsky (2012)
-found the table closer to a two-tailed test and recomputed it by the
-normal approximation, <code>z / sqrt(N)</code> for a one-tailed test at <code>alpha</code>
-(their Table 2). Lawshe's content validity index for the whole set is the
-mean CVR of the items his table retains (Lawshe, 1975).</p></li>
+He labeled it a one-tailed test at .05. Wilson et al. (2012) found the
+table closer to a two-tailed test and recomputed it by the normal
+approximation, <code>z / sqrt(N)</code> for a one-tailed test at <code>alpha</code> (their
+Table 2). An item meets Lawshe's minimum when its essential count reaches
+the count that minimum implies: 8 of 9 for his .78, which is .778 printed
+to two decimals (Ayre &amp; Scally, 2014). Lawshe's content validity index
+for the whole set is the mean CVR of the items his table retains (Lawshe,
+1975).</p></li>
 <li><p><strong>Relevance.</strong> Fleiss' (1971) kappa, his kappa for many raters and nominal
 categories, on the relevant/not-relevant decision. It needs every expert to
 rate every item. The printout also notes that S-CVI/Ave is the average
@@ -299,6 +327,7 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: relevance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts/item: 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Scale: 1 to 4 | Relevant: a rating of 3 or higher</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50.0%.</span>
@@ -394,9 +423,9 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Item3    Review      8/12  .33         below                below</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Item4    Review      6/12  .00         below                below</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe (1975, Table 1): minimum CVR .56 for 12 panelists, labeled a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> one-tailed test at .05. Wilson, Pan and Schumsky (2012) found the table</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> closer to a two-tailed test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe (1975, Table 1): minimum CVR .56 for 12 panelists (10 of 12), which he</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> labeled a one-tailed test at .05. Wilson et al. (2012) found the table closer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> to a two-tailed test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Wilson et al. (2012, Table 2): minimum CVR .47, the normal approximation</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> z/sqrt(N) at one-tailed alpha = .05.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The decision above uses the exact binomial test (Ayre &amp; Scally, 2014).</span>

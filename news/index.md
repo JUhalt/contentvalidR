@@ -3,7 +3,7 @@
 ## contentvalidR 0.10.1.9000 (development version)
 
 Fixes from the audit before 1.0. Some of them change values, so check
-any item sort that matches the cases below.
+any analysis that matches the cases below.
 
 ### Item sort: values that change
 
@@ -98,6 +98,99 @@ any item sort that matches the cases below.
   drawn as diamonds; the figures draw triangles.
 - [`?interpret_colquitt`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md)
   gives the full reference for Colquitt et al. (2019).
+
+### Expert panel: values that change
+
+- **On a two-point scale the default cut is the top point.** The cut for
+  “relevant” defaulted to `hi - 1`, which is the bottom of a 0/1 or 1/2
+  scale, so every rating counted. An item no expert rated relevant got
+  an I-CVI of 1.00 and “Strong support”.
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+  [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  and
+  [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  now default to `hi` on a two-point scale, and refuse a cut at the
+  bottom of any scale.
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) was
+  always right.
+- **[`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md)
+  needs `lo` and `hi`.** It assumed a 1-5 scale, while
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  and
+  [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  assume 1-4, so `aikens_v(R)` on 1-4 ratings returned .75 for an item
+  every expert rated 4. V depends on the scale, so the scale is no
+  longer assumed, and the printout states it.
+- **A rater-ID column is no longer analyzed as an item.** With four
+  experts on a 1-4 scale, an `expert` column holding 1 to 4 was rated as
+  an item and changed S-CVI, the agreement coefficient and the handoff.
+  Every function that takes a judge-by-item table now stops when a
+  column looks like a rater ID, and says which column to remove. The
+  check goes by name (`expert`, `judge`, `rater_id`, `ID` and the like),
+  and also catches the row-number column a CSV round trip adds (`X`)
+  when it counts 1, 2, 3. It cannot catch an ID column with an item-like
+  name, and an item that really is named `Subject` has to be renamed.
+  [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  takes long data and is not affected.
+- **An essentiality item rated by too few experts for the exact test
+  gets no decision.** With four or fewer experts at the defaults no
+  count can reach alpha. Such items were `"Review"`, with a legend
+  saying too few experts had rated them essential, even at 4 of 4. They
+  are now `"Insufficient panel"`, with status `"Insufficient data"`, the
+  printout says why, and the `rule` text in the handoff no longer reads
+  “CVR \>= NA, i.e. at least NA of 4”.
+- **Named essential counts keep their names.**
+  [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md) and
+  `expert_validity(mode = "essentiality")` renamed the items of a named
+  count vector to Item1, Item2, so the handoff carried names that
+  matched no response data. Names are used when every count has a
+  distinct, non-blank name; otherwise the items are numbered, as before.
+- **Lawshe’s table at nine panelists.** In the comparison block, 8 of 9
+  panelists (a CVR of .778) was reported as below his .78, and the
+  vignette said his table asks for all nine. His .78 is 8 of 9 printed
+  to two decimals: nine panelists can give no other value near it (Ayre
+  & Scally, 2014). The comparison now uses the count each tabled value
+  implies, so 8 of 9 meets it and his content validity index includes
+  that item. Ten of 13 (.538 against .54) still falls short, the one
+  size where his table and the exact test differ.
+- **A seed no longer resets the random stream of the session.** Every
+  `seed` argument called
+  [`set.seed()`](https://rdrr.io/r/base/Random.html) and left it set, so
+  a seeded call inside a simulation loop made every later replicate draw
+  the same data. Seeded resampling now restores the stream it found.
+  Results for a given seed are unchanged.
+- **The AC1 bootstrap scores every resample on the same categories.** A
+  resample that happened to miss a rating category was scored with fewer
+  categories, which pulled the interval down. It affected
+  `panel_agreement(method = "ac1")` on scales with three or more
+  categories; the point estimate, and AC1 inside
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+  are unchanged.
+
+### Expert panel: other fixes
+
+- The relevance printout states the rating scale and the cut it used.
+- In
+  [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md)
+  and
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+  a rating outside the scale names its column and the scale in the
+  error, and says to set `lo` and `hi`.
+- [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md) and
+  the essentiality table print “none” where no count can meet the test,
+  with a sentence saying why, where they printed `NA`.
+  [`summary()`](https://rdrr.io/r/base/summary.html) counts such items
+  as “Too few experts”, apart from items no expert rated.
+- The essentiality figure marks an item whose panel was too small to
+  test with a cross, and its legend lists only what is drawn.
+- With panels of different sizes, the Lawshe comparison says that his
+  minimum is applied as a count, and no longer reads an unrated first
+  item as “no minimum for this panel size”.
+- [`?cvr`](https://juhalt.github.io/contentvalidR/reference/cvr.md) no
+  longer calls the step in Lawshe’s table at eight experts a defect.
+- [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  prints “undefined” for a coefficient that cannot be computed, where it
+  printed “= NA” followed by a note about resamples.
 
 ### Other changes
 

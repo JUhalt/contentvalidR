@@ -55,7 +55,7 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.10.1.9000" id="contentvalidr-01019000-development-version">contentvalidR 0.10.1.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-01019000-development-version"></a></h2>
-<p>Fixes from the audit before 1.0. Some of them change values, so check any item sort that matches the cases below.</p>
+<p>Fixes from the audit before 1.0. Some of them change values, so check any analysis that matches the cases below.</p>
 <div class="section level3">
 <h3 id="item-sort-values-that-change-0-10-1-9000">Item sort: values that change<a class="anchor" aria-label="anchor" href="#item-sort-values-that-change-0-10-1-9000"></a></h3>
 <ul><li>
@@ -91,6 +91,38 @@
 <li>The item-sort and construct-rating vignettes said scale means are drawn as diamonds; the figures draw triangles.</li>
 <li>
 <code><a href="../reference/interpret_colquitt.html">?interpret_colquitt</a></code> gives the full reference for Colquitt et al. (2019).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="expert-panel-values-that-change-0-10-1-9000">Expert panel: values that change<a class="anchor" aria-label="anchor" href="#expert-panel-values-that-change-0-10-1-9000"></a></h3>
+<ul><li>
+<strong>On a two-point scale the default cut is the top point.</strong> The cut for “relevant” defaulted to <code>hi - 1</code>, which is the bottom of a 0/1 or 1/2 scale, so every rating counted. An item no expert rated relevant got an I-CVI of 1.00 and “Strong support”. <code><a href="../reference/expert_validity.html">expert_validity()</a></code>, <code><a href="../reference/judge_validity.html">judge_validity()</a></code> and <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> now default to <code>hi</code> on a two-point scale, and refuse a cut at the bottom of any scale. <code><a href="../reference/cvi.html">cvi()</a></code> was always right.</li>
+<li>
+<strong><code><a href="../reference/aikens_v.html">aikens_v()</a></code> needs <code>lo</code> and <code>hi</code>.</strong> It assumed a 1-5 scale, while <code><a href="../reference/expert_validity.html">expert_validity()</a></code> and <code><a href="../reference/judge_validity.html">judge_validity()</a></code> assume 1-4, so <code>aikens_v(R)</code> on 1-4 ratings returned .75 for an item every expert rated 4. V depends on the scale, so the scale is no longer assumed, and the printout states it.</li>
+<li>
+<strong>A rater-ID column is no longer analyzed as an item.</strong> With four experts on a 1-4 scale, an <code>expert</code> column holding 1 to 4 was rated as an item and changed S-CVI, the agreement coefficient and the handoff. Every function that takes a judge-by-item table now stops when a column looks like a rater ID, and says which column to remove. The check goes by name (<code>expert</code>, <code>judge</code>, <code>rater_id</code>, <code>ID</code> and the like), and also catches the row-number column a CSV round trip adds (<code>X</code>) when it counts 1, 2, 3. It cannot catch an ID column with an item-like name, and an item that really is named <code>Subject</code> has to be renamed. <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> takes long data and is not affected.</li>
+<li>
+<strong>An essentiality item rated by too few experts for the exact test gets no decision.</strong> With four or fewer experts at the defaults no count can reach alpha. Such items were <code>"Review"</code>, with a legend saying too few experts had rated them essential, even at 4 of 4. They are now <code>"Insufficient panel"</code>, with status <code>"Insufficient data"</code>, the printout says why, and the <code>rule</code> text in the handoff no longer reads “CVR &gt;= NA, i.e. at least NA of 4”.</li>
+<li>
+<strong>Named essential counts keep their names.</strong> <code><a href="../reference/cvr.html">cvr()</a></code> and <code>expert_validity(mode = "essentiality")</code> renamed the items of a named count vector to Item1, Item2, so the handoff carried names that matched no response data. Names are used when every count has a distinct, non-blank name; otherwise the items are numbered, as before.</li>
+<li>
+<strong>Lawshe’s table at nine panelists.</strong> In the comparison block, 8 of 9 panelists (a CVR of .778) was reported as below his .78, and the vignette said his table asks for all nine. His .78 is 8 of 9 printed to two decimals: nine panelists can give no other value near it (Ayre &amp; Scally, 2014). The comparison now uses the count each tabled value implies, so 8 of 9 meets it and his content validity index includes that item. Ten of 13 (.538 against .54) still falls short, the one size where his table and the exact test differ.</li>
+<li>
+<strong>A seed no longer resets the random stream of the session.</strong> Every <code>seed</code> argument called <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> and left it set, so a seeded call inside a simulation loop made every later replicate draw the same data. Seeded resampling now restores the stream it found. Results for a given seed are unchanged.</li>
+<li>
+<strong>The AC1 bootstrap scores every resample on the same categories.</strong> A resample that happened to miss a rating category was scored with fewer categories, which pulled the interval down. It affected <code>panel_agreement(method = "ac1")</code> on scales with three or more categories; the point estimate, and AC1 inside <code><a href="../reference/expert_validity.html">expert_validity()</a></code>, are unchanged.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="expert-panel-other-fixes-0-10-1-9000">Expert panel: other fixes<a class="anchor" aria-label="anchor" href="#expert-panel-other-fixes-0-10-1-9000"></a></h3>
+<ul><li>The relevance printout states the rating scale and the cut it used.</li>
+<li>In <code><a href="../reference/aikens_v.html">aikens_v()</a></code> and <code><a href="../reference/expert_validity.html">expert_validity()</a></code>, a rating outside the scale names its column and the scale in the error, and says to set <code>lo</code> and <code>hi</code>.</li>
+<li>
+<code><a href="../reference/cvr.html">cvr()</a></code> and the essentiality table print “none” where no count can meet the test, with a sentence saying why, where they printed <code>NA</code>. <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> counts such items as “Too few experts”, apart from items no expert rated.</li>
+<li>The essentiality figure marks an item whose panel was too small to test with a cross, and its legend lists only what is drawn.</li>
+<li>With panels of different sizes, the Lawshe comparison says that his minimum is applied as a count, and no longer reads an unrated first item as “no minimum for this panel size”.</li>
+<li>
+<code><a href="../reference/cvr.html">?cvr</a></code> no longer calls the step in Lawshe’s table at eight experts a defect.</li>
+<li>
+<code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> prints “undefined” for a coefficient that cannot be computed, where it printed “= NA” followed by a note about resamples.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-changes-0-10-1-9000">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-10-1-9000"></a></h3>

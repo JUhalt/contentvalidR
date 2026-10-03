@@ -45,7 +45,9 @@ gtheory_content(
 - ratings:
 
   A judges-by-items numeric matrix or data frame: one row per judge, one
-  column per item.
+  column per item. A column whose name looks like a rater ID (such as
+  `expert` or `rater_id`) stops the function, so remove it, or rename an
+  item that has such a name.
 
 - na.rm:
 

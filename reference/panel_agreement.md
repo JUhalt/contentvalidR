@@ -20,7 +20,11 @@ Two coefficients are available:
   Gerke (2023) show that it rises as ratings concentrate in one category
   even at a fixed level of agreement, and that it can be non-zero when
   raters are independent. Its printed output always repeats that
-  critique. AC1 treats the supplied values as unordered categories.
+  critique. AC1 treats the supplied values as unordered categories. It
+  depends on how many categories there are: they are the values observed
+  in `ratings`, as in Gwet's own software by default, and the bootstrap
+  holds them fixed, so a resample that happens to miss a category is
+  scored on the same scale.
 
 ## Usage
 
@@ -40,7 +44,9 @@ panel_agreement(
 - ratings:
 
   A numeric matrix or data frame with raters in rows and items in
-  columns. Missing ratings are allowed.
+  columns. Missing ratings are allowed. A column whose name looks like a
+  rater ID (such as `expert` or `rater_id`) stops the function, so
+  remove it, or rename an item that has such a name.
 
 - method:
 
@@ -62,7 +68,8 @@ panel_agreement(
 
 - seed:
 
-  Optional seed for a reproducible interval.
+  Optional seed for a reproducible interval. The random-number stream of
+  the session is left as it was.
 
 ## Value
 

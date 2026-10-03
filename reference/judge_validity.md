@@ -47,7 +47,9 @@ judge_validity(
 - ratings:
 
   A judges-by-items numeric matrix or data frame of relevance ratings:
-  one row per judge, one column per item.
+  one row per judge, one column per item. A column whose name looks like
+  a rater ID (such as `expert` or `rater_id`) stops the function, so
+  remove it, or rename an item that has such a name.
 
 - lo, hi:
 
@@ -55,7 +57,9 @@ judge_validity(
 
 - relevance_cut:
 
-  Lowest rating treated as relevant. Defaults to `hi - 1`.
+  Lowest rating treated as relevant. Defaults to `hi - 1`, and to `hi`
+  on a two-point scale. It must lie above `lo`: at `lo` every rating
+  would count as relevant.
 
 - na.rm:
 

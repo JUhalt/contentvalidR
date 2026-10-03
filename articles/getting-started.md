@@ -201,6 +201,7 @@ expert_fit
 #> -----------------------------------
 #> Mode: relevance
 #> Items: 3 | Experts/item: 6
+#> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
 #> Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].
 #>   Identical rating pairs: 71.1%.
@@ -323,6 +324,7 @@ aikens_v(R, lo = 1, hi = 5)
 #>  Item5       5 .60 [.39, .78]
 #>  Item6       5 .65 [.43, .82]
 #> 
+#> Scale: 1 to 5.
 #> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
 
 cvr(essential = c(8,10,5), N = 12)

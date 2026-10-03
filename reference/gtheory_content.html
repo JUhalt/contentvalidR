@@ -137,7 +137,9 @@ residual component. This is a property of the design, not of the estimator.</p>
 
 <dl><dt id="arg-ratings">ratings<a class="anchor" aria-label="anchor" href="#arg-ratings"></a></dt>
 <dd><p>A judges-by-items numeric matrix or data frame: one row per
-judge, one column per item.</p></dd>
+judge, one column per item. A column whose name looks like a rater ID
+(such as <code>expert</code> or <code>rater_id</code>) stops the function, so remove it, or
+rename an item that has such a name.</p></dd>
 
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
