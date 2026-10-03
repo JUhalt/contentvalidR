@@ -259,8 +259,8 @@ sort_validity <- function(assignments,
                           proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
                           legacy = FALSE,
                           n_constructs = NULL) {
-  judge_type <- match.arg(judge_type)
-  proportion_ci <- match.arg(proportion_ci)
+  judge_type <- .choose(judge_type)
+  proportion_ci <- .choose(proportion_ci)
   .validate_flag(legacy, "legacy")
   if (!is.null(n_constructs) &&
       (!is.numeric(n_constructs) || length(n_constructs) != 1L ||
@@ -622,8 +622,8 @@ plot.contentvalid_sort <- function(x,
                                    label = c("review", "all", "none"),
                                    show_legend = TRUE,
                                    ...) {
-  type <- match.arg(type)
-  label <- match.arg(label)
+  type <- .choose(type)
+  label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
@@ -633,7 +633,7 @@ plot.contentvalid_sort <- function(x,
   csv_lab <- "Csv: lead of the target over its top rival"
 
   if (type == "item") {
-    metric <- match.arg(metric)
+    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "psa") 0 else -1

@@ -645,6 +645,46 @@ analysis that matches the cases below.
 * The handoff vignette's nomologR install line names CRAN as well as
   R-universe, so it works in a fresh library.
 
+## Output style shared with nomologR
+
+The printouts of contentvalidR and nomologR now follow one style, agreed
+between the two packages (JUhalt/nomologR#144), so a researcher moving from
+content review to empirical validation reads both alike. Only presentation
+changes: no stored value, field, argument or handoff column.
+
+* **Headers.** Every printout opens with the object's class and a
+  plain-language title on one line, with no rule beneath:
+  `<contentvalid_sort> Item-sort analysis`; a summary's tag ends in
+  "summary".
+* **Numbers.** Values round half away from zero for display, so 5 of 8
+  prints .63, where R's own rounding gave .62 beside 3 of 8 as .38. A value
+  that could not be computed prints "--", never "NA". A *p* value that
+  would print 1.000 prints "> .999". Percentages are whole numbers on a base
+  under 100. Results objects keep full precision.
+* **Prose** wraps at 79 columns and never breaks inside "p < .001",
+  "alpha = .05", "N = 40" or an interval.
+* **Tables** are indented two spaces, with text left-aligned, numbers
+  right-aligned and headings in sentence case. A column empty in every row
+  is dropped, unless a decision rests on it. A table too wide for the
+  console tightens its columns, then drops trailing ones and names them,
+  never the status column. Contingency tables print the same way.
+* **Sections** indent their content; summaries list flagged units in a
+  "Flagged" section, one bullet per unit with a complete sentence,
+  "- B2 (Review): ...". Every printout ends with what the evidence does not
+  decide and one line pointing to what else the object holds ("See
+  summary(x) for the flagged items ...").
+* **Errors** for a wrong choice name the argument and the choices:
+  `` `format` must be one of "apa", "data.frame", or "markdown", not
+  "latex". ``
+* **Plots.** Every plot method takes `type`.
+* **Manuscript tables.** `content_report()` adds the APA general note:
+  the abbreviations in the order the columns show them, the interval
+  method, and the criterion behind the decisions. Its headings are in
+  sentence case. In Markdown the note reads "*Note.* ..." and a value that
+  could not be computed is an em dash.
+* `?contentvalidR` describes the conventions and gives the crosswalk
+  between contentvalidR's statuses and nomologR's.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

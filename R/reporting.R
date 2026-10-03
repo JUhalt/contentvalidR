@@ -82,7 +82,7 @@ as.data.frame.contentvalid_workflow <- function(x,
                                                 component = c("results", "scale_summary"),
                                                 include_interpretation = TRUE,
                                                 ...) {
-  component <- match.arg(component)
+  component <- .choose(component)
   .validate_flag(include_interpretation, "include_interpretation")
 
   out <- if (component == "results") x$results else .workflow_scale_summary(x)
@@ -228,14 +228,97 @@ as.data.frame.contentvalid_workflow <- function(x,
   # Two interval columns can share a heading ("95% CI" after V and after
   # I-CVI). The object keeps names that tell them apart; the printed table
   # and the Markdown show the shared heading, each beside its estimate.
+  headings <- .sentence_case(headings)
   display <- headings
   shared <- which(duplicated(headings) | duplicated(headings, fromLast = TRUE))
   for (i in shared[shared > 1L]) headings[i] <- paste(display[i - 1L], display[i])
   tab <- as.data.frame(cols, stringsAsFactors = FALSE)
   names(tab) <- headings
   attr(tab, "display") <- display
+  attr(tab, "note") <- .report_note(
+    x, display, has_missing = any(vapply(tab, function(v) any(v == .missing_mark),
+                                          logical(1)))
+  )
   tab
 }
+
+# The general note of an APA table (Section 7.14): the abbreviations in the
+# order the columns show them, the interval method, then the criterion that
+# produced the decisions. Shared in form with nomologR.
+.report_note <- function(x, headings, has_missing = FALSE) {
+  abbrev <- c(
+    Psa = "proportion of substantive agreement",
+    Csv = "coefficient of substantive validity",
+    HTC = "Hinkin-Tracey correspondence",
+    HTD = "Hinkin-Tracey distinctiveness",
+    V = "Aiken's content validity coefficient",
+    `I-CVI` = "item-level content validity index",
+    CVR = "content validity ratio",
+    IOC = "index of item-objective congruence",
+    CI = "confidence interval"
+  )
+  seen <- character(0)
+  for (h in headings) {
+    words <- strsplit(h, " ", fixed = TRUE)[[1]]
+    seen <- c(seen, setdiff(intersect(words, names(abbrev)), seen))
+  }
+  defs <- if (length(seen)) {
+    paste0(paste(paste(seen, "=", abbrev[seen]), collapse = "; "), ".")
+  }
+  st <- x$settings
+  alpha <- if (is.numeric(st$alpha)) st$alpha else 0.05
+  ci <- .ci_label(alpha)
+  interval <- NULL
+  if (any(headings == ci)) {
+    prop <- .handoff_interval_label(st$proportion_ci)
+    interval <- switch(
+      class(x)[1],
+      contentvalid_sort = if (!is.na(prop)) sprintf("%s = %s confidence interval.", ci, prop),
+      contentvalid_expert = if (!is.na(prop)) {
+        sprintf(paste("%s = Penfield-Giacobbi score confidence interval for V",
+                      "and %s confidence interval for I-CVI."), ci, prop)
+      },
+      contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci),
+      NULL
+    )
+  }
+  criterion <- switch(
+    class(x)[1],
+    contentvalid_sort = sprintf(paste(
+      "Retain = at least the number of target assignments the exact one-sided",
+      "binomial test needs at alpha = %s with p0 = %s (Howard & Melloy, 2016)."),
+      .fmt_alpha(alpha), .fmt(st$p0)),
+    contentvalid_rating = sprintf(paste(
+      "Retain = omnibus p and every one-sided contrast p at or below alpha =",
+      "%s (MacKenzie et al., 2011)."), .fmt_alpha(alpha)),
+    contentvalid_expert = switch(
+      x$mode,
+      relevance = paste0(
+        "Strong support = at least the number of experts rating the item ",
+        "relevant that Lynn's (1986) criterion requires for the panel size",
+        if (any(x$results$N > 10, na.rm = TRUE)) {
+          ", held at her 7 of 9 beyond ten experts (a contentvalidR extension)"
+        }, "."),
+      essentiality = sprintf(paste(
+        "Supported = an essential count that meets the exact one-sided",
+        "binomial test at alpha = %s (Ayre & Scally, 2014)."), .fmt_alpha(alpha)),
+      congruence = if (is.numeric(st$ioc_cut)) {
+        paste0("Congruent = IOC at or above ", .ioc_cut_source(st$ioc_cut),
+               " (Rovinelli & Hambleton, 1977).")
+      }
+    ),
+    contentvalid_delphi = if (is.numeric(st$consensus_threshold)) {
+      sprintf("Consensus = at least %s of experts agreeing in the last round.",
+              .delphi_percent(st$consensus_threshold))
+    },
+    NULL
+  )
+  missing <- if (has_missing) "-- = not computed; the printout says why."
+  txt <- c(defs, interval, criterion, missing)
+  if (!length(txt)) return(NULL)
+  paste(txt, collapse = " ")
+}
+
 
 # The headings a reader sees: the shared ones restored.
 .report_display <- function(tab) {
@@ -308,8 +391,8 @@ content_report <- function(x,
     stop("`x` must be a fitted contentvalidR workflow object.", call. = FALSE)
   }
   if (.congruence_pre10(x)) stop(.congruence_pre10_message(), call. = FALSE)
-  format <- match.arg(format)
-  include <- match.arg(include)
+  format <- .choose(format)
+  include <- .choose(include)
   .validate_digits(digits)
   if (!is.null(caption) &&
       (!is.character(caption) || length(caption) != 1L || is.na(caption))) {
@@ -333,7 +416,15 @@ content_report <- function(x,
     lines <- c(lines, if (!nrow(tab)) {
       "_No units matched the requested selection._"
     } else {
-      .as_markdown_table(.report_display(tab))
+      md <- .report_display(tab)
+      # APA marks a value that could not be computed with an em dash.
+      md[] <- lapply(md, function(v) ifelse(v == .missing_mark, "\u2014", v))
+      note <- attr(tab, "note")
+      c(.as_markdown_table(md),
+        if (length(note)) {
+          c("", paste0("*Note.* ", gsub(.missing_mark, "\u2014", note,
+                                         fixed = TRUE)))
+        })
     })
     attr(lines, "settings") <- x$settings
     class(lines) <- "contentvalid_markdown"
@@ -368,6 +459,11 @@ print.contentvalid_report <- function(x, ...) {
     cat("No units matched the requested selection.\n")
   } else {
     .print_table(.report_display(x))
+    note <- attr(x, "note")
+    if (length(note)) {
+      cat("\n")
+      .say(paste("Note.", note))
+    }
   }
   invisible(x)
 }
@@ -376,6 +472,7 @@ print.contentvalid_report <- function(x, ...) {
 as.data.frame.contentvalid_report <- function(x, ...) {
   class(x) <- "data.frame"
   attr(x, "display") <- NULL
+  attr(x, "note") <- NULL
   x
 }
 

@@ -523,6 +523,8 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #'
 #' @param x A `contentvalid_structure` object.
 #' @param show_legend Draw the blueprint-cell key.
+#' @param type `"map"`, the only view, accepted so that every plot method
+#'   takes `type`.
 #' @param ... Passed to [graphics::plot()]. An argument given here, such as
 #'   `xlab`, `xlim` or `main`, replaces the one the method would set. A `pch`
 #'   or `col` with one value per blueprint cell (or cluster) is applied cell
@@ -546,8 +548,9 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #' ), 9, 9, dimnames = list(items, items))
 #' plot(content_structure(sim, membership = blueprint))
 #' @export
-plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_structure <- function(x, show_legend = TRUE, type = "map", ...) {
   .validate_flag(show_legend, "show_legend")
+  type <- .choose(type, "map")
   user <- list(...)
   op <- .plot_margins(user)
   on.exit(graphics::par(op), add = TRUE)

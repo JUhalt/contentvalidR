@@ -624,8 +624,8 @@ delphi_validity <- function(ratings,
                             alpha = 0.05,
                             B = 1000,
                             seed = NULL) {
-  stability <- match.arg(stability)
-  kappa_weights <- match.arg(kappa_weights)
+  stability <- .choose(stability)
+  kappa_weights <- .choose(kappa_weights)
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) ||
       alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one number strictly between 0 and 1.", call. = FALSE)
@@ -1281,7 +1281,7 @@ plot.contentvalid_delphi <- function(x,
     }
     type <- which
   }
-  type <- match.arg(type)
+  type <- .choose(type)
   .validate_flag(show_legend, "show_legend")
   .validate_flag(apa, "apa")
   if (type == "distribution") {

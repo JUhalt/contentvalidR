@@ -221,8 +221,8 @@ rating_validity <- function(ratings,
                             adjust = c("none", "holm"),
                             orbiting_r = NULL,
                             judge_type = c("naive", "expert")) {
-  adjust <- match.arg(adjust)
-  judge_type <- match.arg(judge_type)
+  adjust <- .choose(adjust)
+  judge_type <- .choose(judge_type)
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
   anchors <- .validate_rating_scale(scale_min, scale_max, d$rating)
@@ -636,8 +636,8 @@ plot.contentvalid_rating <- function(x,
                                      label = c("review", "all", "none"),
                                      show_legend = TRUE,
                                      ...) {
-  type <- match.arg(type)
-  label <- match.arg(label)
+  type <- .choose(type)
+  label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
@@ -647,7 +647,7 @@ plot.contentvalid_rating <- function(x,
   htd_lab <- "HTD: lead of the target over the other constructs"
 
   if (type == "item") {
-    metric <- match.arg(metric)
+    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "htc") 0 else -1

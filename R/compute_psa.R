@@ -67,7 +67,7 @@ compute_psa <- function(assignments,
                         target_col = "target_construct",
                         ci = c("wilson", "agresti_coull", "exact", "none"),
                         alpha = 0.05) {
-  ci <- match.arg(ci)
+  ci <- .choose(ci)
   d <- .prepare_sort_assignments(
     assignments, item_col, rater_col, assigned_col, target_col
   )

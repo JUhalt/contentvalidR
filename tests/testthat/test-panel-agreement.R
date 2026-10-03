@@ -163,8 +163,8 @@ test_that("malformed inputs are rejected", {
   expect_error(panel_agreement(X, B = 2.5), "non-negative integer")
   expect_error(panel_agreement(X, alpha = 0), "strictly between 0 and 1")
   expect_error(panel_agreement(X, seed = "a"), "NULL or one number")
-  expect_error(panel_agreement(X, method = "fleiss"), "should be one of")
-  expect_error(panel_agreement(X, level = "ratio"), "should be one of")
+  expect_error(panel_agreement(X, method = "fleiss"), "must be one of")
+  expect_error(panel_agreement(X, level = "ratio"), "must be one of")
   Xinf <- X
   Xinf[1, 1] <- Inf
   expect_error(panel_agreement(Xinf), "infinite")

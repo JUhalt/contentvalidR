@@ -38,7 +38,7 @@ NULL
 
 # One table out of a result holding several.
 .as_df_part <- function(x, component, choices) {
-  component <- match.arg(component, choices)
+  component <- .choose(component, choices, "component")
   out <- x[[component]]
   if (is.null(out)) {
     stop("This result has no `", component, "` table.", call. = FALSE)
@@ -106,7 +106,7 @@ as.data.frame.contentvalid_structure <- function(x, row.names = NULL,
                                                  component = c("items", "fit",
                                                                "cross_tab"),
                                                  ...) {
-  component <- match.arg(component[1], c("items", "fit", "cross_tab"))
+  component <- .choose(component[1], c("items", "fit", "cross_tab"), "component")
   if (component == "items") {
     # The clusters table already carries each item's coordinates.
     out <- x$clusters

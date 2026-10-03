@@ -94,7 +94,7 @@ expert_power <- function(n_experts = 3:12,
                          criterion = c("cvi", "cvr"),
                          alpha = 0.05,
                          response_rate = 1) {
-  criterion <- match.arg(criterion)
+  criterion <- .choose(criterion)
 
   if (!is.numeric(n_experts) || !length(n_experts) || anyNA(n_experts) ||
       any(!is.finite(n_experts)) || any(n_experts < 1) ||
@@ -246,6 +246,8 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 #' Plot an expert-panel planning curve
 #'
 #' @param x A `contentvalid_expert_power` object.
+#' @param type `"probability"`, the only view, accepted so that every plot
+#'   method takes `type`.
 #' @param show_legend Draw the key identifying each assumed endorsement
 #'   probability.
 #' @param ... Passed to [graphics::plot()].
@@ -253,8 +255,10 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 #' @examples
 #' plot(expert_power(n_experts = 3:12, prob = c(0.7, 0.85)))
 #' @export
-plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
+                                           type = "probability", ...) {
   .validate_flag(show_legend, "show_legend")
+  type <- .choose(type, "probability")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results

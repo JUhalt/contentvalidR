@@ -178,7 +178,7 @@ test_that("every result becomes a data frame", {
   expect_identical(names(as.data.frame(content_handoff(s))),
                    names(content_handoff(s)$item_evidence))
   expect_error(as.data.frame(gtheory_content(R), component = "nope"),
-               "should be one of")
+               "must be one of")
 })
 
 test_that("a single test is one row", {

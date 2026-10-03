@@ -50,7 +50,7 @@ test_that("the scale summary is reachable through the same generic", {
   s <- as.data.frame(fit, component = "scale_summary")
   expect_equal(nrow(s), nrow(fit$scale_summary))
   expect_true("workflow" %in% names(s))
-  expect_error(as.data.frame(fit, component = "nope"), "should be one of")
+  expect_error(as.data.frame(fit, component = "nope"), "must be one of")
 })
 
 test_that("tables from different workflows stack without losing identity", {

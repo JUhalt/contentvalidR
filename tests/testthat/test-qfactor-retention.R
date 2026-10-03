@@ -149,5 +149,5 @@ test_that("retention arguments are validated", {
   expect_error(qfactor_content(d, n_iter = 0), "positive integer")
   expect_error(qfactor_content(d, n_iter = 2.5), "positive integer")
   expect_error(qfactor_content(d, seed = "a"), "NULL or one number")
-  expect_error(qfactor_content(d, retention = "scree"), "should be one of")
+  expect_error(qfactor_content(d, retention = "scree"), "must be one of")
 })

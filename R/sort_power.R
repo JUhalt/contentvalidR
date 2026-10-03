@@ -125,7 +125,7 @@ plot.contentvalid_sort_power <- function(x,
                                          reference_power = NULL,
                                          show_legend = TRUE,
                                          ...) {
-  type <- match.arg(type)
+  type <- .choose(type)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)

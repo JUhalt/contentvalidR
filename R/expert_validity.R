@@ -259,10 +259,10 @@ expert_validity <- function(data,
                             agreement_B = 1000,
                             seed = NULL,
                             legacy = FALSE) {
-  mode <- match.arg(mode)
-  proportion_ci <- match.arg(proportion_ci)
-  agreement <- match.arg(agreement)
-  agreement_level <- match.arg(agreement_level)
+  mode <- .choose(mode)
+  proportion_ci <- .choose(proportion_ci)
+  agreement <- .choose(agreement)
+  agreement_level <- .choose(agreement_level)
   .validate_flag(na.rm, "na.rm")
   .validate_flag(legacy, "legacy")
 
@@ -1115,7 +1115,7 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
                                      apa = TRUE, labels = NULL, ...) {
   .validate_flag(show_legend, "show_legend")
   .validate_flag(apa, "apa")
-  type <- match.arg(type)
+  type <- .choose(type)
   if (type == "distribution") {
     if (!identical(x$mode, "relevance")) {
       stop("The distribution view draws relevance ratings, so it needs a ",

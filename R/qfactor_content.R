@@ -185,9 +185,9 @@ qfactor_content <- function(ratings,
                             percentile = 95,
                             n_iter = 100,
                             seed = NULL) {
-  method <- match.arg(method)
-  retention <- match.arg(retention)
-  parallel_criterion <- match.arg(parallel_criterion)
+  method <- .choose(method)
+  retention <- .choose(retention)
+  parallel_criterion <- .choose(parallel_criterion)
   .validate_column_names(item_col, rater_col, construct_col, rating_col)
   if (!is.numeric(n_iter) || length(n_iter) != 1L || !is.finite(n_iter) ||
       n_iter < 1 || n_iter != floor(n_iter)) {

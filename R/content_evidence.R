@@ -417,7 +417,7 @@ as.data.frame.contentvalid_evidence <- function(x, row.names = NULL,
 #' @export
 plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
                                        apa = TRUE, show_legend = TRUE, ...) {
-  type <- match.arg(type)
+  type <- .choose(type)
   .validate_flag(apa, "apa")
   .validate_flag(show_legend, "show_legend")
   if (type == "flow") {

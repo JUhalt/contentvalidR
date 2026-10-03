@@ -274,9 +274,9 @@
 # Joins the parts of a phrase that must stay on one line with no-break
 # spaces, which strwrap() does not split at; .say() turns them back.
 .bind_phrases <- function(x) {
-  # "p < .001", "N = 473", "alpha = .05", "Phi = .80": a name, a relation
-  # and a number.
-  x <- gsub("\\b([A-Za-z][A-Za-z0-9-]*) ([<>=]) (?=[-.0-9])",
+  # "p < .001", "N = 473", "alpha = .05", "CI = confidence": a name, its
+  # relation and the next word.
+  x <- gsub("\\b([A-Za-z][A-Za-z0-9-]*) ([<>=]) ",
             paste0("\\1", .nbsp, "\\2", .nbsp), x, perl = TRUE)
   # "[.65, .99]" and "F(2, 14)" or "chi-square(1, N = 40)"
   x <- gsub("\\[([^]\\[]*), ([^]\\[]*)\\]", paste0("[\\1,", .nbsp, "\\2]"),

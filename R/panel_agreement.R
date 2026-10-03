@@ -185,8 +185,8 @@ panel_agreement <- function(ratings,
                             B = 1000,
                             alpha = 0.05,
                             seed = NULL) {
-  method <- match.arg(method)
-  level <- match.arg(level)
+  method <- .choose(method)
+  level <- .choose(level)
 
   .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)

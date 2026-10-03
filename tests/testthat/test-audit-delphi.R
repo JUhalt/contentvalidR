@@ -179,8 +179,8 @@ test_that("plot() takes type, and still accepts which", {
     expect_identical(plot(fit, which = view), fit)
     expect_identical(plot(fit, view), fit)
   }
-  expect_error(plot(fit, type = "trend"), "should be one of")
-  expect_error(plot(fit, which = "trend"), "should be one of")
+  expect_error(plot(fit, type = "trend"), "must be one of")
+  expect_error(plot(fit, which = "trend"), "must be one of")
   # The earlier name stands in for `type`, never beside it.
   expect_error(plot(fit, type = "consensus", which = "stability"),
                "Give `type` or `which`, not both", fixed = TRUE)
