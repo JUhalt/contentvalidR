@@ -722,10 +722,12 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
 #' are deliberately not drawn across item points because those norms were developed
 #' for scale-level averages rather than individual items.
 #'
-#' The key sits above the data, in two or three rows when one row would not
-#' fit the figure's width. Where a vertical axis title would not fit the
-#' figure's height, the axis shows the index's name alone (Psa or Csv) and the
-#' key's heading gives the full definition.
+#' The key sits above the data, in as many rows as the figure's width needs.
+#' Where a vertical axis title would not fit the figure's height, the axis
+#' shows the index's name alone (Psa or Csv) and the key's heading gives the
+#' full definition. The item plot widens its bottom margin for long item
+#' names, shortening a name in the middle with "..." when it would take more
+#' than about 40% of the figure's height.
 #'
 #' @param x A `contentvalid_sort` object.
 #' @param metric Either `"psa"` or `"csv"` for `type = "item"`.
@@ -774,6 +776,8 @@ plot.contentvalid_sort <- function(x,
     xs <- seq_along(y)
     lo <- if (metric == "psa") 0 else -1
     full <- if (metric == "psa") psa_lab else csv_lab
+    # The item names set the bottom margin, so they come first.
+    below <- .item_axis_below(r$item)
     ylab <- .ylab_fit(full, if (metric == "psa") "Psa" else "Csv")
     leg <- .decision_legend(r$recommendation)
     lg <- leg$legend
@@ -798,13 +802,18 @@ plot.contentvalid_sort <- function(x,
     key <- if (isTRUE(show_legend)) {
       .legend_fit(lg, lp, ll, title = if (!identical(ylab, full)) full)
     }
-    # Headroom above 1 holds the legend, clear of the data.
-    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+    # Headroom above 1 holds the legend, clear of the data. The axis title
+    # is set below the item names.
+    dots <- list(...)
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "",
                     ylab = ylab, xlim = c(0.5, length(y) + 0.5),
                     ylim = c(lo, .legend_room(lo, 1, 1 + 0.2 * (1 - lo), key))),
-               list(...))
-    graphics::axis(1, at = xs, labels = r$item, las = 2)
-    .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+               dots, protect = c("type", "xaxt", "yaxt", "axes", "xlab"))
+    graphics::axis(1, at = xs, labels = below$labels, las = 2)
+    graphics::title(xlab = if (is.null(dots$xlab)) "Item" else dots$xlab,
+                    line = below$line)
+    .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5),
+                  las = 1)
     if (metric == "psa") {
       graphics::segments(xs[ci], r$psa_low[ci], xs[ci], r$psa_high[ci])
       graphics::segments(xs[ok] - 0.3, crit[ok], xs[ok] + 0.3, crit[ok], lty = 2)
@@ -835,7 +844,7 @@ plot.contentvalid_sort <- function(x,
                   pch = pch[ok]), list(...),
              protect = c("type", "xaxt", "yaxt", "axes", "pch"))
   .axis_bounded(1, at = seq(0, 1, 0.25))
-  .axis_bounded(2, at = seq(-1, 1, 0.5))
+  .axis_bounded(2, at = seq(-1, 1, 0.5), las = 1)
   .hline(0)
 
   lab_idx <- switch(

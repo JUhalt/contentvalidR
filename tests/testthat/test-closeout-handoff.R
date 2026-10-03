@@ -198,7 +198,8 @@ test_that("a stage that decided nothing holds nothing back", {
   loose <- delphi_validity(ratings[ratings$item %in% paste0("S", 1:4), ],
                            lo = 1, hi = 4, B = 0)
   ev <- content_evidence(loose)
-  expect_identical(ev$carried, paste0("S", 1:4))
+  # Nothing is held back, and nothing is carried either: no stage decided.
+  expect_length(ev$carried, 0L)
   expect_false(ev$flow[[1]]$decided)
   expect_length(ev$flow[[1]]$held, 0L)
   out <- printed(ev)
@@ -206,6 +207,7 @@ test_that("a stage that decided nothing holds nothing back", {
   expect_match(txt, "No stage applied a decision rule", fixed = TRUE)
   expect_false(grepl("Held back: S1", txt, fixed = TRUE))
   expect_false(any(grepl("Held back", out[grepl("^  S[1-4] ", out)])))
+  expect_true(all(grepl("No decision$", out[grepl("^  S[1-4] ", out)])))
 
   # Beside a stage that did decide, only that stage holds items back.
   d <- congruence_data()
@@ -219,8 +221,8 @@ test_that("a stage that decided nothing holds nothing back", {
   txt <- joined(both)
   expect_match(txt, "Held back: I3 (First).", fixed = TRUE)
   expect_match(txt, "Second applied no decision rule", fixed = TRUE)
-  expect_match(txt, "A stage that applied no decision rule holds nothing back",
-               fixed = TRUE)
+  expect_match(txt, paste("A stage that applied no decision rule to an item",
+                          "does not hold it back"), fixed = TRUE)
   # The handoff records what the stage did, unchanged.
   expect_false(any(both$stages$Second$item_evidence$carried))
 })
@@ -386,7 +388,8 @@ test_that("the result column numbers the stages; the key matches the table", {
   # No line of the key starts with the missing marker.
   expect_false(any(grepl("^ *-- ", out)))
 
-  # Long stage names: a column that does not fit is left out of the key too.
+  # Long stage names: the stage columns are headed by their numbers, so both
+  # stay on screen, and the key explains both.
   wt <- read.csv(extdata("walkthrough_relevance.csv"), stringsAsFactors = FALSE)
   panel <- expert_validity(as.matrix(wt[setdiff(names(wt), "expert")]),
                            mode = "relevance", lo = 1, hi = 4,
@@ -396,10 +399,12 @@ test_that("the result column numbers the stages; the key matches the table", {
     `Expert relevance panel (round 1)` = panel,
     `Item sort with naive judges (study 2)` = sort_validity(sorts)
   ))
-  expect_true(any(grepl("Not shown for width: Item sort with naive judges",
-                        wide, fixed = TRUE)))
-  expect_false(any(grepl("^  Psa -- ", wide)))
+  expect_false(any(grepl("Not shown for width", wide, fixed = TRUE)))
+  expect_true(any(grepl("^  Item +1 +2 +Result$", wide)))
+  expect_true(any(grepl("^  Psa -- ", wide)))
   expect_true(any(grepl("^  I-CVI -- ", wide)))
+  expect_true(any(grepl("^  1, 2 -- The stages, numbered as listed above",
+                        wide)))
   expect_true(any(grepl("^  EF5 .* Held back: 1, 2$", wide)))
 
   # A stage that did not review an item: the marker is explained in a

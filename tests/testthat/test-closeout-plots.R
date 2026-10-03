@@ -53,7 +53,7 @@ test_that("a key's measured size is the size legend() draws", {
                titled$width, tolerance = 1e-6)
 })
 
-test_that("a key too wide for one row takes two, then three, then smaller type", {
+test_that("a key too wide for one row takes more rows, then smaller type", {
   grDevices::pdf(NULL, width = 7, height = 4)
   on.exit(grDevices::dev.off(), add = TRUE)
   labels <- c("Retain", "Review", "Insufficient data", "95% CI",
@@ -72,14 +72,34 @@ test_that("a key too wide for one row takes two, then three, then smaller type",
                    c("Retain", "95% CI", "Review", "Criterion (exact test)",
                      "Insufficient data", ""))
   expect_identical(two$pch, c(19, NA, 1, NA, 4, NA))
+  # Every row count is tried, down to a single column, before the type
+  # shrinks.
   tiny <- contentvalidR:::.legend_fit(labels, pch, lty, width_in = 2.5)
-  expect_identical(tiny$rows, 3)
-  expect_lt(tiny$cex, 0.72)
+  expect_identical(c(tiny$rows, tiny$ncol), c(5, 1))
+  expect_identical(tiny$cex, 0.72)
   expect_lte(tiny$width, 2.5 - 0.1 + 1e-9)
+  # Too wide even in one column: smaller type, never below 8 points.
+  floor_cex <- 8 / (graphics::par("ps") * graphics::par("cex"))
+  narrow <- contentvalidR:::.legend_fit(labels, pch, lty, width_in = 1.5)
+  expect_identical(narrow$rows, 5)
+  expect_lt(narrow$cex, 0.72)
+  expect_gt(narrow$cex, floor_cex)
+  expect_lte(narrow$width, 1.5 - 0.1 + 1e-9)
+  crushed <- contentvalidR:::.legend_fit(labels, pch, lty, width_in = 0.5)
+  expect_equal(crushed$cex, floor_cex)
   # A short last row leaves blank slots at its end, never mid-key.
   seven <- contentvalidR:::.legend_fit(as.character(1:7), 1, width_in = 0.9)
-  expect_identical(seven$rows, 3)
-  expect_identical(seven$legend, c("1", "4", "7", "2", "5", "", "3", "6", ""))
+  expect_identical(c(seven$rows, seven$ncol), c(4, 2))
+  expect_identical(seven$legend, c("1", "3", "5", "7", "2", "4", "6", ""))
+  # Four entries, the relevance key of a panel of more than ten experts: two
+  # columns are too wide for 4 inches, and one column fits at full size.
+  four <- contentvalidR:::.legend_fit(
+    c("Aiken's V", "I-CVI", "95% CI",
+      "I-CVI criterion (10 of 12, package extension)"),
+    c(19, 1, NA, NA), c(NA, NA, 1, 2), width_in = 4)
+  expect_identical(c(four$rows, four$ncol), c(4, 1))
+  expect_identical(four$cex, 0.72)
+  expect_lte(four$width, 4 - 0.1)
   expect_null(contentvalidR:::.legend_fit(character(0)))
 })
 
