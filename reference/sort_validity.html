@@ -176,10 +176,11 @@ comparison. Default <code>FALSE</code>. They are computed either way, stored in
 
 
 <dt id="arg-n-constructs">n_constructs<a class="anchor" aria-label="anchor" href="#arg-n-constructs"></a></dt>
-<dd><p>Optional number of constructs judges could choose among,
-used only by the comparison block's chance-based extension. By default it
-is the number of constructs that appear in the data, which is too few
-when judges were offered a construct none of them chose.</p></dd>
+<dd><p>Optional number of constructs judges could choose among.
+It is used by the comparison block's chance-based extension and by the
+caution added to the Colquitt et al. (2019) bands when it is not three.
+By default it is the number of constructs that appear in the data, which
+is too few when judges were offered a construct none of them chose.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -281,6 +282,10 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>  target items mean Psa Psa level mean Csv Csv level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A     3      .77  Moderate      .53  Moderate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Benchmark set: Overall (not correlation-normed)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> These bands come from tasks with three definitions (one focal, two orbiting);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges here used 2 (set `n_constructs` if more were offered), so the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> do not discuss other numbers.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms derived from scale-level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> averages, not universal cutoffs or automatic scale-retention rules. They</span>
@@ -319,11 +324,15 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Retain: 2 of 3 | Review: 1 of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale-level evidence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  target items retain review mean Psa Psa level mean Csv Csv level  overall</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       A     3      2      1      .77  Moderate      .53  Moderate Moderate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  target items retain review mean Psa Psa level mean Csv Csv level</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       A     3      2      1      .77  Moderate      .53  Moderate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A: The weaker of Psa and Csv falls in the Moderate band of published scales</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   (Colquitt et al., 2019); review the weaker items before finalizing.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A: Mean Psa and mean Csv both fall in the Moderate band of published scales</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Colquitt et al., 2019); review the weaker items before finalizing. These</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   bands come from tasks with three definitions (one focal, two orbiting);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   judges here used 2 (set `n_constructs` if more were offered), so the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   do not discuss other numbers.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items needing attention</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  item target decision Psa Csv competitor    p</span>
@@ -364,6 +373,10 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>  target items mean Psa Psa level mean Csv Csv level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       A     3      .77  Moderate      .53  Moderate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Benchmark set: Overall (not correlation-normed)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> These bands come from tasks with three definitions (one focal, two orbiting);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judges here used 2 (set `n_constructs` if more were offered), so the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> do not discuss other numbers.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Colquitt labels are empirical percentile norms derived from scale-level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> averages, not universal cutoffs or automatic scale-retention rules. They</span>

@@ -463,11 +463,11 @@ handoff$item_evidence
 #> 2 Item2  <NA>    TRUE Supported Strong support        4
 #> 3 Item3  <NA>    TRUE Supported Strong support        4
 #> 4 Item4  <NA>   FALSE    Review         Review        4
-#>                                                                                                                                       rule
-#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
-#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
-#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
-#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986); modified kappa > .74 for strong support (Polit et al., 2007)
+#>                                                                                                                                        rule
+#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
+#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
+#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
+#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
 #>   round keying response_min response_max
 #> 1     1     NA           NA           NA
 #> 2     1     NA           NA           NA

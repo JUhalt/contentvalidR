@@ -71,6 +71,10 @@ fit
 #>       A     3      .78  Moderate      .57  Moderate
 #>       B     3      .82  Moderate      .63    Strong
 #> Benchmark set: Overall (not correlation-normed)
+#> These bands come from tasks with three definitions (one focal, two orbiting);
+#> judges here used 2 (set `n_constructs` if more were offered), so the
+#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#> do not discuss other numbers.
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level
 #> averages, not universal cutoffs or automatic scale-retention rules. They
@@ -118,12 +122,22 @@ summary(fit)
 #> Retain: 4 of 6 | Review: 2 of 6
 #> 
 #> Scale-level evidence
-#>  target items retain review mean Psa Psa level mean Csv Csv level  overall
-#>       A     3      2      1      .78  Moderate      .57  Moderate Moderate
-#>       B     3      2      1      .82  Moderate      .63    Strong Moderate
+#>  target items retain review mean Psa Psa level mean Csv Csv level
+#>       A     3      2      1      .78  Moderate      .57  Moderate
+#>       B     3      2      1      .82  Moderate      .63    Strong
 #> 
-#> A, B: The weaker of Psa and Csv falls in the Moderate band of published
-#>   scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> A: Mean Psa and mean Csv both fall in the Moderate band of published scales
+#>   (Colquitt et al., 2019); review the weaker items before finalizing. These
+#>   bands come from tasks with three definitions (one focal, two orbiting);
+#>   judges here used 2 (set `n_constructs` if more were offered), so the
+#>   comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#>   do not discuss other numbers.
+#> B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of
+#>   published scales (Colquitt et al., 2019); review the weaker items before
+#>   finalizing. These bands come from tasks with three definitions (one focal,
+#>   two orbiting); judges here used 2 (set `n_constructs` if more were
+#>   offered), so the comparison is approximate. This is a contentvalidR
+#>   caution: Colquitt et al. do not discuss other numbers.
 #> 
 #> Items needing attention
 #>  item target decision Psa Csv competitor    p
@@ -237,12 +251,12 @@ fit_normed$scale_summary
 #>                                        benchmark_set benchmark_applicable
 #> 1 More moderate focal-orbiting correlation (.35-.50)                 TRUE
 #> 2       Weaker focal-orbiting correlation (r <= .34)                 TRUE
-#>   overall_strength
-#> 1         Moderate
-#> 2             Weak
-#>                                                                                                                                                                                    evidence
-#> 1                                              The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
-#> 2 The weaker of Psa and Csv falls in the Weak band of published scales (Colquitt et al., 2019); review item wording and construct overlap, and consider pretesting the revised items again.
+#>   n_definitions
+#> 1             2
+#> 2             2
+#>                                                                                                                                                                                                                                                                                                                                                                                                                                                 evidence
+#> 1                                              Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing. These bands come from tasks with three definitions (one focal, two orbiting); judges here used 2 (set `n_constructs` if more were offered), so the comparison is approximate. This is a contentvalidR caution: Colquitt et al. do not discuss other numbers.
+#> 2 Mean Psa and mean Csv both fall in the Weak band of published scales (Colquitt et al., 2019); review item wording and construct overlap, and consider pretesting the revised items again. These bands come from tasks with three definitions (one focal, two orbiting); judges here used 2 (set `n_constructs` if more were offered), so the comparison is approximate. This is a contentvalidR caution: Colquitt et al. do not discuss other numbers.
 ```
 
 The conditional panels are:
@@ -272,9 +286,9 @@ expert_fit$scale_summary
 #>    mean_csv csv_strength orbiting_r                    benchmark_set
 #> 1 0.5666667         <NA>         NA Overall (not correlation-normed)
 #> 2 0.6333333         <NA>         NA Overall (not correlation-normed)
-#>   benchmark_applicable overall_strength
-#> 1                FALSE             <NA>
-#> 2                FALSE             <NA>
+#>   benchmark_applicable n_definitions
+#> 1                FALSE             2
+#> 2                FALSE             2
 #>                                                                              evidence
 #> 1 Colquitt norms not applied because this workflow was marked as using expert judges.
 #> 2 Colquitt norms not applied because this workflow was marked as using expert judges.

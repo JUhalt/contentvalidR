@@ -109,7 +109,8 @@ contentvalid_glossary()
 #>       1; higher is stronger)
 #>   I_CVI -- Item-level Content Validity Index. Proportion of experts who
 #>       rated the item as relevant, after applying the relevance cut. (0 to
-#>       1; compared against a panel-size guideline)
+#>       1; compared with Lynn's (1986) criterion for the panel size, which
+#>       this package extends past ten experts at her 7 of 9)
 #>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an
 #>       interval around I-CVI. Expert panels are usually small, so these
 #>       intervals are often wide: a single I-CVI value can look more settled
@@ -129,13 +130,15 @@ contentvalid_glossary()
 #>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward
 #>       calling the item essential rather than merely useful. (-1 to 1; above
 #>       0 means more than half the panel called it essential)
-#>   ioc -- Item-Objective Congruence. How consistently experts linked the
-#>       item to the objective it was written for rather than to another
-#>       objective. (-1 to 1; higher is stronger)
+#>   ioc -- Index of item-objective congruence. Whether experts matched the
+#>       item to an objective and not to the item's other objectives: half the
+#>       gap between their mean rating on the objective and their mean rating
+#>       on the others (Rovinelli & Hambleton, 1977). It is 1 only when every
+#>       expert rates the item +1 on the objective and -1 on every other. (-1
+#>       to 1; Rovinelli and Hambleton applied a criterion of .70)
 #>   decisions (relevance):
-#>     Strong support -- met the I-CVI criterion, with modified kappa above
-#>         .74.
-#>     Support -- met the I-CVI criterion.
+#>     Strong support -- met the I-CVI criterion, which also puts modified
+#>         kappa above .74.
 #>     Review -- did not meet the I-CVI criterion.
 #>     Insufficient panel -- fewer than three experts rated it.
 #>   decisions (essentiality):
@@ -145,15 +148,14 @@ contentvalid_glossary()
 #>         the exact test.
 #>     Insufficient data -- no expert rated it.
 #>   decisions (congruence):
-#>     Target favored -- experts linked it most strongly to its intended
-#>         objective.
-#>     Tie / review -- its intended objective tied with another.
-#>     Review -- experts linked it more strongly to another objective.
+#>     Congruent -- its index of item-objective congruence met the criterion.
+#>     Review -- its index fell below the criterion; the margin shows how its
+#>         intended objective compares with the closest other.
 #>     Target described -- only its intended objective was rated, so there is
 #>         nothing to compare.
 #>     Insufficient data -- no usable ratings for its intended objective.
-#>     Descriptive only -- no intended objective was given, so IOC is only
-#>         described.
+#>     Descriptive only -- no intended objective was given, so the index is
+#>         only described.
 #> 
 #> judge-heterogeneity
 #>   severity -- Judge severity. How harsh or lenient a judge is compared with

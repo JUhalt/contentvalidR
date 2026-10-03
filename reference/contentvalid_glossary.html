@@ -175,7 +175,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       1; higher is stronger)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI -- Item-level Content Validity Index. Proportion of experts who</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rated the item as relevant, after applying the relevance cut. (0 to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared against a panel-size guideline)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       1; compared with Lynn's (1986) criterion for the panel size, which</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       this package extends past ten experts at her 7 of 9)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I_CVI_low/I_CVI_high -- Interval for I-CVI. Lower and upper limits of an</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       interval around I-CVI. Expert panels are usually small, so these</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       intervals are often wide: a single I-CVI value can look more settled</span>
@@ -195,13 +196,15 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       calling the item essential rather than merely useful. (-1 to 1; above</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       0 means more than half the panel called it essential)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ioc -- Item-Objective Congruence. How consistently experts linked the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       item to the objective it was written for rather than to another</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       objective. (-1 to 1; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ioc -- Index of item-objective congruence. Whether experts matched the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item to an objective and not to the item's other objectives: half the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       gap between their mean rating on the objective and their mean rating</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       on the others (Rovinelli &amp; Hambleton, 1977). It is 1 only when every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       expert rates the item +1 on the objective and -1 on every other. (-1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       to 1; Rovinelli and Hambleton applied a criterion of .70)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (relevance):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Strong support -- met the I-CVI criterion, with modified kappa above</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         .74.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Support -- met the I-CVI criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Strong support -- met the I-CVI criterion, which also puts modified</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         kappa above .74.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet the I-CVI criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient panel -- fewer than three experts rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (essentiality):</span>
@@ -211,15 +214,14 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         the exact test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no expert rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions (congruence):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Target favored -- experts linked it most strongly to its intended</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         objective.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Tie / review -- its intended objective tied with another.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- experts linked it more strongly to another objective.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Congruent -- its index of item-objective congruence met the criterion.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- its index fell below the criterion; the margin shows how its</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         intended objective compares with the closest other.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Target described -- only its intended objective was rated, so there is</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         nothing to compare.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no usable ratings for its intended objective.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Descriptive only -- no intended objective was given, so IOC is only</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         described.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Descriptive only -- no intended objective was given, so the index is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         only described.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> judge-heterogeneity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How harsh or lenient a judge is compared with</span>

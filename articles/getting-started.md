@@ -163,15 +163,15 @@ summary(rating_fit)
 #> Retain: 3 of 3 | Review: 0 of 3
 #> 
 #> Scale-level evidence
-#>  target items retain review mean HTC HTC level mean HTD   HTD level  overall
-#>       A     2      2      0      .86  Moderate      .50 Very Strong Moderate
-#>       B     1      1      0      .88    Strong      .54 Very Strong   Strong
+#>  target items retain review mean HTC HTC level mean HTD   HTD level
+#>       A     2      2      0      .86  Moderate      .50 Very Strong
+#>       B     1      1      0      .88    Strong      .54 Very Strong
 #> 
-#> A: The weaker of HTC and HTD falls in the Moderate band of published scales
-#>   (Colquitt et al., 2019); inspect the weaker items and construct overlap
-#>   before finalizing the scale.
-#> B: The weaker of HTC and HTD falls in the Strong band of published scales
-#>   (Colquitt et al., 2019).
+#> A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band
+#>   of published scales (Colquitt et al., 2019); inspect the weaker items and
+#>   construct overlap before finalizing the scale.
+#> B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of
+#>   published scales (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
 #> 
@@ -222,8 +222,8 @@ expert_fit
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
 #> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa
-#> is modified kappa, with values above .74 read as excellent (Polit, Beck, &
-#> Owen, 2007).
+#> is modified kappa, with values above .74 read as excellent (Polit et al.,
+#> 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
@@ -243,7 +243,8 @@ expert_fit
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, compared with Lynn's criterion for the panel size.
+#>       item relevant, against Lynn's criterion for the panel size (beyond
+#>       ten, this package's).
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
 #>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
@@ -253,7 +254,8 @@ expert_fit
 #>       rating is the same.
 #> 
 #> What the decisions mean
-#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
+#>   Strong support -- met the I-CVI criterion, which also puts modified kappa
+#>       above .74.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).
@@ -379,15 +381,20 @@ ioc_df <- data.frame(
   score = sample(c(-1,0,1), 18, replace = TRUE)
 )
 ioc(ioc_df)
-#> Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
 #> 
-#>  item objective judges  IOC
-#>    I1         A      3  .00
-#>    I1         B      3  .33
-#>    I1         C      3 -.67
-#>    I2         A      3  .00
-#>    I2         B      3  .00
-#>    I2         C      3  .00
+#>  item objective judges mean  IOC
+#>    I1         A      3  .00  .08
+#>    I1         B      3  .33  .33
+#>    I1         C      3 -.67 -.42
+#>    I2         A      3  .00  .00
+#>    I2         B      3  .00  .00
+#>    I2         C      3  .00  .00
+#> 
+#> mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap
+#> between that mean and their mean on the item's other objectives; 1 only when
+#> every judge rates +1 on the objective and -1 on every other. Rovinelli and
+#> Hambleton applied a criterion of .70.
 ```
 
 **Diagnostics & reproducibility**

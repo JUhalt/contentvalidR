@@ -66,14 +66,14 @@ sort_fit$scale_summary
 #> 1    0.725       Strong         NA Overall (not correlation-normed)
 #> 2    0.575     Moderate         NA Overall (not correlation-normed)
 #> 3    0.675       Strong         NA Overall (not correlation-normed)
-#>   benchmark_applicable overall_strength
-#> 1                 TRUE           Strong
-#> 2                 TRUE         Moderate
-#> 3                 TRUE         Moderate
-#>                                                                                                                                       evidence
-#> 1                                              The weaker of Psa and Csv falls in the Strong band of published scales (Colquitt et al., 2019).
-#> 2 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
-#> 3 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#>   benchmark_applicable n_definitions
+#> 1                 TRUE             3
+#> 2                 TRUE             3
+#> 3                 TRUE             3
+#>                                                                                                                                                      evidence
+#> 1                                                             Mean Psa and mean Csv both fall in the Strong band of published scales (Colquitt et al., 2019).
+#> 2                Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> 3 Mean Psa falls in the Moderate band and mean Csv in the Strong band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
 ```
 
 ### Methods scaffold
@@ -190,14 +190,14 @@ rating_fit$scale_summary
 #> 1      A       2     2     2        1        1              0 0.8333333
 #> 2      B       2     2     2        1        1              0 0.8333333
 #> 3      C       2     2     2        1        1              0 0.8333333
-#>   htc_strength mean_htd htd_strength overall_strength orbiting_r benchmark_set
-#> 1         Weak   0.4375  Very Strong             Weak         NA       overall
-#> 2         Weak   0.4375  Very Strong             Weak         NA       overall
-#> 3         Weak   0.4375  Very Strong             Weak         NA       overall
-#>                                                                                                                                                                                                                           evidence
-#> 1 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 2 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 3 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#>   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set
+#> 1         Weak   0.4375  Very Strong             3         NA       overall
+#> 2         Weak   0.4375  Very Strong             3         NA       overall
+#> 3         Weak   0.4375  Very Strong             3         NA       overall
+#>                                                                                                                                                                                                                                               evidence
+#> 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
 ```
 
 ### Methods scaffold
@@ -280,12 +280,12 @@ expert_fit$results
 #> 3 0.2917439 Strong support
 #> 4 0.3669773         Review
 #> 5 0.3669773         Review
-#>                                                                                                                                                                interpretation
-#> 1 The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 2 The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 3 The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 4              The item does not meet the common panel-size CVI guideline; review wording, relevance, construct coverage, and expert comments before revising or removing it.
-#> 5              The item does not meet the common panel-size CVI guideline; review wording, relevance, construct coverage, and expert comments before revising or removing it.
+#>                                                                                                                                                           interpretation
+#> 1 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
+#> 2 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
+#> 3 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
+#> 4              The item does not meet the panel-size I-CVI criterion; review wording, relevance, construct coverage, and expert comments before revising or removing it.
+#> 5              The item does not meet the panel-size I-CVI criterion; review wording, relevance, construct coverage, and expert comments before revising or removing it.
 #>      status
 #> 1 Supported
 #> 2 Supported
@@ -295,10 +295,8 @@ expert_fit$results
 expert_fit$scale_summary
 #>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
 #> 1       5             8             8         0.75       0.8      0.6 0.6934253
-#>   agreement_low agreement_high n_strong_support n_support n_review
-#> 1    0.07142857      0.8457143                3         0        2
-#>   n_insufficient
-#> 1              0
+#>   agreement_low agreement_high n_strong_support n_review n_insufficient
+#> 1    0.07142857      0.8457143                3        2              0
 ```
 
 > Experts rated the relevance of each candidate item on a bounded
@@ -354,27 +352,30 @@ relevance/CVI threshold.
 expert_ioc <- read_example("expert_congruence_example.csv")
 ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
 ioc_fit$results
-#>   item target target_ioc strongest_competitor competitor_ioc    margin
-#> 1   I1      A  1.0000000                    B     -0.6666667 1.6666667
-#> 2   I2      B  1.0000000                    A     -0.6666667 1.6666667
-#> 3   I3      C  0.8333333                    B      0.5000000 0.3333333
-#>   recommendation
-#> 1 Target favored
-#> 2 Target favored
-#> 3 Target favored
-#>                                                                                                       interpretation
-#> 1 The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
-#> 2 The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
-#> 3 The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.
+#>   item target n_judges target_ioc target_mean strongest_competitor
+#> 1   I1      A        6  0.9166667   1.0000000                    B
+#> 2   I2      B        6  0.8750000   1.0000000                    A
+#> 3   I3      C        6  0.4583333   0.8333333                    B
+#>   competitor_mean    margin recommendation
+#> 1      -0.6666667 1.6666667      Congruent
+#> 2      -0.6666667 1.6666667      Congruent
+#> 3       0.5000000 0.3333333         Review
+#>                                                                                                                                                                                                                                                interpretation
+#> 1                                                                                                   The index of item-objective congruence for the intended objective is at or above .70: the experts matched the item to it and not to the other objectives.
+#> 2                                                                                                   The index of item-objective congruence for the intended objective is at or above .70: the experts matched the item to it and not to the other objectives.
+#> 3 The index of item-objective congruence for the intended objective is below .70: the experts matched the item to its intended objective but did not clearly rule out the others. Review the item's wording against the objectives and the experts' comments.
 #>      status
 #> 1 Supported
 #> 2 Supported
-#> 3 Supported
+#> 3    Review
 ```
 
-For IOC, report the intended objective, target IOC, strongest competing
-objective, and target-minus-competitor margin. The margin is diagnostic
-evidence about alignment; it is not a newly invented significance test.
+For congruence, report each item’s intended objective, its index of
+item-objective congruence against the criterion (`ioc_cut`, by default
+the .70 Rovinelli and Hambleton applied), and the decision. The experts’
+mean ratings on the intended objective and on the closest other
+objective, and the margin between them, describe the index; they are not
+part of its criterion.
 
 ## Figures across review stages
 
@@ -424,7 +425,8 @@ evidence
 #> 
 #> What these columns mean
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, compared with Lynn's criterion for the panel size.
+#>       item relevant, against Lynn's criterion for the panel size (beyond
+#>       ten, this package's).
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
 #>       item in the construct it was written for (0 to 1; higher is
 #>       stronger).
@@ -559,6 +561,9 @@ sort_fit$design
 #> 
 #> $n_constructs_observed
 #> [1] 3
+#> 
+#> $n_constructs_given
+#> [1] FALSE
 ```
 
 A strong reproducibility supplement should also archive the item

@@ -5,8 +5,10 @@ item at the top. Relevance mode shows Aiken's V and I-CVI side by side,
 each with its interval, and a dashed line at the I-CVI criterion when
 every item had the same number of experts. Essentiality mode shows each
 observed CVR against the CVR the exact test needs for that item.
-Congruence mode shows each item's IOC for its intended objective against
-its strongest competitor, when a target mapping is available.
+Congruence mode shows each item's index for its intended objective
+against the `ioc_cut` criterion (dashed), with the experts' mean ratings
+on the target and on the closest other objective in gray, when a target
+mapping is available; an item with no index is marked with a cross.
 
 In relevance mode, `type = "distribution"` draws every expert's rating
 as a diverging stacked bar (Heiberger & Robbins, 2014), split at the

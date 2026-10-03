@@ -147,6 +147,10 @@
 <span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
 <span><span class="co">#&gt;       A     3      .77  Moderate      .53  Moderate</span></span>
 <span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; These bands come from tasks with three definitions (one focal, two orbiting);</span></span>
+<span><span class="co">#&gt; judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
+<span><span class="co">#&gt; comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span></span>
+<span><span class="co">#&gt; do not discuss other numbers.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
 <span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
@@ -180,6 +184,7 @@
 <span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
 <span><span class="co">#&gt; statistics.</span></span></code></pre></div>
 <p>The verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. <code>Review</code> is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.</p>
+<p>The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.</p>
 <p>For a manuscript, <code><a href="reference/content_report.html">content_report()</a></code> gives the same evidence as an APA table, and <code>format = "markdown"</code> writes it for Quarto or R Markdown:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>

@@ -4,7 +4,9 @@ mode = &quot;relevance&quot;: bounded ordinal relevance ratings, combining Aiken
 V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 panel-level agreement coefficient.
 mode = &quot;essentiality&quot;: Lawshe CVR with exact binomial critical values.
-mode = &quot;congruence&quot;: Rovinelli-Hambleton item-objective congruence.
+mode = &quot;congruence&quot;: the index of item-objective congruence of
+Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+objective (see ioc()).
 
 
 Quantitative results are presented as evidence for item review rather than
@@ -19,7 +21,9 @@ mode = &quot;relevance&quot;: bounded ordinal relevance ratings, combining Aiken
 V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 panel-level agreement coefficient.
 mode = &quot;essentiality&quot;: Lawshe CVR with exact binomial critical values.
-mode = &quot;congruence&quot;: Rovinelli-Hambleton item-objective congruence.
+mode = &quot;congruence&quot;: the index of item-objective congruence of
+Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+objective (see ioc()).
 
 
 Quantitative results are presented as evidence for item review rather than
@@ -89,7 +93,9 @@ which would say the experts had disagreed."></head><body>
 V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 panel-level agreement coefficient.</p></li>
 <li><p><code>mode = "essentiality"</code>: Lawshe CVR with exact binomial critical values.</p></li>
-<li><p><code>mode = "congruence"</code>: Rovinelli-Hambleton item-objective congruence.</p></li>
+<li><p><code>mode = "congruence"</code>: the index of item-objective congruence of
+Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+objective (see <code><a href="ioc.html">ioc()</a></code>).</p></li>
 </ul><p>Quantitative results are presented as evidence for item review rather than
 as a substitute for expert comments, construct coverage, comprehensibility,
 or other parts of a content-validity argument.</p>
@@ -112,6 +118,7 @@ which would say the experts had disagreed.</p>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  target_col <span class="op">=</span> <span class="st">"target_objective"</span>,</span>
+<span>  ioc_cut <span class="op">=</span> <span class="fl">0.7</span>,</span>
 <span>  proportion_ci <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"wilson"</span>, <span class="st">"agresti_coull"</span>, <span class="st">"exact"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  agreement <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"krippendorff"</span>, <span class="st">"ac1"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  agreement_level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ordinal"</span>, <span class="st">"nominal"</span>, <span class="st">"interval"</span><span class="op">)</span>,</span>
@@ -168,7 +175,16 @@ every rating would count as relevant.</p></dd>
 
 <dt id="arg-target-col">target_col<a class="anchor" aria-label="anchor" href="#arg-target-col"></a></dt>
 <dd><p>In congruence mode, optional column identifying each
-item's intended objective. If absent, IOC cells are returned descriptively.</p></dd>
+item's intended objective. If absent, every item-objective index is
+described and no decision is made.</p></dd>
+
+
+<dt id="arg-ioc-cut">ioc_cut<a class="anchor" aria-label="anchor" href="#arg-ioc-cut"></a></dt>
+<dd><p>In congruence mode, the lowest index of item-objective
+congruence that counts as congruent. The default, .70, is the criterion
+Rovinelli and Hambleton (1977) applied. Turner and Carlson (2003) extend
+the index to items written for more than one objective, which this
+package does not do.</p></dd>
 
 
 <dt id="arg-proportion-ci">proportion_ci<a class="anchor" aria-label="anchor" href="#arg-proportion-ci"></a></dt>
@@ -225,8 +241,9 @@ while retaining mode-specific <code>recommendation</code> wording. In relevance 
     <h2 id="earlier-methods-for-comparison">Earlier methods, for comparison<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison"></a></h2>
 
 
-<p>The decisions use Lynn's (1986) criterion in relevance mode and the exact
-binomial test (Ayre &amp; Scally, 2014) in essentiality mode. Earlier rules are
+<p>The decisions use Lynn's (1986) criterion in relevance mode (beyond the ten
+experts her table covers, this package's extension holding her 7 of 9) and
+the exact binomial test (Ayre &amp; Scally, 2014) in essentiality mode. Earlier rules are
 reported beside them for teaching, and none changes a decision:</p><ul><li><p><strong>Essentiality.</strong> Lawshe's (1975) Table 1 gives a minimum CVR for 5 to 15
 panelists, then every fifth panel size to 40; other sizes have no minimum.
 He labeled it a one-tailed test at .05. Wilson et al. (2012) found the
@@ -304,6 +321,12 @@ sure you know what's being reported? Critique and recommendations.
 <p>Polit, D. F., Beck, C. T., &amp; Owen, S. V. (2007). Is the CVI an acceptable
 indicator of content validity? <em>Research in Nursing &amp; Health, 30</em>(4),
 459–467. <a href="https://doi.org/10.1002/nur.20199" class="external-link">doi:10.1002/nur.20199</a></p>
+<p>Rovinelli, R. J., &amp; Hambleton, R. K. (1977). On the use of content
+specialists in the assessment of criterion-referenced test item validity.
+<em>Dutch Journal of Educational Research, 2</em>, 49–60.</p>
+<p>Turner, R. C., &amp; Carlson, L. (2003). Indexes of item-objective congruence
+for multidimensional items. <em>International Journal of Testing, 3</em>(2),
+163–171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link">doi:10.1207/S15327574IJT0302_5</a></p>
 <p>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation of the
 critical values for Lawshe's content validity ratio. <em>Measurement and
 Evaluation in Counseling and Development, 45</em>(3), 197–210.
@@ -344,8 +367,8 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> interval, and I-CVI the proportion interval named below.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kappa is modified kappa, with values above .74 read as excellent (Polit,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Beck, &amp; Owen, 2007).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> kappa is modified kappa, with values above .74 read as excellent (Polit et</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> al., 2007).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald interval.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An interval reflects how few ratings an item received, not whether the right</span>
@@ -365,7 +388,8 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       possible) to 1 (highest).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       item relevant, compared with Lynn's criterion for the panel size.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item relevant, against Lynn's criterion for the panel size (beyond</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ten, this package's).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       small; the method is named above.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span>
@@ -375,7 +399,8 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, 93.
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rating is the same.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support -- met the I-CVI criterion, with modified kappa above .74.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support -- met the I-CVI criterion, which also puts modified kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       above .74.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>

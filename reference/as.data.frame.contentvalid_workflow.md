@@ -96,12 +96,12 @@ as.data.frame(fit, component = "scale_summary")
 #> 1       Strong    0.725       Strong         NA
 #> 2     Moderate    0.575     Moderate         NA
 #> 3     Moderate    0.675       Strong         NA
-#>                      benchmark_set benchmark_applicable overall_strength
-#> 1 Overall (not correlation-normed)                 TRUE           Strong
-#> 2 Overall (not correlation-normed)                 TRUE         Moderate
-#> 3 Overall (not correlation-normed)                 TRUE         Moderate
-#>                                                                                                                                       evidence
-#> 1                                              The weaker of Psa and Csv falls in the Strong band of published scales (Colquitt et al., 2019).
-#> 2 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
-#> 3 The weaker of Psa and Csv falls in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#>                      benchmark_set benchmark_applicable n_definitions
+#> 1 Overall (not correlation-normed)                 TRUE             3
+#> 2 Overall (not correlation-normed)                 TRUE             3
+#> 3 Overall (not correlation-normed)                 TRUE             3
+#>                                                                                                                                                      evidence
+#> 1                                                             Mean Psa and mean Csv both fall in the Strong band of published scales (Colquitt et al., 2019).
+#> 2                Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+#> 3 Mean Psa falls in the Moderate band and mean Csv in the Strong band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
 ```

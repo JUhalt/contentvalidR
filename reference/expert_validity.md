@@ -9,7 +9,10 @@ Provides a user-facing workflow for three common expert-panel tasks:
 - `mode = "essentiality"`: Lawshe CVR with exact binomial critical
   values.
 
-- `mode = "congruence"`: Rovinelli-Hambleton item-objective congruence.
+- `mode = "congruence"`: the index of item-objective congruence of
+  Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+  objective (see
+  [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md)).
 
 Quantitative results are presented as evidence for item review rather
 than as a substitute for expert comments, construct coverage,
@@ -34,6 +37,7 @@ expert_validity(
   alpha = 0.05,
   na.rm = FALSE,
   target_col = "target_objective",
+  ioc_cut = 0.7,
   proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
   agreement = c("krippendorff", "ac1", "none"),
   agreement_level = c("ordinal", "nominal", "interval"),
@@ -91,7 +95,16 @@ expert_validity(
 - target_col:
 
   In congruence mode, optional column identifying each item's intended
-  objective. If absent, IOC cells are returned descriptively.
+  objective. If absent, every item-objective index is described and no
+  decision is made.
+
+- ioc_cut:
+
+  In congruence mode, the lowest index of item-objective congruence that
+  counts as congruent. The default, .70, is the criterion Rovinelli and
+  Hambleton (1977) applied. Turner and Carlson (2003) extend the index
+  to items written for more than one objective, which this package does
+  not do.
 
 - proportion_ci:
 
@@ -150,10 +163,11 @@ result.
 
 ## Earlier methods, for comparison
 
-The decisions use Lynn's (1986) criterion in relevance mode and the
-exact binomial test (Ayre & Scally, 2014) in essentiality mode. Earlier
-rules are reported beside them for teaching, and none changes a
-decision:
+The decisions use Lynn's (1986) criterion in relevance mode (beyond the
+ten experts her table covers, this package's extension holding her 7 of
+9) and the exact binomial test (Ayre & Scally, 2014) in essentiality
+mode. Earlier rules are reported beside them for teaching, and none
+changes a decision:
 
 - **Essentiality.** Lawshe's (1975) Table 1 gives a minimum CVR for 5 to
   15 panelists, then every fifth panel size to 40; other sizes have no
@@ -253,6 +267,15 @@ acceptable indicator of content validity? *Research in Nursing & Health,
 30*(4), 459–467.
 [doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
 
+Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+specialists in the assessment of criterion-referenced test item
+validity. *Dutch Journal of Educational Research, 2*, 49–60.
+
+Turner, R. C., & Carlson, L. (2003). Indexes of item-objective
+congruence for multidimensional items. *International Journal of
+Testing, 3*(2), 163–171.
+[doi:10.1207/S15327574IJT0302_5](https://doi.org/10.1207/S15327574IJT0302_5)
+
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
 critical values for Lawshe's content validity ratio. *Measurement and
 Evaluation in Counseling and Development, 45*(3), 197–210.
@@ -295,8 +318,8 @@ fit
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
 #> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986);
-#> kappa is modified kappa, with values above .74 read as excellent (Polit,
-#> Beck, & Owen, 2007).
+#> kappa is modified kappa, with values above .74 read as excellent (Polit et
+#> al., 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
@@ -316,7 +339,8 @@ fit
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, compared with Lynn's criterion for the panel size.
+#>       item relevant, against Lynn's criterion for the panel size (beyond
+#>       ten, this package's).
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
 #>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
@@ -326,7 +350,8 @@ fit
 #>       rating is the same.
 #> 
 #> What the decisions mean
-#>   Strong support -- met the I-CVI criterion, with modified kappa above .74.
+#>   Strong support -- met the I-CVI criterion, which also puts modified kappa
+#>       above .74.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:
 #> options(contentvalidR.show_key = FALSE).

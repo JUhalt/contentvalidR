@@ -152,14 +152,14 @@ rating_fit$scale_summary
 #> 1      A       2     2     2        1        1              0 0.8333333
 #> 2      B       2     2     2        1        1              0 0.8333333
 #> 3      C       2     2     2        1        1              0 0.8333333
-#>   htc_strength mean_htd htd_strength overall_strength orbiting_r benchmark_set
-#> 1         Weak   0.4375  Very Strong             Weak         NA       overall
-#> 2         Weak   0.4375  Very Strong             Weak         NA       overall
-#> 3         Weak   0.4375  Very Strong             Weak         NA       overall
-#>                                                                                                                                                                                                                           evidence
-#> 1 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 2 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 3 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#>   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set
+#> 1         Weak   0.4375  Very Strong             3         NA       overall
+#> 2         Weak   0.4375  Very Strong             3         NA       overall
+#> 3         Weak   0.4375  Very Strong             3         NA       overall
+#>                                                                                                                                                                                                                                               evidence
+#> 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+#> 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
 ```
 
 Report the repeated-measures design and target-versus-orbiting
@@ -189,10 +189,8 @@ expert_fit$results[c(
 expert_fit$scale_summary
 #>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
 #> 1       5             8             8         0.75       0.8      0.6 0.6934253
-#>   agreement_low agreement_high n_strong_support n_support n_review
-#> 1    0.07142857      0.8457143                3         0        2
-#>   n_insufficient
-#> 1              0
+#>   agreement_low agreement_high n_strong_support n_review n_insufficient
+#> 1    0.07142857      0.8457143                3        2              0
 ```
 
 Essentiality and congruence require different expert tasks. Do not place

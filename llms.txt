@@ -108,6 +108,10 @@ fit
 #>  target items mean Psa Psa level mean Csv Csv level
 #>       A     3      .77  Moderate      .53  Moderate
 #> Benchmark set: Overall (not correlation-normed)
+#> These bands come from tasks with three definitions (one focal, two orbiting);
+#> judges here used 2 (set `n_constructs` if more were offered), so the
+#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#> do not discuss other numbers.
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level
 #> averages, not universal cutoffs or automatic scale-retention rules. They
@@ -146,6 +150,11 @@ The verdict comes first: two items meet the exact test of Howard and
 Melloy (2016), and one is flagged for review. `Review` is not a decision
 to delete; it marks an item to look at again, together with what the
 judges wrote about it.
+
+The scale-level bands place the mean Psa and Csv against published
+scales (Colquitt et al., 2019). Those norms come from sorts with three
+definitions, and these judges used two, so the printout says the
+comparison is approximate.
 
 For a manuscript,
 [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
@@ -697,7 +706,7 @@ size.
 - [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md) :
   Lawshe's Content Validity Ratio (CVR)
 - [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md) :
-  Item-Objective Congruence (IOC)
+  Index of item-objective congruence (IOC)
 - [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
   : Panel-level agreement among expert raters
 

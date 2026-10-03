@@ -83,15 +83,17 @@ taken from the handoff:
 
 - an item sort: Psa, against the exact test's criterion;
 
-- an expert relevance panel: the I-CVI, against Lynn's (1986) count;
+- an expert relevance panel: the I-CVI, against Lynn's (1986) count
+  (beyond ten experts, this package's extension holding her 7 of 9);
 
 - a Delphi study: the share of experts agreeing, against the consensus
   threshold;
 
 - an essentiality panel: the CVR, against the exact test's criterion;
 
-- congruence ratings: the IOC margin over the strongest competing
-  objective, or the IOC when there is no target mapping;
+- congruence ratings: the index of item-objective congruence for the
+  target objective, against the criterion, or the highest index when
+  there is no target mapping;
 
 - construct ratings: HTC, with no criterion, because that workflow
   decides on its planned contrasts.
@@ -176,7 +178,8 @@ evidence
 #> 
 #> What these columns mean
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, compared with Lynn's criterion for the panel size.
+#>       item relevant, against Lynn's criterion for the panel size (beyond
+#>       ten, this package's).
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
 #>       item in the construct it was written for (0 to 1; higher is
 #>       stronger).

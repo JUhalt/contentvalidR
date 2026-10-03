@@ -231,15 +231,15 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; Retain: 3 of 3 | Review: 0 of 3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level evidence</span></span>
-<span><span class="co">#&gt;  target items retain review mean HTC HTC level mean HTD   HTD level  overall</span></span>
-<span><span class="co">#&gt;       A     2      2      0      .86  Moderate      .50 Very Strong Moderate</span></span>
-<span><span class="co">#&gt;       B     1      1      0      .88    Strong      .54 Very Strong   Strong</span></span>
+<span><span class="co">#&gt;  target items retain review mean HTC HTC level mean HTD   HTD level</span></span>
+<span><span class="co">#&gt;       A     2      2      0      .86  Moderate      .50 Very Strong</span></span>
+<span><span class="co">#&gt;       B     1      1      0      .88    Strong      .54 Very Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: The weaker of HTC and HTD falls in the Moderate band of published scales</span></span>
-<span><span class="co">#&gt;   (Colquitt et al., 2019); inspect the weaker items and construct overlap</span></span>
-<span><span class="co">#&gt;   before finalizing the scale.</span></span>
-<span><span class="co">#&gt; B: The weaker of HTC and HTD falls in the Strong band of published scales</span></span>
-<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt; A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band</span></span>
+<span><span class="co">#&gt;   of published scales (Colquitt et al., 2019); inspect the weaker items and</span></span>
+<span><span class="co">#&gt;   construct overlap before finalizing the scale.</span></span>
+<span><span class="co">#&gt; B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
+<span><span class="co">#&gt;   published scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -286,8 +286,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span></span>
 <span><span class="co">#&gt; interval, and I-CVI the proportion interval named below.</span></span>
 <span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa</span></span>
-<span><span class="co">#&gt; is modified kappa, with values above .74 read as excellent (Polit, Beck, &amp;</span></span>
-<span><span class="co">#&gt; Owen, 2007).</span></span>
+<span><span class="co">#&gt; is modified kappa, with values above .74 read as excellent (Polit et al.,</span></span>
+<span><span class="co">#&gt; 2007).</span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
 <span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
@@ -307,7 +307,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span></span>
 <span><span class="co">#&gt;       possible) to 1 (highest).</span></span>
 <span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
-<span><span class="co">#&gt;       item relevant, compared with Lynn's criterion for the panel size.</span></span>
+<span><span class="co">#&gt;       item relevant, against Lynn's criterion for the panel size (beyond</span></span>
+<span><span class="co">#&gt;       ten, this package's).</span></span>
 <span><span class="co">#&gt;   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span></span>
 <span><span class="co">#&gt;       small; the method is named above.</span></span>
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span></span>
@@ -317,7 +318,8 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;       rating is the same.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
-<span><span class="co">#&gt;   Strong support -- met the I-CVI criterion, with modified kappa above .74.</span></span>
+<span><span class="co">#&gt;   Strong support -- met the I-CVI criterion, which also puts modified kappa</span></span>
+<span><span class="co">#&gt;       above .74.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
@@ -433,15 +435,20 @@ files.</p>
 <span>  score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fl">18</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ioc.html">ioc</a></span><span class="op">(</span><span class="va">ioc_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Item-objective congruence (IOC; Rovinelli &amp; Hambleton, 1977)</span></span>
+<span><span class="co">#&gt; Index of item-objective congruence (IOC; Rovinelli &amp; Hambleton, 1977)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item objective judges  IOC</span></span>
-<span><span class="co">#&gt;    I1         A      3  .00</span></span>
-<span><span class="co">#&gt;    I1         B      3  .33</span></span>
-<span><span class="co">#&gt;    I1         C      3 -.67</span></span>
-<span><span class="co">#&gt;    I2         A      3  .00</span></span>
-<span><span class="co">#&gt;    I2         B      3  .00</span></span>
-<span><span class="co">#&gt;    I2         C      3  .00</span></span></code></pre></div>
+<span><span class="co">#&gt;  item objective judges mean  IOC</span></span>
+<span><span class="co">#&gt;    I1         A      3  .00  .08</span></span>
+<span><span class="co">#&gt;    I1         B      3  .33  .33</span></span>
+<span><span class="co">#&gt;    I1         C      3 -.67 -.42</span></span>
+<span><span class="co">#&gt;    I2         A      3  .00  .00</span></span>
+<span><span class="co">#&gt;    I2         B      3  .00  .00</span></span>
+<span><span class="co">#&gt;    I2         C      3  .00  .00</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap</span></span>
+<span><span class="co">#&gt; between that mean and their mean on the item's other objectives; 1 only when</span></span>
+<span><span class="co">#&gt; every judge rates +1 on the objective and -1 on every other. Rovinelli and</span></span>
+<span><span class="co">#&gt; Hambleton applied a criterion of .70.</span></span></code></pre></div>
 <p><strong>Diagnostics &amp; reproducibility</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># pretend "kept" after CFA</span></span>

@@ -95,10 +95,11 @@ sort_validity(
 
 - n_constructs:
 
-  Optional number of constructs judges could choose among, used only by
-  the comparison block's chance-based extension. By default it is the
-  number of constructs that appear in the data, which is too few when
-  judges were offered a construct none of them chose.
+  Optional number of constructs judges could choose among. It is used by
+  the comparison block's chance-based extension and by the caution added
+  to the Colquitt et al. (2019) bands when it is not three. By default
+  it is the number of constructs that appear in the data, which is too
+  few when judges were offered a construct none of them chose.
 
 ## Value
 
@@ -212,6 +213,10 @@ fit
 #>  target items mean Psa Psa level mean Csv Csv level
 #>       A     3      .77  Moderate      .53  Moderate
 #> Benchmark set: Overall (not correlation-normed)
+#> These bands come from tasks with three definitions (one focal, two orbiting);
+#> judges here used 2 (set `n_constructs` if more were offered), so the
+#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#> do not discuss other numbers.
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level
 #> averages, not universal cutoffs or automatic scale-retention rules. They
@@ -250,11 +255,15 @@ summary(fit)
 #> Retain: 2 of 3 | Review: 1 of 3
 #> 
 #> Scale-level evidence
-#>  target items retain review mean Psa Psa level mean Csv Csv level  overall
-#>       A     3      2      1      .77  Moderate      .53  Moderate Moderate
+#>  target items retain review mean Psa Psa level mean Csv Csv level
+#>       A     3      2      1      .77  Moderate      .53  Moderate
 #> 
-#> A: The weaker of Psa and Csv falls in the Moderate band of published scales
-#>   (Colquitt et al., 2019); review the weaker items before finalizing.
+#> A: Mean Psa and mean Csv both fall in the Moderate band of published scales
+#>   (Colquitt et al., 2019); review the weaker items before finalizing. These
+#>   bands come from tasks with three definitions (one focal, two orbiting);
+#>   judges here used 2 (set `n_constructs` if more were offered), so the
+#>   comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#>   do not discuss other numbers.
 #> 
 #> Items needing attention
 #>  item target decision Psa Csv competitor    p
@@ -295,6 +304,10 @@ print(fit, legacy = TRUE)
 #>  target items mean Psa Psa level mean Csv Csv level
 #>       A     3      .77  Moderate      .53  Moderate
 #> Benchmark set: Overall (not correlation-normed)
+#> These bands come from tasks with three definitions (one focal, two orbiting);
+#> judges here used 2 (set `n_constructs` if more were offered), so the
+#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
+#> do not discuss other numbers.
 #> 
 #> Colquitt labels are empirical percentile norms derived from scale-level
 #> averages, not universal cutoffs or automatic scale-retention rules. They

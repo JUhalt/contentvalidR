@@ -6,6 +6,17 @@ from scale-level averages and from naive judges representative of
 substantive study populations. They should therefore be treated as
 contextual norms, not pass/fail rules.
 
+Colquitt et al. (2019) built these norms from tasks in which naive
+judges saw three definitions, the focal construct and two orbiting
+constructs, and either sorted each item into one of them (Psa, Csv) or
+rated it against each on a 7-point scale (HTC, HTD). They did not
+examine tasks offering more or fewer definitions.
+[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+and
+[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)
+therefore add a caution, this package's own, when a study offers a
+different number.
+
 When `judge_type = "expert"`, the Colquitt classification is
 deliberately not applied because the authors caution against using their
 norms for expert judges.

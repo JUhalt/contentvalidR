@@ -264,13 +264,10 @@ summary(fit)
 #>  target items retain review mean HTC   HTC level mean HTD   HTD level
 #>       A     3      3      0      .88      Strong      .58 Very Strong
 #>       B     1      1      0      .92 Very Strong      .61 Very Strong
-#>      overall
-#>       Strong
-#>  Very Strong
 #> 
-#> A: The weaker of HTC and HTD falls in the Strong band of published scales
-#>   (Colquitt et al., 2019).
-#> B: The weaker of HTC and HTD falls in the Very Strong band of published
+#> A: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of
+#>   published scales (Colquitt et al., 2019).
+#> B: Mean HTC and mean HTD both fall in the Very Strong band of published
 #>   scales (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.
@@ -310,12 +307,12 @@ fit$scale_summary
 #>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
 #> 1      A       3     3     3        3        0              0 0.8833333
 #> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set
-#> 1       Strong 0.5781250  Very Strong           Strong         NA       overall
-#> 2  Very Strong 0.6145833  Very Strong      Very Strong         NA       overall
-#>                                                                                               evidence
-#> 1      The weaker of HTC and HTD falls in the Strong band of published scales (Colquitt et al., 2019).
-#> 2 The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).
+#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
+#> 1       Strong 0.5781250  Very Strong             3         NA       overall
+#> 2  Very Strong 0.6145833  Very Strong             3         NA       overall
+#>                                                                                                              evidence
+#> 1 Mean HTC falls in the Strong band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019).
+#> 2                Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).
 colquitt_benchmarks("htc")
 #> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
 #> 
@@ -356,12 +353,12 @@ rating_validity(
 #>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
 #> 1      A       3     3     3        3        0              0 0.8833333
 #> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set
-#> 1     Moderate 0.5781250  Very Strong         Moderate       0.42      moderate
-#> 2  Very Strong 0.6145833  Very Strong      Very Strong       0.55      stronger
-#>                                                                                                                                                                        evidence
-#> 1 The weaker of HTC and HTD falls in the Moderate band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.
-#> 2                                                                          The weaker of HTC and HTD falls in the Very Strong band of published scales (Colquitt et al., 2019).
+#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
+#> 1     Moderate 0.5781250  Very Strong             3       0.42      moderate
+#> 2  Very Strong 0.6145833  Very Strong             3       0.55      stronger
+#>                                                                                                                                                                                            evidence
+#> 1 Mean HTC falls in the Moderate band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.
+#> 2                                                                                              Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).
 ```
 
 A given level of distinctiveness can be more impressive when the focal
@@ -380,9 +377,9 @@ rating_validity(rating_dat, judge_type = "expert")$scale_summary
 #>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
 #> 1      A       3     3     3        3        0              0 0.8833333
 #> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength overall_strength orbiting_r benchmark_set
-#> 1         <NA> 0.5781250         <NA>             <NA>         NA       overall
-#> 2         <NA> 0.6145833         <NA>             <NA>         NA       overall
+#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
+#> 1         <NA> 0.5781250         <NA>             3         NA       overall
+#> 2         <NA> 0.6145833         <NA>             3         NA       overall
 #>                                                                                                        evidence
 #> 1 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.
 #> 2 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.

@@ -218,13 +218,10 @@ summary(fit)
 #>  target items retain review mean HTC   HTC level mean HTD   HTD level
 #>       A     2      2      0      .89      Strong      .62 Very Strong
 #>       B     1      1      0      .93 Very Strong      .69 Very Strong
-#>      overall
-#>       Strong
-#>  Very Strong
 #> 
-#> A: The weaker of HTC and HTD falls in the Strong band of published scales
-#>   (Colquitt et al., 2019).
-#> B: The weaker of HTC and HTD falls in the Very Strong band of published
+#> A: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of
+#>   published scales (Colquitt et al., 2019).
+#> B: Mean HTC and mean HTD both fall in the Very Strong band of published
 #>   scales (Colquitt et al., 2019).
 #> 
 #> All analyzed items met the item-level inferential screening criterion.

@@ -237,14 +237,14 @@ individual-item cutoffs.</p>
 <span><span class="co">#&gt; 1      A       2     2     2        1        1              0 0.8333333</span></span>
 <span><span class="co">#&gt; 2      B       2     2     2        1        1              0 0.8333333</span></span>
 <span><span class="co">#&gt; 3      C       2     2     2        1        1              0 0.8333333</span></span>
-<span><span class="co">#&gt;   htc_strength mean_htd htd_strength overall_strength orbiting_r benchmark_set</span></span>
-<span><span class="co">#&gt; 1         Weak   0.4375  Very Strong             Weak         NA       overall</span></span>
-<span><span class="co">#&gt; 2         Weak   0.4375  Very Strong             Weak         NA       overall</span></span>
-<span><span class="co">#&gt; 3         Weak   0.4375  Very Strong             Weak         NA       overall</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                           evidence</span></span>
-<span><span class="co">#&gt; 1 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
-<span><span class="co">#&gt; 2 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
-<span><span class="co">#&gt; 3 The weaker of HTC and HTD falls in the Weak band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span></code></pre></div>
+<span><span class="co">#&gt;   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set</span></span>
+<span><span class="co">#&gt; 1         Weak   0.4375  Very Strong             3         NA       overall</span></span>
+<span><span class="co">#&gt; 2         Weak   0.4375  Very Strong             3         NA       overall</span></span>
+<span><span class="co">#&gt; 3         Weak   0.4375  Very Strong             3         NA       overall</span></span>
+<span><span class="co">#&gt;                                                                                                                                                                                                                                               evidence</span></span>
+<span><span class="co">#&gt; 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
+<span><span class="co">#&gt; 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
+<span><span class="co">#&gt; 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span></code></pre></div>
 <p>Report the repeated-measures design and target-versus-orbiting
 contrasts. For a review item, naming the strongest competitor is often
 more informative than a standalone p value.</p>
@@ -272,10 +272,8 @@ more informative than a standalone p value.</p>
 <span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span></span>
 <span><span class="co">#&gt;   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement</span></span>
 <span><span class="co">#&gt; 1       5             8             8         0.75       0.8      0.6 0.6934253</span></span>
-<span><span class="co">#&gt;   agreement_low agreement_high n_strong_support n_support n_review</span></span>
-<span><span class="co">#&gt; 1    0.07142857      0.8457143                3         0        2</span></span>
-<span><span class="co">#&gt;   n_insufficient</span></span>
-<span><span class="co">#&gt; 1              0</span></span></code></pre></div>
+<span><span class="co">#&gt;   agreement_low agreement_high n_strong_support n_review n_insufficient</span></span>
+<span><span class="co">#&gt; 1    0.07142857      0.8457143                3        2              0</span></span></code></pre></div>
 <p>Essentiality and congruence require different expert tasks. Do not
 place CVR, CVI, Aiken V, and IOC in one generic threshold table as if
 they answer the same question.</p>

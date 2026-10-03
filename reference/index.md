@@ -106,7 +106,7 @@ size.
 - [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md) :
   Lawshe's Content Validity Ratio (CVR)
 - [`ioc()`](https://juhalt.github.io/contentvalidR/reference/ioc.md) :
-  Item-Objective Congruence (IOC)
+  Index of item-objective congruence (IOC)
 - [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
   : Panel-level agreement among expert raters
 

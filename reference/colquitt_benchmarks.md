@@ -5,6 +5,17 @@ Returns the empirical interpretation bands proposed by Colquitt et al.
 scale-level averages for 112 scales and are percentile-based norms, not
 universal psychometric cutoffs.
 
+Colquitt et al. (2019) built these norms from tasks in which naive
+judges saw three definitions, the focal construct and two orbiting
+constructs, and either sorted each item into one of them (Psa, Csv) or
+rated it against each on a 7-point scale (HTC, HTD). They did not
+examine tasks offering more or fewer definitions.
+[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+and
+[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)
+therefore add a caution, this package's own, when a study offers a
+different number.
+
 If `orbiting_r` is supplied, the correlation-conditional benchmark set
 is selected. Otherwise the overall, non-correlation-normed criteria are
 used.
