@@ -4,12 +4,15 @@
 \alias{plot.contentvalid_structure}
 \title{Plot an expert content map}
 \usage{
-\method{plot}{contentvalid_structure}(x, show_legend = TRUE, ...)
+\method{plot}{contentvalid_structure}(x, show_legend = TRUE, type = "map", ...)
 }
 \arguments{
 \item{x}{A \code{contentvalid_structure} object.}
 
 \item{show_legend}{Draw the blueprint-cell key.}
+
+\item{type}{\code{"map"}, the only view, accepted so that every plot method
+takes \code{type}.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}. An argument given here, such as
 \code{xlab}, \code{xlim} or \code{main}, replaces the one the method would set. A \code{pch}

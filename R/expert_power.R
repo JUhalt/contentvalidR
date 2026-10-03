@@ -94,7 +94,7 @@ expert_power <- function(n_experts = 3:12,
                          criterion = c("cvi", "cvr"),
                          alpha = 0.05,
                          response_rate = 1) {
-  criterion <- match.arg(criterion)
+  criterion <- .choose(criterion)
 
   if (!is.numeric(n_experts) || !length(n_experts) || anyNA(n_experts) ||
       any(!is.finite(n_experts)) || any(n_experts < 1) ||
@@ -182,8 +182,7 @@ expert_power <- function(n_experts = 3:12,
 print.contentvalid_expert_power <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   st <- x$settings
-  cat("contentvalidR expert-panel planning\n")
-  cat(strrep("-", 35), "\n", sep = "")
+  .print_header(x, "Expert-panel planning")
   .say("Criterion:", st$method)
   if (st$criterion == "cvr") cat("Alpha: ", .fmt_alpha(st$alpha), "\n", sep = "")
   if (st$response_rate < 1) {
@@ -208,17 +207,17 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
     tab[[paste("prob =", .fmt(p, digits))]] <-
       .fmt(sel$power[match(sizes, sel$n_experts)], digits)
   }
-  cat("\nProbability that an item clears the criterion\n")
+  .section("Probability that an item clears the criterion")
   .print_table(tab)
   cat("\n")
   .say(paste0(
     if (st$response_rate >= 1) {
-      paste0("required: endorsements the criterion needs from the panel",
+      paste0("Required: endorsements the criterion needs from the panel",
              if (any(tab$required == "none")) {
                " (none: no count reaches the criterion at this size)"
              }, ". ")
     },
-    "prob: the probability you assume that one expert endorses the item."
+    "Prob: the probability you assume that one expert endorses the item."
   ))
 
   if (st$criterion == "cvi" && st$response_rate >= 1 && any(sizes %in% 3:5)) {
@@ -236,17 +235,19 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "contentvalidR extension.")
   }
 
-  cat("\n")
-  .say("This table reports the consequences of the panel sizes you asked",
-       "about. It does not recommend one. `prob` is an assumption you supply,",
-       "so treat the result as conditional on it and report the value you",
-       "assumed.")
+  .closing(c("This table reports the consequences of the panel sizes you asked",
+             "about. It does not recommend one. `prob` is an assumption you supply,",
+             "so treat the result as conditional on it and report the value you",
+             "assumed."),
+           "See plot(x) for the probabilities by panel size.")
   invisible(x)
 }
 
 #' Plot an expert-panel planning curve
 #'
 #' @param x A `contentvalid_expert_power` object.
+#' @param type `"probability"`, the only view, accepted so that every plot
+#'   method takes `type`.
 #' @param show_legend Draw the key identifying each assumed endorsement
 #'   probability.
 #' @param ... Passed to [graphics::plot()].
@@ -254,8 +255,10 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 #' @examples
 #' plot(expert_power(n_experts = 3:12, prob = c(0.7, 0.85)))
 #' @export
-plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
+                                           type = "probability", ...) {
   .validate_flag(show_legend, "show_legend")
+  type <- .choose(type, "probability")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results

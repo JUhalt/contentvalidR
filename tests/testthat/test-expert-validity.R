@@ -167,11 +167,11 @@ test_that("congruence rejects inconsistent targets", {
 test_that("expert print and summary methods return invisibly", {
   x <- cbind(I1 = c(4,4,4,4,4,4), I2 = c(4,3,3,2,3,2))
   fit <- expert_validity(x, mode = "relevance", lo = 1, hi = 4)
-  expect_output(p <- print(fit), "expert-panel")
+  expect_output(p <- print(fit), "Expert-panel analysis")
   expect_identical(p, fit)
   s <- summary(fit)
   expect_s3_class(s, "summary.contentvalid_expert")
-  expect_output(ps <- print(s), "Summary")
+  expect_output(ps <- print(s), "<contentvalid_expert summary>")
   expect_identical(ps, s)
   expect_true(nrow(s$flagged) >= 1)
 })

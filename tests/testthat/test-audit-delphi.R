@@ -179,8 +179,8 @@ test_that("plot() takes type, and still accepts which", {
     expect_identical(plot(fit, which = view), fit)
     expect_identical(plot(fit, view), fit)
   }
-  expect_error(plot(fit, type = "trend"), "should be one of")
-  expect_error(plot(fit, which = "trend"), "should be one of")
+  expect_error(plot(fit, type = "trend"), "must be one of")
+  expect_error(plot(fit, which = "trend"), "must be one of")
   # The earlier name stands in for `type`, never beside it.
   expect_error(plot(fit, type = "consensus", which = "stability"),
                "Give `type` or `which`, not both", fixed = TRUE)
@@ -417,7 +417,7 @@ test_that("the trend tables list the pairs of rounds in round order", {
   header <- lines[grep("^Stability trend", lines)[1] + 1L]
   # S0 entered in round 2 and is listed first, which put "2->3" before "1->2".
   expect_identical(strsplit(trimws(header), "\\s+")[[1]],
-                   c("item", "1->2", "2->3"))
+                   c("Item", "1->2", "2->3"))
 })
 
 test_that("percentages agree across the header, the interpretation and options", {

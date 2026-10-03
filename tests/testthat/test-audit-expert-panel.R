@@ -203,8 +203,9 @@ test_that("a panel too small for the exact test gives no decision, and says why"
   # The component says the same.
   comp <- gsub("\\s+", " ",
                paste(capture.output(print(cvr(c(4, 3), N = 4))), collapse = " "))
-  # .0625 is an exact tie at three decimals, so the last digit is not pinned.
-  expect_match(comp, "4/4 1\\.00 \\.06[23] none --")
+  # .0625 is an exact tie at three decimals and rounds half up. No count can
+  # pass, so the component's decision column reads -- and is still shown.
+  expect_match(comp, "4/4 1\\.00 \\.063 none --")
   expect_equal(cvr(4, N = 4)$p_value, 1 / 16)
   expect_match(comp, "With 4 or fewer experts, no count of essential ratings",
                fixed = TRUE)

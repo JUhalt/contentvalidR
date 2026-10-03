@@ -87,7 +87,7 @@ test_that("empty panels, missing inputs, and 'none' yield NA", {
 })
 
 test_that("invalid methods and alpha levels are rejected", {
-  expect_error(contentvalidR:::.proportion_ci(3, 5, "wald"), "should be one of")
+  expect_error(contentvalidR:::.proportion_ci(3, 5, "wald"), "must be one of")
   expect_error(contentvalidR:::.proportion_ci(3, 5, alpha = 0), "strictly between 0 and 1")
   expect_error(contentvalidR:::.proportion_ci(3, 5, alpha = 1), "strictly between 0 and 1")
   expect_error(contentvalidR:::.proportion_ci(3, 5, alpha = NA_real_), "strictly between 0 and 1")
@@ -184,7 +184,7 @@ test_that("sort_validity() carries Psa intervals and names the method", {
   expect_equal(exact$results$psa_low[exact$results$item == "A1"], ref_b[1], tolerance = 1e-10)
   expect_match(paste(capture.output(print(exact)), collapse = " "), "Clopper-Pearson")
 
-  expect_error(sort_validity(d, proportion_ci = "wald"), "should be one of")
+  expect_error(sort_validity(d, proportion_ci = "wald"), "must be one of")
 })
 
 test_that("missing ratings use each item's effective number of ratings", {

@@ -550,7 +550,7 @@ judge_validity <- function(ratings,
     if (any(items$fragile %in% TRUE)) {
       big <- "n_raters" %in% names(items) &&
         any(items$n_raters[items$fragile %in% TRUE] > 10L)
-      paste0("changes without: removing any one of these judges changes the ",
+      paste0("Changes without: removing any one of these judges changes the ",
              "item's status. Such an item is one judge away from the other ",
              "side of the CVI criterion for its panel size (Lynn, 1986",
              if (big) {
@@ -621,8 +621,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   st <- x$settings
   d <- x$design
   r <- x$results
-  cat("contentvalidR judge heterogeneity\n")
-  cat(strrep("-", 33), "\n", sep = "")
+  .print_header(x, "Judge heterogeneity")
   cat("Judges: ", s$n_judges, " | Items: ", s$n_items, "\n", sep = "")
   cat("Scale: ", .fmt_scale(st$lo), " to ", .fmt_scale(st$hi),
       " | Relevant: a rating of ", .fmt_scale(st$relevance_cut),
@@ -658,7 +657,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
                 collapse = ", "))
   }
 
-  cat("\nJudges\n")
+  .section("Judges")
   estimable <- isTRUE(s$severity_estimable)
   show <- data.frame(judge = r$judge, decision = r$recommendation,
                      mean = .fmt(r$mean_rating, digits, bounded = FALSE),
@@ -673,9 +672,9 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   .print_table(show)
   cat("\n")
   .say(paste0(
-    "mean: the judge's mean rating. severity: how far the judge rates below ",
+    "Mean: the judge's mean rating. Severity: how far the judge rates below ",
     "the panel, in rating points (negative is more lenient)",
-    if (estimable) paste0("; logit: severity on the relevant/not-relevant ",
+    if (estimable) paste0(". Logit: severity on the relevant/not-relevant ",
                           "decision from the facets model, against the ",
                           "judges it placed, which the flags use") else "",
     "."
@@ -702,7 +701,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   }
 
   if (!estimable) {
-    cat("\nLogit severity not estimated\n")
+    .section("Logit severity not estimated")
     .say(x$details$severity_note)
     .say("Severity in rating points is reported instead and is used for",
          "flagging.")
@@ -710,11 +709,13 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
 
   items <- x$details$influence_items
   if (isTRUE(s$n_fragile_items > 0L)) {
-    cat("\nItems whose status changes if one judge is removed\n")
+    .section("Items whose status changes if one judge is removed")
     .print_fragile_items(items)
     cat("\n")
   } else if (any(items$fragile %in% FALSE)) {
-    cat("\nNo item's review status depends on any single judge.\n")
+    .end_section()
+    cat("\n")
+    .say("No item's review status depends on any single judge.")
   } else {
     cat("\n")
   }
@@ -732,9 +733,9 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("A 'Review' judge is not a judge to remove. Disagreement can be",
-       "substantive expertise; the flag marks ratings worth a closer look.")
+  .closing(c("A 'Review' judge is not a judge to remove. Disagreement can be",
+             "substantive expertise; the flag marks ratings worth a closer look."),
+           "See summary(x) for the flagged judges and the judges needed.")
   invisible(x)
 }
 
@@ -756,13 +757,12 @@ summary.contentvalid_judge <- function(object, ...) {
 #' @export
 print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: judge and rater heterogeneity\n")
-  cat(strrep("-", 38), "\n", sep = "")
+  .print_header(x, "Judge heterogeneity")
   cat("Judges: ", x$n_judges, " | Items: ", x$n_items, "\n", sep = "")
   cat("Consistent with panel: ", x$n_supported, " | Flagged for review: ",
       x$n_review, " | Insufficient: ", x$n_insufficient, "\n", sep = "")
 
-  cat("\nGeneralizability\n")
+  .section("Generalizability")
   gt <- x$gtheory
   na_words <- function(v) if (is.na(v)) "not estimable" else .fmt(v, digits)
   cat("  Dependability (absolute decisions): ",
@@ -775,29 +775,26 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
          indent = 2L, exdent = 2L)
   }
   if (nrow(gt$judges_needed) && !identical(gt$status, "Insufficient data")) {
-    cat("\nJudges needed to reach each coefficient\n")
-    .print_table(.judges_needed_table(gt$judges_needed, digits))
+    .section("Judges needed to reach each coefficient")
+    .print_table(.judges_needed_table(gt$judges_needed, digits),
+                 more = "x$gtheory$judges_needed")
   }
 
   if (nrow(x$reviewed_judges)) {
-    cat("\nJudges flagged for review\n")
+    .section("Flagged")
     # Judges flagged for the same reason share one explanation.
     rj <- x$reviewed_judges
-    for (txt in unique(rj$interpretation)) {
-      same <- rj$interpretation == txt
-      cat("\n")
-      .say(paste0(paste0(rj$judge[same], collapse = ", "), " (",
-                  rj$recommendation[same][1], ")"), indent = 2L, exdent = 4L)
-      .say(txt, indent = 4L)
-    }
+    .say_flagged(rj$judge, rj$recommendation, rj$interpretation)
   } else {
-    cat("\nNo judge was flagged for review.\n")
+    .end_section()
+    cat("\n")
+    .say("No judge was flagged for review.")
   }
 
   fragile <- x$influence_items
   if (is.data.frame(fragile)) {
     if (any(fragile$fragile %in% TRUE)) {
-      cat("\nItems whose status changes if one judge is removed\n")
+      .section("Items whose status changes if one judge is removed")
       .print_fragile_items(fragile)
       cat("\n")
     } else if (any(is.na(fragile$fragile))) {
@@ -806,9 +803,9 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
     for (line in .fragile_items_notes(fragile)) .say(line)
   }
 
-  cat("\n")
-  .say("This analysis describes how much conclusions depend on these judges.",
-       "It does not establish that the items cover the intended content",
-       "domain.")
+  .closing(c("This analysis describes how much conclusions depend on these judges.",
+             "It does not establish that the items cover the intended content",
+             "domain."),
+           "See x$reviewed_judges for the flagged judges as a data frame.")
   invisible(x)
 }

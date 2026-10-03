@@ -203,6 +203,9 @@ domain_validity <- function(assignments,
   }
 
   share <- counts / n_items
+  # Shares in the interpretations are written as the printed table writes
+  # them.
+  pct <- function(p) .fmt_pct(p, base = n_items)
   empty <- counts == 0L
   # A cell the blueprint gives one item is not thin with one: with targets,
   # the floor is the smaller of `min_items` and the cell's own target.
@@ -245,23 +248,24 @@ domain_validity <- function(assignments,
     }
     if (under[i]) {
       return(sprintf(paste(
-        "This cell holds %.0f%% of the items, less than 1/%s of its intended",
-        "share of %.0f%% (a target of %s). The blueprint weights this cell",
+        "This cell holds %s of the items, less than 1/%s of its intended",
+        "share of %s (a target of %s). The blueprint weights this cell",
         "more heavily than the item set does. Either write more items for it",
         "or revise the target."
-      ), share[i] * 100, format(over_factor), expected_share[i] * 100,
+      ), pct(share[i]), format(over_factor), pct(expected_share[i]),
          .n_noun(format(target_n[i]), "item")))
     }
     if (over[i]) {
       return(sprintf(paste(
-        "This cell holds %.0f%% of the items, more than %.1f times its expected",
-        "share of %.0f%%. Over-representation is not an error, but it weights",
-        "the instrument toward this cell, which should be a deliberate choice",
-        "rather than an accident of item writing."
-      ), share[i] * 100, over_factor, expected_share[i] * 100))
+        "This cell holds %s of the items (%s), more than %.1f times its",
+        "expected share of %s. Over-representation is not an error, but it",
+        "weights the instrument toward this cell, which should be a deliberate",
+        "choice rather than an accident of item writing."
+      ), pct(share[i]), .n_noun(counts[i], "item"), over_factor,
+         pct(expected_share[i])))
     }
-    sprintf("This cell holds %s, %.0f%% of the instrument, which meets the coverage criteria set for this analysis.",
-            .n_noun(counts[i], "item"), share[i] * 100)
+    sprintf("This cell holds %s, %s of the instrument, which meets the coverage criteria set for this analysis.",
+            .n_noun(counts[i], "item"), pct(share[i]))
   }, character(1))
 
   results <- data.frame(
@@ -356,11 +360,8 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
   s <- x$scale_summary
   st <- x$settings
   r <- x$results
-  pct <- function(p) ifelse(is.na(p), "NA",
-                            paste0(formatC(100 * p, format = "f", digits = 0),
-                                   "%"))
-  cat("contentvalidR content-domain coverage\n")
-  cat(strrep("-", 37), "\n", sep = "")
+  pct <- function(p) .fmt_pct(p, base = s$n_items)
+  .print_header(x, "Content-domain coverage")
   cat("Items: ", s$n_items, " | Blueprint cells: ", s$n_cells, "\n", sep = "")
   .say(paste0(
     "Criteria: at least ", st$min_items, " item", if (st$min_items != 1L) "s",
@@ -392,7 +393,7 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
                 collapse = ", "))
   }
 
-  cat("\nCells\n")
+  .section("Cells")
   show <- data.frame(cell = r$cell, decision = r$recommendation,
                      items = r$n_items, share = pct(r$share),
                      expected = pct(r$expected_share),
@@ -429,10 +430,10 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("Coverage shows that items exist for each cell. It does not show that",
-       "those items are good ones, or that the blueprint is the right",
-       "description of the domain.")
+  .closing(c("Coverage shows that items exist for each cell. It does not show that",
+             "those items are good ones, or that the blueprint is the right",
+             "description of the domain."),
+           "See summary(x) for the cells needing attention.")
   invisible(x)
 }
 
@@ -451,26 +452,23 @@ summary.contentvalid_domain <- function(object, ...) {
 #' @export
 print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: content-domain coverage\n")
-  cat(strrep("-", 32), "\n", sep = "")
+  .print_header(x, "Content-domain coverage")
   cat("Items: ", x$n_items, " | Blueprint cells: ", x$n_cells, "\n", sep = "")
   cat("Cells meeting coverage criteria: ", x$n_supported, " | Flagged: ",
       x$n_review, "\n", sep = "")
 
   if (nrow(x$gaps)) {
-    cat("\nCells needing attention\n")
-    for (i in seq_len(nrow(x$gaps))) {
-      row <- x$gaps[i, ]
-      cat(sprintf("\n  %s (%s, %d item%s)\n", row$cell, row$recommendation,
-                  row$n_items, if (row$n_items == 1L) "" else "s"))
-      .say(row$interpretation, indent = 4L)
-    }
+    .section("Flagged")
+    g <- x$gaps
+    .say_flagged(g$cell, g$recommendation, g$interpretation)
   } else {
-    cat("\nEvery blueprint cell met the coverage criteria set for this analysis.\n")
+    .end_section()
+    cat("\n")
+    .say("Every blueprint cell met the coverage criteria set for this analysis.")
   }
 
   if (!is.null(x$structure)) {
-    cat("\nContent structure\n")
+    .section("Content structure")
     .say(x$structure$interpretation, indent = 2L)
   }
 
@@ -483,6 +481,7 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
       "Note: no `domain` was supplied, so empty cells could not be detected."
     })
   }
+  .closing(pointer = "See x$gaps for the cells needing attention as a data frame.")
   invisible(x)
 }
 
@@ -528,6 +527,8 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #'
 #' @param x A `contentvalid_structure` object.
 #' @param show_legend Draw the blueprint-cell key.
+#' @param type `"map"`, the only view, accepted so that every plot method
+#'   takes `type`.
 #' @param ... Passed to [graphics::plot()]. An argument given here, such as
 #'   `xlab`, `xlim` or `main`, replaces the one the method would set. A `pch`
 #'   or `col` with one value per blueprint cell (or cluster) is applied cell
@@ -551,8 +552,9 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #' ), 9, 9, dimnames = list(items, items))
 #' plot(content_structure(sim, membership = blueprint))
 #' @export
-plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_structure <- function(x, show_legend = TRUE, type = "map", ...) {
   .validate_flag(show_legend, "show_legend")
+  type <- .choose(type, "map")
   user <- list(...)
   op <- .plot_margins(user)
   on.exit(graphics::par(op), add = TRUE)

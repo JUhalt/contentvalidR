@@ -46,7 +46,7 @@ aikens_v <- function(ratings, lo, hi,
                      ci = c("score", "none", "bootstrap"),
                      B = 500, alpha = 0.05, seed = NULL,
                      na.rm = FALSE) {
-  ci <- match.arg(ci)
+  ci <- .choose(ci)
   .validate_flag(na.rm, "na.rm")
   # V is the mean rating rescaled by the scale's range, so the bounds decide
   # the answer and are never assumed.

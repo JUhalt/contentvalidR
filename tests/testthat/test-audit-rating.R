@@ -148,7 +148,8 @@ test_that("identical ratings still give no test", {
   expect_true(is.na(out$F))
   expect_true(is.na(out$p))
   expect_true(is.na(out$p_screen))
-  expect_match(flat(out), "--", fixed = TRUE)
+  expect_match(flat(out), "F test --: the ratings left no variance to test",
+               fixed = TRUE)
 })
 
 test_that("an ordinary item is untouched by the zero-variance tolerance", {
@@ -211,7 +212,7 @@ test_that("the two degrees of freedom of a test are written to one precision", {
 test_that("the test is credited to both of its sources", {
   d <- rating_data()
   lines <- strsplit(shown(anova_content(d)), "\n", fixed = TRUE)[[1]]
-  expect_identical(lines[1], "Content-validity ANOVA")
+  expect_identical(lines[1], "<contentvalid_anova> Content-validity ANOVA")
   expect_identical(lines[2],
                    "Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).")
   fit <- rating_validity(d)
@@ -328,7 +329,7 @@ test_that("expert-judge tables leave out the level columns", {
   expect_false(grepl("HTC level", out, fixed = TRUE))
   expect_false(grepl("HTD level", out, fixed = TRUE))
   expect_false(grepl("Benchmark set", out, fixed = TRUE))
-  expect_match(out, "mean HTC mean HTD", fixed = TRUE)
+  expect_match(out, "Mean HTC Mean HTD", fixed = TRUE)
   # The table holds means only, and its heading says so.
   expect_match(out, "Target-scale means", fixed = TRUE)
   expect_false(grepl("Target-scale Colquitt benchmarks", out, fixed = TRUE))
@@ -343,10 +344,12 @@ test_that("expert-judge tables leave out the level columns", {
   expect_match(naive, "Benchmark set:", fixed = TRUE)
   expect_match(naive, "Target-scale Colquitt benchmarks", fixed = TRUE)
 
-  # The judge type decides, not an empty column: a naive-judge fit with no
-  # decided item keeps its level columns in the summary, as in the print.
+  # A level column empty for every scale is dropped (the style shared with
+  # nomologR), and the sentence beneath says why there is no band.
   undecided <- d[d$rater == 1, ]
-  expect_match(flat(summary(rating_validity(undecided))), "HTC level",
+  undecided_sm <- flat(summary(rating_validity(undecided)))
+  expect_false(grepl("HTC level", undecided_sm, fixed = TRUE))
+  expect_match(undecided_sm, "Insufficient scale-level rating evidence",
                fixed = TRUE)
 
   sorts <- utils::read.csv(
@@ -399,7 +402,11 @@ test_that("content_report() carries the F test, within 80 columns", {
   old <- options(width = 80)
   on.exit(options(old), add = TRUE)
   lines <- utils::capture.output(print(rep))
-  expect_length(lines, nrow(rep) + 1L)
+  expect_match(lines[1], "^<contentvalid_report> ")
+  table_lines <- lines[2L + seq_len(nrow(rep) + 1L)]
+  expect_true(all(grepl("^  [A-Z0-9]", table_lines)))
+  expect_identical(lines[nrow(rep) + 4L], "")
+  expect_match(lines[nrow(rep) + 5L], "^Note[.] ")
   expect_lte(max(nchar(lines)), 80L)
   # The closest competitor and the effect size are in the numeric table.
   num <- content_report(fit, format = "data.frame")
@@ -423,6 +430,13 @@ test_that("content_report() carries the F test, within 80 columns", {
                      undecided$construct == "B"] <- NA
   und <- content_report(rating_validity(undecided))
   expect_identical(und$`F test`[und$item == "I3"], "--")
+  # The decision column is never dropped for width, nor for being "--".
+  for (w in c(80, 60)) {
+    options(width = w)
+    und_lines <- utils::capture.output(print(und))
+    expect_match(und_lines[3], "Decision$")
+    expect_false(any(grepl("Not shown for width: .*Decision", und_lines)))
+  }
 })
 
 test_that("the profile figure draws complete-judge means and marks no decision", {
@@ -575,7 +589,7 @@ test_that("a contrast with no p is named, not papered over by another's p", {
   expect_false(grepl("largest contrast p", note, fixed = TRUE))
   out <- flat(fit)
   expect_match(out,
-               "NA when a contrast could not be tested because every judge rated the intended construct and another the same",
+               "-- when a contrast could not be tested because every judge rated the intended construct and another the same",
                fixed = TRUE)
 })
 

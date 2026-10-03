@@ -59,7 +59,7 @@
 # each item was rated against.
 .colquitt_definitions_caution <- function(n_definitions,
                                           how = c("offered", "used", "rated")) {
-  how <- match.arg(how)
+  how <- .choose(how)
   if (is.null(n_definitions) || is.na(n_definitions) || n_definitions == 3L) {
     return("")
   }
@@ -137,7 +137,7 @@
 #' @export
 colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
                                 orbiting_r = NULL) {
-  statistic <- match.arg(statistic)
+  statistic <- .choose(statistic)
   norm <- .colquitt_norm(orbiting_r)
   cp <- .colquitt_cutpoints(statistic, norm)
   out <- data.frame(
@@ -197,8 +197,8 @@ interpret_colquitt <- function(value,
                                statistic = c("psa", "csv", "htc", "htd"),
                                orbiting_r = NULL,
                                judge_type = c("naive", "expert")) {
-  statistic <- match.arg(statistic)
-  judge_type <- match.arg(judge_type)
+  statistic <- .choose(statistic)
+  judge_type <- .choose(judge_type)
   if (!is.numeric(value) || length(value) < 1L) {
     stop("`value` must be a non-empty numeric vector.", call. = FALSE)
   }

@@ -5,7 +5,7 @@ template:
 
 reference:
 - title: About the package
-  desc: What the package promises, and what you can rely on across versions.
+  desc: How to read the output, what the package promises, and what you can rely on across versions.
   contents:
   - contentvalidR-package
 

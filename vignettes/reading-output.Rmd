@@ -66,12 +66,15 @@ fit_sort <- sort_validity(sorts)
 fit_sort
 ```
 
-The printout opens with a one-line verdict (how many items met the criterion,
-and which were flagged), then one row per item. Working across the item table:
+The printout opens with a header line naming the object's class and what it
+holds (`<contentvalid_sort> Item-sort analysis`), then the facts of the design:
+how many items and judges, and the test applied. Then comes the verdict (how
+many items met the criterion, and which were flagged), and then one row per
+item. Working across the item table:
 
-- **decision** — the workflow's verdict for the item, stated first so the
+- **Decision** — the workflow's verdict for the item, stated first so the
   numbers after it read as the reasons.
-- **judges** — how many judges put the item where you intended, out of how many
+- **Judges** — how many judges put the item where you intended, out of how many
   judged it (`n_target` and `n` in `results`). Always read this before the
   coefficients: an impressive Psa computed from four judges is not impressive.
 - **Psa** — the proportion of judges who assigned the item to its intended
@@ -82,7 +85,7 @@ and which were flagged), then one row per item. Working across the item table:
   construct keeps attracting it. That pattern means your two construct
   definitions overlap, which is a definitional problem rather than a wording
   problem.
-- **competitor** — the construct judges picked most often *instead*. This is
+- **Competitor** — the construct judges picked most often *instead*. This is
   the single most useful diagnostic column in the table, because it tells you
   *where* a weak item drifted, which points at the fix.
 - **p** — the Howard-Melloy exact test against the benchmark rate `p0`, .50 by
@@ -93,8 +96,27 @@ Numbers follow the APA style rules (American Psychological Association, 2020,
 Section 6.36). A statistic
 that cannot exceed 1, such as a proportion or a *p* value, is printed without a
 leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
-.001 is printed as < .001. The `results` table keeps every value at full
-precision.
+.001 is printed as < .001, and one that would round to 1 as > .999. Exact ties
+round half up, so 5 of 8 judges (.625) prints as .63. A value that could not be
+computed prints as `--`, and the printout says why. The `results` table keeps
+every value at full precision.
+
+A narrow console never squeezes a table into wrapped blocks. Columns that do
+not fit are left out from the right, never the item or its decision, and a
+line beneath the table names them and the call that shows them.
+
+The status words read across this package and nomologR as follows (the same
+table is in `?contentvalidR`):
+
+| contentvalidR | nomologR |
+|---|---|
+| Supported | no flag |
+| Review | review |
+| (no counterpart) | concern |
+| Insufficient data | not computed |
+| Descriptive only | note |
+
+"Review" always means look again, never delete.
 
 The scale-level table adds Colquitt strength labels. These are **percentile
 positions relative to scales published in the literature**, not absolute

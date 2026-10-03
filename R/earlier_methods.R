@@ -212,11 +212,11 @@
 }
 
 .verdict <- function(meets) {
-  ifelse(is.na(meets), "n/a", ifelse(meets, "meets", "below"))
+  ifelse(is.na(meets), .missing_mark, ifelse(meets, "Meets", "Below"))
 }
 
 .earlier_heading <- function() {
-  cat("\nEarlier methods, for comparison (not used for the decision)\n")
+  .section("Earlier methods, for comparison (not used for the decision)")
 }
 
 # An estimate can print as equal to its cutoff and still miss it, such as 10
@@ -235,7 +235,7 @@
     .say(paste0(
       paste0(items[h], " (", .fmt(value[h], 3), ")", collapse = ", "),
       if (length(h) == 1L) " prints" else " print",
-      " at the ", rule, " cutoff of ", shown_cut,
+      " at the ", rule, " criterion of ", shown_cut,
       " but ", if (length(h) == 1L) "falls" else "fall",
       " short of it before rounding."
     ))
@@ -269,7 +269,11 @@
   show_ext <- !is.null(ext_cut) && !is.na(ext_cut) &&
     abs(ext_cut - .yao_cut) > 1e-9
   if (show_ext) tab$`extension*` <- .verdict(it$extension_meets)
-  .print_table(tab)
+  # Each earlier rule's verdict is the point of the table, so a narrow console
+  # loses the cut columns first.
+  .print_table(tab, keep = c(.table_keep, "A&G (1991)", "Yao et al. (2008)",
+                             "extension*"),
+               more = "x$details$earlier_methods$items")
   cat("\n")
 
   alpha <- .fmt_alpha(em$alpha)
@@ -300,7 +304,7 @@
        "four-domain sort where chance assignment is .25.")
   if (show_ext) {
     .say(paste0(
-      "* extension: a contentvalidR extension, not a published rule. It ",
+      "Extension*: a contentvalidR extension, not a published rule. It ",
       "carries Yao et al.'s reasoning to this sort's ", k, " constructs as ",
       "chance plus .05, so Psa and Csv both at least ", .fmt(ext_cut, digits),
       " (1/", k, " + .05)."
@@ -365,7 +369,8 @@
   }
   tab$`Lawshe (1975)` <- .verdict(it$lawshe_meets)
   tab$`Wilson et al. (2012)` <- .verdict(it$wilson_meets)
-  .print_table(tab)
+  .print_table(tab, keep = c(.table_keep, "Lawshe (1975)", "Wilson et al. (2012)"),
+               more = "x$details$earlier_methods$items")
   cat("\n")
 
   alpha <- .fmt_alpha(em$alpha)
@@ -467,7 +472,7 @@
               ", with Aiken's V beside it"))
   tab <- data.frame(item = cc$item, V = .fmt(cc$V, digits),
                     Ccv = .fmt(cc$ccv_corrected, digits),
-                    `book label` = ifelse(is.na(cc$label), "NA", cc$label),
+                    `book label` = ifelse(is.na(cc$label), .missing_mark, cc$label),
                     stringsAsFactors = FALSE, check.names = FALSE)
   .print_table(tab)
   cat("\n")

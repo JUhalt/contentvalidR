@@ -3,7 +3,7 @@
 # Two-sided interval for a binomial proportion x / n. The methods and their
 # sources are documented on cvi() and compute_psa(); this helper only computes.
 .proportion_ci <- function(x, n, method = "wilson", alpha = 0.05) {
-  method <- match.arg(method, .proportion_ci_methods)
+  method <- .choose(method, .proportion_ci_methods, "method")
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) ||
       alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one number strictly between 0 and 1.", call. = FALSE)
