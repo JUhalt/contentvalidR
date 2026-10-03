@@ -207,7 +207,7 @@ Look at C2. Fourteen of 20 judges chose its target, one short of the 15 the
 exact test needs, so the decision is Review. Anderson and Gerbing's rule
 passes it: their critical Csv of .50 assumes the six judges who missed the
 target all chose one rival, but here they split, so Csv reaches .50 anyway.
-That is the miscalibration in miniature. Yao, Wu and Yang's (2008) .30 cutoffs
+That is the miscalibration in miniature. Yao et al.'s (2008) .30 cutoffs
 pass every item, because they were set for four domains, where chance is .25;
 with three constructs, chance is already above .30.
 

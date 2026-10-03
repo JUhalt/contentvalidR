@@ -17,6 +17,60 @@
   graphics::par(mar = mar)
 }
 
+# Draws a figure's frame from the method's own arguments, with any named
+# argument the caller passed in `...` taking the place of the method's, so
+# `xlab`, `xlim` or `main` never collide with it. Arguments the figure's
+# encoding depends on (`protect`: the frame type, the axes the method draws
+# itself, and on a map the decision symbols its legend keys) are kept as the
+# method set them, and a NULL from the caller leaves the method's value.
+# Unnamed arguments cannot be matched to anything and are dropped with a
+# warning.
+.plot_with <- function(args, dots,
+                       protect = c("type", "xaxt", "yaxt", "axes"),
+                       draw = graphics::plot) {
+  nm <- names(dots)
+  if (is.null(nm)) nm <- rep("", length(dots))
+  if (any(!nzchar(nm))) {
+    warning("Unnamed arguments to plot() are ignored; name them, as in ",
+            "xlab = \"...\".", call. = FALSE)
+  }
+  named <- dots[nzchar(nm)]
+  named <- named[!names(named) %in% protect &
+                   !vapply(named, is.null, logical(1))]
+  args[names(named)] <- named
+  do.call(draw, args)
+}
+
+# Item labels for the left margin of a horizontal figure, and the margin they
+# need, in lines. The labels are measured on the open device. A label wider
+# than 40% of the width left for labels (`width_in` less `reserve_in`, in
+# inches) is shortened in the middle with "...", keeping its start and end so
+# that names sharing an opening stay apart; if shortened labels would still
+# coincide, a number is added.
+.item_labels <- function(items, width_in = graphics::par("fin")[1],
+                         reserve_in = 0, base = 1.2) {
+  items <- as.character(items)
+  csi <- graphics::par("csi")
+  cap_in <- max(0.4 * (width_in - reserve_in), 4 * csi)
+  wide <- function(x) graphics::strwidth(x, units = "inches")
+  out <- items
+  for (i in which(wide(items) > cap_in)) {
+    full <- items[i]
+    keep <- nchar(full)
+    repeat {
+      keep <- keep - 1L
+      head <- ceiling(keep / 2)
+      label <- paste0(substr(full, 1L, head), "...",
+                      substr(full, nchar(full) - (keep - head) + 1L, nchar(full)))
+      if (wide(label) <= cap_in || keep <= 4L) break
+    }
+    out[i] <- label
+  }
+  dup <- duplicated(out) | duplicated(out, fromLast = TRUE)
+  if (any(dup)) out[dup] <- paste0(out[dup], " (", which(dup), ")")
+  list(labels = out, lines = base + max(wide(out), 0) / csi)
+}
+
 # Tick labels in APA style for a bounded statistic: 0, .25, .50, .75, 1.00.
 .tick_labels <- function(at, digits = 2) {
   out <- formatC(at, format = "f", digits = digits)

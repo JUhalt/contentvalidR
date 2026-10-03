@@ -193,7 +193,7 @@
 #'   judges spread across several constructs, the leading rival's count falls,
 #'   so Csv can reach the critical value with fewer target assignments than
 #'   the exact test requires. That is why it is not used for the decision.
-#' * **Yao, Wu and Yang (2008)** required Psa and Csv both to reach .30, which
+#' * **Yao et al. (2008)** required Psa and Csv both to reach .30, which
 #'   they chose for a four-domain sort, where an item assigned at random lands
 #'   in its domain with probability .25 (p. 486). They give no rule for other
 #'   numbers of domains.
@@ -638,10 +638,10 @@ plot.contentvalid_sort <- function(x,
     xs <- seq_along(y)
     lo <- if (metric == "psa") 0 else -1
     # Headroom above 1 holds the legend, clear of the data.
-    graphics::plot(xs, y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
-                   ylab = if (metric == "psa") psa_lab else csv_lab,
-                   xlim = c(0.5, length(y) + 0.5),
-                   ylim = c(lo, 1 + 0.2 * (1 - lo)), ...)
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
+                    ylab = if (metric == "psa") psa_lab else csv_lab,
+                    xlim = c(0.5, length(y) + 0.5),
+                    ylim = c(lo, 1 + 0.2 * (1 - lo))), list(...))
     graphics::axis(1, at = xs, labels = r$item, las = 2)
     .axis_bounded(2, at = if (metric == "psa") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
     leg <- .decision_legend(r$recommendation)
@@ -677,9 +677,10 @@ plot.contentvalid_sort <- function(x,
   }
 
   ok <- is.finite(r$psa) & is.finite(r$csv)
-  graphics::plot(r$psa[ok], r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
-                 xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = csv_lab,
-                 pch = pch[ok], ...)
+  .plot_with(list(x = r$psa[ok], y = r$csv[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
+                  xaxt = "n", yaxt = "n", xlab = psa_lab, ylab = csv_lab,
+                  pch = pch[ok]), list(...),
+             protect = c("type", "xaxt", "yaxt", "axes", "pch"))
   .axis_bounded(1, at = seq(0, 1, 0.25))
   .axis_bounded(2, at = seq(-1, 1, 0.5))
   .hline(0)

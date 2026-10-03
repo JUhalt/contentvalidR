@@ -217,15 +217,40 @@ as.data.frame.contentvalid_workflow <- function(x,
   spec <- .report_spec(x)
   cols <- list()
   headings <- character(0)
+  is_ci <- logical(0)
   for (entry in spec) {
     if (!all(entry$cols %in% names(res))) next
     if (nrow(res) && all(is.na(res[[entry$cols[1]]]))) next
     cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits)
     headings <- c(headings, entry$heading)
+    is_ci <- c(is_ci, identical(entry$type, "ci"))
   }
+  # An interval is named after its estimate in the object ("V 95% CI",
+  # "I-CVI 95% CI"), whatever else the table holds, while the printed table
+  # and the Markdown head it "95% CI", beside that estimate. The map from
+  # name to printed heading is kept, so a column the user renames prints
+  # under the new name.
+  names_out <- headings
+  at <- which(is_ci & seq_along(headings) > 1L)
+  names_out[at] <- paste(headings[at - 1L], headings[at])
   tab <- as.data.frame(cols, stringsAsFactors = FALSE)
-  names(tab) <- headings
+  names(tab) <- names_out
+  if (length(at)) attr(tab, "display") <- stats::setNames(headings[at], names_out[at])
   tab
+}
+
+# The headings a reader sees: an interval named after its estimate is
+# printed under its shared heading, unless the user renamed it.
+.report_display <- function(tab) {
+  map <- attr(tab, "display")
+  out <- as.data.frame(tab)
+  if (length(map)) {
+    nm <- names(out)
+    hit <- nm %in% names(map)
+    nm[hit] <- map[nm[hit]]
+    names(out) <- nm
+  }
+  out
 }
 
 #' Build a manuscript-ready results table
@@ -252,7 +277,9 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' @param caption Optional caption line placed above a Markdown table.
 #'
 #' @return For `"apa"`, a data frame of character columns that prints without
-#'   row names; `as.data.frame()` drops its print class. For `"data.frame"`, a
+#'   row names; `as.data.frame()` drops its print class. An interval column is
+#'   named after its estimate (`V 95% CI`, `I-CVI 95% CI`) and printed under
+#'   the shared heading `95% CI`. For `"data.frame"`, a
 #'   plain data frame with `recommendation` and `status` columns. For
 #'   `"markdown"`, a character vector of Markdown lines that prints as the
 #'   table, carrying the analysis provenance as its `"settings"` attribute.
@@ -316,7 +343,7 @@ content_report <- function(x,
     lines <- c(lines, if (!nrow(tab)) {
       "_No units matched the requested selection._"
     } else {
-      .as_markdown_table(tab)
+      .as_markdown_table(.report_display(tab))
     })
     attr(lines, "settings") <- x$settings
     class(lines) <- "contentvalid_markdown"
@@ -350,7 +377,7 @@ print.contentvalid_report <- function(x, ...) {
   if (!nrow(x)) {
     cat("No units matched the requested selection.\n")
   } else {
-    .print_table(as.data.frame(x))
+    .print_table(.report_display(x))
   }
   invisible(x)
 }
@@ -358,6 +385,7 @@ print.contentvalid_report <- function(x, ...) {
 #' @export
 as.data.frame.contentvalid_report <- function(x, ...) {
   class(x) <- "data.frame"
+  attr(x, "display") <- NULL
   x
 }
 

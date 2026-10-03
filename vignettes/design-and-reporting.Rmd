@@ -96,13 +96,14 @@ random-number generation.
 
 ## Table templates
 
+`content_report()` turns a fit into a manuscript table, with the columns a
+reader needs and numbers in APA form; `format = "markdown"` gives the same
+table to paste. The unrounded values stay in each fit's `results`.
+
 ### Item sort
 
 ```{r sort-table}
-sort_fit$results[c(
-  "item", "target", "n", "n_target", "competitor",
-  "psa", "csv", "p_value", "status", "recommendation"
-)]
+content_report(sort_fit)
 ```
 
 At the target-scale level, report mean Psa/Csv and the benchmark set actually
@@ -111,25 +112,19 @@ used. Do not convert Colquitt's scale-level norms into individual-item cutoffs.
 ### Construct rating
 
 ```{r rating-table}
-rating_fit$results[c(
-  "item", "target", "n_complete", "strongest_competitor",
-  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
-)]
-rating_fit$scale_summary
+content_report(rating_fit)
 ```
 
 Report the repeated-measures design and target-versus-orbiting contrasts. For a
-review item, naming the strongest competitor is often more informative than a
-standalone p value.
+review item, naming the strongest competitor, which `rating_fit$results` holds
+as `strongest_competitor`, is often more informative than a standalone p
+value.
 
 ### Expert relevance
 
 ```{r expert-table}
-expert_fit$results[c(
-  "item", "N", "V", "ci_low", "ci_high", "I_CVI",
-  "kappa_mod", "status", "recommendation"
-)]
-expert_fit$scale_summary
+content_report(expert_fit)
+expert_fit$scale_summary[c("S_CVI_Ave", "S_CVI_UA", "agreement")]
 ```
 
 Essentiality and congruence require different expert tasks. Do not place CVR,

@@ -22,8 +22,8 @@ interchangeable.
 
 The three modes are:
 
-- **relevance**: Aiken's V plus CVI and modified kappa, with a panel-level
-  agreement coefficient;
+- **relevance**: Aiken's (1980) V plus CVI and the modified kappa of Polit
+  et al. (2007), with a panel-level agreement coefficient;
 - **essentiality**: Lawshe's CVR with exact binomial inference; and
 - **congruence**: the index of item-objective congruence (IOC) of Rovinelli
   and Hambleton (1977).
@@ -90,9 +90,10 @@ fit$scale_summary[, c("agreement", "agreement_low", "agreement_high")]
 fit$details$agreement
 ```
 
-The default coefficient is Krippendorff's alpha. It accepts any number of
-experts and missing ratings, and Zapf et al. (2016) recommend it when ratings
-are ordinal or incomplete, which describes most expert panels. It is a general
+The default coefficient is Krippendorff's alpha (Krippendorff, 2011). It
+accepts any number of experts and missing ratings, and Zapf et al. (2016)
+recommend it when ratings are ordinal or incomplete, which describes most
+expert panels. It is a general
 reliability coefficient (Hayes & Krippendorff, 2007) rather than one developed
 for content validity; no publication applying it specifically to
 content-validity panels was found.
@@ -367,7 +368,7 @@ multidimensional items. *International Journal of Testing, 3*(2), 163–171.
 https://doi.org/10.1207/S15327574IJT0302_5
 
 Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's kappa:
-A comparison of basic properties. *MethodsX, 10*, 102212.
+A comparison of basic properties. *MethodsX, 10*, Article 102212.
 https://doi.org/10.1016/j.mex.2023.102212
 
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the critical
@@ -377,5 +378,5 @@ https://doi.org/10.1177/0748175612440286
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring inter-rater
 reliability for nominal data: Which coefficients and confidence intervals are
-appropriate? *BMC Medical Research Methodology, 16*, 93.
+appropriate? *BMC Medical Research Methodology, 16*, Article 93.
 https://doi.org/10.1186/s12874-016-0200-9

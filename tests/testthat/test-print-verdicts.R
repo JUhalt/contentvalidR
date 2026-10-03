@@ -60,7 +60,8 @@ test_that("the key does not claim modified kappa stays between 0 and 1", {
   expect_lt(fit$results$kappa_mod[fit$results$item == "I4"], 0)
   expect_equal(round(fit$results$kappa_mod[fit$results$item == "I4"], 2), -0.07)
   out <- printed(fit)
-  expect_match(out, "below 0 when agreement is below chance", fixed = TRUE)
+  expect_match(out, "below 0 only when no expert, or one of three, rated it relevant",
+               fixed = TRUE)
   expect_false(grepl("overstate consensus. (0 to 1", out, fixed = TRUE))
 })
 

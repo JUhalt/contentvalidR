@@ -67,8 +67,10 @@ interval uses the same \code{alpha} as Aiken's V. See \code{ci} in \code{\link[=
 methods and the evidence for each.}
 
 \item{agreement}{Panel-level agreement coefficient for relevance mode:
-\code{"krippendorff"} (default), \code{"ac1"}, or \code{"none"}. Krippendorff's alpha uses
-the relevance ratings at \code{agreement_level}; Gwet's AC1 uses the
+\code{"krippendorff"} (default), \code{"ac1"}, or \code{"none"}. Krippendorff's alpha
+(Hayes & Krippendorff, 2007), which Zapf et al. (2016) recommend for
+ordinal or incomplete ratings, uses the relevance ratings at
+\code{agreement_level}; Gwet's AC1 uses the
 relevant/not-relevant decision. See \code{\link[=panel_agreement]{panel_agreement()}} for the evidence
 behind each, including why AC1 is never the default. Panels with fewer
 than two experts or two items report no agreement coefficient.}
@@ -102,7 +104,8 @@ while retaining mode-specific \code{recommendation} wording. In relevance mode,
 Provides a user-facing workflow for three common expert-panel tasks:
 \itemize{
 \item \code{mode = "relevance"}: bounded ordinal relevance ratings, combining Aiken's
-V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
+the modified kappa of Polit et al. (2007), and a
 panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
 \item \code{mode = "congruence"}: the index of item-objective congruence of
@@ -245,6 +248,6 @@ Evaluation in Counseling and Development, 45}(3), 197–210.
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and confidence
-intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
+intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, Article 93.
 \doi{10.1186/s12874-016-0200-9}
 }

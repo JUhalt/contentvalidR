@@ -19,7 +19,10 @@ simulate_csv_power(N = 20, true_p = 0.65, reps = 2000, alpha = 0.05)
 Estimated power (a number between 0 and 1).
 }
 \description{
-Auxiliary compatibility helper. For supported exact planning, prefer \code{\link[=sort_power]{sort_power()}}, which does not require Monte Carlo simulation.
+Auxiliary compatibility helper. It estimates by simulation the
+power of the exact target-count test of Howard and Melloy (2016). For
+supported exact planning, prefer \code{\link[=sort_power]{sort_power()}}, which does not require
+Monte Carlo simulation.
 }
 \examples{
 simulate_csv_power(N = 20, true_p = 0.65, reps = 100, alpha = 0.05)

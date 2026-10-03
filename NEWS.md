@@ -584,6 +584,86 @@ analysis that matches the cases below.
 * The reporting vignette's congruence guidance reports the index against
   its criterion, with the means and margin as description.
 
+## Keys, help pages, figures and tables: values that change
+
+* **Report intervals are named after their estimates.** `content_report()`
+  returned two columns both named "95% CI" in a relevance report, so
+  `tab$"95% CI"` found only the first. Every interval column is now named
+  after its estimate (`Psa 95% CI`, `V 95% CI`, `I-CVI 95% CI`), and the
+  printed table and the Markdown head it "95% CI", beside that estimate. A
+  column the user renames prints under the new name.
+* **`plot()` takes `xlab`, `ylab`, `xlim`, `ylim` and `main` everywhere.**
+  Most plot methods set these themselves and also passed `...` on, so giving
+  one stopped with "formal argument matched by multiple actual arguments".
+  An argument the caller gives now replaces the method's own, except those
+  the figure's encoding depends on: the frame type, the axes the method
+  draws, and the decision symbols a map's legend keys. A `NULL` leaves the
+  method's value, and an unnamed argument is dropped with a warning. In the
+  distribution views and the evidence profile a title is drawn once, above
+  the legend, and the item labels take the place of a y-axis label.
+* **Long item names no longer stop a figure.** The distribution views and
+  the evidence profile sized the label margin to the longest name, and a
+  long one left no room to draw ("figure margins too large"). Labels are
+  measured on the device; one wider than 40% of the width left for labels
+  is shortened in the middle, keeping its start and end, so names that
+  share an opening stay apart.
+
+## Keys, help pages, figures and tables: other fixes
+
+* `as.data.frame()` works on every result: `cvi()`, `gtheory_content()`,
+  `content_structure()`, `compare_rounds()`, `content_handoff()`,
+  `sort_power()`, `expert_power()` and `panel_agreement()` had no method, and
+  `csv_binom_test()`, `signal_detection()` and `reproducibility_phi()` gave
+  two to four rows for one test. A result holding several tables takes
+  `component`; a single test is one row, with an interval as two columns and
+  a two-by-two table as four named counts. The agreement row names the
+  interval's error rate `ci_alpha`, and the binomial row marks its interval
+  one-sided. See `?"contentvalid-data-frames"`.
+* The key said modified kappa falls below 0 "when agreement is below
+  chance". It does so only when no expert, or one of three, rated the item
+  relevant: 2 of 8 gives .16.
+* The relevance key defines S-CVI/Ave and S-CVI/UA, which the header prints.
+* With `agreement = "ac1"`, the key describes AC1, which is not 0 for
+  independent raters and stays high when ratings concentrate; it repeated
+  the Krippendorff caution that the coefficient "can be low when nearly
+  every rating is the same". The generic agreement entry now describes
+  Krippendorff's alpha alone.
+* The glossary said judge severity is in logits when the model is
+  estimable. Its terms now follow the `results` columns: `severity_raw`,
+  printed as severity, in rating points, and `severity`, printed as logit,
+  from the facets model on the relevant/not-relevant decision, which can
+  differ even in sign. The key gives both.
+* The domain decision meanings state the rules: more than `over_factor`
+  times the expected share, and less than the target share divided by it.
+* Three-author works are cited with "et al." in the `cvi()` printout and
+  help, the legacy sort printout and `?sort_validity` (Yao et al., 2008),
+  the item-sort and reporting vignettes, and DESCRIPTION; "p value" is no
+  longer hyphenated; article numbers read "Article 93".
+* Help pages cite every work they list, by author and date: the interval
+  methods in `?compute_psa`, Colquitt et al. (2019) in `?htd`, Hinkin and
+  Tracey (1999) in `?htc`, Aiken (1980) in `?aikens_v`, Howard and Melloy
+  (2016) in `?simulate_csv_power` and `?sort_power`, Feinstein and
+  Cicchetti (1990) and Wongpakaran et al. (2013) in `?panel_agreement`, and
+  Penfield and Giacobbi (2004), Polit et al. (2007), Hayes and Krippendorff
+  (2007) and Zapf et al. (2016) in `?expert_validity`; the expert-panel and
+  reading-output vignettes likewise.
+* `?contentvalidR` promised `plot()` for all six workflows; judge and domain
+  fits have none, and it now says how to draw a domain fit's content map
+  when similarity data were supplied.
+* The reporting vignettes build their tables with `content_report()` rather
+  than from raw `results` columns, and point to the strongest competitor and
+  the scale-level CVIs, which those tables leave out.
+* `reading-output` says what `Strong` means: the 60th to 79th percentile of
+  the scales Colquitt et al. (2019) collected, not "typical of published
+  work".
+* The walkthrough says seven items, not five, each set a test for one
+  stage; that the fifteen assignments follow from the null probability of
+  .50, not from "two plausible answers"; calls `csv` the substantive validity
+  coefficient; and no longer says the judges "never considered", or "saw
+  only one of", the facets of an item four of them sorted elsewhere.
+* The handoff vignette's nomologR install line names CRAN as well as
+  R-universe, so it works in a fresh library.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

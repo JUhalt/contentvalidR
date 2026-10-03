@@ -42,7 +42,8 @@
 #' Provides a user-facing workflow for three common expert-panel tasks:
 #'
 #' * `mode = "relevance"`: bounded ordinal relevance ratings, combining Aiken's
-#'   V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
+#'   V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
+#'   the modified kappa of Polit et al. (2007), and a
 #'   panel-level agreement coefficient.
 #' * `mode = "essentiality"`: Lawshe CVR with exact binomial critical values.
 #' * `mode = "congruence"`: the index of item-objective congruence of
@@ -92,8 +93,10 @@
 #'   interval uses the same `alpha` as Aiken's V. See `ci` in [cvi()] for the
 #'   methods and the evidence for each.
 #' @param agreement Panel-level agreement coefficient for relevance mode:
-#'   `"krippendorff"` (default), `"ac1"`, or `"none"`. Krippendorff's alpha uses
-#'   the relevance ratings at `agreement_level`; Gwet's AC1 uses the
+#'   `"krippendorff"` (default), `"ac1"`, or `"none"`. Krippendorff's alpha
+#'   (Hayes & Krippendorff, 2007), which Zapf et al. (2016) recommend for
+#'   ordinal or incomplete ratings, uses the relevance ratings at
+#'   `agreement_level`; Gwet's AC1 uses the
 #'   relevant/not-relevant decision. See [panel_agreement()] for the evidence
 #'   behind each, including why AC1 is never the default. Panels with fewer
 #'   than two experts or two items report no agreement coefficient.
@@ -224,7 +227,7 @@
 #'
 #' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 #' inter-rater reliability for nominal data: Which coefficients and confidence
-#' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
+#' intervals are appropriate? *BMC Medical Research Methodology, 16*, Article 93.
 #' \doi{10.1186/s12874-016-0200-9}
 #'
 #' @examples
@@ -291,7 +294,7 @@ expert_validity <- function(data,
     item$kappa_quality <- .kappa_quality(item$kappa_mod)
     item$ci_width <- item$ci_high - item$ci_low
     # Every count that meets the criterion gives modified kappa above .74, the
-    # band Polit, Beck, and Owen (2007) read as excellent: the lowest is .76,
+    # band Polit et al. (2007) read as excellent: the lowest is .76,
     # for 7 of 9. So an item that meets the criterion has strong support, and
     # no weaker tier can occur.
     item$recommendation <- ifelse(
@@ -975,9 +978,13 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     switch(
       x$mode,
       relevance = .print_key(
-        c("V", "I_CVI", "I_CVI_low/I_CVI_high", "kappa_mod",
-          if (show_agreement) "agreement"),
-        headings = c("V", "I-CVI", paste(ci, "after I-CVI"), "kappa",
+        c("S_CVI_Ave", "S_CVI_UA", "V", "I_CVI", "I_CVI_low/I_CVI_high",
+          "kappa_mod",
+          if (show_agreement) {
+            if (identical(x$settings$agreement, "ac1")) "agreement_ac1" else "agreement"
+          }),
+        headings = c("S-CVI/Ave", "S-CVI/UA", "V", "I-CVI",
+                     paste(ci, "after I-CVI"), "kappa",
                      if (show_agreement) "Panel agreement")),
       essentiality = .print_key("cvr", headings = "CVR"),
       .print_key("ioc", headings = "IOC")
@@ -1128,7 +1135,7 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
       hi = x$settings$hi, cut = x$settings$relevance_cut,
       criterion = if (length(crit) == 1L) crit else NULL,
       status = list(stats::setNames(r$status, r$item)), value_label = "I-CVI",
-      xlab = "Share of experts (left: below the relevance cut; right: relevant)",
+      axis_label = "Share of experts (left: below the relevance cut; right: relevant)",
       labels = labels, apa = apa, show_legend = show_legend, ...
     )
     return(invisible(x))
@@ -1150,8 +1157,8 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
   ci_label <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
 
   if (x$mode == "relevance") {
-    graphics::plot(NA, xlim = c(0, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                   yaxt = "n", xlab = "Relevance (0 to 1)", ylab = "", ...)
+    .plot_with(list(x = NA, xlim = c(0, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                    yaxt = "n", xlab = "Relevance (0 to 1)", ylab = ""), list(...))
     .axis_bounded(1, at = seq(0, 1, 0.25))
     graphics::axis(2, at = y, labels = r$item, las = 1)
     # The I-CVI criterion depends on the panel size, so it is drawn as a line
@@ -1182,8 +1189,8 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
                   c(NA, NA, 1, if (one_crit) 2))
     }
   } else if (x$mode == "essentiality") {
-    graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                   yaxt = "n", xlab = "CVR (-1 to 1)", ylab = "", ...)
+    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                    yaxt = "n", xlab = "CVR (-1 to 1)", ylab = ""), list(...))
     .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
     .vline_below(0, 0.5, top)
@@ -1205,9 +1212,9 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     # Each item's index against the criterion, with the experts' mean rating
     # on the target objective and on the closest other objective for context.
     cut <- x$settings$ioc_cut
-    graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                   yaxt = "n", xlab = "IOC and mean rating (-1 to 1)",
-                   ylab = "", ...)
+    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
+                    yaxt = "n", xlab = "IOC and mean rating (-1 to 1)",
+                    ylab = ""), list(...))
     .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
     .vline_below(0, 0.5, top)

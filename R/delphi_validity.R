@@ -1304,7 +1304,7 @@ plot.contentvalid_delphi <- function(x,
       rounds = ratings, items = unique(as.character(x$results$item)),
       lo = x$settings$lo, hi = x$settings$hi, cut = x$settings$agree_cut,
       criterion = threshold, status = status, value_label = "Agree",
-      xlab = "Share of experts (left: below the agreement cut; right: agreeing)",
+      axis_label = "Share of experts (left: below the agreement cut; right: agreeing)",
       labels = labels, apa = apa, show_legend = show_legend, ...
     )
     return(invisible(x))
@@ -1324,9 +1324,9 @@ plot.contentvalid_delphi <- function(x,
 
     # Headroom at the top keeps the legend clear of the lines.
     ylim <- c(0, 1.16)
-    graphics::plot(NA, xlim = c(1, length(rounds) + right_pad * 0.12),
-                   ylim = ylim, yaxt = "n", xaxt = "n",
-                   xlab = "Round", ylab = "Share of experts agreeing", ...)
+    .plot_with(list(x = NA, xlim = c(1, length(rounds) + right_pad * 0.12),
+                    ylim = ylim, yaxt = "n", xaxt = "n",
+                    xlab = "Round", ylab = "Share of experts agreeing"), list(...))
     .axis_bounded(2, at = seq(0, 1, by = 0.25))
     graphics::axis(1, at = seq_along(rounds), labels = rounds)
     threshold <- x$settings$consensus_threshold
@@ -1360,9 +1360,9 @@ plot.contentvalid_delphi <- function(x,
   ys <- lapply(items, function(it) stab$value[stab$item == it])
   unchanged <- lapply(items, function(it) stab$prop_unchanged[stab$item == it])
 
-  graphics::plot(NA, xlim = c(1, max(pair_at) + right_pad * 0.12), ylim = ylim,
-                 xaxt = "n", yaxt = "n", xlab = "Pair of rounds",
-                 ylab = .delphi_axis_label(x$settings), ...)
+  .plot_with(list(x = NA, xlim = c(1, max(pair_at) + right_pad * 0.12), ylim = ylim,
+                  xaxt = "n", yaxt = "n", xlab = "Pair of rounds",
+                  ylab = .delphi_axis_label(x$settings)), list(...))
   graphics::axis(1, at = ax$x_at, labels = ax$x_labels)
   # Ticks stop below the headroom kept for the legend. A chi-square keeps the
   # leading zero APA drops only for statistics that cannot exceed 1.

@@ -1,8 +1,9 @@
 #' Hinkin-Tracey correspondence (HTC)
 #'
 #' @description
-#' Computes the Hinkin-Tracey correspondence index for each item. Following
-#' Colquitt et al. (2019), HTC is the average definitional-correspondence rating
+#' Computes the Hinkin-Tracey correspondence index for each item, named for
+#' the rating task of Hinkin and Tracey (1999). Following Colquitt et al.
+#' (2019), HTC is the average definitional-correspondence rating
 #' for the intended construct divided by `a`, the number of rating anchors.
 #' Ratings are internally shifted to a 1-to-`a` metric when a scale such as
 #' 0-to-4 is supplied, preserving the meaning of the published formula.
@@ -74,8 +75,8 @@ htc <- function(ratings,
 #' Hinkin-Tracey distinctiveness (HTD)
 #'
 #' @description
-#' Computes the Hinkin-Tracey distinctiveness index for each item in a fully
-#' crossed, within-judge rating design. For every complete judge, the intended
+#' Computes the Hinkin-Tracey distinctiveness index of Colquitt et al. (2019)
+#' for each item in a fully crossed, within-judge rating design. For every complete judge, the intended
 #' construct rating is contrasted with each orbiting-construct rating. The
 #' average of those difference scores is divided by `a - 1`, where `a` is the
 #' number of rating anchors. HTD ranges from -1 to 1.

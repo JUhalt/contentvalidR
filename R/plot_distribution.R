@@ -28,7 +28,7 @@
 # `status`: a list parallel to `rounds` of named character vectors, item to
 # shared status, for the symbol beside each bar.
 .plot_rating_distribution <- function(rounds, items, lo, hi, cut, criterion,
-                                      status, value_label, xlab, labels, apa,
+                                      status, value_label, axis_label, labels, apa,
                                       show_legend, ...) {
   k <- as.integer(hi - lo + 1)
   cats <- seq(lo, hi)
@@ -49,16 +49,26 @@
   top <- n * step + 0.2
   round_names <- names(rounds)
 
+  # The round labels and the right margin are reserved before the item
+  # labels are sized, so long names never crowd out the plot.
+  round_lines <- if (nr > 1L) 0.55 * max(nchar(round_names)) + 0.6 else 0
+  lab <- .item_labels(items, reserve_in = (round_lines + 4.2) *
+                        graphics::par("csi"))
+  dots <- list(...)
+  main <- dots$main
   mar <- graphics::par("mar")
-  mar[2] <- 1.2 + 0.62 * max(nchar(items)) +
-    if (nr > 1L) 0.55 * max(nchar(round_names)) + 0.6 else 0
-  mar[3] <- if (isTRUE(show_legend)) 3.4 else 1.1
+  mar[2] <- lab$lines + round_lines
+  mar[3] <- (if (isTRUE(show_legend)) 3.4 else 1.1) + if (length(main)) 1.6 else 0
   mar[4] <- 4.2
   op <- graphics::par(mar = mar)
   on.exit(graphics::par(op), add = TRUE)
 
-  graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
-                 yaxt = "n", xlab = xlab, ylab = "", bty = "n", ...)
+  # A title sits above the legend, and the item labels take the place of a
+  # y-axis label.
+  .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
+                  yaxt = "n", xlab = axis_label, ylab = "", bty = "n"), dots,
+             protect = c("type", "xaxt", "yaxt", "axes", "main", "ylab"))
+  if (length(main)) graphics::title(main = main, line = mar[3] - 1.2)
   at <- seq(-1, 1, 0.25)
   graphics::axis(1, at = at, labels = .tick_labels(abs(at)))
   graphics::segments(0, 0.4, 0, top, col = "grey30")
@@ -102,7 +112,7 @@
       graphics::text(1.11, yc, .fmt(right), adj = 0, cex = 0.75, xpd = NA)
     }
     mid <- mean(c(ypos(i, 1), ypos(i, nr)))
-    graphics::axis(2, at = mid, labels = items[i], las = 1, tick = FALSE,
+    graphics::axis(2, at = mid, labels = lab$labels[i], las = 1, tick = FALSE,
                    line = if (nr > 1L) 0.55 * max(nchar(round_names)) - 0.2 else -0.4)
   }
   # Drawn over the bars, so a bar that stops short of it can be seen to.

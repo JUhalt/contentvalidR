@@ -3,7 +3,7 @@
 #' @description
 #' Computes item-level Content Validity Index (I-CVI), scale-level average CVI
 #' (S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
-#' described by Polit, Beck, and Owen (2007).
+#' described by Polit et al. (2007).
 #'
 #' The I-CVI is the proportion of experts rating an item 3 or 4 on a 4-point
 #' relevance scale (Lynn, 1986). Polit and Beck (2006) named the two
@@ -189,7 +189,7 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   cat("\n")
   .say("agree: judges rating the item relevant, out of those who rated it.",
        "Pc: the probability that this many judges would agree by chance.",
-       "kappa: the modified kappa of Polit, Beck and Owen (2007), the I-CVI",
+       "kappa: the modified kappa of Polit et al. (2007), the I-CVI",
        "chance-corrected by Pc.")
   if (has_ci) {
     cat("\n")
