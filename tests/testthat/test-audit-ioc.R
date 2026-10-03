@@ -210,3 +210,48 @@ test_that("the verdict verb agrees with its number", {
                          lo = 1, hi = 4, agreement = "none")
   expect_match(flat(one), "1 of 1 item meets the I-CVI criterion", fixed = TRUE)
 })
+
+# ---- Colquitt et al. (2019) norms: no overall band, and their design --------
+
+sort_two <- function() {
+  d <- expand.grid(item = c("A1", "A2", "B1", "B2"), rater = 1:12,
+                   stringsAsFactors = FALSE)
+  d$target_construct <- substr(d$item, 1, 1)
+  d$assigned_construct <- d$target_construct
+  d$assigned_construct[d$rater == 12] <- "A"
+  d
+}
+
+test_that("the sort summary reads each index against its own band", {
+  fit <- sort_validity(sort_two())
+  s <- fit$scale_summary
+  expect_false("overall_strength" %in% names(s))
+  expect_false(any(grepl("weaker of", s$evidence, fixed = TRUE)))
+  expect_match(s$evidence[1], "mean Csv", fixed = TRUE)
+  expect_false(grepl("overall", paste(capture.output(print(summary(fit))),
+                                      collapse = " "), fixed = TRUE))
+})
+
+test_that("the norms carry a caution when judges did not see three definitions", {
+  two <- sort_validity(sort_two())
+  expect_match(two$scale_summary$evidence[1],
+               "three definitions (one focal, two orbiting); this study offered 2",
+               fixed = TRUE)
+  three <- sort_validity(sort_two(), n_constructs = 3)
+  expect_false(any(grepl("three definitions", three$scale_summary$evidence,
+                         fixed = TRUE)))
+
+  set.seed(2)
+  rd <- expand.grid(item = c("A1", "B1"), rater = 1:12,
+                    construct = c("A", "B", "C", "D"), stringsAsFactors = FALSE)
+  rd$target_construct <- ifelse(rd$item == "B1", "B", "A")
+  rd$rating <- ifelse(rd$construct == rd$target_construct,
+                      sample(4:5, nrow(rd), TRUE), sample(1:3, nrow(rd), TRUE))
+  four <- rating_validity(rd)
+  expect_false("overall_strength" %in% names(four$scale_summary))
+  expect_match(four$scale_summary$evidence[1], "this study offered 4",
+               fixed = TRUE)
+  three <- rating_validity(rd[rd$construct != "D", ])
+  expect_false(any(grepl("three definitions", three$scale_summary$evidence,
+                         fixed = TRUE)))
+})

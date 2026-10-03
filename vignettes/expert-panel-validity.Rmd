@@ -210,8 +210,8 @@ these with page references.
 ## Congruence: item-objective alignment
 
 Each expert rates each item against every objective: +1 if the item clearly
-measures it, 0 if unclear, -1 if it clearly does not. Rovinelli and Hambleton's
-(1977) index for an objective is half the gap between the experts' mean rating
+measures it, 0 if unclear, -1 if it clearly does not. The index of Rovinelli and
+Hambleton (1977) for an objective is half the gap between the experts' mean rating
 on that objective and their mean rating on the item's other objectives, so it
 reaches 1 only when every expert gives +1 to the objective and -1 to every
 other. A target mapping says which objective each item was written for:
@@ -250,7 +250,7 @@ actual panel size.
 Each mode uses a plot matched to the expert task rather than forcing unlike
 indices into one generic chart.
 
-```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's index of item-objective congruence for its intended objective (filled), with the experts' mean rating on the intended objective (triangle) and on the closest other objective (open circle) in grey, a dotted line at zero, and a dashed line at the .70 criterion.")}
+```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's index of item-objective congruence for its intended objective (filled), with the experts' mean rating on the intended objective (triangle) and on the closest other objective (open circle) in gray, a dotted line at zero, and a dashed line at the .70 criterion.")}
 plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
 plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 plot(expert_validity(d, mode = "congruence"))
@@ -260,7 +260,7 @@ Relevance mode displays Aiken's V with its score interval and overlays I-CVI as
 a separate marker. Essentiality mode displays observed CVR against the exact
 panel-specific critical CVR, and marks with a cross an item whose panel was too
 small to test. Congruence mode places each item's index against the
-criterion, with the two mean ratings behind it in grey. These displays are
+criterion, with the two mean ratings behind it in gray. These displays are
 diagnostic summaries; they do not create new validity thresholds.
 
 An index reduces each item's ratings to one number, and the relevance plot

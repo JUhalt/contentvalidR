@@ -50,6 +50,19 @@
   )
 }
 
+# The caution added to a scale-level reading of the Colquitt et al. (2019)
+# bands when a study did not offer three definitions, the design behind every
+# one of their 112 scales. It is this package's caution: they do not discuss
+# other numbers.
+.colquitt_definitions_caution <- function(n_definitions) {
+  if (is.null(n_definitions) || is.na(n_definitions) || n_definitions == 3L) {
+    return("")
+  }
+  sprintf(paste(" These bands come from tasks with three definitions (one",
+                "focal, two orbiting); this study offered %d, so the",
+                "comparison is approximate."), as.integer(n_definitions))
+}
+
 #' Colquitt et al. (2019) empirical content-validation benchmarks
 #'
 #' @description
@@ -57,6 +70,12 @@
 #' (2019) for Psa, Csv, HTC, or HTD. The benchmarks were created from
 #' scale-level averages for 112 scales and are percentile-based norms, not
 #' universal psychometric cutoffs.
+#'
+#' Colquitt et al. (2019) built these norms from tasks in which naive judges
+#' saw three definitions, the focal construct and two orbiting constructs, and
+#' rated on a 7-point scale. They did not examine tasks offering more or fewer
+#' definitions. [sort_validity()] and [rating_validity()] therefore add a
+#' caution, this package's own, when a study offers a different number.
 #'
 #' If `orbiting_r` is supplied, the correlation-conditional benchmark set is
 #' selected. Otherwise the overall, non-correlation-normed criteria are used.
@@ -110,6 +129,12 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #' scale-level averages and from naive judges representative of substantive
 #' study populations. They should therefore be treated as contextual norms,
 #' not pass/fail rules.
+#'
+#' Colquitt et al. (2019) built these norms from tasks in which naive judges
+#' saw three definitions, the focal construct and two orbiting constructs, and
+#' rated on a 7-point scale. They did not examine tasks offering more or fewer
+#' definitions. [sort_validity()] and [rating_validity()] therefore add a
+#' caution, this package's own, when a study offers a different number.
 #'
 #' When `judge_type = "expert"`, the Colquitt classification is deliberately
 #' not applied because the authors caution against using their norms for expert

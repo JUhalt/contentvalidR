@@ -1,9 +1,9 @@
 #' Index of item-objective congruence (IOC)
 #'
 #' @description
-#' Computes Rovinelli and Hambleton's (1977) index of item-objective congruence
-#' from expert ratings coded `+1` (the item clearly measures the objective),
-#' `0` (unclear), and `-1` (it clearly does not). Each judge rates each item
+#' Computes the index of item-objective congruence of Rovinelli and Hambleton
+#' (1977) from expert ratings coded `+1` (the item clearly measures the
+#' objective), `0` (unclear), and `-1` (it clearly does not). Each judge rates each item
 #' against every objective, and the index asks whether the item was matched to
 #' one objective **and not to the others**.
 #'

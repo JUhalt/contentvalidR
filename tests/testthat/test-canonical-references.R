@@ -42,12 +42,14 @@ test_that("Ayre-Scally exact logic gives the N=10 critical CVR boundary", {
   expect_false(below$pass)
 })
 
-test_that("IOC defining mean is reproduced by a hand-worked objective cell", {
+test_that("the mean rating behind the IOC is reproduced by a hand-worked cell", {
   d <- data.frame(
     item = "I1", judge = 1:5, objective = "A",
     score = c(1, 1, 1, 0, -1)
   )
   out <- ioc(d)
-  expect_equal(out$ioc, .4, tolerance = 1e-12)
+  expect_equal(out$mean_rating, .4, tolerance = 1e-12)
+  # The index compares objectives, so one objective has none.
+  expect_true(is.na(out$ioc))
   expect_equal(out$n_judges, 5L)
 })

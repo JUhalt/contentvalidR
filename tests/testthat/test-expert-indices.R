@@ -82,15 +82,17 @@ test_that("CVR validates counts", {
   expect_error(cvr(c(3), N = NULL), "required")
 })
 
-test_that("IOC matches cell means", {
+test_that("IOC keeps the cell means and computes the index from them", {
   d <- data.frame(
     item = rep("I1", 6), judge = rep(1:3, 2),
     objective = rep(c("A", "B"), each = 3),
     score = c(1,1,1, 0,-1,0)
   )
   out <- ioc(d)
-  expect_equal(out$ioc[out$objective == "A"], 1)
-  expect_equal(out$ioc[out$objective == "B"], -1/3)
+  expect_equal(out$mean_rating[out$objective == "A"], 1)
+  expect_equal(out$mean_rating[out$objective == "B"], -1/3)
+  expect_equal(out$ioc[out$objective == "A"], 2/3)
+  expect_equal(out$ioc[out$objective == "B"], -2/3)
   expect_equal(out$n_judges, c(3L, 3L))
 })
 
@@ -112,5 +114,6 @@ test_that("IOC handles missingness transparently", {
   expect_equal(out$n_total, 3L)
   expect_equal(out$n_judges, 2L)
   expect_equal(out$n_missing, 1L)
-  expect_equal(out$ioc, .5)
+  expect_equal(out$mean_rating, .5)
+  expect_true(is.na(out$ioc))
 })

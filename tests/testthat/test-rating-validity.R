@@ -25,7 +25,9 @@ test_that("rating_validity returns informative item and scale evidence", {
   expect_equal(fit$results$issue[fit$results$item == "A2"], "Orbiting construct rated higher")
   expect_equal(fit$results$strongest_competitor[fit$results$item == "A2"], "B")
   expect_equal(nrow(fit$scale_summary), 2L)
-  expect_true(all(c("mean_htc", "mean_htd", "overall_strength", "evidence") %in% names(fit$scale_summary)))
+  expect_true(all(c("mean_htc", "mean_htd", "htc_strength", "htd_strength",
+                    "evidence") %in% names(fit$scale_summary)))
+  expect_false("overall_strength" %in% names(fit$scale_summary))
 })
 
 test_that("rating_validity print and summary explain the evidence", {

@@ -27,6 +27,12 @@ Returns the empirical interpretation bands proposed by Colquitt et al.
 scale-level averages for 112 scales and are percentile-based norms, not
 universal psychometric cutoffs.
 
+Colquitt et al. (2019) built these norms from tasks in which naive judges
+saw three definitions, the focal construct and two orbiting constructs, and
+rated on a 7-point scale. They did not examine tasks offering more or fewer
+definitions. \code{\link[=sort_validity]{sort_validity()}} and \code{\link[=rating_validity]{rating_validity()}} therefore add a
+caution, this package's own, when a study offers a different number.
+
 If \code{orbiting_r} is supplied, the correlation-conditional benchmark set is
 selected. Otherwise the overall, non-correlation-normed criteria are used.
 

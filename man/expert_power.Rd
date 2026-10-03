@@ -23,7 +23,9 @@ expert_power(
 I-CVI: every expert must agree with three to five, one may disagree from
 six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 experts, where Lynn's table stops, the package holds her lowest proportion,
-7 of 9. \code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
+7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
+Beck (2006) restate her rule as no lower than .78 for six or more experts.
+\code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
 
 \item{alpha}{Significance level for the CVR criterion. Ignored for CVI.}
 
@@ -47,6 +49,12 @@ an answer: \emph{if an expert endorses this item with probability \code{prob}, h
 often will a panel of this size actually clear the criterion?} Nothing here
 recommends a panel size. It reports the consequences of the sizes you ask
 about, so the choice stays yours and stays documented.
+
+This is a contentvalidR planning tool, not a published method: the
+probability is binomial, assuming that experts endorse the item
+independently and with the same probability. The criteria it applies are
+published (Lynn, 1986; Ayre & Scally, 2014), except Lynn's beyond ten
+experts, which is this package's extension (see \code{criterion}).
 }
 \section{Why the curve is not always smooth}{
 

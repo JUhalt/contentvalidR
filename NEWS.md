@@ -490,6 +490,70 @@ analysis that matches the cases below.
 * A congruence plot without a target mapping stops before it opens a
   graphics device, so the failed call leaves no empty `Rplots.pdf`.
 
+## Congruence and method attribution: values that change
+
+* **`ioc()` returns the published index.** Its `ioc` column held each
+  objective's mean rating, which applied work often reports as "the IOC" but
+  which reaches 1 whenever every expert gives +1 to the objective, whatever
+  they say about the others. It is now the index of Rovinelli and
+  Hambleton (1977): half the gap between the mean rating on the objective and the mean
+  on the item's other objectives, 1 only when every expert gives +1 to the
+  objective and -1 to every other. The mean is kept as `mean_rating`, and
+  `n_objectives` is added. The index is `NA` for an item rated against one
+  objective, because it compares objectives. Items and objectives keep the
+  order of the data.
+* **Congruence decisions use the index and a criterion.** An item was
+  `"Target favored"` when the mean on its target beat the mean on every other
+  objective, or `"Tie / review"`, so a mean of .25 against -.25 passed. It is
+  now `"Congruent"` when its index for the target objective reaches
+  `ioc_cut`, by default the .70 Rovinelli and Hambleton applied, and
+  `"Review"` otherwise; `"Target described"` when only the target objective
+  was rated. `results` holds `target_ioc` (the index), `target_mean`,
+  `competitor_mean` and `margin` (the gap between the means, a description
+  beside the index); `competitor_ioc` is gone.
+* **Congruence without a target mapping has one row per item,** as every
+  item-level table does: the objective the item matched best and its index.
+  The item-by-objective table is in `details$cells`, and the printout shows
+  it.
+* **The congruence handoff carries the index.** Its statistics are
+  `target IOC` (the index, with `ioc_cut` as the criterion), `target mean
+  rating` and `competitor mean rating` (its note names the objective);
+  `competitor IOC` and `IOC margin` are gone. Without a target mapping each
+  item carries `highest IOC`, its note naming the objective.
+  `content_evidence()` shows `target IOC`. The schema is unchanged.
+* **The relevance decision `"Support"` is gone.** Every count that meets
+  Lynn's criterion puts modified kappa above .74 (the lowest is .76, at 7 of
+  9), so an item meeting the criterion always had `"Strong support"` and
+  `"Support"` could not occur. `scale_summary` loses `n_support`.
+* **No "overall" strength in the item-sort and construct-rating
+  summaries.** `overall_strength` was the weaker of the two Colquitt et al.
+  (2019) levels, a combination they do not publish. It is gone from
+  `scale_summary`, the printouts and the summary tables; the two levels
+  stay, each against its published benchmark.
+
+## Congruence and method attribution: other fixes
+
+* Lynn's (1986) table stops at ten experts. Beyond it the package holds her
+  lowest tabled proportion, 7 of 9, and now says that this is its own
+  extension: in the printout, the handoff rule (which then also cites Polit
+  & Beck, 2006, who restate her rule as no lower than .78 for six or more
+  experts), the glossary, `?expert_power` and both vignettes.
+* `expert_power()` is described as a contentvalidR planning tool, not a
+  published method.
+* The Colquitt et al. (2019) bands carry a caution when judges saw a number
+  of definitions other than three: every one of their 112 scales was rated
+  against its own definition and two orbiting ones, and they did not examine
+  other numbers. The caution is this package's own, and
+  `?colquitt_benchmarks` describes their design.
+* The relevance handoff rule says that meeting the criterion also puts
+  modified kappa above .74, in place of a separate kappa rule.
+* Verdicts agree in number: "1 of 3 items meets the exact essentiality
+  criterion."
+* `content_report()` for congruence shows the experts, the index, both means
+  and the margin.
+* `?expert_validity` cites Rovinelli and Hambleton (1977) and Turner and
+  Carlson (2003), and documents `ioc_cut`.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

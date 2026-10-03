@@ -2,7 +2,7 @@
 % Please edit documentation in R/ioc.R
 \name{ioc}
 \alias{ioc}
-\title{Item-Objective Congruence (IOC)}
+\title{Index of item-objective congruence (IOC)}
 \usage{
 ioc(ratings, na.rm = FALSE)
 }
@@ -13,15 +13,43 @@ ioc(ratings, na.rm = FALSE)
 missing scores are removed within item-objective cells.}
 }
 \value{
-A data.frame with item, objective, total rows, effective judge count,
-missing count, and IOC.
+A data.frame with one row for each item and objective: \code{item},
+\code{objective}, \code{n_total} (rows), \code{n_judges} (usable ratings), \code{n_missing},
+\code{mean_rating} (the judges' mean rating on the objective, -1 to 1),
+\code{n_objectives} (objectives the item has usable ratings on), and \code{ioc},
+the index. \code{ioc} is \code{NA} for an item rated against a single objective,
+because the index compares objectives. Items and objectives keep the
+order of the data.
 It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
-Computes item-objective congruence from expert ratings coded \code{-1}, \code{0}, and
-\code{+1}. Duplicate item-judge-objective ratings are rejected. Missing ratings
-may be removed cellwise with transparent effective judge counts.
+Computes the index of item-objective congruence of Rovinelli and Hambleton
+(1977) from expert ratings coded \code{+1} (the item clearly measures the
+objective), \code{0} (unclear), and \code{-1} (it clearly does not). Each judge rates each item
+against every objective, and the index asks whether the item was matched to
+one objective \strong{and not to the others}.
+
+For item \eqn{k} and objective \eqn{i}, with \eqn{N} objectives and \eqn{n}
+judges,
+\deqn{I_{ik} = \frac{(N - 1) \sum_j X_{ijk} - \sum_{l \ne i} \sum_j X_{ljk}}{2 (N - 1) n},}
+which is half the difference between the judges' mean rating on the
+objective and their mean rating on the item's other objectives. It is \code{+1}
+only when every judge gives \code{+1} on the objective and \code{-1} on every other,
+and \code{.50} when every judge gives \code{+1} on the objective and \code{0} on the
+others. Rovinelli and Hambleton applied a criterion of .70 to it.
+
+\code{mean_rating} is the judges' mean rating on the objective alone. Applied
+work often reports that mean as "the IOC" (the sum of the ratings over the
+number of experts). It is an ingredient of the index, not the index: it
+reaches 1 whenever every judge gives \code{+1} on that objective, whatever they
+say about the others. Versions of this package before 1.0 returned it in
+the \code{ioc} column.
+
+Duplicate item-judge-objective ratings are rejected. Missing ratings may be
+removed cellwise with transparent effective judge counts; the index is then
+computed from the cell means, which is the same formula when no rating is
+missing.
 }
 \examples{
 df <- data.frame(
@@ -36,8 +64,4 @@ ioc(df)
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
 specialists in the assessment of criterion-referenced test item validity.
 \emph{Dutch Journal of Educational Research, 2}, 49–60.
-
-Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence
-for multidimensional items. \emph{International Journal of Testing, 3}(2), 163–171.
-\doi{10.1207/S15327574IJT0302_5}
 }
