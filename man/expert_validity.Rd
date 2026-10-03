@@ -99,13 +99,22 @@ while retaining mode-specific \code{recommendation} wording. In relevance mode,
 \code{scale_summary} also holds \code{agreement}, \code{agreement_low}, and
 \code{agreement_high}, and \code{details$agreement} holds the full
 \code{\link[=panel_agreement]{panel_agreement()}} result.
+
+In relevance mode, \code{results} also holds \code{cvi_criterion}, the I-CVI that
+Lynn's criterion asks of the item's panel size, shown for reading (the
+decision compares counts), and \code{kappa_quality}, the band of \code{kappa_mod}
+in the guidelines of Cicchetti and Sparrow (1981) and Fleiss (1981), as
+cited in Polit et al. (2007), who apply them to modified kappa:
+\code{"Excellent"} above .74, \code{"Good"} from .60 to .74, \code{"Fair"} from .40 to
+.59, and \code{"Poor"} below .40. The band describes the item and decides
+nothing; every item that meets the I-CVI criterion is \code{"Excellent"}.
 }
 \description{
 Provides a user-facing workflow for three common expert-panel tasks:
 \itemize{
 \item \code{mode = "relevance"}: bounded ordinal relevance ratings, combining Aiken's
-V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
-the modified kappa of Polit et al. (2007), and a
+(1980) V (with the score intervals of Penfield and Giacobbi, 2004), the
+CVI with the modified kappa of Polit et al. (2007), and a
 panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
 \item \code{mode = "congruence"}: the index of item-objective congruence of
@@ -196,6 +205,10 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
                 legacy = TRUE)
 }
 \references{
+Aiken, L. R. (1980). Content validity and reliability of single items or
+questionnaires. \emph{Educational and Psychological Measurement, 40}(4), 955–959.
+\doi{10.1177/001316448004000419}
+
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
 \emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79–86.
@@ -230,8 +243,8 @@ sure you know what's being reported? Critique and recommendations.
 \emph{Research in Nursing & Health, 29}(5), 489–497. \doi{10.1002/nur.20147}
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459–467. \doi{10.1002/nur.20199}
+indicator of content validity? Appraisal and recommendations. \emph{Research in
+Nursing & Health, 30}(4), 459–467. \doi{10.1002/nur.20199}
 
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
 specialists in the assessment of criterion-referenced test item validity.

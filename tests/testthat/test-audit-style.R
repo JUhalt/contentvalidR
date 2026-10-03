@@ -388,7 +388,9 @@ test_that("the printouts relate the shared status words to the workflow's own", 
                fixed = TRUE)
   rel <- expert_validity(relevance(), lo = 1, hi = 4, agreement = "none")
   sm <- shown(summary(rel))
-  expect_match(sm[3], "^Strong support: [0-9]+ of 3 [|] Review: [0-9]+ of 3")
+  # The scale and the cut come first, as in print().
+  expect_match(sm[3], "^Scale: 1 to 4 [|] Relevant: a rating of 3 or higher$")
+  expect_match(sm[4], "^Strong support: [0-9]+ of 3 [|] Review: [0-9]+ of 3")
   expect_match(shown(summary(sort_fit()))[length(shown(summary(sort_fit())))],
                "^See summary\\(x\\)\\$reviewed_items")
 })

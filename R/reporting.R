@@ -9,8 +9,10 @@
     contentvalid_rating = c("item", "target", "n_complete", "strongest_competitor",
                             "htc", "htd", "F", "df1", "df2", "df1_gg", "df2_gg",
                             "partial_eta2", "p_value", "max_contrast_p"),
-    contentvalid_expert = c("item", "target", "N", "n_judges", "V", "ci_low",
-                            "ci_high", "I_CVI",
+    # The essential count and the count the exact test needed are the
+    # numbers an essentiality decision compares.
+    contentvalid_expert = c("item", "target", "N", "ne", "critical_ne",
+                            "n_judges", "V", "ci_low", "ci_high", "I_CVI",
                             "I_CVI_low", "I_CVI_high", "kappa_mod", "cvr",
                             "p_value", "target_ioc", "target_mean",
                             "strongest_competitor", "competitor_mean", "margin",
@@ -39,12 +41,14 @@
 
 .as_markdown_table <- function(df) {
   if (!nrow(df)) return(character(0))
-  # Text is not padded: a Markdown cell needs no alignment.
+  # Text is not padded: the rule row aligns each column, text to the left and
+  # numbers to the right, as in the console table.
   cells <- lapply(df, function(col) {
     .md_escape(if (is.character(col)) col else format(col, trim = TRUE))
   })
   header <- paste0("| ", paste(names(df), collapse = " | "), " |")
-  rule <- paste0("| ", paste(rep("---", length(df)), collapse = " | "), " |")
+  align <- ifelse(vapply(cells, .looks_numeric, logical(1)), "---:", ":---")
+  rule <- paste0("| ", paste(align, collapse = " | "), " |")
   rows <- vapply(seq_len(nrow(df)), function(i) {
     paste0("| ", paste(vapply(cells, function(col) col[i], character(1)),
                        collapse = " | "), " |")
@@ -186,6 +190,10 @@ as.data.frame.contentvalid_workflow <- function(x,
         method, kappa = "kappa", lambda = "lambda", percent_change = "net change",
         "chi-square"
       )
+      # The methods with a stability rule carry its decision, which the
+      # statistic alone does not give: the two chi-squares read p in
+      # opposite directions.
+      ruled <- chisq || identical(method, "percent_change")
       c(
         list(
           s("item", "text", "item"), s("last round", "text", "last_round"),
@@ -196,9 +204,10 @@ as.data.frame.contentvalid_workflow <- function(x,
         list(
           s(heading, if (chisq) "num" else "prop", "stability"),
           s(ci, "ci", "stability_low", "stability_high"),
-          s("p", "p", "stability_p"),
-          s("decision", "text", "recommendation")
-        )
+          s("p", "p", "stability_p")
+        ),
+        if (ruled) list(s("stable", "yesno", "stable")),
+        list(s("decision", "text", "recommendation"))
       )
     },
     list()
@@ -217,6 +226,7 @@ as.data.frame.contentvalid_workflow <- function(x,
     num = .fmt(v[[1]], digits, bounded = FALSE),
     percent = .fmt_pct(v[[1]], base = base),
     p = .fmt_p(v[[1]]),
+    yesno = .yes_no(v[[1]]),
     # Corrected degrees of freedom where a correction applied, the plain
     # ones otherwise (an F of Inf has no error variance to correct).
     ftest = ifelse(is.na(v[[1]]), "--",
@@ -239,12 +249,21 @@ as.data.frame.contentvalid_workflow <- function(x,
   cols <- list()
   headings <- character(0)
   is_ci <- logical(0)
+  # Rows whose interval has no width, which the note explains rather than
+  # leave a reader to take [1.00, 1.00] for certainty.
+  flat <- rep(FALSE, nrow(res))
   for (entry in spec) {
     if (!all(entry$cols %in% names(res))) next
     if (nrow(res) && all(is.na(res[[entry$cols[1]]]))) next
     cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits, base)
     headings <- c(headings, entry$heading)
     is_ci <- c(is_ci, identical(entry$type, "ci"))
+    if (identical(entry$type, "ci")) {
+      lo <- res[[entry$cols[1]]]
+      hi <- res[[entry$cols[2]]]
+      flat <- flat | (is.finite(lo) & is.finite(hi) &
+                        abs(hi - lo) <= sqrt(.Machine$double.eps))
+    }
   }
   # An interval is named after its estimate in the object ("V 95% CI",
   # "I-CVI 95% CI"), whatever else the table holds, while the printed table
@@ -261,7 +280,9 @@ as.data.frame.contentvalid_workflow <- function(x,
   attr(tab, "note") <- .report_note(
     x, headings, has_missing = any(vapply(tab, function(v) any(v == .missing_mark),
                                           logical(1))),
-    decisions = res$recommendation
+    decisions = res$recommendation,
+    flat = if (length(cols)) cols[[1]][flat] else character(0),
+    res = res
   )
   tab
 }
@@ -271,7 +292,8 @@ as.data.frame.contentvalid_workflow <- function(x,
 # order the columns show them, what each column a reader could not otherwise
 # interpret holds, the interval method, then the criterion that produced the
 # decisions shown. Shared in form with nomologR.
-.report_note <- function(x, headings, has_missing = FALSE, decisions = NULL) {
+.report_note <- function(x, headings, has_missing = FALSE, decisions = NULL,
+                         flat = character(0), res = NULL) {
   abbrev <- c(
     Psa = "proportion of substantive agreement",
     Csv = "coefficient of substantive validity",
@@ -294,7 +316,7 @@ as.data.frame.contentvalid_workflow <- function(x,
   st <- x$settings
   alpha <- if (is.numeric(st$alpha)) st$alpha else 0.05
   ci <- .ci_label(alpha)
-  columns <- .report_column_notes(x, headings)
+  columns <- .report_column_notes(x, headings, res)
   interval <- NULL
   if (any(headings == ci)) {
     prop <- .handoff_interval_label(st$proportion_ci)
@@ -310,6 +332,18 @@ as.data.frame.contentvalid_workflow <- function(x,
       contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci),
       NULL
     )
+    # An interval with no width reads as certainty. A bootstrap interval has
+    # none when every resample gave the same value, which is what the cell
+    # then shows; the closed-form intervals here always have width.
+    if (length(flat)) {
+      interval <- c(interval, paste0(
+        "An interval with equal limits (", paste(flat, collapse = ", "),
+        ") has no width",
+        if (inherits(x, "contentvalid_delphi")) {
+          " because every resample of the experts gave the same value"
+        },
+        "; it does not mean the value is known exactly."))
+    }
   }
   criterion <- switch(
     class(x)[1],
@@ -333,16 +367,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       essentiality = sprintf(paste(
         "Supported = an essential count that meets the exact one-sided",
         "binomial test at alpha = %s (Ayre & Scally, 2014)."), .fmt_alpha(alpha)),
-      congruence = if (is.numeric(st$ioc_cut)) {
-        cut <- .fmt(st$ioc_cut)
-        if (isTRUE(all.equal(st$ioc_cut, 0.70))) {
-          paste0("Congruent = IOC at or above ", cut, ", the criterion ",
-                 "Rovinelli and Hambleton (1977) applied.")
-        } else {
-          paste0("Congruent = IOC at or above ", cut, ", set for this ",
-                 "analysis; Rovinelli and Hambleton (1977) applied .70.")
-        }
-      }
+      congruence = .report_congruence_criterion(st, decisions)
     ),
     contentvalid_delphi = if (is.numeric(st$consensus_threshold)) {
       sprintf("Consensus = at least %s of experts agreeing in the last round.",
@@ -361,7 +386,7 @@ as.data.frame.contentvalid_workflow <- function(x,
 
 # What a column holds, for the columns whose heading alone does not say:
 # one sentence each, in the order the table shows them.
-.report_column_notes <- function(x, headings) {
+.report_column_notes <- function(x, headings, res = NULL) {
   has <- function(h) any(tolower(headings) == tolower(h))
   st <- x$settings
   out <- switch(
@@ -429,9 +454,11 @@ as.data.frame.contentvalid_workflow <- function(x,
           "Lambda = Goodman-Kruskal lambda between those rounds."
         },
         percent_change = if (has("net change")) {
-          paste("Net change = net change in the rating distribution between",
-                "those rounds, read as stable below .15 (Scheibe et al.,",
-                "1975/2002).")
+          paste0("Net change = net change in the rating distribution between ",
+                 "those rounds",
+                 # The Stable column states the cut when the table has it.
+                 if (!has("stable")) ", read as stable below .15",
+                 " (Scheibe et al., 1975/2002).")
         },
         chisq_individual = if (has("chi-square")) {
           paste("Chi-square = individual stability chi-square between those",
@@ -442,7 +469,8 @@ as.data.frame.contentvalid_workflow <- function(x,
                 "(Dajani et al., 1979).")
         },
         NULL
-      )
+      ),
+      if (has("stable")) .report_delphi_stable(st, res)
     ),
     contentvalid_judge = c(
       if (has("ratings")) "Ratings = items the judge rated.",
@@ -476,6 +504,63 @@ as.data.frame.contentvalid_workflow <- function(x,
     NULL
   )
   if (length(out)) paste(out, collapse = " ")
+}
+
+# Which way the Delphi stability rule reads, since the two chi-squares read
+# p in opposite directions: the individual test takes dependence between the
+# rounds' ratings (p below alpha) as stability, the group test takes no
+# detectable change in the distribution (p at or above alpha).
+.report_delphi_stable <- function(st, res = NULL) {
+  alpha <- .fmt_alpha(if (is.numeric(st$alpha)) st$alpha else 0.05)
+  method <- if (is.null(st$stability)) "" else st$stability
+  switch(
+    method,
+    percent_change = "Stable = net change below .15.",
+    chisq_individual = sprintf(paste(
+      "Stable = p below alpha = %s: the later ratings depend on the earlier",
+      "ones."), alpha),
+    chisq_group = paste0(sprintf(paste(
+      "Stable = p at or above alpha = %s: the two rounds' distributions do",
+      "not differ detectably"), alpha),
+      # Every rating in one category in both rounds leaves no test, and the
+      # two distributions identical.
+      if (is.data.frame(res) &&
+          all(c("stable", "stability_p") %in% names(res)) &&
+          any(res$stable %in% TRUE & is.na(res$stability_p))) {
+        ", or, with no p, every rating fell in one category in both rounds"
+      }, "."),
+    NULL
+  )
+}
+
+# The congruence criterion, for the decisions the table shows. With no target
+# mapping no item is decided, so the note says why every decision is
+# "Descriptive only" rather than state a criterion nothing was held to.
+.report_congruence_criterion <- function(st, decisions) {
+  shown <- unique(as.character(decisions))
+  decided <- any(shown %in% c("Congruent", "Review"))
+  rule <- if (is.numeric(st$ioc_cut) && decided) {
+    cut <- .fmt(st$ioc_cut)
+    if (isTRUE(all.equal(st$ioc_cut, 0.70))) {
+      paste0("Congruent = IOC at or above ", cut, ", the criterion ",
+             "Rovinelli and Hambleton (1977) applied.")
+    } else {
+      paste0("Congruent = IOC at or above ", cut, ", set for this ",
+             "analysis; Rovinelli and Hambleton (1977) applied .70.")
+    }
+  }
+  c(
+    rule,
+    if ("Target described" %in% shown) {
+      paste("Target described = rated against the intended objective only,",
+            "so no index could be computed and no decision was made.")
+    },
+    if ("Descriptive only" %in% shown) {
+      paste("Descriptive only = no intended objective was given, so the index",
+            "is described for each item's best objective and no decision was",
+            "made.")
+    }
+  )
 }
 
 # The rules behind a judge's flag, for the decisions the table shows. They
@@ -562,7 +647,9 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' @param format `"apa"` (default), a table of formatted text in APA style;
 #'   `"markdown"`, the same table as Markdown lines; or `"data.frame"`, the
 #'   selected columns as rounded numbers under their names in `results`, for
-#'   further computation.
+#'   further computation. In the data frame, *p* values are rounded to three
+#'   decimals, so one below .0005 becomes 0: report it as `< .001`, as the APA
+#'   table does, or take the exact value from `x$results`.
 #' @param include `"all"` (default) or `"flagged"`, which keeps only units whose
 #'   status is not `Supported`.
 #' @param caption Optional caption line placed above a Markdown table.
@@ -571,9 +658,19 @@ as.data.frame.contentvalid_workflow <- function(x,
 #'   row names; `as.data.frame()` drops its print class. An interval column is
 #'   named after its estimate (`V 95% CI`, `I-CVI 95% CI`) and printed under
 #'   the shared heading `95% CI`. For `"data.frame"`, a
-#'   plain data frame with `recommendation` and `status` columns. For
+#'   plain data frame with `recommendation` and `status` columns; for an
+#'   essentiality fit it keeps the essential count `ne` and `critical_ne`,
+#'   the count the exact test needed. For
 #'   `"markdown"`, a character vector of Markdown lines that prints as the
 #'   table, carrying the analysis provenance as its `"settings"` attribute.
+#'
+#' @section Markdown in a Quarto or R Markdown document:
+#' The Markdown lines become a table only when the document receives them as
+#' Markdown, so print them in a code chunk with the option
+#' `results = "asis"` (in Quarto, `#| output: asis`). In a chunk with the
+#' default option, they show as console output, pipes and all. The
+#' rule row aligns text columns left and numeric columns right, and the
+#' `*Note.*` paragraph follows the table after a blank line.
 #'
 #' @section Changed in 0.9.0:
 #' The default is now `format = "apa"`. Earlier versions returned the numeric
@@ -604,6 +701,8 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' )
 #' fit <- sort_validity(sorts)
 #' content_report(fit)
+#' # In a Quarto or R Markdown chunk with `results = "asis"`, these lines
+#' # render as a table:
 #' content_report(fit, format = "markdown", include = "flagged")
 #' @export
 content_report <- function(x,
@@ -692,7 +791,8 @@ print.contentvalid_report <- function(x, ...) {
   if (!nrow(x)) {
     .say("No units matched the requested selection.")
   } else {
-    .print_table(.report_display(x), keep = c(.table_keep, "I-CVI", "IOC"))
+    .print_table(.report_display(x),
+                 keep = c(.table_keep, "I-CVI", "IOC", "stable"))
     note <- attr(x, "note")
     if (length(note)) {
       cat("\n")

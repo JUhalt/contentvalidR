@@ -73,11 +73,13 @@ expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
 }
 \references{
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. \emph{Measurement and Evaluation in Counseling and Development,
-47}(1), 79–86. \doi{10.1177/0748175613513808}
+validity ratio: Revisiting the original methods of calculation.
+\emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79–86.
+\doi{10.1177/0748175613513808}
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 \emph{Nursing Research, 35}(6), 382–385.
+\doi{10.1097/00006199-198611000-00017}
 
 Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
 sure you know what's being reported? Critique and recommendations.

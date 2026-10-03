@@ -219,9 +219,9 @@
 
 # Whether a column of formatted text holds numbers, to be right-aligned:
 # estimates, intervals, counts such as "18/20", percentages, "< .001". The
-# missing marker and "none" do not decide it.
+# missing marker (an em dash in Markdown) and "none" do not decide it.
 .looks_numeric <- function(v) {
-  v <- v[!(v %in% c("", .missing_mark, "none", "NA"))]
+  v <- v[!(v %in% c("", .missing_mark, "—", "none", "NA"))]
   if (!length(v)) return(TRUE)
   num <- "^([<>] )?-?([0-9]+([.][0-9]+)?|[.][0-9]+)%?$"
   all(grepl(num, v) | grepl("^\\[.*\\]$", v) | grepl("^[0-9]+/[0-9]+$", v) |
@@ -295,6 +295,10 @@
   x <- gsub("\\[([^]\\[]*), ([^]\\[]*)\\]", paste0("[\\1,", .nbsp, "\\2]"),
             x, perl = TRUE)
   x <- gsub("\\(([0-9.]+), ", paste0("(\\1,", .nbsp), x, perl = TRUE)
+  # "F test", "contrast p", "omnibus p": two-word terms a note defines.
+  # Split, the second word would read as the term ("test = within-judge").
+  x <- gsub("\\b(F|[Cc]ontrast|[Oo]mnibus) (test|p)\\b",
+            paste0("\\1", .nbsp, "\\2"), x, perl = TRUE)
   x
 }
 

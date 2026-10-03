@@ -111,7 +111,8 @@ test_that("markdown output is a valid table carrying its settings", {
   # Header, separator rule, one line per item, then a blank line and the
   # APA note.
   expect_match(md[1], "^\\| Item \\|")
-  expect_match(md[2], "^\\| --- \\|")
+  # The item column is text, so the rule aligns it left.
+  expect_match(md[2], "^\\| :--- \\|")
   expect_gte(length(md), 2L + 6L + 2L)
   table_md <- md[1:8]
   expect_true(all(grepl("^\\|", table_md)))

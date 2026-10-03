@@ -288,8 +288,9 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
     title = c("Index of item-objective congruence (IOC)",
               "Rovinelli and Hambleton (1977)."),
     build = function() {
+      # The raters are experts, as in the congruence workflow's printout.
       tab <- data.frame(item = x$item, objective = x$objective,
-                        judges = x$n_judges, stringsAsFactors = FALSE)
+                        experts = x$n_judges, stringsAsFactors = FALSE)
       # Objects saved before 1.0 have no separate mean.
       if ("mean_rating" %in% names(x)) tab$mean <- .fmt(x$mean_rating, digits)
       tab$IOC <- .fmt(x$ioc, digits)
@@ -297,11 +298,11 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
     },
     notes = c(
       if ("mean_rating" %in% names(x)) {
-        paste("Mean: the judges' mean rating on the objective (-1 to 1).",
+        paste("Mean: the experts' mean rating on the objective (-1 to 1).",
               "IOC: half the gap between that mean and their mean on the",
-              "item's other objectives; 1 only when every judge rates +1 on the",
-              "objective and -1 on every other. Rovinelli and Hambleton applied",
-              "a criterion of .70.")
+              "item's other objectives; 1 only when every expert rates +1 on",
+              "the objective and -1 on every other. Rovinelli and Hambleton",
+              "applied a criterion of .70.")
       },
       if (any(is.na(x$ioc) & !is.na(x$mean_rating) & x$n_objectives == 1L)) {
         paste("IOC is -- for an item rated against one objective: the index",
