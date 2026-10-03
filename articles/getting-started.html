@@ -304,6 +304,10 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'</span></span>
+<span><span class="co">#&gt;       I-CVIs; Polit and Beck (2006) recommend .90 or higher.</span></span>
+<span><span class="co">#&gt;   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every</span></span>
+<span><span class="co">#&gt;       expert rated relevant; it falls as experts are added.</span></span>
 <span><span class="co">#&gt;   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span></span>
 <span><span class="co">#&gt;       possible) to 1 (highest).</span></span>
 <span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
@@ -312,7 +316,7 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span></span>
 <span><span class="co">#&gt;       small; the method is named above.</span></span>
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span></span>
-<span><span class="co">#&gt;       below 0 when agreement is below chance).</span></span>
+<span><span class="co">#&gt;       below 0 only when no expert, or one of three, rated it relevant).</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient for the whole</span></span>
 <span><span class="co">#&gt;       panel (1 is perfect, 0 is chance); it can be low when nearly every</span></span>
 <span><span class="co">#&gt;       rating is the same.</span></span>
@@ -416,7 +420,7 @@ files.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; agree: judges rating the item relevant, out of those who rated it. Pc: the</span></span>
 <span><span class="co">#&gt; probability that this many judges would agree by chance. kappa: the modified</span></span>
-<span><span class="co">#&gt; kappa of Polit, Beck and Owen (2007), the I-CVI chance-corrected by Pc.</span></span>
+<span><span class="co">#&gt; kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>

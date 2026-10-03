@@ -184,28 +184,22 @@ random-number generation.</p>
 <div class="section level2">
 <h2 id="table-templates">Table templates<a class="anchor" aria-label="anchor" href="#table-templates"></a>
 </h2>
+<p><code><a href="../reference/content_report.html">content_report()</a></code> turns a fit into a manuscript table,
+with the columns a reader needs and numbers in APA form;
+<code>format = "markdown"</code> gives the same table to paste. The
+unrounded values stay in each fit’s <code>results</code>.</p>
 <div class="section level3">
 <h3 id="item-sort">Item sort<a class="anchor" aria-label="anchor" href="#item-sort"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"n"</span>, <span class="st">"n_target"</span>, <span class="st">"competitor"</span>,</span>
-<span>  <span class="st">"psa"</span>, <span class="st">"csv"</span>, <span class="st">"p_value"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span></span>
-<span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target  n n_target competitor  psa  csv      p_value    status</span></span>
-<span><span class="co">#&gt; 1   A1      A 20       18       B; C 0.90 0.85 0.0002012253 Supported</span></span>
-<span><span class="co">#&gt; 2   A2      A 20       15          B 0.75 0.60 0.0206947327 Supported</span></span>
-<span><span class="co">#&gt; 3   B1      B 20       17          A 0.85 0.75 0.0012884140 Supported</span></span>
-<span><span class="co">#&gt; 4   B2      B 20       13          A 0.65 0.40 0.1315879822    Review</span></span>
-<span><span class="co">#&gt; 5   C1      C 20       18       A; B 0.90 0.85 0.0002012253 Supported</span></span>
-<span><span class="co">#&gt; 6   C2      C 20       14          B 0.70 0.50 0.0576591492    Review</span></span>
-<span><span class="co">#&gt;   recommendation</span></span>
-<span><span class="co">#&gt; 1         Retain</span></span>
-<span><span class="co">#&gt; 2         Retain</span></span>
-<span><span class="co">#&gt; 3         Retain</span></span>
-<span><span class="co">#&gt; 4         Review</span></span>
-<span><span class="co">#&gt; 5         Retain</span></span>
-<span><span class="co">#&gt; 6         Review</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">sort_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  item target judges competitor Psa     95% CI Csv      p decision</span></span>
+<span><span class="co">#&gt;    A1      A  18/20       B; C .90 [.70, .97] .85 &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain</span></span>
+<span><span class="co">#&gt;    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain</span></span>
+<span><span class="co">#&gt;    B2      B  13/20          A .65 [.43, .82] .40   .132   Review</span></span>
+<span><span class="co">#&gt;    C1      C  18/20       A; B .90 [.70, .97] .85 &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    C2      C  14/20          B .70 [.48, .85] .50   .058   Review</span></span></code></pre></div>
 <p>At the target-scale level, report mean Psa/Csv and the benchmark set
 actually used. Do not convert Colquitt’s scale-level norms into
 individual-item cutoffs.</p>
@@ -214,66 +208,34 @@ individual-item cutoffs.</p>
 <h3 id="construct-rating">Construct rating<a class="anchor" aria-label="anchor" href="#construct-rating"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rating_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"n_complete"</span>, <span class="st">"strongest_competitor"</span>,</span>
-<span>  <span class="st">"htc"</span>, <span class="st">"htd"</span>, <span class="st">"p_value"</span>, <span class="st">"max_contrast_p"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span></span>
-<span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target n_complete strongest_competitor       htc       htd      p_value</span></span>
-<span><span class="co">#&gt; 1   A1      A         24                    C 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 2   A2      A         24                    B 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt; 3   B1      B         24                    C 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 4   B2      B         24                    A 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt; 5   C1      C         24                    B 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 6   C2      C         24                    B 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt;   max_contrast_p    status recommendation</span></span>
-<span><span class="co">#&gt; 1   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 2   5.173102e-02    Review         Review</span></span>
-<span><span class="co">#&gt; 3   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 4   5.173102e-02    Review         Review</span></span>
-<span><span class="co">#&gt; 5   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 6   5.173102e-02    Review         Review</span></span>
-<span><span class="va">rating_fit</span><span class="op">$</span><span class="va">scale_summary</span></span>
-<span><span class="co">#&gt;   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc</span></span>
-<span><span class="co">#&gt; 1      A       2     2     2        1        1              0 0.8333333</span></span>
-<span><span class="co">#&gt; 2      B       2     2     2        1        1              0 0.8333333</span></span>
-<span><span class="co">#&gt; 3      C       2     2     2        1        1              0 0.8333333</span></span>
-<span><span class="co">#&gt;   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set</span></span>
-<span><span class="co">#&gt; 1         Weak   0.4375  Very Strong             3         NA       overall</span></span>
-<span><span class="co">#&gt; 2         Weak   0.4375  Very Strong             3         NA       overall</span></span>
-<span><span class="co">#&gt; 3         Weak   0.4375  Very Strong             3         NA       overall</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                                                                               evidence</span></span>
-<span><span class="co">#&gt; 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
-<span><span class="co">#&gt; 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span>
-<span><span class="co">#&gt; 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  item target judges HTC HTD                  F test      p contrast p decision</span></span>
+<span><span class="co">#&gt;    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
+<span><span class="co">#&gt;    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
+<span><span class="co">#&gt;    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span></code></pre></div>
 <p>Report the repeated-measures design and target-versus-orbiting
-contrasts. For a review item, naming the strongest competitor is often
-more informative than a standalone p value.</p>
+contrasts. For a review item, naming the strongest competitor, which
+<code>rating_fit$results</code> holds as
+<code>strongest_competitor</code>, is often more informative than a
+standalone p value.</p>
 </div>
 <div class="section level3">
 <h3 id="expert-relevance">Expert relevance<a class="anchor" aria-label="anchor" href="#expert-relevance"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">expert_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"item"</span>, <span class="st">"N"</span>, <span class="st">"V"</span>, <span class="st">"ci_low"</span>, <span class="st">"ci_high"</span>, <span class="st">"I_CVI"</span>,</span>
-<span>  <span class="st">"kappa_mod"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span></span>
-<span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    item N         V    ci_low   ci_high I_CVI kappa_mod    status</span></span>
-<span><span class="co">#&gt; 1 Item1 8 1.0000000 0.8620238 1.0000000  1.00 1.0000000 Supported</span></span>
-<span><span class="co">#&gt; 2 Item2 8 0.9166667 0.7415120 0.9768412  1.00 1.0000000 Supported</span></span>
-<span><span class="co">#&gt; 3 Item3 8 0.8333333 0.6414693 0.9332132  1.00 1.0000000 Supported</span></span>
-<span><span class="co">#&gt; 4 Item4 8 0.5833333 0.3883467 0.7553240  0.75 0.7192982    Review</span></span>
-<span><span class="co">#&gt; 5 Item5 8 0.4166667 0.2446760 0.6116533  0.25 0.1578947    Review</span></span>
-<span><span class="co">#&gt;   recommendation</span></span>
-<span><span class="co">#&gt; 1 Strong support</span></span>
-<span><span class="co">#&gt; 2 Strong support</span></span>
-<span><span class="co">#&gt; 3 Strong support</span></span>
-<span><span class="co">#&gt; 4         Review</span></span>
-<span><span class="co">#&gt; 5         Review</span></span>
-<span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span></span>
-<span><span class="co">#&gt;   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement</span></span>
-<span><span class="co">#&gt; 1       5             8             8         0.75       0.8      0.6 0.6934253</span></span>
-<span><span class="co">#&gt;   agreement_low agreement_high n_strong_support n_review n_insufficient</span></span>
-<span><span class="co">#&gt; 1    0.07142857      0.8457143                3        2              0</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   item experts    V      95% CI I-CVI      95% CI kappa       decision</span></span>
+<span><span class="co">#&gt;  Item1       8 1.00 [.86, 1.00]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
+<span><span class="co">#&gt;  Item2       8  .92  [.74, .98]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
+<span><span class="co">#&gt;  Item3       8  .83  [.64, .93]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
+<span><span class="co">#&gt;  Item4       8  .58  [.39, .76]   .75  [.41, .93]   .72         Review</span></span>
+<span><span class="co">#&gt;  Item5       8  .42  [.24, .61]   .25  [.07, .59]   .16         Review</span></span>
+<span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S_CVI_Ave"</span>, <span class="st">"S_CVI_UA"</span>, <span class="st">"agreement"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   S_CVI_Ave S_CVI_UA agreement</span></span>
+<span><span class="co">#&gt; 1       0.8      0.6 0.6934253</span></span></code></pre></div>
 <p>Essentiality and congruence require different expert tasks. Do not
 place CVR, CVI, Aiken V, and IOC in one generic threshold table as if
 they answer the same question.</p>

@@ -130,10 +130,10 @@ beside omega-squared. None of them changes the decision:
   fewer target assignments than the exact test requires. That is why it
   is not used for the decision.
 
-- **Yao, Wu and Yang (2008)** required Psa and Csv both to reach .30,
-  which they chose for a four-domain sort, where an item assigned at
-  random lands in its domain with probability .25 (p. 486). They give no
-  rule for other numbers of domains.
+- **Yao et al. (2008)** required Psa and Csv both to reach .30, which
+  they chose for a four-domain sort, where an item assigned at random
+  lands in its domain with probability .25 (p. 486). They give no rule
+  for other numbers of domains.
 
 - **A contentvalidR extension, not a published rule.** Yao et al.'s
   reasoning carried to `k` constructs as chance plus .05: Psa and Csv
@@ -325,8 +325,8 @@ print(fit, legacy = TRUE)
 #> judge who misses the target picks the same rival. When those judges spread
 #> across several constructs, Csv can reach it with fewer target assignments
 #> than the exact test needs.
-#> Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a four-domain
-#> sort where chance assignment is .25.
+#> Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort
+#> where chance assignment is .25.
 #> * extension: a contentvalidR extension, not a published rule. It carries Yao
 #>   et al.'s reasoning to this sort's 2 constructs as chance plus .05, so Psa
 #>   and Csv both at least .55 (1/2 + .05).

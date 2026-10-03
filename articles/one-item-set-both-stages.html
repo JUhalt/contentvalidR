@@ -137,7 +137,8 @@ offered to the judges as a distractor and has no items of its own.</p>
 <p>Each item was also given a job, and the file records what it is, so
 you can check the stages against the design rather than take this
 vignette’s word for anything. Two are simply written the other way
-round; five more are meant to cause trouble:</p>
+round; seven more each set a particular test for one stage or the
+other:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">items</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/startsWith.html" class="external-link">startsWith</a></span><span class="op">(</span><span class="va">role</span>, <span class="st">"ordinary"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"role"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;    item                                                               role</span></span>
@@ -157,8 +158,8 @@ round; five more are meant to cause trouble:</p>
 <p>Twenty judges sorted each item into <code>EF</code>, <code>TF</code>,
 or <code>TA</code>. <code><a href="../reference/sort_validity.html">sort_validity()</a></code> applies the exact
 target-count test of Howard and Melloy (2016): with twenty judges and
-two plausible answers, an item needs fifteen assignments to its target
-to meet the criterion.</p>
+the default null probability of .50, an item needs fifteen assignments
+to its target to meet the criterion.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu">path</span><span class="op">(</span><span class="st">"walkthrough_sort.csv"</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorted</span><span class="op">)</span></span>
@@ -185,9 +186,10 @@ eight of twenty judges read it as test anxiety. Its target wins and the
 criterion is not met.</p>
 <p><code>TF5</code> (“I work hard to stay on top of my reading”) is
 worse: thirteen judges put it under effort regulation and only six under
-task focus, so a competing facet beat the target outright. Its content
-validity index for sorting is negative, which is what a negative
-<code>csv</code> means.</p>
+task focus, so a competing facet beat the target outright. Its
+substantive validity coefficient, <code>csv</code>, is negative, which
+means judges chose a competing construct more often than the intended
+one.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">panel</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="va">panel</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">recommendation</span> <span class="op">==</span> <span class="st">"Review"</span>,</span>
 <span>              <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"csv"</span>, <span class="st">"issue"</span><span class="op">)</span><span class="op">]</span></span>
@@ -335,8 +337,8 @@ variance with the rest of the facet:</p>
 <span><span class="co">#&gt;    0.27    0.08</span></span></code></pre></div>
 <p><strong><code>TF4</code> passed content review and belongs to both
 facets.</strong> “I keep working through a task without taking breaks”
-is as much effort as focus, and the response data say so even though the
-judges saw only one of the two:</p>
+is as much effort as focus, and the response data say so, though only
+four of the twenty judges sorted it under effort regulation:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">unclass</a></span><span class="op">(</span><span class="va">fa</span><span class="op">$</span><span class="va">loadings</span><span class="op">)</span><span class="op">[</span><span class="st">"TF4"</span>, <span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Factor1 Factor2 </span></span>
@@ -455,9 +457,10 @@ from content review</a>.</p>
 <p>Surviving content review is evidence about relevance, representation,
 and whether experts read an item the way it was meant. It is not
 evidence that the item measures anything. Of the ten items this panel
-carried forward, one carries almost no common variance and one belongs
-to a facet the judges never considered. Both read well. That is not a
-failure of the panel; it is the boundary of what a panel can see.</p>
+carried forward, one carries almost no common variance and one also
+loads on a second facet that only four of the twenty judges saw in it.
+Both read well. That is not a failure of the panel; it is the boundary
+of what a panel can see.</p>
 <p>The reverse holds just as firmly. A screening index is a number about
 a sample, and it does not know which part of the construct an item was
 there to cover. <code>EF3</code> would be dropped by a rule and kept by

@@ -239,7 +239,9 @@ models, reliability, invariance, and nomological networks.
 
 ``` r
 
-# install.packages("nomologR", repos = "https://juhalt.r-universe.dev")
+# install.packages("nomologR",
+#                  repos = c("https://juhalt.r-universe.dev",
+#                            "https://cloud.r-project.org"))
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.

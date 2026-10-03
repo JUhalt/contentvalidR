@@ -94,8 +94,9 @@ interchangeable.</p>
 <p>The three modes are:</p>
 <ul>
 <li>
-<strong>relevance</strong>: Aiken’s V plus CVI and modified kappa,
-with a panel-level agreement coefficient;</li>
+<strong>relevance</strong>: Aiken’s (1980) V plus CVI and the
+modified kappa of Polit et al. (2007), with a panel-level agreement
+coefficient;</li>
 <li>
 <strong>essentiality</strong>: Lawshe’s CVR with exact binomial
 inference; and</li>
@@ -163,6 +164,10 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'</span></span>
+<span><span class="co">#&gt;       I-CVIs; Polit and Beck (2006) recommend .90 or higher.</span></span>
+<span><span class="co">#&gt;   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every</span></span>
+<span><span class="co">#&gt;       expert rated relevant; it falls as experts are added.</span></span>
 <span><span class="co">#&gt;   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span></span>
 <span><span class="co">#&gt;       possible) to 1 (highest).</span></span>
 <span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
@@ -171,7 +176,7 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt;   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span></span>
 <span><span class="co">#&gt;       small; the method is named above.</span></span>
 <span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span></span>
-<span><span class="co">#&gt;       below 0 when agreement is below chance).</span></span>
+<span><span class="co">#&gt;       below 0 only when no expert, or one of three, rated it relevant).</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient for the whole</span></span>
 <span><span class="co">#&gt;       panel (1 is perfect, 0 is chance); it can be low when nearly every</span></span>
 <span><span class="co">#&gt;       rating is the same.</span></span>
@@ -270,13 +275,13 @@ coefficient with a bootstrap interval:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. It does</span></span>
 <span><span class="co">#&gt; not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
-<p>The default coefficient is Krippendorff’s alpha. It accepts any
-number of experts and missing ratings, and Zapf et al. (2016) recommend
-it when ratings are ordinal or incomplete, which describes most expert
-panels. It is a general reliability coefficient (Hayes &amp;
-Krippendorff, 2007) rather than one developed for content validity; no
-publication applying it specifically to content-validity panels was
-found.</p>
+<p>The default coefficient is Krippendorff’s alpha (Krippendorff, 2011).
+It accepts any number of experts and missing ratings, and Zapf et
+al. (2016) recommend it when ratings are ordinal or incomplete, which
+describes most expert panels. It is a general reliability coefficient
+(Hayes &amp; Krippendorff, 2007) rather than one developed for content
+validity; no publication applying it specifically to content-validity
+panels was found.</p>
 <p>Choose the measurement level that matches the rating scale. Relevance
 ratings are treated as ordinal by default.
 <code>agreement_level = "interval"</code> treats the distances between
@@ -686,7 +691,7 @@ congruence for multidimensional items. <em>International Journal of
 Testing, 3</em>(2), 163–171. <a href="https://doi.org/10.1207/S15327574IJT0302_5" class="external-link uri">https://doi.org/10.1207/S15327574IJT0302_5</a></p>
 <p>Vach, W., &amp; Gerke, O. (2023). Gwet’s AC1 is not a substitute for
 Cohen’s kappa: A comparison of basic properties. <em>MethodsX, 10</em>,
-102212. <a href="https://doi.org/10.1016/j.mex.2023.102212" class="external-link uri">https://doi.org/10.1016/j.mex.2023.102212</a></p>
+Article 102212. <a href="https://doi.org/10.1016/j.mex.2023.102212" class="external-link uri">https://doi.org/10.1016/j.mex.2023.102212</a></p>
 <p>Wilson, F. R., Pan, W., &amp; Schumsky, D. A. (2012). Recalculation
 of the critical values for Lawshe’s content validity ratio.
 <em>Measurement and Evaluation in Counseling and Development,
@@ -694,7 +699,7 @@ of the critical values for Lawshe’s content validity ratio.
 <p>Zapf, A., Castell, S., Morawietz, L., &amp; Karch, A. (2016).
 Measuring inter-rater reliability for nominal data: Which coefficients
 and confidence intervals are appropriate? <em>BMC Medical Research
-Methodology, 16</em>, 93. <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link uri">https://doi.org/10.1186/s12874-016-0200-9</a></p>
+Methodology, 16</em>, Article 93. <a href="https://doi.org/10.1186/s12874-016-0200-9" class="external-link uri">https://doi.org/10.1186/s12874-016-0200-9</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

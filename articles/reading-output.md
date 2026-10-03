@@ -168,11 +168,11 @@ across the item table:
   rate random sorting would give, which is 1 divided by the number of
   constructs.
 
-Numbers follow the APA style rules (seventh edition, Section 6.36). A
-statistic that cannot exceed 1, such as a proportion or a *p* value, is
-printed without a leading zero (.90). One that can exceed 1 keeps it
-(0.57). A *p* value below .001 is printed as \< .001. The `results`
-table keeps every value at full precision.
+Numbers follow the APA style rules (American Psychological Association,
+2020, Section 6.36). A statistic that cannot exceed 1, such as a
+proportion or a *p* value, is printed without a leading zero (.90). One
+that can exceed 1 keeps it (0.57). A *p* value below .001 is printed as
+\< .001. The `results` table keeps every value at full precision.
 
 The scale-level table adds Colquitt strength labels. These are
 **percentile positions relative to scales published in the literature**,
@@ -470,8 +470,9 @@ every flagged item optimizes a statistic at the cost of the content
 domain, which is the opposite of content validity.
 
 **“Strong means good.”** Benchmark labels are percentile positions
-against published scales. `Strong` means typical of published work, not
-that the item is fit for your purpose.
+against published scales. `Strong` places a scale’s mean between the
+60th and 79th percentiles of the scales Colquitt et al. (2019)
+collected, not that the item is fit for your purpose.
 
 **“One index is enough.”** No single coefficient establishes content
 validity. These are components of an argument that also rests on
@@ -552,6 +553,11 @@ contentvalid_glossary("expert-panel")
 American Psychological Association. (2020). *Publication manual of the
 American Psychological Association* (7th ed.).
 <https://doi.org/10.1037/0000165-000>
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. *Journal of Applied
+Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
 
 Lynn, M. R. (1986). Determination and quantification of content
 validity. *Nursing Research, 35*(6), 382–385.

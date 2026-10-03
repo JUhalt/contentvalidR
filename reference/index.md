@@ -56,6 +56,18 @@ reports and downstream workflows.
   : Glossary of contentvalidR indices and status terms
 - [`as.data.frame(`*`<contentvalid_workflow>`*`)`](https://juhalt.github.io/contentvalidR/reference/as.data.frame.contentvalid_workflow.md)
   : Extract workflow results as a plain data frame
+- [`as.data.frame(`*`<contentvalid_cvi>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_gtheory>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_structure>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_rounds>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_handoff>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_sort_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_expert_power>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_agreement>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_binom>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_signal>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  [`as.data.frame(`*`<contentvalid_reproducibility>`*`)`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+  : Tables from contentvalidR results
 - [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
   : Build a manuscript-ready results table
 - [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)

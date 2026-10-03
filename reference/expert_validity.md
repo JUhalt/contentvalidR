@@ -3,8 +3,9 @@
 Provides a user-facing workflow for three common expert-panel tasks:
 
 - `mode = "relevance"`: bounded ordinal relevance ratings, combining
-  Aiken's V (with Penfield-Giacobbi score intervals), CVI/modified
-  kappa, and a panel-level agreement coefficient.
+  Aiken's V (with the score intervals of Penfield and Giacobbi, 2004),
+  the CVI with the modified kappa of Polit et al. (2007), and a
+  panel-level agreement coefficient.
 
 - `mode = "essentiality"`: Lawshe CVR with exact binomial critical
   values.
@@ -117,9 +118,10 @@ expert_validity(
 - agreement:
 
   Panel-level agreement coefficient for relevance mode: `"krippendorff"`
-  (default), `"ac1"`, or `"none"`. Krippendorff's alpha uses the
-  relevance ratings at `agreement_level`; Gwet's AC1 uses the
-  relevant/not-relevant decision. See
+  (default), `"ac1"`, or `"none"`. Krippendorff's alpha (Hayes &
+  Krippendorff, 2007), which Zapf et al. (2016) recommend for ordinal or
+  incomplete ratings, uses the relevance ratings at `agreement_level`;
+  Gwet's AC1 uses the relevant/not-relevant decision. See
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
   for the evidence behind each, including why AC1 is never the default.
   Panels with fewer than two experts or two items report no agreement
@@ -284,7 +286,7 @@ Evaluation in Counseling and Development, 45*(3), 197–210.
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and
 confidence intervals are appropriate? *BMC Medical Research Methodology,
-16*, 93.
+16*, Article 93.
 [doi:10.1186/s12874-016-0200-9](https://doi.org/10.1186/s12874-016-0200-9)
 
 ## Examples
@@ -336,6 +338,10 @@ fit
 #> cutoffs.
 #> 
 #> What these columns mean
+#>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'
+#>       I-CVIs; Polit and Beck (2006) recommend .90 or higher.
+#>   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every
+#>       expert rated relevant; it falls as experts are added.
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
@@ -344,7 +350,7 @@ fit
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
 #>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
-#>       below 0 when agreement is below chance).
+#>       below 0 only when no expert, or one of three, rated it relevant).
 #>   Panel agreement -- Panel-level agreement. One coefficient for the whole
 #>       panel (1 is perfect, 0 is chance); it can be low when nearly every
 #>       rating is the same.

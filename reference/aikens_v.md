@@ -1,9 +1,9 @@
 # Aiken's V for expert content-relevance ratings
 
-Computes Aiken's V per item for bounded ordinal expert ratings. By
-default, confidence intervals use the score method described by Penfield
-and Giacobbi (2004). Percentile bootstrap intervals remain available for
-compatibility and sensitivity analysis.
+Computes Aiken's (1980) V per item for bounded ordinal expert ratings.
+By default, confidence intervals use the score method described by
+Penfield and Giacobbi (2004). Percentile bootstrap intervals remain
+available for compatibility and sensitivity analysis.
 
 ## Usage
 

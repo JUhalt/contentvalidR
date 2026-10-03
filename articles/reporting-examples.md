@@ -99,28 +99,22 @@ For this bundled example, 20 judges evaluated 6 items. 4 items met the
 exact screening criterion, 2 were flagged for review, and 0 had
 insufficient usable assignments.
 
-A manuscript table can usually be built directly from:
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+gives the manuscript table: the columns a reader needs, with numbers in
+APA form. `format = "markdown"` gives the same table to paste into a
+manuscript, and `format = "data.frame"` the rounded numbers. The
+unrounded values stay in `sort_fit$results`.
 
 ``` r
 
-sort_fit$results[c(
-  "item", "target", "n", "n_target", "competitor",
-  "psa", "csv", "p_value", "status", "recommendation"
-)]
-#>   item target  n n_target competitor  psa  csv      p_value    status
-#> 1   A1      A 20       18       B; C 0.90 0.85 0.0002012253 Supported
-#> 2   A2      A 20       15          B 0.75 0.60 0.0206947327 Supported
-#> 3   B1      B 20       17          A 0.85 0.75 0.0012884140 Supported
-#> 4   B2      B 20       13          A 0.65 0.40 0.1315879822    Review
-#> 5   C1      C 20       18       A; B 0.90 0.85 0.0002012253 Supported
-#> 6   C2      C 20       14          B 0.70 0.50 0.0576591492    Review
-#>   recommendation
-#> 1         Retain
-#> 2         Retain
-#> 3         Retain
-#> 4         Review
-#> 5         Retain
-#> 6         Review
+content_report(sort_fit)
+#>  item target judges competitor Psa     95% CI Csv      p decision
+#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
+#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
+#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
+#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
+#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
+#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
 ```
 
 Do not report `Review` as synonymous with deletion. A review flag
@@ -222,29 +216,20 @@ were flagged for review.
 
 ``` r
 
-rating_fit$results[c(
-  "item", "target", "n_complete", "strongest_competitor",
-  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
-)]
-#>   item target n_complete strongest_competitor       htc       htd      p_value
-#> 1   A1      A         24                    C 0.9333333 0.6666667 1.274299e-19
-#> 2   A2      A         24                    B 0.7333333 0.2083333 7.375102e-08
-#> 3   B1      B         24                    C 0.9333333 0.6666667 1.274299e-19
-#> 4   B2      B         24                    A 0.7333333 0.2083333 7.375102e-08
-#> 5   C1      C         24                    B 0.9333333 0.6666667 1.274299e-19
-#> 6   C2      C         24                    B 0.7333333 0.2083333 7.375102e-08
-#>   max_contrast_p    status recommendation
-#> 1   1.122784e-13 Supported         Retain
-#> 2   5.173102e-02    Review         Review
-#> 3   1.122784e-13 Supported         Retain
-#> 4   5.173102e-02    Review         Review
-#> 5   1.122784e-13 Supported         Retain
-#> 6   5.173102e-02    Review         Review
+content_report(rating_fit)
+#>  item target judges HTC HTD                  F test      p contrast p decision
+#>    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#>    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#>    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
 ```
 
-For review items, report the strongest orbiting competitor. That
-information turns a generic statement about weak distinctiveness into a
-specific diagnostic about where construct overlap may be occurring.
+For review items, report the strongest orbiting competitor, which
+`rating_fit$results` holds as `strongest_competitor`. That information
+turns a generic statement about weak distinctiveness into a specific
+diagnostic about where construct overlap may be occurring.
 
 ## Expert-panel study
 
@@ -302,10 +287,10 @@ expert_fit$scale_summary
 > Experts rated the relevance of each candidate item on a bounded
 > ordinal scale. We summarized relevance using Aiken’s V with
 > Penfield-Giacobbi score confidence intervals and calculated I-CVI with
-> Polit-Beck-Owen modified kappa. S-CVI/Ave and S-CVI/UA were reported
-> at the scale level. Panel-size CVI guidelines were used as review aids
-> and were considered alongside written expert feedback and construct
-> coverage.
+> the modified kappa of Polit et al. (2007). S-CVI/Ave and S-CVI/UA were
+> reported at the scale level. Panel-size CVI guidelines were used as
+> review aids and were considered alongside written expert feedback and
+> construct coverage.
 
 In this example, 8 experts evaluated 5 items. The workflow identifies 3
 supported items and 2 review items under its quantitative rules.

@@ -275,8 +275,9 @@ fit
 #>  Judge8   Severe 2.00     0.90    NA    NA     NA      0.83
 #> 
 #> mean: the judge's mean rating. severity: how far the judge rates below the
-#> panel, in rating points (negative is more lenient); logit: the same from the
-#> facets model, against the judges it placed, which the flags use.
+#> panel, in rating points (negative is more lenient); logit: severity on the
+#> relevant/not-relevant decision from the facets model, against the judges it
+#> placed, which the flags use.
 #> 
 #> A judge is flagged when severity exceeds 1 logit in either direction (0.75
 #> rating points for a judge the model could not place) or scale use is below
@@ -301,7 +302,9 @@ fit
 #> 
 #> What these columns mean
 #>   severity -- Judge severity. How much harsher (positive) or more lenient
-#>       (negative) the judge is than the panel.
+#>       (negative) the judge is than the panel, in rating points.
+#>   logit -- Judge severity in logits. Severity on the relevant/not-relevant
+#>       decision from the facets model; the flags use it when estimable.
 #>   infit, outfit -- Fit mean squares. How predictable the judge's decisions
 #>       are: about 1 is expected, high is erratic, low is more predictable
 #>       than expected.

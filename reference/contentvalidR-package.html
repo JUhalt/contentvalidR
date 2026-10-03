@@ -4,7 +4,7 @@
 , empirical interpretation benchmarks from Colquitt et al. (2019) doi:10.1037/apl0000406
 , and the construct-rating procedure of Hinkin and Tracey (1999) doi:10.1177/109442819922004
  with HTC/HTD indices and repeated-measures item screening. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) doi:10.1080/19312450709336664
-. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker, Llabre and Miller (1988) doi:10.1111/j.1745-3984.1988.tb00309.x
+. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) doi:10.1111/j.1745-3984.1988.tb00309.x
 , content-domain coverage and expert-perceived content structure following Sireci and Geisinger (1992) doi:10.1177/014662169201600102
 , consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) doi:10.1186/1471-2288-7-52
 , comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients."><meta property="og:description" content="Provides quantitative tools for substantive and content-oriented scale pretesting. Implements item-sort indices from Anderson and Gerbing (1991) doi:10.1037/0021-9010.76.5.732
@@ -12,7 +12,7 @@
 , empirical interpretation benchmarks from Colquitt et al. (2019) doi:10.1037/apl0000406
 , and the construct-rating procedure of Hinkin and Tracey (1999) doi:10.1177/109442819922004
  with HTC/HTD indices and repeated-measures item screening. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) doi:10.1080/19312450709336664
-. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker, Llabre and Miller (1988) doi:10.1111/j.1745-3984.1988.tb00309.x
+. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) doi:10.1111/j.1745-3984.1988.tb00309.x
 , content-domain coverage and expert-perceived content structure following Sireci and Geisinger (1992) doi:10.1177/014662169201600102
 , consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) doi:10.1186/1471-2288-7-52
 , comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients."></head><body>
@@ -76,7 +76,7 @@
 , empirical interpretation benchmarks from Colquitt et al. (2019) <a href="https://doi.org/10.1037/apl0000406" class="external-link">doi:10.1037/apl0000406</a>
 , and the construct-rating procedure of Hinkin and Tracey (1999) <a href="https://doi.org/10.1177/109442819922004" class="external-link">doi:10.1177/109442819922004</a>
  with HTC/HTD indices and repeated-measures item screening. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) <a href="https://doi.org/10.1080/19312450709336664" class="external-link">doi:10.1080/19312450709336664</a>
-. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker, Llabre and Miller (1988) <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link">doi:10.1111/j.1745-3984.1988.tb00309.x</a>
+. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) <a href="https://doi.org/10.1111/j.1745-3984.1988.tb00309.x" class="external-link">doi:10.1111/j.1745-3984.1988.tb00309.x</a>
 , content-domain coverage and expert-perceived content structure following Sireci and Geisinger (1992) <a href="https://doi.org/10.1177/014662169201600102" class="external-link">doi:10.1177/014662169201600102</a>
 , consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) <a href="https://doi.org/10.1186/1471-2288-7-52" class="external-link">doi:10.1186/1471-2288-7-52</a>
 , comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients.</p>
@@ -94,8 +94,11 @@ without guessing.</p>
 <p>The public API is in three tiers.</p>
 <p><strong>Tier 1, the recommended workflows.</strong> <code><a href="sort_validity.html">sort_validity()</a></code>,
 <code><a href="rating_validity.html">rating_validity()</a></code>, <code><a href="expert_validity.html">expert_validity()</a></code>, <code><a href="delphi_validity.html">delphi_validity()</a></code>,
-<code><a href="judge_validity.html">judge_validity()</a></code>, and <code><a href="domain_validity.html">domain_validity()</a></code>; their <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>,
-and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods; the object contract they share (<code>results</code>,
+<code><a href="judge_validity.html">judge_validity()</a></code>, and <code><a href="domain_validity.html">domain_validity()</a></code>; their <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and
+<code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> methods, and the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods of the first four (when
+similarity data were supplied, a domain fit's content map is drawn with
+<code>plot(fit$details$structure)</code>); the object
+contract they share (<code>results</code>,
 <code>scale_summary</code>, <code>settings</code>, <code>design</code>, <code>details</code>); the shared status
 vocabulary (<code>Supported</code>, <code>Review</code>, <code>Insufficient data</code>, <code>Descriptive only</code>); and <code><a href="content_handoff.html">content_handoff()</a></code>, <code><a href="content_evidence.html">content_evidence()</a></code>, <code><a href="content_report.html">content_report()</a></code>,
 <code><a href="compare_rounds.html">compare_rounds()</a></code>, <code><a href="as.data.frame.contentvalid_workflow.html">as.data.frame.contentvalid_workflow()</a></code>, and

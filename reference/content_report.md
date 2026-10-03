@@ -53,10 +53,12 @@ content_report(
 
 For `"apa"`, a data frame of character columns that prints without row
 names; [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
-drops its print class. For `"data.frame"`, a plain data frame with
-`recommendation` and `status` columns. For `"markdown"`, a character
-vector of Markdown lines that prints as the table, carrying the analysis
-provenance as its `"settings"` attribute.
+drops its print class. An interval column is named after its estimate
+(`V 95% CI`, `I-CVI 95% CI`) and printed under the shared heading
+`95% CI`. For `"data.frame"`, a plain data frame with `recommendation`
+and `status` columns. For `"markdown"`, a character vector of Markdown
+lines that prints as the table, carrying the analysis provenance as its
+`"settings"` attribute.
 
 ## Changed in 0.9.0
 

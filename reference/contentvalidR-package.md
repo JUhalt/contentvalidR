@@ -18,8 +18,8 @@ congruence, and panel-level agreement using Krippendorff's alpha as
 described by Hayes and Krippendorff (2007)
 [doi:10.1080/19312450709336664](https://doi.org/10.1080/19312450709336664)
 . Also provides judge and rater heterogeneity analysis following the
-generalizability-theory treatment of content-validity ratings in
-Crocker, Llabre and Miller (1988)
+generalizability-theory treatment of content-validity ratings in Crocker
+et al. (1988)
 [doi:10.1111/j.1745-3984.1988.tb00309.x](https://doi.org/10.1111/j.1745-3984.1988.tb00309.x)
 , content-domain coverage and expert-perceived content structure
 following Sireci and Geisinger (1992)
@@ -50,12 +50,14 @@ The public API is in three tiers.
 [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md),
 and
 [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md);
-their [`print()`](https://rdrr.io/r/base/print.html),
-[`summary()`](https://rdrr.io/r/base/summary.html), and
-[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods; the
-object contract they share (`results`, `scale_summary`, `settings`,
-`design`, `details`); the shared status vocabulary (`Supported`,
-`Review`, `Insufficient data`, `Descriptive only`); and
+their [`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) methods, and the
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods of the
+first four (when similarity data were supplied, a domain fit's content
+map is drawn with `plot(fit$details$structure)`); the object contract
+they share (`results`, `scale_summary`, `settings`, `design`,
+`details`); the shared status vocabulary (`Supported`, `Review`,
+`Insufficient data`, `Descriptive only`); and
 [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md),
 [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md),
 [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),

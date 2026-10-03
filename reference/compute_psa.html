@@ -100,8 +100,11 @@ rater, assigned construct, and intended target construct.</p></dd>
 
 
 <dt id="arg-ci">ci<a class="anchor" aria-label="anchor" href="#arg-ci"></a></dt>
-<dd><p>Interval method for Psa: <code>"wilson"</code> (default), <code>"agresti_coull"</code>,
-<code>"exact"</code>, or <code>"none"</code>. The methods and the evidence for each are described
+<dd><p>Interval method for Psa: <code>"wilson"</code> (default), the score interval
+of Wilson (1927); <code>"agresti_coull"</code>, the adjusted Wald interval of Agresti
+and Coull (1998); <code>"exact"</code>, the Clopper and Pearson (1934) interval; or
+<code>"none"</code>. Newcombe (1998) compared seven methods and recommends score
+intervals over the Wald interval; the evidence for each is described
 under <code>ci</code> in <code><a href="cvi.html">cvi()</a></code>.</p></dd>
 
 

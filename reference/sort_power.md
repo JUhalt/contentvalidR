@@ -1,9 +1,9 @@
 # Exact power for the item-sort target-count rule
 
-Computes the exact probability that an item will meet the Howard-Melloy
-target-count criterion for a planned judge sample size and an assumed
-true target-assignment probability. This is a binomial calculation, not
-a simulation.
+Computes the exact probability that an item will meet the target-count
+criterion of Howard and Melloy (2016) for a planned judge sample size
+and an assumed true target-assignment probability. This is a binomial
+calculation, not a simulation.
 
 ## Usage
 

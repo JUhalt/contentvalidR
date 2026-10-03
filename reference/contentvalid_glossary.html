@@ -185,14 +185,28 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       would have agreed even if rating at random. With small panels, chance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement is substantial, which is why the raw I-CVI alone can</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (at most 1; below 0 when fewer experts agree</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       than chance predicts; higher is stronger)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       overstate consensus. (at most 1; below 0 only when no expert, or one</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       of three, rated the item relevant; higher is stronger)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   agreement -- Panel-level agreement. One coefficient describing how</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       consistently the whole panel rated the item set: Krippendorff's alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       by default, or Gwet's AC1 if chosen. It is separate from modified</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       kappa, which describes one item at a time. (1 is perfect agreement</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       and 0 is agreement no better than chance; it can be low on a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       close-agreeing panel whose ratings cluster on one value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       consistently the whole panel rated the item set: Krippendorff's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       alpha, the default (see agreement_ac1 for Gwet's AC1). It is separate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       from modified kappa, which describes one item at a time. (1 is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       perfect agreement and 0 is agreement no better than chance; it can be</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       low on a close-agreeing panel whose ratings cluster on one value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   agreement_ac1 -- Panel-level agreement (Gwet's AC1). One coefficient</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       describing how consistently the whole panel made the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       relevant/not-relevant decision, with chance agreement estimated so</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       that it stays small when nearly every rating falls in one category.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       It is separate from modified kappa, which describes one item at a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       time. (1 is perfect agreement; 0 is agreement equal to AC1's own</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       chance estimate, which independent raters need not reach; it stays</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       high when nearly every rating is the same)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_CVI_Ave -- Scale-level CVI, averaging method. The mean of the items'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       I-CVIs, the same quantity as the average congruency percentage. Polit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       and Beck (2006) recommend .90 or higher. (0 to 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S_CVI_UA -- Scale-level CVI, universal agreement. The share of items that</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       every expert rated relevant. It falls as experts are added, so Polit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       and Beck (2006) recommend reporting it beside S-CVI/Ave. (0 to 1)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       calling the item essential rather than merely useful. (-1 to 1; above</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       0 means more than half the panel called it essential)</span>
@@ -224,11 +238,17 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         only described.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> judge-heterogeneity</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How harsh or lenient a judge is compared with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the panel, on the items that judge rated. Positive means the judge</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       rates lower than the panel. Reported in logits from the facets model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       when it can be estimated, otherwise in rating points. (0 means</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       typical of this panel)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   severity_raw -- Judge severity. How harsh or lenient a judge is compared</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       with the panel, on the items that judge rated, in rating points</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       (`severity_raw` in `results`, printed as severity). Positive means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the judge rates lower than the panel. (0 means typical of this panel)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity in logits. Severity estimated by the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       many-facet Rasch model on the relevant/not-relevant decision, against</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the judges the model placed (`severity` in `results`, printed as</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       logit), by default corrected for the bias of joint maximum likelihood</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       (`bias_correct`). Positive means harsher. It can differ from the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rating-point severity, even in sign. (0 means typical of the judges</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       placed; flagged beyond the logit cut)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   infit/outfit -- Fit mean squares. Whether a judge's pattern of decisions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       is as predictable as the model expects. Around 1 is expected; high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       values mean erratic ratings, low values mean ratings more predictable</span>
@@ -276,10 +296,11 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       map; no published benchmark applies)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Covered -- met the coverage criteria.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Thinly covered -- fewer items than the minimum set.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Over-represented -- a larger share of the items than expected.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Under-represented -- a much smaller share of the items than its target</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         calls for.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Thinly covered -- fewer items than the minimum set for this analysis.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Over-represented -- more than `over_factor` times its expected share of</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         the items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Under-represented -- less than its target share divided by</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         `over_factor`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Not covered -- the blueprint includes it, but no item addresses it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> delphi</span>
@@ -306,12 +327,12 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   chi_sq_individual -- Individual stability chi-square. Tests whether</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       experts' later ratings depend on their earlier ones. A significant</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       result is read as stability. It needs expected counts of at least 5,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       which small panels rarely have. (0 or more; read with its p-value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       which small panels rarely have. (0 or more; read with its p value)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   chi_sq_group -- Group stability chi-square. Tests whether the two rounds'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       rating distributions differ. A non-significant result is read as</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       stability, so small panels often look stable because the test has</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       little power, and experts swapping ratings go unseen. (0 or more;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       read with its p-value)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       read with its p value)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   percent_change -- Net change in the rating distribution. How far the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       panel's rating distribution moved between two rounds, as a share of</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the experts compared. Change below 15% is read as stable, a cutoff</span>

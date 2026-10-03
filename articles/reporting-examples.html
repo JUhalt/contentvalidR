@@ -183,26 +183,20 @@ population matched the intended use of those norms.</p>
 <p>For this bundled example, 20 judges evaluated 6 items. 4 items met
 the exact screening criterion, 2 were flagged for review, and 0 had
 insufficient usable assignments.</p>
-<p>A manuscript table can usually be built directly from:</p>
+<p><code><a href="../reference/content_report.html">content_report()</a></code> gives the manuscript table: the columns
+a reader needs, with numbers in APA form.
+<code>format = "markdown"</code> gives the same table to paste into a
+manuscript, and <code>format = "data.frame"</code> the rounded numbers.
+The unrounded values stay in <code>sort_fit$results</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"n"</span>, <span class="st">"n_target"</span>, <span class="st">"competitor"</span>,</span>
-<span>  <span class="st">"psa"</span>, <span class="st">"csv"</span>, <span class="st">"p_value"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span></span>
-<span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target  n n_target competitor  psa  csv      p_value    status</span></span>
-<span><span class="co">#&gt; 1   A1      A 20       18       B; C 0.90 0.85 0.0002012253 Supported</span></span>
-<span><span class="co">#&gt; 2   A2      A 20       15          B 0.75 0.60 0.0206947327 Supported</span></span>
-<span><span class="co">#&gt; 3   B1      B 20       17          A 0.85 0.75 0.0012884140 Supported</span></span>
-<span><span class="co">#&gt; 4   B2      B 20       13          A 0.65 0.40 0.1315879822    Review</span></span>
-<span><span class="co">#&gt; 5   C1      C 20       18       A; B 0.90 0.85 0.0002012253 Supported</span></span>
-<span><span class="co">#&gt; 6   C2      C 20       14          B 0.70 0.50 0.0576591492    Review</span></span>
-<span><span class="co">#&gt;   recommendation</span></span>
-<span><span class="co">#&gt; 1         Retain</span></span>
-<span><span class="co">#&gt; 2         Retain</span></span>
-<span><span class="co">#&gt; 3         Retain</span></span>
-<span><span class="co">#&gt; 4         Review</span></span>
-<span><span class="co">#&gt; 5         Retain</span></span>
-<span><span class="co">#&gt; 6         Review</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">sort_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  item target judges competitor Psa     95% CI Csv      p decision</span></span>
+<span><span class="co">#&gt;    A1      A  18/20       B; C .90 [.70, .97] .85 &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain</span></span>
+<span><span class="co">#&gt;    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain</span></span>
+<span><span class="co">#&gt;    B2      B  13/20          A .65 [.43, .82] .40   .132   Review</span></span>
+<span><span class="co">#&gt;    C1      C  18/20       A; B .90 [.70, .97] .85 &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    C2      C  14/20          B .70 [.48, .85] .50   .058   Review</span></span></code></pre></div>
 <p>Do not report <code>Review</code> as synonymous with deletion. A
 review flag identifies an item for substantive inspection; retaining an
 item for domain coverage can be a reasonable decision when that
@@ -303,27 +297,19 @@ benchmarks rather than universal item cutoffs.</p>
 definitions. 3 items were supported by the complete screening rule and 3
 were flagged for review.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">rating_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"n_complete"</span>, <span class="st">"strongest_competitor"</span>,</span>
-<span>  <span class="st">"htc"</span>, <span class="st">"htd"</span>, <span class="st">"p_value"</span>, <span class="st">"max_contrast_p"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span></span>
-<span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target n_complete strongest_competitor       htc       htd      p_value</span></span>
-<span><span class="co">#&gt; 1   A1      A         24                    C 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 2   A2      A         24                    B 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt; 3   B1      B         24                    C 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 4   B2      B         24                    A 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt; 5   C1      C         24                    B 0.9333333 0.6666667 1.274299e-19</span></span>
-<span><span class="co">#&gt; 6   C2      C         24                    B 0.7333333 0.2083333 7.375102e-08</span></span>
-<span><span class="co">#&gt;   max_contrast_p    status recommendation</span></span>
-<span><span class="co">#&gt; 1   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 2   5.173102e-02    Review         Review</span></span>
-<span><span class="co">#&gt; 3   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 4   5.173102e-02    Review         Review</span></span>
-<span><span class="co">#&gt; 5   1.122784e-13 Supported         Retain</span></span>
-<span><span class="co">#&gt; 6   5.173102e-02    Review         Review</span></span></code></pre></div>
-<p>For review items, report the strongest orbiting competitor. That
-information turns a generic statement about weak distinctiveness into a
-specific diagnostic about where construct overlap may be occurring.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  item target judges HTC HTD                  F test      p contrast p decision</span></span>
+<span><span class="co">#&gt;    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
+<span><span class="co">#&gt;    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
+<span><span class="co">#&gt;    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
+<span><span class="co">#&gt;    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span></code></pre></div>
+<p>For review items, report the strongest orbiting competitor, which
+<code>rating_fit$results</code> holds as
+<code>strongest_competitor</code>. That information turns a generic
+statement about weak distinctiveness into a specific diagnostic about
+where construct overlap may be occurring.</p>
 </div>
 </div>
 <div class="section level2">
@@ -382,10 +368,10 @@ specific diagnostic about where construct overlap may be occurring.</p>
 <p>Experts rated the relevance of each candidate item on a bounded
 ordinal scale. We summarized relevance using Aiken’s V with
 Penfield-Giacobbi score confidence intervals and calculated I-CVI with
-Polit-Beck-Owen modified kappa. S-CVI/Ave and S-CVI/UA were reported at
-the scale level. Panel-size CVI guidelines were used as review aids and
-were considered alongside written expert feedback and construct
-coverage.</p>
+the modified kappa of Polit et al. (2007). S-CVI/Ave and S-CVI/UA were
+reported at the scale level. Panel-size CVI guidelines were used as
+review aids and were considered alongside written expert feedback and
+construct coverage.</p>
 </blockquote>
 <p>In this example, 8 experts evaluated 5 items. The workflow identifies
 3 supported items and 2 review items under its quantitative rules.</p>

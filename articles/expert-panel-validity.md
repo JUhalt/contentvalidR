@@ -12,8 +12,8 @@ interchangeable.
 
 The three modes are:
 
-- **relevance**: Aiken’s V plus CVI and modified kappa, with a
-  panel-level agreement coefficient;
+- **relevance**: Aiken’s (1980) V plus CVI and the modified kappa of
+  Polit et al. (2007), with a panel-level agreement coefficient;
 - **essentiality**: Lawshe’s CVR with exact binomial inference; and
 - **congruence**: the index of item-objective congruence (IOC) of
   Rovinelli and Hambleton (1977).
@@ -79,6 +79,10 @@ fit
 #> cutoffs.
 #> 
 #> What these columns mean
+#>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'
+#>       I-CVIs; Polit and Beck (2006) recommend .90 or higher.
+#>   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every
+#>       expert rated relevant; it falls as experts are added.
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
@@ -87,7 +91,7 @@ fit
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
 #>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
-#>       below 0 when agreement is below chance).
+#>       below 0 only when no expert, or one of three, rated it relevant).
 #>   Panel agreement -- Panel-level agreement. One coefficient for the whole
 #>       panel (1 is perfect, 0 is chance); it can be low when nearly every
 #>       rating is the same.
@@ -194,12 +198,13 @@ fit$details$agreement
 #> not show that the items are relevant or that the domain is covered.
 ```
 
-The default coefficient is Krippendorff’s alpha. It accepts any number
-of experts and missing ratings, and Zapf et al. (2016) recommend it when
-ratings are ordinal or incomplete, which describes most expert panels.
-It is a general reliability coefficient (Hayes & Krippendorff, 2007)
-rather than one developed for content validity; no publication applying
-it specifically to content-validity panels was found.
+The default coefficient is Krippendorff’s alpha (Krippendorff, 2011). It
+accepts any number of experts and missing ratings, and Zapf et
+al. (2016) recommend it when ratings are ordinal or incomplete, which
+describes most expert panels. It is a general reliability coefficient
+(Hayes & Krippendorff, 2007) rather than one developed for content
+validity; no publication applying it specifically to content-validity
+panels was found.
 
 Choose the measurement level that matches the rating scale. Relevance
 ratings are treated as ordinal by default.
@@ -677,7 +682,7 @@ congruence for multidimensional items. *International Journal of
 Testing, 3*(2), 163–171. <https://doi.org/10.1207/S15327574IJT0302_5>
 
 Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for Cohen’s
-kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+kappa: A comparison of basic properties. *MethodsX, 10*, Article 102212.
 <https://doi.org/10.1016/j.mex.2023.102212>
 
 Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
@@ -688,4 +693,4 @@ Evaluation in Counseling and Development, 45*(3), 197–210.
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and
 confidence intervals are appropriate? *BMC Medical Research Methodology,
-16*, 93. <https://doi.org/10.1186/s12874-016-0200-9>
+16*, Article 93. <https://doi.org/10.1186/s12874-016-0200-9>

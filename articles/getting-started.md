@@ -240,6 +240,10 @@ expert_fit
 #> cutoffs.
 #> 
 #> What these columns mean
+#>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'
+#>       I-CVIs; Polit and Beck (2006) recommend .90 or higher.
+#>   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every
+#>       expert rated relevant; it falls as experts are added.
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
 #>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
@@ -248,7 +252,7 @@ expert_fit
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
 #>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
-#>       below 0 when agreement is below chance).
+#>       below 0 only when no expert, or one of three, rated it relevant).
 #>   Panel agreement -- Panel-level agreement. One coefficient for the whole
 #>       panel (1 is perfect, 0 is chance); it can be low when nearly every
 #>       rating is the same.
@@ -362,7 +366,7 @@ cvi(M)
 #> 
 #> agree: judges rating the item relevant, out of those who rated it. Pc: the
 #> probability that this many judges would agree by chance. kappa: the modified
-#> kappa of Polit, Beck and Owen (2007), the I-CVI chance-corrected by Pc.
+#> kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
 #> 
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.

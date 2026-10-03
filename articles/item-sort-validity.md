@@ -474,8 +474,8 @@ sort_validity(three, legacy = TRUE)
 #> judge who misses the target picks the same rival. When those judges spread
 #> across several constructs, Csv can reach it with fewer target assignments
 #> than the exact test needs.
-#> Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a four-domain
-#> sort where chance assignment is .25.
+#> Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort
+#> where chance assignment is .25.
 #> * extension: a contentvalidR extension, not a published rule. It carries Yao
 #>   et al.'s reasoning to this sort's 3 constructs as chance plus .05, so Psa
 #>   and Csv both at least .38 (1/3 + .05).
@@ -497,10 +497,10 @@ Look at C2. Fourteen of 20 judges chose its target, one short of the 15
 the exact test needs, so the decision is Review. Anderson and Gerbing’s
 rule passes it: their critical Csv of .50 assumes the six judges who
 missed the target all chose one rival, but here they split, so Csv
-reaches .50 anyway. That is the miscalibration in miniature. Yao, Wu and
-Yang’s (2008) .30 cutoffs pass every item, because they were set for
-four domains, where chance is .25; with three constructs, chance is
-already above .30.
+reaches .50 anyway. That is the miscalibration in miniature. Yao et
+al.’s (2008) .30 cutoffs pass every item, because they were set for four
+domains, where chance is .25; with three constructs, chance is already
+above .30.
 
 The column marked `extension*` is not a published rule. It is this
 package’s extension of Yao et al.’s reasoning to any number of

@@ -57,8 +57,8 @@ items[c("item", "facet", "stem")]
 
 Each item was also given a job, and the file records what it is, so you
 can check the stages against the design rather than take this vignette’s
-word for anything. Two are simply written the other way round; five more
-are meant to cause trouble:
+word for anything. Two are simply written the other way round; seven
+more each set a particular test for one stage or the other:
 
 ``` r
 
@@ -80,8 +80,8 @@ subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
 Twenty judges sorted each item into `EF`, `TF`, or `TA`.
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
 applies the exact target-count test of Howard and Melloy (2016): with
-twenty judges and two plausible answers, an item needs fifteen
-assignments to its target to meet the criterion.
+twenty judges and the default null probability of .50, an item needs
+fifteen assignments to its target to meet the criterion.
 
 ``` r
 
@@ -114,8 +114,9 @@ met.
 
 `TF5` (“I work hard to stay on top of my reading”) is worse: thirteen
 judges put it under effort regulation and only six under task focus, so
-a competing facet beat the target outright. Its content validity index
-for sorting is negative, which is what a negative `csv` means.
+a competing facet beat the target outright. Its substantive validity
+coefficient, `csv`, is negative, which means judges chose a competing
+construct more often than the intended one.
 
 ``` r
 
@@ -294,8 +295,8 @@ round(unclass(fa$loadings)["EF4", ], 2)
 
 **`TF4` passed content review and belongs to both facets.** “I keep
 working through a task without taking breaks” is as much effort as
-focus, and the response data say so even though the judges saw only one
-of the two:
+focus, and the response data say so, though only four of the twenty
+judges sorted it under effort regulation:
 
 ``` r
 
@@ -439,9 +440,10 @@ review](https://juhalt.github.io/nomologR/articles/guided-workflow.html#starting
 Surviving content review is evidence about relevance, representation,
 and whether experts read an item the way it was meant. It is not
 evidence that the item measures anything. Of the ten items this panel
-carried forward, one carries almost no common variance and one belongs
-to a facet the judges never considered. Both read well. That is not a
-failure of the panel; it is the boundary of what a panel can see.
+carried forward, one carries almost no common variance and one also
+loads on a second facet that only four of the twenty judges saw in it.
+Both read well. That is not a failure of the panel; it is the boundary
+of what a panel can see.
 
 The reverse holds just as firmly. A screening index is a number about a
 sample, and it does not know which part of the construct an item was

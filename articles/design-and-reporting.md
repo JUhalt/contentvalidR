@@ -97,28 +97,23 @@ random-number generation.
 
 ## Table templates
 
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+turns a fit into a manuscript table, with the columns a reader needs and
+numbers in APA form; `format = "markdown"` gives the same table to
+paste. The unrounded values stay in each fit’s `results`.
+
 ### Item sort
 
 ``` r
 
-sort_fit$results[c(
-  "item", "target", "n", "n_target", "competitor",
-  "psa", "csv", "p_value", "status", "recommendation"
-)]
-#>   item target  n n_target competitor  psa  csv      p_value    status
-#> 1   A1      A 20       18       B; C 0.90 0.85 0.0002012253 Supported
-#> 2   A2      A 20       15          B 0.75 0.60 0.0206947327 Supported
-#> 3   B1      B 20       17          A 0.85 0.75 0.0012884140 Supported
-#> 4   B2      B 20       13          A 0.65 0.40 0.1315879822    Review
-#> 5   C1      C 20       18       A; B 0.90 0.85 0.0002012253 Supported
-#> 6   C2      C 20       14          B 0.70 0.50 0.0576591492    Review
-#>   recommendation
-#> 1         Retain
-#> 2         Retain
-#> 3         Retain
-#> 4         Review
-#> 5         Retain
-#> 6         Review
+content_report(sort_fit)
+#>  item target judges competitor Psa     95% CI Csv      p decision
+#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
+#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
+#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
+#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
+#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
+#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
 ```
 
 At the target-scale level, report mean Psa/Csv and the benchmark set
@@ -129,68 +124,35 @@ individual-item cutoffs.
 
 ``` r
 
-rating_fit$results[c(
-  "item", "target", "n_complete", "strongest_competitor",
-  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
-)]
-#>   item target n_complete strongest_competitor       htc       htd      p_value
-#> 1   A1      A         24                    C 0.9333333 0.6666667 1.274299e-19
-#> 2   A2      A         24                    B 0.7333333 0.2083333 7.375102e-08
-#> 3   B1      B         24                    C 0.9333333 0.6666667 1.274299e-19
-#> 4   B2      B         24                    A 0.7333333 0.2083333 7.375102e-08
-#> 5   C1      C         24                    B 0.9333333 0.6666667 1.274299e-19
-#> 6   C2      C         24                    B 0.7333333 0.2083333 7.375102e-08
-#>   max_contrast_p    status recommendation
-#> 1   1.122784e-13 Supported         Retain
-#> 2   5.173102e-02    Review         Review
-#> 3   1.122784e-13 Supported         Retain
-#> 4   5.173102e-02    Review         Review
-#> 5   1.122784e-13 Supported         Retain
-#> 6   5.173102e-02    Review         Review
-rating_fit$scale_summary
-#>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
-#> 1      A       2     2     2        1        1              0 0.8333333
-#> 2      B       2     2     2        1        1              0 0.8333333
-#> 3      C       2     2     2        1        1              0 0.8333333
-#>   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set
-#> 1         Weak   0.4375  Very Strong             3         NA       overall
-#> 2         Weak   0.4375  Very Strong             3         NA       overall
-#> 3         Weak   0.4375  Very Strong             3         NA       overall
-#>                                                                                                                                                                                                                                               evidence
-#> 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+content_report(rating_fit)
+#>  item target judges HTC HTD                  F test      p contrast p decision
+#>    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#>    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#>    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
+#>    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
 ```
 
 Report the repeated-measures design and target-versus-orbiting
-contrasts. For a review item, naming the strongest competitor is often
-more informative than a standalone p value.
+contrasts. For a review item, naming the strongest competitor, which
+`rating_fit$results` holds as `strongest_competitor`, is often more
+informative than a standalone p value.
 
 ### Expert relevance
 
 ``` r
 
-expert_fit$results[c(
-  "item", "N", "V", "ci_low", "ci_high", "I_CVI",
-  "kappa_mod", "status", "recommendation"
-)]
-#>    item N         V    ci_low   ci_high I_CVI kappa_mod    status
-#> 1 Item1 8 1.0000000 0.8620238 1.0000000  1.00 1.0000000 Supported
-#> 2 Item2 8 0.9166667 0.7415120 0.9768412  1.00 1.0000000 Supported
-#> 3 Item3 8 0.8333333 0.6414693 0.9332132  1.00 1.0000000 Supported
-#> 4 Item4 8 0.5833333 0.3883467 0.7553240  0.75 0.7192982    Review
-#> 5 Item5 8 0.4166667 0.2446760 0.6116533  0.25 0.1578947    Review
-#>   recommendation
-#> 1 Strong support
-#> 2 Strong support
-#> 3 Strong support
-#> 4         Review
-#> 5         Review
-expert_fit$scale_summary
-#>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
-#> 1       5             8             8         0.75       0.8      0.6 0.6934253
-#>   agreement_low agreement_high n_strong_support n_review n_insufficient
-#> 1    0.07142857      0.8457143                3        2              0
+content_report(expert_fit)
+#>   item experts    V      95% CI I-CVI      95% CI kappa       decision
+#>  Item1       8 1.00 [.86, 1.00]  1.00 [.68, 1.00]  1.00 Strong support
+#>  Item2       8  .92  [.74, .98]  1.00 [.68, 1.00]  1.00 Strong support
+#>  Item3       8  .83  [.64, .93]  1.00 [.68, 1.00]  1.00 Strong support
+#>  Item4       8  .58  [.39, .76]   .75  [.41, .93]   .72         Review
+#>  Item5       8  .42  [.24, .61]   .25  [.07, .59]   .16         Review
+expert_fit$scale_summary[c("S_CVI_Ave", "S_CVI_UA", "agreement")]
+#>   S_CVI_Ave S_CVI_UA agreement
+#> 1       0.8      0.6 0.6934253
 ```
 
 Essentiality and congruence require different expert tasks. Do not place

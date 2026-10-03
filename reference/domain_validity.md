@@ -179,8 +179,9 @@ domain_validity(
 #> 
 #> What the decisions mean
 #>   Covered -- met the coverage criteria.
-#>   Thinly covered -- fewer items than the minimum set.
-#>   Over-represented -- a larger share of the items than expected.
+#>   Thinly covered -- fewer items than the minimum set for this analysis.
+#>   Over-represented -- more than `over_factor` times its expected share of
+#>       the items.
 #>   Not covered -- the blueprint includes it, but no item addresses it.
 #> 
 #> Full definitions: contentvalid_glossary(). To hide this key:

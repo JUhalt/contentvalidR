@@ -119,14 +119,28 @@ contentvalid_glossary()
 #>   kappa_mod -- Modified kappa. I-CVI adjusted for the chance that experts
 #>       would have agreed even if rating at random. With small panels, chance
 #>       agreement is substantial, which is why the raw I-CVI alone can
-#>       overstate consensus. (at most 1; below 0 when fewer experts agree
-#>       than chance predicts; higher is stronger)
+#>       overstate consensus. (at most 1; below 0 only when no expert, or one
+#>       of three, rated the item relevant; higher is stronger)
 #>   agreement -- Panel-level agreement. One coefficient describing how
-#>       consistently the whole panel rated the item set: Krippendorff's alpha
-#>       by default, or Gwet's AC1 if chosen. It is separate from modified
-#>       kappa, which describes one item at a time. (1 is perfect agreement
-#>       and 0 is agreement no better than chance; it can be low on a
-#>       close-agreeing panel whose ratings cluster on one value)
+#>       consistently the whole panel rated the item set: Krippendorff's
+#>       alpha, the default (see agreement_ac1 for Gwet's AC1). It is separate
+#>       from modified kappa, which describes one item at a time. (1 is
+#>       perfect agreement and 0 is agreement no better than chance; it can be
+#>       low on a close-agreeing panel whose ratings cluster on one value)
+#>   agreement_ac1 -- Panel-level agreement (Gwet's AC1). One coefficient
+#>       describing how consistently the whole panel made the
+#>       relevant/not-relevant decision, with chance agreement estimated so
+#>       that it stays small when nearly every rating falls in one category.
+#>       It is separate from modified kappa, which describes one item at a
+#>       time. (1 is perfect agreement; 0 is agreement equal to AC1's own
+#>       chance estimate, which independent raters need not reach; it stays
+#>       high when nearly every rating is the same)
+#>   S_CVI_Ave -- Scale-level CVI, averaging method. The mean of the items'
+#>       I-CVIs, the same quantity as the average congruency percentage. Polit
+#>       and Beck (2006) recommend .90 or higher. (0 to 1)
+#>   S_CVI_UA -- Scale-level CVI, universal agreement. The share of items that
+#>       every expert rated relevant. It falls as experts are added, so Polit
+#>       and Beck (2006) recommend reporting it beside S-CVI/Ave. (0 to 1)
 #>   cvr -- Lawshe's Content Validity Ratio. How far the panel leans toward
 #>       calling the item essential rather than merely useful. (-1 to 1; above
 #>       0 means more than half the panel called it essential)
@@ -158,11 +172,17 @@ contentvalid_glossary()
 #>         only described.
 #> 
 #> judge-heterogeneity
-#>   severity -- Judge severity. How harsh or lenient a judge is compared with
-#>       the panel, on the items that judge rated. Positive means the judge
-#>       rates lower than the panel. Reported in logits from the facets model
-#>       when it can be estimated, otherwise in rating points. (0 means
-#>       typical of this panel)
+#>   severity_raw -- Judge severity. How harsh or lenient a judge is compared
+#>       with the panel, on the items that judge rated, in rating points
+#>       (`severity_raw` in `results`, printed as severity). Positive means
+#>       the judge rates lower than the panel. (0 means typical of this panel)
+#>   severity -- Judge severity in logits. Severity estimated by the
+#>       many-facet Rasch model on the relevant/not-relevant decision, against
+#>       the judges the model placed (`severity` in `results`, printed as
+#>       logit), by default corrected for the bias of joint maximum likelihood
+#>       (`bias_correct`). Positive means harsher. It can differ from the
+#>       rating-point severity, even in sign. (0 means typical of the judges
+#>       placed; flagged beyond the logit cut)
 #>   infit/outfit -- Fit mean squares. Whether a judge's pattern of decisions
 #>       is as predictable as the model expects. Around 1 is expected; high
 #>       values mean erratic ratings, low values mean ratings more predictable
@@ -210,10 +230,11 @@ contentvalid_glossary()
 #>       map; no published benchmark applies)
 #>   decisions:
 #>     Covered -- met the coverage criteria.
-#>     Thinly covered -- fewer items than the minimum set.
-#>     Over-represented -- a larger share of the items than expected.
-#>     Under-represented -- a much smaller share of the items than its target
-#>         calls for.
+#>     Thinly covered -- fewer items than the minimum set for this analysis.
+#>     Over-represented -- more than `over_factor` times its expected share of
+#>         the items.
+#>     Under-represented -- less than its target share divided by
+#>         `over_factor`.
 #>     Not covered -- the blueprint includes it, but no item addresses it.
 #> 
 #> delphi
@@ -240,12 +261,12 @@ contentvalid_glossary()
 #>   chi_sq_individual -- Individual stability chi-square. Tests whether
 #>       experts' later ratings depend on their earlier ones. A significant
 #>       result is read as stability. It needs expected counts of at least 5,
-#>       which small panels rarely have. (0 or more; read with its p-value)
+#>       which small panels rarely have. (0 or more; read with its p value)
 #>   chi_sq_group -- Group stability chi-square. Tests whether the two rounds'
 #>       rating distributions differ. A non-significant result is read as
 #>       stability, so small panels often look stable because the test has
 #>       little power, and experts swapping ratings go unseen. (0 or more;
-#>       read with its p-value)
+#>       read with its p value)
 #>   percent_change -- Net change in the rating distribution. How far the
 #>       panel's rating distribution moved between two rounds, as a share of
 #>       the experts compared. Change below 15% is read as stable, a cutoff

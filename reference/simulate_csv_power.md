@@ -1,6 +1,8 @@
 # Legacy simulation of item-sort target-count power
 
-Auxiliary compatibility helper. For supported exact planning, prefer
+Auxiliary compatibility helper. It estimates by simulation the power of
+the exact target-count test of Howard and Melloy (2016). For supported
+exact planning, prefer
 [`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md),
 which does not require Monte Carlo simulation.
 
