@@ -367,37 +367,49 @@ judge_ratings <- rbind(
 dimnames(judge_ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 fit_judge <- judge_validity(judge_ratings, lo = 1, hi = 4)
 fit_judge$results[, c("judge", "mean_rating", "severity_raw",
-                      "differentiation", "n_items_flipped", "recommendation")]
-#>    judge mean_rating severity_raw differentiation n_items_flipped
-#> 1 Judge1    3.166667   -0.2708333       0.9136465               0
-#> 2 Judge2    3.000000   -0.1041667       1.1754383               0
-#> 3 Judge3    3.000000   -0.1041667       1.1754383               0
-#> 4 Judge4    3.166667   -0.2708333       0.9136465               0
-#> 5 Judge5    3.166667   -0.2708333       1.2351428               0
-#> 6 Judge6    2.833333    0.0625000       1.0863535               0
-#> 7 Judge7    3.166667   -0.2708333       0.9136465               0
-#> 8 Judge8    1.666667    1.2291667       0.4798707               0
-#>   recommendation
-#> 1        Typical
-#> 2        Typical
-#> 3        Typical
-#> 4        Typical
-#> 5        Typical
-#> 6        Typical
-#> 7        Typical
-#> 8         Severe
+                      "differentiation", "recommendation")]
+#>    judge mean_rating severity_raw differentiation recommendation
+#> 1 Judge1    3.166667   -0.2708333       0.9136465        Typical
+#> 2 Judge2    3.000000   -0.1041667       1.1754383        Typical
+#> 3 Judge3    3.000000   -0.1041667       1.1754383        Typical
+#> 4 Judge4    3.166667   -0.2708333       0.9136465        Typical
+#> 5 Judge5    3.166667   -0.2708333       1.2351428        Typical
+#> 6 Judge6    2.833333    0.0625000       1.0863535        Typical
+#> 7 Judge7    3.166667   -0.2708333       0.9136465        Typical
+#> 8 Judge8    1.666667    1.2291667       0.4798707         Severe
 ```
 
 `severity_raw` is signed so that **positive means harsher**: the judge
 rates lower than the panel. `differentiation` near 1 means the judge
-used the scale about as widely as everyone else. `n_items_flipped` is
-the influence diagnostic: how many items would change review status if
-this judge were removed.
+used the scale about as widely as everyone else. The cuts that turn
+these into a flag are conventions of this package; `print(fit_judge)`
+states them, and each one is an argument, so you can apply your own.
 
 A judge flagged here is not a judge to delete. A dissenting expert may
-be the one reading the construct definition correctly. The flag tells
-you a conclusion rests on one person’s ratings, which is worth knowing
-before you write it up.
+be the one reading the construct definition correctly. The flag marks
+ratings worth a second look before you write the study up.
+
+Whether a conclusion rests on a single judge is reported for the items,
+not the judges:
+
+``` r
+
+fit_judge$details$influence_items
+#>        item n_raters n_relevant status_full_panel fragile changes_without
+#> Item1 Item1        8          7           Support   FALSE            <NA>
+#> Item2 Item2        8          7           Support   FALSE            <NA>
+#> Item3 Item3        8          7           Support   FALSE            <NA>
+#> Item4 Item4        8          7           Support   FALSE            <NA>
+#> Item5 Item5        8          0            Review   FALSE            <NA>
+#> Item6 Item6        8          0            Review   FALSE            <NA>
+```
+
+`fragile` is `TRUE` for an item whose review status would change if one
+judge were removed, which happens when the item is one judge away from
+the other side of the CVI criterion for its panel size: at the
+criterion, or one short of it. Every judge on one side of such an item
+changes it alike, so it is a fact about the item and no judge is flagged
+for it.
 
 The panel-level dependability coefficient answers a planning question:
 
@@ -412,7 +424,9 @@ summary(fit_judge)$gtheory$judges_needed
 
 That table reports how many judges a target coefficient would need.
 Where it returns `NA`, no realistic panel reaches that target, which
-usually means the judges barely distinguished the items.
+usually means the judges barely distinguished the items. The numbers are
+estimates from one panel’s ratings, with no interval, so read them as
+planning figures.
 
 ## Reading domain coverage
 
@@ -473,7 +487,10 @@ addresses coverage, and only when you give it the full blueprint.
 
 **“More judges always helps.”** More judges narrows intervals, but it
 can also change a criterion: the I-CVI guideline shifts at six experts.
-Check `judges_needed` rather than assuming.
+Check
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+for that step rather than assuming. (`judges_needed`, above, answers a
+different question: how many judges a dependability target needs.)
 
 ## Writing it up
 

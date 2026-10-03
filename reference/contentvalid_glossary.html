@@ -223,14 +223,17 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> judge-heterogeneity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How harsh or lenient a judge is compared with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the rest of the panel. Positive means the judge rates lower than the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       panel. Reported in logits from the facets model when it can be</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       estimated, otherwise in rating points. (0 means typical of this</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       panel)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the panel, on the items that judge rated. Positive means the judge</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       rates lower than the panel. Reported in logits from the facets model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       when it can be estimated, otherwise in rating points. (0 means</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       typical of this panel)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   infit/outfit -- Fit mean squares. Whether a judge's pattern of decisions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       is as predictable as the model expects. Around 1 is expected; high</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       values mean erratic ratings, low values mean ratings more predictable</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       than expected. (around 1.0 is expected)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       than expected. Linacre (2002) calls 0.5 to 1.5 productive for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       measurement. Only a value above that range is flagged, and only when</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       it rests on enough decisions. (around 1.0 is expected; 0.5 to 1.5 is</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       productive for measurement)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   differentiation -- Scale use. How widely a judge spread their ratings</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       compared with a typical judge on this panel. Values well below 1 mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the judge distinguished less among items. (1.0 is typical of this</span>
@@ -249,13 +252,12 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Typical -- consistent with the panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Severe -- rates markedly lower than the panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Lenient -- rates markedly higher than the panel.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Erratic -- decisions noisier than the model expects.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Too predictable -- decisions more predictable than the model expects.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Erratic -- decisions noisier than the model expects (infit or outfit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         above the range).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Low differentiation -- draws few distinctions among items compared with</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         other judges.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Influential -- at least one item's review status changes without this</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         judge.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two usable ratings.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two usable ratings, or no other judge</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         to compare with.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> domain-coverage</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   share -- Share of items. Percentage of all items that fall in this</span>
@@ -264,14 +266,18 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       perceive match the blueprint's cells, corrected for the agreement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       expected by chance. (0 is chance agreement, 1 is exact; can be</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       slightly negative)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   stress -- Kruskal stress-1. How much distortion was introduced by</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       squeezing the similarity data into the chosen number of dimensions.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Lower is a closer fit. (0 is perfect; below .10 is conventionally</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       called fair or better)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   stress -- Map distortion. How far the distances on the content map depart</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       from the experts' dissimilarities: the root of their squared</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       differences over the squared dissimilarities. Lower is a closer map.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       It is not Kruskal's (1964) stress-1, which belongs to nonmetric</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       scaling, so his verbal benchmarks do not apply to it. (0 is an exact</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       map; no published benchmark applies)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   decisions:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Covered -- met the coverage criteria.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Thinly covered -- fewer items than the minimum set.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Over-represented -- a larger share of the items than expected.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     Under-represented -- a much smaller share of the items than its target</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         calls for.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Not covered -- the blueprint includes it, but no item addresses it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> delphi</span>

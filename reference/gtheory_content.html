@@ -3,7 +3,7 @@
 components, then reports how dependably the panel's ratings generalize over
 judges.
 This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+ratings in Crocker et al. (1988). Items are the objects of
 measurement and judges are the facet of generalization, so the question the
 analysis answers is: if a different panel of judges of the same size had
 rated these items, how similar would the conclusions be?
@@ -25,7 +25,7 @@ residual component. This is a property of the design, not of the estimator."><me
 components, then reports how dependably the panel's ratings generalize over
 judges.
 This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+ratings in Crocker et al. (1988). Items are the objects of
 measurement and judges are the facet of generalization, so the question the
 analysis answers is: if a different panel of judges of the same size had
 rated these items, how similar would the conclusions be?
@@ -103,7 +103,7 @@ residual component. This is a property of the design, not of the estimator."></h
 components, then reports how dependably the panel's ratings generalize over
 judges.</p>
 <p>This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+ratings in Crocker et al. (1988). Items are the objects of
 measurement and judges are the facet of generalization, so the question the
 analysis answers is: <em>if a different panel of judges of the same size had
 rated these items, how similar would the conclusions be?</em></p>
@@ -127,7 +127,8 @@ residual component. This is a property of the design, not of the estimator.</p>
 <span>  <span class="va">ratings</span>,</span>
 <span>  na.rm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  targets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
-<span>  max_judges <span class="op">=</span> <span class="fl">30</span></span>
+<span>  max_judges <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  phi_cut <span class="op">=</span> <span class="fl">0.8</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -156,6 +157,13 @@ strictly between 0 and 1.</p></dd>
 <dt id="arg-max-judges">max_judges<a class="anchor" aria-label="anchor" href="#arg-max-judges"></a></dt>
 <dd><p>Largest panel size shown in the decision-study projection.</p></dd>
 
+
+<dt id="arg-phi-cut">phi_cut<a class="anchor" aria-label="anchor" href="#arg-phi-cut"></a></dt>
+<dd><p>Dependability coefficient at or above which the status is
+<code>"Supported"</code>. Default .80. Neither Brennan (2001) nor Crocker et al.
+(1988) sets a required value, so this is a contentvalidR convention,
+printed beside the status so a reader can apply another.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -179,8 +187,19 @@ distinguished from one another.</p></dd>
 <dt>settings, design</dt>
 <dd><p>Analysis settings and realized design metadata.</p></dd>
 
+<dt>status</dt>
+<dd><p><code>"Supported"</code> when the dependability coefficient is at or
+above <code>phi_cut</code> and <code>"Review"</code> when it is below; <code>"Descriptive only"</code> when the items show no variance to generalize; and
+<code>"Insufficient data"</code> with fewer than two judges or two items.</p></dd>
 
-</dl></div>
+<dt>interpretation</dt>
+<dd><p>The status in a sentence or two.</p></dd>
+
+
+</dl><p>The projection and <code>judges_needed</code> are estimates from the variance
+components of one panel, with no interval. From a small panel they are
+rough, so read them as planning figures, not as exact answers.</p>
+    </div>
     <div class="section level2">
     <h2 id="negative-variance-estimates">Negative variance estimates<a class="anchor" aria-label="anchor" href="#negative-variance-estimates"></a></h2>
 
@@ -219,10 +238,10 @@ content validity ratings. <em>Journal of Educational Measurement, 25</em>(4),
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observed design</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Generalizability coefficient (relative, rank ordering): .97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Dependability coefficient (absolute, fixed standard):   .96</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> With 8 judges, absolute decisions about these items would generalize</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> dependably to another panel of the same size (Phi = .96). Judge differences</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> account for 5.8% of total variance.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> With 8 judges, absolute decisions about these items would generalize to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> another panel of the same size at Phi = .96, at or above the .80 set for this</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> analysis. Judge differences account for 5.8% of total variance.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variance components</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    source df   MS estimate used % of total</span>
@@ -238,6 +257,8 @@ content validity ratings. <em>Journal of Educational Measurement, 25</em>(4),
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .70            1              1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .80            1              2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     .90            2              3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> These panel sizes are estimates from one panel's variance components, with no</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> interval: read them as planning figures.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A dependability coefficient describes generalization over judges only. It is</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> not evidence that the items cover the intended content domain.</span>

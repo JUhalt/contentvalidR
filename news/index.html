@@ -197,6 +197,67 @@
 <li>Label handling is faster on large data with numeric identifiers: each distinct value is converted once.</li>
 </ul></div>
 <div class="section level3">
+<h3 id="judges-domain-and-structure-values-that-change-0-10-1-9000">Judges, domain and structure: values that change<a class="anchor" aria-label="anchor" href="#judges-domain-and-structure-values-that-change-0-10-1-9000"></a></h3>
+<ul><li>
+<strong>An item one judge from the criterion no longer flags its judges.</strong> With five of six judges rating an item relevant, removing any of the five changes the item’s CVI status, so all five were <code>"Influential"</code> and flagged for review, and the lone dissenter was the only <code>"Typical"</code> judge. On a panel of three every judge was <code>"Influential"</code> for every item, because one judge fewer leaves no criterion at all. <code><a href="../reference/judge_validity.html">judge_validity()</a></code> now reports such items in their own table, with the judges whose removal changes each one, and flags no judge for it. An item rated by three or fewer judges is “not checked”. <code>"Influential"</code> is no longer a decision, <code>scale_summary</code> loses <code>n_influential</code> and gains <code>n_items_unchecked</code>, and <code>details$influence_items</code> gains <code>n_raters</code>, <code>n_relevant</code> and <code>changes_without</code>. Such an item sits at the criterion or one short of it, depending on the panel size.</li>
+<li>
+<strong>Fit statistics flag a judge only above the range, and only with enough decisions.</strong> Infit or outfit outside 0.5 to 1.5 sent a judge to review either way. That range is Linacre’s (2002) guide to how productive data are for measurement: below 0.5 is “less productive for measurement, but not degrading”, and misfit distorts the measurement only above 2.0. On six to ten items, a third to a half of judges who fit the model exactly fell outside it by chance. A judge below the range is now described and not flagged (<code>"Too predictable"</code> is no longer a decision), and a judge above it is <code>"Erratic"</code> only when the model scored at least <code>fit_min_ratings</code> of their decisions (default 30). With the item counts usual in content validation the fit statistics are shown and not flagged, and a judge above the range on too few decisions is named with the number scored. Linacre is cited only for his own bounds; a <code>fit_range</code> set by the analyst is called that.</li>
+<li>
+<strong>Logit severity is corrected by the number of judges.</strong> Joint maximum likelihood stretches the judge severities by about J / (J - 1), with J the number of judges behind each item parameter. The correction multiplied by (L - 1) / L with L the number of items, which left nearly all of the stretch in place on a small panel: about 1.4 times too large with four judges. It now uses the judges who rated each item (their mean over the items when ratings are missing). Printed logits change: smaller when the model holds fewer judges than items, slightly larger when it holds more. Standard errors are scaled by the square root of the factor, as the Facets documentation describes. Applying the Wright and Douglas (1977) correction to judges is labeled as this package’s choice, with Wright’s
+<ol start="1988" style="list-style-type: decimal"><li>note that it is inexact for very short tests.</li>
+</ol></li>
+<li>
+<strong>With missing ratings a judge is compared on the items they rated.</strong> A judge who rated only the low-rated items, exactly as everyone else did, was flagged <code>"Severe"</code>. Severity in rating points and scale use now compare each judge with the panel on the same items. With complete ratings the values are computed as before.</li>
+<li>
+<strong>A judge exactly at a cut is not flagged.</strong> Severity and scale use are compared with their cuts allowing for rounding error in the last digit, so a judge printed at 0.75 beside “exceeds 0.75” is no longer flagged.</li>
+<li>
+<strong><code><a href="../reference/content_structure.html">content_structure()</a></code> clusters the map coordinates.</strong> It named the procedure of Sireci and Geisinger (1992, 1995), who clustered the items’ scaling coordinates, but clustered the original dissimilarities, so the number of dimensions never affected the clusters or the adjusted Rand index. It now clusters the coordinates on the retained dimensions with average linkage (this package’s choice; the sources checked do not state their linkage). Clusters, the adjusted Rand index and the status can change, and now depend on <code>dims</code>. The help says what still differs from their procedure.</li>
+<li>
+<strong>A one-cell blueprint, or one cluster, has no adjusted Rand index.</strong> It was .00 and “Review: correspond only weakly”. It is <code>NA</code>, with status <code>"Insufficient data"</code>, because nothing can be compared.</li>
+<li>
+<strong>The map’s fit is no longer called Kruskal’s stress-1.</strong> The statistic compares the map’s distances with the dissimilarities; Kruskal’s (1964) stress-1 belongs to nonmetric scaling and is computed differently. It keeps its value and its name in the object, <code>stress</code>, is printed as “distortion”, and loses the labels “good”, “fair” and “poor”, which were his benchmarks for a different quantity. The <code>fit</code> table loses <code>fit_label</code>. The goodness of fit, <code>gof</code>, is described as the share of the sum of the absolute eigenvalues, which is what it is.</li>
+<li>
+<strong><code><a href="../reference/domain_validity.html">domain_validity()</a></code> with <code>targets</code>.</strong> A cell far below its intended share was <code>"Covered"</code>: it is now <code>"Under-represented"</code> when its share is below the expected share divided by <code>over_factor</code>. A cell that met a target of one item was <code>"Thinly covered"</code>: the minimum is now the smaller of <code>min_items</code> and the cell’s target (rounded up), and the printed criteria say so. A cell named in <code>targets</code> that holds no item was left out, and its target with it; it is now reported as <code>"Not covered"</code>. With <code>domain</code>, a target for a cell not in <code>domain</code> is an error. Without <code>targets</code> nothing changes.</li>
+<li>
+<strong><code><a href="../reference/similarity_from_sort.html">similarity_from_sort()</a></code> keeps the items in the order of the data.</strong> It sorted them. A <code>membership</code> vector built by position to match the old sorted order is now misaligned, so name it by item.</li>
+<li>
+<strong><code><a href="../reference/reproducibility_phi.html">reproducibility_phi()</a></code> and <code><a href="../reference/signal_detection.html">signal_detection()</a></code> report Fisher’s exact <em>p</em> when an expected count is below 5.</strong> They printed a chi-square <em>p</em> with R’s warning suppressed, on tables of six to twenty items: .121 where the exact <em>p</em> is .333. <code>p</code> is now the exact <em>p</em> in that case, <code>p_method</code> says which test it is, and <code>p_chisq</code> keeps the chi-square <em>p</em>.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="judges-domain-and-structure-other-fixes-0-10-1-9000">Judges, domain and structure: other fixes<a class="anchor" aria-label="anchor" href="#judges-domain-and-structure-other-fixes-0-10-1-9000"></a></h3>
+<ul><li>The cuts behind a status are arguments, printed beside it and labeled as contentvalidR conventions: <code>phi_cut</code> in <code><a href="../reference/gtheory_content.html">gtheory_content()</a></code> (.80), <code>ari_cut</code> in <code><a href="../reference/content_structure.html">content_structure()</a></code> (.60), and <code>differentiation_cut</code> and <code>fit_min_ratings</code> in <code><a href="../reference/judge_validity.html">judge_validity()</a></code>. No published standard sets them. A cut the analyst sets is printed as “set for this analysis”, and a value that rounds to its cut gets a third decimal (“.797, below the .80”).</li>
+<li>
+<code>gtheory_content(max_judges = 1)</code> no longer stops with “wrong sign in ‘by’ argument”.</li>
+<li>
+<code><a href="../reference/gtheory_content.html">gtheory_content()</a></code> states its coefficient against the criterion. It called any Phi below .80 “moderately” generalizable, .31 included. When no item variance is found, the text says where the variance is; it said both coefficients are 0 when one is undefined. A design too small to analyze prints its reason without an empty variance table.</li>
+<li>The projected panel sizes are described as estimates from one panel, in the printout, the help and the README, which said the question is “answered exactly”.</li>
+<li>A named <code>membership</code> whose names do not match the items is an error. It was read by position, so one typo reordered the blueprint.</li>
+<li>Equal similarities, repeated judge or item names, and a matrix with no rows stop with a message that says what is wrong.</li>
+<li>
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a content structure accepts <code>xlab</code>, <code>pch</code>, <code>xlim</code> and the like: they replace the method’s own. A <code>pch</code> or <code>col</code> with one value per cell is applied by cell and kept in the key. A map with one dimension keeps its symbols and legend.</li>
+<li>
+<code><a href="../reference/judge_validity.html">judge_validity()</a></code> prints the scale and the relevance cut, the number of missing ratings and how many judges Phi rests on (in <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> too), “not estimable” where it printed <code>NA%</code>, and one judge as “Insufficient data”, with nothing after the verdict. <code>results</code> gains <code>n_scored</code>, the decisions the facets model scored for each judge.</li>
+<li>
+<code><a href="../reference/domain_validity.html">domain_validity()</a></code>: <code>scale_summary</code> gains <code>n_under</code> and <code>settings</code> gains <code>over_possible</code>; a cell named twice in <code>targets</code> stops; item labels in <code>similarity</code> are trimmed like the assignments. <code><a href="../reference/content_structure.html">content_structure()</a></code> accepts a factor <code>membership</code>. <code><a href="../reference/reproducibility_phi.html">reproducibility_phi()</a></code> and <code><a href="../reference/signal_detection.html">signal_detection()</a></code> return <code>n</code> and <code>p_method</code> (<code>NA</code> when no test can be run), and no longer fail on tables of more than about 430 items.</li>
+<li>
+<code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> ignores the settings the data decide (<code>bias_correction</code>, <code>over_possible</code>), so two rounds analyzed alike stay comparable.</li>
+<li>Judge objects saved before 1.0 print and summarize again.</li>
+<li>
+<code><a href="../reference/content_report.html">content_report()</a></code> for judges shows logit severity, infit and outfit, and drops the count of flipped items.</li>
+<li>
+<code>chi-square(1, N = 60) = 41.71</code>: the two-by-two comparators print the sample size with the degrees of freedom, as APA asks.</li>
+<li>
+<code><a href="../reference/domain_validity.html">domain_validity()</a></code> says when no cell can be flagged as over-represented (two equal cells at the default factor), and its key no longer defines “stress”, which that printout does not show.</li>
+<li>
+<code><a href="../reference/qfactor_content.html">qfactor_content()</a></code> says its loadings are unrotated and how that differs from the published approach. The message about Kaiser’s rule is wrapped.</li>
+<li>
+<code><a href="../reference/similarity_from_sort.html">similarity_from_sort()</a></code> compares labels as trimmed text; <code><a href="../reference/domain_validity.html">domain_validity()</a></code> trims cell and item labels.</li>
+<li>The examples for <code><a href="../reference/judge_validity.html">judge_validity()</a></code> and <code><a href="../reference/content_structure.html">content_structure()</a></code> now show the logit columns and a two-dimensional map whose nine items are all visible.</li>
+<li>
+<code><a href="../reference/domain_validity.html">?domain_validity</a></code> says its structure analysis is adapted from Sireci and Geisinger (1992, 1995), as <code><a href="../reference/content_structure.html">?content_structure</a></code> does.</li>
+<li>A congruence plot without a target mapping stops before it opens a graphics device, so the failed call leaves no empty <code>Rplots.pdf</code>.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="other-changes-0-10-1-9000">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-10-1-9000"></a></h3>
 <ul><li>The reader in nomologR is now tested against handoffs from contentvalidR 0.6.0 through 0.10.1, and the README says so.</li>
 </ul></div>

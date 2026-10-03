@@ -4,38 +4,42 @@ who happened to serve on the panel, rather than reporting only aggregate
 indices that average heterogeneity away.
 The workflow reports four complementary kinds of evidence:
 Generalizability. How dependably the panel's ratings would reproduce
-with a different panel of the same size, via gtheory_content().
+with a different panel of the same size, via gtheory_content(), the
+analysis Crocker et al. (1988) applied to content-validity ratings.
 Severity. How harsh or lenient each judge is relative to the panel,
 both in raw rating units and, where estimable, on a logit scale from a
-many-facet Rasch model fitted as a logistic regression.
+many-facet Rasch model (Linacre, 1989) fitted as a logistic regression.
 Response style. How much each judge differentiates among items, and how
-much they concentrate on middle or extreme categories.
-Influence. Which items would change their CVI-based review status if any
-single judge were removed from the panel.
+much they concentrate on middle or extreme categories, two of the rater
+effects Engelhard (1994) describes.
+Fragile items. Which items would change their CVI-based review status
+(Lynn, 1986) if any single judge were removed from the panel.
 
 
 A judge flagged for Review is not a judge to discard. Disagreement may be
 substantive expertise rather than error, and removing inconvenient judges is
-not a validity procedure. The flag identifies where a conclusion rests on one
-person's ratings and therefore deserves a closer look."><meta property="og:description" content="Examines whether content-validity conclusions depend on the particular judges
+not a validity procedure. The flag marks a judge whose ratings deserve a
+closer look."><meta property="og:description" content="Examines whether content-validity conclusions depend on the particular judges
 who happened to serve on the panel, rather than reporting only aggregate
 indices that average heterogeneity away.
 The workflow reports four complementary kinds of evidence:
 Generalizability. How dependably the panel's ratings would reproduce
-with a different panel of the same size, via gtheory_content().
+with a different panel of the same size, via gtheory_content(), the
+analysis Crocker et al. (1988) applied to content-validity ratings.
 Severity. How harsh or lenient each judge is relative to the panel,
 both in raw rating units and, where estimable, on a logit scale from a
-many-facet Rasch model fitted as a logistic regression.
+many-facet Rasch model (Linacre, 1989) fitted as a logistic regression.
 Response style. How much each judge differentiates among items, and how
-much they concentrate on middle or extreme categories.
-Influence. Which items would change their CVI-based review status if any
-single judge were removed from the panel.
+much they concentrate on middle or extreme categories, two of the rater
+effects Engelhard (1994) describes.
+Fragile items. Which items would change their CVI-based review status
+(Lynn, 1986) if any single judge were removed from the panel.
 
 
 A judge flagged for Review is not a judge to discard. Disagreement may be
 substantive expertise rather than error, and removing inconvenient judges is
-not a validity procedure. The flag identifies where a conclusion rests on one
-person's ratings and therefore deserves a closer look."></head><body>
+not a validity procedure. The flag marks a judge whose ratings deserve a
+closer look."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -95,18 +99,20 @@ person's ratings and therefore deserves a closer look."></head><body>
 who happened to serve on the panel, rather than reporting only aggregate
 indices that average heterogeneity away.</p>
 <p>The workflow reports four complementary kinds of evidence:</p><ul><li><p><strong>Generalizability.</strong> How dependably the panel's ratings would reproduce
-with a different panel of the same size, via <code><a href="gtheory_content.html">gtheory_content()</a></code>.</p></li>
+with a different panel of the same size, via <code><a href="gtheory_content.html">gtheory_content()</a></code>, the
+analysis Crocker et al. (1988) applied to content-validity ratings.</p></li>
 <li><p><strong>Severity.</strong> How harsh or lenient each judge is relative to the panel,
 both in raw rating units and, where estimable, on a logit scale from a
-many-facet Rasch model fitted as a logistic regression.</p></li>
+many-facet Rasch model (Linacre, 1989) fitted as a logistic regression.</p></li>
 <li><p><strong>Response style.</strong> How much each judge differentiates among items, and how
-much they concentrate on middle or extreme categories.</p></li>
-<li><p><strong>Influence.</strong> Which items would change their CVI-based review status if any
-single judge were removed from the panel.</p></li>
+much they concentrate on middle or extreme categories, two of the rater
+effects Engelhard (1994) describes.</p></li>
+<li><p><strong>Fragile items.</strong> Which items would change their CVI-based review status
+(Lynn, 1986) if any single judge were removed from the panel.</p></li>
 </ul><p>A judge flagged for <code>Review</code> is not a judge to discard. Disagreement may be
 substantive expertise rather than error, and removing inconvenient judges is
-not a validity procedure. The flag identifies where a conclusion rests on one
-person's ratings and therefore deserves a closer look.</p>
+not a validity procedure. The flag marks a judge whose ratings deserve a
+closer look.</p>
     </div>
 
     <div class="section level2">
@@ -120,7 +126,9 @@ person's ratings and therefore deserves a closer look.</p>
 <span>  bias_correct <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  severity_cut <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  severity_raw_cut <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  fit_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span><span class="op">)</span></span>
+<span>  fit_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">1.5</span><span class="op">)</span>,</span>
+<span>  fit_min_ratings <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  differentiation_cut <span class="op">=</span> <span class="fl">0.5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -132,7 +140,8 @@ person's ratings and therefore deserves a closer look.</p>
 <dd><p>A judges-by-items numeric matrix or data frame of relevance
 ratings: one row per judge, one column per item. A column whose name
 looks like a rater ID (such as <code>expert</code> or <code>rater_id</code>) stops the
-function, so remove it, or rename an item that has such a name.</p></dd>
+function, so remove it, or rename an item that has such a name. Judge
+names (row names) and item names must be unique.</p></dd>
 
 
 <dt id="arg-lo-hi">lo, hi<a class="anchor" aria-label="anchor" href="#arg-lo-hi"></a></dt>
@@ -146,8 +155,10 @@ function, so remove it, or rename an item that has such a name.</p></dd>
 
 
 <dt id="arg-na-rm">na.rm<a class="anchor" aria-label="anchor" href="#arg-na-rm"></a></dt>
-<dd><p>Permit missing ratings. Generalizability analysis additionally
-requires complete cases and drops incomplete judges, reporting how many.</p></dd>
+<dd><p>Permit missing ratings. Each judge is then compared with the
+panel on the items that judge rated. Generalizability analysis
+additionally requires complete cases and drops incomplete judges; the
+printout says how many.</p></dd>
 
 
 <dt id="arg-bias-correct">bias_correct<a class="anchor" aria-label="anchor" href="#arg-bias-correct"></a></dt>
@@ -168,8 +179,22 @@ mean the judge rates lower than the panel.</p></dd>
 
 
 <dt id="arg-fit-range">fit_range<a class="anchor" aria-label="anchor" href="#arg-fit-range"></a></dt>
-<dd><p>Length-2 vector giving the acceptable infit/outfit mean
-square range. Values outside it flag erratic or overly predictable judges.</p></dd>
+<dd><p>Length-2 vector giving the infit/outfit mean-square range
+read as acceptable. The default, 0.5 to 1.5, is the range Linacre (2002)
+calls productive for measurement. A judge above it is flagged as erratic
+when <code>fit_min_ratings</code> is met. A judge below it is described, not
+flagged.</p></dd>
+
+
+<dt id="arg-fit-min-ratings">fit_min_ratings<a class="anchor" aria-label="anchor" href="#arg-fit-min-ratings"></a></dt>
+<dd><p>Fewest decisions the facets model must have scored
+for a judge before a fit flag is raised. Default 30.</p></dd>
+
+
+<dt id="arg-differentiation-cut">differentiation_cut<a class="anchor" aria-label="anchor" href="#arg-differentiation-cut"></a></dt>
+<dd><p>Scale use below which a judge is flagged for low
+differentiation. Scale use is the judge's standard deviation over the
+median judge's. Default 0.5.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -177,9 +202,51 @@ square range. Values outside it flag erratic or overly predictable judges.</p></
     <p>An object of class <code>contentvalid_judge</code> and <code>contentvalid_workflow</code>.
 Unlike the item-oriented workflows, <code>results</code> has <strong>one row per judge</strong>.
 <code>scale_summary</code> describes the panel, and <code>details</code> contains the
-generalizability analysis, the facets model, raw rater effects, and the
-item-level influence table.</p>
+generalizability analysis, the facets model, raw rater effects, and
+<code>influence_items</code>, the item-level table of fragile items: for each item
+its number of raters, the number who rated it relevant, its status with
+the full panel, whether that status changes when one judge is removed
+(<code>fragile</code>; <code>NA</code> when it could not be checked), and the judges whose
+removal changes it. In <code>results</code>, <code>n_items_flipped</code> and <code>flipped_items</code>
+give the same information by judge; they describe the items and are not
+a flag.</p>
     </div>
+    <div class="section level2">
+    <h2 id="what-is-published-and-what-is-this-package-s-choice">What is published and what is this package's choice<a class="anchor" aria-label="anchor" href="#what-is-published-and-what-is-this-package-s-choice"></a></h2>
+
+
+<p>The generalizability analysis, the many-facet Rasch model, the infit and
+outfit mean squares and the rater effects are published methods, cited
+above. These parts are contentvalidR conventions, with no published
+standard behind the numbers:</p><ul><li><p>The cuts that flag a judge: <code>severity_cut</code> (1 logit),
+<code>severity_raw_cut</code> (a quarter of the scale range) and
+<code>differentiation_cut</code> (0.5). The scale-use ratio itself is this
+package's index of the differentiation Engelhard (1994) describes.</p></li>
+<li><p>Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
+guide to how productive data are for measurement: below 0.5 is "less
+productive for measurement, but not degrading", 1.5 to 2.0 is
+"unproductive for construction of measurement, but not degrading", and
+only above 2.0 does misfit distort the measurement. The package flags
+above 1.5 and never below 0.5 because a high mean square means noise in
+a judge's decisions, which bears on whether to trust them, while a low
+one means decisions more predictable than the model expects. A mean square from
+a handful of yes-or-no decisions varies widely by chance even for a
+judge who fits the model exactly, so a judge above the range is flagged
+only when the model scored at least <code>fit_min_ratings</code> of their
+decisions. Thirty follows the guidance in the Facets documentation
+(Linacre, n.d.) that stable estimates need at least 30 observations per
+element. With the item counts usual in content validation the fit
+statistics are therefore shown and not flagged.</p></li>
+<li><p>The fragile-item check. It reapplies Lynn's (1986) criterion with one
+judge removed. An item one judge away from the other side of the
+criterion for its panel size (at the criterion, or one short of it,
+depending on the size) changes status when any judge on one side is
+removed, so the check describes the item and flags no judge. An item
+rated by three or fewer judges is not checked, because one fewer leaves
+no criterion.</p></li>
+<li><p>Applying the Wright-Douglas correction to judges (see the estimation
+note).</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="estimation-note">Estimation note<a class="anchor" aria-label="anchor" href="#estimation-note"></a></h2>
 
@@ -187,12 +254,25 @@ item-level influence table.</p>
 <p>Logit severity comes from a many-facet Rasch model fitted by joint maximum
 likelihood as a logistic regression, the generalized linear model
 formulation described by De Boeck and Wilson (2004). Joint maximum
-likelihood is known to over-disperse facet estimates in small designs. The
-standard Wright-Douglas <code>(L-1)/L</code> correction is applied by default and
-reported in <code>settings$bias_correction</code>, but it reduces rather than removes
-that bias. Where precise severity calibration matters, marginal maximum
-likelihood estimation is preferable, and the raw rating-unit severity in
-<code>severity_raw</code> is free of this particular issue.</p>
+likelihood stretches estimates. Wright and Douglas (1977) found that
+multiplying item difficulties by <code>(L - 1) / L</code>, with <code>L</code> the number of
+items in the test, approximately removes the bias (see also Wright, 1988).
+Here the judges stand where the test items do, and the rated items where
+the persons do, so the package multiplies the severities by
+<code>(J - 1) / J</code>, with <code>J</code> the number of judges who rated each item in the
+model (with missing ratings, the mean of that number over the items), and
+the standard errors by its square root, as the Facets documentation
+describes for the standard errors (Linacre, n.d.). That application to
+judges is this package's choice. The factor is reported in
+<code>settings$bias_correction</code>. Versions before 1.0 counted items instead,
+which left most of the bias in place on a small panel. The correction is
+approximate: Wright and Douglas recommended it for tests of more than 20
+items, and Wright (1988) notes that it is slightly inexact for very short
+tests, which is what a panel of a few judges amounts to. With two or
+three judges no single factor is trustworthy. Where precise severity
+calibration matters,
+marginal maximum likelihood estimation is preferable, and the raw
+rating-unit severity in <code>severity_raw</code> is free of this particular issue.</p>
 <p>Severity is estimated from the dichotomized relevance decision, consistent
 with how the package computes CVI. Judges and items showing no variation in
 that decision carry no information about relative severity and are excluded
@@ -209,7 +289,23 @@ A generalized linear and nonlinear approach</em>. Springer.
 <p>Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. <em>Journal of Educational
 Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.1994.tb00436.x" class="external-link">doi:10.1111/j.1745-3984.1994.tb00436.x</a></p>
+<p>Linacre, J. M. (n.d.). <em>Estimation considerations: JMLE estimation bias</em>
+[Facets help]. Winsteps.com. Retrieved October 2, 2026, from
+<a href="https://www.winsteps.com/facetman/estimationconsiderations.htm" class="external-link">https://www.winsteps.com/facetman/estimationconsiderations.htm</a></p>
 <p>Linacre, J. M. (1989). <em>Many-facet Rasch measurement</em>. MESA Press.</p>
+<p>Linacre, J. M. (2002). What do infit and outfit, mean-square and
+standardized mean? <em>Rasch Measurement Transactions, 16</em>(2), 878.
+<a href="https://www.rasch.org/rmt/rmt162f.htm" class="external-link">https://www.rasch.org/rmt/rmt162f.htm</a></p>
+<p>Lynn, M. R. (1986). Determination and quantification of content validity.
+<em>Nursing Research, 35</em>(6), 382–385.
+<a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link">doi:10.1097/00006199-198611000-00017</a></p>
+<p>Wright, B. D. (1988). The efficacy of unconditional maximum likelihood bias
+correction: Comment on Jansen, van den Wollenberg, and Wierda. <em>Applied
+Psychological Measurement, 12</em>(3), 315–318.
+<a href="https://doi.org/10.1177/014662168801200309" class="external-link">doi:10.1177/014662168801200309</a></p>
+<p>Wright, B. D., &amp; Douglas, G. A. (1977). Best procedures for sample-free
+item analysis. <em>Applied Psychological Measurement, 1</em>(2), 281–295.
+<a href="https://doi.org/10.1177/014662167700100216" class="external-link">doi:10.1177/014662167700100216</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -219,54 +315,68 @@ Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Eight judges rate ten items for relevance on a 1-4 scale. Judge8 rates</span></span></span>
+<span class="r-in"><span><span class="co"># lower than the rest, and Item4 is one judge short of the CVI criterion.</span></span></span>
+<span class="r-in"><span><span class="va">ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">judge_validity</span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR judge heterogeneity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: 8 | Items: 6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dependability (Phi): .94 | Judge share of variance: 15.6%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: 8 | Items: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Scale: 1 to 4 | Relevant: a rating of 3 or higher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dependability (Phi): .85 | Judge share of variance: 15.2%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 7 of 8 judges are consistent with the panel.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Flagged for review: Judge8 (Severe)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Judges</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   judge decision mean severity scale use flipped</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge1  Typical 3.17    -0.27      0.91       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge2  Typical 3.00    -0.10      1.18       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge3  Typical 3.00    -0.10      1.18       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge4  Typical 3.17    -0.27      0.91       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge5  Typical 3.17    -0.27      1.24       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge6  Typical 2.83     0.06      1.09       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge7  Typical 3.17    -0.27      0.91       0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge8   Severe 1.67     1.23      0.48       0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   judge decision mean severity logit infit outfit scale use</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge1  Typical 3.20    -0.30 -0.40  0.59   0.51      0.98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge2  Typical 3.00    -0.10  0.30  1.55   1.59      1.02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge3  Typical 2.90     0.00  0.30  0.65   0.59      0.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge4  Typical 2.90     0.00  0.30  1.39   1.54      1.24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge5  Typical 2.90     0.00  0.30  0.90   0.82      0.92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge6  Typical 3.00    -0.10 -0.40  1.36   1.18      1.17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge7  Typical 3.30    -0.40 -0.40  0.59   0.51      1.03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Judge8   Severe 2.00     0.90    NA    NA     NA      0.83</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mean: the judge's mean rating. severity: how far the judge rates below the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> panel, in rating points (negative is more lenient). flipped: items whose</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> review status changes if this judge is removed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> A judge is flagged when severity exceeds 0.75 rating points in either</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> direction, scale use is below 0.50, or any item's status depends on them.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> panel, in rating points (negative is more lenient); logit: the same from the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> facets model, against the judges it placed, which the flags use.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Logit severity not estimated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judge severity could not be estimated. After setting aside judges and items</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> with no variation in endorsement, fewer than two judges and two items</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> remained, usually because each judge endorsed either all of the remaining</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> items or none of them. That happens when the panel agrees almost completely,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> or when the only disagreement is a judge who rejects every item the others</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> accept. It describes the ratings rather than an estimation failure: a logit</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> scale needs judges whose endorsements vary.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Severity in rating points is reported instead and is used for flagging.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> A judge is flagged when severity exceeds 1 logit in either direction (0.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rating points for a judge the model could not place) or scale use is below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.50. These cuts are contentvalidR conventions, not published standards.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> No item's review status depends on any single judge.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Fit: a judge is flagged as erratic when infit or outfit is above 1.5, the top</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> of the range Linacre (2002) calls productive for measurement, and the model</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> scored at least 30 of their decisions. The flag and the minimum are</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR conventions.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Here the model scored at most 6 of any judge's decisions (items every judge</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> agreed on are set aside), so the fit statistics are shown and not flagged.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items whose status changes if one judge is removed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item relevant status changes without</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4   6 of 8 Review  Judge4, Judge8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> changes without: removing any one of these judges changes the item's status.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Such an item is one judge away from the other side of the CVI criterion for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> its panel size (Lynn, 1986): at the criterion, or one short of it. This</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> describes the item, not the judges named, and is a contentvalidR check, not a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> published index.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   severity -- Judge severity. How much harsher (positive) or more lenient</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       (negative) the judge is than the panel.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   infit, outfit -- Fit mean squares. How predictable the judge's decisions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       are: about 1 is expected, high is erratic, low is more predictable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       than expected.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   scale use -- Scale use. Spread of the judge's ratings compared with a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       typical judge (1 is typical; low means few distinctions).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Phi -- Dependability coefficient. How well the absolute ratings would</span>
@@ -280,30 +390,40 @@ Measurement, 31</em>(2), 93–112. <a href="https://doi.org/10.1111/j.1745-3984.
 <span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A 'Review' judge is not a judge to remove. Disagreement can be substantive</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> expertise; the flag marks where a conclusion rests on one person's ratings.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> expertise; the flag marks ratings worth a closer look.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Summary: judge and rater heterogeneity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: 8 | Items: 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Judges: 8 | Items: 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Consistent with panel: 7 | Flagged for review: 1 | Insufficient: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Generalizability</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Dependability (absolute decisions): .94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Generalizability (rank ordering):   .97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dependability (absolute decisions): .85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Generalizability (rank ordering):   .89</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Judges needed to reach each coefficient</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  target relative (G) absolute (Phi)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .70            1              2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .80            2              2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .90            3              5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .70            3              4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .80            5              6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     .90           10             13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Judges flagged for review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Judge8 (Severe)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     This judge is markedly more severe than the panel (1.23 rating points</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     This judge is markedly more severe than the panel (0.90 rating points</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     relative to the panel mean). Consistent severity does not invalidate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     their ratings, but it shifts absolute indices such as CVI, which is why</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     the dependability coefficient is penalized by judge differences.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Items whose status changes if one judge is removed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item relevant status changes without</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4   6 of 8 Review  Judge4, Judge8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> changes without: removing any one of these judges changes the item's status.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Such an item is one judge away from the other side of the CVI criterion for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> its panel size (Lynn, 1986): at the criterion, or one short of it. This</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> describes the item, not the judges named, and is a contentvalidR check, not a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> published index.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This analysis describes how much conclusions depend on these judges. It does</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> not establish that the items cover the intended content domain.</span>

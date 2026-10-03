@@ -221,8 +221,10 @@ signal_detection(pretest_supported, later_retained)
 #>   Retain            4            0
 #>   Not retained      0            2
 #> 
-#> accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00,
-#> chi-square(1) = 6.00, p = .014.
+#> accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00, Fisher's
+#> exact p = .067.
+#> An expected count is below 5, so the exact test is reported in place of the
+#> chi-square approximation (chi-square(1, N = 6) = 6.00, p = .014).
 
 replication_supported <- c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE)
 reproducibility_phi(pretest_supported, replication_supported)
@@ -233,14 +235,25 @@ reproducibility_phi(pretest_supported, replication_supported)
 #>   Retain            4            0
 #>   Not retained      1            1
 #> 
-#> phi = .63, chi-square(1) = 2.40, p = .121.
+#> phi = .63, Fisher's exact p = .333.
+#> An expected count is below 5, so the exact test is reported in place of the
+#> chi-square approximation (chi-square(1, N = 6) = 2.40, p = .121).
 ```
+
+With six items every expected count is below 5, so both helpers report
+Fisher’s exact *p* and show the chi-square approximation beside it for
+reference. With enough items for the approximation they report the
+chi-square test, with its degrees of freedom and *N*.
 
 ## Planning how many judges to recruit
 
-Each planning function answers the question for one design exactly, from
-the decision rule the analysis will apply, rather than from a rule of
-thumb.
+[`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+and
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+answer the question exactly for one design, from the decision rule the
+analysis will apply, rather than from a rule of thumb.
+[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+estimates it from a panel’s ratings.
 
 For an item sort,
 [`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
@@ -327,10 +340,10 @@ gtheory_content(judge_ratings)
 #> Observed design
 #>   Generalizability coefficient (relative, rank ordering): .97
 #>   Dependability coefficient (absolute, fixed standard):   .94
-#> Status: Supported
-#> With 8 judges, absolute decisions about these items would generalize
-#> dependably to another panel of the same size (Phi = .94). Judge differences
-#> account for 15.6% of total variance.
+#> Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
+#> With 8 judges, absolute decisions about these items would generalize to
+#> another panel of the same size at Phi = .94, at or above the .80 set for this
+#> analysis. Judge differences account for 15.6% of total variance.
 #> 
 #> Variance components
 #>    source df   MS estimate used % of total
@@ -346,6 +359,8 @@ gtheory_content(judge_ratings)
 #>     .70            1              2
 #>     .80            2              2
 #>     .90            3              5
+#> These panel sizes are estimates from one panel's variance components, with no
+#> interval: read them as planning figures.
 #> 
 #> A dependability coefficient describes generalization over judges only. It is
 #> not evidence that the items cover the intended content domain.
@@ -353,8 +368,13 @@ gtheory_content(judge_ratings)
 
 The dependability coefficient (Phi) concerns the absolute level of the
 ratings and is lowered by differences in judge severity, which is
-usually what a content-validity decision rests on. A target no realistic
-panel reaches shows as `NA`: the judges barely distinguished the items.
+usually what a content-validity decision rests on. The status beside it
+compares Phi with `phi_cut` (.80 by default), a convention of this
+package, not a published standard. A target no realistic panel reaches
+prints as “unreachable” (`NA` in the data): the judges barely
+distinguished the items. The projected panel sizes come from one panel’s
+variance components and carry no interval, so read them as planning
+figures.
 
 Across pretest rounds,
 [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)

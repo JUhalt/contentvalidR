@@ -26,7 +26,12 @@ plot(x, show_legend = TRUE, ...)
 - ...:
 
   Passed to
-  [`graphics::plot()`](https://rdrr.io/r/graphics/plot.default.html).
+  [`graphics::plot()`](https://rdrr.io/r/graphics/plot.default.html). An
+  argument given here, such as `xlab`, `xlim` or `main`, replaces the
+  one the method would set. A `pch` or `col` with one value per
+  blueprint cell (or cluster) is applied cell by cell and shown in the
+  key; a `pch` of any other length leaves the key out, because it could
+  no longer tell the cells apart.
 
 ## Value
 
@@ -35,11 +40,18 @@ plot(x, show_legend = TRUE, ...)
 ## Examples
 
 ``` r
-items <- paste0("I", 1:6)
-blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-sim <- matrix(1, 6, 6, dimnames = list(items, items))
-sim[1:3, 1:3] <- 5
-sim[4:6, 4:6] <- 5
-diag(sim) <- 5
+items <- paste0("I", 1:9)
+blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+sim <- matrix(c(
+  5, 4, 3, 2, 2, 1, 1, 2, 1,
+  4, 5, 4, 3, 1, 2, 2, 1, 1,
+  3, 4, 5, 1, 2, 2, 1, 1, 3,
+  2, 3, 1, 5, 4, 3, 2, 2, 1,
+  2, 1, 2, 4, 5, 4, 1, 3, 2,
+  1, 2, 2, 3, 4, 5, 2, 1, 2,
+  1, 2, 1, 2, 1, 2, 5, 3, 4,
+  2, 1, 1, 2, 3, 1, 3, 5, 4,
+  1, 1, 3, 1, 2, 2, 4, 4, 5
+), 9, 9, dimnames = list(items, items))
 plot(content_structure(sim, membership = blueprint))
 ```

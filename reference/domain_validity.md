@@ -11,10 +11,11 @@ no items, or too few, are content gaps that no amount of item-level
 relevance evidence will reveal, because an item can only be rated if it
 exists.
 
-Structure is assessed with the multidimensional scaling and cluster
-analysis procedure of Sireci and Geisinger (1992), and is run when
-expert similarity data is supplied. See
-[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md).
+Structure is assessed with a multidimensional scaling and cluster
+analysis adapted from Sireci and Geisinger (1992, 1995), run when expert
+similarity data is supplied. See
+[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+for what differs from their procedure.
 
 ## Usage
 
@@ -58,23 +59,36 @@ domain_validity(
 
   Optional character vector of every cell the blueprint intends to
   cover. Supplying it is what makes **empty** cells detectable; without
-  it only the cells that already contain items can be reported.
+  it only the cells that already contain items, or that `targets` names,
+  can be reported.
 
 - min_items:
 
   Fewest items a cell may hold before it is flagged as thinly covered.
+  With `targets`, a cell is compared with the smaller of `min_items` and
+  its own target, so a cell the blueprint gives one item is not thin
+  with one.
 
 - over_factor:
 
   A cell holding more than this multiple of its expected share is
-  flagged as over-represented. This is an attention-drawing heuristic,
-  not a standard.
+  flagged as over-represented. With `targets`, a cell holding less than
+  its expected share divided by `over_factor` is flagged as
+  under-represented. This is an attention-drawing heuristic, not a
+  standard. With few cells no share can exceed the multiple (two equal
+  cells at the default of 2), and the printout says so.
 
 - targets:
 
   Optional named numeric vector giving the intended number of items per
   cell. When supplied, expected shares come from it rather than from an
-  assumption of equal cells.
+  assumption of equal cells, and cells far below their intended share
+  are flagged. Without it under-representation is not judged, because an
+  equal share is an assumption, not a blueprint. A cell named in
+  `targets` is part of the blueprint, so it is reported (as not covered)
+  even when no item is assigned to it. With `domain`, every cell
+  `targets` names must be in `domain`. A fractional target is rounded up
+  where it sets the thin-coverage floor.
 
 - similarity:
 
@@ -101,11 +115,13 @@ cells are equally important. Coverage is evidence about the item set's
 reach, and is properly read alongside item-level relevance evidence and
 expert judgment about the blueprint itself.
 
-## References
+The coverage tally itself (`min_items`, `over_factor`, `targets`) is
+this package's blueprint check, not a published index: it counts items
+per cell and draws attention to cells that are empty, thin, or out of
+proportion. Sireci (1998) discusses why domain representation belongs in
+a content-validity argument alongside item relevance.
 
-Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-specialists in the assessment of criterion-referenced test item
-validity. *Dutch Journal of Educational Research, 2*, 49–60.
+## References
 
 Sireci, S. G. (1998). The construct of content validity. *Social
 Indicators Research, 45*(1–3), 83–117.
@@ -115,6 +131,11 @@ Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. *Applied Psychological
 Measurement, 16*(1), 17–31.
 [doi:10.1177/014662169201600102](https://doi.org/10.1177/014662169201600102)
+
+Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts
+to assess content representation: An MDS analysis. *Applied
+Psychological Measurement, 19*(3), 241–255.
+[doi:10.1177/014662169501900303](https://doi.org/10.1177/014662169501900303)
 
 ## See also
 
@@ -139,7 +160,8 @@ domain_validity(
 #> -------------------------------------
 #> Items: 7 | Blueprint cells: 4
 #> Criteria: at least 2 items per cell, and no cell above 2 times its expected
-#> share (an equal share when no `targets` are given).
+#> share (an equal share when no `targets` are given). These criteria are
+#> contentvalidR conventions, not published standards.
 #> 
 #> 1 of 4 cells meet the coverage criteria.
 #> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly

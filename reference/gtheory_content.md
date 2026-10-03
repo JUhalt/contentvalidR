@@ -5,10 +5,10 @@ variance components, then reports how dependably the panel's ratings
 generalize over judges.
 
 This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
-measurement and judges are the facet of generalization, so the question
-the analysis answers is: *if a different panel of judges of the same
-size had rated these items, how similar would the conclusions be?*
+ratings in Crocker et al. (1988). Items are the objects of measurement
+and judges are the facet of generalization, so the question the analysis
+answers is: *if a different panel of judges of the same size had rated
+these items, how similar would the conclusions be?*
 
 Two coefficients are reported because they answer different questions:
 
@@ -36,7 +36,8 @@ gtheory_content(
   ratings,
   na.rm = FALSE,
   targets = c(0.7, 0.8, 0.9),
-  max_judges = 30
+  max_judges = 30,
+  phi_cut = 0.8
 )
 ```
 
@@ -63,6 +64,13 @@ gtheory_content(
 - max_judges:
 
   Largest panel size shown in the decision-study projection.
+
+- phi_cut:
+
+  Dependability coefficient at or above which the status is
+  `"Supported"`. Default .80. Neither Brennan (2001) nor Crocker et
+  al. (1988) sets a required value, so this is a contentvalidR
+  convention, printed beside the status so a reader can apply another.
 
 ## Value
 
@@ -92,6 +100,21 @@ An object of class `contentvalid_gtheory`, a list containing:
 - settings, design:
 
   Analysis settings and realized design metadata.
+
+- status:
+
+  `"Supported"` when the dependability coefficient is at or above
+  `phi_cut` and `"Review"` when it is below; `"Descriptive only"` when
+  the items show no variance to generalize; and `"Insufficient data"`
+  with fewer than two judges or two items.
+
+- interpretation:
+
+  The status in a sentence or two.
+
+The projection and `judges_needed` are estimates from the variance
+components of one panel, with no interval. From a small panel they are
+rough, so read them as planning figures, not as exact answers.
 
 ## Negative variance estimates
 
@@ -131,10 +154,10 @@ gtheory_content(ratings)
 #> Observed design
 #>   Generalizability coefficient (relative, rank ordering): .97
 #>   Dependability coefficient (absolute, fixed standard):   .96
-#> Status: Supported
-#> With 8 judges, absolute decisions about these items would generalize
-#> dependably to another panel of the same size (Phi = .96). Judge differences
-#> account for 5.8% of total variance.
+#> Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
+#> With 8 judges, absolute decisions about these items would generalize to
+#> another panel of the same size at Phi = .96, at or above the .80 set for this
+#> analysis. Judge differences account for 5.8% of total variance.
 #> 
 #> Variance components
 #>    source df   MS estimate used % of total
@@ -150,6 +173,8 @@ gtheory_content(ratings)
 #>     .70            1              1
 #>     .80            1              2
 #>     .90            2              3
+#> These panel sizes are estimates from one panel's variance components, with no
+#> interval: read them as planning figures.
 #> 
 #> A dependability coefficient describes generalization over judges only. It is
 #> not evidence that the items cover the intended content domain.

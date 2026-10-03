@@ -157,14 +157,17 @@ contentvalid_glossary()
 #> 
 #> judge-heterogeneity
 #>   severity -- Judge severity. How harsh or lenient a judge is compared with
-#>       the rest of the panel. Positive means the judge rates lower than the
-#>       panel. Reported in logits from the facets model when it can be
-#>       estimated, otherwise in rating points. (0 means typical of this
-#>       panel)
+#>       the panel, on the items that judge rated. Positive means the judge
+#>       rates lower than the panel. Reported in logits from the facets model
+#>       when it can be estimated, otherwise in rating points. (0 means
+#>       typical of this panel)
 #>   infit/outfit -- Fit mean squares. Whether a judge's pattern of decisions
 #>       is as predictable as the model expects. Around 1 is expected; high
 #>       values mean erratic ratings, low values mean ratings more predictable
-#>       than expected. (around 1.0 is expected)
+#>       than expected. Linacre (2002) calls 0.5 to 1.5 productive for
+#>       measurement. Only a value above that range is flagged, and only when
+#>       it rests on enough decisions. (around 1.0 is expected; 0.5 to 1.5 is
+#>       productive for measurement)
 #>   differentiation -- Scale use. How widely a judge spread their ratings
 #>       compared with a typical judge on this panel. Values well below 1 mean
 #>       the judge distinguished less among items. (1.0 is typical of this
@@ -183,13 +186,12 @@ contentvalid_glossary()
 #>     Typical -- consistent with the panel.
 #>     Severe -- rates markedly lower than the panel.
 #>     Lenient -- rates markedly higher than the panel.
-#>     Erratic -- decisions noisier than the model expects.
-#>     Too predictable -- decisions more predictable than the model expects.
+#>     Erratic -- decisions noisier than the model expects (infit or outfit
+#>         above the range).
 #>     Low differentiation -- draws few distinctions among items compared with
 #>         other judges.
-#>     Influential -- at least one item's review status changes without this
-#>         judge.
-#>     Insufficient data -- fewer than two usable ratings.
+#>     Insufficient data -- fewer than two usable ratings, or no other judge
+#>         to compare with.
 #> 
 #> domain-coverage
 #>   share -- Share of items. Percentage of all items that fall in this
@@ -198,14 +200,18 @@ contentvalid_glossary()
 #>       perceive match the blueprint's cells, corrected for the agreement
 #>       expected by chance. (0 is chance agreement, 1 is exact; can be
 #>       slightly negative)
-#>   stress -- Kruskal stress-1. How much distortion was introduced by
-#>       squeezing the similarity data into the chosen number of dimensions.
-#>       Lower is a closer fit. (0 is perfect; below .10 is conventionally
-#>       called fair or better)
+#>   stress -- Map distortion. How far the distances on the content map depart
+#>       from the experts' dissimilarities: the root of their squared
+#>       differences over the squared dissimilarities. Lower is a closer map.
+#>       It is not Kruskal's (1964) stress-1, which belongs to nonmetric
+#>       scaling, so his verbal benchmarks do not apply to it. (0 is an exact
+#>       map; no published benchmark applies)
 #>   decisions:
 #>     Covered -- met the coverage criteria.
 #>     Thinly covered -- fewer items than the minimum set.
 #>     Over-represented -- a larger share of the items than expected.
+#>     Under-represented -- a much smaller share of the items than its target
+#>         calls for.
 #>     Not covered -- the blueprint includes it, but no item addresses it.
 #> 
 #> delphi

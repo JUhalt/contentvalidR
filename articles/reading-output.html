@@ -456,38 +456,45 @@ conclusions depend on <em>these particular judges</em>?</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">judge_ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fit_judge</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/judge_validity.html">judge_validity</a></span><span class="op">(</span><span class="va">judge_ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">fit_judge</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"judge"</span>, <span class="st">"mean_rating"</span>, <span class="st">"severity_raw"</span>,</span>
-<span>                      <span class="st">"differentiation"</span>, <span class="st">"n_items_flipped"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    judge mean_rating severity_raw differentiation n_items_flipped</span></span>
-<span><span class="co">#&gt; 1 Judge1    3.166667   -0.2708333       0.9136465               0</span></span>
-<span><span class="co">#&gt; 2 Judge2    3.000000   -0.1041667       1.1754383               0</span></span>
-<span><span class="co">#&gt; 3 Judge3    3.000000   -0.1041667       1.1754383               0</span></span>
-<span><span class="co">#&gt; 4 Judge4    3.166667   -0.2708333       0.9136465               0</span></span>
-<span><span class="co">#&gt; 5 Judge5    3.166667   -0.2708333       1.2351428               0</span></span>
-<span><span class="co">#&gt; 6 Judge6    2.833333    0.0625000       1.0863535               0</span></span>
-<span><span class="co">#&gt; 7 Judge7    3.166667   -0.2708333       0.9136465               0</span></span>
-<span><span class="co">#&gt; 8 Judge8    1.666667    1.2291667       0.4798707               0</span></span>
-<span><span class="co">#&gt;   recommendation</span></span>
-<span><span class="co">#&gt; 1        Typical</span></span>
-<span><span class="co">#&gt; 2        Typical</span></span>
-<span><span class="co">#&gt; 3        Typical</span></span>
-<span><span class="co">#&gt; 4        Typical</span></span>
-<span><span class="co">#&gt; 5        Typical</span></span>
-<span><span class="co">#&gt; 6        Typical</span></span>
-<span><span class="co">#&gt; 7        Typical</span></span>
-<span><span class="co">#&gt; 8         Severe</span></span></code></pre></div>
+<span>                      <span class="st">"differentiation"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    judge mean_rating severity_raw differentiation recommendation</span></span>
+<span><span class="co">#&gt; 1 Judge1    3.166667   -0.2708333       0.9136465        Typical</span></span>
+<span><span class="co">#&gt; 2 Judge2    3.000000   -0.1041667       1.1754383        Typical</span></span>
+<span><span class="co">#&gt; 3 Judge3    3.000000   -0.1041667       1.1754383        Typical</span></span>
+<span><span class="co">#&gt; 4 Judge4    3.166667   -0.2708333       0.9136465        Typical</span></span>
+<span><span class="co">#&gt; 5 Judge5    3.166667   -0.2708333       1.2351428        Typical</span></span>
+<span><span class="co">#&gt; 6 Judge6    2.833333    0.0625000       1.0863535        Typical</span></span>
+<span><span class="co">#&gt; 7 Judge7    3.166667   -0.2708333       0.9136465        Typical</span></span>
+<span><span class="co">#&gt; 8 Judge8    1.666667    1.2291667       0.4798707         Severe</span></span></code></pre></div>
 <p><code>severity_raw</code> is signed so that <strong>positive means
 harsher</strong>: the judge rates lower than the panel.
 <code>differentiation</code> near 1 means the judge used the scale about
-as widely as everyone else. <code>n_items_flipped</code> is the
-influence diagnostic: how many items would change review status if this
-judge were removed.</p>
+as widely as everyone else. The cuts that turn these into a flag are
+conventions of this package; <code>print(fit_judge)</code> states them,
+and each one is an argument, so you can apply your own.</p>
 <p>A judge flagged here is not a judge to delete. A dissenting expert
 may be the one reading the construct definition correctly. The flag
-tells you a conclusion rests on one person’s ratings, which is worth
-knowing before you write it up.</p>
+marks ratings worth a second look before you write the study up.</p>
+<p>Whether a conclusion rests on a single judge is reported for the
+items, not the judges:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit_judge</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">influence_items</span></span>
+<span><span class="co">#&gt;        item n_raters n_relevant status_full_panel fragile changes_without</span></span>
+<span><span class="co">#&gt; Item1 Item1        8          7           Support   FALSE            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; Item2 Item2        8          7           Support   FALSE            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; Item3 Item3        8          7           Support   FALSE            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; Item4 Item4        8          7           Support   FALSE            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; Item5 Item5        8          0            Review   FALSE            &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; Item6 Item6        8          0            Review   FALSE            &lt;NA&gt;</span></span></code></pre></div>
+<p><code>fragile</code> is <code>TRUE</code> for an item whose review
+status would change if one judge were removed, which happens when the
+item is one judge away from the other side of the CVI criterion for its
+panel size: at the criterion, or one short of it. Every judge on one
+side of such an item changes it alike, so it is a fact about the item
+and no judge is flagged for it.</p>
 <p>The panel-level dependability coefficient answers a planning
 question:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit_judge</span><span class="op">)</span><span class="op">$</span><span class="va">gtheory</span><span class="op">$</span><span class="va">judges_needed</span></span>
 <span><span class="co">#&gt;   target n_judges_relative n_judges_absolute</span></span>
 <span><span class="co">#&gt; 1    0.7                 1                 2</span></span>
@@ -495,13 +502,14 @@ question:</p>
 <span><span class="co">#&gt; 3    0.9                 3                 5</span></span></code></pre></div>
 <p>That table reports how many judges a target coefficient would need.
 Where it returns <code>NA</code>, no realistic panel reaches that
-target, which usually means the judges barely distinguished the
-items.</p>
+target, which usually means the judges barely distinguished the items.
+The numbers are estimates from one panel’s ratings, with no interval, so
+read them as planning figures.</p>
 </div>
 <div class="section level2">
 <h2 id="reading-domain-coverage">Reading domain coverage<a class="anchor" aria-label="anchor" href="#reading-domain-coverage"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">assignments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">7</span><span class="op">)</span>,</span>
 <span>  construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>, <span class="st">"Autonomy"</span>,</span>
@@ -551,8 +559,9 @@ Relevance and coverage are different questions. Only
 give it the full blueprint.</p>
 <p><strong>“More judges always helps.”</strong> More judges narrows
 intervals, but it can also change a criterion: the I-CVI guideline
-shifts at six experts. Check <code>judges_needed</code> rather than
-assuming.</p>
+shifts at six experts. Check <code><a href="../reference/expert_power.html">expert_power()</a></code> for that step
+rather than assuming. (<code>judges_needed</code>, above, answers a
+different question: how many judges a dependability target needs.)</p>
 </div>
 <div class="section level2">
 <h2 id="writing-it-up">Writing it up<a class="anchor" aria-label="anchor" href="#writing-it-up"></a>
@@ -578,7 +587,7 @@ blueprint.</p>
 <p><code>settings</code> and <code>design</code> hold everything a
 reader needs to reproduce the decision rules, so report them rather than
 only the coefficients:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_sort</span><span class="op">$</span><span class="va">settings</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"p0"</span>, <span class="st">"alpha"</span>, <span class="st">"judge_type"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt; $p0</span></span>
 <span><span class="co">#&gt; [1] 0.5</span></span>
@@ -594,10 +603,10 @@ only the coefficients:</p>
 </h2>
 <p>Printed output includes a key defining each column. Once the terms
 are familiar:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>The definitions remain available at any time:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/contentvalid_glossary.html">contentvalid_glossary</a></span><span class="op">(</span><span class="st">"expert-panel"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">

@@ -300,8 +300,10 @@ required parts of the flagship workflows.</p>
 <span><span class="co">#&gt;   Retain            4            0</span></span>
 <span><span class="co">#&gt;   Not retained      0            2</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00,</span></span>
-<span><span class="co">#&gt; chi-square(1) = 6.00, p = .014.</span></span>
+<span><span class="co">#&gt; accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00, Fisher's</span></span>
+<span><span class="co">#&gt; exact p = .067.</span></span>
+<span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
+<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 6) = 6.00, p = .014).</span></span>
 <span></span>
 <span><span class="va">replication_supported</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">replication_supported</span><span class="op">)</span></span>
@@ -312,14 +314,22 @@ required parts of the flagship workflows.</p>
 <span><span class="co">#&gt;   Retain            4            0</span></span>
 <span><span class="co">#&gt;   Not retained      1            1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; phi = .63, chi-square(1) = 2.40, p = .121.</span></span></code></pre></div>
+<span><span class="co">#&gt; phi = .63, Fisher's exact p = .333.</span></span>
+<span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
+<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 6) = 2.40, p = .121).</span></span></code></pre></div>
+<p>With six items every expected count is below 5, so both helpers
+report Fisher’s exact <em>p</em> and show the chi-square approximation
+beside it for reference. With enough items for the approximation they
+report the chi-square test, with its degrees of freedom and
+<em>N</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="planning-how-many-judges-to-recruit">Planning how many judges to recruit<a class="anchor" aria-label="anchor" href="#planning-how-many-judges-to-recruit"></a>
 </h2>
-<p>Each planning function answers the question for one design exactly,
-from the decision rule the analysis will apply, rather than from a rule
-of thumb.</p>
+<p><code><a href="../reference/sort_power.html">sort_power()</a></code> and <code><a href="../reference/expert_power.html">expert_power()</a></code> answer the
+question exactly for one design, from the decision rule the analysis
+will apply, rather than from a rule of thumb.
+<code><a href="../reference/gtheory_content.html">gtheory_content()</a></code> estimates it from a panel’s ratings.</p>
 <p>For an item sort, <code><a href="../reference/sort_power.html">sort_power()</a></code> gives the probability
 that an item reaches the exact retention count, for each panel size and
 each rate at which you expect judges to choose the target:</p>
@@ -392,10 +402,10 @@ design would need to reach a given dependability:</p>
 <span><span class="co">#&gt; Observed design</span></span>
 <span><span class="co">#&gt;   Generalizability coefficient (relative, rank ordering): .97</span></span>
 <span><span class="co">#&gt;   Dependability coefficient (absolute, fixed standard):   .94</span></span>
-<span><span class="co">#&gt; Status: Supported</span></span>
-<span><span class="co">#&gt; With 8 judges, absolute decisions about these items would generalize</span></span>
-<span><span class="co">#&gt; dependably to another panel of the same size (Phi = .94). Judge differences</span></span>
-<span><span class="co">#&gt; account for 15.6% of total variance.</span></span>
+<span><span class="co">#&gt; Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span></span>
+<span><span class="co">#&gt; With 8 judges, absolute decisions about these items would generalize to</span></span>
+<span><span class="co">#&gt; another panel of the same size at Phi = .94, at or above the .80 set for this</span></span>
+<span><span class="co">#&gt; analysis. Judge differences account for 15.6% of total variance.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variance components</span></span>
 <span><span class="co">#&gt;    source df   MS estimate used % of total</span></span>
@@ -411,14 +421,20 @@ design would need to reach a given dependability:</p>
 <span><span class="co">#&gt;     .70            1              2</span></span>
 <span><span class="co">#&gt;     .80            2              2</span></span>
 <span><span class="co">#&gt;     .90            3              5</span></span>
+<span><span class="co">#&gt; These panel sizes are estimates from one panel's variance components, with no</span></span>
+<span><span class="co">#&gt; interval: read them as planning figures.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A dependability coefficient describes generalization over judges only. It is</span></span>
 <span><span class="co">#&gt; not evidence that the items cover the intended content domain.</span></span></code></pre></div>
 <p>The dependability coefficient (Phi) concerns the absolute level of
 the ratings and is lowered by differences in judge severity, which is
-usually what a content-validity decision rests on. A target no realistic
-panel reaches shows as <code>NA</code>: the judges barely distinguished
-the items.</p>
+usually what a content-validity decision rests on. The status beside it
+compares Phi with <code>phi_cut</code> (.80 by default), a convention of
+this package, not a published standard. A target no realistic panel
+reaches prints as “unreachable” (<code>NA</code> in the data): the
+judges barely distinguished the items. The projected panel sizes come
+from one panel’s variance components and carry no interval, so read them
+as planning figures.</p>
 <p>Across pretest rounds, <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> sets each item’s
 status side by side and checks whether the analysis settings changed
 between rounds, so a relaxed criterion cannot read as an improved
