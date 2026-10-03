@@ -1,12 +1,27 @@
 # The full distribution of a panel's ratings, as diverging stacked bars
 # (Heiberger & Robbins, 2014), shared by plot(<expert fit>, type =
-# "distribution") and plot(<Delphi fit>, which = "distribution").
+# "distribution") and plot(<Delphi fit>, type = "distribution").
 #
 # Each bar splits at the cut the decision rule uses: ratings below it extend
 # left of zero and ratings at or above it extend right, so the right-hand
 # length is exactly the share the rule counts (the I-CVI, or the share
 # agreeing). The number printed beside the bar is that share, and the symbol
 # is the decision the fit made, taken from the fit rather than recomputed.
+
+# The share of ratings in each scale category. A rating between two scale
+# points is drawn with the point below it, and never across the cut from where
+# the rule counts it, so the categories at or above the cut sum to exactly
+# mean(x >= cut), the share the fit used.
+.rating_shares <- function(x, cats, cut) {
+  k <- length(cats)
+  bin <- pmin(pmax(as.integer(floor(x - cats[1] + 1e-9)) + 1L, 1L), k)
+  crossed <- x >= cut & cats[bin] < cut
+  bin[crossed] <- min(which(cats >= cut))
+  # And the mirror: a rating a hair under the cut stays on the lower side.
+  under <- x < cut & cats[bin] >= cut
+  bin[under] <- max(which(cats < cut))
+  tabulate(bin, k) / length(x)
+}
 
 # `rounds`: a named list of rating matrices (raters in rows, items in
 # columns), one per round, drawn as adjacent bars for each item.
@@ -65,7 +80,7 @@
                        col = "grey40", font = 3)
         next
       }
-      p <- tabulate(as.integer(round(x - lo)) + 1L, k) / length(x)
+      p <- .rating_shares(x, cats, cut)
       # Nearest the cut first, so the extremes sit at the outer ends.
       left <- 0
       for (j in rev(which(cats < cut))) {

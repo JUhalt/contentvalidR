@@ -272,7 +272,7 @@ delphi_fit <- function(..., threshold = 0.75) {
                   lo = 1, hi = 4, consensus_threshold = threshold, ...)
 }
 
-test_that("a Delphi fit hands off, dating each item by the round it settled in", {
+test_that("a Delphi fit hands off, dating each item by its last rated round", {
   fit <- delphi_fit(B = 0)
   h <- content_handoff(fit, keep = c("Supported", "Review"))
 
@@ -288,7 +288,12 @@ test_that("a Delphi fit hands off, dating each item by the round it settled in",
   expect_identical(ev$n_judges[ev$item == "S1"], 6L)
   expect_identical(ev$n_judges[ev$item == "S2"], 5L)
   expect_match(ev$rule[ev$item == "S1"], "at least 75% of experts")
-  expect_match(ev$rule[ev$item == "S1"], "settled in round 2 of 3")
+  expect_match(ev$rule[ev$item == "S1"], "last rated in round 2 of 3$")
+  # The rule reports the threshold as supplied; when it was fixed is for the
+  # analyst to say.
+  expect_match(ev$rule[ev$item == "S1"], "threshold as supplied", fixed = TRUE)
+  expect_false(any(grepl("with the threshold fixed before", ev$rule,
+                         fixed = TRUE)))
 
   # Statistics carry the same per-item round.
   st <- h$item_statistics
@@ -505,7 +510,7 @@ test_that("a Delphi study with no consensus threshold hands off descriptively", 
   h <- content_handoff(fit, keep = "Descriptive only")
 
   expect_setequal(h$items, c("S1", "S2", "S3"))
-  expect_match(h$item_evidence$rule[1], "no consensus threshold was set")
+  expect_match(h$item_evidence$rule[1], "no consensus threshold was supplied")
   icvi <- h$item_statistics[h$item_statistics$statistic == "I-CVI", ]
   expect_true(all(is.na(icvi$criterion)))
 })

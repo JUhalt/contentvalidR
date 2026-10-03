@@ -17,7 +17,8 @@
     contentvalid_domain = c("cell", "n_items", "share"),
     contentvalid_delphi = c("item", "last_round", "n_experts", "prop_agree",
                             "prop_unchanged", "stability", "stability_low",
-                            "stability_high", "stability_p", "stable"),
+                            "stability_high", "stability_df", "stability_p",
+                            "stable"),
     character(0)
   )
   intersect(cols, names(x$results))
@@ -151,13 +152,30 @@ as.data.frame.contentvalid_workflow <- function(x,
       s("cell", "text", "cell"), s("items", "int", "n_items"),
       s("share", "percent", "share"), s("decision", "text", "recommendation")
     ),
-    contentvalid_delphi = list(
-      s("item", "text", "item"), s("last round", "int", "last_round"),
-      s("experts", "int", "n_experts"), s("agree", "prop", "prop_agree"),
-      s("unchanged", "prop", "prop_unchanged"), s("stability", "prop", "stability"),
-      s(ci, "ci", "stability_low", "stability_high"), s("p", "p", "stability_p"),
-      s("decision", "text", "recommendation")
-    ),
+    contentvalid_delphi = {
+      # The column is headed by the statistic it holds. A chi-square can
+      # exceed 1, so it keeps its leading zero and is reported with its df.
+      method <- x$settings$stability
+      chisq <- method %in% c("chisq_individual", "chisq_group")
+      heading <- if (is.null(method)) "stability" else switch(
+        method, kappa = "kappa", lambda = "lambda", percent_change = "net change",
+        "chi-square"
+      )
+      c(
+        list(
+          s("item", "text", "item"), s("last round", "text", "last_round"),
+          s("experts", "int", "n_experts"), s("agree", "prop", "prop_agree"),
+          s("unchanged", "prop", "prop_unchanged")
+        ),
+        if (chisq) list(s("df", "int", "stability_df")),
+        list(
+          s(heading, if (chisq) "num" else "prop", "stability"),
+          s(ci, "ci", "stability_low", "stability_high"),
+          s("p", "p", "stability_p"),
+          s("decision", "text", "recommendation")
+        )
+      )
+    },
     list()
   )
 }

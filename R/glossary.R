@@ -237,7 +237,7 @@
       definition = paste(
         "Share of the experts rating an item in a round whose rating was at",
         "or above the agreement cut. On a relevance scale this is the I-CVI.",
-        "Consensus means it reached the threshold set before the study."
+        "Consensus means it reached the consensus threshold supplied."
       ),
       range = "0 to 1; higher is broader agreement",
       stringsAsFactors = FALSE
@@ -259,9 +259,9 @@
       definition = paste(
         "Agreement between each expert's ratings in two consecutive rounds,",
         "corrected for chance, with larger changes counting more. Read it as",
-        "a trend across rounds. It falls when ratings bunch in one category,",
-        "so a converged panel can show a low kappa even when almost no one",
-        "changed their rating."
+        "a trend across rounds. It can be low when ratings bunch in one",
+        "category, so a converged panel can show a low kappa even when almost",
+        "no one changed their rating."
       ),
       range = "-1 to 1; 1 is perfect stability, 0 is no better than chance",
       stringsAsFactors = FALSE
@@ -306,7 +306,7 @@
       definition = paste(
         "How far the panel's rating distribution moved between two rounds, as",
         "a share of the experts compared. Change below 15% is read as stable,",
-        "a cut-off its authors set from one study without statistical theory."
+        "a cutoff its authors set from one study without statistical theory."
       ),
       range = "0 to 1; stable below .15",
       stringsAsFactors = FALSE
@@ -341,9 +341,9 @@
     share = "Percentage of all items in this cell.",
     adjusted_rand = "Match between the experts' groupings and the blueprint, corrected for chance (0 is chance, 1 is exact).",
     stress = "Distortion from fitting the similarities into few dimensions (0 is perfect; below .10 is fair or better).",
-    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the preset threshold.",
+    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the consensus threshold.",
     prop_unchanged = "Share of experts giving the same rating in two consecutive rounds (1 means nobody changed).",
-    kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cut-off.",
+    kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cutoff.",
     lambda = "How much an expert's earlier rating predicts the later one (0 to 1): predictability, not agreement.",
     chi_sq_individual = "Tests whether later ratings depend on earlier ones; needs expected counts of 5 or more.",
     chi_sq_group = "Tests whether the two rounds' distributions differ; small panels often look stable for lack of power.",
