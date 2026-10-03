@@ -108,7 +108,9 @@ standard behind the numbers:
 \item The cuts that flag a judge: \code{severity_cut} (1 logit),
 \code{severity_raw_cut} (a quarter of the scale range) and
 \code{differentiation_cut} (0.5). The scale-use ratio itself is this
-package's index of the differentiation Engelhard (1994) describes.
+package's index of the differentiation Engelhard (1994) describes. A
+cut, or a \code{fit_min_ratings}, given other than its default is printed as
+set for this analysis.
 \item Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
 guide to how productive data are for measurement: below 0.5 is "less
 productive for measurement, but not degrading", 1.5 to 2.0 is

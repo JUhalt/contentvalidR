@@ -145,7 +145,10 @@ test_that("benchmark labels are marked as norms and as non-comparable across ind
   out <- printed(sort_fixture())
   expect_match(out, "percentile norms")
   expect_match(out, "not universal cutoffs")
-  expect_match(out, "not comparable with each other")
+  # The values sit on different scales; the percentile positions can be
+  # compared.
+  expect_match(out, "values cannot be compared with each other")
+  expect_false(grepl("labels are not comparable", out, fixed = TRUE))
 
   # The HTC/HTD case is the one users misread, so it is called out explicitly.
   out_r <- printed(rating_fixture())

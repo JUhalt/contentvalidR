@@ -21,6 +21,13 @@
 #' collection, when the alternative constructs are clearly different from the
 #' target or the judges are subject-matter experts.
 #'
+#' The criterion is met when the exact *p* is at or below `alpha`, so a *p*
+#' equal to `alpha` counts as meeting it, and `critical_n_target` is the
+#' fewest target assignments whose *p* is at or below `alpha`. A strict "below
+#' `alpha`" gives the same decision unless a tail probability equals `alpha`
+#' exactly, which cannot happen at `p0 = 0.5` and `alpha = 0.05`: every tail
+#' probability is then a multiple of 1 / 2^N.
+#'
 #' With very few judges no count can reach `alpha`: at `p0 = 0.5` and
 #' `alpha = 0.05`, four judges who all choose the target give *p* = .0625.
 #' `critical_n_target` is then `NA`, and the printout says so.
@@ -29,7 +36,8 @@
 #' @param N Integer; total number of non-missing assignments for the item.
 #' @param p0 Null target-assignment probability. Default `0.5`, following
 #'   Howard and Melloy (2016); see Details.
-#' @param alpha Significance level. Default `0.05`.
+#' @param alpha Significance level. Default `0.05`. A *p* equal to `alpha`
+#'   meets the criterion; see Details.
 #'
 #' @return A list containing the exact *p* value, observed target proportion,
 #'   one-sided confidence interval at level `1 - alpha`, the minimum critical

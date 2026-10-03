@@ -43,8 +43,10 @@ average of those difference scores is divided by \code{a - 1}, where \code{a} is
 number of rating anchors. HTD ranges from -1 to 1.
 
 HTD is therefore the intended construct's average lead over \strong{all} the
-orbiting constructs, not its lead over the closest one. The closest one is
-reported beside it as \code{strongest_competitor}.
+orbiting constructs, not its lead over any one of them. The other
+construct with the highest mean rating is reported beside it as
+\code{strongest_competitor}, with that mean as \code{competitor_mean}; both use the
+judges HTD uses, those who rated the item against every construct.
 }
 \examples{
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B", "C"))

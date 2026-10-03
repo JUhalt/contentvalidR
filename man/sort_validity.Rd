@@ -33,7 +33,8 @@ suggest a higher value such as .6 or .75, chosen before data collection,
 when the alternative constructs are clearly different from the target or
 the judges are subject-matter experts.}
 
-\item{alpha}{Significance level. Default \code{0.05}.}
+\item{alpha}{Significance level. Default \code{0.05}. A \emph{p} equal to \code{alpha}
+meets the criterion.}
 
 \item{orbiting_r}{Optional average correlation between each focal/target
 scale and its orbiting scales. For one target, supply one correlation. For
@@ -47,8 +48,9 @@ If omitted, the overall Colquitt et al. norms are used.}
 \code{"agresti_coull"}, \code{"exact"}, or \code{"none"}. The interval is two-sided at
 level \code{1 - alpha}, while the exact test is one-sided, so the interval of
 an item that just meets the criterion can still include \code{p0}. The
-decision comes from the test, not from the interval. See \code{ci} in \code{\link[=cvi]{cvi()}}
-for the methods and the evidence for each.}
+decision comes from the test, not from the interval, and the printout
+says so when a retained item's interval includes \code{p0}. See \code{ci} in
+\code{\link[=cvi]{cvi()}} for the methods and the evidence for each.}
 
 \item{legacy}{Print the earlier published rules beside the decision, for
 comparison. Default \code{FALSE}. They are computed either way, stored in
@@ -74,7 +76,9 @@ item level, \code{sort_validity()} combines Anderson and Gerbing's (1991) Psa an
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 \code{"Retain"}; items that do not meet it are labeled \code{"Review"}, not
-automatically \code{"Delete"}. An item sorted by so few judges that no count
+automatically \code{"Delete"}. An item meets the criterion when its exact \emph{p}
+is at or below \code{alpha}, so a \emph{p} equal to \code{alpha} counts as meeting it;
+see \code{\link[=csv_binom_test]{csv_binom_test()}}. An item sorted by so few judges that no count
 could meet the criterion (four or fewer at the defaults) is labeled
 \code{"Insufficient panel"}, with status \code{"Insufficient data"}.
 
@@ -86,7 +90,10 @@ the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
-descriptive benchmarks rather than pass/fail rules.
+descriptive benchmarks rather than pass/fail rules. Each index is read
+against its own band; the advice in \code{scale_summary$evidence}, keyed to the
+lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s.
 }
 \section{Earlier methods, for comparison}{
 

@@ -52,7 +52,7 @@ test_that("Colquitt labels are suppressed for expert rating panels", {
   fit <- rating_validity(.make_rating_v003(), judge_type = "expert")
   expect_true(all(is.na(fit$scale_summary$htc_strength)))
   expect_true(all(is.na(fit$scale_summary$htd_strength)))
-  expect_match(fit$scale_summary$evidence[1], "suppressed")
+  expect_match(fit$scale_summary$evidence[1], "not applied")
 })
 
 test_that("rating_validity reports incomplete judge profiles itemwise", {

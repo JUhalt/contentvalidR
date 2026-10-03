@@ -125,7 +125,8 @@
 #'   the items is an error, never read by position. When supplied, the
 #'   recovered clustering is compared against it.
 #' @param k Number of clusters to extract. Defaults to the number of distinct
-#'   blueprint cells, or 2 when no blueprint is supplied.
+#'   blueprint cells, or 2 when no blueprint is supplied or it names fewer
+#'   than two cells.
 #' @param dims Number of multidimensional scaling dimensions to retain. The
 #'   clusters are formed from the coordinates on these dimensions.
 #' @param max_dims Largest dimensionality reported in the fit table.

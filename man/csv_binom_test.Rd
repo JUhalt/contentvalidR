@@ -14,7 +14,8 @@ csv_binom_test(n_c, N, p0 = 0.5, alpha = 0.05)
 \item{p0}{Null target-assignment probability. Default \code{0.5}, following
 Howard and Melloy (2016); see Details.}
 
-\item{alpha}{Significance level. Default \code{0.05}.}
+\item{alpha}{Significance level. Default \code{0.05}. A \emph{p} equal to \code{alpha}
+meets the criterion; see Details.}
 }
 \value{
 A list containing the exact \emph{p} value, observed target proportion,
@@ -46,6 +47,13 @@ describe .5 as arbitrary and lenient, kept because earlier work used it,
 and suggest a higher value such as .6 or .75, chosen before data
 collection, when the alternative constructs are clearly different from the
 target or the judges are subject-matter experts.
+
+The criterion is met when the exact \emph{p} is at or below \code{alpha}, so a \emph{p}
+equal to \code{alpha} counts as meeting it, and \code{critical_n_target} is the
+fewest target assignments whose \emph{p} is at or below \code{alpha}. A strict "below
+\code{alpha}" gives the same decision unless a tail probability equals \code{alpha}
+exactly, which cannot happen at \code{p0 = 0.5} and \code{alpha = 0.05}: every tail
+probability is then a multiple of 1 / 2^N.
 
 With very few judges no count can reach \code{alpha}: at \code{p0 = 0.5} and
 \code{alpha = 0.05}, four judges who all choose the target give \emph{p} = .0625.
