@@ -34,6 +34,12 @@
 #' recommends a panel size. It reports the consequences of the sizes you ask
 #' about, so the choice stays yours and stays documented.
 #'
+#' This is a contentvalidR planning tool, not a published method: the
+#' probability is binomial, assuming that experts endorse the item
+#' independently and with the same probability. The criteria it applies are
+#' published (Lynn, 1986; Ayre & Scally, 2014), except Lynn's beyond ten
+#' experts, which is this package's extension (see `criterion`).
+#'
 #' @param n_experts Panel sizes to evaluate.
 #' @param prob Probability that one expert endorses the item, as relevant
 #'   (`criterion = "cvi"`) or essential (`criterion = "cvr"`). Values well below
@@ -42,7 +48,9 @@
 #'   I-CVI: every expert must agree with three to five, one may disagree from
 #'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 #'   experts, where Lynn's table stops, the package holds her lowest proportion,
-#'   7 of 9. `"cvr"` uses the exact Lawshe critical count at level `alpha`.
+#'   7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
+#'   Beck (2006) restate her rule as no lower than .78 for six or more experts.
+#'   `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 #' @param alpha Significance level for the CVR criterion. Ignored for CVI.
 #' @param response_rate Expected proportion of invited experts who return usable
 #'   ratings. When below 1, `n_experts` is treated as the number invited and the

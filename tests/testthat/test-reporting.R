@@ -231,8 +231,9 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   con <- content_report(expert_validity(d, mode = "congruence"))
-  expect_identical(names(con), c("item", "target", "target IOC", "competitor",
-                                 "competitor IOC", "margin", "decision"))
+  expect_identical(names(con), c("item", "target", "experts", "IOC", "mean",
+                                 "competitor", "competitor mean", "margin",
+                                 "decision"))
   expect_identical(con$margin, c("2.00", "2.00"))
 
   long <- function(m, round) {

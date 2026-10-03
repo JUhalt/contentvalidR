@@ -45,7 +45,9 @@
 #'   V (with Penfield-Giacobbi score intervals), CVI/modified kappa, and a
 #'   panel-level agreement coefficient.
 #' * `mode = "essentiality"`: Lawshe CVR with exact binomial critical values.
-#' * `mode = "congruence"`: Rovinelli-Hambleton item-objective congruence.
+#' * `mode = "congruence"`: the index of item-objective congruence of
+#'   Rovinelli and Hambleton (1977), from ratings of +1, 0, or -1 on each
+#'   objective (see [ioc()]).
 #'
 #' Quantitative results are presented as evidence for item review rather than
 #' as a substitute for expert comments, construct coverage, comprehensibility,
@@ -78,7 +80,13 @@
 #' @param alpha Inferential/CI alpha level.
 #' @param na.rm Permit itemwise/cellwise missing ratings where supported.
 #' @param target_col In congruence mode, optional column identifying each
-#'   item's intended objective. If absent, IOC cells are returned descriptively.
+#'   item's intended objective. If absent, every item-objective index is
+#'   described and no decision is made.
+#' @param ioc_cut In congruence mode, the lowest index of item-objective
+#'   congruence that counts as congruent. The default, .70, is the criterion
+#'   Rovinelli and Hambleton (1977) applied. Turner and Carlson (2003) extend
+#'   the index to items written for more than one objective, which this
+#'   package does not do.
 #' @param proportion_ci Interval method for I-CVI in relevance mode:
 #'   `"wilson"` (default), `"agresti_coull"`, `"exact"`, or `"none"`. The
 #'   interval uses the same `alpha` as Aiken's V. See `ci` in [cvi()] for the
@@ -200,6 +208,14 @@
 #' indicator of content validity? *Research in Nursing & Health, 30*(4),
 #' 459–467. \doi{10.1002/nur.20199}
 #'
+#' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
+#' specialists in the assessment of criterion-referenced test item validity.
+#' *Dutch Journal of Educational Research, 2*, 49–60.
+#'
+#' Turner, R. C., & Carlson, L. (2003). Indexes of item-objective congruence
+#' for multidimensional items. *International Journal of Testing, 3*(2),
+#' 163–171. \doi{10.1207/S15327574IJT0302_5}
+#'
 #' Wilson, F. R., Pan, W., & Schumsky, D. A. (2012). Recalculation of the
 #' critical values for Lawshe's content validity ratio. *Measurement and
 #' Evaluation in Counseling and Development, 45*(3), 197–210.
@@ -233,6 +249,7 @@ expert_validity <- function(data,
                             alpha = 0.05,
                             na.rm = FALSE,
                             target_col = "target_objective",
+                            ioc_cut = 0.70,
                             proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
                             agreement = c("krippendorff", "ac1", "none"),
                             agreement_level = c("ordinal", "nominal", "interval"),
@@ -272,12 +289,16 @@ expert_validity <- function(data,
     item$cvi_criterion <- .cvi_common_criterion(item$N)
     item$kappa_quality <- .kappa_quality(item$kappa_mod)
     item$ci_width <- item$ci_high - item$ci_low
+    # Every count that meets the criterion gives modified kappa above .74, the
+    # band Polit, Beck, and Owen (2007) read as excellent: the lowest is .76,
+    # for 7 of 9. So an item that meets the criterion has strong support, and
+    # no weaker tier can occur.
     item$recommendation <- ifelse(
       item$N < 3L,
       "Insufficient panel",
       ifelse(
         !is.na(item$cvi_criterion) & item$A >= .cvi_required_count(item$N),
-        ifelse(item$kappa_mod > 0.74, "Strong support", "Support"),
+        "Strong support",
         "Review"
       )
     )
@@ -287,9 +308,6 @@ expert_validity <- function(data,
       }
       if (item$recommendation[i] == "Strong support") {
         return("The item meets the common panel-size CVI guideline and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.")
-      }
-      if (item$recommendation[i] == "Support") {
-        return("The item meets the common panel-size CVI guideline; inspect Aiken's V, interval precision, and expert comments before finalizing wording.")
       }
       "The item does not meet the common panel-size CVI guideline; review wording, relevance, construct coverage, and expert comments before revising or removing it."
     }, character(1))
@@ -320,7 +338,6 @@ expert_validity <- function(data,
       agreement_low = if (is.null(agree)) NA_real_ else agree$ci_low,
       agreement_high = if (is.null(agree)) NA_real_ else agree$ci_high,
       n_strong_support = sum(item$recommendation == "Strong support"),
-      n_support = sum(item$recommendation == "Support"),
       n_review = sum(item$recommendation == "Review"),
       n_insufficient = sum(item$recommendation == "Insufficient panel"),
       stringsAsFactors = FALSE
@@ -435,88 +452,146 @@ expert_validity <- function(data,
     if (!is.data.frame(data)) {
       stop("Congruence mode requires a long data.frame.", call. = FALSE)
     }
+    if (!is.numeric(ioc_cut) || length(ioc_cut) != 1L || !is.finite(ioc_cut) ||
+        ioc_cut <= 0 || ioc_cut > 1) {
+      stop("`ioc_cut` must be one number above 0 and at most 1.", call. = FALSE)
+    }
     cells <- .untag_component(ioc(data, na.rm = na.rm))
     if (!is.character(target_col) || length(target_col) != 1L || is.na(target_col) ||
         !nzchar(trimws(target_col))) {
       stop("`target_col` must be one non-empty column name.", call. = FALSE)
     }
     has_target <- target_col %in% names(data)
+    items <- unique(cells$item)
+    by_item <- split(cells, factor(cells$item, levels = items))
 
     if (!has_target) {
-      res <- cells
-      res$recommendation <- "Descriptive only"
-      res$interpretation <- "No target-objective column was supplied; IOC is reported descriptively for each item-objective cell."
+      # One row per item, as in every item-level workflow: the objective the
+      # item matched best. The full item-by-objective table is in
+      # `details$cells`, and the printout shows it.
+      rows <- lapply(by_item, function(g) {
+        best <- if (any(is.finite(g$ioc))) max(g$ioc, na.rm = TRUE) else NA_real_
+        data.frame(
+          item = g$item[1],
+          n_objectives = g$n_objectives[1],
+          best_objective = if (is.na(best)) {
+            NA_character_
+          } else {
+            paste(g$objective[g$ioc %in% best], collapse = ", ")
+          },
+          best_ioc = best,
+          recommendation = "Descriptive only",
+          interpretation = paste(
+            "No target-objective column was supplied, so the index of",
+            "item-objective congruence is described for each objective",
+            "without a decision."
+          ),
+          stringsAsFactors = FALSE
+        )
+      })
+      res <- do.call(rbind, rows)
+      rownames(res) <- NULL
     } else {
-      map <- unique(data[, c("item", target_col), drop = FALSE])
-      names(map) <- c("item", "target")
-      if (anyNA(map$target) || any(!nzchar(trimws(as.character(map$target))))) {
+      map <- unique(data.frame(item = .as_label(data$item),
+                               target = .as_label(data[[target_col]]),
+                               stringsAsFactors = FALSE))
+      if (anyNA(map$target) || any(!nzchar(map$target))) {
         stop("Target-objective mappings cannot be missing or empty.", call. = FALSE)
       }
       counts <- table(map$item)
       if (any(counts != 1L)) {
         stop("Each item must map to exactly one target objective.", call. = FALSE)
       }
-      available <- split(as.character(data$objective), as.character(data$item), drop = TRUE)
       invalid_target <- vapply(seq_len(nrow(map)), function(i) {
-        !as.character(map$target[i]) %in% unique(available[[as.character(map$item[i])]])
+        !map$target[i] %in% cells$objective[cells$item == map$item[i]]
       }, logical(1))
       if (any(invalid_target)) {
         stop("Target objective is absent from the rated objectives for item(s): ",
-             paste(as.character(map$item[invalid_target]), collapse = ", "), ".", call. = FALSE)
+             paste(map$item[invalid_target], collapse = ", "), ".", call. = FALSE)
       }
 
-      by_item <- split(cells, cells$item, drop = TRUE)
       rows <- lapply(by_item, function(g) {
-        target <- as.character(map$target[match(g$item[1], map$item)])
+        target <- map$target[match(g$item[1], map$item)]
         target_row <- g[g$objective == target, , drop = FALSE]
         competitors <- g[g$objective != target, , drop = FALSE]
-        target_ioc <- if (nrow(target_row) == 1L) target_row$ioc else NA_real_
-        if (nrow(competitors) > 0L && any(is.finite(competitors$ioc))) {
-          mx <- max(competitors$ioc, na.rm = TRUE)
-          strongest <- paste(competitors$objective[competitors$ioc == mx], collapse = ", ")
+        target_mean <- target_row$mean_rating
+        target_ioc <- target_row$ioc
+        # The closest other objective, by the judges' mean rating on it. The
+        # margin over it is a description beside the index, not a rule.
+        if (nrow(competitors) > 0L && any(is.finite(competitors$mean_rating))) {
+          mx <- max(competitors$mean_rating, na.rm = TRUE)
+          strongest <- paste(
+            competitors$objective[competitors$mean_rating %in% mx],
+            collapse = ", "
+          )
         } else {
           mx <- NA_real_
           strongest <- NA_character_
         }
-        margin <- if (is.finite(target_ioc) && is.finite(mx)) target_ioc - mx else NA_real_
-        rec <- if (!is.finite(target_ioc)) {
+        rec <- if (!is.finite(target_mean)) {
           "Insufficient data"
-        } else if (!is.finite(mx)) {
+        } else if (!is.finite(target_ioc)) {
           "Target described"
-        } else if (margin > 0) {
-          "Target favored"
-        } else if (margin == 0) {
-          "Tie / review"
+        } else if (target_ioc >= ioc_cut - 1e-9) {
+          "Congruent"
         } else {
           "Review"
         }
         data.frame(
           item = g$item[1], target = target,
+          n_judges = target_row$n_judges,
           target_ioc = target_ioc,
+          target_mean = target_mean,
           strongest_competitor = strongest,
-          competitor_ioc = mx,
-          margin = margin,
+          competitor_mean = mx,
+          margin = if (is.finite(target_mean) && is.finite(mx)) target_mean - mx else NA_real_,
           recommendation = rec,
           stringsAsFactors = FALSE
         )
       })
       res <- do.call(rbind, rows)
       rownames(res) <- NULL
+      cut_txt <- .fmt(ioc_cut)
       res$interpretation <- vapply(seq_len(nrow(res)), function(i) {
-        switch(
-          res$recommendation[i],
-          "Target favored" = "The intended objective has the highest IOC; use the margin and expert comments to judge practical distinctiveness.",
-          "Tie / review" = "The intended objective ties the strongest competing objective; review conceptual boundaries and item wording.",
-          "Review" = "A competing objective has higher IOC than the intended objective; review target alignment and expert rationale.",
-          "Target described" = "The intended objective has usable IOC evidence, but no competing objective is available for a distinctiveness comparison.",
-          "Insufficient data" = "The intended objective lacks usable expert ratings."
-        )
+        if (res$recommendation[i] == "Congruent") {
+          return(sprintf(paste(
+            "The index of item-objective congruence for the intended",
+            "objective is at or above %s: the experts matched the item to it",
+            "and not to the other objectives."), cut_txt))
+        }
+        if (res$recommendation[i] == "Target described") {
+          return(paste(
+            "The item was rated against its intended objective only, so the",
+            "index, which compares objectives, cannot be computed. The mean",
+            "rating on the objective is described."))
+        }
+        if (res$recommendation[i] == "Insufficient data") {
+          return("The intended objective lacks usable expert ratings.")
+        }
+        # Below the criterion: say which way it fell short.
+        margin <- res$margin[i]
+        why <- if (is.finite(margin) && margin < 0) {
+          paste0("the experts rated ", res$strongest_competitor[i],
+                 " higher than the intended objective")
+        } else if (is.finite(margin) && margin == 0) {
+          paste0("the experts rated ", res$strongest_competitor[i],
+                 " as high as the intended objective")
+        } else if (is.finite(res$target_mean[i]) && res$target_mean[i] <= 0) {
+          "the experts did not, on balance, match the item to its intended objective"
+        } else {
+          paste("the experts matched the item to its intended objective but",
+                "did not clearly rule out the others")
+        }
+        sprintf(paste0("The index of item-objective congruence for the ",
+                       "intended objective is below %s: %s. Review the item's ",
+                       "wording against the objectives and the experts' ",
+                       "comments."), cut_txt, why)
       }, character(1))
     }
 
     res$status <- .workflow_status_from_recommendation(res$recommendation)
     scale <- data.frame(
-      n_items = length(unique(cells$item)),
+      n_items = length(items),
       n_supported = sum(res$status == "Supported", na.rm = TRUE),
       n_review = sum(res$status == "Review", na.rm = TRUE),
       n_insufficient = sum(res$status == "Insufficient data", na.rm = TRUE),
@@ -525,8 +600,9 @@ expert_validity <- function(data,
     )
     settings <- list(
       na.rm = isTRUE(na.rm), target_col = if (has_target) target_col else NULL,
+      ioc_cut = ioc_cut,
       judge_type = "expert",
-      method = "Rovinelli-Hambleton item-objective congruence"
+      method = "Index of item-objective congruence (Rovinelli & Hambleton, 1977)"
     )
     design <- list(
       type = "expert-panel congruence",
@@ -594,18 +670,34 @@ expert_validity <- function(data,
   tab <- data.frame(item = r$item, stringsAsFactors = FALSE, check.names = FALSE)
   if ("target" %in% names(r)) tab$target <- r$target
   tab$decision <- r$recommendation
-  if ("target_ioc" %in% names(r)) {
-    # IOC lies in [-1, 1]; the margin between two IOCs can reach 2, so it
-    # keeps its leading zero (APA 7, Section 6.36).
-    tab$`target IOC` <- .fmt(r$target_ioc, digits)
+  if ("target_ioc" %in% names(r) && "target_mean" %in% names(r)) {
+    tab$experts <- r$n_judges
+    tab$IOC <- .fmt(r$target_ioc, digits)
+    tab$mean <- .fmt(r$target_mean, digits)
     tab$competitor <- r$strongest_competitor
-    tab$`competitor IOC` <- .fmt(r$competitor_ioc, digits)
+    tab$`competitor mean` <- .fmt(r$competitor_mean, digits)
+    # A mean lies in [-1, 1]; the margin between two means can reach 2, so it
+    # keeps its leading zero (APA 7, Section 6.36).
     tab$margin <- .fmt(r$margin, digits, bounded = FALSE)
+  } else if ("best_ioc" %in% names(r)) {
+    tab$objectives <- r$n_objectives
+    tab$`best objective` <- r$best_objective
+    tab$`best IOC` <- .fmt(r$best_ioc, digits)
   } else {
+    # An object saved before 1.0, whose columns held the mean ratings.
     num <- names(r)[vapply(r, is.numeric, logical(1))]
-    for (col in num) tab[[col]] <- .fmt(r[[col]], digits)
+    for (col in num) tab[[col]] <- .fmt(r[[col]], digits, bounded = FALSE)
   }
   tab
+}
+
+# The item-by-objective table for congruence: every objective each item was
+# rated against, with the mean rating and the index.
+.ioc_cells_table <- function(cells, digits) {
+  data.frame(item = cells$item, objective = cells$objective,
+             experts = cells$n_judges, mean = .fmt(cells$mean_rating, digits),
+             IOC = .fmt(cells$ioc, digits),
+             stringsAsFactors = FALSE, check.names = FALSE)
 }
 
 # The opening verdict every workflow print shares: how many items met the
@@ -616,27 +708,27 @@ expert_validity <- function(data,
     r$status <- .workflow_status_from_recommendation(r$recommendation)
   }
   if (identical(mode, "relevance")) {
-    met <- sum(r$recommendation %in% c("Strong support", "Support"))
-    strong <- sum(r$recommendation == "Strong support")
-    which_strong <- if (met == 0L || strong == 0L) {
-      ""
-    } else if (strong == met) {
-      if (met == 1L) ", with strong support" else ", all with strong support"
-    } else {
-      sprintf(", %d of them with strong support", strong)
-    }
-    .say(sprintf("%d of %d items meet the I-CVI criterion%s%s.", met, n,
-                 which_strong,
-                 if (nzchar(which_strong)) " (modified kappa above .74)" else ""))
+    met <- sum(r$recommendation %in% "Strong support")
+    .say(sprintf("%d of %s %s the I-CVI criterion%s.", met, .n_noun(n, "item"),
+                 if (met == 1L || n == 1L) "meets" else "meet",
+                 if (met == 0L) "" else if (met == 1L) {
+                   ", with strong support (modified kappa above .74)"
+                 } else {
+                   ", all with strong support (modified kappa above .74)"
+                 }))
   } else if (identical(mode, "essentiality")) {
-    .say(sum(r$status %in% "Supported"), "of", n,
-         "items meet the exact essentiality criterion.")
+    met <- sum(r$status %in% "Supported")
+    .say(met, "of", .n_noun(n, "item"),
+         if (met == 1L || n == 1L) "meets" else "meet",
+         "the exact essentiality criterion.")
   } else if (all(r$status %in% "Descriptive only")) {
-    .say("No target objective was supplied, so IOC is described for every",
-         "item-objective pair without a decision.")
+    .say("No target objective was supplied, so the index of item-objective",
+         "congruence is described for every item and objective, without a",
+         "decision.")
   } else {
-    .say(sum(r$recommendation == "Target favored"), "of", n,
-         "items are linked most strongly to their target objective.")
+    .say(sum(r$status %in% "Supported"), "of", .n_noun(n, "item"),
+         if (sum(r$status %in% "Supported") == 1L || n == 1L) "meets" else "meet",
+         "the congruence criterion for their target objective.")
   }
   review <- r$item[r$status %in% "Review"]
   if (length(review)) .say("Flagged for review:", paste(review, collapse = ", "))
@@ -711,13 +803,28 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cat("\n")
     .say("Each", ci, "follows its estimate: Aiken's V has a Penfield-Giacobbi",
          "score interval, and I-CVI the proportion interval named below.")
+    kappa_note <- paste("kappa is modified kappa, with values above .74 read",
+                        "as excellent (Polit, Beck, & Owen, 2007).")
     if (length(sizes) == 1L) {
       need <- .cvi_required_count(sizes)
-      .say(sprintf(paste("I-CVI criterion for %d experts: %d agreeing (%s),",
-                         "following Lynn (1986); kappa is modified kappa,",
-                         "with values above .74 read as excellent (Polit,",
-                         "Beck, & Owen, 2007)."),
-                   sizes, need, .fmt(need / sizes, digits)))
+      .say(sprintf("I-CVI criterion for %d experts: %d agreeing (%s), %s; %s",
+                   sizes, need, .fmt(need / sizes, digits),
+                   if (sizes > 10L) {
+                     paste("holding the lowest proportion in Lynn's (1986)",
+                           "table, 7 of 9, beyond the ten experts it covers",
+                           "(a contentvalidR extension)")
+                   } else {
+                     "following Lynn (1986)"
+                   }, kappa_note))
+    } else if (length(sizes) > 1L) {
+      .say(sprintf("I-CVI needed: the criterion of Lynn (1986) for each item's panel size%s; %s",
+                   if (any(sizes > 10L)) {
+                     paste0(", holding her lowest tabled proportion, 7 of 9,",
+                            " beyond the ten experts her table covers (a",
+                            " contentvalidR extension)")
+                   } else {
+                     ""
+                   }, kappa_note))
     }
     if (!is.null(x$settings$proportion_ci)) {
       .say(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha))
@@ -758,13 +865,37 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
         " | Objectives: ", d$n_objectives, "\n", sep = "")
     missing_line("cell")
     .say("Method:", x$settings$method)
+    cut <- x$settings$ioc_cut
+    targeted <- "target_mean" %in% names(x$results)
+    if (targeted && is.numeric(cut)) {
+      .say(paste0("Criterion: IOC at or above ", .fmt(cut, digits),
+                  ", the criterion Rovinelli and Hambleton applied."))
+    }
     cat("\n")
     .expert_verdict(x$results, "congruence")
     cat("\n")
     r <- x$results
-    .print_table(.expert_item_table(r, "congruence", digits, x$settings$alpha))
+    cells <- if (is.list(x$details)) x$details$cells else NULL
+    if (!targeted && is.data.frame(cells) && "mean_rating" %in% names(cells)) {
+      # Without targets the item-by-objective table is the result.
+      .print_table(.ioc_cells_table(cells, digits))
+    } else {
+      .print_table(.expert_item_table(r, "congruence", digits,
+                                      x$settings$alpha))
+    }
+    cat("\n")
+    .say(if (targeted) {
+      paste("IOC: the index for the target objective. mean: the experts'",
+            "mean rating on it (-1 to 1). competitor mean: the highest mean",
+            "on another objective. margin: mean less competitor mean, a",
+            "description beside the index, not part of its criterion.")
+    } else {
+      paste("mean: the experts' mean rating on the objective (-1 to 1). IOC:",
+            "half the gap between that mean and their mean on the item's other",
+            "objectives.")
+    })
     # Each distinct interpretation is printed once, with the items it covers.
-    if ("interpretation" %in% names(r)) {
+    if (targeted && "interpretation" %in% names(r)) {
       cat("\n")
       .say_grouped(r$item, r$interpretation)
     }
@@ -993,20 +1124,37 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
                   c(if (any(good)) c(19, 1), if (any(undecided)) 4))
     }
   } else {
-    if (!"target_ioc" %in% names(r)) {
+    if (!all(c("target_ioc", "target_mean") %in% names(r))) {
       stop("Congruence plots require a target-objective mapping.", call. = FALSE)
     }
+    # Each item's index against the criterion, with the experts' mean rating
+    # on the target objective and on the closest other objective for context.
+    cut <- x$settings$ioc_cut
     graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                   yaxt = "n", xlab = "IOC (-1 to 1)", ylab = "", ...)
+                   yaxt = "n", xlab = "Item-objective congruence (-1 to 1)",
+                   ylab = "", ...)
     .axis_bounded(1, at = seq(-1, 1, 0.5))
     graphics::axis(2, at = y, labels = r$item, las = 1)
     .vline_below(0, 0.5, top)
-    good <- is.finite(r$competitor_ioc) & is.finite(r$target_ioc)
-    graphics::segments(r$competitor_ioc[good], y[good], r$target_ioc[good], y[good])
-    graphics::points(r$competitor_ioc[good], y[good], pch = 1)
-    graphics::points(r$target_ioc, y, pch = 19)
+    if (is.numeric(cut)) .vline_below(cut, 0.5, top, lty = 2)
+    has_ioc <- is.finite(r$target_ioc)
+    means <- is.finite(r$target_mean) & is.finite(r$competitor_mean)
+    graphics::segments(r$competitor_mean[means], y[means], r$target_mean[means],
+                       y[means], col = "grey60")
+    graphics::points(r$competitor_mean[means], y[means], pch = 1, col = "grey40")
+    graphics::points(r$target_mean[means], y[means], pch = 2, col = "grey40")
+    graphics::points(r$target_ioc[has_ioc], y[has_ioc], pch = 19)
     if (isTRUE(show_legend)) {
-      .legend_top(c("Intended objective", "Strongest competitor"), c(19, 1))
+      .legend_top(c(if (any(has_ioc)) "IOC", if (any(means)) c("Mean: target",
+                                                              "Mean: competitor"),
+                    if (is.numeric(cut)) "Criterion"),
+                  c(if (any(has_ioc)) 19, if (any(means)) c(2, 1),
+                    if (is.numeric(cut)) NA),
+                  c(if (any(has_ioc)) NA, if (any(means)) c(NA, NA),
+                    if (is.numeric(cut)) 2),
+                  col = c(if (any(has_ioc)) "black",
+                          if (any(means)) c("grey40", "grey40"),
+                          if (is.numeric(cut)) "black"))
     }
   }
   invisible(x)

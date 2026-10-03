@@ -220,5 +220,6 @@ test_that("expert workflows retain explicit insufficient and single-objective st
   )
   cfit <- expert_validity(con, mode = "congruence")
   expect_equal(cfit$results$recommendation, "Target described")
-  expect_true(is.na(cfit$results$competitor_ioc))
+  expect_true(is.na(cfit$results$competitor_mean))
+  expect_true(is.na(cfit$results$target_ioc))
 })

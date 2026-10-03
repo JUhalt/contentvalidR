@@ -27,8 +27,9 @@
 #' * a Delphi study: the share of experts agreeing, against the consensus
 #'   threshold;
 #' * an essentiality panel: the CVR, against the exact test's criterion;
-#' * congruence ratings: the IOC margin over the strongest competing
-#'   objective, or the IOC when there is no target mapping;
+#' * congruence ratings: the index of item-objective congruence for the
+#'   target objective, against the criterion, or the highest index when there
+#'   is no target mapping;
 #' * construct ratings: HTC, with no criterion, because that workflow decides
 #'   on its planned contrasts.
 #'
@@ -187,8 +188,11 @@ content_evidence <- function(..., keep = "Supported") {
     "expert-panel" = switch(mode,
                             relevance = "I-CVI",
                             essentiality = "CVR",
-                            congruence = if ("IOC margin" %in% have) "IOC margin"
-                                         else "IOC",
+                            # The last two are the names before 1.0.
+                            congruence = c("target IOC", "highest IOC",
+                                           "IOC margin", "IOC")[
+                              c("target IOC", "highest IOC", "IOC margin",
+                                "IOC") %in% have][1],
                             NA_character_),
     NA_character_)
   if (is.na(pick) || !pick %in% have) {
@@ -325,7 +329,8 @@ print.contentvalid_evidence <- function(x, ...) {
   if (.show_key()) {
     stats <- unique(x$evidence$statistic)
     term <- c(Psa = "psa", `I-CVI` = "I_CVI", `Share agreeing` = "prop_agree",
-              CVR = "cvr", `IOC margin` = "ioc", IOC = "ioc", HTC = "htc")
+              CVR = "cvr", `target IOC` = "ioc", `highest IOC` = "ioc",
+              `IOC margin` = "ioc", IOC = "ioc", HTC = "htc")
     known <- stats[stats %in% names(term)]
     .print_key(unname(term[known]), headings = known)
     cat(strwrap(paste("result -- carried when every stage that reviewed the",
@@ -454,8 +459,8 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   for (k in seq_len(ns)) {
     s <- ev[ev$stage == stages[k], , drop = FALSE]
     stat <- s$statistic[1]
-    xlim <- switch(stat, CVR = c(-1, 1), IOC = c(-1, 1), `IOC margin` = c(-2, 2),
-                   c(0, 1))
+    xlim <- switch(stat, CVR = c(-1, 1), IOC = c(-1, 1), `target IOC` = c(-1, 1),
+                   `highest IOC` = c(-1, 1), `IOC margin` = c(-2, 2), c(0, 1))
     graphics::plot(NA, xlim = xlim, ylim = c(0.4, n + 0.6), xaxt = "n",
                    yaxt = "n", xlab = stat, ylab = "", ...)
     if (stat == "IOC margin") {

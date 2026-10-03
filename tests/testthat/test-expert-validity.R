@@ -120,12 +120,13 @@ test_that("congruence workflow identifies strongest competitor", {
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   fit <- expert_validity(d, mode = "congruence")
   expect_s3_class(fit, "contentvalid_expert")
-  expect_equal(fit$results$recommendation, rep("Target favored", 2))
+  expect_equal(fit$results$recommendation, rep("Congruent", 2))
+  expect_equal(fit$results$target_ioc, c(1, 1))
   expect_true(all(fit$results$margin > 0))
   expect_equal(sort(fit$results$strongest_competitor), c("A", "B"))
 })
 
-test_that("congruence workflow detects ties and wrong-target dominance", {
+test_that("congruence workflow reviews a tie and a wrong-target item", {
   d <- data.frame(
     item = rep(c("Tie", "Wrong"), each = 6),
     judge = rep(rep(1:3, 2), 2),
@@ -134,7 +135,11 @@ test_that("congruence workflow detects ties and wrong-target dominance", {
     score = c(1,1,0, 1,1,0, 0,0,0, 1,1,1)
   )
   fit <- expert_validity(d, mode = "congruence")
-  expect_equal(fit$results$recommendation[fit$results$item == "Tie"], "Tie / review")
+  # A tie leaves the index at 0, below the criterion; the margin shows the tie.
+  expect_equal(fit$results$recommendation[fit$results$item == "Tie"], "Review")
+  expect_equal(fit$results$margin[fit$results$item == "Tie"], 0)
+  expect_match(fit$results$interpretation[fit$results$item == "Tie"],
+               "as high as the intended objective", fixed = TRUE)
   expect_equal(fit$results$recommendation[fit$results$item == "Wrong"], "Review")
 })
 
@@ -146,7 +151,9 @@ test_that("congruence without target mapping is descriptive", {
   )
   fit <- expert_validity(d, mode = "congruence")
   expect_true(all(fit$results$recommendation == "Descriptive only"))
-  expect_equal(nrow(fit$results), 2)
+  # One row per item; the item-by-objective cells are kept in details.
+  expect_equal(nrow(fit$results), 1)
+  expect_equal(nrow(fit$details$cells), 2)
 })
 
 test_that("congruence rejects inconsistent targets", {

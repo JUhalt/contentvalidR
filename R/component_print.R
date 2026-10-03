@@ -262,11 +262,28 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "objective", "n_judges", "ioc"),
-    title = "Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)",
+    title = "Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)",
     build = function() {
-      data.frame(item = x$item, objective = x$objective, judges = x$n_judges,
-                 IOC = .fmt(x$ioc, digits), stringsAsFactors = FALSE)
-    }
+      tab <- data.frame(item = x$item, objective = x$objective,
+                        judges = x$n_judges, stringsAsFactors = FALSE)
+      # Objects saved before 1.0 have no separate mean.
+      if ("mean_rating" %in% names(x)) tab$mean <- .fmt(x$mean_rating, digits)
+      tab$IOC <- .fmt(x$ioc, digits)
+      tab
+    },
+    notes = c(
+      if ("mean_rating" %in% names(x)) {
+        paste("mean: the judges' mean rating on the objective (-1 to 1).",
+              "IOC: half the gap between that mean and their mean on the",
+              "item's other objectives; 1 only when every judge rates +1 on the",
+              "objective and -1 on every other. Rovinelli and Hambleton applied",
+              "a criterion of .70.")
+      },
+      if (anyNA(x$ioc) && !all(is.na(x$mean_rating))) {
+        paste("IOC is NA for an item rated against one objective: the index",
+              "compares objectives.")
+      }
+    )
   )
 }
 

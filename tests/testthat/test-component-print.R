@@ -154,7 +154,7 @@ test_that("the item-sort and expert components print their notes", {
   d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"))
   d$score <- ifelse((d$item == "I1") == (d$objective == "A"), 1, -1)
   out_ioc <- shown(ioc(d))
-  expect_match(out_ioc, "Item-objective congruence (IOC", fixed = TRUE)
+  expect_match(out_ioc, "Index of item-objective congruence (IOC", fixed = TRUE)
   expect_match(out_ioc, "I1 A 4 1.00", fixed = TRUE)
 })
 
