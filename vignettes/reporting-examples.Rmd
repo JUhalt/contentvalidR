@@ -37,9 +37,15 @@ small helper; the objects themselves keep full precision, and
 `content_report()` gives the formatted APA table.
 
 ```{r sort-fit}
-# Round the numeric columns of a data frame for display only.
+# Round the numeric columns of a data frame for display only. A p value is
+# written as APA writes it, so one below .001 reads "< .001", never 0.
 rounded <- function(d, digits = 3) {
-  d[] <- lapply(d, function(v) if (is.numeric(v)) round(v, digits) else v)
+  is_p <- grepl("(^p_|_p$)", names(d))
+  d[] <- Map(function(v, p) {
+    if (!is.numeric(v)) return(v)
+    if (p) return(ifelse(v < .001, "< .001", sub("^0", "", sprintf("%.3f", v))))
+    round(v, digits)
+  }, d, is_p)
   d
 }
 sort_dat <- read_example("sort_example.csv")

@@ -829,7 +829,9 @@ still open and 16 new ones. These are closed here.
 * **`content_report()`.** A Delphi table for the chi-square and
   percent-change methods has a Stable column; the essentiality
   `format = "data.frame"` table keeps `ne` and `critical_ne`; the Markdown rule
-  row aligns text left and numbers right.
+  row aligns the item column and other text left and numbers right; and the
+  note says when an interval has equal limits, because every resample gave
+  the same value.
 * **Handoff notes.** Each Delphi stability row's `note` says which way its
   criterion reads (the individual chi-square takes *p* below alpha as stable,
   the group chi-square *p* at or above alpha, net percent change a value
@@ -905,8 +907,10 @@ still open and 16 new ones. These are closed here.
   markers. A long vertical axis title gives way to the index's name ("HTD").
   The congruence plot fills an index that met the criterion and leaves one
   below it open. A one-dimensional content map stacks the labels of items at
-  the same position. `plot()` stops before opening a device when given an
-  unknown `metric` or an invalid `reference_power`.
+  the same position. `plot()` checks `metric` and `reference_power` whatever
+  the `type`: an unknown `metric` with `type = "map"` or `"profile"`, or an
+  invalid `reference_power` with `type = "critical"`, used to be ignored and
+  is now an error, raised before a graphics device opens.
 * **Text.** "F test", "contrast p" and "omnibus p" are never split across
   lines. An interval note says it reflects how few ratings an item received,
   not whether the right people rated it.
@@ -924,8 +928,11 @@ still open and 16 new ones. These are closed here.
   intraclass correlation. The design guide's sentence about unreachable
   targets is conditional. Tables in the construct-rating, item-sort and
   reporting vignettes print rounded, and the reporting vignette shows the
-  Markdown report rendered. The README says a printout opens with a header,
-  then the facts, then the verdict.
+  Markdown report rendered, with *p* values below .001 written "< .001". The
+  README says a printout opens with a header, then the facts, then the
+  verdict. The Scheibe et al. (1975/2002) chapter keeps no publisher, because
+  APA 7 omits one that repeats the editors, as the 2002 web edition's issuers
+  do.
 
 ## Release housekeeping
 
