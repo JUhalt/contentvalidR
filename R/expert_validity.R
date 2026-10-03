@@ -172,7 +172,84 @@
 #'   while retaining mode-specific `recommendation` wording. In relevance mode,
 #'   `scale_summary` also holds `agreement`, `agreement_low`, and
 #'   `agreement_high`, and `details$agreement` holds the full
-#'   [panel_agreement()] result.
+#'   [panel_agreement()] result. `print()`, `summary()`, and `plot()` are
+#'   described in [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per item, and its columns
+#'   depend on `mode`. Every mode ends with `recommendation`, the decision in
+#'   the mode's own words; `interpretation`, the decision explained in a
+#'   sentence; and `status`, the shared status.
+#'
+#'   In relevance mode:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`N`}{Experts who rated the item.}
+#'     \item{`n_missing`}{Experts who did not.}
+#'     \item{`V`}{Aiken's V.}
+#'     \item{`ci_low`, `ci_high`}{The interval for V at level `1 - alpha`.}
+#'     \item{`ci_method`}{The method of that interval, the score interval of
+#'       Penfield and Giacobbi (2004).}
+#'     \item{`A`}{Experts who rated the item relevant, at or above
+#'       `relevance_cut`.}
+#'     \item{`I_CVI`}{The I-CVI, `A / N`.}
+#'     \item{`I_CVI_low`, `I_CVI_high`}{The interval for the I-CVI, by the
+#'       method in `proportion_ci`; `NA` with `"none"`.}
+#'     \item{`Pc`}{The probability of chance agreement that modified kappa
+#'       corrects for (Polit et al., 2007).}
+#'     \item{`kappa_mod`}{Modified kappa.}
+#'     \item{`cvi_criterion`}{The I-CVI that Lynn's (1986) criterion requires
+#'       for the item's panel size, as a proportion; `NA` below three
+#'       experts.}
+#'     \item{`kappa_quality`}{The band of `kappa_mod`: `"Excellent"` above
+#'       .74, `"Good"` from .60, and `"Fair"` from .40, the criteria Polit et
+#'       al. (2007) use, and `"Poor"` below .40.}
+#'     \item{`ci_width`}{The width of the interval for V,
+#'       `ci_high - ci_low`.}
+#'     \item{`recommendation`}{`"Strong support"` (the item meets the I-CVI
+#'       criterion), `"Review"`, or `"Insufficient panel"` (fewer than three
+#'       experts).}
+#'   }
+#'
+#'   In essentiality mode:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`ne`}{Experts who rated the item essential.}
+#'     \item{`N`}{Experts who rated the item.}
+#'     \item{`cvr`}{Lawshe's CVR, `(ne - N / 2) / (N / 2)`.}
+#'     \item{`p_value`}{The one-sided exact binomial *p* of `ne` at a rate
+#'       of .5.}
+#'     \item{`critical_ne`}{The fewest essential ratings that meet the
+#'       criterion at `alpha`; `NA` when no count can.}
+#'     \item{`critical_cvr`}{The CVR of `critical_ne`.}
+#'     \item{`pass`}{Whether `ne` reaches `critical_ne`.}
+#'     \item{`recommendation`}{`"Supported"`, `"Review"`,
+#'       `"Insufficient panel"` (no count could meet the test), or
+#'       `"Insufficient data"` (no expert rated the item).}
+#'   }
+#'
+#'   In congruence mode, with a target objective for each item:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`target`}{The objective the item was written for.}
+#'     \item{`n_judges`}{Experts who rated the item on its target.}
+#'     \item{`target_ioc`}{The index of item-objective congruence for the
+#'       target.}
+#'     \item{`target_mean`}{The experts' mean rating on the target, -1 to
+#'       1.}
+#'     \item{`strongest_competitor`}{The other objective with the highest
+#'       mean rating, ties joined by `", "`.}
+#'     \item{`competitor_mean`}{The mean rating on that objective.}
+#'     \item{`margin`}{`target_mean - competitor_mean`, a description beside
+#'       the index, not part of its criterion.}
+#'     \item{`recommendation`}{`"Congruent"` (`target_ioc` at or above
+#'       `ioc_cut`), `"Review"`, `"Target described"` (the item was rated on
+#'       its target alone, so there is no index), or `"Insufficient data"`.}
+#'   }
+#'
+#'   Without a target objective, congruence `results` hold `item`,
+#'   `n_objectives` (objectives the item was rated on), `best_objective` and
+#'   `best_ioc` (the objective with the highest index, and that index), and
+#'   `recommendation`, which is `"Descriptive only"`.
 #'
 #' @references
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content

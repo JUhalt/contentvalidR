@@ -130,7 +130,42 @@
 #'   (`fragile`; `NA` when it could not be checked), and the judges whose
 #'   removal changes it. In `results`, `n_items_flipped` and `flipped_items`
 #'   give the same information by judge; they describe the items and are not
-#'   a flag.
+#'   a flag. `print()` and `summary()` are described in
+#'   [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per judge:
+#'   \describe{
+#'     \item{`judge`}{The judge: the row name in `ratings`, or `Judge1`,
+#'       `Judge2`, and so on when `ratings` has none.}
+#'     \item{`n_ratings`}{Items the judge rated.}
+#'     \item{`mean_rating`}{The judge's mean rating.}
+#'     \item{`sd_rating`}{The standard deviation of the judge's ratings.}
+#'     \item{`severity_raw`}{Severity in rating points: the panel's mean
+#'       rating on the items the judge rated, less the judge's. Positive
+#'       means harsher than the panel.}
+#'     \item{`severity`}{Severity in logits from the many-facet Rasch model,
+#'       positive for harsher; `NA` when it is not estimable.}
+#'     \item{`se`}{The standard error of `severity`.}
+#'     \item{`infit`, `outfit`}{The judge's infit and outfit mean squares.}
+#'     \item{`n_scored`}{Relevance decisions of the judge that the model
+#'       scored.}
+#'     \item{`severity_estimable`}{Whether the model could estimate the
+#'       judge's severity.}
+#'     \item{`differentiation`}{Scale use: the standard deviation of the
+#'       judge's ratings over the median judge's, on the items the judge
+#'       rated.}
+#'     \item{`central_prop`}{The share of the judge's ratings strictly between
+#'       `lo` and `hi`.}
+#'     \item{`extreme_prop`}{The share at `lo` or `hi`.}
+#'     \item{`n_items_flipped`}{Items whose review status changes when this
+#'       judge is removed; `NA` when none could be checked.}
+#'     \item{`flipped_items`}{Those items, comma-separated.}
+#'     \item{`recommendation`}{`"Typical"`, `"Severe"`, `"Lenient"`,
+#'       `"Erratic"`, `"Low differentiation"`, or `"Insufficient data"`.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Typical"`,
+#'       `"Review"` for a flag, or `"Insufficient data"`.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'   }
 #'
 #' @section What is published and what is this package's choice:
 #' The generalizability analysis, the many-facet Rasch model, the infit and

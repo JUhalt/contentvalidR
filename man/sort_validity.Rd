@@ -66,7 +66,38 @@ All flagship workflow objects expose the common components \code{results},
 \code{scale_summary}, \code{settings}, \code{design}, and \code{details}. Item-level \code{results}
 include a standardized \code{status} field while retaining the method-specific
 \code{recommendation} field. \code{print()}, \code{summary()}, and \code{plot()} provide
-user-facing interpretation.
+user-facing interpretation; see \link{contentvalid-methods}.
+
+\strong{Results columns.} \code{results} has one row per item:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{target}}{The construct the item was written for.}
+\item{\code{n_total}}{Rows for the item, missing assignments included.}
+\item{\code{n}}{Judges who sorted the item: its assignments that are not
+missing.}
+\item{\code{n_missing}}{Missing assignments, \code{n_total - n}.}
+\item{\code{n_target}}{Assignments to the target construct.}
+\item{\code{competitor}}{The other construct judges chose most often, with
+ties joined by \code{"; "}; \code{NA} when no judge chose another construct.}
+\item{\code{n_other_max}}{Assignments to the competitor.}
+\item{\code{psa}}{Psa, \code{n_target / n}.}
+\item{\code{psa_low}, \code{psa_high}}{The interval for Psa at level
+\code{1 - alpha}, by the method in \code{proportion_ci}; \code{NA} with \code{"none"}.}
+\item{\code{csv}}{Csv, \code{(n_target - n_other_max) / n}.}
+\item{\code{p_value}}{The one-sided exact binomial \emph{p} of the target count
+against \code{p0}.}
+\item{\code{critical_n_target}}{The fewest target assignments that meet the
+criterion with \code{n} judges; \code{NA} when no count can.}
+\item{\code{passes_chance}}{Whether \code{n_target} reaches
+\code{critical_n_target}.}
+\item{\code{recommendation}}{\code{"Retain"}, \code{"Review"}, \code{"Insufficient panel"}
+(no count could meet the test), or \code{"Insufficient data"} (no judge
+sorted the item).}
+\item{\code{issue}}{The reason in a few words, such as \code{"Competing construct favored"}.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Retain"},
+\code{"Review"}, or \code{"Insufficient data"}.}
+}
 }
 \description{
 Provides the recommended user-facing workflow for item-sort studies. At the
