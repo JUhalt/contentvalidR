@@ -42,12 +42,15 @@
 .as_markdown_table <- function(df) {
   if (!nrow(df)) return(character(0))
   # Text is not padded: the rule row aligns each column, text to the left and
-  # numbers to the right, as in the console table.
+  # numbers to the right, as in the console table. The first column names
+  # the units, so it is left-aligned as an APA stub even when the items are
+  # numbered.
   cells <- lapply(df, function(col) {
     .md_escape(if (is.character(col)) col else format(col, trim = TRUE))
   })
   header <- paste0("| ", paste(names(df), collapse = " | "), " |")
   align <- ifelse(vapply(cells, .looks_numeric, logical(1)), "---:", ":---")
+  align[1L] <- ":---"
   rule <- paste0("| ", paste(align, collapse = " | "), " |")
   rows <- vapply(seq_len(nrow(df)), function(i) {
     paste0("| ", paste(vapply(cells, function(col) col[i], character(1)),
@@ -138,7 +141,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       s("HTC", "prop", "htc"), s("HTD", "prop", "htd"),
       # The test behind the omnibus p, with the corrected degrees of freedom
       # that p was read from. The table is kept to one 80-column block, so
-      # the closest competitor and partial eta-squared are left to
+      # the strongest competitor and partial eta-squared are left to
       # `format = "data.frame"` and to the fit's own printout.
       s("F test", "ftest", "F", "df1", "df2", "df1_gg", "df2_gg"),
       s("p", "p", "p_value"), s("contrast p", "p", "max_contrast_p"),
@@ -332,6 +335,12 @@ as.data.frame.contentvalid_workflow <- function(x,
       contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci),
       NULL
     )
+    # A retained item's two-sided interval can reach p0 while the one-sided
+    # test rejects it, which the printout explains and so does the note.
+    if (inherits(x, "contentvalid_sort") && is.data.frame(res) &&
+        all(c("recommendation", "psa_low", "item") %in% names(res))) {
+      interval <- c(interval, .sort_interval_note(res, st))
+    }
     # An interval with no width reads as certainty. A bootstrap interval has
     # none when every resample gave the same value, which is what the cell
     # then shows; the closed-form intervals here always have width.
@@ -427,7 +436,8 @@ as.data.frame.contentvalid_workflow <- function(x,
                 "objective (-1 to 1).")
         },
         if (has("competitor mean")) {
-          "Competitor mean = the same for the closest other objective."
+          paste("Competitor mean = the same for the other objective with the",
+                "highest mean.")
         },
         if (has("margin")) "Margin = mean minus competitor mean.",
         if (has("best objective")) {
@@ -565,41 +575,45 @@ as.data.frame.contentvalid_workflow <- function(x,
 
 # The rules behind a judge's flag, for the decisions the table shows. The
 # defaults are this package's conventions, which a manuscript table should
-# say; a cut the analyst changed is said to be set for the analysis.
+# say; a cut the analyst changed is said to be set for the analysis. Only the
+# cuts the note states are named, each as the printout names it.
 .report_judge_criterion <- function(st, decisions) {
   if (!is.list(st) || !is.numeric(st$severity_cut)) return(NULL)
   shown <- unique(as.character(decisions))
+  severe <- any(shown %in% c("Severe", "Lenient"))
+  erratic <- "Erratic" %in% shown && is.numeric(st$fit_range)
+  low <- "Low differentiation" %in% shown
   rules <- c(
-    if (any(shown %in% c("Severe", "Lenient"))) {
+    if (severe) {
       sprintf(paste("Severe or Lenient = severity beyond %s %s, or beyond",
                     "%s rating points for a judge the model could not place"),
               format(st$severity_cut),
               if (isTRUE(all.equal(st$severity_cut, 1))) "logit" else "logits",
               .fmt(st$severity_raw_cut, 2, bounded = FALSE))
     },
-    if ("Erratic" %in% shown && is.numeric(st$fit_range)) {
+    if (erratic) {
       sprintf("Erratic = infit or outfit above %s, on at least %d scored decisions",
               format(st$fit_range[2]), as.integer(st$fit_min_ratings))
     },
-    if ("Low differentiation" %in% shown) {
+    if (low) {
       diff_cut <- if (is.null(st$differentiation_cut)) 0.5 else st$differentiation_cut
       sprintf("Low differentiation = scale use below %s",
               .fmt(diff_cut, 2, bounded = FALSE))
     }
   )
   if (!length(rules)) return(NULL)
-  same <- function(a, b) is.null(a) || isTRUE(all.equal(a, b))
-  defaults <- same(st$severity_cut, 1) &&
-    (is.null(st$lo) || same(st$severity_raw_cut, 0.25 * (st$hi - st$lo))) &&
-    same(st$differentiation_cut, 0.5) && same(st$fit_range, c(0.5, 1.5)) &&
-    same(st$fit_min_ratings, 30L)
+  cuts <- c(
+    if (severe) {
+      c(severity = "logit severity", severity_raw = "rating-point severity")
+    },
+    if (erratic) c(fit = "mean-square", fit_min = "scored-decisions"),
+    if (low) c(differentiation = "scale-use")
+  )
+  default <- c(.judge_cut_is_default(st),
+               fit = is.null(st$fit_range) ||
+                 isTRUE(all.equal(st$fit_range[2], 1.5)))
   paste0(paste(rules, collapse = "; "), ". ",
-         if (defaults) {
-           "These cuts are contentvalidR conventions, not published standards."
-         } else {
-           paste("These cuts were set for this analysis; the package's",
-                 "defaults are its own conventions, not published standards.")
-         })
+         .judge_cut_source(cuts, default[names(cuts)]))
 }
 
 # The rules behind a cell's decision, for the decisions the table shows.
@@ -681,8 +695,9 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' Markdown, so print them in a code chunk with the option
 #' `results = "asis"` (in Quarto, `#| output: asis`). In a chunk with the
 #' default option, they show as console output, pipes and all. The
-#' rule row aligns text columns left and numeric columns right, and the
-#' `*Note.*` paragraph follows the table after a blank line.
+#' rule row aligns the first column, which names the units, and the other
+#' text columns left and numeric columns right, and the `*Note.*` paragraph
+#' follows the table after a blank line.
 #'
 #' @section Changed in 0.9.0:
 #' The default is now `format = "apa"`. Earlier versions returned the numeric

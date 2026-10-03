@@ -1,8 +1,11 @@
 #' Printing, summarizing, and plotting contentvalidR results
 #'
 #' @description
-#' Every contentvalidR result has a `print()` method, and nearly every one
-#' has `as.data.frame()`. The six workflows and [compare_rounds()] also have
+#' Every contentvalidR result has a `print()` method, except those of three
+#' auxiliary helpers: [qfactor_content()] returns a plain list, and
+#' [simulate_csv_power()] and [simulate_anova_power()] return a number.
+#' Nearly every result with a `print()` method also has `as.data.frame()`.
+#' The six workflows and [compare_rounds()] also have
 #' `summary()`, and the results that have a figure have `plot()`. This page
 #' says what each method does for each kind of result. The function that
 #' made a result documents the result itself, such as the columns of a
@@ -61,9 +64,9 @@
 #' the cells under review.
 #'
 #' `summary()` of a [compare_rounds()] result returns a
-#' `summary.contentvalid_rounds` list whose `changed` holds the units whose
-#' status changed between the first and last rounds, with the counts in
-#' `summary`.
+#' `summary.contentvalid_rounds` list whose `changed` holds the units that
+#' changed status between the first and last rounds, entered or left, or
+#' appeared only in between, with the counts in `summary`.
 #'
 #' @section plot():
 #' Figures are drawn with base graphics, and each has its own help page:

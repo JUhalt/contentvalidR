@@ -451,7 +451,7 @@
     ),
     congruence = c(
       Congruent = "its index of item-objective congruence met the criterion.",
-      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the closest other.",
+      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the other objective with the highest mean rating.",
       "Target described" = "only its intended objective was rated, so there is nothing to compare.",
       "Insufficient data" = "no usable ratings for its intended objective.",
       "Descriptive only" = "no intended objective was given, so the index is only described."

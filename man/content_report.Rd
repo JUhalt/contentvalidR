@@ -57,8 +57,9 @@ The Markdown lines become a table only when the document receives them as
 Markdown, so print them in a code chunk with the option
 \code{results = "asis"} (in Quarto, \verb{#| output: asis}). In a chunk with the
 default option, they show as console output, pipes and all. The
-rule row aligns text columns left and numeric columns right, and the
-\verb{*Note.*} paragraph follows the table after a blank line.
+rule row aligns the first column, which names the units, and the other
+text columns left and numeric columns right, and the \verb{*Note.*} paragraph
+follows the table after a blank line.
 }
 
 \section{Changed in 0.9.0}{

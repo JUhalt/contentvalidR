@@ -125,10 +125,13 @@ corrects for (Polit et al., 2007).}
 \item{\code{kappa_mod}}{Modified kappa.}
 \item{\code{cvi_criterion}}{The I-CVI that Lynn's (1986) criterion requires
 for the item's panel size, as a proportion; \code{NA} below three
-experts.}
-\item{\code{kappa_quality}}{The band of \code{kappa_mod}: \code{"Excellent"} above
-.74, \code{"Good"} from .60, and \code{"Fair"} from .40, the criteria Polit et
-al. (2007) use, and \code{"Poor"} below .40.}
+experts. It is shown for reading: the decision compares counts.}
+\item{\code{kappa_quality}}{The band of \code{kappa_mod} in the guidelines of
+Cicchetti and Sparrow (1981) and Fleiss (1981), as cited in Polit et
+al. (2007), who apply them to modified kappa: \code{"Excellent"} above
+.74, \code{"Good"} from .60 to .74, \code{"Fair"} from .40 to .59, and
+\code{"Poor"} below .40. The band describes the item and decides nothing;
+every item that meets the I-CVI criterion is \code{"Excellent"}.}
 \item{\code{ci_width}}{The width of the interval for V,
 \code{ci_high - ci_low}.}
 \item{\code{recommendation}}{\code{"Strong support"} (the item meets the I-CVI
@@ -176,15 +179,6 @@ Without a target objective, congruence \code{results} hold \code{item},
 \code{n_objectives} (objectives the item was rated on), \code{best_objective} and
 \code{best_ioc} (the objective with the highest index, and that index), and
 \code{recommendation}, which is \code{"Descriptive only"}.
-
-In relevance mode, \code{results} also holds \code{cvi_criterion}, the I-CVI that
-Lynn's criterion asks of the item's panel size, shown for reading (the
-decision compares counts), and \code{kappa_quality}, the band of \code{kappa_mod}
-in the guidelines of Cicchetti and Sparrow (1981) and Fleiss (1981), as
-cited in Polit et al. (2007), who apply them to modified kappa:
-\code{"Excellent"} above .74, \code{"Good"} from .60 to .74, \code{"Fair"} from .40 to
-.59, and \code{"Poor"} below .40. The band describes the item and decides
-nothing; every item that meets the I-CVI criterion is \code{"Excellent"}.
 }
 \description{
 Provides a user-facing workflow for three common expert-panel tasks:

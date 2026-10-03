@@ -426,11 +426,14 @@ test_that("the profile draws at full size and fits its verdicts", {
                          `Item sort` = sort_validity(sorts),
                          `Second relevance panel` = panel)
   cex <- numeric(0)
+  # The session's own plot.new hooks are put back, not removed.
+  old_hook <- getHook("plot.new")
   setHook("plot.new", function() cex <<- c(cex, graphics::par("cex")))
-  on.exit(setHook("plot.new", NULL, "replace"), add = TRUE)
+  on.exit(setHook("plot.new", old_hook, "replace"), add = TRUE)
+  # Each device is closed on exit, also when a plot() call fails.
   grDevices::pdf(NULL, width = 7.5, height = 5.5)
+  on.exit(grDevices::dev.off(), add = TRUE)
   plot(ev)
-  grDevices::dev.off()
   # layout() would have drawn three stages at 0.66.
   expect_true(length(cex) >= 4L)
   expect_true(all(cex == 1))
@@ -438,6 +441,7 @@ test_that("the profile draws at full size and fits its verdicts", {
   # Each verdict fits between its start and the room given, at 8 points or
   # more, wrapping where shrinking is not enough.
   grDevices::pdf(NULL, width = 7.5, height = 5.5)
+  on.exit(grDevices::dev.off(), add = TRUE)
   graphics::plot.new()
   smallest <- 8 / graphics::par("ps")
   verdict <- c("carried", paste("held back: Relevance panel; Item sort;",
@@ -450,7 +454,6 @@ test_that("the profile draws at full size and fits its verdicts", {
   # Short verdicts keep their size.
   short <- contentvalidR:::.evidence_fit_text("carried", 1, room = 0.5,
                                               cex = 0.78, smallest = smallest)
-  grDevices::dev.off()
   expect_gte(fit$cex, smallest)
   expect_gt(length(fit$lines[[2]]), 1L)
   expect_true(all(unlist(widths) <= 0.25))
@@ -477,8 +480,8 @@ test_that("the profile draws at full size and fits its verdicts", {
   expect_gt(narrow$mar_top, 1.9)
   expect_false(plan_on(ev, 7.5, 5.5)$numbered)
   grDevices::pdf(NULL, width = 5, height = 4)
+  on.exit(grDevices::dev.off(), add = TRUE)
   drawn <- plot(long)
-  grDevices::dev.off()
   expect_identical(drawn, long)
 })
 
@@ -499,8 +502,8 @@ test_that("the profile's key lists only what was drawn", {
   expect_false(grepl("Cross", key(ev$evidence), fixed = TRUE))
   expect_match(key(ev$evidence), "Filled: met the criterion.", fixed = TRUE)
   grDevices::pdf(NULL)
+  on.exit(grDevices::dev.off(), add = TRUE)
   drawn <- plot(ev)
-  grDevices::dev.off()
   expect_identical(drawn, ev)
 
   # Construct ratings have no criterion line, so a filled symbol met the
