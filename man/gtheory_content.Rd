@@ -61,7 +61,7 @@ components, then reports how dependably the panel's ratings generalize over
 judges.
 
 This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+ratings in Crocker et al. (1988). Items are the objects of
 measurement and judges are the facet of generalization, so the question the
 analysis answers is: \emph{if a different panel of judges of the same size had
 rated these items, how similar would the conclusions be?}

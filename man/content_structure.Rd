@@ -69,15 +69,15 @@ the items cover the domain: see \code{\link[=domain_validity]{domain_validity()}
 \section{What is published and what is this package's choice}{
 
 Sireci and Geisinger scaled the experts' similarity ratings and then ran a
-hierarchical cluster analysis, with average linkage, on the items' scaling
-coordinates. \code{content_structure()} does the same, so the clusters depend
-on the number of dimensions retained. Three things differ from their
-procedure and are this package's choices:
+hierarchical cluster analysis on the items' scaling coordinates.
+\code{content_structure()} does the same, so the clusters depend on the number
+of dimensions retained. Four things differ from their procedure or are not
+stated in it, and are this package's choices:
 \itemize{
 \item In their 1995 study they scaled each expert's matrix with an
 individual-differences model (INDSCAL). This function applies classical
-(Torgerson) scaling to one similarity matrix, usually the experts' mean
-ratings.
+scaling to one similarity matrix, usually the experts' mean ratings.
+\item The clusters are formed with average linkage.
 \item They read the correspondence with the blueprint from the cluster table
 and from regressions of relevance ratings on the coordinates. The
 adjusted Rand index is added here to put a number on that
@@ -97,10 +97,12 @@ coordinates, so the number of dimensions had no effect on the clusters.
 The retained dimensionality is reported rather than chosen silently. For
 every dimensionality up to \code{max_dims}, the \code{fit} table gives two measures
 of how well the map reproduces the similarities. \code{gof} is the goodness of
-fit of classical scaling: the share of the eigenvalue total that the
-retained dimensions account for. \code{stress} is the root of the squared
-differences between the dissimilarities and the map distances, over the
-squared dissimilarities; 0 is an exact map.
+fit of classical scaling: the share of the sum of the absolute eigenvalues
+that the retained dimensions account for. \code{stress}, printed as
+"distortion", is the root of the squared differences between the
+dissimilarities and the map distances, over the squared dissimilarities;
+0 is an exact map. It need not fall as dimensions are added, because
+classical scaling does not minimize it.
 
 That \code{stress} is not Kruskal's (1964) stress-1, which compares the map
 distances with monotonically transformed dissimilarities in a nonmetric
@@ -117,15 +119,15 @@ dimensionality.
 items <- paste0("I", 1:9)
 blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
 sim <- matrix(c(
-  5, 4, 4, 2, 2, 1, 1, 2, 1,
-  4, 5, 4, 2, 1, 2, 2, 1, 1,
-  4, 4, 5, 1, 2, 2, 1, 1, 2,
-  2, 2, 1, 5, 4, 4, 2, 2, 1,
-  2, 1, 2, 4, 5, 4, 1, 2, 2,
-  1, 2, 2, 4, 4, 5, 2, 1, 2,
-  1, 2, 1, 2, 1, 2, 5, 4, 4,
-  2, 1, 1, 2, 2, 1, 4, 5, 4,
-  1, 1, 2, 1, 2, 2, 4, 4, 5
+  5, 4, 3, 2, 2, 1, 1, 2, 1,
+  4, 5, 4, 3, 1, 2, 2, 1, 1,
+  3, 4, 5, 1, 2, 2, 1, 1, 3,
+  2, 3, 1, 5, 4, 3, 2, 2, 1,
+  2, 1, 2, 4, 5, 4, 1, 3, 2,
+  1, 2, 2, 3, 4, 5, 2, 1, 2,
+  1, 2, 1, 2, 1, 2, 5, 3, 4,
+  2, 1, 1, 2, 3, 1, 3, 5, 4,
+  1, 1, 3, 1, 2, 2, 4, 4, 5
 ), 9, 9, dimnames = list(items, items))
 content_structure(sim, membership = blueprint)
 }

@@ -19,9 +19,10 @@
 #' items, or too few, are content gaps that no amount of item-level relevance
 #' evidence will reveal, because an item can only be rated if it exists.
 #'
-#' Structure is assessed with the multidimensional scaling and cluster analysis
-#' procedure of Sireci and Geisinger (1992), and is run when expert similarity
-#' data is supplied. See [content_structure()].
+#' Structure is assessed with a multidimensional scaling and cluster analysis
+#' adapted from Sireci and Geisinger (1992, 1995), run when expert similarity
+#' data is supplied. See [content_structure()] for what differs from their
+#' procedure.
 #'
 #' @param assignments A data frame mapping items to blueprint cells.
 #' @param item_col Column naming each item.
@@ -32,7 +33,8 @@
 #'   specifications.
 #' @param domain Optional character vector of every cell the blueprint intends
 #'   to cover. Supplying it is what makes **empty** cells detectable; without it
-#'   only the cells that already contain items can be reported.
+#'   only the cells that already contain items, or that `targets` names, can
+#'   be reported.
 #' @param min_items Fewest items a cell may hold before it is flagged as thinly
 #'   covered. With `targets`, a cell is compared with the smaller of
 #'   `min_items` and its own target, so a cell the blueprint gives one item is
@@ -47,7 +49,11 @@
 #'   items per cell. When supplied, expected shares come from it rather than
 #'   from an assumption of equal cells, and cells far below their intended
 #'   share are flagged. Without it under-representation is not judged,
-#'   because an equal share is an assumption, not a blueprint.
+#'   because an equal share is an assumption, not a blueprint. A cell named
+#'   in `targets` is part of the blueprint, so it is reported (as not
+#'   covered) even when no item is assigned to it. With `domain`, every cell
+#'   `targets` names must be in `domain`. A fractional target is rounded up
+#'   where it sets the thin-coverage floor.
 #' @param similarity Optional square item-by-item expert similarity matrix. When
 #'   supplied, the content-structure analysis is run and reported alongside
 #'   coverage.
@@ -78,6 +84,10 @@
 #' Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 #' cluster analysis and multidimensional scaling. *Applied Psychological
 #' Measurement, 16*(1), 17–31. \doi{10.1177/014662169201600102}
+#'
+#' Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to
+#' assess content representation: An MDS analysis. *Applied Psychological
+#' Measurement, 19*(3), 241–255. \doi{10.1177/014662169501900303}
 #'
 #' @seealso [content_structure()], [similarity_from_sort()], [ioc()].
 #'
@@ -138,25 +148,6 @@ domain_validity <- function(assignments,
   }
   cells <- .domain_cell_labels(d, cell_col, facet_col)
 
-  observed <- unique(cells)
-  if (!is.null(domain)) {
-    .validate_labels(domain, "domain")
-    domain <- unique(.as_label(domain))
-    unknown <- setdiff(observed, domain)
-    if (length(unknown)) {
-      stop("These cells appear in `assignments` but not in `domain`: ",
-           paste(unknown, collapse = ", "),
-           ". Add them to `domain` or correct the assignments.", call. = FALSE)
-    }
-    all_cells <- domain
-  } else {
-    all_cells <- sort(observed)
-  }
-
-  n_items <- length(items)
-  n_cells <- length(all_cells)
-  counts <- vapply(all_cells, function(z) sum(cells == z), integer(1))
-
   if (!is.null(targets)) {
     if (!is.numeric(targets) || is.null(names(targets)) || anyNA(targets) ||
         any(targets < 0) || any(!is.finite(targets))) {
@@ -168,6 +159,37 @@ domain_validity <- function(assignments,
            paste(unique(names(targets)[duplicated(names(targets))]),
                  collapse = ", "), ".", call. = FALSE)
     }
+  }
+
+  observed <- unique(cells)
+  if (!is.null(domain)) {
+    .validate_labels(domain, "domain")
+    domain <- unique(.as_label(domain))
+    unknown <- setdiff(observed, domain)
+    if (length(unknown)) {
+      stop("These cells appear in `assignments` but not in `domain`: ",
+           paste(unknown, collapse = ", "),
+           ". Add them to `domain` or correct the assignments.", call. = FALSE)
+    }
+    extra <- setdiff(names(targets), domain)
+    if (length(extra)) {
+      stop("`targets` names cells that are not in `domain`: ",
+           paste(extra, collapse = ", "),
+           ". Add them to `domain` or remove them from `targets`.",
+           call. = FALSE)
+    }
+    all_cells <- domain
+  } else {
+    # A cell with a target is part of the blueprint, so a target cell that
+    # holds no item is reported as not covered rather than left out.
+    all_cells <- sort(union(observed, names(targets)))
+  }
+
+  n_items <- length(items)
+  n_cells <- length(all_cells)
+  counts <- vapply(all_cells, function(z) sum(cells == z), integer(1))
+
+  if (!is.null(targets)) {
     missing_targets <- setdiff(all_cells, names(targets))
     if (length(missing_targets)) {
       stop("`targets` is missing entries for: ",
@@ -187,7 +209,8 @@ domain_validity <- function(assignments,
   thin_floor <- if (is.null(targets)) {
     rep(min_items, n_cells)
   } else {
-    pmin(min_items, pmax(target_n, 1))
+    # Rounded up: a cell cannot hold part of an item.
+    pmin(min_items, pmax(ceiling(target_n - 1e-9), 1))
   }
   thin <- !empty & counts < thin_floor
   over <- !empty & !is.na(expected_share) & share > over_factor * expected_share
@@ -257,6 +280,9 @@ domain_validity <- function(assignments,
   structure_fit <- NULL
   if (!is.null(similarity)) {
     sim_mat <- as.matrix(similarity)
+    # Item names are compared as trimmed text, as the assignments are.
+    if (!is.null(rownames(sim_mat))) rownames(sim_mat) <- .as_label(rownames(sim_mat))
+    if (!is.null(colnames(sim_mat))) colnames(sim_mat) <- .as_label(colnames(sim_mat))
     sim_items <- rownames(sim_mat)
     if (!is.null(sim_items)) {
       unknown_items <- setdiff(sim_items, items)
@@ -275,7 +301,7 @@ domain_validity <- function(assignments,
       }
       membership <- cells
     }
-    structure_fit <- content_structure(similarity, membership = membership, ...)
+    structure_fit <- content_structure(sim_mat, membership = membership, ...)
   }
 
   scale_summary <- data.frame(
@@ -292,7 +318,8 @@ domain_validity <- function(assignments,
   )
 
   settings <- list(
-    method = "Blueprint coverage with optional Sireci-Geisinger content structure",
+    method = paste("Blueprint coverage with optional content structure",
+                   "adapted from Sireci and Geisinger"),
     min_items = as.integer(min_items),
     over_factor = over_factor,
     targets_supplied = !is.null(targets),
@@ -337,7 +364,11 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
   cat("Items: ", s$n_items, " | Blueprint cells: ", s$n_cells, "\n", sep = "")
   .say(paste0(
     "Criteria: at least ", st$min_items, " item", if (st$min_items != 1L) "s",
-    " per cell, and no cell above ", format(st$over_factor),
+    " per cell",
+    if (isTRUE(st$targets_supplied) && st$min_items > 1L) {
+      " (or the cell's target, if smaller)"
+    },
+    ", and no cell above ", format(st$over_factor),
     " times its expected share",
     if (isTRUE(st$targets_supplied)) {
       paste0(" or below 1/", format(st$over_factor),
@@ -348,7 +379,8 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     if (identical(st$over_possible, FALSE)) {
       paste(" With these cells no share can exceed that multiple, so no",
             "cell can be flagged as over-represented.")
-    }
+    },
+    " These criteria are contentvalidR conventions, not published standards."
   ))
   cat("\n")
   .say(paste0(s$n_covered, " of ", s$n_cells,
@@ -369,9 +401,15 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
 
   if (!isTRUE(s$domain_supplied)) {
     cat("\n")
-    .say("No `domain` was supplied, so only cells that already contain items",
-         "could be reported. Cells intended by the blueprint but holding no",
-         "items cannot be detected this way.")
+    if (isTRUE(st$targets_supplied)) {
+      .say("No `domain` was supplied, so the cells reported are those holding",
+           "items and those named in `targets`. A cell intended by the",
+           "blueprint but named in neither cannot be detected this way.")
+    } else {
+      .say("No `domain` was supplied, so only cells that already contain items",
+           "could be reported. Cells intended by the blueprint but holding no",
+           "items cannot be detected this way.")
+    }
   }
 
   if (!is.null(x$details$structure)) {
@@ -404,6 +442,7 @@ summary.contentvalid_domain <- function(object, ...) {
   core$n_cells <- object$design$n_cells
   core$structure <- object$details$structure
   core$domain_supplied <- object$scale_summary$domain_supplied
+  core$targets_supplied <- isTRUE(object$settings$targets_supplied)
   core$gaps <- object$results[object$results$status == "Review", , drop = FALSE]
   class(core) <- "summary.contentvalid_domain"
   core
@@ -437,10 +476,46 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 
   if (!isTRUE(x$domain_supplied)) {
     cat("\n")
-    .say("Note: no `domain` was supplied, so empty cells could not be",
-         "detected.")
+    .say(if (isTRUE(x$targets_supplied)) {
+      paste("Note: no `domain` was supplied, so only cells named in `targets`",
+            "could be detected as empty.")
+    } else {
+      "Note: no `domain` was supplied, so empty cells could not be detected."
+    })
   }
   invisible(x)
+}
+
+# The point symbols and colours of a content map, and those of its key. A
+# symbol or colour given once per cell is applied by cell, so the key still
+# matches the points. A symbol given any other way leaves no key, which could
+# no longer tell the cells apart. NULL colours leave the defaults in place.
+.structure_symbols <- function(group, user) {
+  n <- nlevels(group)
+  at <- as.integer(group)
+  key_pch <- (seq_len(n) - 1L) %% 25L + 1L
+  pch <- key_pch[at]
+  if (!is.null(user$pch)) {
+    if (length(user$pch) == n) {
+      key_pch <- user$pch
+      pch <- user$pch[at]
+    } else {
+      key_pch <- NULL
+      pch <- user$pch
+    }
+  }
+  col <- NULL
+  key_col <- NULL
+  if (!is.null(user$col)) {
+    if (length(user$col) == n) {
+      key_col <- user$col
+      col <- user$col[at]
+    } else {
+      if (length(user$col) == 1L) key_col <- user$col
+      col <- user$col
+    }
+  }
+  list(pch = pch, col = col, key_pch = key_pch, key_col = key_col)
 }
 
 #' Plot an expert content map
@@ -454,22 +529,25 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
 #' @param x A `contentvalid_structure` object.
 #' @param show_legend Draw the blueprint-cell key.
 #' @param ... Passed to [graphics::plot()]. An argument given here, such as
-#'   `xlab`, `xlim` or `main`, replaces the one the method would set.
+#'   `xlab`, `xlim` or `main`, replaces the one the method would set. A `pch`
+#'   or `col` with one value per blueprint cell (or cluster) is applied cell
+#'   by cell and shown in the key; a `pch` of any other length leaves the key
+#'   out, because it could no longer tell the cells apart.
 #'
 #' @return `x`, invisibly. Called for the plot.
 #' @examples
 #' items <- paste0("I", 1:9)
 #' blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
 #' sim <- matrix(c(
-#'   5, 4, 4, 2, 2, 1, 1, 2, 1,
-#'   4, 5, 4, 2, 1, 2, 2, 1, 1,
-#'   4, 4, 5, 1, 2, 2, 1, 1, 2,
-#'   2, 2, 1, 5, 4, 4, 2, 2, 1,
-#'   2, 1, 2, 4, 5, 4, 1, 2, 2,
-#'   1, 2, 2, 4, 4, 5, 2, 1, 2,
-#'   1, 2, 1, 2, 1, 2, 5, 4, 4,
-#'   2, 1, 1, 2, 2, 1, 4, 5, 4,
-#'   1, 1, 2, 1, 2, 2, 4, 4, 5
+#'   5, 4, 3, 2, 2, 1, 1, 2, 1,
+#'   4, 5, 4, 3, 1, 2, 2, 1, 1,
+#'   3, 4, 5, 1, 2, 2, 1, 1, 3,
+#'   2, 3, 1, 5, 4, 3, 2, 2, 1,
+#'   2, 1, 2, 4, 5, 4, 1, 3, 2,
+#'   1, 2, 2, 3, 4, 5, 2, 1, 2,
+#'   1, 2, 1, 2, 1, 2, 5, 3, 4,
+#'   2, 1, 1, 2, 3, 1, 3, 5, 4,
+#'   1, 1, 3, 1, 2, 2, 4, 4, 5
 #' ), 9, 9, dimnames = list(items, items))
 #' plot(content_structure(sim, membership = blueprint))
 #' @export
@@ -482,7 +560,9 @@ plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
   cl <- x$clusters
 
   group <- if (!is.null(cl$blueprint_cell)) factor(cl$blueprint_cell) else factor(cl$cluster)
-  pch <- (as.integer(group) - 1L) %% 25L + 1L
+  sym <- .structure_symbols(group, user)
+  user$pch <- NULL
+  user$col <- NULL
   # A map with one usable dimension is a strip: every item at height 0.
   one_dim <- ncol(pts) < 2L
   px <- pts[, 1]
@@ -492,26 +572,28 @@ plot.contentvalid_structure <- function(x, show_legend = TRUE, ...) {
   pad <- 0.15 * c(diff(xr), diff(yr))
   pad[!is.finite(pad) | pad == 0] <- 1
 
-  # What the caller passes replaces what the method would set, so `xlab`,
-  # `pch` or `xlim` never collide with it.
+  # What the caller passes replaces what the method would set, so `xlab`
+  # or `xlim` never collide with it.
   args <- list(
-    x = px, y = py, pch = pch,
+    x = px, y = py, pch = sym$pch,
     xlim = xr + c(-pad[1], pad[1]),
     ylim = yr + c(-pad[2], pad[2] * 1.6),
     xlab = "Dimension 1", ylab = if (one_dim) "" else "Dimension 2"
   )
+  if (!is.null(sym$col)) args$col <- sym$col
   if (one_dim) args$yaxt <- "n"
   args[names(user)] <- user
   do.call(graphics::plot, args)
   graphics::text(px, py, labels = rownames(pts), pos = 3, cex = 0.7)
 
-  if (isTRUE(show_legend)) {
+  if (isTRUE(show_legend) && !is.null(sym$key_pch)) {
     # Name what the symbols stand for: the blueprint's cells when one was
     # supplied, otherwise the clusters recovered from the similarities.
-    graphics::legend("top", legend = levels(group),
-                     pch = (seq_along(levels(group)) - 1L) %% 25L + 1L,
-                     title = if (!is.null(cl$blueprint_cell)) "Blueprint cell" else "Cluster",
-                     bty = "n", horiz = TRUE, cex = 0.72, x.intersp = 0.7)
+    key <- list("top", legend = levels(group), pch = sym$key_pch,
+                title = if (!is.null(cl$blueprint_cell)) "Blueprint cell" else "Cluster",
+                bty = "n", horiz = TRUE, cex = 0.72, x.intersp = 0.7)
+    if (!is.null(sym$key_col)) key$col <- sym$key_col
+    do.call(graphics::legend, key)
   }
   invisible(x)
 }

@@ -353,11 +353,6 @@ Works cited in this README, the help pages, and the vignettes.
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
   for scaled disagreement or partial credit. *Psychological Bulletin,
   70*(4), 213–220. <https://doi.org/10.1037/h0026256>
-- Colquitt, J. A., Baer, M. D., Long, D. M., &
-  Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social
-  exchange relationships: A comparison of relative content validity.
-  *Journal of Applied Psychology, 99*(4), 599–618.
-  <https://doi.org/10.1037/a0036374>
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
   Content validation guidelines: Evaluation criteria for definitional
   correspondence and definitional distinctiveness. *Journal of Applied
@@ -451,13 +446,13 @@ Works cited in this README, the help pages, and the vignettes.
 - Lawshe, C. H. (1975). A quantitative approach to content validity.
   *Personnel Psychology, 28*(4), 563–575.
   <https://doi.org/10.1111/j.1744-6570.1975.tb01393.x>
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
+  bias* $$Facets help$$. Winsteps.com. Retrieved October 2, 2026, from
+  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 - Linacre, J. M. (2002). What do infit and outfit, mean-square and
   standardized mean? *Rasch Measurement Transactions, 16*(2), 878.
   <https://www.rasch.org/rmt/rmt162f.htm>
-- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
-  bias* (Facets help). Winsteps.com.
-  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
   <https://doi.org/10.1097/00006199-198611000-00017>

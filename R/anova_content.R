@@ -1,4 +1,4 @@
-#' Hinkin-Tracey ANOVA content test
+#' Repeated-measures ANOVA content test for construct ratings
 #'
 #' @description
 #' For each item, evaluates whether definitional-correspondence ratings differ
@@ -25,14 +25,22 @@
 #' evidence.
 #'
 #' @section What is published and what is this package's choice:
-#' The rating task is Hinkin and Tracey's (1999), and the repeated-measures
-#' ANOVA with a planned contrast is MacKenzie et al.'s (2011)
-#' recommendation for it. Four details are contentvalidR choices, not taken
-#' from either source: the Greenhouse-Geisser corrected *p* as the screening
-#' *p*; one one-sided paired contrast for each orbiting construct, where
-#' MacKenzie et al. describe a single contrast against the other constructs;
-#' no multiplicity adjustment by default; and the screening rule that the
-#' omnibus test and every contrast must pass.
+#' The rating task is Hinkin and Tracey's (1999). The repeated-measures ANOVA
+#' followed, when its *F* is significant, by a planned contrast of the
+#' intended construct against the others is MacKenzie et al.'s (2011)
+#' recommendation for it, so the rule that an item passes the omnibus test
+#' and then its contrasts follows their sequence. These details are
+#' contentvalidR choices, not taken from either source:
+#'
+#' * The Greenhouse-Geisser corrected *p* is the screening *p* of the omnibus
+#'   test.
+#' * There is one one-sided paired contrast for each orbiting construct, and
+#'   every one must pass, where MacKenzie et al. describe a single contrast
+#'   against the other constructs.
+#' * The contrasts are not adjusted for their number unless `adjust = "holm"`.
+#' * The tests use the judges who rated the item against every construct, and
+#'   need at least two of them.
+#' * In a between-judge design the contrasts are one-sided Welch *t* tests.
 #'
 #' @param ratings A long-format data.frame with item, rater, construct, and
 #'   numeric rating columns.
@@ -60,7 +68,15 @@
 #'   deviation of the differences in a within-judge design, and Cohen's *d*
 #'   with the pooled standard deviation in a between-judge design.
 #'   `p_screen` is the *p* the screening uses: the Greenhouse-Geisser corrected
-#'   `p_gg` in a within-judge design and `p` otherwise.
+#'   `p_gg` in a within-judge design where a correction applies, and `p`
+#'   otherwise. `max_contrast_p` is the largest contrast *p*, and `NA` when a
+#'   contrast has no *p* because every judge rated the intended construct and
+#'   another the same.
+#'
+#'   When every judge's ratings differ across the constructs by the same
+#'   amounts there is no error variance: `F` is `Inf`, `p` is 0, no
+#'   sphericity correction applies (`epsilon_gg`, `df1_gg`, `df2_gg` and
+#'   `p_gg` are `NA`), and `p_screen` is `p`.
 #'   It prints as a formatted table in APA style; the values themselves are
 #'   unrounded, and `as.data.frame()` returns the plain data frame.
 #'   `posthoc_pass`, a duplicate of `contrast_pass` deprecated in 0.7.0, was
@@ -183,7 +199,11 @@ anova_content <- function(ratings,
 
     contrast_pass <- if (!nrow(con) || any(is.na(con$pass))) NA else all(con$pass)
     min_diff <- if (nrow(con) && any(!is.na(con$mean_diff))) min(con$mean_diff, na.rm = TRUE) else NA_real_
-    max_p <- if (nrow(con) && any(!is.na(con$p_adj))) max(con$p_adj, na.rm = TRUE) else NA_real_
+    # The largest contrast p is the one every contrast is at or below. A
+    # contrast with no p (the intended construct and another rated the same
+    # by every judge) fails, so skipping it would report a largest p that
+    # meets alpha beside a decision that says a contrast did not.
+    max_p <- if (nrow(con) && !anyNA(con$p_adj)) max(con$p_adj) else NA_real_
 
     rows[[i]] <- data.frame(
       item = item,

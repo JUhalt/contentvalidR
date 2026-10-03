@@ -18,37 +18,52 @@ rating_data <- function(items = c("I1", "I2", "I3"), raters = 1:8, seed = 5) {
   d
 }
 
-test_that("an item with one complete judge stays out of the scale means", {
+test_that("an index that rests on one judge stays out of its scale mean", {
   d <- rating_data()
+  # Seven judges skip construct B for I3: one judge rated it against every
+  # construct, and all eight rated it against its intended one.
   d$rating[d$item == "I3" & d$rater != 1 & d$construct == "B"] <- NA
   fit <- rating_validity(d)
   r <- fit$results
-  expect_identical(r$recommendation[r$item == "I3"], "Insufficient data")
-  # Its one judge still gives it an HTC and an HTD.
-  expect_false(is.na(r$htc[r$item == "I3"]))
-  expect_false(is.na(r$htd[r$item == "I3"]))
+  i3 <- r$item == "I3"
+  expect_identical(r$recommendation[i3], "Insufficient data")
+  expect_identical(r$n_complete[i3], 1L)
+  expect_identical(r$n_target[i3], 8L)
+  expect_false(is.na(r$htd[i3]))
 
+  # HTD from one judge is left out. HTC from eight judges is kept: dropping
+  # it would move mean HTC on the evidence of the whole panel.
   s <- fit$scale_summary
-  decided <- r$recommendation != "Insufficient data"
-  expect_equal(s$mean_htc, mean(r$htc[decided]))
-  expect_equal(s$mean_htd, mean(r$htd[decided]))
+  expect_equal(s$mean_htd, mean(r$htd[!i3]))
+  expect_equal(s$mean_htc, mean(r$htc))
   expect_identical(s$n_items, 3L)
-  expect_identical(s$n_htc, 2L)
+  expect_identical(s$n_htc, 3L)
   expect_identical(s$n_htd, 2L)
 
-  out <- flat(fit)
-  expect_match(out, "A: mean HTC and mean HTD use 2 of 3 items; an item without a decision is left out.",
+  sentence <- paste("A: mean HTC uses 3 and mean HTD 2 of 3 items; an index",
+                    "that rests on fewer than two judges is left out.")
+  expect_match(flat(fit), sentence, fixed = TRUE)
+  expect_match(flat(summary(fit)), "mean HTC uses 3 and mean HTD 2 of 3 items",
                fixed = TRUE)
-  expect_match(flat(summary(fit)), "mean HTC and mean HTD use 2 of 3 items",
-               fixed = TRUE)
+
+  # An item rated by a single judge at all is left out of both means.
+  one <- d[!(d$item == "I3" & d$rater != 1), ]
+  s1 <- rating_validity(one)$scale_summary
+  expect_identical(c(s1$n_htc, s1$n_htd), c(2L, 2L))
+  expect_match(flat(rating_validity(one)),
+               "A: mean HTC and mean HTD use 2 of 3 items;", fixed = TRUE)
 })
 
 test_that("the scale means do not depend on alpha", {
   d <- rating_data()
-  a <- rating_validity(d, alpha = .05)$scale_summary
-  b <- rating_validity(d, alpha = .001)$scale_summary
-  expect_equal(a$mean_htc, b$mean_htc)
-  expect_equal(a$mean_htd, b$mean_htd)
+  d$rating[d$item == "I3" & d$rater != 1 & d$construct == "B"] <- NA
+  loose <- rating_validity(d, alpha = .05)
+  strict <- rating_validity(d, alpha = 1e-6)
+  # The decisions do change with alpha; the means and their counts must not.
+  expect_false(identical(loose$results$recommendation,
+                         strict$results$recommendation))
+  cols <- c("mean_htc", "mean_htd", "n_htc", "n_htd")
+  expect_equal(loose$scale_summary[cols], strict$scale_summary[cols])
 })
 
 test_that("exactly parallel judges give F = Inf, p = 0, and no correction", {
@@ -72,12 +87,40 @@ test_that("exactly parallel judges give F = Inf, p = 0, and no correction", {
   expect_identical(out$p_screen, 0)
   expect_equal(out$partial_eta2, 1)
   expect_true(out$contrast_pass)
+  expect_identical(out$max_contrast_p, 0)
+
+  # The contrasts beside it carry no rounding noise either: every judge's
+  # gap is the same, so t and dz are infinite, not quadrillions.
+  con <- attr(out, "contrasts")
+  expect_identical(con$t, c(Inf, Inf))
+  expect_identical(con$p, c(0, 0))
+  expect_identical(con$dz, c(Inf, Inf))
+  expect_equal(con$mean_diff, c(1.6, 2.4))
 
   txt <- flat(out)
   expect_match(txt, "F(2, 8) = Inf", fixed = TRUE)
   expect_match(txt, "F = Inf: the judges' rating profiles were exactly parallel",
                fixed = TRUE)
-  expect_false(grepl("Greenhouse-Geisser corrected, so", txt, fixed = TRUE))
+  expect_false(grepl("Greenhouse-Geisser corrected", txt, fixed = TRUE))
+})
+
+test_that("a real spread in a contrast is not taken for rounding noise", {
+  d <- expand.grid(item = "I1", rater = 1:8, construct = c("A", "B", "C"))
+  d$rating <- c(5, 4, 5, 4, 5, 4, 5, 4,
+                2, 2, 1, 2, 1, 2, 1, 2,
+                3, 2, 2, 1, 2, 1, 2, 1)
+  con <- attr(anova_content(d, target_map = c(I1 = "A")), "contrasts")
+  wide <- matrix(d$rating, nrow = 8)
+  ref <- stats::t.test(wide[, 1], wide[, 2], paired = TRUE,
+                       alternative = "greater")
+  expect_equal(con$t[1], unname(ref$statistic))
+  expect_equal(con$p[1], ref$p.value)
+  # The same ratings in far smaller units give the same test.
+  small <- d
+  small$rating <- small$rating * 1e-6
+  con_small <- attr(anova_content(small, target_map = c(I1 = "A")), "contrasts")
+  expect_equal(con_small$t, con$t)
+  expect_equal(con_small$p, con$p)
 })
 
 test_that("the zero-variance tolerance does not depend on the rating units", {
@@ -138,22 +181,39 @@ test_that("whole degrees of freedom print whole, and the note fits the test", {
   expect_false(grepl("fractional", txt, fixed = TRUE))
 
   three <- flat(anova_content(rating_data()))
-  expect_match(three, "Greenhouse-Geisser corrected, so their degrees of freedom are fractional",
+  expect_match(three, "Greenhouse-Geisser corrected, which reduces their degrees of freedom",
                fixed = TRUE)
   expect_match(three, "F\\([0-9]\\.[0-9]{2}, [0-9]+\\.[0-9]{2}\\) = ")
 })
 
-test_that(".fmt_df writes whole and fractional degrees of freedom", {
-  expect_identical(contentvalidR:::.fmt_df(c(2, 14, 1.8912, NA)),
-                   c("2", "14", "1.89", "NA"))
-  expect_identical(contentvalidR:::.fmt_df(2.0000000001), "2")
+test_that("the two degrees of freedom of a test are written to one precision", {
+  fmt <- contentvalidR:::.fmt_df
+  expect_identical(fmt(c(2, 1.8912), c(14, 20.84)), c("2, 14", "1.89, 20.84"))
+  expect_identical(fmt(2.0000000001, 8), "2, 8")
+  # A corrected pair in which one happens to be whole keeps its decimals:
+  # epsilon = 16/23 turns 2 and 46 into 1.39 and exactly 32.
+  expect_identical(fmt(2 * 16 / 23, 46 * 16 / 23), "1.39, 32.00")
+  expect_identical(contentvalidR:::.fmt_f_test(c(37.3712, Inf), c(1.39, 2),
+                                               c(32, 8)),
+                   c("F(1.39, 32.00) = 37.37", "F(2, 8) = Inf"))
+  expect_identical(contentvalidR:::.fmt_f_test(Inf, 2, 6, digits = 3),
+                   "F(2, 6) = Inf")
+
+  # The bundled example has such an item.
+  ex <- utils::read.csv(
+    system.file("extdata", "rating_example.csv", package = "contentvalidR"),
+    stringsAsFactors = FALSE
+  )
+  out <- flat(anova_content(ex))
+  expect_false(grepl("F\\([0-9]+\\.[0-9]+, [0-9]+\\) = ", out))
 })
 
 test_that("the test is credited to both of its sources", {
   d <- rating_data()
-  expect_match(flat(anova_content(d)),
-               "adapted from Hinkin & Tracey, 1999; MacKenzie et al., 2011",
-               fixed = TRUE)
+  lines <- strsplit(shown(anova_content(d)), "\n", fixed = TRUE)[[1]]
+  expect_identical(lines[1], "Content-validity ANOVA")
+  expect_identical(lines[2],
+                   "Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).")
   fit <- rating_validity(d)
   h <- content_handoff(fit)
   rule <- unique(h$item_evidence$rule)
@@ -179,9 +239,11 @@ test_that("the printout states the rule and its alpha", {
 })
 
 test_that("Retain means what the rule says", {
-  fit <- rating_validity(rating_data())
+  # At this alpha one item passes and two are held back.
+  fit <- rating_validity(rating_data(), alpha = 3e-4)
   r <- fit$results
   retain <- r$p_value <= fit$settings$alpha & r$contrast_pass
+  expect_true(any(retain) && !all(retain))
   expect_identical(r$recommendation == "Retain", retain)
   meaning <- contentvalidR:::.decision_meanings("construct-rating")[["Retain"]]
   expect_match(meaning, "omnibus test", fixed = TRUE)
@@ -267,6 +329,9 @@ test_that("expert-judge tables leave out the level columns", {
   expect_false(grepl("HTD level", out, fixed = TRUE))
   expect_false(grepl("Benchmark set", out, fixed = TRUE))
   expect_match(out, "mean HTC mean HTD", fixed = TRUE)
+  # The table holds means only, and its heading says so.
+  expect_match(out, "Target-scale means", fixed = TRUE)
+  expect_false(grepl("Target-scale Colquitt benchmarks", out, fixed = TRUE))
   sm <- flat(summary(fit))
   expect_false(grepl("HTC level", sm, fixed = TRUE))
   expect_false(grepl("HTD level", sm, fixed = TRUE))
@@ -276,6 +341,13 @@ test_that("expert-judge tables leave out the level columns", {
   naive <- flat(rating_validity(d))
   expect_match(naive, "HTC level", fixed = TRUE)
   expect_match(naive, "Benchmark set:", fixed = TRUE)
+  expect_match(naive, "Target-scale Colquitt benchmarks", fixed = TRUE)
+
+  # The judge type decides, not an empty column: a naive-judge fit with no
+  # decided item keeps its level columns in the summary, as in the print.
+  undecided <- d[d$rater == 1, ]
+  expect_match(flat(summary(rating_validity(undecided))), "HTC level",
+               fixed = TRUE)
 
   sorts <- utils::read.csv(
     system.file("extdata", "sort_example.csv", package = "contentvalidR"),
@@ -284,6 +356,7 @@ test_that("expert-judge tables leave out the level columns", {
   es <- sort_validity(sorts, judge_type = "expert")
   expect_false(grepl("Psa level", flat(es), fixed = TRUE))
   expect_false(grepl("Benchmark set", flat(es), fixed = TRUE))
+  expect_match(flat(es), "Scale-level means", fixed = TRUE)
   expect_false(grepl("Psa level", flat(summary(es)), fixed = TRUE))
   expect_false(grepl("overall", flat(summary(es)), fixed = TRUE))
   expect_match(flat(sort_validity(sorts)), "Psa level", fixed = TRUE)
@@ -310,11 +383,11 @@ test_that("results carry the corrected degrees of freedom of the screening p", {
                stats::pf(r$F, r$df1_gg, r$df2_gg, lower.tail = FALSE))
 })
 
-test_that("content_report() carries the F test and its effect size", {
+test_that("content_report() carries the F test, within 80 columns", {
   fit <- rating_validity(rating_data())
   rep <- content_report(fit)
-  expect_true(all(c("F test", "partial eta^2", "omnibus p", "contrast p") %in%
-                    names(rep)))
+  expect_identical(names(rep), c("item", "target", "judges", "HTC", "HTD",
+                                 "F test", "p", "contrast p", "decision"))
   r <- fit$results
   expect_identical(
     rep$`F test`[1],
@@ -322,19 +395,34 @@ test_that("content_report() carries the F test and its effect size", {
             formatC(r$df2_gg[1], format = "f", digits = 2),
             formatC(r$F[1], format = "f", digits = 2))
   )
-  expect_identical(rep$`partial eta^2`[1],
-                   sub("^0", "", formatC(r$partial_eta2[1], format = "f",
-                                         digits = 2)))
+  # One block at the console: every row starts with its item.
+  old <- options(width = 80)
+  on.exit(options(old), add = TRUE)
+  lines <- utils::capture.output(print(rep))
+  expect_length(lines, nrow(rep) + 1L)
+  expect_lte(max(nchar(lines)), 80L)
+  # The closest competitor and the effect size are in the numeric table.
   num <- content_report(fit, format = "data.frame")
-  expect_true(all(c("F", "df1_gg", "df2_gg", "partial_eta2") %in% names(num)))
+  expect_true(all(c("strongest_competitor", "F", "df1", "df2", "df1_gg",
+                    "df2_gg", "partial_eta2", "p_value") %in% names(num)))
 
-  # An F of Inf has no correction: the plain degrees of freedom are shown.
+  # An F of Inf has no correction: the plain degrees of freedom are shown,
+  # with no padding at any number of digits.
   d <- expand.grid(item = "I1", rater = 1:5, construct = c("A", "B", "C"),
                    stringsAsFactors = FALSE)
   d$target_construct <- "A"
   d$rating <- c(A = 5, B = 3, C = 2)[d$construct]
-  expect_identical(content_report(rating_validity(d))$`F test`,
+  inf_fit <- rating_validity(d)
+  expect_identical(content_report(inf_fit)$`F test`, "F(2, 8) = Inf")
+  expect_identical(content_report(inf_fit, digits = 3)$`F test`,
                    "F(2, 8) = Inf")
+
+  # A missing test is a dash, as in the anova print.
+  undecided <- rating_data()
+  undecided$rating[undecided$item == "I3" & undecided$rater != 1 &
+                     undecided$construct == "B"] <- NA
+  und <- content_report(rating_validity(undecided))
+  expect_identical(und$`F test`[und$item == "I3"], "--")
 })
 
 test_that("the profile figure draws complete-judge means and marks no decision", {
@@ -348,8 +436,42 @@ test_that("the profile figure draws complete-judge means and marks no decision",
   r <- fit$results
   expect_false(isTRUE(all.equal(r$target_mean[1], r$target_mean_complete[1])))
 
-  grDevices::pdf(NULL)
+  # What is drawn, not only that drawing runs.
+  lay <- contentvalidR:::.rating_profile_layout(r)
+  # Both ends of I1's gap come from its complete judges.
+  expect_equal(lay$target[1], r$target_mean_complete[1])
+  expect_identical(lay$both, c(TRUE, TRUE, FALSE))
+  # I3 has no decision: no gap, and a cross at its mean target rating.
+  expect_identical(lay$loose, c(FALSE, FALSE, TRUE))
+  expect_equal(lay$cross[3], r$target_mean[3])
+  expect_identical(lay$legend, c("Target", "Top competitor", "Gap (retain)",
+                                 "No decision"))
+  expect_identical(lay$pch, c(19, 1, NA, 4))
+  expect_identical(lay$lty, c(NA, NA, 1, NA))
+
+  grDevices::pdf(NULL, width = 7, height = 5)
   on.exit(grDevices::dev.off(), add = TRUE)
+
+  # With all five entries the key takes two rows and stays inside the plot.
+  tied <- data.frame(
+    item = "I4", rater = rep(1:8, 3), construct = rep(c("A", "B", "C"), each = 8),
+    target_construct = "A",
+    rating = c(5, 4, 5, 4, 5, 4, 5, 4,
+               4, 5, 4, 5, 4, 5, 4, 5,
+               1, 2, 1, 2, 2, 1, 1, 2),
+    stringsAsFactors = FALSE
+  )
+  five <- rating_validity(rbind(d, tied[names(d)]))
+  five_lay <- contentvalidR:::.rating_profile_layout(five$results)
+  expect_length(five_lay$legend, 5L)
+  plot(five, type = "profile")
+  key <- graphics::legend("top", legend = five_lay$legend, pch = five_lay$pch,
+                          lty = five_lay$lty, ncol = 3, cex = 0.72, bty = "n",
+                          x.intersp = 0.7, seg.len = 1.6, plot = FALSE)
+  usr <- graphics::par("usr")
+  expect_gte(key$rect$left, usr[1])
+  expect_lte(key$rect$left + key$rect$w, usr[2])
+
   expect_silent(plot(fit, type = "profile"))
   expect_silent(plot(fit, type = "profile", show_legend = FALSE))
   expect_silent(plot(fit, type = "map"))
@@ -378,10 +500,14 @@ test_that("an item held back by the omnibus test alone is told so", {
   expect_identical(r$recommendation, "Review")
   expect_identical(r$issue, "Every contrast met, omnibus test not met")
   expect_match(r$interpretation,
-               "Every planned contrast met the screening criterion, but the omnibus test did not",
+               "Every planned contrast met the screening criterion, but the omnibus test, which comes first in the procedure (MacKenzie et al., 2011), did not",
+               fixed = TRUE)
+  expect_match(r$interpretation,
+               "With two constructs the one-sided contrast p is half the omnibus p",
                fixed = TRUE)
   expect_false(grepl("weakest target-orbiting comparison", r$interpretation,
                      fixed = TRUE))
+  expect_false(grepl("this package's rule", r$interpretation, fixed = TRUE))
   # The omnibus p does not meet alpha, so its handoff row needs no note.
   h <- content_handoff(fit, keep = c("Supported", "Review"))
   expect_identical(h$item_statistics$note[h$item_statistics$statistic == "p_value"], "")
@@ -415,20 +541,100 @@ test_that("the handoff says when a contrast, not the omnibus p, held an item bac
                fixed = TRUE)
   expect_identical(note[st$item[st$statistic == "p_value"] == "I2"], "")
   expect_false(anyNA(st$note))
-  # Schema 1 is frozen: the same columns as before.
-  expect_identical(names(st), names(content_handoff(rating_validity(good))$item_statistics))
+  # Schema 1 is frozen: the columns the schema names, in its order.
+  expect_identical(names(st),
+                   names(contentvalidR:::.handoff_schema()$item_statistics))
+})
+
+test_that("a contrast with no p is named, not papered over by another's p", {
+  # Every judge rates the intended construct and B the same, and C far lower.
+  # The A-against-B contrast has no p and fails; A-against-C passes easily.
+  d <- data.frame(
+    item = "q1", rater = rep(paste0("J", 1:6), 3),
+    construct = rep(c("A", "B", "C"), each = 6),
+    rating = c(5, 4, 4, 5, 4, 5,
+               5, 4, 4, 5, 4, 5,
+               1, 2, 1, 1, 2, 1),
+    target_construct = "A", stringsAsFactors = FALSE
+  )
+  fit <- rating_validity(d)
+  r <- fit$results
+  con <- fit$details$contrasts
+  expect_true(is.na(con$p[con$competitor == "B"]))
+  expect_lt(con$p[con$competitor == "C"], .05)
+  expect_lte(r$p_value, .05)
+  expect_identical(r$recommendation, "Review")
+  # The largest contrast p is not the p of the contrast that passed.
+  expect_true(is.na(r$max_contrast_p))
+
+  st <- content_handoff(fit, keep = c("Supported", "Review"))$item_statistics
+  note <- st$note[st$statistic == "p_value"]
+  expect_match(note,
+               "every judge rated the intended construct and B the same, so that contrast has no p.",
+               fixed = TRUE)
+  expect_false(grepl("largest contrast p", note, fixed = TRUE))
+  out <- flat(fit)
+  expect_match(out,
+               "NA when a contrast could not be tested because every judge rated the intended construct and another the same",
+               fixed = TRUE)
+})
+
+test_that("the handoff says when the contrasts were Holm-adjusted", {
+  d <- data.frame(
+    item = "I1", rater = rep(1:4, 3), construct = rep(c("A", "B", "C"), each = 4),
+    rating = c(5, 2, 5, 3,
+               3, 1, 5, 2,
+               2, 1, 4, 2),
+    target_construct = "A", stringsAsFactors = FALSE
+  )
+  plain <- rating_validity(d)
+  holm <- rating_validity(d, adjust = "holm")
+  # The raw contrasts pass; the Holm-adjusted ones do not.
+  expect_identical(plain$results$recommendation, "Retain")
+  expect_identical(holm$results$recommendation, "Review")
+  h <- content_handoff(holm, keep = c("Supported", "Review"))
+  note <- h$item_statistics$note[h$item_statistics$statistic == "p_value"]
+  expect_match(note, "the largest Holm-adjusted contrast p = ", fixed = TRUE)
+  expect_match(h$item_evidence$rule, "contrast significant after Holm adjustment (",
+               fixed = TRUE)
+  expect_false(grepl("Holm", content_handoff(plain)$item_evidence$rule,
+                     fixed = TRUE))
+  expect_match(flat(holm), "the largest Holm-adjusted p among the planned",
+               fixed = TRUE)
+})
+
+test_that("a missing omnibus p carries a note saying why", {
+  d <- rating_data()
+  d$rating[d$item == "I3" & d$rater != 1 & d$construct == "B"] <- NA
+  flatd <- expand.grid(item = "I4", rater = 1:8, construct = c("A", "B", "C"),
+                       stringsAsFactors = FALSE)
+  flatd$target_construct <- "A"
+  flatd$rating <- 3
+  fit <- rating_validity(rbind(d, flatd[names(d)]))
+  st <- content_handoff(
+    fit, keep = c("Supported", "Review", "Insufficient data")
+  )$item_statistics
+  p_rows <- st[st$statistic == "p_value", ]
+  expect_true(is.na(p_rows$value[p_rows$item == "I3"]))
+  expect_match(p_rows$note[p_rows$item == "I3"],
+               "No test: fewer than two judges rated the item against every construct.",
+               fixed = TRUE)
+  expect_true(is.na(p_rows$value[p_rows$item == "I4"]))
+  expect_match(p_rows$note[p_rows$item == "I4"], "No test: ", fixed = TRUE)
+  expect_identical(p_rows$note[p_rows$item == "I1"], "")
 })
 
 test_that("the ANOVA printout states the level and adjustment of its contrasts", {
   d <- rating_data()
   expect_match(flat(anova_content(d, alpha = .01)),
-               "The contrasts are one-sided (the intended construct rated above the other), at alpha = .01, with no adjustment for the number of contrasts.",
+               "each one-sided (the intended construct rated above one of the others), at alpha = .01 with no adjustment for their number.",
                fixed = TRUE)
   expect_match(flat(anova_content(d, adjust = "holm")),
-               "at alpha = .05, with p values Holm-adjusted for the number of contrasts.",
-               fixed = TRUE)
-  expect_match(flat(anova_content(d)),
-               "the other construct with the highest mean rating", fixed = TRUE)
+               "at alpha = .05, Holm-adjusted for their number.", fixed = TRUE)
+  # Without a target there are no contrasts, and nothing is said about them.
+  bare <- flat(anova_content(d[c("item", "rater", "construct", "rating")]))
+  expect_false(grepl("contrast p:", bare, fixed = TRUE))
+  expect_false(grepl("one-sided", bare, fixed = TRUE))
 })
 
 test_that("a single orbiting_r named for another construct is refused", {
@@ -457,15 +663,22 @@ test_that("a single orbiting_r named for another construct is refused", {
 })
 
 test_that("references name the sources of the repeated-measures test", {
+  # From the source tree when there is one, so a stale installed copy is not
+  # read; from the installed help otherwise, so the check runs under R CMD
+  # check too.
   rd <- function(topic) {
     path <- testthat::test_path("..", "..", "man", paste0(topic, ".Rd"))
-    skip_if_not(file.exists(path), "man pages are not installed with the tests")
-    paste(readLines(path, warn = FALSE), collapse = "\n")
+    if (file.exists(path)) {
+      return(paste(readLines(path, warn = FALSE), collapse = "\n"))
+    }
+    db <- tools::Rd_db("contentvalidR")
+    paste(as.character(db[[paste0(topic, ".Rd")]]), collapse = "")
   }
   anova_rd <- rd("anova_content")
   expect_match(anova_rd, "MacKenzie", fixed = TRUE)
   expect_match(anova_rd, "Greenhouse", fixed = TRUE)
   expect_match(anova_rd, "Duncan", fixed = TRUE)
+  expect_match(anova_rd, "Repeated-measures ANOVA content test", fixed = TRUE)
   expect_false(grepl("Halvorsen", anova_rd, fixed = TRUE))
   expect_match(rd("rating_validity"), "MacKenzie", fixed = TRUE)
   expect_match(rd("htd"), "Content validation guidelines", fixed = TRUE)

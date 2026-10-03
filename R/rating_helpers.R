@@ -59,10 +59,10 @@
     }
     names(target_map) <- .as_label(names(target_map))
     if (anyDuplicated(names(target_map))) {
-      stop("`target_map` names the same item more than once once spaces around ",
-           "the names are removed: ",
+      stop("`target_map` names the same item more than once after spaces ",
+           "around the names are removed: ",
            paste(unique(names(target_map)[duplicated(names(target_map))]),
-                 collapse = ", "), ".", call. = FALSE)
+                 collapse = ", "), ". Give each item one entry.", call. = FALSE)
     }
     item_chr <- d$item
     missing_targets <- setdiff(unique(item_chr), names(target_map))
@@ -229,6 +229,13 @@
     n <- length(diff)
     md <- mean(diff)
     sd_d <- stats::sd(diff)
+    # The same judge-to-judge gap for every judge leaves a standard deviation
+    # of rounding noise (about 1e-16 at fractional ratings), which would give
+    # a t in the quadrillions beside an omnibus F of Inf. A spread or a mean
+    # this small against the ratings themselves is zero.
+    tiny <- 1e-8 * max(abs(c(y[, target], y[, other])))
+    if (!is.na(sd_d) && sd_d <= tiny) sd_d <- 0
+    if (abs(md) <= tiny) md <- 0
     if (is.na(sd_d) || sd_d == 0) {
       tval <- if (md > 0) Inf else if (md < 0) -Inf else NA_real_
       p <- if (md > 0) 0 else if (md < 0) 1 else NA_real_

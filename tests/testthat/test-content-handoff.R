@@ -273,7 +273,7 @@ delphi_fit <- function(..., threshold = 0.75) {
                   lo = 1, hi = 4, consensus_threshold = threshold, ...)
 }
 
-test_that("a Delphi fit hands off, dating each item by the round it settled in", {
+test_that("a Delphi fit hands off, dating each item by its last rated round", {
   fit <- delphi_fit(B = 0)
   h <- content_handoff(fit, keep = c("Supported", "Review"))
 

@@ -1063,6 +1063,12 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     )
     return(invisible(x))
   }
+  # Checked before the margins are set, so a plot that cannot be drawn does
+  # not open a graphics device.
+  if (identical(x$mode, "congruence") &&
+      !all(c("target_ioc", "target_mean") %in% names(x$results))) {
+    stop("Congruence plots require a target-objective mapping.", call. = FALSE)
+  }
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
@@ -1124,9 +1130,6 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
                   c(if (any(good)) c(19, 1), if (any(undecided)) 4))
     }
   } else {
-    if (!all(c("target_ioc", "target_mean") %in% names(r))) {
-      stop("Congruence plots require a target-objective mapping.", call. = FALSE)
-    }
     # Each item's index against the criterion, with the experts' mean rating
     # on the target objective and on the closest other objective for context.
     cut <- x$settings$ioc_cut

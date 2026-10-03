@@ -196,30 +196,52 @@
 # that sentence so a reader need not re-derive method-specific semantics. An
 # item rated in a single round has no pair at all, and therefore no row in the
 # fit to take a note from, so that sentence is written here.
+#
+# Returns two notes for each item. `gap` says when the stability rows describe
+# an earlier pair than the item's last round (rated in rounds 1, 2 and 4: the
+# pair is 1 and 2, and the rows are dated round 4), and goes on every row
+# taken from that pair. `stability` is the note for the stability statistic
+# itself: the gap sentence, and why the statistic is undefined when it is.
 .handoff_delphi_notes <- function(fit, results) {
   stab <- fit$details$stability
   rounds <- fit$design$rounds
   rated <- .delphi_rated_rounds(fit)
-  vapply(seq_len(nrow(results)), function(i) {
+  n <- nrow(results)
+  gap <- character(n)
+  own <- character(n)
+  for (i in seq_len(n)) {
     rows <- which(stab$item == results$item[i])
+    idx <- sort(rated[[results$item[i]]])
     if (!length(rows)) {
-      idx <- sort(rated[[results$item[i]]])
-      if (length(idx) >= 2L) {
+      own[i] <- if (length(idx) >= 2L) {
         # Rated more than once, but never in two rounds that follow each other.
-        return(paste0("This item was rated in rounds ",
-                      paste(rounds[idx], collapse = ", "),
-                      ", which are not consecutive, so no pair of rounds was ",
-                      "compared."))
+        paste0("This item was rated in rounds ", .and_list(rounds[idx]),
+               ", which are not consecutive, so no pair of rounds was ",
+               "compared.")
+      } else {
+        paste("This item was rated in only one round, so there was no pair",
+              "of rounds to compare.")
       }
-      return(paste("This item was rated in only one round, so there was no",
-                   "pair of rounds to compare."))
+      next
     }
-    stab$note[rows[length(rows)]]
-  }, character(1))
+    last <- rows[length(rows)]
+    own[i] <- stab$note[last]
+    if (length(idx) &&
+        !identical(as.character(stab$to_round[last]),
+                   as.character(rounds[max(idx)]))) {
+      gap[i] <- paste0("From rounds ", stab$from_round[last], " and ",
+                       stab$to_round[last], ", the item's last consecutive ",
+                       "pair; it was last rated in round ", rounds[max(idx)],
+                       ".")
+    }
+  }
+  own[is.na(own)] <- ""
+  list(gap = gap, stability = trimws(paste(gap, own)))
 }
 
-# A Delphi study ends one item at a time: an item settles in the round where it
-# was last rated, which is earlier than the final round when it was set aside.
+# A Delphi study ends one item at a time: an item's evidence is dated by the
+# round where it was last rated, which is earlier than the final round when
+# it was set aside.
 # Its evidence therefore comes from its own last round, and `round` carries that
 # round's index rather than a constant.
 .handoff_delphi_spec <- function(fit, results) {
@@ -231,10 +253,16 @@
 
   # The round is given by its position, with its label beside it when the
   # label is not that number, so "round 3 of 3" never reads "round 4 of 3".
+  # A label that already says its position ("2", "R2", "Round 2") is not
+  # repeated beside it.
+  says_position <- vapply(seq_along(round_index), function(i) {
+    lab <- as.character(results$last_round[i])
+    num <- regmatches(lab, regexpr("[0-9]+(\\.[0-9]+)?", lab))
+    length(num) == 1L && isTRUE(as.numeric(num) == round_index[i])
+  }, logical(1))
   where <- sprintf(
     "last rated in round %d of %d%s", round_index, length(rounds),
-    ifelse(as.character(round_index) == as.character(results$last_round), "",
-           paste0(" (\"", results$last_round, "\")"))
+    ifelse(says_position, "", paste0(" (\"", results$last_round, "\")"))
   )
   # The rule states what was supplied. Whether the threshold was fixed before
   # the study is for the analyst to report; the software cannot know it.
@@ -243,18 +271,19 @@
            "(Diamond et al., 2014, recommend fixing one before the study); ",
            where)
   } else {
-    ifelse(
-      results$recommendation %in% "Insufficient panel",
-      paste0("fewer than three experts rated the item in its last round, so ",
-             "no consensus judgment was made; ", where),
-      sprintf(paste0("consensus when at least %s of experts rated the item %s",
-                     "%s on the %s to %s scale (threshold as supplied; Diamond ",
-                     "et al., 2014, recommend fixing it before the study); %s"),
-              .delphi_percent(threshold), format(s$agree_cut),
-              if (s$agree_cut < s$hi) " or higher" else "",
-              format(s$lo), format(s$hi), where)
-    )
+    sprintf(paste0("consensus when at least %s of experts rated the item %s",
+                   "%s on the %s to %s scale (threshold as supplied; Diamond ",
+                   "et al., 2014, recommend fixing it before the study); %s"),
+            .delphi_percent(threshold), format(s$agree_cut),
+            if (s$agree_cut < s$hi) " or higher" else "",
+            format(s$lo), format(s$hi), where)
   }
+  # Too few experts is its own reason, with or without a threshold: the rule
+  # beside an "Insufficient data" status must explain that status.
+  thin <- results$recommendation %in% "Insufficient panel"
+  rule[thin] <- paste0("fewer than three experts rated the item in its last ",
+                       "round, so no consensus judgment was made; ",
+                       where[thin])
 
   stability_label <- switch(
     s$stability,
@@ -289,6 +318,7 @@
     fit$details$round_fits[[1]]$settings$proportion_ci
   )
 
+  notes <- .handoff_delphi_notes(fit, results)
   statistics <- rbind(
     .handoff_stat(results$item, "I-CVI", results$prop_agree,
                   if (is.null(threshold)) NA_real_ else threshold,
@@ -304,7 +334,8 @@
     # No criterion: a Delphi decides on the consensus threshold, not on the
     # 0.74 kappa rule that expert_validity() applies.
     .handoff_stat(results$item, "modified kappa", last_fit_stat("kappa_mod")),
-    .handoff_stat(results$item, "proportion unchanged", results$prop_unchanged),
+    .handoff_stat(results$item, "proportion unchanged", results$prop_unchanged,
+                  note = notes$gap),
     .handoff_stat(results$item, stability_label, results$stability,
                   criterion = if (s$stability == "percent_change") {
                     .delphi_scheibe_cut
@@ -319,13 +350,13 @@
                     NA_character_
                   },
                   interval_level = level,
-                  note = .handoff_delphi_notes(fit, results))
+                  note = notes$stability)
   )
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
     statistics <- rbind(
       statistics,
       .handoff_stat(results$item, "stability p_value", results$stability_p,
-                    s$alpha)
+                    s$alpha, note = notes$gap)
     )
   }
 
@@ -345,19 +376,47 @@
 # still be held back by a planned contrast, so that row says so: a reader who
 # sees a statistic meeting its criterion beside a "Review" decision is told
 # which test decided.
-.handoff_rating_notes <- function(results, alpha) {
+#
+# The note names what held the item back. A contrast with no p (every judge
+# rated the intended construct and another the same) is said in words: quoting
+# the largest p among the other contrasts would give a p that meets alpha
+# beside a decision that says a contrast did not. A missing omnibus p is
+# explained too, as the note column promises.
+.handoff_rating_notes <- function(fit, results, alpha) {
   pass <- .handoff_column(results, "contrast_pass")
   largest <- .handoff_column(results, "max_contrast_p")
-  held <- !is.na(results$p_value) & results$p_value <= alpha &
-    !(pass %in% TRUE) & results$recommendation %in% "Review"
-  ifelse(
-    held,
-    paste0("This omnibus p meets alpha, but the rule also needs every planned ",
-           "contrast to pass",
-           ifelse(is.na(largest), ", and not every one did.",
-                  paste0("; the largest contrast ", .p_phrase(largest), "."))),
-    ""
+  holm <- identical(fit$settings$adjust, "holm")
+  contrasts <- if (is.list(fit$details)) fit$details$contrasts else NULL
+  no_p <- is.na(results$p_value)
+  held <- !no_p & results$p_value <= alpha & !(pass %in% TRUE) &
+    results$recommendation %in% "Review"
+
+  out <- character(nrow(results))
+  for (i in which(held)) {
+    tied <- character(0)
+    if (is.data.frame(contrasts) && nrow(contrasts)) {
+      own <- contrasts[contrasts$item == results$item[i], , drop = FALSE]
+      tied <- as.character(own$competitor[is.na(own$p_adj)])
+    }
+    reason <- if (length(tied)) {
+      paste0("; every judge rated the intended construct and ",
+             paste(tied, collapse = ", "),
+             " the same, so that contrast has no p.")
+    } else if (is.na(largest[i])) {
+      ", and not every one did."
+    } else {
+      paste0("; the largest ", if (holm) "Holm-adjusted " else "", "contrast ",
+             .p_phrase(largest[i]), ".")
+    }
+    out[i] <- paste0("This omnibus p meets alpha, but the rule also needs ",
+                     "every planned contrast to pass", reason)
+  }
+  insufficient <- results$recommendation %in% "Insufficient data"
+  out[no_p & insufficient] <- paste(
+    "No test: fewer than two judges rated the item against every construct."
   )
+  out[no_p & !insufficient] <- "No test: the ratings left no variance to test."
+  out
 }
 
 # Per-workflow evidence: the construct each item belongs to, the effective judge
@@ -419,16 +478,22 @@
       # rule says in words that every contrast must pass as well.
       rule = rep(sprintf(
         paste("Greenhouse-Geisser corrected omnibus test and every planned",
-              "target-versus-orbiting contrast significant (repeated-measures",
-              "ANOVA adapted from Hinkin & Tracey, 1999, following MacKenzie",
-              "et al., 2011), alpha = %s"), .fmt_alpha(alpha)), n),
+              "target-versus-orbiting contrast significant%s",
+              "(repeated-measures ANOVA adapted from Hinkin & Tracey, 1999,",
+              "following MacKenzie et al., 2011), alpha = %s"),
+        if (identical(fit$settings$adjust, "holm")) {
+          " after Holm adjustment"
+        } else {
+          ""
+        },
+        .fmt_alpha(alpha)), n),
       citation = c("Hinkin & Tracey (1999)", "MacKenzie et al. (2011)",
                    "Colquitt et al. (2019)"),
       statistics = rbind(
         .handoff_stat(results$item, "HTC", results$htc),
         .handoff_stat(results$item, "HTD", results$htd),
         .handoff_stat(results$item, "p_value", results$p_value, alpha,
-                      note = .handoff_rating_notes(results, alpha))
+                      note = .handoff_rating_notes(fit, results, alpha))
       )
     ))
   }
@@ -753,7 +818,8 @@
 #' undefined: every rating fell in the same category in both rounds." It also
 #' says when a statistic that meets its criterion is not what decided: the
 #' construct-rating `p_value` is the omnibus *p*, and for an item held back by
-#' a planned contrast its note says so and gives the largest contrast *p*.
+#' a planned contrast its note says so, with the largest contrast *p* or, when
+#' a contrast has none, the constructs that tied.
 #'
 #' Its contract, agreed with the `nomologR` maintainers:
 #'
@@ -809,6 +875,11 @@
 #' The chi-square methods add `stability p_value` against `alpha`. Stability
 #' travels as evidence beside the decision; it never decides what is carried,
 #' exactly as it never sets an item's status in [delphi_validity()].
+#'
+#' The stability rows come from the item's last pair of consecutive rounds.
+#' For an item rated again after a gap (rounds 1, 2 and 4) that pair is
+#' earlier than the round the rows are dated by, and their `note` says which
+#' rounds they compare.
 #'
 #' @section When a stability statistic is NA:
 #' A stability row is always present for a carried item, so an `NA` there is a
@@ -893,7 +964,7 @@
 #' @param round Pretest round this analysis represents. One fit is one round, so
 #'   this defaults to `1` and matters only when stacking rounds by hand. It
 #'   cannot be set for a Delphi fit, which dates each item by the round it
-#'   settled in.
+#'   was last rated in.
 #' @param reverse_keyed Names of the reverse-worded items, `character(0)` if
 #'   none is, or `NULL` (the default) to leave keying unrecorded. See
 #'   "Instrument metadata".
@@ -935,11 +1006,11 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
          "set.", call. = FALSE)
   }
 
-  # A Delphi fit dates each item by the round it settled in, so `round` is read
-  # from the fit rather than supplied.
+  # A Delphi fit dates each item by the round it was last rated in, so `round`
+  # is read from the fit rather than supplied.
   if (inherits(fit, "contentvalid_delphi") && !missing(round)) {
-    stop("For a Delphi fit, `round` comes from the round each item settled ",
-         "in, so it cannot be set here.", call. = FALSE)
+    stop("For a Delphi fit, `round` comes from the round each item was last ",
+         "rated in, so it cannot be set here.", call. = FALSE)
   }
 
   valid <- .status_definitions()$status
@@ -960,7 +1031,7 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
 
   spec <- .handoff_spec(fit, results)
   # One round per item: a constant everywhere except a Delphi handoff, where
-  # each item carries the round it settled in.
+  # each item carries the round it was last rated in.
   item_round <- if (is.null(spec$round)) {
     rep(as.integer(round), nrow(results))
   } else {

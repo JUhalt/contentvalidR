@@ -61,7 +61,7 @@ test_that("an item at the criterion is reported once, with its judges", {
   fit <- judge_validity(X)
   out <- flat(fit)
   expect_match(out, "6 of 6 judges are consistent with the panel.", fixed = TRUE)
-  expect_match(out, "Items whose status rests on a single judge", fixed = TRUE)
+  expect_match(out, "Items whose status changes if one judge is removed", fixed = TRUE)
   expect_match(out, "Fragile 5 of 6 Support J1, J2, J3, J4, J5", fixed = TRUE)
   expect_match(out, "This describes the item, not the judges named",
                fixed = TRUE)
@@ -110,9 +110,10 @@ test_that("fit statistics are shown and not flagged on a small design", {
   expect_false(any(r$recommendation %in% c("Erratic", "Too predictable")))
   expect_true(all(r$n_scored < 30))
   out <- flat(fit)
-  expect_match(out, "here it scored at most 6, so the fit statistics are shown and not flagged",
+  expect_match(out, "Here the model scored at most 6 of any judge's decisions",
                fixed = TRUE)
-  expect_match(out, "(Linacre, 2002)", fixed = TRUE)
+  expect_match(out, "so the fit statistics are shown and not flagged", fixed = TRUE)
+  expect_match(out, "Linacre (2002)", fixed = TRUE)
   expect_match(r$interpretation[r$judge == "Judge2"],
                "too few for a fit flag", fixed = TRUE)
 })
@@ -129,7 +130,7 @@ test_that("an erratic judge is flagged once the model scored enough decisions", 
   dimnames(X) <- list(paste0("J", 1:n_j), paste0("I", 1:n_i))
   fit <- judge_validity(X)
   r <- fit$results
-  skip_if_not(fit$scale_summary$severity_estimable)
+  expect_true(fit$scale_summary$severity_estimable)
   expect_gte(r$n_scored[n_j], 30L)
   expect_identical(r$recommendation[n_j], "Erratic")
   expect_identical(r$status[n_j], "Review")
@@ -159,8 +160,9 @@ test_that("a judge more predictable than the model expects is never flagged", {
   expect_true(below[1])
   expect_true(all(r$n_scored[below] >= 30L))
   expect_false(any(r$recommendation %in% c("Erratic", "Too predictable")))
-  expect_match(r$interpretation[1], "this is not a flag", fixed = TRUE)
-  expect_match(r$interpretation[1], "Linacre (2002)", fixed = TRUE)
+  expect_match(r$interpretation[1], "which is not a flag", fixed = TRUE)
+  # A range the analyst set is not Linacre's, so he is not quoted for it.
+  expect_false(grepl("Linacre", r$interpretation[1], fixed = TRUE))
   expect_false(grepl("fixed rule", r$interpretation[1], fixed = TRUE))
 })
 
@@ -178,7 +180,7 @@ test_that("the bias correction counts judges, not items", {
   X <- ifelse(matrix(stats::rbinom(4 * 40, 1, 0.6), nrow = 4), 4, 2)
   dimnames(X) <- list(paste0("J", 1:4), paste0("I", 1:40))
   fit <- judge_validity(X)
-  skip_if_not(fit$scale_summary$severity_estimable)
+  expect_true(fit$scale_summary$severity_estimable)
   placed <- sum(fit$results$severity_estimable)
   expect_equal(fit$settings$bias_correction, (placed - 1) / placed)
   raw <- judge_validity(X, bias_correct = FALSE)
@@ -592,4 +594,269 @@ test_that("the key no longer calls the map's fit Kruskal's stress", {
   expect_match(row$definition, "not Kruskal's", fixed = TRUE)
   expect_false(grepl("fair", row$range, fixed = TRUE))
   expect_lte(max(nchar(contentvalidR:::.term_short())), 120L)
+})
+
+# ---- Review of the audit fixes ----------------------------------------------
+
+test_that("a fragile item can be one judge short of the criterion", {
+  # Eight judges: the criterion is 7, and 6 of 8 becomes 6 of 7 without a
+  # dissenter, which meets it.
+  X <- rbind(c(4, 4), c(4, 4), c(4, 4), c(4, 4), c(4, 4), c(4, 4),
+             c(2, 4), c(2, 4))
+  dimnames(X) <- list(paste0("J", 1:8), c("Short", "Solid"))
+  fit <- judge_validity(X)
+  items <- fit$details$influence_items
+  expect_true(items$fragile[items$item == "Short"])
+  expect_identical(items$status_full_panel[items$item == "Short"], "Review")
+  out <- flat(fit)
+  expect_match(out, "at the criterion, or one short of it", fixed = TRUE)
+  expect_false(grepl("sits at the CVI criterion", out, fixed = TRUE))
+})
+
+test_that("complete ratings give raw severity as before, and a judge at a cut is not flagged", {
+  X <- matrix(c(2, 4, 2, 3, 3, 4, 4, 3, 3, 3, 2, 4, 4, 1, 4, 1, 3, 4, 3, 3), 5, 4)
+  fit <- judge_validity(X, lo = 1, hi = 4)
+  r <- fit$results
+  expect_identical(r$severity_raw, unname(mean(X) - rowMeans(X)))
+  at_cut <- abs(abs(r$severity_raw) - fit$settings$severity_raw_cut) < 1e-8
+  expect_true(any(at_cut))
+  expect_false(any(r$recommendation[at_cut] %in% c("Severe", "Lenient")))
+})
+
+test_that("with missing ratings the correction counts the judges behind each item", {
+  set.seed(4)
+  n_j <- 6; n_i <- 40
+  X <- ifelse(matrix(stats::rbinom(n_j * n_i, 1, 0.6), n_j), 4, 2)
+  # Each item is rated by four of the six judges.
+  for (i in seq_len(n_i)) X[sample(n_j, 2), i] <- NA
+  dimnames(X) <- list(paste0("J", 1:n_j), paste0("I", 1:n_i))
+  fit <- judge_validity(X, na.rm = TRUE)
+  expect_true(fit$scale_summary$severity_estimable)
+  expect_equal(fit$settings$bias_correction, 3 / 4)
+  raw <- judge_validity(X, na.rm = TRUE, bias_correct = FALSE)
+  expect_equal(fit$results$severity, raw$results$severity * 3 / 4)
+  expect_equal(fit$results$se, raw$results$se * sqrt(3 / 4))
+})
+
+test_that("the fit rule cites Linacre only for his bound and names judges too thin to flag", {
+  r <- data.frame(judge = c("A", "B", "C"), infit = c(1, 2.4, 1.1),
+                  outfit = c(1, 3.5, 0.9), n_scored = c(36L, 20L, 36L),
+                  stringsAsFactors = FALSE)
+  lines <- contentvalidR:::.judge_fit_lines(
+    r, list(fit_range = c(0.5, 1.5), fit_min_ratings = 30L))
+  expect_match(lines[1], "Linacre (2002)", fixed = TRUE)
+  expect_match(lines[1], "at least 30", fixed = TRUE)
+  expect_match(lines[1], "contentvalidR conventions", fixed = TRUE)
+  expect_identical(lines[2], "Above 1.5 on too few scored decisions to flag: B (20).")
+
+  custom <- contentvalidR:::.judge_fit_lines(
+    r, list(fit_range = c(0.5, 1.2), fit_min_ratings = 30L))
+  expect_false(grepl("Linacre", custom[1], fixed = TRUE))
+  expect_match(custom[1], "the upper bound set for this analysis", fixed = TRUE)
+
+  r$n_scored <- c(6L, 6L, 5L)
+  few <- contentvalidR:::.judge_fit_lines(
+    r, list(fit_range = c(0.5, 1.5), fit_min_ratings = 30L))
+  expect_match(few[2], "Here the model scored at most 6", fixed = TRUE)
+})
+
+test_that("a judge below a custom fit range is not described in Linacre's words", {
+  set.seed(32)
+  n_j <- 8; n_i <- 60
+  easy <- seq(-2, 2, length.out = n_i)
+  p <- stats::plogis(outer(rep(0, n_j), easy, "+"))
+  B <- matrix(stats::rbinom(n_j * n_i, 1, as.vector(p)), n_j)
+  B[1, ] <- as.integer(easy > 0)
+  X <- ifelse(B == 1, 4, 2)
+  dimnames(X) <- list(paste0("J", 1:n_j), paste0("I", 1:n_i))
+  default <- judge_validity(X)
+  expect_true(default$scale_summary$severity_estimable)
+  expect_lt(min(default$results$infit[1], default$results$outfit[1]), 0.5)
+  expect_match(default$results$interpretation[1], "Linacre (2002)", fixed = TRUE)
+  custom <- judge_validity(X, fit_range = c(0.9, 10))
+  expect_false(grepl("Linacre", custom$results$interpretation[1], fixed = TRUE))
+})
+
+test_that("one judge prints the verdict and nothing that needs a panel", {
+  out <- flat(judge_validity(matrix(c(4, 3, 2, 4), 1)))
+  expect_match(out, "One judge is not a panel", fixed = TRUE)
+  expect_false(grepl("A judge is flagged", out, fixed = TRUE))
+  expect_false(grepl("Logit severity not estimated", out, fixed = TRUE))
+})
+
+test_that("Phi is not said to rest on fewer than two judges", {
+  X <- varied_panel()
+  X[, 10] <- NA
+  out <- flat(judge_validity(X, na.rm = TRUE))
+  expect_match(out, "fewer than two judges rated every item, so Phi is not estimable",
+               fixed = TRUE)
+  expect_false(grepl("Phi uses the 0 judges", out, fixed = TRUE))
+  X <- varied_panel()
+  X[1, 1] <- NA
+  sm <- flat(summary(judge_validity(X, na.rm = TRUE)))
+  expect_match(sm, "Phi uses the 7 judges who rated every item", fixed = TRUE)
+})
+
+test_that("an empty data frame gets the empty-input message", {
+  expect_error(judge_validity(data.frame(I1 = numeric(0), I2 = numeric(0))),
+               "at least one judge")
+})
+
+test_that("judge objects saved before 1.0 still print and summarize", {
+  fit <- judge_validity(varied_panel())
+  fit$settings$differentiation_cut <- NULL
+  fit$settings$fit_min_ratings <- NULL
+  fit$results$n_scored <- NULL
+  keep <- c("item", "fragile")
+  fit$details$influence_items <- fit$details$influence_items[, keep]
+  expect_no_warning(out <- flat(fit))
+  expect_match(out, "scale use is below 0.50", fixed = TRUE)
+  expect_no_error(flat(summary(fit)))
+})
+
+test_that("the summary heading for judges sharing a reason wraps", {
+  set.seed(31)
+  n_j <- 8; n_i <- 60
+  easy <- seq(-2, 2, length.out = n_i)
+  p <- stats::plogis(outer(rep(0, n_j), easy, "+"))
+  B <- matrix(stats::rbinom(n_j * n_i, 1, as.vector(p)), n_j)
+  B[n_j, ] <- as.integer(easy < 0)
+  X <- ifelse(B == 1, 4, 2)
+  dimnames(X) <- list(sprintf("Judge_Number%02d", 1:n_j), paste0("I", 1:n_i))
+  out <- shown(summary(judge_validity(X)))
+  expect_true(all(nchar(out) <= 80))
+})
+
+test_that("a value just below its cut gets a third decimal", {
+  expect_identical(contentvalidR:::.fmt_beside_cut(0.796703, 0.80), ".797")
+  expect_identical(contentvalidR:::.fmt_beside_cut(0.81, 0.80), ".81")
+  expect_identical(contentvalidR:::.fmt_beside_cut(0.80, 0.80), ".80")
+  X <- structure(c(1, 1, 1, 2, 1, 2, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1),
+                 dim = 5:4)
+  g <- gtheory_content(X)
+  expect_match(g$interpretation, "Phi = .797, below the .80", fixed = TRUE)
+})
+
+test_that("a cut the analyst sets is not called a package convention", {
+  X <- varied_panel()
+  out <- flat(gtheory_content(X, phi_cut = 0.9))
+  expect_match(out, "(criterion: Phi >= .90, set for this analysis)", fixed = TRUE)
+  expect_false(grepl("a contentvalidR convention)", out, fixed = TRUE))
+})
+
+test_that("gtheory names residual variation as residual", {
+  g <- gtheory_content(rbind(c(4, 3, 4, 3), c(3, 4, 3, 4), c(4, 3, 3, 4),
+                             c(3, 4, 4, 3)))
+  expect_match(g$interpretation, "residual", fixed = TRUE)
+  expect_false(grepl("within judge-item cells", g$interpretation, fixed = TRUE))
+})
+
+test_that("the content map's symbols and key follow a pch or col given per cell", {
+  group <- factor(c("A", "A", "B", "C"))
+  s <- contentvalidR:::.structure_symbols(group, list())
+  expect_identical(s$pch, c(1L, 1L, 2L, 3L))
+  expect_identical(s$key_pch, 1:3)
+  expect_null(s$key_col)
+
+  per_cell <- contentvalidR:::.structure_symbols(group, list(pch = c(15, 16, 17),
+                                                          col = c("red", "blue", "grey")))
+  expect_identical(per_cell$pch, c(15, 15, 16, 17))
+  expect_identical(per_cell$key_pch, c(15, 16, 17))
+  expect_identical(per_cell$col, c("red", "red", "blue", "grey"))
+  expect_identical(per_cell$key_col, c("red", "blue", "grey"))
+
+  one <- contentvalidR:::.structure_symbols(group, list(pch = 19, col = "red"))
+  expect_null(one$key_pch)
+  expect_identical(one$key_col, "red")
+})
+
+test_that("the structure example spreads its nine items over the map", {
+  items <- paste0("I", 1:9)
+  blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+  sim <- matrix(c(
+    5, 4, 3, 2, 2, 1, 1, 2, 1,
+    4, 5, 4, 3, 1, 2, 2, 1, 1,
+    3, 4, 5, 1, 2, 2, 1, 1, 3,
+    2, 3, 1, 5, 4, 3, 2, 2, 1,
+    2, 1, 2, 4, 5, 4, 1, 3, 2,
+    1, 2, 2, 3, 4, 5, 2, 1, 2,
+    1, 2, 1, 2, 1, 2, 5, 3, 4,
+    2, 1, 1, 2, 3, 1, 3, 5, 4,
+    1, 1, 3, 1, 2, 2, 4, 4, 5
+  ), 9, 9, dimnames = list(items, items))
+  cs <- content_structure(sim, membership = blueprint)
+  expect_identical(nrow(unique(round(cs$coordinates, 6))), 9L)
+  out <- flat(content_structure(sim, membership = blueprint, ari_cut = 1))
+  expect_match(out, "set for this analysis)", fixed = TRUE)
+  expect_match(out, "distortion", fixed = TRUE)
+  expect_match(out, "absolute eigenvalues", fixed = TRUE)
+})
+
+test_that("structure errors say what to do and end with one period", {
+  expect_error(content_structure(matrix(5, 4, 4)), "Check `similarity`.", fixed = TRUE)
+  sim <- matrix(1, 9, 9, dimnames = list(paste0("I", 1:9), paste0("I", 1:9)))
+  diag(sim) <- 5
+  sim[1:3, 1:3] <- 4
+  diag(sim) <- 5
+  bp <- stats::setNames(rep(c("A", "B", "C"), each = 3), paste0("Q", 1:9))
+  err <- tryCatch(content_structure(sim, membership = bp), error = conditionMessage)
+  expect_match(err, "I5 and 4 more. Name it", fixed = TRUE)
+})
+
+test_that("domain criteria state the target floor, rounded up, and name the convention", {
+  d <- data.frame(item = paste0("I", 1:7),
+                  cell = c(rep("Autonomy", 4), "Competence", "Competence", "Relatedness"))
+  fit <- domain_validity(d, targets = c(Autonomy = 4, Competence = 2, Relatedness = 1))
+  out <- flat(fit)
+  expect_match(out, "at least 2 items per cell (or the cell's target, if smaller)",
+               fixed = TRUE)
+  expect_match(out, "contentvalidR conventions, not published standards", fixed = TRUE)
+  expect_identical(fit$results$recommendation[fit$results$cell == "Relatedness"],
+                   "Covered")
+
+  frac <- domain_validity(d, targets = c(Autonomy = 4, Competence = 2,
+                                         Relatedness = 1.5))
+  rel <- frac$results$cell == "Relatedness"
+  expect_identical(frac$results$recommendation[rel], "Thinly covered")
+  expect_match(frac$results$interpretation[rel], "below the minimum of 2",
+               fixed = TRUE)
+})
+
+test_that("a target cell with no items is reported, and a stray target stops", {
+  d <- data.frame(item = paste0("I", 1:4), cell = c("A", "A", "B", "B"))
+  fit <- domain_validity(d, targets = c(A = 2, B = 2, C = 2))
+  expect_identical(fit$results$cell, c("A", "B", "C"))
+  expect_identical(fit$results$recommendation[3], "Not covered")
+  expect_equal(fit$results$expected_share, rep(1 / 3, 3))
+  expect_error(domain_validity(d, domain = c("A", "B"),
+                               targets = c(A = 2, B = 2, C = 2)),
+               "not in `domain`: C")
+})
+
+test_that("domain_validity trims the item names in similarity", {
+  items <- paste0("I", 1:6, " ")
+  sim <- matrix(1, 6, 6, dimnames = list(items, items))
+  sim[1:3, 1:3] <- 4
+  sim[4:6, 4:6] <- 4
+  sim[1, 2] <- sim[2, 1] <- 5
+  sim[4, 6] <- sim[6, 4] <- 3
+  diag(sim) <- 5
+  d <- data.frame(item = items, cell = rep(c("A", "B"), each = 3))
+  fit <- domain_validity(d, similarity = sim, dims = 1)
+  expect_s3_class(fit$details$structure, "contentvalid_structure")
+})
+
+test_that("rounds analyzed alike stay comparable when the data change a derived setting", {
+  a <- domain_validity(data.frame(item = paste0("I", 1:6),
+                                  cell = rep(c("A", "B"), each = 3)))
+  b <- domain_validity(data.frame(item = paste0("I", 1:9),
+                                  cell = rep(c("A", "B", "C"), each = 3)))
+  expect_false(identical(a$settings$over_possible, b$settings$over_possible))
+  expect_true(compare_rounds(a, b)$comparable)
+})
+
+test_that("the two-by-two comparators handle large tables", {
+  expect_no_error(signal_detection(rep(c(TRUE, FALSE), c(400, 300)),
+                                   rep(c(TRUE, FALSE, TRUE, FALSE),
+                                       c(350, 50, 40, 260))))
 })

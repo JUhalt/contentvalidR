@@ -31,7 +31,8 @@ specifications.}
 
 \item{domain}{Optional character vector of every cell the blueprint intends
 to cover. Supplying it is what makes \strong{empty} cells detectable; without it
-only the cells that already contain items can be reported.}
+only the cells that already contain items, or that \code{targets} names, can
+be reported.}
 
 \item{min_items}{Fewest items a cell may hold before it is flagged as thinly
 covered. With \code{targets}, a cell is compared with the smaller of
@@ -49,7 +50,11 @@ cells at the default of 2), and the printout says so.}
 items per cell. When supplied, expected shares come from it rather than
 from an assumption of equal cells, and cells far below their intended
 share are flagged. Without it under-representation is not judged,
-because an equal share is an assumption, not a blueprint.}
+because an equal share is an assumption, not a blueprint. A cell named
+in \code{targets} is part of the blueprint, so it is reported (as not
+covered) even when no item is assigned to it. With \code{domain}, every cell
+\code{targets} names must be in \code{domain}. A fractional target is rounded up
+where it sets the thin-coverage floor.}
 
 \item{similarity}{Optional square item-by-item expert similarity matrix. When
 supplied, the content-structure analysis is run and reported alongside
@@ -72,9 +77,10 @@ cells of the domain the instrument is meant to represent. Cells with no
 items, or too few, are content gaps that no amount of item-level relevance
 evidence will reveal, because an item can only be rated if it exists.
 
-Structure is assessed with the multidimensional scaling and cluster analysis
-procedure of Sireci and Geisinger (1992), and is run when expert similarity
-data is supplied. See \code{\link[=content_structure]{content_structure()}}.
+Structure is assessed with a multidimensional scaling and cluster analysis
+adapted from Sireci and Geisinger (1992, 1995), run when expert similarity
+data is supplied. See \code{\link[=content_structure]{content_structure()}} for what differs from their
+procedure.
 }
 \section{What coverage evidence can and cannot establish}{
 
@@ -111,6 +117,10 @@ Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological
 Measurement, 16}(1), 17–31. \doi{10.1177/014662169201600102}
+
+Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to
+assess content representation: An MDS analysis. \emph{Applied Psychological
+Measurement, 19}(3), 241–255. \doi{10.1177/014662169501900303}
 }
 \seealso{
 \code{\link[=content_structure]{content_structure()}}, \code{\link[=similarity_from_sort]{similarity_from_sort()}}, \code{\link[=ioc]{ioc()}}.

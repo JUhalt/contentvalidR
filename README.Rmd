@@ -182,7 +182,6 @@ Works cited in this README, the help pages, and the vignettes.
 - Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi studies. *Technological Forecasting and Social Change, 16*(1), 67–73. https://doi.org/10.1016/0040-1625(80)90074-8
 - Clopper, C. J., & Pearson, E. S. (1934). The use of confidence or fiducial limits illustrated in the case of the binomial. *Biometrika, 26*(4), 404–413. https://doi.org/10.1093/biomet/26.4.404
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision for scaled disagreement or partial credit. *Psychological Bulletin, 70*(4), 213–220. https://doi.org/10.1037/h0026256
-- Colquitt, J. A., Baer, M. D., Long, D. M., & Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social exchange relationships: A comparison of relative content validity. *Journal of Applied Psychology, 99*(4), 599–618. https://doi.org/10.1037/a0036374
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 - Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of content validity ratings. *Journal of Educational Measurement, 25*(4), 287–299. https://doi.org/10.1111/j.1745-3984.1988.tb00309.x
 - Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and agreement criteria for the termination of Delphi studies. *Technological Forecasting and Social Change, 13*(1), 83–90. https://doi.org/10.1016/0040-1625(79)90007-6
@@ -209,9 +208,9 @@ Works cited in this README, the help pages, and the vignettes.
 - Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27. https://doi.org/10.1007/BF02289565
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. *Biometrics, 33*(1), 159–174. https://doi.org/10.2307/2529310
 - Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*(4), 563–575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias* \[Facets help\]. Winsteps.com. Retrieved October 2, 2026, from https://www.winsteps.com/facetman/estimationconsiderations.htm
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 - Linacre, J. M. (2002). What do infit and outfit, mean-square and standardized mean? *Rasch Measurement Transactions, 16*(2), 878. https://www.rasch.org/rmt/rmt162f.htm
-- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias* (Facets help). Winsteps.com. https://www.winsteps.com/facetman/estimationconsiderations.htm
 - Lynn, M. R. (1986). Determination and quantification of content validity. *Nursing Research, 35*(6), 382–385. https://doi.org/10.1097/00006199-198611000-00017
 - MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct measurement and validation procedures in MIS and behavioral research: Integrating new and existing techniques. *MIS Quarterly, 35*(2), 293–334. https://doi.org/10.2307/23044045
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8), 857–872. https://doi.org/10/cpchjg

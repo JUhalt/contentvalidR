@@ -66,6 +66,16 @@
   out
 }
 
+# A value printed beside its cut. Two decimals can make a value just below the
+# cut print as the cut itself ("Phi = .80, below the .80"), so such a value
+# gets a third decimal.
+.fmt_beside_cut <- function(x, cut, digits = 2L) {
+  if (!is.na(x) && x < cut && .fmt(x, digits) == .fmt(cut, digits)) {
+    return(.fmt(x, digits + 1L))
+  }
+  .fmt(x, digits)
+}
+
 # The heading for an interval column, such as "95% CI".
 .ci_label <- function(alpha) {
   paste0(format(100 * (1 - alpha)), "% CI")
@@ -93,13 +103,27 @@
   paste(n, ifelse(n == 1, noun, plural))
 }
 
-# Degrees of freedom as APA writes them: a whole number without decimals, a
-# corrected (fractional) one with them. "F(2, 15)", "F(1.89, 20.84)".
-.fmt_df <- function(df, digits = 2) {
-  whole <- !is.na(df) & abs(df - round(df)) < 1e-8
-  out <- .fmt(df, digits, bounded = FALSE)
-  out[whole] <- format(round(df[whole]), trim = TRUE, scientific = FALSE)
-  out
+# The two degrees of freedom of an F test as APA writes them: whole numbers
+# without decimals, "F(2, 15)", and corrected ones with them, "F(1.89,
+# 20.84)". The pair is decided together, so a correction that happens to
+# leave one of the two whole still prints both to the same precision:
+# "F(1.39, 32.00)", never "F(1.39, 32)".
+.fmt_df <- function(df1, df2, digits = 2) {
+  is_whole <- function(v) is.na(v) | abs(v - round(v)) < 1e-8
+  whole <- is_whole(df1) & is_whole(df2)
+  one <- function(v) {
+    out <- .fmt(v, digits, bounded = FALSE)
+    w <- whole & !is.na(v)
+    out[w] <- format(round(v[w]), trim = TRUE, scientific = FALSE)
+    out
+  }
+  paste0(one(df1), ", ", one(df2))
+}
+
+# An F test as text: "F(2, 15) = 4.21". `Inf` is written without padding.
+.fmt_f_test <- function(f, df1, df2, digits = 2) {
+  value <- ifelse(is.infinite(f), "Inf", .fmt(f, digits, bounded = FALSE))
+  sprintf("F(%s) = %s", .fmt_df(df1, df2, digits), value)
 }
 
 # Scale points as text, written alike: "1" and "4", or "0.333" and "1.333" on
