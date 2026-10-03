@@ -119,7 +119,8 @@ The item-level recommendation has deliberately limited meaning:
 Colquitt et al. (2019) created empirical norms from **scale-level averages** of HTC and HTD across 112 published scales. `rating_validity()` therefore averages item HTC/HTD within each target scale before assigning those descriptive normative labels.
 
 ```{r scale}
-fit$scale_summary
+fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
+                      "mean_htd", "htd_strength")]
 colquitt_benchmarks("htc")
 colquitt_benchmarks("htd")
 ```
@@ -127,10 +128,12 @@ colquitt_benchmarks("htd")
 The overall bands are empirical percentile standing, not universal validity cutoffs. If the average correlation between a focal scale and its orbiting scales is known, correlation-conditional norms can be requested:
 
 ```{r conditional}
-rating_validity(
+conditional <- rating_validity(
   rating_dat,
   orbiting_r = c(A = .42, B = .55)
-)$scale_summary
+)
+conditional$scale_summary[, c("target", "orbiting_r", "htc_strength",
+                              "htd_strength", "benchmark_set")]
 ```
 
 A given level of distinctiveness can be more impressive when the focal and orbiting constructs are known to correlate strongly.
@@ -140,7 +143,8 @@ A given level of distinctiveness can be more impressive when the focal and orbit
 Colquitt et al.'s normative distributions were developed using naive judges representative of substantive target populations. Their paper cautions against applying those norms to expert panels. The package therefore separates calculation from norm applicability:
 
 ```{r expert}
-rating_validity(rating_dat, judge_type = "expert")$scale_summary
+rating_validity(rating_dat, judge_type = "expert")$scale_summary[
+  , c("target", "mean_htc", "htc_strength", "mean_htd", "htd_strength")]
 ```
 
 HTC/HTD are still computed, but the Colquitt labels are suppressed. `print()` and `summary()` leave out the columns that would hold them; the stored table, shown here, keeps them as `NA`.

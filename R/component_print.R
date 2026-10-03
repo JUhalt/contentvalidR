@@ -162,7 +162,7 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
   .print_component(
     x, needed,
     title = c("Content-validity ANOVA",
-              "Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011)."),
+              "Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011)."),
     build = function() {
       gg <- !is.na(x$df1_gg)
       d1 <- ifelse(gg, x$df1_gg, x$df1)
@@ -266,7 +266,7 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE)
     },
     notes = c(
-      sprintf(paste("Needed: essential ratings the exact one-tailed binomial",
+      sprintf(paste("Needed: essential ratings the exact one-sided binomial",
                     "test requires at alpha = %s (Ayre & Scally, 2014)."),
               .fmt_alpha(alpha)),
       if (any(is.na(x$critical_ne) & x$N >= 1L)) {
@@ -356,7 +356,7 @@ print.contentvalid_colquitt_norms <- function(x, digits = 2, ...) {
 #' @export
 print.contentvalid_binom <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  .print_header(x, "Howard-Melloy exact test (one-tailed)")
+  .print_header(x, "Howard-Melloy exact test (one-sided)")
   cat("\n")
   p_txt <- .p_phrase(x$p.value)
   has_counts <- all(c("n_target", "N", "p0", "alpha") %in% names(x))
@@ -466,7 +466,7 @@ print.contentvalid_similarity <- function(x, digits = 2, ...) {
   for (b in seq_along(blocks)) {
     if (b > 1L) cat("\n")
     .print_table(tab[, c(1L, blocks[[b]] + 1L), drop = FALSE],
-                 keep = names(tab))
+                 keep = names(tab), as_is = colnames(m))
   }
   if (is.matrix(pairs)) {
     off <- pairs[upper.tri(pairs)]

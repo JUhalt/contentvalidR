@@ -57,6 +57,21 @@
 # `how` says what was counted: the definitions the study offered (given as
 # `n_constructs`), the ones judges used (observed in a sort), or the ones
 # each item was rated against.
+# The Colquitt benchmark set behind each scale's levels: one line when every
+# scale shares it, otherwise one line per set naming its targets.
+.say_benchmark_sets <- function(targets, sets) {
+  sets <- as.character(sets)
+  if (length(unique(sets)) == 1L) {
+    .say("Benchmark set:", sets[1])
+    return(invisible(NULL))
+  }
+  for (s in unique(sets)) {
+    who <- paste(targets[sets == s], collapse = ", ")
+    .say(paste0("Benchmark set for ", who, ": ", s))
+  }
+  invisible(NULL)
+}
+
 .colquitt_definitions_caution <- function(n_definitions,
                                           how = c("offered", "used", "rated")) {
   how <- .choose(how)

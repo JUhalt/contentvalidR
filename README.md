@@ -148,9 +148,9 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
@@ -167,7 +167,9 @@ definitions, and these judges used two, so the printout says the
 comparison is approximate.
 
 For a manuscript, `content_report()` gives the same evidence as an APA
-table, and `format = "markdown"` writes it for Quarto or R Markdown:
+table, with a general note that defines its abbreviations and columns
+and states the criterion behind each decision; `format = "markdown"`
+writes it for Quarto or R Markdown:
 
 ``` r
 content_report(fit)
@@ -179,10 +181,10 @@ content_report(fit)
 #>   Needs review A       12/20 B          .60 [.39, .78] .20   .252 Review
 #> 
 #> Note. Psa = proportion of substantive agreement; CI = confidence interval;
-#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
-#> interval. Retain = at least the number of target assignments the exact
-#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
-#> 2016).
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.

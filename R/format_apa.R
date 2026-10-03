@@ -115,7 +115,7 @@
 # shows them (`more`). Returns the headings it printed, invisibly, so a key
 # can leave out a column that was not shown.
 .print_table <- function(tab, keep = .table_keep, more = "as.data.frame(x)",
-                         indent = 2L, gap = 2L) {
+                         indent = 2L, gap = 2L, as_is = character(0)) {
   tab <- as.data.frame(tab, stringsAsFactors = FALSE, check.names = FALSE)
   if (!ncol(tab)) return(invisible(character(0)))
   heads <- names(tab)
@@ -133,7 +133,9 @@
   empty[kept(heads)] <- FALSE
   cells <- cells[!empty]
   heads <- heads[!empty]
-  shown <- .sentence_case(heads)
+  # A heading that is data, such as an item ID or a round label, is printed
+  # as given (`as_is`).
+  shown <- ifelse(heads %in% as_is, heads, .sentence_case(heads))
   right <- vapply(cells, .looks_numeric, logical(1))
   width_of <- function(v) if (length(v)) max(nchar(v, type = "width")) else 0L
   widths <- pmax(nchar(shown, type = "width"), vapply(cells, width_of, 0L))
@@ -247,15 +249,15 @@
 
 # A printout's last lines, at the margin: a closing caveat and, after a blank
 # line, the pointer to what else the object holds ("See summary(x) for ...").
-.closing <- function(caveat = NULL, pointer = NULL) {
+.closing <- function(caveat = NULL, pointer = NULL, width = NULL) {
   .end_section()
   if (length(caveat)) {
     cat("\n")
-    .say(paste(caveat, collapse = " "))
+    .say(paste(caveat, collapse = " "), width = width)
   }
   if (length(pointer)) {
     cat("\n")
-    .say(pointer)
+    .say(pointer, width = width)
   }
   invisible(NULL)
 }

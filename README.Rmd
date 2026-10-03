@@ -91,7 +91,7 @@ The first line names the object, `<contentvalid_sort>`, and what it holds; then,
 
 The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.
 
-For a manuscript, `content_report()` gives the same evidence as an APA table, and `format = "markdown"` writes it for Quarto or R Markdown:
+For a manuscript, `content_report()` gives the same evidence as an APA table, with a general note that defines its abbreviations and columns and states the criterion behind each decision; `format = "markdown"` writes it for Quarto or R Markdown:
 
 ```{r first-report}
 content_report(fit)

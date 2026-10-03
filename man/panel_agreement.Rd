@@ -37,7 +37,8 @@ An object of class \code{contentvalid_agreement}: a list with \code{method},
 \code{level}, \code{estimate}, \code{ci_low}, \code{ci_high}, \code{alpha}, \code{B}, \code{n_boot_usable},
 \code{n_items} (items rated by at least two raters), \code{n_raters},
 \code{percent_agreement} (share of within-item rating pairs that are identical),
-\code{interpretation}, and \code{critique}.
+\code{interpretation}, \code{critique}, and \code{n_pairs} (the number of within-item
+rating pairs, the base of \code{percent_agreement}).
 }
 \description{
 Summarizes how consistently a panel rated the whole item set, as one
@@ -53,7 +54,9 @@ number of raters and with missing ratings. Zapf et al. (2016) recommend it
 specifically when data are ordinal or ratings are missing, which is typical
 of expert panels. It is a general reliability coefficient (Hayes &
 Krippendorff, 2007); no publication applying it specifically to
-content-validity panels was found.
+content-validity panels was found. Its value agrees with \code{kripp.alpha()}
+of the irr package (Gamer et al., 2026) to numerical precision, which
+the package's tests check.
 \item \code{"ac1"}: Gwet's (2008) AC1, designed for high-agreement data where
 kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
 affected than Cohen's kappa by how often each category is used. It is
@@ -100,6 +103,10 @@ panel_agreement(ratings >= 3, method = "ac1", B = 0)
 Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
 I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
 43}(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
+
+Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). \emph{irr: Various
+coefficients of interrater reliability and agreement} (R package version
+0.85) [Computer software]. \doi{10.32614/CRAN.package.irr}
 
 Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 the presence of high agreement. \emph{British Journal of Mathematical and

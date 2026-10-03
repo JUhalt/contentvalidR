@@ -846,7 +846,10 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     r <- x$results
     ci <- .ci_label(x$settings$alpha)
     sizes <- unique(r$N[!is.na(r$cvi_criterion)])
-    .print_table(.expert_item_table(r, "relevance", digits, x$settings$alpha))
+    # I-CVI decides, so a narrow console never drops it.
+    shown <- .print_table(.expert_item_table(r, "relevance", digits,
+                                             x$settings$alpha),
+                          keep = c(.table_keep, "I-CVI"))
     cat("\n")
     .say("Each", ci, "follows its estimate: Aiken's V has a Penfield-Giacobbi",
          "score interval, and I-CVI the proportion interval named below.")
@@ -907,7 +910,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     # With no usable ratings there is no critical count to state.
     if (length(sizes) == 1L && sizes >= 1L && !is.na(r$critical_ne[1])) {
       .say(sprintf(paste("With %d experts, an item needs at least %d rating it",
-                         "essential for the exact one-tailed binomial test at",
+                         "essential for the exact one-sided binomial test at",
                          "alpha = %s (Ayre & Scally, 2014)."),
                    sizes, r$critical_ne[1], .fmt_alpha(x$settings$alpha)))
     }
@@ -984,7 +987,13 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
           }),
         headings = c("S-CVI/Ave", "S-CVI/UA", "V", "I-CVI",
                      paste(ci, "after I-CVI"), "kappa",
-                     if (show_agreement) "Panel agreement")),
+                     if (show_agreement) "Panel agreement"),
+        # The facts and the panel line are always shown; a table column only
+        # when the console had room for it (the I-CVI interval is the second
+        # interval column).
+        shown = c("S-CVI/Ave", "S-CVI/UA", "Panel agreement",
+                  intersect(c("V", "I-CVI", "kappa"), shown),
+                  if (sum(shown == ci) >= 2L) paste(ci, "after I-CVI"))),
       essentiality = .print_key("cvr", headings = "CVR"),
       .print_key("ioc", headings = "IOC")
     )
@@ -1015,7 +1024,11 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_header(x, "Expert-panel analysis")
   cat("Mode: ", x$mode, "\n", sep = "")
-  cat("Supported: ", x$n_supported, " | Review: ", x$n_review, sep = "")
+  passing <- switch(x$mode, relevance = "Strong support",
+                    essentiality = "Supported", congruence = "Congruent",
+                    "Supported")
+  cat(passing, ": ", x$n_supported, " of ", x$n_items, " | Review: ",
+      x$n_review, " of ", x$n_items, sep = "")
   # Two reasons for no decision, counted apart: too few experts for any count
   # to meet the exact test, and no usable rating at all.
   n_few <- if (identical(x$mode, "essentiality")) {
@@ -1061,7 +1074,7 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   }
   .closing(c("These summaries support, but do not replace, qualitative content",
              "review."),
-           "See x$reviewed_items for the flagged items as a data frame.")
+           "See summary(x)$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 

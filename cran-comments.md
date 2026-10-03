@@ -7,11 +7,22 @@ This is an update of contentvalidR from 0.4.0, on CRAN since 2026-09-28, to
   in 0.9.0, with a warning naming its replacement, `panel_agreement()`. That
   warning shipped only on GitHub and R-universe, so CRAN users go from 0.4.0,
   where the function works, to 1.0.0, where it is gone; NEWS.md records the
-  removal and the replacement. No other function, argument or returned field
-  that 0.4.0 exported is removed.
+  removal and the replacement.
+* Also removed since 0.4.0, each recorded in NEWS.md with its reason:
+  `anova_content()`'s `posthoc` argument (deprecated from the first release,
+  removed in 0.7.0) and its `posthoc_pass` column (removed in 0.8.0);
+  `overall_strength` in the `scale_summary` of `sort_validity()` and
+  `rating_validity()`, `n_support` in that of `expert_validity()`,
+  `n_influential` in that of `judge_validity()`, and `fit_label` in the
+  `fit` table of `content_structure()`. These four fields were removed in
+  1.0.0 without a notice period because they were wrong or unreachable;
+  `?contentvalidR` says so beside the deprecation policy.
+* `content_report()` returns an APA table by default since 0.9.0;
+  `format = "data.frame"` gives the numeric table.
 * Several results change because methods were corrected after an audit of the
   package against its sources. NEWS.md lists each change under "values that
-  change", with the reason.
+  change", with the reason, and lists the stored sentences that now follow
+  the printed rounding rules under "Stored text that changes".
 * The printed output of every function changed to a style shared with the
   companion package nomologR. Printed output is outside the package's
   stability policy (`?contentvalidR`).
@@ -46,8 +57,10 @@ contentvalidR's handoff object; it is maintained by the same author.
 ## Submission notes
 
 * The words flagged as possibly misspelled in DESCRIPTION are spelled
-  correctly. Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
-  Lawshe, MacKenzie, Melloy, Sireci and Tracey are author surnames, and "et
-  al." is the standard citation abbreviation.
+  correctly: Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
+  Lawshe, MacKenzie, Melloy, and Sireci are author surnames;
+  "generalizability" is the standard term of generalizability theory; and
+  "et al." is the standard citation abbreviation. To be confirmed against
+  the raw win-builder log at submission.
 * The package imports only `stats` and contains no compiled code.
-* The Description field gives DOIs for the implemented methods.
+* The Description field gives DOIs for the principal methods.

@@ -474,14 +474,13 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   sc <- x$scale_summary
   expert <- identical(s$judge_type, "expert")
   # Without benchmarks the table holds means only, and is headed as such.
-  .section(if (expert) "Target-scale means" else
-    "Target-scale Colquitt benchmarks")
+  .section(if (expert) "Scale-level means" else
+    "Scale-level Colquitt benchmarks")
   # The stored code ("overall") prints as the label the item-sort print uses.
   labels <- vapply(as.character(sc$benchmark_set), function(s) {
     lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
     if (is.null(lab)) s else lab
   }, character(1), USE.NAMES = FALSE)
-  sets <- unique(labels)
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean HTC` = .fmt(sc$mean_htc, digits),
                    stringsAsFactors = FALSE, check.names = FALSE)
@@ -490,13 +489,10 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   if (!expert) st$`HTC level` <- sc$htc_strength
   st$`mean HTD` <- .fmt(sc$mean_htd, digits)
   if (!expert) st$`HTD level` <- sc$htd_strength
-  if (!expert && length(sets) > 1L) st$benchmarks <- labels
-  # The benchmark set explains each level, so it is never dropped for width.
-  .print_table(st, keep = c(.table_keep, "benchmarks"),
-               more = 'as.data.frame(x, component = "scale_summary")')
+  .print_table(st, more = 'as.data.frame(x, component = "scale_summary")')
   # How many items are behind each mean, said only when some were left out.
   for (line in .rating_partial_means(sc)) .say(line)
-  if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
+  if (!expert) .say_benchmark_sets(sc$target, labels)
   if (!expert) for (line in .colquitt_caution_lines(sc, "rated")) .say(line)
 
   cat("\n")
@@ -519,9 +515,9 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  .closing(c("'Review' is not an automatic deletion decision. Consider construct",
-             "definitions, item wording, orbiting-construct choice, domain coverage,",
-             "and qualitative judge feedback."),
+  .closing(c("A flag for review is not an automatic deletion decision.",
+             "Consider construct definitions, item wording, orbiting-construct",
+             "choice, domain coverage, and qualitative judge feedback."),
            "See summary(x) for the flagged items and content_report(x) for an APA table.")
   invisible(x)
 }
@@ -589,7 +585,7 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   .closing(c("Interpret these results alongside theory, domain coverage, and",
              "qualitative feedback. The analysis does not by itself establish",
              "comprehensiveness or the full content-validity argument."),
-           "See x$reviewed_items for the flagged items as a data frame.")
+           "See summary(x)$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 

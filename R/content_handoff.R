@@ -1166,6 +1166,10 @@ print.contentvalid_handoff <- function(x, ...) {
     }
   }
 
+  # The status words, in this workflow's own terms, after the facts.
+  cat("\n")
+  .say(.status_meaning(x$item_evidence$recommendation, x$item_evidence$status))
+
   held <- x$item_evidence[!x$item_evidence$carried, , drop = FALSE]
   if (nrow(held)) {
     .section("Held back")

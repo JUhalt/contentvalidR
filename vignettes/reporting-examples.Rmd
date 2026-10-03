@@ -36,8 +36,10 @@ and for seeing the expected input shape before analyzing a new study.
 sort_dat <- read_example("sort_example.csv")
 sort_fit <- sort_validity(sort_dat)
 sort_sum <- summary(sort_fit)
-sort_fit$results
-sort_fit$scale_summary
+sort_fit$results[, c("item", "target", "psa", "csv", "p_value",
+                    "recommendation")]
+sort_fit$scale_summary[, c("target", "n_items", "mean_psa", "psa_strength",
+                           "mean_csv", "csv_strength")]
 ```
 
 ### Methods scaffold
@@ -82,8 +84,10 @@ reasonable decision when that rationale is documented.
 rating_dat <- read_example("rating_example.csv")
 rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
 rating_sum <- summary(rating_fit)
-rating_fit$results
-rating_fit$scale_summary
+rating_fit$results[, c("item", "target", "htc", "htd", "p_value",
+                      "max_contrast_p", "recommendation")]
+rating_fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
+                             "mean_htd", "htd_strength")]
 ```
 
 ### Methods scaffold
@@ -130,8 +134,10 @@ expert_fit <- expert_validity(
   hi = 4
 )
 expert_sum <- summary(expert_fit)
-expert_fit$results
-expert_fit$scale_summary
+expert_fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod",
+                      "recommendation")]
+expert_fit$scale_summary[, c("n_items", "mean_Aiken_V", "S_CVI_Ave",
+                             "S_CVI_UA", "agreement")]
 ```
 
 > Experts rated the relevance of each candidate item on a bounded ordinal
@@ -152,7 +158,8 @@ items under its quantitative rules.
 expert_ess <- read_example("expert_essentiality_example.csv")
 expert_ess_matrix <- as.matrix(expert_ess[setdiff(names(expert_ess), "expert")])
 ess_fit <- expert_validity(expert_ess_matrix, mode = "essentiality")
-ess_fit$results
+ess_fit$results[, c("item", "ne", "N", "cvr", "p_value", "critical_ne",
+                   "recommendation")]
 ```
 
 For an essentiality task, state that CVR is tied to a different expert judgment
@@ -164,7 +171,8 @@ count for each item rather than borrowing a relevance/CVI threshold.
 ```{r expert-congruence}
 expert_ioc <- read_example("expert_congruence_example.csv")
 ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
-ioc_fit$results
+ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
+                   "strongest_competitor", "margin", "recommendation")]
 ```
 
 For congruence, report each item's intended objective, its index of

@@ -49,7 +49,9 @@ row per item**. `judge_validity()` returns **one row per judge**.
 Every `results` table carries a `status` column drawn from a shared vocabulary:
 
 ```{r}
-attr(contentvalid_glossary(), "statuses")
+statuses <- attr(contentvalid_glossary(), "statuses")
+writeLines(strwrap(paste0(statuses$status, ": ", statuses$meaning),
+                   exdent = 2))
 ```
 
 `Review` is the one people misread. It does not mean "delete this." It means
@@ -101,9 +103,10 @@ round half up, so 5 of 8 judges (.625) prints as .63. A value that could not be
 computed prints as `--`, and the printout says why. The `results` table keeps
 every value at full precision.
 
-A narrow console never squeezes a table into wrapped blocks. Columns that do
-not fit are left out from the right, never the item or its decision, and a
-line beneath the table names them and the call that shows them.
+In a narrow console, columns that do not fit are left out from the right,
+never the item, its decision or the statistic the decision rests on, and a
+line beneath the table names them and the call that shows them. A table with
+nothing it may leave out prints wider than the console.
 
 The status words read across this package and nomologR as follows (the same
 table is in `?contentvalidR`):

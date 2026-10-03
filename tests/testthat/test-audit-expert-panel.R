@@ -239,7 +239,7 @@ test_that("a mixed panel shows every kind of decision without a raw NA count", {
   # The summary counts the two reasons for no decision apart.
   sm <- gsub("\\s+", " ",
              paste(capture.output(print(summary(fit))), collapse = " "))
-  expect_match(sm, "Supported: 2 | Review: 1 | Too few experts: 2 | Insufficient data: 1",
+  expect_match(sm, "Supported: 2 of 6 | Review: 1 of 6 | Too few experts: 2 | Insufficient data: 1",
                fixed = TRUE)
 
   # Each kind of item has its own handoff rule, none with a missing count.

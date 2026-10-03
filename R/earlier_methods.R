@@ -499,28 +499,38 @@
   pe_text <- if (length(pe) == 1L) small(pe) else
     paste(small(max(pe)), "to", small(min(pe)))
   .say("Its shortcomings, which is why it does not decide anything here:")
+  # Bullets hang: a wrapped line starts under the text, not under the "*".
+  hang <- .cv_print$indent + 2L
   .say(paste(
     "* It uses only the mean rating, so it cannot reflect agreement,",
     "although the book presents it as measuring agreement too: in its own",
     "Table 7, ratings of 1, 3, 4, 5, 2 and of 3, 3, 3, 3, 3 both get .60."
-  ), exdent = 2L)
+  ), exdent = hang)
   .say(paste0(
     "* The correction for chance, (1/J)^J, depends only on the number of ",
     "judges, not on the ratings or the number of scale points, and is ",
     pe_text, " here."
-  ), exdent = 2L)
+  ), exdent = hang)
+  floor_after <- if (length(pe) == 1L) {
+    .fmt(em$lo / em$hi - pe, digits)
+  } else {
+    paste(.fmt(em$lo / em$hi - max(pe), digits), "to",
+          .fmt(em$lo / em$hi - min(pe), digits))
+  }
   .say(if (isTRUE(em$lo == 0)) {
     paste("* On a scale starting at 0, as here, Ccv before the correction is",
           "Aiken's V.")
   } else {
-    paste0("* On a scale starting at ", format(em$lo), ", as here, it ",
-           "cannot fall below ", .fmt(em$lo / em$hi, digits), " (",
-           format(em$lo), "/", format(em$hi), "), so unlike Aiken's V it does ",
-           "not reach 0 when every judge gives the lowest rating.")
-  }, exdent = 2L)
+    paste0("* On a scale starting at ", format(em$lo), ", as here, Ccv ",
+           "before the correction cannot fall below ",
+           .fmt(em$lo / em$hi, digits), " (", format(em$lo), "/",
+           format(em$hi), "), and after it not below that less (1/J)^J (",
+           floor_after, " here), so unlike Aiken's V it does not reach 0 when ",
+           "every judge gives the lowest rating.")
+  }, exdent = hang)
   .say(paste(
     "* The .80 and .90 bands are stated without derivation or a test, and",
     "the book does not keep to them: its Example 11 calls .7968 acceptable."
-  ), exdent = 2L)
+  ), exdent = hang)
   invisible(NULL)
 }

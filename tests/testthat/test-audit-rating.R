@@ -214,7 +214,7 @@ test_that("the test is credited to both of its sources", {
   lines <- strsplit(shown(anova_content(d)), "\n", fixed = TRUE)[[1]]
   expect_identical(lines[1], "<contentvalid_anova> Content-validity ANOVA")
   expect_identical(lines[2],
-                   "Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).")
+                   "Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011).")
   fit <- rating_validity(d)
   h <- content_handoff(fit)
   rule <- unique(h$item_evidence$rule)
@@ -331,8 +331,8 @@ test_that("expert-judge tables leave out the level columns", {
   expect_false(grepl("Benchmark set", out, fixed = TRUE))
   expect_match(out, "Mean HTC Mean HTD", fixed = TRUE)
   # The table holds means only, and its heading says so.
-  expect_match(out, "Target-scale means", fixed = TRUE)
-  expect_false(grepl("Target-scale Colquitt benchmarks", out, fixed = TRUE))
+  expect_match(out, "Scale-level means", fixed = TRUE)
+  expect_false(grepl("Scale-level Colquitt benchmarks", out, fixed = TRUE))
   sm <- flat(summary(fit))
   expect_false(grepl("HTC level", sm, fixed = TRUE))
   expect_false(grepl("HTD level", sm, fixed = TRUE))
@@ -342,7 +342,7 @@ test_that("expert-judge tables leave out the level columns", {
   naive <- flat(rating_validity(d))
   expect_match(naive, "HTC level", fixed = TRUE)
   expect_match(naive, "Benchmark set:", fixed = TRUE)
-  expect_match(naive, "Target-scale Colquitt benchmarks", fixed = TRUE)
+  expect_match(naive, "Scale-level Colquitt benchmarks", fixed = TRUE)
 
   # A level column empty for every scale is dropped (the style shared with
   # nomologR), and the sentence beneath says why there is no band.

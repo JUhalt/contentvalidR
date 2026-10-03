@@ -327,8 +327,8 @@ print.contentvalid_rounds <- function(x, ...) {
   moved <- sum(change %in% c("Strengthened", "Weakened", "Changed"))
   both <- sum(change %in% c("Strengthened", "Weakened", "Changed", "Unchanged"))
   cat("\n")
-  .say(sprintf("%d of %s in both the first and last round changed status%s.",
-               moved, .n_noun(both, "unit"),
+  .say(sprintf("Of the %s present in the first and last rounds, %d changed status%s.",
+               .n_noun(both, "unit"), moved,
                if (moved > 0L) {
                  sprintf(" (%d stronger, %d weaker%s)",
                          sum(change %in% "Strengthened"),
@@ -365,7 +365,7 @@ print.contentvalid_rounds <- function(x, ...) {
   }
 
   .section("Status by round")
-  .print_table(x$transitions, more = "x$transitions")
+  .print_table(x$transitions, more = "x$transitions", as_is = x$labels)
 
   .section("Round-to-round summary")
   s <- x$summary
@@ -421,6 +421,9 @@ print.summary.contentvalid_rounds <- function(x, ...) {
   cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",
       sep = "")
 
+  t <- x$transitions
+  .say(.status_meaning(NULL, NULL, workflow = x$workflow))
+
   if (!x$comparable) {
     .section("What differs between rounds")
     .print_table(x$settings_changes, more = "x$settings_changes")
@@ -428,16 +431,24 @@ print.summary.contentvalid_rounds <- function(x, ...) {
 
   if (nrow(x$changed)) {
     .section("Units whose status changed")
-    .print_table(x$changed, more = "x$changed")
+    .print_table(x$changed, more = "summary(x)$changed", as_is = x$labels)
   } else {
     .end_section()
     cat("\n")
     .say("No unit changed status between the first and last round.")
   }
   .closing(pointer = if (nrow(x$changed)) {
-    "See x$changed for those units as a data frame."
+    "See summary(x)$changed for those units as a data frame."
   } else {
     "See x$summary for the round-to-round counts."
   })
   invisible(x)
+}
+
+# A comparison of rounds has no figure; each round's own fit plots.
+#' @export
+plot.contentvalid_rounds <- function(x, ...) {
+  stop("A comparison of rounds has no figure. print(x) shows each unit's ",
+       "status by round; plot each round's own fit to see its evidence.",
+       call. = FALSE)
 }

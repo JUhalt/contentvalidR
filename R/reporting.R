@@ -29,6 +29,14 @@
 
 .md_escape <- function(x) gsub("|", "\\|", as.character(x), fixed = TRUE)
 
+# APA sets statistical symbols in italics. Markdown can, so the symbols that
+# stand alone in a heading or the note (p, F, V, n, N) are italicized there;
+# the console and the names on the object stay plain.
+.md_symbols <- function(x) {
+  gsub("(?<![A-Za-z0-9*'.-])([pFVnN])(?![A-Za-z0-9*'(-])", "*\\1*", x,
+       perl = TRUE)
+}
+
 .as_markdown_table <- function(df) {
   if (!nrow(df)) return(character(0))
   # Text is not padded: a Markdown cell needs no alignment.
@@ -166,7 +174,8 @@ as.data.frame.contentvalid_workflow <- function(x,
     ),
     contentvalid_domain = list(
       s("cell", "text", "cell"), s("items", "int", "n_items"),
-      s("share", "percent", "share"), s("decision", "text", "recommendation")
+      s("share", "percent", "share"), s("expected", "percent", "expected_share"),
+      s("decision", "text", "recommendation")
     ),
     contentvalid_delphi = {
       # The column is headed by the statistic it holds. A chi-square can
@@ -251,16 +260,18 @@ as.data.frame.contentvalid_workflow <- function(x,
   if (length(at)) attr(tab, "display") <- stats::setNames(headings[at], names_out[at])
   attr(tab, "note") <- .report_note(
     x, headings, has_missing = any(vapply(tab, function(v) any(v == .missing_mark),
-                                          logical(1)))
+                                          logical(1))),
+    decisions = res$recommendation
   )
   tab
 }
 
 
 # The general note of an APA table (Section 7.14): the abbreviations in the
-# order the columns show them, the interval method, then the criterion that
-# produced the decisions. Shared in form with nomologR.
-.report_note <- function(x, headings, has_missing = FALSE) {
+# order the columns show them, what each column a reader could not otherwise
+# interpret holds, the interval method, then the criterion that produced the
+# decisions shown. Shared in form with nomologR.
+.report_note <- function(x, headings, has_missing = FALSE, decisions = NULL) {
   abbrev <- c(
     Psa = "proportion of substantive agreement",
     Csv = "coefficient of substantive validity",
@@ -283,6 +294,7 @@ as.data.frame.contentvalid_workflow <- function(x,
   st <- x$settings
   alpha <- if (is.numeric(st$alpha)) st$alpha else 0.05
   ci <- .ci_label(alpha)
+  columns <- .report_column_notes(x, headings)
   interval <- NULL
   if (any(headings == ci)) {
     prop <- .handoff_interval_label(st$proportion_ci)
@@ -336,14 +348,187 @@ as.data.frame.contentvalid_workflow <- function(x,
       sprintf("Consensus = at least %s of experts agreeing in the last round.",
               .delphi_percent(st$consensus_threshold))
     },
+    contentvalid_judge = .report_judge_criterion(st, decisions),
+    contentvalid_domain = .report_domain_criterion(st, decisions),
     NULL
   )
   missing <- if (has_missing) "-- = not computed."
-  txt <- c(defs, interval, criterion, missing)
+  txt <- c(defs, columns, interval, criterion, missing)
   if (!length(txt)) return(NULL)
   paste(txt, collapse = " ")
 }
 
+
+# What a column holds, for the columns whose heading alone does not say:
+# one sentence each, in the order the table shows them.
+.report_column_notes <- function(x, headings) {
+  has <- function(h) any(tolower(headings) == tolower(h))
+  st <- x$settings
+  out <- switch(
+    class(x)[1],
+    contentvalid_sort = c(
+      if (has("judges")) {
+        "Judges = target assignments, out of the judges who sorted the item."
+      }
+    ),
+    contentvalid_rating = c(
+      if (has("judges")) {
+        "Judges = judges who rated the item against every construct."
+      },
+      if (has("F test")) {
+        paste("F test = within-judge omnibus test, with Greenhouse-Geisser",
+              "corrected degrees of freedom where the correction applied.")
+      },
+      if (has("contrast p")) {
+        paste0("Contrast p = the largest one-sided ",
+               if (identical(st$adjust, "holm")) "Holm-adjusted ",
+               "p among the planned contrasts of the intended construct with ",
+               "each other construct.")
+      }
+    ),
+    contentvalid_expert = switch(
+      x$mode,
+      relevance = c(
+        if (has("kappa")) "Kappa = modified kappa (Polit et al., 2007)."
+      ),
+      essentiality = c(
+        if (has("essential")) {
+          "Essential = experts rating the item essential, out of those who rated it."
+        }
+      ),
+      c(
+        if (has("mean")) {
+          paste("Mean = the experts' mean rating of the item on its intended",
+                "objective (-1 to 1).")
+        },
+        if (has("competitor mean")) {
+          "Competitor mean = the same for the closest other objective."
+        },
+        if (has("margin")) "Margin = mean minus competitor mean.",
+        if (has("best objective")) {
+          "Best objective = the objective with the highest IOC."
+        }
+      )
+    ),
+    contentvalid_delphi = c(
+      if (has("agree")) {
+        sprintf(paste("Agree = share of experts rating the item %s or higher",
+                      "in its last round."), .fmt_scale(st$agree_cut))
+      },
+      if (has("unchanged")) {
+        paste("Unchanged = share of experts who kept their rating between",
+              "the item's last two consecutive rounds.")
+      },
+      switch(
+        if (is.null(st$stability)) "" else st$stability,
+        kappa = if (has("kappa")) {
+          sprintf("Kappa = %s-weighted kappa between those rounds.",
+                  st$kappa_weights)
+        },
+        lambda = if (has("lambda")) {
+          "Lambda = Goodman-Kruskal lambda between those rounds."
+        },
+        percent_change = if (has("net change")) {
+          paste("Net change = net change in the rating distribution between",
+                "those rounds, read as stable below .15 (Scheibe et al.,",
+                "1975/2002).")
+        },
+        chisq_individual = if (has("chi-square")) {
+          paste("Chi-square = individual stability chi-square between those",
+                "rounds (Chaffin & Talley, 1980).")
+        },
+        chisq_group = if (has("chi-square")) {
+          paste("Chi-square = group stability chi-square between those rounds",
+                "(Dajani et al., 1979).")
+        },
+        NULL
+      )
+    ),
+    contentvalid_judge = c(
+      if (has("ratings")) "Ratings = items the judge rated.",
+      if (has("mean")) "Mean = the judge's mean rating.",
+      if (has("severity")) {
+        paste("Severity = how far the judge rates below the panel, in rating",
+              "points (positive is harsher).")
+      },
+      if (has("logit")) {
+        paste("Logit = severity from the many-facet Rasch model of the",
+              "relevant/not-relevant decision.")
+      },
+      if (has("infit") || has("outfit")) {
+        "Infit, Outfit = fit mean squares (about 1 is expected)."
+      },
+      if (has("scale use")) {
+        paste("Scale use = spread of the judge's ratings relative to a typical",
+              "judge on this panel (1 is typical).")
+      }
+    ),
+    contentvalid_domain = c(
+      if (has("share")) "Share = percentage of all items in the cell.",
+      if (has("expected")) {
+        if (isTRUE(st$targets_supplied)) {
+          "Expected = the cell's share of the targets in the blueprint."
+        } else {
+          "Expected = an equal share of the items for every cell."
+        }
+      }
+    ),
+    NULL
+  )
+  if (length(out)) paste(out, collapse = " ")
+}
+
+# The rules behind a judge's flag, for the decisions the table shows. They
+# are this package's conventions, which a manuscript table should say.
+.report_judge_criterion <- function(st, decisions) {
+  if (!is.list(st) || !is.numeric(st$severity_cut)) return(NULL)
+  shown <- unique(as.character(decisions))
+  rules <- c(
+    if (any(shown %in% c("Severe", "Lenient"))) {
+      sprintf(paste("Severe or Lenient = severity beyond %s logit, or beyond",
+                    "%s rating points for a judge the model could not place"),
+              format(st$severity_cut),
+              .fmt(st$severity_raw_cut, 2, bounded = FALSE))
+    },
+    if ("Erratic" %in% shown && is.numeric(st$fit_range)) {
+      sprintf("Erratic = infit or outfit above %s, on at least %d scored decisions",
+              format(st$fit_range[2]), as.integer(st$fit_min_ratings))
+    },
+    if ("Low differentiation" %in% shown) {
+      diff_cut <- if (is.null(st$differentiation_cut)) 0.5 else st$differentiation_cut
+      sprintf("Low differentiation = scale use below %s",
+              .fmt(diff_cut, 2, bounded = FALSE))
+    }
+  )
+  if (!length(rules)) return(NULL)
+  paste0(paste(rules, collapse = "; "),
+         ". These cuts are contentvalidR conventions, not published standards.")
+}
+
+# The rules behind a cell's decision, for the decisions the table shows.
+.report_domain_criterion <- function(st, decisions) {
+  if (!is.list(st) || !is.numeric(st$min_items)) return(NULL)
+  shown <- unique(as.character(decisions))
+  f <- format(st$over_factor)
+  rules <- c(
+    if ("Not covered" %in% shown) "Not covered = no item addresses the cell",
+    if ("Thinly covered" %in% shown) {
+      paste0("Thinly covered = fewer than ", .n_noun(st$min_items, "item"),
+             if (isTRUE(st$targets_supplied) && st$min_items > 1L) {
+               " (or the cell's target, if smaller)"
+             })
+    },
+    if ("Over-represented" %in% shown) {
+      paste0("Over-represented = more than ", f, " times the expected share")
+    },
+    if ("Under-represented" %in% shown) {
+      paste0("Under-represented = less than 1/", f, " of the expected share")
+    }
+  )
+  if (!length(rules)) return(NULL)
+  paste0(paste(rules, collapse = "; "),
+         ". These criteria are contentvalidR conventions, not published standards.")
+}
 
 # The headings a reader sees: an interval named after its estimate is
 # printed under its shared heading, unless the user renamed it.
@@ -395,6 +580,12 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' table by default, with *p* values rounded to `digits`; use
 #' `format = "data.frame"` for that table, where *p* values now keep three
 #' decimals.
+#'
+#' @section Changed in 1.0.0:
+#' Numbers in `format = "data.frame"` round half up, as the APA table does,
+#' so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
+#' own rounding gave 0.62. The APA table prints under a header and carries
+#' its general note as the `"note"` attribute.
 #'
 #' @section Reporting the decision rules:
 #' A results table alone is not a reproducible report. The thresholds that
@@ -450,16 +641,19 @@ content_report <- function(x,
       "_No units matched the requested selection._"
     } else {
       md <- .report_display(tab)
-      names(md) <- .sentence_case(names(md))
+      names(md) <- .md_symbols(.sentence_case(names(md)))
       # APA marks a value that could not be computed with an em dash.
-      md[] <- lapply(md, function(v) ifelse(v == .missing_mark, "\u2014", v))
+      md[] <- lapply(md, function(v) {
+        v <- sub("^F[(]", "*F*(", v)
+        ifelse(v == .missing_mark, "\u2014", v)
+      })
       note <- attr(tab, "note")
       c(.as_markdown_table(md),
         if (length(note)) {
           # A Markdown paragraph may break across lines, so the note is
           # wrapped like the console.
-          c("", strwrap(paste0("*Note.* ", gsub(.missing_mark, "\u2014", note,
-                                                 fixed = TRUE)), width = 79))
+          note <- .md_symbols(gsub(.missing_mark, "\u2014", note, fixed = TRUE))
+          c("", strwrap(paste0("*Note.* ", note), width = 79))
         })
     })
     attr(lines, "settings") <- x$settings
@@ -498,7 +692,7 @@ print.contentvalid_report <- function(x, ...) {
   if (!nrow(x)) {
     .say("No units matched the requested selection.")
   } else {
-    .print_table(.report_display(x))
+    .print_table(.report_display(x), keep = c(.table_keep, "I-CVI", "IOC"))
     note <- attr(x, "note")
     if (length(note)) {
       cat("\n")

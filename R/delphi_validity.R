@@ -1442,6 +1442,6 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   }
   .closing(c("Consensus is not correctness, and 'No consensus' is not an instruction",
              "to drop an item. Read these results with the experts' comments."),
-           "See x$reviewed_items for the items without consensus as a data frame.")
+           "See summary(x)$reviewed_items for the items without consensus as a data frame.")
   invisible(x)
 }

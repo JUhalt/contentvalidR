@@ -30,7 +30,7 @@ test_that("every printout opens with a tag-first header and no rule", {
     "^<contentvalid_psa> ")
   expect_match(shown(cvi(relevance() >= 3))[1], "^<contentvalid_cvi> ")
   expect_identical(shown(csv_binom_test(n_c = 15, N = 20))[1],
-                   "<contentvalid_binom> Howard-Melloy exact test (one-tailed)")
+                   "<contentvalid_binom> Howard-Melloy exact test (one-sided)")
   sim <- shown(similarity_from_sort(utils::read.csv(
     system.file("extdata", "sort_example.csv", package = "contentvalidR"))))
   expect_identical(sim[1], "<contentvalid_similarity> Item similarity")
@@ -115,7 +115,7 @@ test_that("sections indent their prose, and the closing returns to the margin", 
   expect_true(any(grepl("^  Judges: assignments", out)))
   last <- out[length(out)]
   expect_match(last, "^See summary\\(x\\)")
-  expect_true(any(grepl("^'Review' is not an automatic deletion decision", out)))
+  expect_true(any(grepl("^A flag for review is not an automatic deletion decision", out)))
 })
 
 test_that("summaries list flagged units as bullets with complete sentences", {
@@ -198,7 +198,10 @@ test_that("a value not computed is -- in the console and an em dash in Markdown"
   expect_false(grepl("printout", attr(tab, "note"), fixed = TRUE))
   md <- content_report(fit, format = "markdown")
   expect_match(md[grepl("^[|] A3 ", md)], "| \u2014 |", fixed = TRUE)
-  expect_match(md[length(md)], "\u2014 = not computed.", fixed = TRUE)
+  # The note wraps across lines, which Markdown joins into one paragraph.
+  note_md <- paste(md[seq(which(startsWith(md, "*Note.*")), length(md))],
+                   collapse = " ")
+  expect_match(note_md, "\u2014 = not computed.", fixed = TRUE)
   # 5 of 8 is an exact tie: both formats round it half up.
   expect_identical(tab$Psa[tab$item == "A1"], ".63")
   expect_equal(content_report(fit, format = "data.frame")$psa[1], 0.63)
@@ -298,4 +301,128 @@ test_that("keys and glossary entries wrap with the console", {
   expect_false(any(grepl(":$", out)))
   key <- shown(sort_fit(), width = 60)
   expect_lte(max(nchar(key)), 60L)
+})
+
+test_that("judge and domain reports state their criteria as package conventions", {
+  set.seed(3)
+  ratings <- matrix(sample(1:4, 60, TRUE), 6,
+                    dimnames = list(NULL, paste0("I", 1:10)))
+  ratings[6, ] <- pmax(1, ratings[6, ] - 2)
+  jr <- content_report(judge_validity(ratings, lo = 1, hi = 4))
+  jn <- attr(jr, "note")
+  expect_match(jn, "Severity = how far the judge rates below the panel",
+               fixed = TRUE)
+  expect_match(jn, "Scale use = ", fixed = TRUE)
+  if (any(c("Severe", "Lenient") %in% jr$decision)) {
+    expect_match(jn, "These cuts are contentvalidR conventions", fixed = TRUE)
+  }
+  d <- data.frame(item = paste0("I", 1:8),
+                  cell = c(rep("A", 3), rep("B", 4), "C"))
+  dr <- content_report(domain_validity(d, cell_col = "cell", min_items = 1,
+                                       targets = c(A = 3, B = 2, C = 3)))
+  expect_identical(names(dr), c("cell", "items", "share", "expected", "decision"))
+  expect_identical(dr$expected, c("38%", "25%", "38%"))
+  dn <- attr(dr, "note")
+  expect_match(dn, "Under-represented = less than 1/2 of the expected share",
+               fixed = TRUE)
+  expect_match(dn, "These criteria are contentvalidR conventions", fixed = TRUE)
+})
+
+test_that("an APA note defines the columns a reader could not otherwise read", {
+  rel <- content_report(expert_validity(relevance(), lo = 1, hi = 4,
+                                        agreement = "none"))
+  expect_match(attr(rel, "note"), "Kappa = modified kappa (Polit et al., 2007).",
+               fixed = TRUE)
+  rat <- utils::read.csv(system.file("extdata", "rating_example.csv",
+                                     package = "contentvalidR"))
+  rn <- attr(content_report(rating_validity(rat, scale_min = 1, scale_max = 5)),
+             "note")
+  expect_match(rn, "Greenhouse-Geisser", fixed = TRUE)
+  expect_match(rn, "Contrast p = the largest one-sided p", fixed = TRUE)
+  sn <- attr(content_report(sort_fit()), "note")
+  expect_match(sn, "Judges = target assignments, out of the judges who sorted",
+               fixed = TRUE)
+})
+
+test_that("Markdown sets statistical symbols in italics, the console does not", {
+  rat <- utils::read.csv(system.file("extdata", "rating_example.csv",
+                                     package = "contentvalidR"))
+  fit <- rating_validity(rat, scale_min = 1, scale_max = 5)
+  md <- content_report(fit, format = "markdown")
+  expect_match(md[1], "| *F* test | *p* | Contrast *p* | Decision |", fixed = TRUE)
+  expect_true(any(grepl("| *F*(", md, fixed = TRUE)))
+  note <- paste(md[seq(which(startsWith(md, "*Note.*")), length(md))],
+                collapse = " ")
+  expect_match(note, "omnibus *p*", fixed = TRUE)
+  expect_false(grepl("*p*0", note, fixed = TRUE))
+  # The object and the console keep plain names.
+  expect_true("p" %in% names(content_report(fit)))
+  expect_false(any(grepl("*", shown(content_report(fit)), fixed = TRUE)))
+})
+
+test_that("item IDs and round labels keep their case in table headings", {
+  s <- utils::read.csv(system.file("extdata", "sort_example.csv",
+                                   package = "contentvalidR"))
+  s$item <- tolower(s$item)
+  out <- shown(similarity_from_sort(s))
+  expect_true(any(grepl("^  Item +a1 +a2", out)))
+  expect_true(any(grepl("^  a2 ", out)))
+})
+
+test_that("different benchmark sets are named beneath the table, which keeps its levels", {
+  fit <- sort_validity(utils::read.csv(
+    system.file("extdata", "sort_example.csv", package = "contentvalidR")),
+    orbiting_r = c(A = .42, B = .28, C = .60))
+  out <- shown(fit)
+  expect_true(any(grepl("Psa level", out, fixed = TRUE)))
+  expect_true(any(grepl("Csv level", out, fixed = TRUE)))
+  expect_false(any(grepl("Benchmarks", out, fixed = TRUE)))
+  expect_true(any(grepl("^  Benchmark set for A: ", out)))
+})
+
+test_that("the printouts relate the shared status words to the workflow's own", {
+  h <- content_handoff(sort_fit(), reverse_keyed = character(0),
+                       response_scale = c(1, 5))
+  expect_match(gsub("[[:space:]]+", " ", paste(shown(h), collapse = " ")),
+               "Supported is this analysis's passing decision (Retain)",
+               fixed = TRUE)
+  rel <- expert_validity(relevance(), lo = 1, hi = 4, agreement = "none")
+  sm <- shown(summary(rel))
+  expect_match(sm[3], "^Strong support: [0-9]+ of 3 [|] Review: [0-9]+ of 3")
+  expect_match(shown(summary(sort_fit()))[length(shown(summary(sort_fit())))],
+               "^See summary\\(x\\)\\$reviewed_items")
+})
+
+test_that("the evidence headline names every stage that held an item back", {
+  wr <- utils::read.csv(system.file("extdata", "walkthrough_relevance.csv",
+                                    package = "contentvalidR"))
+  ws <- utils::read.csv(system.file("extdata", "walkthrough_sort.csv",
+                                    package = "contentvalidR"))
+  ev <- content_evidence(
+    `Relevance panel` = expert_validity(as.matrix(wr[, -1]), mode = "relevance",
+                                        lo = 1, hi = 4, seed = 1),
+    `Item sort` = sort_validity(ws))
+  txt <- gsub("\\s+", " ", paste(shown(ev), collapse = " "))
+  expect_match(txt, "EF5 (Relevance panel; Item sort)", fixed = TRUE)
+})
+
+test_that("an agreement interval with no width is said in words", {
+  r <- cbind(I1 = c(4, 4, 4, 3), I2 = c(4, 4, 3, 4), I3 = c(3, 4, 4, 4),
+             I4 = c(4, 3, 4, 4))
+  pa <- panel_agreement(r, seed = 1)
+  expect_equal(pa$ci_low, pa$ci_high)
+  out <- paste(shown(pa), collapse = " ")
+  expect_match(out, "every resample of the items gave the same value",
+               fixed = TRUE)
+  expect_false(grepl("[-.25, -.25]", out, fixed = TRUE))
+  expect_identical(utils::tail(names(pa), 1L), "n_pairs")
+})
+
+test_that("results without a figure say so when plotted", {
+  d <- data.frame(item = paste0("I", 1:4), cell = c("A", "A", "B", "C"))
+  expect_error(plot(domain_validity(d, cell_col = "cell", min_items = 1)),
+               "no figure", fixed = TRUE)
+  ratings <- matrix(c(4, 3, 4, 2, 4, 3, 3, 4, 4, 4, 2, 3), 3)
+  expect_error(plot(judge_validity(ratings, lo = 1, hi = 4)), "no figure",
+               fixed = TRUE)
 })

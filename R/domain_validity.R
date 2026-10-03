@@ -384,8 +384,10 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     " These criteria are contentvalidR conventions, not published standards."
   ))
   cat("\n")
-  .say(paste0(s$n_covered, " of ", s$n_cells,
-              " cells meet the coverage criteria."))
+  # The verb agrees with the count that leads, as in "1 of 4 cells meets".
+  .say(paste0(s$n_covered, " of ", .n_noun(s$n_cells, "cell"),
+              if (s$n_covered == 1L || s$n_cells == 1L) " meets" else " meet",
+              " the coverage criteria."))
   flagged <- r$status == "Review"
   if (any(flagged)) {
     .say("Flagged for review:",
@@ -481,7 +483,7 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
       "Note: no `domain` was supplied, so empty cells could not be detected."
     })
   }
-  .closing(pointer = "See x$gaps for the cells needing attention as a data frame.")
+  .closing(pointer = "See summary(x)$gaps for the cells needing attention as a data frame.")
   invisible(x)
 }
 
@@ -598,4 +600,17 @@ plot.contentvalid_structure <- function(x, show_legend = TRUE, type = "map", ...
     do.call(graphics::legend, key)
   }
   invisible(x)
+}
+
+# A coverage analysis has no figure of its own; its content map, when
+# similarity data were supplied, belongs to the structure object.
+#' @export
+plot.contentvalid_domain <- function(x, ...) {
+  if (is.list(x$details) && !is.null(x$details$structure)) {
+    stop("A coverage analysis has no figure of its own. Its content map is ",
+         "drawn with plot(x$details$structure).", call. = FALSE)
+  }
+  stop("A coverage analysis has no figure. print(x) shows the cells; with ",
+       "similarity data, domain_validity() also builds a content map.",
+       call. = FALSE)
 }

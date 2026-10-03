@@ -464,7 +464,6 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   # Without benchmarks the table holds means only, and is headed as such.
   .section(if (expert) "Scale-level means" else
     "Scale-level Colquitt benchmarks")
-  sets <- unique(sc$benchmark_set)
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean Psa` = .fmt(sc$mean_psa, digits),
                    stringsAsFactors = FALSE, check.names = FALSE)
@@ -473,12 +472,11 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert) st$`Psa level` <- sc$psa_strength
   st$`mean Csv` <- .fmt(sc$mean_csv, digits)
   if (!expert) st$`Csv level` <- sc$csv_strength
-  # A benchmark set shared by every scale is stated once, not on every row.
-  if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
-  # The benchmark set explains each level, so it is never dropped for width.
-  .print_table(st, keep = c(.table_keep, "benchmarks"),
-               more = 'as.data.frame(x, component = "scale_summary")')
-  if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
+  .print_table(st, more = 'as.data.frame(x, component = "scale_summary")')
+  # The benchmark set explains each level. One shared by every scale is
+  # stated once; different ones are named for their targets beneath the
+  # table, where a long label cannot push the levels out.
+  if (!expert) .say_benchmark_sets(sc$target, sc$benchmark_set)
   if (!expert) {
     how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
     for (line in .colquitt_caution_lines(sc, how)) .say(line)
@@ -508,9 +506,9 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
     .print_key_footer()
   }
 
-  .closing(c("'Review' is not an automatic deletion decision. Use theory,",
-             "construct-domain coverage, item wording, and qualitative judge",
-             "feedback alongside these statistics."),
+  .closing(c("A flag for review is not an automatic deletion decision. Use",
+             "theory, construct-domain coverage, item wording, and qualitative",
+             "judge feedback alongside these statistics."),
            "See summary(x) for the flagged items and content_report(x) for an APA table.")
   invisible(x)
 }
@@ -581,7 +579,7 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   .closing(c("Interpret scale norms and item flags alongside theory, domain",
              "coverage, and qualitative feedback. This analysis does not by itself",
              "establish comprehensiveness or the full content-validity argument."),
-           "See x$reviewed_items for the flagged items as a data frame.")
+           "See summary(x)$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 

@@ -417,7 +417,7 @@
     lambda = "How much an expert's earlier rating predicts the later one (0 to 1): predictability, not agreement.",
     chi_sq_individual = "Tests whether later ratings depend on earlier ones; needs expected counts of 5 or more.",
     chi_sq_group = "Tests whether the two rounds' distributions differ; small panels often look stable for lack of power.",
-    percent_change = "Net change in the rating distribution between rounds (stable below .15 by its authors' rule)."
+    percent_change = "How far the distribution moved between rounds, as a share of the experts (stable below .15 by its authors' rule)."
   )
 }
 
@@ -495,6 +495,30 @@
   invisible(NULL)
 }
 
+# One sentence relating the shared status words to a workflow's decision
+# words: from the decisions on hand, or from the workflow's name.
+.status_meaning <- function(recommendation, status, workflow = NULL) {
+  passing <- if (length(recommendation)) {
+    unique(recommendation[!is.na(status) & status == "Supported"])
+  } else {
+    character(0)
+  }
+  if (!length(passing) && length(workflow)) {
+    passing <- switch(as.character(workflow)[1],
+                      "item-sort" = "Retain", "construct-rating" = "Retain",
+                      "delphi" = "Consensus", "judge-heterogeneity" = "Typical",
+                      "domain-coverage" = "Covered", character(0))
+  }
+  paste0("Status uses the words shared with nomologR: Supported is ",
+         if (length(passing)) {
+           paste0("this analysis's passing decision (",
+                  paste(passing, collapse = ", "), ")")
+         } else {
+           "the analysis's passing decision"
+         },
+         ", and Review marks an item to look at again, not to delete.")
+}
+
 .status_definitions <- function() {
   data.frame(
     status = c("Supported", "Review", "Insufficient data", "Descriptive only"),
@@ -541,8 +565,14 @@
   .section("What these columns mean")
   for (i in seq_len(nrow(defs))) {
     body <- short[[defs$term[i]]]
-    .say(paste0(.sentence_case(heads[[defs$term[i]]]), " -- ", defs$label[i],
-                ". ", body), indent = 2L, exdent = 6L, width = width)
+    head <- .sentence_case(heads[[defs$term[i]]])
+    label <- if (identical(tolower(head), tolower(defs$label[i]))) {
+      ""
+    } else {
+      paste0(defs$label[i], ". ")
+    }
+    .say(paste0(head, " -- ", label, body), indent = 2L, exdent = 6L,
+         width = width)
   }
   invisible(NULL)
 }
@@ -645,6 +675,6 @@ print.contentvalid_glossary <- function(x, width = NULL, ...) {
   .closing(c("Strength labels such as Strong or Weak are percentile positions",
              "relative to published scales, not absolute judgments, and are not",
              "comparable across different indices."),
-           "See as.data.frame(x) for the definitions as a table.")
+           "See as.data.frame(x) for the definitions as a table.", width = width)
   invisible(x)
 }

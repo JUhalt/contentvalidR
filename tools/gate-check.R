@@ -55,9 +55,16 @@ cat("\n", length(res$notes), " note(s), all expected.\n", sep = "")
 # own count is used when R gives one.
 days <- regmatches(res$notes, regexpr("Days since last update: [0-9]+", res$notes))
 n <- if (length(days)) as.integer(sub("\\D+", "", days[1])) else NA_integer_
-if (is.na(n) && file.exists(file.path("tools", "cran-release-date"))) {
-  released <- as.Date(trimws(readLines(file.path("tools", "cran-release-date"),
-                                       n = 1L, warn = FALSE)))
+release_file <- file.path(root, "tools", "cran-release-date")
+if (is.na(n) && file.exists(release_file)) {
+  # An empty file or a line not in YYYY-MM-DD form gives no reminder rather
+  # than failing the gate after a clean check.
+  x <- readLines(release_file, n = 1L, warn = FALSE)
+  released <- if (length(x)) {
+    as.Date(trimws(x), format = "%Y-%m-%d")
+  } else {
+    as.Date(NA)
+  }
   if (!is.na(released)) n <- as.integer(Sys.Date() - released)
 }
 if (!is.na(n) && n < 60L) {

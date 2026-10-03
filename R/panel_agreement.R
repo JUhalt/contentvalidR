@@ -52,6 +52,18 @@
   sum(m * (m - 1) / 2)
 }
 
+# The interval beside an agreement coefficient. When every resample gave the
+# same value the interval has no width, which reflects items rated alike,
+# not precision, so that is said instead.
+.agreement_ci_text <- function(ag, digits) {
+  if (!is.finite(ag$ci_low) || !is.finite(ag$ci_high)) return("")
+  if (isTRUE(all.equal(ag$ci_low, ag$ci_high))) {
+    return(paste0("; no ", .ci_label(ag$alpha), ", because every resample of ",
+                  "the items gave the same value"))
+  }
+  paste0(", ", .ci_label(ag$alpha), " ", .fmt_ci(ag$ci_low, ag$ci_high, digits))
+}
+
 # The share of identical pairs as printed: whole numbers on fewer than 100
 # pairs. An object saved before `n_pairs` existed prints whole numbers.
 .pairs_percent <- function(ag) {
@@ -101,7 +113,9 @@
 #'   specifically when data are ordinal or ratings are missing, which is typical
 #'   of expert panels. It is a general reliability coefficient (Hayes &
 #'   Krippendorff, 2007); no publication applying it specifically to
-#'   content-validity panels was found.
+#'   content-validity panels was found. Its value agrees with `kripp.alpha()`
+#'   of the irr package (Gamer et al., 2026) to numerical precision, which
+#'   the package's tests check.
 #' * `"ac1"`: Gwet's (2008) AC1, designed for high-agreement data where
 #'   kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
 #'   affected than Cohen's kappa by how often each category is used. It is
@@ -148,12 +162,17 @@
 #'   `level`, `estimate`, `ci_low`, `ci_high`, `alpha`, `B`, `n_boot_usable`,
 #'   `n_items` (items rated by at least two raters), `n_raters`,
 #'   `percent_agreement` (share of within-item rating pairs that are identical),
-#'   `interpretation`, and `critique`.
+#'   `interpretation`, `critique`, and `n_pairs` (the number of within-item
+#'   rating pairs, the base of `percent_agreement`).
 #'
 #' @references
 #' Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
 #' I. The problems of two paradoxes. *Journal of Clinical Epidemiology,
 #' 43*(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
+#'
+#' Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). *irr: Various
+#' coefficients of interrater reliability and agreement* (R package version
+#' 0.85) \[Computer software\]. \doi{10.32614/CRAN.package.irr}
 #'
 #' Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 #' the presence of high agreement. *British Journal of Mathematical and
@@ -271,9 +290,9 @@ panel_agreement <- function(ratings,
     n_items = n_items,
     n_raters = nrow(X),
     percent_agreement = pct,
-    n_pairs = .pair_count(X),
     interpretation = interpretation,
-    critique = if (method == "ac1") .ac1_critique() else NA_character_
+    critique = if (method == "ac1") .ac1_critique() else NA_character_,
+    n_pairs = .pair_count(X)
   )
   class(out) <- "contentvalid_agreement"
   out
@@ -295,10 +314,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     # The reason is in the interpretation printed below.
     paste0(label, ": undefined")
   }
-  if (defined && is.finite(x$ci_low) && is.finite(x$ci_high)) {
-    line <- paste0(line, ", ", .ci_label(x$alpha), " ",
-                   .fmt_ci(x$ci_low, x$ci_high, digits))
-  }
+  if (defined) line <- paste0(line, .agreement_ci_text(x, digits))
   .say(line)
   if (is.finite(x$percent_agreement)) {
     cat("Identical rating pairs: ", .pairs_percent(x), "\n", sep = "")
@@ -361,11 +377,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   if (is.na(ag$estimate)) return(paste0(head, "undefined; every paired rating was identical."))
 
   # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
-  out <- paste0(head, .fmt(ag$estimate, digits))
-  if (is.finite(ag$ci_low) && is.finite(ag$ci_high)) {
-    out <- paste0(out, ", ", .ci_label(ag$alpha), " ",
-                  .fmt_ci(ag$ci_low, ag$ci_high, digits))
-  }
+  out <- paste0(head, .fmt(ag$estimate, digits), .agreement_ci_text(ag, digits))
   if (is.finite(ag$percent_agreement)) {
     out <- paste0(out, ". Identical rating pairs: ", .pairs_percent(ag))
   }
@@ -383,7 +395,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     "nearly every rating is the same value, even on a panel that agrees",
     "closely, so read it beside the share of",
     "identical rating pairs. A low alpha with many identical pairs is not by",
-    "itself evidence of a poor panel. Print `details$agreement` for the full",
+    "itself evidence of a poor panel. Print x$details$agreement for the full",
     "explanation and interval details."
   )
 }

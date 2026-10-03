@@ -277,7 +277,7 @@ test_that("compare_rounds() opens with its verdict and refuses mismatched input"
   # The verdict is the first thing after the header.
   after_header <- lines[-seq_len(grep("^Workflow:", lines)[1])]
   expect_match(after_header[nzchar(after_header)][1],
-               "^1 of 2 units in both the first and last round changed status")
+               "^Of the 2 units present in the first and last rounds, 1 changed status")
   expect_match(gsub("\\s+", " ", paste(lines, collapse = " ")),
                "changed status (1 stronger, 0 weaker).", fixed = TRUE)
 
