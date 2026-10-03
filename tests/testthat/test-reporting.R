@@ -199,7 +199,7 @@ test_that("the default report is an APA table", {
 
   # It prints without row names, and as.data.frame() gives a plain data frame.
   out <- utils::capture.output(print(tab))
-  expect_match(out[1], "^ *item")
+  expect_match(out[1], "^ *Item")
   expect_identical(class(as.data.frame(tab)), "data.frame")
 })
 

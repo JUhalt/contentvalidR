@@ -270,8 +270,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   label <- .agreement_label(x$method, x$level)
 
-  cat("contentvalidR panel agreement\n")
-  cat(strrep("-", 29), "\n", sep = "")
+  .print_header(x, "Panel agreement")
   cat("Items rated by two or more raters: ", x$n_items, " | Raters: ",
       x$n_raters, "\n", sep = "")
   # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
@@ -333,10 +332,10 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     .say(note)
   }
 
-  cat("\n")
-  .say("Panel agreement describes how consistently raters rated these items.",
-       "It does not show that the items are relevant or that the domain is",
-       "covered.")
+  .closing(c("Panel agreement describes how consistently raters rated these items.",
+             "It does not show that the items are relevant or that the domain is",
+             "covered."),
+           "See as.data.frame(x) for the estimate as one row.")
   invisible(x)
 }
 

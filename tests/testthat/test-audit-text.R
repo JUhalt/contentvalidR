@@ -67,7 +67,7 @@ test_that("the judge key separates severity in rating points from logits", {
   )
   fit <- judge_validity(r, lo = 1, hi = 4)
   expect_true(fit$scale_summary$severity_estimable)
-  expect_match(flat(fit), "logit -- Judge severity in logits", fixed = TRUE)
+  expect_match(flat(fit), "Logit -- Judge severity in logits", fixed = TRUE)
 })
 
 test_that("domain decision meanings state the rule applied", {

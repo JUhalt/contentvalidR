@@ -407,8 +407,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   r <- x$results
   s <- x$settings
-  cat("contentvalidR construct-rating analysis\n")
-  cat(strrep("-", 39), "\n", sep = "")
+  .print_header(x, "Construct-rating analysis")
   cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
       " | Target constructs: ", x$design$n_target_scales,
       " | Constructs rated: ", x$design$n_constructs_observed, "\n", sep = "")
@@ -448,7 +447,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
          "intended construct.")
   }
 
-  cat("\nItem-level evidence\n")
+  .section("Item-level evidence")
   tab <- data.frame(item = r$item, target = r$target,
                     decision = r$recommendation, n = r$n_complete,
                     HTC = .fmt(r$htc, digits), HTD = .fmt(r$htd, digits),
@@ -459,15 +458,15 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   .print_table(tab)
   cat("\n")
   .say(paste0(
-    "n: judges who rated the item against every construct. omnibus p: do ",
+    "n: judges who rated the item against every construct. Omnibus p: do ",
     "the item's ratings differ across constructs (Greenhouse-Geisser ",
-    "corrected). contrast p: the largest ",
+    "corrected). Contrast p: the largest ",
     if (identical(s$adjust, "holm")) "Holm-adjusted ",
     "p among the planned target-versus-orbiting contrasts, so every contrast ",
     "is at or below it",
     # A contrast with no p fails, and leaves no largest p to report.
     if (anyNA(r$max_contrast_p[r$recommendation != "Insufficient data"])) {
-      paste("; NA when a contrast could not be tested because every judge",
+      paste("; -- when a contrast could not be tested because every judge",
             "rated the intended construct and another the same")
     },
     "."))
@@ -475,8 +474,8 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   sc <- x$scale_summary
   expert <- identical(s$judge_type, "expert")
   # Without benchmarks the table holds means only, and is headed as such.
-  cat(if (expert) "\nTarget-scale means\n" else
-    "\nTarget-scale Colquitt benchmarks\n")
+  .section(if (expert) "Target-scale means" else
+    "Target-scale Colquitt benchmarks")
   # The stored code ("overall") prints as the label the item-sort print uses.
   labels <- vapply(as.character(sc$benchmark_set), function(s) {
     lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
@@ -518,10 +517,10 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("'Review' is not an automatic deletion decision. Consider construct",
-       "definitions, item wording, orbiting-construct choice, domain coverage,",
-       "and qualitative judge feedback.")
+  .closing(c("'Review' is not an automatic deletion decision. Consider construct",
+             "definitions, item wording, orbiting-construct choice, domain coverage,",
+             "and qualitative judge feedback."),
+           "See summary(x) for the flagged items and content_report(x) for an APA table.")
   invisible(x)
 }
 
@@ -537,14 +536,13 @@ summary.contentvalid_rating <- function(object, ...) {
 #' @export
 print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: construct-rating content-validity evidence\n")
-  cat(strrep("-", 51), "\n", sep = "")
+  .print_header(x, "Construct-rating analysis")
   cat("Retain: ", x$n_retain, " of ", x$n_items, " | Review: ", x$n_review,
       " of ", x$n_items, sep = "")
   if (x$n_insufficient) cat(" | Insufficient data: ", x$n_insufficient, sep = "")
   cat("\n")
 
-  cat("\nScale-level evidence\n")
+  .section("Scale-level evidence")
   s <- x$scale_summary
   tab <- data.frame(target = s$target, items = s$n_items,
                     stringsAsFactors = FALSE, check.names = FALSE)
@@ -568,7 +566,7 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 
   f <- x$reviewed_items
   if (nrow(f)) {
-    cat("\nItems needing attention\n")
+    .section("Flagged")
     .print_table(data.frame(
       item = f$item, target = f$target, decision = f$recommendation,
       HTC = .fmt(f$htc, digits), HTD = .fmt(f$htd, digits),
@@ -577,15 +575,17 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
       stringsAsFactors = FALSE, check.names = FALSE
     ))
     cat("\n")
-    .say_grouped(f$item, f$issue)
+    .say_flagged(f$item, f$recommendation, f$interpretation)
   } else {
-    cat("\nAll analyzed items met the item-level inferential screening criterion.\n")
+    .end_section()
+    cat("\n")
+    .say("All analyzed items met the item-level inferential screening criterion.")
   }
 
-  cat("\n")
-  .say("Interpret these results alongside theory, domain coverage, and",
-       "qualitative feedback. The analysis does not by itself establish",
-       "comprehensiveness or the full content-validity argument.")
+  .closing(c("Interpret these results alongside theory, domain coverage, and",
+             "qualitative feedback. The analysis does not by itself establish",
+             "comprehensiveness or the full content-validity argument."),
+           "See x$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 

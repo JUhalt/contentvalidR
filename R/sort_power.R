@@ -57,8 +57,7 @@ sort_power <- function(N, true_p, p0 = .5, alpha = .05) {
 #' @export
 print.contentvalid_sort_power <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("contentvalidR item-sort planning\n")
-  cat(strrep("-", 32), "\n", sep = "")
+  .print_header(x, "Item-sort planning")
   cat("Retention rule: Howard-Melloy exact test (p0 = ", .fmt(x$settings$p0),
       ", alpha = ", .fmt_alpha(x$settings$alpha), ")\n", sep = "")
 
@@ -82,7 +81,7 @@ print.contentvalid_sort_power <- function(x, digits = 2, ...) {
   cat("\n")
   .print_table(tab)
   cat("\n")
-  .say("required: target assignments an item needs to be retained. minimum",
+  .say("Required: target assignments an item needs to be retained. Minimum",
        "Psa: the same as a proportion. power at a value: the exact probability",
        "of reaching the required count if each judge assigns the item to its",
        "target with that probability.")
@@ -94,6 +93,7 @@ print.contentvalid_sort_power <- function(x, digits = 2, ...) {
                  .or_fewer_judges(max(sizes[unreachable])),
                  .fmt_alpha(x$settings$alpha)))
   }
+  .closing(pointer = "See plot(x) for the power curve.")
   invisible(x)
 }
 

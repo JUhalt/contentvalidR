@@ -48,7 +48,9 @@ domain_fixture <- function() {
   )
 }
 
-printed <- function(x) paste(utils::capture.output(print(x)), collapse = " ")
+printed <- function(x) {
+  gsub("[[:space:]]+", " ", paste(utils::capture.output(print(x)), collapse = " "))
+}
 
 test_that("the glossary covers every workflow and defines the shared statuses", {
   g <- contentvalid_glossary()

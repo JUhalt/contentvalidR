@@ -216,7 +216,7 @@
 }
 
 .earlier_heading <- function() {
-  cat("\nEarlier methods, for comparison (not used for the decision)\n")
+  .section("Earlier methods, for comparison (not used for the decision)")
 }
 
 # An estimate can print as equal to its cutoff and still miss it, such as 10
@@ -467,7 +467,7 @@
               ", with Aiken's V beside it"))
   tab <- data.frame(item = cc$item, V = .fmt(cc$V, digits),
                     Ccv = .fmt(cc$ccv_corrected, digits),
-                    `book label` = ifelse(is.na(cc$label), "NA", cc$label),
+                    `book label` = ifelse(is.na(cc$label), .missing_mark, cc$label),
                     stringsAsFactors = FALSE, check.names = FALSE)
   .print_table(tab)
   cat("\n")

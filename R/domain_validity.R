@@ -356,11 +356,8 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
   s <- x$scale_summary
   st <- x$settings
   r <- x$results
-  pct <- function(p) ifelse(is.na(p), "NA",
-                            paste0(formatC(100 * p, format = "f", digits = 0),
-                                   "%"))
-  cat("contentvalidR content-domain coverage\n")
-  cat(strrep("-", 37), "\n", sep = "")
+  pct <- function(p) .fmt_pct(p, base = s$n_items)
+  .print_header(x, "Content-domain coverage")
   cat("Items: ", s$n_items, " | Blueprint cells: ", s$n_cells, "\n", sep = "")
   .say(paste0(
     "Criteria: at least ", st$min_items, " item", if (st$min_items != 1L) "s",
@@ -392,7 +389,7 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
                 collapse = ", "))
   }
 
-  cat("\nCells\n")
+  .section("Cells")
   show <- data.frame(cell = r$cell, decision = r$recommendation,
                      items = r$n_items, share = pct(r$share),
                      expected = pct(r$expected_share),
@@ -429,10 +426,10 @@ print.contentvalid_domain <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("Coverage shows that items exist for each cell. It does not show that",
-       "those items are good ones, or that the blueprint is the right",
-       "description of the domain.")
+  .closing(c("Coverage shows that items exist for each cell. It does not show that",
+             "those items are good ones, or that the blueprint is the right",
+             "description of the domain."),
+           "See summary(x) for the cells needing attention.")
   invisible(x)
 }
 
@@ -451,26 +448,23 @@ summary.contentvalid_domain <- function(object, ...) {
 #' @export
 print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: content-domain coverage\n")
-  cat(strrep("-", 32), "\n", sep = "")
+  .print_header(x, "Content-domain coverage")
   cat("Items: ", x$n_items, " | Blueprint cells: ", x$n_cells, "\n", sep = "")
   cat("Cells meeting coverage criteria: ", x$n_supported, " | Flagged: ",
       x$n_review, "\n", sep = "")
 
   if (nrow(x$gaps)) {
-    cat("\nCells needing attention\n")
-    for (i in seq_len(nrow(x$gaps))) {
-      row <- x$gaps[i, ]
-      cat(sprintf("\n  %s (%s, %d item%s)\n", row$cell, row$recommendation,
-                  row$n_items, if (row$n_items == 1L) "" else "s"))
-      .say(row$interpretation, indent = 4L)
-    }
+    .section("Flagged")
+    g <- x$gaps
+    .say_flagged(g$cell, g$recommendation, g$interpretation)
   } else {
-    cat("\nEvery blueprint cell met the coverage criteria set for this analysis.\n")
+    .end_section()
+    cat("\n")
+    .say("Every blueprint cell met the coverage criteria set for this analysis.")
   }
 
   if (!is.null(x$structure)) {
-    cat("\nContent structure\n")
+    .section("Content structure")
     .say(x$structure$interpretation, indent = 2L)
   }
 
@@ -483,6 +477,7 @@ print.summary.contentvalid_domain <- function(x, digits = 2, ...) {
       "Note: no `domain` was supplied, so empty cells could not be detected."
     })
   }
+  .closing(pointer = "See x$gaps for the cells needing attention as a data frame.")
   invisible(x)
 }
 

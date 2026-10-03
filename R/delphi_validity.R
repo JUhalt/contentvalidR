@@ -941,8 +941,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   panel <- x$details$panel
   stab <- x$details$stability
 
-  cat("contentvalidR Delphi analysis\n")
-  cat(strrep("-", 29), "\n", sep = "")
+  .print_header(x, "Delphi analysis")
   cat("Items: ", x$design$n_items, " | Experts: ", x$design$n_judges,
       " | Rounds: ", x$design$n_rounds, " (",
       paste(x$design$rounds, collapse = ", "), ")\n", sep = "")
@@ -979,7 +978,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                                          collapse = ", "))
   }
 
-  cat("\nItem-level evidence (last round, and the last pair of rounds)\n")
+  .section("Item-level evidence (last round, and the last pair of rounds)")
   val <- .delphi_value_label(s$stability)
   bounded <- .delphi_bounded(s$stability)
   tab <- data.frame(item = r$item, decision = r$recommendation,
@@ -1005,11 +1004,11 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     tab$p <- .fmt_p(r$stability_p)
   }
   if (s$stability %in% c("chisq_individual", "chisq_group", "percent_change")) {
-    tab$stable <- ifelse(is.na(r$stable), "NA", ifelse(r$stable, "yes", "no"))
+    tab$stable <- ifelse(is.na(r$stable), .missing_mark, ifelse(r$stable, "yes", "no"))
   }
   .print_table(tab)
   cat("\n")
-  .say("agree: share of experts agreeing in the item's last round. unchanged:",
+  .say("Agree: share of experts agreeing in the item's last round. Unchanged:",
        "share who kept their rating between the item's last pair of",
        "consecutive rounds.")
   # An item rated in rounds that are not consecutive has no pair to compare,
@@ -1022,7 +1021,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
         ") by pair of rounds\n", sep = "")
     .print_table(.delphi_wide(stab, "value", digits, bounded,
                               rounds = x$design$rounds))
-    cat("\nShare of experts who kept their rating, by pair of rounds\n")
+    .section("Share of experts who kept their rating, by pair of rounds")
     .print_table(.delphi_wide(stab, "prop_unchanged", digits,
                               rounds = x$design$rounds))
   }
@@ -1031,7 +1030,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (nrow(flagged)) {
     # One line per distinct note, naming every item and pair it applies to,
     # so a warning that fits the whole panel is read once rather than per row.
-    cat("\nNotes\n")
+    .section("Notes")
     where <- paste0(flagged$item, " (",
                     .delphi_pair_label(flagged$from_round, flagged$to_round),
                     ")")
@@ -1079,7 +1078,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 
   if (.show_key()) {
     if (length(note$teaching)) {
-      cat("\nHow the stability statistic works\n")
+      .section("How the stability statistic works")
       for (i in seq_along(note$teaching)) {
         if (i > 1L) cat("\n")
         .say(note$teaching[[i]], indent = 2L, exdent = 2L)
@@ -1096,8 +1095,10 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  cat("\nConsensus is not correctness, and 'No consensus' is not an instruction to\n")
-  cat("drop an item. Read these results with the experts' comments.\n")
+  .closing(c("Consensus is not correctness, and 'No consensus' is not an",
+             "instruction to drop an item. Read these results with the",
+             "experts' comments."),
+           "See summary(x) for the items without consensus and plot(x) for the rounds.")
   invisible(x)
 }
 
@@ -1402,8 +1403,7 @@ summary.contentvalid_delphi <- function(object, ...) {
 #' @export
 print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: Delphi consensus and stability\n")
-  cat(strrep("-", 39), "\n", sep = "")
+  .print_header(x, "Delphi analysis")
   cat("Rounds: ", nrow(x$panel), " | Experts per round: ",
       paste(x$panel$n_experts, collapse = ", "), "\n", sep = "")
   # The items behind each count are named on the count's own line, so the
@@ -1434,8 +1434,8 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
     cat("Median share of experts keeping their rating (last pair): ",
         .fmt(med, digits), "\n", sep = "")
   }
-  cat("\n")
-  .say("Consensus is not correctness, and 'No consensus' is not an instruction",
-       "to drop an item. Read these results with the experts' comments.")
+  .closing(c("Consensus is not correctness, and 'No consensus' is not an instruction",
+             "to drop an item. Read these results with the experts' comments."),
+           "See x$reviewed_items for the items without consensus as a data frame.")
   invisible(x)
 }

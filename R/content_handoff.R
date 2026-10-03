@@ -1118,9 +1118,9 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
 #' @export
 print.contentvalid_handoff <- function(x, ...) {
   p <- x$provenance
-  title <- paste0("contentvalidR handoff (schema version ", p$schema_version,
-                  ")")
-  cat(title, "\n", strrep("-", nchar(title)), "\n", sep = "")
+  title <- paste0("Handoff to empirical validation (schema version ",
+                  p$schema_version, ")")
+  .print_header(x, title)
   cat("Workflow: ", p$workflow, sep = "")
   if (!is.na(p$mode)) cat(" (", p$mode, ")", sep = "")
   cat(" | contentvalidR ", p$package_version, " | ", format(p$created), "\n",
@@ -1163,7 +1163,7 @@ print.contentvalid_handoff <- function(x, ...) {
 
   held <- x$item_evidence[!x$item_evidence$carried, , drop = FALSE]
   if (nrow(held)) {
-    cat("\nHeld back\n")
+    .section("Held back")
     show <- data.frame(item = held$item, decision = held$recommendation,
                        stringsAsFactors = FALSE)
     # The shared status adds nothing when it repeats the workflow's own word.
@@ -1189,5 +1189,6 @@ print.contentvalid_handoff <- function(x, ...) {
                "record stays complete.")
        })
   cat("\n")
+  .closing(pointer = "See as.data.frame(x) for the item evidence and x$item_statistics for the statistics.")
   invisible(x)
 }

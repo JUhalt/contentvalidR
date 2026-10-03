@@ -197,11 +197,13 @@ as.data.frame.contentvalid_workflow <- function(x,
   switch(
     entry$type,
     text = ifelse(is.na(v[[1]]), "", as.character(v[[1]])),
-    int = ifelse(is.na(v[[1]]), "NA", format(v[[1]], trim = TRUE)),
-    count = ifelse(is.na(v[[1]]) | is.na(v[[2]]), "NA", paste0(v[[1]], "/", v[[2]])),
+    int = ifelse(is.na(v[[1]]), .missing_mark, format(v[[1]], trim = TRUE)),
+    count = ifelse(is.na(v[[1]]) | is.na(v[[2]]), .missing_mark,
+                   paste0(v[[1]], "/", v[[2]])),
     prop = .fmt(v[[1]], digits),
     num = .fmt(v[[1]], digits, bounded = FALSE),
-    percent = ifelse(is.na(v[[1]]), "NA", paste0(round(100 * v[[1]]), "%")),
+    percent = ifelse(is.na(v[[1]]), .missing_mark,
+                     paste0(.half_up(100 * v[[1]], 0), "%")),
     p = .fmt_p(v[[1]]),
     # Corrected degrees of freedom where a correction applied, the plain
     # ones otherwise (an F of Inf has no error variance to correct).

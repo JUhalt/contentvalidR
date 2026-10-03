@@ -40,9 +40,9 @@ test_that("empty cells are undetectable without a domain, and the output says so
   expect_equal(fit$scale_summary$n_empty, 0L)
   expect_false(fit$scale_summary$domain_supplied)
 
-  printed <- paste(capture.output(print(fit)), collapse = " ")
+  printed <- gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
   expect_match(printed, "cannot be detected")
-  summarised <- paste(capture.output(print(summary(fit))), collapse = " ")
+  summarised <- gsub("[[:space:]]+", " ", paste(capture.output(print(summary(fit))), collapse = " "))
   expect_match(summarised, "no `domain` was supplied")
 })
 
@@ -112,7 +112,7 @@ test_that("structure analysis is attached when similarity is supplied", {
   expect_equal(fit$scale_summary$adjusted_rand, 1)
   expect_true(fit$settings$structure_analyzed)
 
-  printed <- paste(capture.output(print(fit)), collapse = " ")
+  printed <- gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
   expect_match(printed, "adjusted Rand")
 })
 
@@ -159,7 +159,7 @@ test_that("malformed inputs are rejected", {
 
 test_that("output states the limits of coverage evidence", {
   fit <- domain_validity(sdt_assignments(), cell_col = "construct", domain = full_domain)
-  printed <- paste(capture.output(print(fit)), collapse = " ")
+  printed <- gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
   expect_match(printed, "does not show that")
   expect_match(printed, "blueprint is the right")
   expect_error(print(fit, digits = -1), "nonnegative integer")
@@ -179,7 +179,7 @@ test_that("a fully covered blueprint reports no gaps", {
   expect_equal(fit$scale_summary$n_covered, 3L)
   expect_true(all(fit$results$status == "Supported"))
 
-  summarised <- paste(capture.output(print(summary(fit))), collapse = " ")
+  summarised <- gsub("[[:space:]]+", " ", paste(capture.output(print(summary(fit))), collapse = " "))
   expect_match(summarised, "met the coverage criteria")
 })
 

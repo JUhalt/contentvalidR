@@ -289,7 +289,7 @@ content_evidence <- function(..., keep = "Supported") {
 print.contentvalid_evidence <- function(x, ...) {
   ns <- length(x$stages)
   title <- sprintf("Content evidence across %s", .n_noun(ns, "stage"))
-  cat(title, "\n", strrep("-", nchar(title)), "\n", sep = "")
+  .print_header(x, title)
   verdict <- .evidence_verdicts(x)
   held <- x$items[verdict != "carried"]
   first_holder <- vapply(held, function(it) {
@@ -304,7 +304,7 @@ print.contentvalid_evidence <- function(x, ...) {
                                      collapse = ", "), ".")
        })
 
-  cat("\nStages, in order\n")
+  .section("Stages, in order")
   for (k in seq_len(ns)) {
     f <- x$flow[[k]]
     stat <- x$evidence$statistic[x$evidence$stage == names(x$stages)[k]][1]
@@ -338,10 +338,10 @@ print.contentvalid_evidence <- function(x, ...) {
                       "item carried it; otherwise the stages that held it",
                       "back. -- marks a stage that did not review the item."),
                 width = 76, initial = "  ", prefix = "      "), sep = "\n")
-    cat("\nFigures: plot(x) for the evidence profile, plot(x, type = \"flow\")",
-        "\nfor the flow diagram; add apa = FALSE for color.\n", sep = "")
     .print_key_footer()
   }
+  .closing(pointer = paste("See plot(x) for the evidence profile and",
+                           "plot(x, type = \"flow\") for the flow diagram."))
   invisible(x)
 }
 

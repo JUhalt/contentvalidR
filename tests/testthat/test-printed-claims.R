@@ -107,11 +107,11 @@ test_that("every number printed for an item is the number the object holds", {
 test_that("printed numbers follow APA: no leading zero only where it cannot exceed 1", {
   expect_identical(apa(c(.9, -.43, 1, 0, -1e-4)), c(".90", "-.43", "1.00", ".00", ".00"))
   expect_identical(contentvalidR:::.fmt(c(.9, -.43, 1, 0, -1e-4, NA)),
-                   c(".90", "-.43", "1.00", ".00", ".00", "NA"))
+                   c(".90", "-.43", "1.00", ".00", ".00", "--"))
   expect_identical(contentvalidR:::.fmt(c(0.57, 2.3), bounded = FALSE),
                    c("0.57", "2.30"))
   expect_identical(contentvalidR:::.fmt_p(c(.0002, .0207, .5, 1)),
-                   c("< .001", ".021", ".500", "1.000"))
+                   c("< .001", ".021", ".500", "> .999"))
   expect_identical(contentvalidR:::.fmt_ci(c(.699, -.133), c(.972, .15)),
                    c("[.70, .97]", "[-.13, .15]"))
   expect_identical(contentvalidR:::.ci_label(c(.05, .10)), c("95% CI", "90% CI"))
@@ -420,7 +420,7 @@ test_that("nothing printed claims a statistic the analysis did not compute", {
   expect_match(with_interval, "The intervals are percentile bootstraps")
   expect_false(grepl("The intervals are percentile bootstraps", no_interval,
                      fixed = TRUE))
-  expect_match(with_interval, "kappa 95% CI", fixed = TRUE)
+  expect_match(with_interval, "Kappa 95% CI", fixed = TRUE)
   expect_false(grepl("95% CI", no_interval, fixed = TRUE))
 
   expect_false(grepl("The intervals are percentile bootstraps",

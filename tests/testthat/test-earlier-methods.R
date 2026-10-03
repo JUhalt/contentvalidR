@@ -157,7 +157,7 @@ test_that("the extension is labeled as one wherever it is printed", {
       print(sort_validity(d, legacy = TRUE, ...))), collapse = " "))
   }
   three <- text()
-  expect_match(three, "extension*", fixed = TRUE)
+  expect_match(three, "Extension*", fixed = TRUE)
   expect_match(three, "a contentvalidR extension, not a published rule",
                fixed = TRUE)
   expect_match(three, "(1/3 + .05)", fixed = TRUE)

@@ -149,7 +149,7 @@ test_that("content_evidence() refuses what it cannot read", {
 
 test_that("the print opens with the verdict and names who held what back", {
   out <- capture.output(print(wt_sequential()))
-  expect_match(out[3], "10 of 12 items carried by every stage that reviewed")
+  expect_match(out[2], "10 of 12 items carried by every stage that reviewed")
   # Wrapped lines are joined, so a phrase split across two still matches.
   txt <- gsub("\\s+", " ", paste(out, collapse = " "))
   expect_match(txt, "Held back: EF5 \\(Relevance panel\\), TF5 \\(Item sort\\)")

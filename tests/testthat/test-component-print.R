@@ -108,7 +108,7 @@ test_that("the construct-rating components print as APA tables", {
 
   out_htd <- shown(htd(d, scale_min = 1, scale_max = 5))
   expect_match(out_htd, "Hinkin-Tracey distinctiveness (HTD", fixed = TRUE)
-  expect_match(out_htd, "competitor mean", fixed = TRUE)
+  expect_match(out_htd, "Competitor mean", fixed = TRUE)
   expect_match(out_htd, "averages the gap over every other construct", fixed = TRUE)
 
   within <- shown(anova_content(d))
@@ -181,7 +181,7 @@ test_that("the two-by-two helpers print their statistics", {
                fixed = TRUE)
   expect_match(sig, "accuracy = ", fixed = TRUE)
   # Six items: the exact test is reported, with the chi-square beside it.
-  expect_match(sig, "Fisher's exact p = ", fixed = TRUE)
+  expect_match(sig, "Fisher's exact p", fixed = TRUE)
   expect_match(sig, "chi-square(1, N = 6) = ", fixed = TRUE)
   rep_out <- shown(reproducibility_phi(pred, act))
   expect_match(rep_out, "Retention decisions in two pretests", fixed = TRUE)

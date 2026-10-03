@@ -404,8 +404,7 @@ content_structure <- function(similarity,
 #' @export
 print.contentvalid_structure <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("contentvalidR content structure (expert item similarity)\n")
-  cat(strrep("-", 56), "\n", sep = "")
+  .print_header(x, "Content structure from expert similarity")
   cat("Items: ", x$design$n_items, " | Dimensions retained: ", x$settings$dims,
       " | Clusters: ", x$settings$k, "\n", sep = "")
   if (x$settings$dims < x$settings$dims_requested) {
@@ -425,7 +424,7 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
     }), exdent = 2L)
   .say(x$interpretation)
 
-  cat("\nFit by dimensionality\n")
+  .section("Fit by dimensionality")
   f <- x$fit
   .print_table(data.frame(dimensions = f$dims,
                           GOF = .fmt(f$gof, digits),
@@ -434,24 +433,25 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
   cat("\n")
   .say("GOF: goodness of fit from classical scaling, the share of the sum",
        "of the absolute eigenvalues that the retained dimensions account for.",
-       "distortion: how far the map's distances depart from the",
+       "Distortion: how far the map's distances depart from the",
        "dissimilarities (0 is an exact map); it need not fall as dimensions",
        "are added. It is not Kruskal's stress-1, so his benchmarks do not",
        "apply.")
 
   if (!is.null(x$cross_tab)) {
-    cat("\nBlueprint cell by recovered cluster (counts of items)\n")
-    print(x$cross_tab)
-    cat("\nAdjusted Rand index: ",
-        if (is.na(x$adjusted_rand)) "not defined" else
-          .fmt(x$adjusted_rand, digits), "\n", sep = "")
+    .section("Blueprint cell by recovered cluster (counts of items)")
+    .print_table(.table_frame(x$cross_tab))
+    cat("\n")
+    .say("Adjusted Rand index:",
+         if (is.na(x$adjusted_rand)) "not defined" else
+           .fmt(x$adjusted_rand, digits))
   }
 
-  cat("\n")
-  .say("The clusters come from the item coordinates on the",
-       .n_noun(x$settings$dims, "retained dimension"),
-       "(average linkage), so they change with the number of dimensions.",
-       "Choose that number for how interpretable the dimensions are.")
+  .closing(c("The clusters come from the item coordinates on the",
+             .n_noun(x$settings$dims, "retained dimension"),
+             "(average linkage), so they change with the number of dimensions.",
+             "Choose that number for how interpretable the dimensions are."),
+           "See plot(x) for the content map.")
   invisible(x)
 }
 

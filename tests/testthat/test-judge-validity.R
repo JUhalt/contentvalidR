@@ -173,7 +173,7 @@ test_that("very small panels degrade without error", {
 
 test_that("output states that a flagged judge is not a judge to delete", {
   fit <- judge_validity(panel_ratings(), lo = 1, hi = 4)
-  printed <- paste(capture.output(print(fit)), collapse = " ")
+  printed <- gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
   expect_match(printed, "not a judge to remove")
   expect_match(printed, "how far the judge rates below\\s+the panel")
 

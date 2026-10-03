@@ -417,7 +417,7 @@ test_that("the trend tables list the pairs of rounds in round order", {
   header <- lines[grep("^Stability trend", lines)[1] + 1L]
   # S0 entered in round 2 and is listed first, which put "2->3" before "1->2".
   expect_identical(strsplit(trimws(header), "\\s+")[[1]],
-                   c("item", "1->2", "2->3"))
+                   c("Item", "1->2", "2->3"))
 })
 
 test_that("percentages agree across the header, the interpretation and options", {

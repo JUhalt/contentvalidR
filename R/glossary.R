@@ -483,7 +483,7 @@
   meanings <- .decision_meanings(workflow)
   present <- meanings[names(meanings) %in% as.character(decisions)]
   if (!length(present)) return(invisible(NULL))
-  cat("\nWhat the decisions mean\n")
+  .section("What the decisions mean")
   for (nm in names(present)) {
     cat(strwrap(paste0(nm, " -- ", present[[nm]]), width = width,
                 initial = "  ", prefix = "      "), sep = "\n")
@@ -527,18 +527,20 @@
   defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
 
   short <- .term_short()
-  cat("\nWhat these columns mean\n")
+  .section("What these columns mean")
   for (i in seq_len(nrow(defs))) {
     body <- short[[defs$term[i]]]
-    cat(strwrap(paste0(shown[[defs$term[i]]], " -- ", defs$label[i], ". ", body),
+    cat(strwrap(paste0(.sentence_case(shown[[defs$term[i]]]), " -- ",
+                       defs$label[i], ". ", body),
                 width = width, initial = "  ", prefix = "      "), sep = "\n")
   }
   invisible(NULL)
 }
 
 .print_key_footer <- function() {
-  cat("\nFull definitions: contentvalid_glossary(). To hide this key:\n",
-      "options(contentvalidR.show_key = FALSE).\n", sep = "")
+  cat("\n")
+  .say("Full definitions: contentvalid_glossary(). To hide this key:",
+       "options(contentvalidR.show_key = FALSE).")
 }
 
 
@@ -597,7 +599,7 @@ contentvalid_glossary <- function(workflow = NULL) {
 
 #' @export
 print.contentvalid_glossary <- function(x, width = 76, ...) {
-  cat("contentvalidR glossary\n")
+  .print_header(x, "Glossary")
   for (wf in unique(x$workflow)) {
     cat("\n", wf, "\n", sep = "")
     sub <- x[x$workflow == wf, , drop = FALSE]
@@ -635,9 +637,9 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
                       "statuses, stored in the `status` column of `results`."),
                 width = width, initial = "  ", prefix = "  "), sep = "\n")
   }
-  cat("\n")
-  .say("Strength labels such as Strong or Weak are percentile positions",
-       "relative to published scales, not absolute judgments, and are not",
-       "comparable across different indices.")
+  .closing(c("Strength labels such as Strong or Weak are percentile positions",
+             "relative to published scales, not absolute judgments, and are not",
+             "comparable across different indices."),
+           "See as.data.frame(x) for the definitions as a table.")
   invisible(x)
 }

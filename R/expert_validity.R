@@ -806,8 +806,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
   .validate_digits(digits)
   # Checked first, so a bad argument fails before anything is printed.
   show_earlier <- .show_earlier(x, legacy)
-  cat("contentvalidR expert-panel analysis\n")
-  cat(strrep("-", 35), "\n", sep = "")
+  .print_header(x, "Expert-panel analysis")
   cat("Mode: ", x$mode, "\n", sep = "")
   d <- .workflow_design(x)
   # Objects saved before panel agreement existed carry no agreement setting.
@@ -902,7 +901,7 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     .print_table(.expert_item_table(r, "essentiality", digits,
                                     x$settings$alpha))
     cat("\n")
-    .say("essential: experts rating the item essential, out of those who",
+    .say("Essential: experts rating the item essential, out of those who",
          "rated it.")
     # With no usable ratings there is no critical count to state.
     if (length(sizes) == 1L && sizes >= 1L && !is.na(r$critical_ne[1])) {
@@ -949,12 +948,12 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     }
     cat("\n")
     .say(if (targeted) {
-      paste("IOC: the index for the target objective. mean: the experts'",
-            "mean rating on it (-1 to 1). competitor mean: the highest mean",
-            "on another objective. margin: mean less competitor mean, a",
+      paste("IOC: the index for the target objective. Mean: the experts'",
+            "mean rating on it (-1 to 1). Competitor mean: the highest mean",
+            "on another objective. Margin: mean less competitor mean, a",
             "description beside the index, not part of its criterion.")
     } else {
-      paste("mean: the experts' mean rating on the objective (-1 to 1). IOC:",
+      paste("Mean: the experts' mean rating on the objective (-1 to 1). IOC:",
             "half the gap between that mean and their mean on the item's other",
             "objectives.")
     })
@@ -992,9 +991,9 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("Use quantitative indices alongside expert comments, construct",
-       "coverage, and comprehensibility review.")
+  .closing(c("Use quantitative indices alongside expert comments, construct",
+             "coverage, and comprehensibility review."),
+           "See summary(x) for the flagged items and content_report(x) for an APA table.")
   invisible(x)
 }
 
@@ -1013,8 +1012,7 @@ summary.contentvalid_expert <- function(object, ...) {
 #' @export
 print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: expert-panel content-validity evidence\n")
-  cat(strrep("-", 47), "\n", sep = "")
+  .print_header(x, "Expert-panel analysis")
   cat("Mode: ", x$mode, "\n", sep = "")
   cat("Supported: ", x$n_supported, " | Review: ", x$n_review, sep = "")
   # Two reasons for no decision, counted apart: too few experts for any count
@@ -1036,24 +1034,26 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   }
   f <- x$flagged
   if (nrow(f) == 0L) {
-    cat("\nNo items were flagged by the workflow's quantitative review rules.\n")
+    .end_section()
+    cat("\n")
+    .say("No items were flagged by the workflow's quantitative review rules.")
   } else {
-    cat("\nItems needing review or more usable ratings\n")
+    .section("Flagged")
     .print_table(.expert_item_table(f, x$mode, digits, x$settings$alpha))
     if (identical(x$mode, "congruence") && "target_mean" %in% names(f)) {
       cat("\n")
-      .say("IOC: the index for the target objective, which decides. mean: the",
-           "experts' mean rating on it. margin: mean less competitor mean, a",
+      .say("IOC: the index for the target objective, which decides. Mean: the",
+           "experts' mean rating on it. Margin: mean less competitor mean, a",
            "description.")
     }
     if ("interpretation" %in% names(f)) {
       cat("\n")
-      .say_grouped(f$item, f$interpretation)
+      .say_flagged(f$item, f$recommendation, f$interpretation)
     }
   }
-  cat("\n")
-  .say("These summaries support, but do not replace, qualitative content",
-       "review.")
+  .closing(c("These summaries support, but do not replace, qualitative content",
+             "review."),
+           "See x$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 

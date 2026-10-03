@@ -33,11 +33,15 @@ as.data.frame.contentvalid_component <- function(x, ...) {
     print(.untag_component(x))
     return(invisible(x))
   }
-  # A title may run to a second line, such as the line naming its sources.
-  for (line in title) .say(line)
+  # The header names the class; a second title line, such as the one naming
+  # the sources, follows it.
+  .print_header(x, title[1])
+  for (line in title[-1]) .say(line)
   cat("\n")
   .print_table(build())
   notes <- notes[!is.na(notes) & nzchar(notes)]
+  on.exit(.closing(pointer = "See as.data.frame(x) for the unrounded values."),
+          add = TRUE)
   if (length(notes)) {
     cat("\n")
     for (n in notes) .say(n)
@@ -45,7 +49,7 @@ as.data.frame.contentvalid_component <- function(x, ...) {
   invisible(x)
 }
 
-.yes_no <- function(x) ifelse(is.na(x), "NA", ifelse(x, "yes", "no"))
+.yes_no <- function(x) ifelse(is.na(x), .missing_mark, ifelse(x, "yes", "no"))
 
 .alpha_attr <- function(x) {
   a <- attr(x, "alpha")
@@ -69,7 +73,7 @@ print.contentvalid_psa <- function(x, digits = 2, ...) {
       tab
     },
     notes = c(
-      "judges: assignments to the target construct, out of the judges who sorted the item.",
+      "Judges: assignments to the target construct, out of the judges who sorted the item.",
       if (has_ci && is.character(method)) .proportion_ci_note(method, alpha),
       if ("n_missing" %in% names(x) && any(x$n_missing > 0, na.rm = TRUE)) {
         paste("Missing assignments:", sum(x$n_missing, na.rm = TRUE),
@@ -132,7 +136,7 @@ print.contentvalid_htd <- function(x, digits = 2, ...) {
                  HTD = .fmt(x$htd, digits),
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
-    notes = paste("competitor: the other construct with the highest mean rating.",
+    notes = paste("Competitor: the other construct with the highest mean rating.",
                   "HTD itself averages the gap over every other construct.")
   )
 }
@@ -171,6 +175,10 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
         paste("Within-judge omnibus tests are Greenhouse-Geisser corrected,",
               "which reduces their degrees of freedom.")
       },
+      if (any(is.na(x$F))) {
+        paste("F test --: the ratings left no variance to test, so there is no",
+              "F and no p.")
+      },
       if (any(is.infinite(x$F))) {
         paste("F = Inf: the judges' rating profiles were exactly parallel,",
               "leaving no error variance, so the constructs differ for every",
@@ -180,7 +188,7 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
       # only when there are contrasts to describe.
       if (has_contrasts) {
         paste0(
-          "contrast p: the largest p among the planned contrasts, each ",
+          "Contrast p: the largest p among the planned contrasts, each ",
           "one-sided (the intended construct rated above one of the others)",
           if (is.list(st) && is.numeric(st$alpha)) {
             paste0(", at alpha = ", .fmt_alpha(st$alpha),
@@ -190,8 +198,8 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
                      " with no adjustment for their number"
                    })
           },
-          ". It is NA when a contrast has no p because every judge rated the ",
-          "two constructs the same. met: whether every contrast passed. ",
+          ". It is -- when a contrast has no p because every judge rated the ",
+          "two constructs the same. Met: whether every contrast passed. ",
           "attr(x, \"contrasts\") holds each one."
         )
       }
@@ -248,7 +256,7 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE)
     },
     notes = c(
-      sprintf(paste("needed: essential ratings the exact one-tailed binomial",
+      sprintf(paste("Needed: essential ratings the exact one-tailed binomial",
                     "test requires at alpha = %s (Ayre & Scally, 2014)."),
               .fmt_alpha(alpha)),
       if (any(is.na(x$critical_ne) & x$N >= 1L)) {
@@ -277,14 +285,14 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
     },
     notes = c(
       if ("mean_rating" %in% names(x)) {
-        paste("mean: the judges' mean rating on the objective (-1 to 1).",
+        paste("Mean: the judges' mean rating on the objective (-1 to 1).",
               "IOC: half the gap between that mean and their mean on the",
               "item's other objectives; 1 only when every judge rates +1 on the",
               "objective and -1 on every other. Rovinelli and Hambleton applied",
               "a criterion of .70.")
       },
       if (any(is.na(x$ioc) & !is.na(x$mean_rating) & x$n_objectives == 1L)) {
-        paste("IOC is NA for an item rated against one objective: the index",
+        paste("IOC is -- for an item rated against one objective: the index",
               "compares objectives.")
       }
     )
@@ -367,13 +375,14 @@ print.contentvalid_binom <- function(x, digits = 2, ...) {
                  format(100 * attr(x$conf.int, "conf.level")),
                  .fmt_ci(x$conf.int[1], x$conf.int[2], digits)))
   }
+  .closing(pointer = "See as.data.frame(x) for the test as one row.")
   invisible(x)
 }
 
 .print_two_by_two <- function(tab, title, x, digits, extra = NULL) {
-  .say(title)
+  .print_header(x, title)
   cat("\n")
-  print(tab)
+  .print_table(.table_frame(tab))
   cat("\n")
   # APA reports a chi-square test of association with its degrees of freedom
   # and the sample size. Objects saved before `n` existed take it from the
@@ -397,6 +406,7 @@ print.contentvalid_binom <- function(x, digits = 2, ...) {
                 "in place of the chi-square approximation (", chisq_txt, ", ",
                 .p_phrase(x$p_chisq), ")."))
   }
+  .closing(pointer = "See as.data.frame(x) for the counts and the test as one row.")
   invisible(x)
 }
 
@@ -440,5 +450,6 @@ print.contentvalid_similarity <- function(x, digits = 2, ...) {
               as.integer(min(off)), as.integer(max(off)))
     })
   }
+  .closing(pointer = "See content_structure(x) to scale and cluster these similarities.")
   invisible(x)
 }

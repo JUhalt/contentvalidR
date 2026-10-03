@@ -318,8 +318,7 @@ compare_rounds <- function(..., labels = NULL) {
 
 #' @export
 print.contentvalid_rounds <- function(x, ...) {
-  cat("contentvalidR comparison across pretest rounds\n")
-  cat(strrep("-", 46), "\n", sep = "")
+  .print_header(x, "Comparison across pretest rounds")
   cat("Workflow: ", x$workflow, " | Rounds: ", x$n_rounds,
       " | Units compared: ", nrow(x$transitions), "\n", sep = "")
 
@@ -361,14 +360,14 @@ print.contentvalid_rounds <- function(x, ...) {
       # Re-analysis cannot undo a changed panel, so that part is said too.
       if (any(size)) .say(size_text)
     }
-    cat("\nWhat differs\n")
+    .section("What differs")
     .print_table(x$settings_changes)
   }
 
-  cat("\nStatus by round\n")
+  .section("Status by round")
   .print_table(x$transitions)
 
-  cat("\nRound-to-round summary\n")
+  .section("Round-to-round summary")
   s <- x$summary
   .print_table(data.frame(
     from = s$from, to = s$to, compared = s$n_compared,
@@ -389,11 +388,11 @@ print.contentvalid_rounds <- function(x, ...) {
     }, "so these transitions can be read as changes in evidence.")
   }
 
-  cat("\n")
-  .say("A status change means the evidence crossed a criterion, not that an",
-       "item improved by a measurable amount. An item sitting near a boundary",
-       "can move on a very small change. Read transitions alongside each",
-       "round's index values.")
+  .closing(c("A status change means the evidence crossed a criterion, not that an",
+             "item improved by a measurable amount. An item sitting near a boundary",
+             "can move on a very small change. Read transitions alongside each",
+             "round's index values."),
+           "See summary(x) for the units whose status changed.")
   invisible(x)
 }
 
@@ -416,23 +415,25 @@ summary.contentvalid_rounds <- function(object, ...) {
 
 #' @export
 print.summary.contentvalid_rounds <- function(x, ...) {
-  cat("Summary: comparison across pretest rounds\n")
-  cat(strrep("-", 41), "\n", sep = "")
+  .print_header(x, "Comparison across pretest rounds")
   cat("Workflow: ", x$workflow, " | Rounds: ", x$n_rounds, " | Units: ",
       x$n_units, "\n", sep = "")
   cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",
       sep = "")
 
   if (!x$comparable) {
-    cat("\nWhat differs between rounds\n")
+    .section("What differs between rounds")
     .print_table(x$settings_changes)
   }
 
   if (nrow(x$changed)) {
-    cat("\nUnits whose status changed\n")
+    .section("Units whose status changed")
     .print_table(x$changed)
   } else {
-    cat("\nNo unit changed status between the first and last round.\n")
+    .end_section()
+    cat("\n")
+    .say("No unit changed status between the first and last round.")
   }
+  .closing(pointer = "See x$changed for those units as a data frame.")
   invisible(x)
 }
