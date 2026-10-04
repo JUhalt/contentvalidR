@@ -205,7 +205,7 @@ rounded(ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
 For congruence, report each item's intended objective, its index of
 item-objective congruence against the criterion (`ioc_cut`, by default the .70
 Rovinelli and Hambleton applied), and the decision. The experts' mean ratings
-on the intended objective and on the closest other objective, and the margin
+on the intended objective and on the other objective with the highest mean rating, and the margin
 between them, describe the index; they are not part of its criterion.
 
 ## Figures across review stages

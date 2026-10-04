@@ -162,6 +162,23 @@
     right <- right[-j]
     widths <- widths[-j]
   }
+  # Nothing left to drop and still too wide (long item names beside the
+  # columns a decision rests on): the names are shortened in the middle,
+  # keeping their start and end, to no fewer than 12 columns, and only while
+  # they stay distinct.
+  shortened <- FALSE
+  if (total() > room && widths[1] > 12L) {
+    names_now <- cells[[1]]
+    for (w in seq(max(12L, widths[1] - (total() - room)), widths[1] - 1L)) {
+      short <- .shorten_middle(names_now, w)
+      if (!anyDuplicated(short)) break
+    }
+    if (!anyDuplicated(short) && !identical(short, names_now)) {
+      cells[[1]] <- short
+      widths[1] <- max(nchar(c(shown[1], short), type = "width"))
+      shortened <- TRUE
+    }
+  }
   pad <- function(v, w, r) {
     sp <- strrep(" ", pmax(0L, w - nchar(v, type = "width")))
     if (r) paste0(sp, v) else paste0(v, sp)
@@ -182,15 +199,34 @@
                 ". See ", more, " for every column."), indent = indent,
          exdent = indent)
   }
+  if (shortened) {
+    .say(paste0("Long names are shortened in the middle to fit. See ", more,
+                " for them in full."), indent = indent, exdent = indent)
+  }
   invisible(heads)
 }
 
 .table_keep <- c("decision", "status", "result", "p", "omnibus p",
                  "contrast p", "F test", "met", "meets")
 
+# Text no wider than `w` columns: a longer string keeps its start and end,
+# joined by "...", so names that share an opening stay apart.
+.shorten_middle <- function(x, w) {
+  x <- as.character(x)
+  n <- nchar(x, type = "chars")
+  long <- !is.na(x) & n > w
+  keep <- max(2L, w - 3L)
+  head <- ceiling(keep / 2)
+  tail <- keep - head
+  x[long] <- paste0(substr(x[long], 1L, head), "...",
+                    substring(x[long], n[long] - tail + 1L))
+  x
+}
+
 # A percentage: whole numbers when the base is under 100, one decimal
 # otherwise, rounded half up, with the missing marker for NA.
 .fmt_pct <- function(p, base) {
+  if (!length(p)) return(character(0))
   digits <- if (isTRUE(base >= 100)) 1L else 0L
   out <- paste0(formatC(.half_up(100 * as.numeric(p), digits), format = "f",
                         digits = digits), "%")

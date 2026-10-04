@@ -500,7 +500,13 @@ print.contentvalid_evidence <- function(x, ...) {
   tab$result <- .sentence_case(.evidence_verdicts(x, numbered = TRUE))
   # Stage names too long for the console head their columns by number
   # instead, as the list above numbers them, so the columns stay on screen.
-  numbered <- !.evidence_names_fit(tab)
+  # Numbers replace the stages' names only when the names are what make the
+  # table too wide: a name wider than its column's cells.
+  name_wider <- vapply(seq_len(ns) + 1L, function(j) {
+    nchar(names(tab)[j], type = "width") >
+      max(c(0L, nchar(as.character(tab[[j]]), type = "width")))
+  }, logical(1))
+  numbered <- !.evidence_names_fit(tab) && any(name_wider)
   heads <- if (numbered) as.character(seq_len(ns)) else stage_names
   names(tab)[seq_len(ns) + 1L] <- heads
   shown <- .print_table(tab, as_is = heads)
@@ -588,7 +594,10 @@ as.data.frame.contentvalid_evidence <- function(x, row.names = NULL,
 #' stage's rule has one, its criterion as a dashed line. Construct ratings
 #' have none: that workflow decides on planned contrasts, not on the HTC
 #' shown. A filled symbol met the stage's decision rule, an open one was
-#' flagged for review, and a cross marks no decision. "no value" marks an item
+#' flagged for review, and a cross marks an item the stage did not judge
+#' against a criterion (it only described it, or too few raters rated it). On a
+#' small device, panel titles are shortened with "..."; their numbers match the
+#' printout's list of stages. "no value" marks an item
 #' the stage reviewed without a statistic, and "not reviewed" one it did not
 #' see. The last column says whether each item was carried, names the stages
 #' that held it back, or reads "no decision" for an item no stage applied a
@@ -810,7 +819,9 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
       }
     },
     if (any(drawn %in% "Review")) "Open: review.",
-    if (any(!drawn %in% c("Supported", "Review"))) "Cross: no decision.",
+    if (any(!drawn %in% c("Supported", "Review"))) {
+      "Cross: not judged against a criterion."
+    },
     if (any(is.finite(ev$criterion))) "Dashed line: criterion.",
     if (any(is.finite(ev$lower) & is.finite(ev$upper))) {
       if (length(level) == 1L) {
@@ -842,6 +853,12 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   w <- graphics::strwidth(.tick_labels(at), cex = graphics::par("cex.axis"))
   gap <- graphics::strwidth("m", cex = graphics::par("cex.axis"))
   if (any((w[-1] + w[-5]) / 2 + gap > diff(at)[1])) at <- at[c(1, 3, 5)]
+  # When even three labels crowd, the ends alone: the scale's limits matter
+  # more than its middle.
+  if (length(at) == 3L) {
+    w <- w[c(1, 3, 5)]
+    if (any((w[-1] + w[-3]) / 2 + gap > diff(at)[1])) at <- at[c(1, 3)]
+  }
   at
 }
 
@@ -1079,12 +1096,12 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
       # held back.
       earlier <- ev$stage %in% names(x$flow)[seq_len(k - 1L)]
       ruled <- unique(ev$item[earlier & !described])
-      main <- c(main, sprintf("%s %s so far not reviewed here",
+      main <- c(main, sprintf("%s %s, not reviewed here",
                               .n_noun(length(f$not_reviewed), "item"),
                               if (all(f$not_reviewed %in% ruled)) {
-                                "carried"
+                                "carried so far"
                               } else {
-                                "not held back"
+                                "still in play"
                               }))
     }
     s <- ev[ev$stage == names(x$flow)[k], , drop = FALSE]

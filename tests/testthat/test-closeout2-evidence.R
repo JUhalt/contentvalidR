@@ -171,7 +171,7 @@ test_that("the flow diagram lists the items no stage decided on apart", {
   expect_true("Carried forward: 2 items" %in% drawn)
   expect_true("No decision: 1" %in% drawn)
   expect_true("no stage applied a decision rule" %in% drawn)
-  expect_true("1 item not held back so far not reviewed here" %in% drawn)
+  expect_true("1 item still in play, not reviewed here" %in% drawn)
   expect_true("2 items with no decision rule, not held back" %in% drawn)
   expect_true("S3 (Insufficient panel): Share agreeing 1.00" %in% drawn)
 })

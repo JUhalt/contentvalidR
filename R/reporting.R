@@ -863,13 +863,21 @@ print.contentvalid_report <- function(x, ...) {
     # APA reports beside a chi-square. Kappa is not listed, because the
     # relevance table's modified kappa shares the heading; a Delphi kappa
     # table gives up its interval first.
-    .print_table(.report_display(x),
-                 keep = c(.table_keep, "I-CVI", "IOC", "stable", "agree", "df",
-                          "chi-square", "net change", "lambda"))
+    shown <- .print_table(.report_display(x),
+                          keep = c(.table_keep, "I-CVI", "IOC", "stable",
+                                   "agree", "df", "chi-square", "net change",
+                                   "lambda"))
     note <- attr(x, "note")
     if (length(note)) {
       cat("\n")
-      .say(paste("Note.", note))
+      # The note belongs with the whole table, as a manuscript prints it; on
+      # a narrow console it can define a column left out above.
+      partial <- length(shown) < ncol(x)
+      .say(paste("Note.", note,
+                 if (partial) {
+                   paste("(The note describes the full table, including the",
+                         "columns not shown above.)")
+                 }))
     }
   }
   .closing(pointer = paste('See content_report(fit, format = "markdown") for',

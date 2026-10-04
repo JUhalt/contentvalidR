@@ -526,7 +526,8 @@ test_that("the profile's key lists only what was drawn", {
   untargeted <- d[setdiff(names(d), "target_objective")]
   ed <- content_evidence(Second = expert_validity(untargeted,
                                                   mode = "congruence"))
-  expect_match(key(ed$evidence), "Cross: no decision.", fixed = TRUE)
+  expect_match(key(ed$evidence), "Cross: not judged against a criterion.",
+               fixed = TRUE)
 })
 
 test_that("?content_evidence no longer says every panel shows a criterion", {

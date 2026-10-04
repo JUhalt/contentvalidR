@@ -900,17 +900,22 @@ review of the close-out itself found.
   (1975/2002) among its references.
 * **`content_evidence()`.** A congruence handoff made before 1.0, whose
   "target IOC" held a mean rating, is refused, as such fits already were.
-  Stage labels "item" and "result" are refused. The Result column gives
-  stage numbers, and when the stages' names would push their columns off the
-  console the columns are headed by the same numbers, so two or three stages
-  fit an 80-column console; the key explains the numbers and only the columns
-  shown, and "Highest IOC" has its own definition, without a criterion. The
-  evidence profile draws at full size, fits its key to the width inside the
-  item labels, names every item in type sized to the rows, sets numbered
-  verdicts that would still wrap on one line at 8 points, draws the promised
-  cross, and keys a construct-rating panel by its decision rule. The flow
-  diagram keeps its text at 8 points or more wherever the device is tall
-  enough, and `?plot.contentvalid_evidence` says which sizes hold it.
+  Stage labels "item" and "result" are refused. The Result column gives stage
+  numbers, and when the stages' names would push their columns off the console
+  the columns are headed by the same numbers, so two or three stages fit an
+  80-column console; the key explains the numbers and only the columns shown,
+  and "Highest IOC" has its own definition, without a criterion. Short stage
+  names are kept when numbering them would not make the table fit. The profile
+  keys a cross as an item not judged against a criterion (described only, or
+  too few raters), labels only the ends of a crowded axis, and shortens panel
+  titles with "..." on a small device. The flow diagram says "still in play,
+  not reviewed here" for items no earlier stage held back. The evidence
+  profile draws at full size, fits its key to the width inside the item
+  labels, names every item in type sized to the rows, sets numbered verdicts
+  that would still wrap on one line at 8 points, draws the promised cross, and
+  keys a construct-rating panel by its decision rule. The flow diagram keeps
+  its text at 8 points or more wherever the device is tall enough, and
+  `?plot.contentvalid_evidence` says which sizes hold it.
 * **Expert panel.** The relevance printout keeps the `I-CVI needed` column on
   an 80-column console and explains only the columns shown. Essentiality
   states alpha, the exact one-sided test and Ayre and Scally (2014) whatever
@@ -945,25 +950,32 @@ review of the close-out itself found.
   printout and in the report note, which names each cut that was set and
   each that is a convention, and a severity cut of 2 reads "2 logits".
   `?content_structure` gives the default `k` the code uses.
-* **Figures.** Keys too wide for one row take as many rows as they need,
-  down to a single column, before their type shrinks, never below 8 points,
-  and sit in headroom above the data and the reference lines; the
-  construct-rating profile lays out its key the same way, and so do the
-  planning plots, whose axes tick whole numbers of experts or judges and
-  whose curves are solid and told apart by markers. The tick labels of a
-  bounded vertical axis are set horizontally, so a short figure under a tall
-  key drops none. The expert-panel, item-sort and construct-rating item plots
-  widen their label margins for long item names, shortening a name in the
-  middle only when it would take more than about 40% of the figure. A long
-  vertical axis title gives way to the index's name ("HTD"). The congruence
-  plot fills an index that met the criterion and leaves one below it open.
-  A one-dimensional content map stacks the labels of items at the same
-  position. `plot()` checks `metric` and `reference_power` whatever the
-  `type`: an unknown `metric` with `type = "map"` or `"profile"`, or an invalid
-  `reference_power` with `type = "critical"`, used to be ignored and is now an
-  error, raised before a graphics device opens.
-* **Text.** "F test", "contrast p" and "omnibus p" are never split across
-  lines. A column left out for width that shares its heading with another is
+* **Figures.** Keys too wide for one row take as many rows as they need, down
+  to a single column, before their type shrinks, never below 8 points, and sit
+  in headroom above the data and the reference lines; the construct-rating
+  profile lays out its key the same way, and so do the planning plots, whose
+  axes tick whole numbers of experts or judges and whose curves are solid and
+  told apart by markers. The tick labels of a bounded vertical axis are set
+  horizontally, so a short figure under a tall key drops none. The
+  expert-panel, item-sort and construct-rating item plots and the
+  construct-rating profile widen their label margins for long item names,
+  shortening a name in the middle only when it would take more than about 40%
+  of the figure. A long vertical axis title gives way to the index's name
+  ("HTD"). The congruence plot fills an index that met the criterion and
+  leaves one below it open. A one-dimensional content map stacks the labels of
+  items at the same position. `plot()` checks `metric` and `reference_power`
+  whatever the `type`: an unknown `metric` with `type = "map"` or `"profile"`,
+  or an invalid `reference_power` with `type = "critical"`, used to be ignored
+  and is now an error, raised before a graphics device opens.
+* **Text.** A table that still does not fit once nothing is left to drop,
+  such as a Delphi table of long statements beside the columns its decisions
+  rest on, shortens the long item names in the middle, keeping their start
+  and end, and says so; the object keeps them in full. A console report whose
+  table left out columns for width says that its note describes the full
+  table. `content_report(include = "flagged")` of a domain fit with nothing
+  flagged prints "No units matched the requested selection." where it
+  stopped with an error. "F test", "contrast p" and "omnibus p" are never
+  split across lines. A column left out for width that shares its heading with another is
   named after the estimate it follows ("Not shown for width: 95% CI for V,
   95% CI for I-CVI"). An interval note says it reflects how few ratings an
   item received, not whether the right people rated it.

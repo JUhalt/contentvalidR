@@ -233,8 +233,8 @@ expert_validity(d, mode = "congruence")
 
 An item is `"Congruent"` when its index for the target objective reaches
 `ioc_cut`, by default the .70 Rovinelli and Hambleton applied. The printout
-also shows the experts' mean rating on the target and on the closest other
-objective, and the margin between those means. Applied work often reports
+also shows the experts' mean rating on the target and on the other objective
+with the highest mean rating, and the margin between those means. Applied work often reports
 the mean rating on the target as "the IOC"; it is an ingredient of the index,
 not the index, because it reaches 1 whatever the experts say about the other
 objectives. The margin is a description beside the index, not part of its

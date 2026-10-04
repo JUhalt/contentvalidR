@@ -790,6 +790,9 @@ plot.contentvalid_rating <- function(x,
   n <- nrow(r)
   y <- rev(seq_len(n))
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
+  # The left margin is sized to the item names before the key is laid out,
+  # since the key fits the width that remains.
+  item_labels <- .item_axis_left(r$item)
   # The key takes as many rows as the width needs, and the frame holds them
   # above the first item's row.
   key <- if (isTRUE(show_legend)) .legend_fit(lay$legend, lay$pch, lay$lty)
@@ -797,7 +800,7 @@ plot.contentvalid_rating <- function(x,
                   ylim = c(0.5, .legend_room(0.5, n + 0.25, n + 0.5, key)),
                   yaxt = "n", xlab = "Mean rating against each definition",
                   ylab = ""), list(...))
-  graphics::axis(2, at = y, labels = r$item, las = 1)
+  graphics::axis(2, at = y, labels = item_labels, las = 1)
   both <- lay$both
   if (any(both)) {
     graphics::segments(lay$competitor[both], y[both], lay$target[both],

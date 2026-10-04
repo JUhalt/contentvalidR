@@ -34,7 +34,10 @@ behind that stage's decisions, its interval as a bar, and, where the
 stage's rule has one, its criterion as a dashed line. Construct ratings
 have none: that workflow decides on planned contrasts, not on the HTC
 shown. A filled symbol met the stage's decision rule, an open one was
-flagged for review, and a cross marks no decision. "no value" marks an item
+flagged for review, and a cross marks an item the stage did not judge
+against a criterion (it only described it, or too few raters rated it). On a
+small device, panel titles are shortened with "..."; their numbers match the
+printout's list of stages. "no value" marks an item
 the stage reviewed without a statistic, and "not reviewed" one it did not
 see. The last column says whether each item was carried, names the stages
 that held it back, or reads "no decision" for an item no stage applied a
