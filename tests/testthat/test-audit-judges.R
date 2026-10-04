@@ -521,7 +521,7 @@ test_that("the domain key defines only what the printout shows", {
   sim <- three_cells()
   d <- data.frame(item = rownames(sim), cell = rep(c("A", "B", "C"), each = 3))
   out <- flat(domain_validity(d, similarity = sim))
-  expect_match(out, "adjusted Rand -- Adjusted Rand index", fixed = TRUE)
+  expect_match(out, "Adjusted Rand -- Adjusted Rand index", fixed = TRUE)
   expect_false(grepl("stress", out, fixed = TRUE))
 })
 
@@ -788,7 +788,7 @@ test_that("the structure example spreads its nine items over the map", {
   expect_identical(nrow(unique(round(cs$coordinates, 6))), 9L)
   out <- flat(content_structure(sim, membership = blueprint, ari_cut = 1))
   expect_match(out, "set for this analysis)", fixed = TRUE)
-  expect_match(out, "distortion", fixed = TRUE)
+  expect_match(out, "Distortion", fixed = TRUE)
   expect_match(out, "absolute eigenvalues", fixed = TRUE)
 })
 

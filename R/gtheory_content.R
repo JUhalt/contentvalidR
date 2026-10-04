@@ -394,8 +394,7 @@ gtheory_content <- function(ratings,
 #' @export
 print.contentvalid_gtheory <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("contentvalidR generalizability analysis\n")
-  cat(strrep("-", 39), "\n", sep = "")
+  .print_header(x, "Generalizability analysis")
   cat("Design: items x judges, crossed, one rating per cell\n")
   cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_judges, "\n",
       sep = "")
@@ -408,7 +407,7 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
   na_words <- function(v) if (is.na(v)) "not defined" else .fmt(v, digits)
   phi_cut <- x$settings$phi_cut
   if (is.null(phi_cut)) phi_cut <- 0.80
-  cat("\nObserved design\n")
+  .section("Observed design")
   cat("  Generalizability coefficient (relative, rank ordering): ",
       na_words(cf$g_coefficient), "\n", sep = "")
   cat("  Dependability coefficient (absolute, fixed standard):   ",
@@ -431,34 +430,36 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
     return(invisible(x))
   }
 
-  cat("\nVariance components\n")
+  .section("Variance components")
   vc <- x$variance_components
   show <- data.frame(source = vc$source, df = vc$df,
                      MS = .fmt(vc$ms, digits, bounded = FALSE),
                      estimate = .fmt(vc$variance_raw, digits, bounded = FALSE),
                      used = .fmt(vc$variance, digits, bounded = FALSE),
-                     `% of total` = formatC(vc$percent, format = "f",
-                                            digits = 1),
+                     `% of total` = formatC(.half_up(vc$percent, 1),
+                                            format = "f", digits = 1),
                      stringsAsFactors = FALSE, check.names = FALSE)
-  .print_table(show)
+  .print_table(show, more = "x$variance_components")
   cat("\n")
-  .say("estimate: the ANOVA estimate of each variance component. used: the",
+  .say("MS: mean square.",
+       "Estimate: the ANOVA estimate of each variance component. Used: the",
        "same with a negative estimate set to 0, which the coefficients use",
        "(Brennan, 2001).")
 
   if (nrow(x$judges_needed)) {
-    cat("\nJudges needed to reach each coefficient\n")
-    .print_table(.judges_needed_table(x$judges_needed, digits))
+    .section("Judges needed to reach each coefficient")
+    .print_table(.judges_needed_table(x$judges_needed, digits),
+                 more = "x$judges_needed")
     if (anyNA(unlist(x$judges_needed[c("n_judges_relative",
                                        "n_judges_absolute")]))) {
       vc_item <- x$variance_components$variance[
         x$variance_components$source == "item"]
       .say(if (isTRUE(vc_item > 0)) {
-        paste("unreachable: no panel of", .gtheory_max_panel, "or fewer",
+        paste("Unreachable: no panel of", .gtheory_max_panel, "or fewer",
               "judges reaches this target, because the judges barely",
               "distinguish the items from one another.")
       } else {
-        paste("unreachable: with no item variance, no number of judges",
+        paste("Unreachable: with no item variance, no number of judges",
               "reaches any target.")
       })
     }
@@ -466,9 +467,9 @@ print.contentvalid_gtheory <- function(x, digits = 2, ...) {
          "components, with no interval: read them as planning figures.")
   }
 
-  cat("\n")
-  .say("A dependability coefficient describes generalization over judges",
-       "only. It is not evidence that the items cover the intended content",
-       "domain.")
+  .closing(c("A dependability coefficient describes generalization over judges",
+             "only. It is not evidence that the items cover the intended content",
+             "domain."),
+           "See x$dstudy for the coefficients projected by panel size.")
   invisible(x)
 }

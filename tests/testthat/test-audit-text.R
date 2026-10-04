@@ -67,7 +67,7 @@ test_that("the judge key separates severity in rating points from logits", {
   )
   fit <- judge_validity(r, lo = 1, hi = 4)
   expect_true(fit$scale_summary$severity_estimable)
-  expect_match(flat(fit), "logit -- Judge severity in logits", fixed = TRUE)
+  expect_match(flat(fit), "Logit -- Judge severity in logits", fixed = TRUE)
 })
 
 test_that("domain decision meanings state the rule applied", {
@@ -96,9 +96,9 @@ test_that("the relevance report keeps its two intervals apart", {
   expect_identical(names(as.data.frame(tab)), names(tab))
   expect_null(attr(as.data.frame(tab), "display"))
   # A reader sees each interval under the shared heading, beside its estimate.
-  printed <- utils::capture.output(print(tab))
-  expect_identical(lengths(regmatches(printed[1], gregexpr("95% CI", printed[1]))), 2L)
-  expect_false(grepl("V 95% CI", printed[1], fixed = TRUE))
+  printed <- utils::capture.output(print(tab))[3]
+  expect_identical(lengths(regmatches(printed, gregexpr("95% CI", printed))), 2L)
+  expect_false(grepl("V 95% CI", printed, fixed = TRUE))
   md <- content_report(expert_validity(relevance(), lo = 1, hi = 4,
                                        agreement = "none"), format = "markdown")
   expect_match(md[1], "| V | 95% CI | I-CVI | 95% CI |", fixed = TRUE)
@@ -178,7 +178,7 @@ test_that("every result becomes a data frame", {
   expect_identical(names(as.data.frame(content_handoff(s))),
                    names(content_handoff(s)$item_evidence))
   expect_error(as.data.frame(gtheory_content(R), component = "nope"),
-               "should be one of")
+               "must be one of")
 })
 
 test_that("a single test is one row", {
@@ -276,10 +276,10 @@ test_that("a renamed report column prints under its new name", {
   tab <- content_report(sort_fit())
   expect_true("Psa 95% CI" %in% names(tab))
   names(tab)[1] <- "Item code"
-  out <- utils::capture.output(print(tab))
-  expect_match(out[1], "Item code", fixed = TRUE)
-  expect_match(out[1], "95% CI", fixed = TRUE)
-  expect_false(grepl("Psa 95% CI", out[1], fixed = TRUE))
+  out <- utils::capture.output(print(tab))[3]
+  expect_match(out, "Item code", fixed = TRUE)
+  expect_match(out, "95% CI", fixed = TRUE)
+  expect_false(grepl("Psa 95% CI", out, fixed = TRUE))
 })
 
 test_that("the AC1 key does not read 0 as chance", {

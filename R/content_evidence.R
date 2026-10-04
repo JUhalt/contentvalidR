@@ -289,7 +289,7 @@ content_evidence <- function(..., keep = "Supported") {
 print.contentvalid_evidence <- function(x, ...) {
   ns <- length(x$stages)
   title <- sprintf("Content evidence across %s", .n_noun(ns, "stage"))
-  cat(title, "\n", strrep("-", nchar(title)), "\n", sep = "")
+  .print_header(x, title)
   verdict <- .evidence_verdicts(x)
   held <- x$items[verdict != "carried"]
   first_holder <- vapply(held, function(it) {
@@ -304,7 +304,7 @@ print.contentvalid_evidence <- function(x, ...) {
                                      collapse = ", "), ".")
        })
 
-  cat("\nStages, in order\n")
+  .section("Stages, in order")
   for (k in seq_len(ns)) {
     f <- x$flow[[k]]
     stat <- x$evidence$statistic[x$evidence$stage == names(x$stages)[k]][1]
@@ -324,7 +324,8 @@ print.contentvalid_evidence <- function(x, ...) {
                          rows$recommendation[i]))
     tab[[lab]] <- cell
   }
-  tab$result <- verdict
+  # Status words start with a capital, as in every other table.
+  tab$result <- .sentence_case(verdict)
   .print_table(tab)
 
   if (.show_key()) {
@@ -334,14 +335,14 @@ print.contentvalid_evidence <- function(x, ...) {
               `IOC margin` = "ioc", IOC = "ioc", HTC = "htc")
     known <- stats[stats %in% names(term)]
     .print_key(unname(term[known]), headings = known)
-    cat(strwrap(paste("result -- carried when every stage that reviewed the",
-                      "item carried it; otherwise the stages that held it",
-                      "back. -- marks a stage that did not review the item."),
-                width = 76, initial = "  ", prefix = "      "), sep = "\n")
-    cat("\nFigures: plot(x) for the evidence profile, plot(x, type = \"flow\")",
-        "\nfor the flow diagram; add apa = FALSE for color.\n", sep = "")
+    .say("Result -- Carried when every stage that reviewed the item carried",
+         "it; otherwise the stages that held it back. -- marks a stage that",
+         "did not review the item.", indent = 2L, exdent = 6L)
     .print_key_footer()
   }
+  .closing(pointer = paste("See plot(x) for the evidence profile and",
+                           "plot(x, type = \"flow\") for the flow diagram;",
+                           "add apa = FALSE for color."))
   invisible(x)
 }
 
@@ -417,7 +418,7 @@ as.data.frame.contentvalid_evidence <- function(x, row.names = NULL,
 #' @export
 plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
                                        apa = TRUE, show_legend = TRUE, ...) {
-  type <- match.arg(type)
+  type <- .choose(type)
   .validate_flag(apa, "apa")
   .validate_flag(show_legend, "show_legend")
   if (type == "flow") {

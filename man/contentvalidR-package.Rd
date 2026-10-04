@@ -8,6 +8,37 @@
 \description{
 Provides quantitative tools for substantive and content-oriented scale pretesting. Implements item-sort indices from Anderson and Gerbing (1991) \doi{10.1037/0021-9010.76.5.732}, exact item-sort inference following Howard and Melloy (2016) \doi{10.1007/s10869-015-9404-y}, empirical interpretation benchmarks from Colquitt et al. (2019) \doi{10.1037/apl0000406}, and the construct-rating procedure of Hinkin and Tracey (1999) \doi{10.1177/109442819922004} with HTC/HTD indices and repeated-measures item screening. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) \doi{10.1080/19312450709336664}. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) \doi{10.1111/j.1745-3984.1988.tb00309.x}, content-domain coverage and expert-perceived content structure following Sireci and Geisinger (1992) \doi{10.1177/014662169201600102}, consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) \doi{10.1186/1471-2288-7-52}, comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients.
 }
+\section{Reading the output}{
+
+The printouts follow a style shared with nomologR, so the two packages
+read alike. Every printout opens with a header naming the object's class
+and what it holds, such as \verb{<contentvalid_sort> Item-sort analysis}, then
+its facts, then its verdict. \code{print()} shows the full evidence with a key
+to its columns; \code{summary()} shows what needs attention, the flagged units
+with a sentence each. A workflow's printout ends with what the evidence
+does not decide, and every printout ends with a line pointing to what else
+the object holds. Markdown output from \code{\link[=content_report]{content_report()}} is the one
+exception: it prints only the lines to paste. Numbers follow APA 7: no
+leading zero where a value cannot exceed 1, two decimals and three for
+\emph{p}, \verb{--} for a value that could not be computed, and \verb{> .999} for a \emph{p}
+that would round to 1.
+
+The statuses read across the two packages as follows:\tabular{ll}{
+   contentvalidR \tab nomologR \cr
+   Supported \tab no flag \cr
+   Review \tab review \cr
+   (no counterpart) \tab concern \cr
+   Insufficient data \tab not computed \cr
+   Descriptive only \tab note \cr
+}
+
+
+"Review" always means look again, never delete. In the \code{results} and
+the handoff of this package, \code{recommendation} is the decision word (such as
+\code{"Retain"} or \code{"Strong support"}); \code{status} is the shared vocabulary
+above.
+}
+
 \section{What you can rely on}{
 
 Code written against contentvalidR should keep working. This section says

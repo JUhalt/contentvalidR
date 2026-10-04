@@ -259,8 +259,8 @@ sort_validity <- function(assignments,
                           proportion_ci = c("wilson", "agresti_coull", "exact", "none"),
                           legacy = FALSE,
                           n_constructs = NULL) {
-  judge_type <- match.arg(judge_type)
-  proportion_ci <- match.arg(proportion_ci)
+  judge_type <- .choose(judge_type)
+  proportion_ci <- .choose(proportion_ci)
   .validate_flag(legacy, "legacy")
   if (!is.null(n_constructs) &&
       (!is.numeric(n_constructs) || length(n_constructs) != 1L ||
@@ -403,8 +403,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   insufficient <- r$item[r$recommendation == "Insufficient data"]
   too_few <- r$recommendation == "Insufficient panel"
 
-  cat("contentvalidR item-sort analysis\n")
-  cat(strrep("-", 32), "\n", sep = "")
+  .print_header(x, "Item-sort analysis")
   cat("Items: ", x$design$n_items, " | Judges: ", x$design$n_raters,
       " | Target constructs: ", x$design$n_target_scales, "\n", sep = "")
   .say("Test: ", s$item_inference, " (p0 = ", .fmt(s$p0), ", alpha = ",
@@ -441,7 +440,7 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
 
   # The decision sits beside the item so a row reads left to right; each
   # interval gets its own column after its estimate, as APA tables do.
-  cat("\nItem-level evidence\n")
+  .section("Item-level evidence")
   ci <- .ci_label(s$alpha)
   tab <- data.frame(item = r$item, target = r$target,
                     decision = r$recommendation,
@@ -454,17 +453,17 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   tab$Csv <- .fmt(r$csv, digits)
   tab$competitor <- r$competitor
   tab$p <- .fmt_p(r$p_value)
-  .print_table(tab)
+  shown <- .print_table(tab)
   cat("\n")
-  .say("judges: assignments to the target construct, out of the judges who",
+  .say("Judges: assignments to the target construct, out of the judges who",
        "sorted the item.")
   if (!is.null(s$proportion_ci)) .say(.proportion_ci_note(s$proportion_ci, s$alpha))
 
   sc <- x$scale_summary
   expert <- identical(s$judge_type, "expert")
   # Without benchmarks the table holds means only, and is headed as such.
-  cat(if (expert) "\nScale-level means\n" else
-    "\nScale-level Colquitt benchmarks\n")
+  .section(if (expert) "Scale-level means" else
+    "Scale-level Colquitt benchmarks")
   sets <- unique(sc$benchmark_set)
   st <- data.frame(target = sc$target, items = sc$n_items,
                    `mean Psa` = .fmt(sc$mean_psa, digits),
@@ -476,7 +475,9 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
   if (!expert) st$`Csv level` <- sc$csv_strength
   # A benchmark set shared by every scale is stated once, not on every row.
   if (!expert && length(sets) > 1L) st$benchmarks <- sc$benchmark_set
-  .print_table(st)
+  # The benchmark set explains each level, so it is never dropped for width.
+  .print_table(st, keep = c(.table_keep, "benchmarks"),
+               more = 'as.data.frame(x, component = "scale_summary")')
   if (!expert && length(sets) == 1L) .say("Benchmark set:", sets)
   if (!expert) {
     how <- if (isTRUE(x$design$n_constructs_given)) "offered" else "used"
@@ -501,15 +502,16 @@ print.contentvalid_sort <- function(x, digits = 2, legacy = NULL, ...) {
 
   if (.show_key()) {
     .print_key(c("psa", "psa_low/psa_high", "csv", "competitor", "p_value"),
-               headings = c("Psa", ci, "Csv", "competitor", "p"))
+               headings = c("Psa", ci, "Csv", "competitor", "p"),
+               shown = shown)
     .print_decision_legend(x$results$recommendation, "item-sort")
     .print_key_footer()
   }
 
-  cat("\n")
-  .say("'Review' is not an automatic deletion decision. Use theory,",
-       "construct-domain coverage, item wording, and qualitative judge",
-       "feedback alongside these statistics.")
+  .closing(c("'Review' is not an automatic deletion decision. Use theory,",
+             "construct-domain coverage, item wording, and qualitative judge",
+             "feedback alongside these statistics."),
+           "See summary(x) for the flagged items and content_report(x) for an APA table.")
   invisible(x)
 }
 
@@ -525,8 +527,7 @@ summary.contentvalid_sort <- function(object, ...) {
 #' @export
 print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("Summary: item-sort content-validity evidence\n")
-  cat(strrep("-", 44), "\n", sep = "")
+  .print_header(x, "Item-sort analysis")
   cat("Retain: ", x$n_retain, " of ", x$n_items, " | Review: ", x$n_review,
       " of ", x$n_items, sep = "")
   # Two different reasons for no decision, counted apart: too few judges for
@@ -538,7 +539,7 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   }
   cat("\n")
 
-  cat("\nScale-level evidence\n")
+  .section("Scale-level evidence")
   s <- x$scale_summary
   tab <- data.frame(
     target = s$target, items = s$n_items, retain = s$n_retain,
@@ -553,29 +554,34 @@ print.summary.contentvalid_sort <- function(x, digits = 2, ...) {
   if (identical(x$settings$judge_type, "expert")) {
     tab <- tab[!names(tab) %in% c("Psa level", "Csv level")]
   }
-  .print_table(tab)
+  .print_table(tab, more = "x$scale_summary")
   cat("\n")
+  .say("Psa = proportion of substantive agreement; Csv = coefficient of",
+       "substantive validity (Anderson & Gerbing, 1991).")
   .say_grouped(s$target, s$evidence)
 
   f <- x$reviewed_items
   if (nrow(f) > 0L) {
-    cat("\nItems needing attention\n")
+    .section("Flagged")
     .print_table(data.frame(
       item = f$item, target = f$target, decision = f$recommendation,
       Psa = .fmt(f$psa, digits), Csv = .fmt(f$csv, digits),
       competitor = f$competitor, p = .fmt_p(f$p_value),
       stringsAsFactors = FALSE, check.names = FALSE
-    ))
+    ), more = "x$reviewed_items")
     cat("\n")
-    .say_grouped(f$item, f$issue)
+    .say("p = Howard-Melloy exact test of the target assignments.")
+    .say_flagged(f$item, f$recommendation, f$interpretation)
   } else {
-    cat("\nAll analyzed items met the exact target-assignment criterion.\n")
+    .end_section()
+    cat("\n")
+    .say("All analyzed items met the exact target-assignment criterion.")
   }
 
-  cat("\n")
-  .say("Interpret scale norms and item flags alongside theory, domain",
-       "coverage, and qualitative feedback. This analysis does not by itself",
-       "establish comprehensiveness or the full content-validity argument.")
+  .closing(c("Interpret scale norms and item flags alongside theory, domain",
+             "coverage, and qualitative feedback. This analysis does not by itself",
+             "establish comprehensiveness or the full content-validity argument."),
+           "See x$reviewed_items for the flagged items as a data frame.")
   invisible(x)
 }
 
@@ -622,8 +628,8 @@ plot.contentvalid_sort <- function(x,
                                    label = c("review", "all", "none"),
                                    show_legend = TRUE,
                                    ...) {
-  type <- match.arg(type)
-  label <- match.arg(label)
+  type <- .choose(type)
+  label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
@@ -633,7 +639,7 @@ plot.contentvalid_sort <- function(x,
   csv_lab <- "Csv: lead of the target over its top rival"
 
   if (type == "item") {
-    metric <- match.arg(metric)
+    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "psa") 0 else -1

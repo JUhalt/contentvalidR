@@ -281,8 +281,9 @@ test_that("inputs are validated with messages a user can act on", {
 test_that("the printout explains each method, and kappa carries no verbal labels", {
   d <- small_delphi()
   text <- function(...) {
-    paste(capture.output(print(delphi_validity(d, lo = 1, hi = 4, B = 0, ...))),
-          collapse = " ")
+    gsub("[[:space:]]+", " ",
+         paste(capture.output(print(delphi_validity(d, lo = 1, hi = 4, B = 0, ...))),
+               collapse = " "))
   }
   k <- text()
   expect_match(k, "weighted kappa \\(quadratic weights\\)")

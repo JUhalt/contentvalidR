@@ -157,7 +157,7 @@ test_that("the extension is labeled as one wherever it is printed", {
       print(sort_validity(d, legacy = TRUE, ...))), collapse = " "))
   }
   three <- text()
-  expect_match(three, "extension*", fixed = TRUE)
+  expect_match(three, "Extension*", fixed = TRUE)
   expect_match(three, "a contentvalidR extension, not a published rule",
                fixed = TRUE)
   expect_match(three, "(1/3 + .05)", fixed = TRUE)
@@ -277,7 +277,7 @@ test_that("the printed comparison states each rule's source and agreement", {
                               legacy = TRUE)
   out13 <- gsub("[[:space:]]+", " ",
                 paste(utils::capture.output(print(thirteen)), collapse = " "))
-  expect_match(out13, "Item2 (.538) prints at the Lawshe cutoff of .54",
+  expect_match(out13, "Item2 (.538) prints at the Lawshe criterion of .54",
                fixed = TRUE)
 
   # 8 of 9 meets Lawshe's .78, so no such note is printed for it.
@@ -301,8 +301,15 @@ test_that("the printed comparison states each rule's source and agreement", {
   expect_match(out_mixed,
                "for 9 panelists his .78 is 8 of 9 (.778) printed to two decimals",
                fixed = TRUE)
-  expect_match(out_mixed, "B (.538) prints at the Lawshe cutoff of .54",
+  expect_match(out_mixed, "B (.538) prints at the Lawshe criterion of .54",
                fixed = TRUE)
+  # Each rule's verdict survives the console width; a cut column goes first,
+  # and the pointer names where the dropped column is.
+  expect_match(out_mixed, "Lawshe (1975) Wilson et al. (2012)", fixed = TRUE)
+  expect_false(grepl("Not shown for width: Wilson et al.", out_mixed,
+                     fixed = TRUE))
+  expect_false(grepl("See as.data.frame(x) for every column", out_mixed,
+                     fixed = TRUE))
 
   # An unrated first item does not hide the minimum of the panel size in use.
   Z <- cbind(Z = rep(NA_real_, 10), A = c(rep(1, 9), 0), B = rep(1, 10))

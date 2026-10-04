@@ -4,13 +4,16 @@
 \alias{plot.contentvalid_expert_power}
 \title{Plot an expert-panel planning curve}
 \usage{
-\method{plot}{contentvalid_expert_power}(x, show_legend = TRUE, ...)
+\method{plot}{contentvalid_expert_power}(x, show_legend = TRUE, type = "probability", ...)
 }
 \arguments{
 \item{x}{A \code{contentvalid_expert_power} object.}
 
 \item{show_legend}{Draw the key identifying each assumed endorsement
 probability.}
+
+\item{type}{\code{"probability"}, the only view, accepted so that every plot
+method takes \code{type}.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }

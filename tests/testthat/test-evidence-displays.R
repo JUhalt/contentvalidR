@@ -149,13 +149,15 @@ test_that("content_evidence() refuses what it cannot read", {
 
 test_that("the print opens with the verdict and names who held what back", {
   out <- capture.output(print(wt_sequential()))
-  expect_match(out[3], "10 of 12 items carried by every stage that reviewed")
+  expect_match(out[2], "10 of 12 items carried by every stage that reviewed")
   # Wrapped lines are joined, so a phrase split across two still matches.
   txt <- gsub("\\s+", " ", paste(out, collapse = " "))
   expect_match(txt, "Held back: EF5 \\(Relevance panel\\), TF5 \\(Item sort\\)")
   expect_match(txt, "1\\. Relevance panel: 12 items, 8 experts\\. Shows I-CVI\\.")
   expect_match(txt, "2\\. Item sort: 11 items, 20 judges\\. Shows Psa\\.")
-  expect_match(txt, "held back: Item sort")
+  expect_match(txt, "Held back: Item sort")
+  expect_match(txt, "Carried")
+  expect_match(txt, "Result -- Carried when every stage")
   expect_match(txt, "What these columns mean")
 
   old <- options(contentvalidR.show_key = FALSE)
@@ -164,7 +166,7 @@ test_that("the print opens with the verdict and names who held what back", {
                                     collapse = " "))
   expect_no_match(hidden, "What these columns mean")
   # The result stays readable with the key hidden.
-  expect_match(hidden, "held back: Item sort")
+  expect_match(hidden, "Held back: Item sort")
 })
 
 test_that("the profile and the flow draw in gray and in color", {

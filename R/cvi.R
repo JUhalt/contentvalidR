@@ -94,7 +94,7 @@ cvi <- function(binary,
                 ci = c("wilson", "agresti_coull", "exact", "none"),
                 alpha = 0.05) {
   .validate_flag(na.rm, "na.rm")
-  ci <- match.arg(ci)
+  ci <- .choose(ci)
   .check_no_id_column(binary, "binary")
   X <- as.matrix(binary)
   if (length(dim(X)) != 2L || nrow(X) < 1L || ncol(X) < 1L) {
@@ -163,8 +163,7 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   sl <- x$scale_level
   it <- x$item_level
-  cat("contentvalidR content validity index (CVI)\n")
-  cat(strrep("-", 42), "\n", sep = "")
+  .print_header(x, "Content validity index (CVI)")
   cat("Items: ", sl$n_items, " | Judges per item: ", sep = "")
   if (length(unique(it$N)) == 1L) {
     cat(unique(it$N), "\n", sep = "")
@@ -173,8 +172,11 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   cat("S-CVI/Ave: ", .fmt(sl$S_CVI_Ave, digits), " | S-CVI/UA: ",
       .fmt(sl$S_CVI_UA, digits), "\n", sep = "")
+  .say("I-CVI = item-level content validity index; S-CVI/Ave = scale-level",
+       "CVI, the mean I-CVI; S-CVI/UA = scale-level CVI, the share of items",
+       "every judge rated relevant (Polit & Beck, 2006).")
 
-  cat("\nItem-level results\n")
+  .section("Item-level results")
   tab <- data.frame(item = it$item, agree = paste0(it$A, "/", it$N),
                     `I-CVI` = .fmt(it$I_CVI, digits),
                     stringsAsFactors = FALSE, check.names = FALSE)
@@ -185,20 +187,20 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   tab$Pc <- .fmt_p(it$Pc)
   tab$kappa <- .fmt(it$kappa_mod, digits)
-  .print_table(tab)
+  .print_table(tab, more = "x$item_level")
   cat("\n")
-  .say("agree: judges rating the item relevant, out of those who rated it.",
+  .say("Agree: judges rating the item relevant, out of those who rated it.",
        "Pc: the probability that this many judges would agree by chance.",
-       "kappa: the modified kappa of Polit et al. (2007), the I-CVI",
+       "Kappa: the modified kappa of Polit et al. (2007), the I-CVI",
        "chance-corrected by Pc.")
   if (has_ci) {
     cat("\n")
     .say(.proportion_ci_note(x$ci, x$alpha))
   }
-  cat("\n")
-  .say("Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.",
-       "Interpretation should consider panel size, item purpose, and",
-       "qualitative expert feedback; CVI statistics alone do not establish",
-       "comprehensive content validity.")
+  .closing(c("Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.",
+             "Interpretation should consider panel size, item purpose, and",
+             "qualitative expert feedback; CVI statistics alone do not establish",
+             "comprehensive content validity."),
+           "See as.data.frame(x) for the item-level values.")
   invisible(x)
 }

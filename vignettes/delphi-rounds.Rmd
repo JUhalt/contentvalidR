@@ -112,7 +112,7 @@ old <- options(contentvalidR.show_key = FALSE)
 
 ## Reading consensus
 
-The `agree` column (`prop_agree` in `fit$results`) is the share of experts who
+The Agree column (`prop_agree` in `fit$results`) is the share of experts who
 rated the item at or above `agree_cut` in its last round. On a relevance scale this is the item's I-CVI.
 Three statements (S1, S2, and S5) reached the 75% threshold. S1's last round is
 round 2, because it was set aside once it reached consensus.
@@ -130,7 +130,7 @@ writeLines(strwrap(paste0(shown$item, ": ", shown$interpretation),
 
 ## Reading stability
 
-Read the `unchanged` column (`prop_unchanged` in `fit$results`) first. It is
+Read the Unchanged column (`prop_unchanged` in `fit$results`) first. It is
 the plainest measure: the share of experts who gave exactly the same rating
 again. Then read the kappa trend beside it.
 Kappa is weighted kappa between each expert's ratings in two consecutive rounds
@@ -166,7 +166,7 @@ These patterns are why the output gives kappa no verbal labels such as
 "moderate" or "substantial". Landis and Koch (1977), who introduced those
 labels, called their divisions clearly arbitrary. And a label would tend to
 get *worse* as a Delphi succeeds, because convergence can lower kappa. Read kappa
-as a trend, next to the `unchanged` column.
+as a trend, next to the Unchanged column.
 
 The full table, with every pair of rounds, is in `details$stability`:
 

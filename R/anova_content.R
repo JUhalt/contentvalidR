@@ -114,8 +114,8 @@ anova_content <- function(ratings,
                           target_col = "target_construct",
                           design = c("auto", "within", "between"),
                           adjust = c("none", "holm")) {
-  design <- match.arg(design)
-  adjust <- match.arg(adjust)
+  design <- .choose(design)
+  adjust <- .choose(adjust)
   if (!is.numeric(alpha) || length(alpha) != 1L || !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("`alpha` must be one number strictly between 0 and 1.", call. = FALSE)
   }
