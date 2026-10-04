@@ -161,37 +161,35 @@ sorts <- data.frame(
 evidence <- content_evidence(`Relevance panel` = panel,
                              `Item sort` = sort_validity(sorts))
 evidence
-#> Content evidence across 2 stages
-#> --------------------------------
-#> 2 of 4 items carried by every stage that reviewed them. Held back: Item3
-#> (Item sort), Item4 (Relevance panel).
+#> <contentvalid_evidence> Content evidence across 2 stages
+#> 2 of 4 items carried by every stage that reviewed them. Held back: Item3 (Item
+#> sort), Item4 (Relevance panel).
 #> 
 #> Stages, in order
 #>   1. Relevance panel: 4 items, 4 experts. Shows I-CVI.
 #>   2. Item sort: 3 items, 12 judges. Shows Psa.
 #> 
-#>   item     Relevance panel  Item sort                     result
-#>  Item1 1.00 Strong support .92 Retain                    carried
-#>  Item2 1.00 Strong support .83 Retain                    carried
-#>  Item3 1.00 Strong support .42 Review       held back: Item sort
-#>  Item4          .00 Review         -- held back: Relevance panel
+#>   Item   Relevance panel      Item sort   Result
+#>   Item1  1.00 Strong support  .92 Retain  Carried
+#>   Item2  1.00 Strong support  .83 Retain  Carried
+#>   Item3  1.00 Strong support  .42 Review  Held back: Item sort
+#>   Item4  .00 Review           --          Held back: Relevance panel
 #> 
 #> What these columns mean
-#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, against Lynn's criterion for the panel size (beyond
-#>       ten, this package's).
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
-#>   result -- carried when every stage that reviewed the item carried it;
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the item
+#>       relevant, against Lynn's criterion for the panel size (beyond ten, this
+#>       package's).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
+#>   Result -- Carried when every stage that reviewed the item carried it;
 #>       otherwise the stages that held it back. -- marks a stage that did not
 #>       review the item.
 #> 
-#> Figures: plot(x) for the evidence profile, plot(x, type = "flow")
-#> for the flow diagram; add apa = FALSE for color.
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#> See plot(x) for the evidence profile and plot(x, type = "flow") for the flow
+#> diagram; add apa = FALSE for color.
 plot(evidence)
 
 plot(evidence, type = "flow")

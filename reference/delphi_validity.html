@@ -345,8 +345,7 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">delphi_validity</span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, consensus_threshold <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
 <span class="r-in"><span>                       B <span class="op">=</span> <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR Delphi analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_delphi&gt; Delphi analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Experts per round: 8, 8, 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Agreement: a rating of 3 or higher on the 1 to 4 scale.</span>
@@ -357,45 +356,45 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No consensus: S2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence (last round, and the last pair of rounds)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item     decision last round n agree unchanged kappa      95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1    Consensus          3 8  1.00       .88   .60 [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2 No consensus          3 8   .00       .88   .67 [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3    Consensus          3 8  1.00       .88   .67 [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4    Consensus          3 8  1.00       .88   .75 [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  n  Agree  Unchanged  Kappa       95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3  8   1.00        .88    .60  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3  8    .00        .88    .67  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3  8   1.00        .88    .67  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3  8   1.00        .88    .75  [.00, 1.00]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> agree: share of experts agreeing in the item's last round. unchanged: share</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> who kept their rating between the item's last pair of consecutive rounds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Agree: share of experts agreeing in the item's last round. Unchanged: share</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   who kept their rating between the item's last pair of consecutive rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stability trend (kappa) by pair of rounds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item 1-&gt;2 2-&gt;3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1  .67  .60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2  .67  .67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3  .60  .67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4  .72  .75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  1-&gt;2  2-&gt;3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1     .67   .60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2     .67   .67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3     .60   .67</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4     .72   .75</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Share of experts who kept their rating, by pair of rounds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item 1-&gt;2 2-&gt;3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1  .75  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2  .75  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3  .50  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4  .75  .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  1-&gt;2  2-&gt;3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1     .75   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2     .75   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3     .50   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4     .75   .88</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> In some resamples kappa was undefined because every resampled rating fell in</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> one category. Those intervals use the remaining resamples (n_boot_usable in</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> details$stability), so treat them as rough.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   In some resamples kappa was undefined because every resampled rating fell in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   one category. Those intervals use the remaining resamples (n_boot_usable in</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   details$stability), so treat them as rough.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Read kappa as a trend across rounds, beside the share of experts who kept</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> their rating (unchanged), not against a cutoff. Kappa can be low when ratings</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> concentrate in one category (Feinstein &amp; Cicchetti, 1990), so an agreeing</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> panel can show a low kappa; Holey et al. (2007) suggest this for their</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Statement 7.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Read kappa as a trend across rounds, beside the share of experts who kept</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   their rating (unchanged), not against a cutoff. Kappa can be low when</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ratings concentrate in one category (Feinstein &amp; Cicchetti, 1990), so an</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   agreeing panel can show a low kappa; Holey et al. (2007) suggest this for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   their Statement 7.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The kappa intervals resample the experts (Klar et al., 2002). With fewer than</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> about 40 experts they cover less than their stated 95%, so read them as rough</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> indications of precision, not as tests.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   The kappa intervals resample the experts (Klar et al., 2002). With fewer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   than about 40 experts they cover less than their stated 95%, so read them as</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   rough indications of precision, not as tests.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Diamond et al. (2014) recommend fixing the consensus threshold before the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> study. Report whether this one was.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Diamond et al. (2014) recommend fixing the consensus threshold before the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   study. Report whether this one was.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> How the stability statistic works</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Stability is weighted kappa between each expert's ratings in consecutive</span>
@@ -410,32 +409,33 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (.31).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   The intervals are percentile bootstraps that resample the experts, the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   units the two rounds cross-classify: the procedure Klar et al. (2002)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   describe for kappa. They evaluated it for an unweighted kappa on two</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   categories, and a nominal 95% interval covered about 83% of the time with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   20 units and 91% with 30, reaching 94% only from 40 up.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   The intervals are percentile bootstraps that resample the experts, the units</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   the two rounds cross-classify: the procedure Klar et al. (2002) describe for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa. They evaluated it for an unweighted kappa on two categories, and a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   nominal 95% interval covered about 83% of the time with 20 units and 91%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   with 30, reaching 94% only from 40 up.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of experts at or above the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Agree -- Share of experts agreeing. Share of experts at or above the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement cut in a round; consensus means reaching the consensus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       threshold.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Share of experts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       giving the same rating in two consecutive rounds (1 means nobody</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       changed).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       each expert's ratings across two rounds; read it as a trend, not</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       against a cutoff.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Unchanged -- Share of experts keeping their rating. Share of experts giving</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the same rating in two consecutive rounds (1 means nobody changed).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Kappa -- Weighted kappa between rounds. Chance-corrected agreement of each</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       expert's ratings across two rounds; read it as a trend, not against a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       cutoff.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Consensus -- reached the consensus threshold in its last round.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   No consensus -- did not reach the consensus threshold.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> drop an item. Read these results with the experts' comments.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to drop</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> an item. Read these results with the experts' comments.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the items without consensus and plot(x) for the rounds.</span>
 <span class="r-in"><span><span class="va">fit</span><span class="op">$</span><span class="va">details</span><span class="op">$</span><span class="va">stability</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   item from_round to_round n_paired prop_unchanged method     value     lower</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1   S1          1        2        8          0.750  kappa 0.6666667 0.0000000</span>
@@ -459,8 +459,7 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-in"><span><span class="co"># A published alternative, with its critique printed.</span></span></span>
 <span class="r-in"><span><span class="fu">delphi_validity</span><span class="op">(</span><span class="va">ratings</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, consensus_threshold <span class="op">=</span> <span class="fl">0.75</span>,</span></span>
 <span class="r-in"><span>                stability <span class="op">=</span> <span class="st">"percent_change"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR Delphi analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_delphi&gt; Delphi analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Experts per round: 8, 8, 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Agreement: a rating of 3 or higher on the 1 to 4 scale.</span>
@@ -472,59 +471,60 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No consensus: S2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence (last round, and the last pair of rounds)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item     decision last round n agree unchanged change stable</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1    Consensus          3 8  1.00       .88    .12    yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2 No consensus          3 8   .00       .88    .12    yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3    Consensus          3 8  1.00       .88    .12    yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4    Consensus          3 8  1.00       .88    .12    yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  n  Agree  Unchanged  Change  Stable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3  8   1.00        .88     .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3  8    .00        .88     .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3  8   1.00        .88     .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3  8   1.00        .88     .13  yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> agree: share of experts agreeing in the item's last round. unchanged: share</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> who kept their rating between the item's last pair of consecutive rounds.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Agree: share of experts agreeing in the item's last round. Unchanged: share</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   who kept their rating between the item's last pair of consecutive rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stability trend (change) by pair of rounds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item 1-&gt;2 2-&gt;3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1  .12  .12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2  .25  .12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3  .38  .12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4  .25  .12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  1-&gt;2  2-&gt;3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1     .13   .13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2     .25   .13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3     .38   .13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4     .25   .13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Share of experts who kept their rating, by pair of rounds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item 1-&gt;2 2-&gt;3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S1  .75  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S2  .75  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S3  .50  .88</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    S4  .75  .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  1-&gt;2  2-&gt;3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1     .75   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2     .75   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3     .50   .88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4     .75   .88</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Stability is the net change of Scheibe et al. (1975/2002): half the summed</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> differences between the two rounds' rating distributions, as a share of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> experts compared, with change below 15% read as stable. The authors say the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> measure has no statistical theory behind it; the 15% cutoff came from the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> movement they observed in one classroom Delphi. Experts swapping answers</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> cancel out, and in a small panel one expert is a large share: with 10 experts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> one net change is already 10%.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Stability is the net change of Scheibe et al. (1975/2002): half the summed</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   differences between the two rounds' rating distributions, as a share of the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   experts compared, with change below 15% read as stable. The authors say the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   measure has no statistical theory behind it; the 15% threshold came from the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   movement they observed in one classroom Delphi. Experts swapping answers</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   cancel out, and in a small panel one expert is a large share: with 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   experts one net change is already 10%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Diamond et al. (2014) recommend fixing the consensus threshold before the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> study. Report whether this one was.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Diamond et al. (2014) recommend fixing the consensus threshold before the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   study. Report whether this one was.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   agree -- Share of experts agreeing. Share of experts at or above the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Agree -- Share of experts agreeing. Share of experts at or above the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       agreement cut in a round; consensus means reaching the consensus</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       threshold.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   unchanged -- Share of experts keeping their rating. Share of experts</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       giving the same rating in two consecutive rounds (1 means nobody</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       changed).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   change -- Net change in the rating distribution. Net change in the rating</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Unchanged -- Share of experts keeping their rating. Share of experts giving</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       the same rating in two consecutive rounds (1 means nobody changed).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Change -- Net change in the rating distribution. Net change in the rating</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       distribution between rounds (stable below .15 by its authors' rule).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Consensus -- reached the consensus threshold in its last round.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   No consensus -- did not reach the consensus threshold.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> drop an item. Read these results with the experts' comments.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Consensus is not correctness, and 'No consensus' is not an instruction to drop</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> an item. Read these results with the experts' comments.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the items without consensus and plot(x) for the rounds.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

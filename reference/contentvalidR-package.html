@@ -84,6 +84,27 @@
 
 
     <div class="section level2">
+    <h2 id="reading-the-output">Reading the output<a class="anchor" aria-label="anchor" href="#reading-the-output"></a></h2>
+
+
+<p>The printouts follow a style shared with nomologR, so the two packages
+read alike. Every printout opens with a header naming the object's class
+and what it holds, such as <code>&lt;contentvalid_sort&gt; Item-sort analysis</code>, then
+its facts, then its verdict. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows the full evidence with a key
+to its columns; <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> shows what needs attention, the flagged units
+with a sentence each. A workflow's printout ends with what the evidence
+does not decide, and every printout ends with a line pointing to what else
+the object holds. Markdown output from <code><a href="content_report.html">content_report()</a></code> is the one
+exception: it prints only the lines to paste. Numbers follow APA 7: no
+leading zero where a value cannot exceed 1, two decimals and three for
+<em>p</em>, <code>--</code> for a value that could not be computed, and <code>&gt; .999</code> for a <em>p</em>
+that would round to 1.</p>
+<p>The statuses read across the two packages as follows:</p><table class="table table"><tr><td>contentvalidR</td><td>nomologR</td></tr><tr><td>Supported</td><td>no flag</td></tr><tr><td>Review</td><td>review</td></tr><tr><td>(no counterpart)</td><td>concern</td></tr><tr><td>Insufficient data</td><td>not computed</td></tr><tr><td>Descriptive only</td><td>note</td></tr></table><p>"Review" always means look again, never delete. In the <code>results</code> and
+the handoff of this package, <code>recommendation</code> is the decision word (such as
+<code>"Retain"</code> or <code>"Strong support"</code>); <code>status</code> is the shared vocabulary
+above.</p>
+    </div>
+    <div class="section level2">
     <h2 id="what-you-can-rely-on">What you can rely on<a class="anchor" aria-label="anchor" href="#what-you-can-rely-on"></a></h2>
 
 

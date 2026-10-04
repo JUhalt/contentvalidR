@@ -183,28 +183,29 @@ samples analyzed under identical settings.</p></div>
 <span class="r-in"><span><span class="va">round2</span> <span class="op">&lt;-</span> <span class="va">round1</span></span></span>
 <span class="r-in"><span><span class="va">round2</span><span class="op">$</span><span class="va">assigned_construct</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">5</span><span class="op">)</span>, <span class="st">"B"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">compare_rounds</span><span class="op">(</span><span class="fu"><a href="sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">round1</span><span class="op">)</span>, <span class="fu"><a href="sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">round2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR comparison across pretest rounds</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_rounds&gt; Comparison across pretest rounds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: item-sort | Rounds: 2 | Units compared: 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 of 2 units in both the first and last round changed status (1 stronger, 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> weaker).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Status by round</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item Round 1   Round 2       change</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I1  Review Supported Strengthened</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I2  Review    Review    Unchanged</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Round 1  Round 2    Change</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I1    Review   Supported  Strengthened</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I2    Review   Review     Unchanged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Round-to-round summary</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     from      to compared unchanged stronger weaker added removed same rule</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Round 1 Round 2        2         1        1      0     0       0       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   From    To      Compared Unchanged Stronger Weaker Added Removed Same rule</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Round 1 Round 2        2         1        1      0     0       0 yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The settings and the panel size were the same in every round, so these</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> transitions can be read as changes in evidence.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   The settings and the panel size were the same in every round, so these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   transitions can be read as changes in evidence.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A status change means the evidence crossed a criterion, not that an item</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> improved by a measurable amount. An item sitting near a boundary can move on</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a very small change. Read transitions alongside each round's index values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> improved by a measurable amount. An item sitting near a boundary can move on a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> very small change. Read transitions alongside each round's index values.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the units whose status changed.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

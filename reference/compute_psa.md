@@ -100,29 +100,33 @@ df <- data.frame(
   target_construct = rep(c("A", "B"), each = 4)
 )
 compute_psa(df)
-#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> <contentvalid_psa> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
 #> 
-#>  item target judges Psa     95% CI
-#>    I1      A    3/4 .75 [.30, .95]
-#>    I2      B    3/4 .75 [.30, .95]
+#>   Item  Target  Judges  Psa      95% CI
+#>   I1    A          3/4  .75  [.30, .95]
+#>   I2    B          3/4  .75  [.30, .95]
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
+#> Judges: assignments to the target construct, out of the judges who sorted the
 #> item.
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
 #> judges were chosen.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 compute_psa(df, ci = "exact")
-#> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> <contentvalid_psa> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
 #> 
-#>  item target judges Psa     95% CI
-#>    I1      A    3/4 .75 [.19, .99]
-#>    I2      B    3/4 .75 [.19, .99]
+#>   Item  Target  Judges  Psa      95% CI
+#>   I1    A          3/4  .75  [.19, .99]
+#>   I2    B          3/4  .75  [.19, .99]
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
+#> Judges: assignments to the target construct, out of the judges who sorted the
 #> item.
 #> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:
 #> Agresti and Coull (1998) show its coverage runs above the nominal level, so
-#> intervals are wider than they need to be. An interval reflects how few
-#> ratings an item received, not whether the right judges were chosen.
+#> intervals are wider than they need to be. An interval reflects how few ratings
+#> an item received, not whether the right judges were chosen.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

@@ -44,9 +44,8 @@ content_handoff(
 
 - reverse_keyed:
 
-  Names of the reverse-worded items, `character(0)` if none is, or
-  `NULL` (the default) to leave keying unrecorded. See "Instrument
-  metadata".
+  Names of the reverse-keyed items, `character(0)` if none is, or `NULL`
+  (the default) to leave keying unrecorded. See "Instrument metadata".
 
 - response_scale:
 
@@ -160,9 +159,9 @@ floating-point rounding, where the package itself compares counts of
 experts. Read `carried`, which holds what each release decided.
 
 Keying is read the same way, from the field and not from a default:
-`keying` is `1` for a forward-worded item, `-1` for a reverse-worded
-one, and `NA` when nobody said, as described under "Instrument
-metadata". Treat `NA` as unknown, never as forward-worded.
+`keying` is `1` for a forward-keyed item, `-1` for a reverse-keyed one,
+and `NA` when nobody said, as described under "Instrument metadata".
+Treat `NA` as unknown, never as forward-keyed.
 
 ## What version 1 freezes
 
@@ -361,9 +360,9 @@ Added in contentvalidR 0.7.0, at the request of the `nomologR`
 maintainers, because two empirical computations cannot be done correctly
 without them.
 
-- `keying` is `1` for a forward-worded item, `-1` for a reverse-worded
+- `keying` is `1` for a forward-keyed item, `-1` for a reverse-keyed
   one, and `NA` when nobody said. An even-odd consistency index must
-  recode reverse-worded items before splitting the scale, or a perfectly
+  recode reverse-keyed items before splitting the scale, or a perfectly
   consistent respondent looks careless. And a negative corrected
   item-total correlation means opposite things in the two cases: on an
   item that was never recoded it is a coding error, and on a correctly
@@ -383,15 +382,15 @@ a fit's `lo` and `hi` into `response_min` and `response_max` would give
 a downstream reader the wrong limits, and it would then reject every
 legitimate top-category answer. So both default to `NA`, which means
 *unknown*, and a reader should treat `NA` that way rather than assume a
-forward-worded item or an observed range.
+forward-keyed item or an observed range.
 
 Supplying `reverse_keyed` is a statement about every item: the ones
-named are reverse-worded and the rest are not. Pass `character(0)` to
+named are reverse-keyed and the rest are not. Pass `character(0)` to
 record that you checked and none is. So `keying` is either `NA` for
 every item or for none of them, and the same holds for the response
 scale.
 
-Naming a reverse-worded item without `response_scale` gives a warning,
+Naming a reverse-keyed item without `response_scale` gives a warning,
 because such an item cannot be recoded without the scale's limits. A
 reader that recodes would otherwise have to refuse later, where the
 problem is harder to fix.
@@ -430,9 +429,8 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
                        agreement = "none")
 handoff <- content_handoff(fit)
 handoff
-#> contentvalidR handoff (schema version 1)
-#> ----------------------------------------
-#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-03
+#> <contentvalid_handoff> Handoff to empirical validation (schema version 1)
+#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
@@ -440,12 +438,12 @@ handoff
 #>   score, 95%)
 #> 
 #> Held back
-#>   item decision
-#>  Item4   Review
+#>   Item   Decision
+#>   Item4  Review
 #> 
 #> Carry these items into the empirical workflow once response data are
 #> collected. In nomologR that is
-#>   nomo_screen(data, items = handoff)
+#>     nomo_screen(data, items = handoff)
 #> which screens the items carried here. Passing the whole handoff, rather than
 #> handoff$items, keeps the keying and the reasons for anything held back.
 #> 
@@ -455,6 +453,8 @@ handoff
 #> its construct or load on an unintended factor. Items held back are listed
 #> above rather than deleted, so the record stays complete.
 #> 
+#> See as.data.frame(x) for the item evidence and x$item_statistics for the
+#> statistics.
 handoff$items
 #> [1] "Item1" "Item2" "Item3"
 handoff$item_evidence

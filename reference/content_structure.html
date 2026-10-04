@@ -243,8 +243,7 @@ workflow.</p></div>
 <span class="r-in"><span>  <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="op">)</span>, <span class="fl">9</span>, <span class="fl">9</span>, dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">items</span>, <span class="va">items</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">content_structure</span><span class="op">(</span><span class="va">sim</span>, membership <span class="op">=</span> <span class="va">blueprint</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR content structure (expert item similarity)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_structure&gt; Content structure from expert similarity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 9 | Dimensions retained: 2 | Clusters: 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported (criterion: adjusted Rand index &gt;= .60, a contentvalidR</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   convention)</span>
@@ -254,30 +253,31 @@ workflow.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> the domain as subject-matter experts see it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Fit by dimensionality</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  dimensions GOF distortion</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           1 .29        .45</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           2 .50        .24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           3 .65        .20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           4 .79        .25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Dimensions  GOF  Distortion</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            1  .29         .45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            2  .50         .24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            3  .65         .20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            4  .79         .25</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> GOF: goodness of fit from classical scaling, the share of the sum of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> absolute eigenvalues that the retained dimensions account for. distortion:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> how far the map's distances depart from the dissimilarities (0 is an exact</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> map); it need not fall as dimensions are added. It is not Kruskal's stress-1,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> so his benchmarks do not apply.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   GOF: goodness of fit from classical scaling, the share of the sum of the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   absolute eigenvalues that the retained dimensions account for. Distortion:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   how far the map's distances depart from the dissimilarities (0 is an exact</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   map); it need not fall as dimensions are added. It is not Kruskal's</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   stress-1, so his benchmarks do not apply.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Blueprint cell by recovered cluster (counts of items)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              cluster</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blueprint     1 2 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Autonomy    3 0 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Competence  0 3 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Relatedness 0 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Blueprint    Cluster: 1  Cluster: 2  Cluster: 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Autonomy              3           0           0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Competence            0           3           0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relatedness           0           0           3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusted Rand index: 1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Adjusted Rand index: 1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> The clusters come from the item coordinates on the 2 retained dimensions</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (average linkage), so they change with the number of dimensions. Choose that</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> number for how interpretable the dimensions are.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See plot(x) for the content map.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

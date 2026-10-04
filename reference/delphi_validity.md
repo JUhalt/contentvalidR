@@ -307,8 +307,7 @@ ratings <- rbind(long(r1, 1), long(r2, 2), long(r3, 3))
 fit <- delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
                        B = 200, seed = 1)
 fit
-#> contentvalidR Delphi analysis
-#> -----------------------------
+#> <contentvalid_delphi> Delphi analysis
 #> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)
 #> Experts per round: 8, 8, 8
 #> Agreement: a rating of 3 or higher on the 1 to 4 scale.
@@ -319,45 +318,45 @@ fit
 #> No consensus: S2
 #> 
 #> Item-level evidence (last round, and the last pair of rounds)
-#>  item     decision last round n agree unchanged kappa      95% CI
-#>    S1    Consensus          3 8  1.00       .88   .60 [.00, 1.00]
-#>    S2 No consensus          3 8   .00       .88   .67 [.00, 1.00]
-#>    S3    Consensus          3 8  1.00       .88   .67 [.00, 1.00]
-#>    S4    Consensus          3 8  1.00       .88   .75 [.00, 1.00]
+#>   Item  Decision      Last round  n  Agree  Unchanged  Kappa       95% CI
+#>   S1    Consensus              3  8   1.00        .88    .60  [.00, 1.00]
+#>   S2    No consensus           3  8    .00        .88    .67  [.00, 1.00]
+#>   S3    Consensus              3  8   1.00        .88    .67  [.00, 1.00]
+#>   S4    Consensus              3  8   1.00        .88    .75  [.00, 1.00]
 #> 
-#> agree: share of experts agreeing in the item's last round. unchanged: share
-#> who kept their rating between the item's last pair of consecutive rounds.
+#>   Agree: share of experts agreeing in the item's last round. Unchanged: share
+#>   who kept their rating between the item's last pair of consecutive rounds.
 #> 
 #> Stability trend (kappa) by pair of rounds
-#>  item 1->2 2->3
-#>    S1  .67  .60
-#>    S2  .67  .67
-#>    S3  .60  .67
-#>    S4  .72  .75
+#>   Item  1->2  2->3
+#>   S1     .67   .60
+#>   S2     .67   .67
+#>   S3     .60   .67
+#>   S4     .72   .75
 #> 
 #> Share of experts who kept their rating, by pair of rounds
-#>  item 1->2 2->3
-#>    S1  .75  .88
-#>    S2  .75  .88
-#>    S3  .50  .88
-#>    S4  .75  .88
+#>   Item  1->2  2->3
+#>   S1     .75   .88
+#>   S2     .75   .88
+#>   S3     .50   .88
+#>   S4     .75   .88
 #> 
-#> In some resamples kappa was undefined because every resampled rating fell in
-#> one category. Those intervals use the remaining resamples (n_boot_usable in
-#> details$stability), so treat them as rough.
+#>   In some resamples kappa was undefined because every resampled rating fell in
+#>   one category. Those intervals use the remaining resamples (n_boot_usable in
+#>   details$stability), so treat them as rough.
 #> 
-#> Read kappa as a trend across rounds, beside the share of experts who kept
-#> their rating (unchanged), not against a cutoff. Kappa can be low when ratings
-#> concentrate in one category (Feinstein & Cicchetti, 1990), so an agreeing
-#> panel can show a low kappa; Holey et al. (2007) suggest this for their
-#> Statement 7.
+#>   Read kappa as a trend across rounds, beside the share of experts who kept
+#>   their rating (unchanged), not against a cutoff. Kappa can be low when
+#>   ratings concentrate in one category (Feinstein & Cicchetti, 1990), so an
+#>   agreeing panel can show a low kappa; Holey et al. (2007) suggest this for
+#>   their Statement 7.
 #> 
-#> The kappa intervals resample the experts (Klar et al., 2002). With fewer than
-#> about 40 experts they cover less than their stated 95%, so read them as rough
-#> indications of precision, not as tests.
+#>   The kappa intervals resample the experts (Klar et al., 2002). With fewer
+#>   than about 40 experts they cover less than their stated 95%, so read them as
+#>   rough indications of precision, not as tests.
 #> 
-#> Diamond et al. (2014) recommend fixing the consensus threshold before the
-#> study. Report whether this one was.
+#>   Diamond et al. (2014) recommend fixing the consensus threshold before the
+#>   study. Report whether this one was.
 #> 
 #> How the stability statistic works
 #>   Stability is weighted kappa between each expert's ratings in consecutive
@@ -372,32 +371,33 @@ fit
 #>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2
 #>   (.31).
 #> 
-#>   The intervals are percentile bootstraps that resample the experts, the
-#>   units the two rounds cross-classify: the procedure Klar et al. (2002)
-#>   describe for kappa. They evaluated it for an unweighted kappa on two
-#>   categories, and a nominal 95% interval covered about 83% of the time with
-#>   20 units and 91% with 30, reaching 94% only from 40 up.
+#>   The intervals are percentile bootstraps that resample the experts, the units
+#>   the two rounds cross-classify: the procedure Klar et al. (2002) describe for
+#>   kappa. They evaluated it for an unweighted kappa on two categories, and a
+#>   nominal 95% interval covered about 83% of the time with 20 units and 91%
+#>   with 30, reaching 94% only from 40 up.
 #> 
 #> What these columns mean
-#>   agree -- Share of experts agreeing. Share of experts at or above the
+#>   Agree -- Share of experts agreeing. Share of experts at or above the
 #>       agreement cut in a round; consensus means reaching the consensus
 #>       threshold.
-#>   unchanged -- Share of experts keeping their rating. Share of experts
-#>       giving the same rating in two consecutive rounds (1 means nobody
-#>       changed).
-#>   kappa -- Weighted kappa between rounds. Chance-corrected agreement of
-#>       each expert's ratings across two rounds; read it as a trend, not
-#>       against a cutoff.
+#>   Unchanged -- Share of experts keeping their rating. Share of experts giving
+#>       the same rating in two consecutive rounds (1 means nobody changed).
+#>   Kappa -- Weighted kappa between rounds. Chance-corrected agreement of each
+#>       expert's ratings across two rounds; read it as a trend, not against a
+#>       cutoff.
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.
 #>   No consensus -- did not reach the consensus threshold.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
-#> Consensus is not correctness, and 'No consensus' is not an instruction to
-#> drop an item. Read these results with the experts' comments.
+#> Consensus is not correctness, and 'No consensus' is not an instruction to drop
+#> an item. Read these results with the experts' comments.
+#> 
+#> See summary(x) for the items without consensus and plot(x) for the rounds.
 fit$details$stability
 #>   item from_round to_round n_paired prop_unchanged method     value     lower
 #> 1   S1          1        2        8          0.750  kappa 0.6666667 0.0000000
@@ -421,8 +421,7 @@ fit$details$stability
 # A published alternative, with its critique printed.
 delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
                 stability = "percent_change")
-#> contentvalidR Delphi analysis
-#> -----------------------------
+#> <contentvalid_delphi> Delphi analysis
 #> Items: 4 | Experts: 8 | Rounds: 3 (1, 2, 3)
 #> Experts per round: 8, 8, 8
 #> Agreement: a rating of 3 or higher on the 1 to 4 scale.
@@ -434,57 +433,58 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> No consensus: S2
 #> 
 #> Item-level evidence (last round, and the last pair of rounds)
-#>  item     decision last round n agree unchanged change stable
-#>    S1    Consensus          3 8  1.00       .88    .12    yes
-#>    S2 No consensus          3 8   .00       .88    .12    yes
-#>    S3    Consensus          3 8  1.00       .88    .12    yes
-#>    S4    Consensus          3 8  1.00       .88    .12    yes
+#>   Item  Decision      Last round  n  Agree  Unchanged  Change  Stable
+#>   S1    Consensus              3  8   1.00        .88     .13  yes
+#>   S2    No consensus           3  8    .00        .88     .13  yes
+#>   S3    Consensus              3  8   1.00        .88     .13  yes
+#>   S4    Consensus              3  8   1.00        .88     .13  yes
 #> 
-#> agree: share of experts agreeing in the item's last round. unchanged: share
-#> who kept their rating between the item's last pair of consecutive rounds.
+#>   Agree: share of experts agreeing in the item's last round. Unchanged: share
+#>   who kept their rating between the item's last pair of consecutive rounds.
 #> 
 #> Stability trend (change) by pair of rounds
-#>  item 1->2 2->3
-#>    S1  .12  .12
-#>    S2  .25  .12
-#>    S3  .38  .12
-#>    S4  .25  .12
+#>   Item  1->2  2->3
+#>   S1     .13   .13
+#>   S2     .25   .13
+#>   S3     .38   .13
+#>   S4     .25   .13
 #> 
 #> Share of experts who kept their rating, by pair of rounds
-#>  item 1->2 2->3
-#>    S1  .75  .88
-#>    S2  .75  .88
-#>    S3  .50  .88
-#>    S4  .75  .88
+#>   Item  1->2  2->3
+#>   S1     .75   .88
+#>   S2     .75   .88
+#>   S3     .50   .88
+#>   S4     .75   .88
 #> 
-#> Stability is the net change of Scheibe et al. (1975/2002): half the summed
-#> differences between the two rounds' rating distributions, as a share of the
-#> experts compared, with change below 15% read as stable. The authors say the
-#> measure has no statistical theory behind it; the 15% cutoff came from the
-#> movement they observed in one classroom Delphi. Experts swapping answers
-#> cancel out, and in a small panel one expert is a large share: with 10 experts
-#> one net change is already 10%.
+#>   Stability is the net change of Scheibe et al. (1975/2002): half the summed
+#>   differences between the two rounds' rating distributions, as a share of the
+#>   experts compared, with change below 15% read as stable. The authors say the
+#>   measure has no statistical theory behind it; the 15% threshold came from the
+#>   movement they observed in one classroom Delphi. Experts swapping answers
+#>   cancel out, and in a small panel one expert is a large share: with 10
+#>   experts one net change is already 10%.
 #> 
-#> Diamond et al. (2014) recommend fixing the consensus threshold before the
-#> study. Report whether this one was.
+#>   Diamond et al. (2014) recommend fixing the consensus threshold before the
+#>   study. Report whether this one was.
 #> 
 #> What these columns mean
-#>   agree -- Share of experts agreeing. Share of experts at or above the
+#>   Agree -- Share of experts agreeing. Share of experts at or above the
 #>       agreement cut in a round; consensus means reaching the consensus
 #>       threshold.
-#>   unchanged -- Share of experts keeping their rating. Share of experts
-#>       giving the same rating in two consecutive rounds (1 means nobody
-#>       changed).
-#>   change -- Net change in the rating distribution. Net change in the rating
+#>   Unchanged -- Share of experts keeping their rating. Share of experts giving
+#>       the same rating in two consecutive rounds (1 means nobody changed).
+#>   Change -- Net change in the rating distribution. Net change in the rating
 #>       distribution between rounds (stable below .15 by its authors' rule).
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.
 #>   No consensus -- did not reach the consensus threshold.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
-#> Consensus is not correctness, and 'No consensus' is not an instruction to
-#> drop an item. Read these results with the experts' comments.
+#> Consensus is not correctness, and 'No consensus' is not an instruction to drop
+#> an item. Read these results with the experts' comments.
+#> 
+#> See summary(x) for the items without consensus and plot(x) for the rounds.
 ```

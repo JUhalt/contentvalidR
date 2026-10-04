@@ -72,21 +72,25 @@ methodological best practices. *Journal of Business and Psychology,
 
 ``` r
 csv_binom_test(n_c = 15, N = 20)
-#> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
 #> 
 #> The item meets the exact target-assignment criterion.
-#> 15 of 20 judges assigned the item to its target construct (Psa = .75). If
-#> each judge chose the target with probability p0 = .50, a count this high has
+#> 15 of 20 judges assigned the item to its target construct (Psa = .75). If each
+#> judge chose the target with probability p0 = .50, a count this high has
 #> probability p = .021.
 #> At alpha = .05 an item needs at least 15 of 20.
 #> One-sided 95% CI for the target rate: [.54, 1.00].
+#> 
+#> See as.data.frame(x) for the test as one row.
 csv_binom_test(n_c = 14, N = 20)
-#> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
 #> 
 #> The item does not meet the exact target-assignment criterion.
-#> 14 of 20 judges assigned the item to its target construct (Psa = .70). If
-#> each judge chose the target with probability p0 = .50, a count this high has
+#> 14 of 20 judges assigned the item to its target construct (Psa = .70). If each
+#> judge chose the target with probability p0 = .50, a count this high has
 #> probability p = .058.
 #> At alpha = .05 an item needs at least 15 of 20.
 #> One-sided 95% CI for the target rate: [.49, 1.00].
+#> 
+#> See as.data.frame(x) for the test as one row.
 ```

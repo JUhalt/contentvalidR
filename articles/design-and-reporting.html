@@ -193,13 +193,24 @@ unrounded values stay in each fit’s <code>results</code>.</p>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">sort_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  item target judges competitor Psa     95% CI Csv      p decision</span></span>
-<span><span class="co">#&gt;    A1      A  18/20       B; C .90 [.70, .97] .85 &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain</span></span>
-<span><span class="co">#&gt;    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain</span></span>
-<span><span class="co">#&gt;    B2      B  13/20          A .65 [.43, .82] .40   .132   Review</span></span>
-<span><span class="co">#&gt;    C1      C  18/20       A; B .90 [.70, .97] .85 &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    C2      C  14/20          B .70 [.48, .85] .50   .058   Review</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision</span></span>
+<span><span class="co">#&gt;   A1    A        18/20  B; C        .90  [.70, .97]  .85  &lt; .001  Retain</span></span>
+<span><span class="co">#&gt;   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain</span></span>
+<span><span class="co">#&gt;   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain</span></span>
+<span><span class="co">#&gt;   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review</span></span>
+<span><span class="co">#&gt;   C1    C        18/20  A; B        .90  [.70, .97]  .85  &lt; .001  Retain</span></span>
+<span><span class="co">#&gt;   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. Psa = proportion of substantive agreement; CI = confidence interval;</span></span>
+<span><span class="co">#&gt; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence</span></span>
+<span><span class="co">#&gt; interval. Retain = at least the number of target assignments the exact</span></span>
+<span><span class="co">#&gt; one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy,</span></span>
+<span><span class="co">#&gt; 2016).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
 <p>At the target-scale level, report mean Psa/Csv and the benchmark set
 actually used. Do not convert Colquitt’s scale-level norms into
 individual-item cutoffs.</p>
@@ -209,13 +220,22 @@ individual-item cutoffs.</p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  item target judges HTC HTD                  F test      p contrast p decision</span></span>
-<span><span class="co">#&gt;    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
-<span><span class="co">#&gt;    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
-<span><span class="co">#&gt;    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item Target Judges HTC HTD F test                       p Contrast p Decision</span></span>
+<span><span class="co">#&gt;   A1   A          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   A2   A          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt;   B1   B          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   B2   B          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt;   C1   C          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.</span></span>
+<span><span class="co">#&gt; Retain = omnibus p and every one-sided contrast p at or below alpha = .05</span></span>
+<span><span class="co">#&gt; (MacKenzie et al., 2011).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
 <p>Report the repeated-measures design and target-versus-orbiting
 contrasts. For a review item, naming the strongest competitor, which
 <code>rating_fit$results</code> holds as
@@ -227,12 +247,23 @@ standalone p value.</p>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   item experts    V      95% CI I-CVI      95% CI kappa       decision</span></span>
-<span><span class="co">#&gt;  Item1       8 1.00 [.86, 1.00]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
-<span><span class="co">#&gt;  Item2       8  .92  [.74, .98]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
-<span><span class="co">#&gt;  Item3       8  .83  [.64, .93]  1.00 [.68, 1.00]  1.00 Strong support</span></span>
-<span><span class="co">#&gt;  Item4       8  .58  [.39, .76]   .75  [.41, .93]   .72         Review</span></span>
-<span><span class="co">#&gt;  Item5       8  .42  [.24, .61]   .25  [.07, .59]   .16         Review</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item   Experts     V       95% CI  I-CVI       95% CI  Kappa  Decision</span></span>
+<span><span class="co">#&gt;   Item1        8  1.00  [.86, 1.00]   1.00  [.68, 1.00]   1.00  Strong support</span></span>
+<span><span class="co">#&gt;   Item2        8   .92   [.74, .98]   1.00  [.68, 1.00]   1.00  Strong support</span></span>
+<span><span class="co">#&gt;   Item3        8   .83   [.64, .93]   1.00  [.68, 1.00]   1.00  Strong support</span></span>
+<span><span class="co">#&gt;   Item4        8   .58   [.39, .76]    .75   [.41, .93]    .72  Review</span></span>
+<span><span class="co">#&gt;   Item5        8   .42   [.24, .61]    .25   [.07, .59]    .16  Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. V = Aiken's content validity coefficient; CI = confidence interval;</span></span>
+<span><span class="co">#&gt; I-CVI = item-level content validity index. 95% CI = Penfield-Giacobbi score</span></span>
+<span><span class="co">#&gt; confidence interval for V and Wilson score confidence interval for I-CVI.</span></span>
+<span><span class="co">#&gt; Strong support = at least the number of experts rating the item relevant that</span></span>
+<span><span class="co">#&gt; Lynn's (1986) criterion requires for the panel size.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span>
 <span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S_CVI_Ave"</span>, <span class="st">"S_CVI_UA"</span>, <span class="st">"agreement"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;   S_CVI_Ave S_CVI_UA agreement</span></span>
 <span><span class="co">#&gt; 1       0.8      0.6 0.6934253</span></span></code></pre></div>
@@ -253,30 +284,32 @@ required parts of the flagship workflows.</p>
 <code class="sourceCode R"><span><span class="va">pretest_supported</span> <span class="op">&lt;-</span> <span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Supported"</span></span>
 <span><span class="va">later_retained</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/signal_detection.html">signal_detection</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">later_retained</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Retention decisions compared with the actual outcome</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_signal&gt; Retention decisions compared with the actual outcome</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;               Actual</span></span>
-<span><span class="co">#&gt; Predicted      Retain Not retained</span></span>
-<span><span class="co">#&gt;   Retain            4            0</span></span>
-<span><span class="co">#&gt;   Not retained      0            2</span></span>
+<span><span class="co">#&gt;   Predicted     Actual: Retain  Actual: Not retained</span></span>
+<span><span class="co">#&gt;   Retain                     4                     0</span></span>
+<span><span class="co">#&gt;   Not retained               0                     2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00, Fisher's</span></span>
 <span><span class="co">#&gt; exact p = .067.</span></span>
 <span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
 <span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 6) = 6.00, p = .014).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span>
 <span></span>
 <span><span class="va">replication_supported</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">replication_supported</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Retention decisions in two pretests</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_reproducibility&gt; Retention decisions in two pretests</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;               Pretest2</span></span>
-<span><span class="co">#&gt; Pretest1       Retain Not retained</span></span>
-<span><span class="co">#&gt;   Retain            4            0</span></span>
-<span><span class="co">#&gt;   Not retained      1            1</span></span>
+<span><span class="co">#&gt;   Pretest1      Pretest2: Retain  Pretest2: Not retained</span></span>
+<span><span class="co">#&gt;   Retain                       4                       0</span></span>
+<span><span class="co">#&gt;   Not retained                 1                       1</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; phi = .63, Fisher's exact p = .333.</span></span>
 <span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
-<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 6) = 2.40, p = .121).</span></span></code></pre></div>
+<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 6) = 2.40, p = .121).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span></code></pre></div>
 <p>With six items every expected count is below 5, so both helpers
 report Fisher’s exact <em>p</em> and show the chi-square approximation
 beside it for reference. With enough items for the approximation they
@@ -295,48 +328,50 @@ that an item reaches the exact retention count, for each panel size and
 each rate at which you expect judges to choose the target:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort planning</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort_power&gt; Item-sort planning</span></span>
 <span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  judges required minimum Psa power at .60 power at .70 power at .80</span></span>
-<span><span class="co">#&gt;      20    15/20         .75          .13          .42          .80</span></span>
-<span><span class="co">#&gt;      30    20/30         .67          .29          .73          .97</span></span>
-<span><span class="co">#&gt;      40    26/40         .65          .32          .81          .99</span></span>
+<span><span class="co">#&gt;   Judges  Required  Minimum Psa  Power at .60  Power at .70  Power at .80</span></span>
+<span><span class="co">#&gt;       20     15/20          .75           .13           .42           .80</span></span>
+<span><span class="co">#&gt;       30     20/30          .67           .29           .73           .97</span></span>
+<span><span class="co">#&gt;       40     26/40          .65           .32           .81           .99</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
-<span><span class="co">#&gt; same as a proportion. power at a value: the exact probability of reaching the</span></span>
-<span><span class="co">#&gt; required count if each judge assigns the item to its target with that</span></span>
-<span><span class="co">#&gt; probability.</span></span></code></pre></div>
+<span><span class="co">#&gt; Required: target assignments an item needs to be retained. Minimum Psa: the</span></span>
+<span><span class="co">#&gt; same as a proportion (Psa = proportion of substantive agreement). Power at a</span></span>
+<span><span class="co">#&gt; value: the exact probability of reaching the required count if each judge</span></span>
+<span><span class="co">#&gt; assigns the item to its target with that probability.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See plot(x) for the power curve.</span></span></code></pre></div>
 <p>For an expert panel, <code><a href="../reference/expert_power.html">expert_power()</a></code> gives the
 probability that an item clears the I-CVI criterion, for each panel size
 and an assumed probability that one expert endorses it:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_power.html">expert_power</a></span><span class="op">(</span>n_experts <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">8</span>, prob <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR expert-panel planning</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_expert_power&gt; Expert-panel planning</span></span>
 <span><span class="co">#&gt; Criterion: Exact binomial planning against the panel-size I-CVI guideline</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Probability that an item clears the criterion</span></span>
-<span><span class="co">#&gt;  experts required prob = .90</span></span>
-<span><span class="co">#&gt;        3      3/3        .73</span></span>
-<span><span class="co">#&gt;        4      4/4        .66</span></span>
-<span><span class="co">#&gt;        5      5/5        .59</span></span>
-<span><span class="co">#&gt;        6      5/6        .89</span></span>
-<span><span class="co">#&gt;        7      6/7        .85</span></span>
-<span><span class="co">#&gt;        8      7/8        .81</span></span>
+<span><span class="co">#&gt;   Experts  Required  Prob = .90</span></span>
+<span><span class="co">#&gt;         3       3/3         .73</span></span>
+<span><span class="co">#&gt;         4       4/4         .66</span></span>
+<span><span class="co">#&gt;         5       5/5         .59</span></span>
+<span><span class="co">#&gt;         6       5/6         .89</span></span>
+<span><span class="co">#&gt;         7       6/7         .85</span></span>
+<span><span class="co">#&gt;         8       7/8         .81</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; required: endorsements the criterion needs from the panel. prob: the</span></span>
-<span><span class="co">#&gt; probability you assume that one expert endorses the item.</span></span>
+<span><span class="co">#&gt;   Required: endorsements the criterion needs from the panel. Prob: the</span></span>
+<span><span class="co">#&gt;   probability you assume that one expert endorses the item.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Note the step at six experts. Lynn's criterion requires unanimity with three</span></span>
-<span><span class="co">#&gt; to five experts and allows one disagreement from six, so a sixth expert</span></span>
-<span><span class="co">#&gt; relaxes the criterion while a fourth or fifth makes unanimity harder. That is</span></span>
-<span><span class="co">#&gt; a property of the guideline, not of the items.</span></span>
+<span><span class="co">#&gt;   Note the step at six experts. Lynn's criterion requires unanimity with three</span></span>
+<span><span class="co">#&gt;   to five experts and allows one disagreement from six, so a sixth expert</span></span>
+<span><span class="co">#&gt;   relaxes the criterion while a fourth or fifth makes unanimity harder. That</span></span>
+<span><span class="co">#&gt;   is a property of the guideline, not of the items.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; This table reports the consequences of the panel sizes you asked about. It</span></span>
 <span><span class="co">#&gt; does not recommend one. `prob` is an assumption you supply, so treat the</span></span>
-<span><span class="co">#&gt; result as conditional on it and report the value you assumed.</span></span></code></pre></div>
+<span><span class="co">#&gt; result as conditional on it and report the value you assumed.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See plot(x) for the probabilities by panel size.</span></span></code></pre></div>
 <p>Note the step. Lynn’s (1986) criterion requires every expert to agree
 on panels of up to five, and allows one disagreement from six, so a
 fourth or fifth expert <strong>lowers</strong> the probability of
@@ -354,38 +389,40 @@ design would need to reach a given dependability:</p>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">judge_ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/gtheory_content.html">gtheory_content</a></span><span class="op">(</span><span class="va">judge_ratings</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR generalizability analysis</span></span>
-<span><span class="co">#&gt; ---------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_gtheory&gt; Generalizability analysis</span></span>
 <span><span class="co">#&gt; Design: items x judges, crossed, one rating per cell</span></span>
 <span><span class="co">#&gt; Items: 6 | Judges: 8</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Observed design</span></span>
 <span><span class="co">#&gt;   Generalizability coefficient (relative, rank ordering): .97</span></span>
 <span><span class="co">#&gt;   Dependability coefficient (absolute, fixed standard):   .94</span></span>
-<span><span class="co">#&gt; Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span></span>
-<span><span class="co">#&gt; With 8 judges, absolute decisions about these items would generalize to</span></span>
-<span><span class="co">#&gt; another panel of the same size at Phi = .94, at or above the .80 set for this</span></span>
-<span><span class="co">#&gt; analysis. Judge differences account for 15.6% of total variance.</span></span>
+<span><span class="co">#&gt;   Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span></span>
+<span><span class="co">#&gt;   With 8 judges, absolute decisions about these items would generalize to</span></span>
+<span><span class="co">#&gt;   another panel of the same size at Phi = .94, at or above the .80 set for</span></span>
+<span><span class="co">#&gt;   this analysis. Judge differences account for 15.6% of total variance.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variance components</span></span>
-<span><span class="co">#&gt;    source df   MS estimate used % of total</span></span>
-<span><span class="co">#&gt;      item  5 7.77     0.94 0.94       66.8</span></span>
-<span><span class="co">#&gt;     judge  7 1.57     0.22 0.22       15.6</span></span>
-<span><span class="co">#&gt;  residual 35 0.25     0.25 0.25       17.5</span></span>
+<span><span class="co">#&gt;   Source    df    MS  Estimate  Used  % of total</span></span>
+<span><span class="co">#&gt;   item       5  7.77      0.94  0.94        66.8</span></span>
+<span><span class="co">#&gt;   judge      7  1.57      0.22  0.22        15.6</span></span>
+<span><span class="co">#&gt;   residual  35  0.25      0.25  0.25        17.5</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; estimate: the ANOVA estimate of each variance component. used: the same with</span></span>
-<span><span class="co">#&gt; a negative estimate set to 0, which the coefficients use (Brennan, 2001).</span></span>
+<span><span class="co">#&gt;   MS: mean square. Estimate: the ANOVA estimate of each variance component.</span></span>
+<span><span class="co">#&gt;   Used: the same with a negative estimate set to 0, which the coefficients use</span></span>
+<span><span class="co">#&gt;   (Brennan, 2001).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Judges needed to reach each coefficient</span></span>
-<span><span class="co">#&gt;  target relative (G) absolute (Phi)</span></span>
-<span><span class="co">#&gt;     .70            1              2</span></span>
-<span><span class="co">#&gt;     .80            2              2</span></span>
-<span><span class="co">#&gt;     .90            3              5</span></span>
-<span><span class="co">#&gt; These panel sizes are estimates from one panel's variance components, with no</span></span>
-<span><span class="co">#&gt; interval: read them as planning figures.</span></span>
+<span><span class="co">#&gt;   Target  Relative (G)  Absolute (Phi)</span></span>
+<span><span class="co">#&gt;      .70             1               2</span></span>
+<span><span class="co">#&gt;      .80             2               2</span></span>
+<span><span class="co">#&gt;      .90             3               5</span></span>
+<span><span class="co">#&gt;   These panel sizes are estimates from one panel's variance components, with</span></span>
+<span><span class="co">#&gt;   no interval: read them as planning figures.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A dependability coefficient describes generalization over judges only. It is</span></span>
-<span><span class="co">#&gt; not evidence that the items cover the intended content domain.</span></span></code></pre></div>
+<span><span class="co">#&gt; not evidence that the items cover the intended content domain.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See x$dstudy for the coefficients projected by panel size.</span></span></code></pre></div>
 <p>The dependability coefficient (Phi) concerns the absolute level of
 the ratings and is lowered by differences in judge severity, which is
 usually what a content-validity decision rests on. The status beside it

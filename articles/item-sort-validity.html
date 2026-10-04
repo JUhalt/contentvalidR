@@ -125,8 +125,7 @@ comprehensively covers the construct domain.</p>
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sort_dat</span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort analysis</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort&gt; Item-sort analysis</span></span>
 <span><span class="co">#&gt; Items: 6 | Judges: 20 | Target constructs: 2</span></span>
 <span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
@@ -136,46 +135,44 @@ comprehensively covers the construct domain.</p>
 <span><span class="co">#&gt; Flagged for review: A3, B3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;  item target decision judges Psa     95% CI Csv competitor      p</span></span>
-<span><span class="co">#&gt;    A1      A   Retain  18/20 .90 [.70, .97] .80          B &lt; .001</span></span>
-<span><span class="co">#&gt;    A2      A   Retain  16/20 .80 [.58, .92] .60          B   .006</span></span>
-<span><span class="co">#&gt;    A3      A   Review  13/20 .65 [.43, .82] .30          B   .132</span></span>
-<span><span class="co">#&gt;    B1      B   Retain  18/20 .90 [.70, .97] .80          A &lt; .001</span></span>
-<span><span class="co">#&gt;    B2      B   Retain  17/20 .85 [.64, .95] .70          A   .001</span></span>
-<span><span class="co">#&gt;    B3      B   Review  14/20 .70 [.48, .85] .40          A   .058</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p</span></span>
+<span><span class="co">#&gt;   A1    A       Retain     18/20  .90  [.70, .97]  .80  B           &lt; .001</span></span>
+<span><span class="co">#&gt;   A2    A       Retain     16/20  .80  [.58, .92]  .60  B             .006</span></span>
+<span><span class="co">#&gt;   A3    A       Review     13/20  .65  [.43, .82]  .30  B             .132</span></span>
+<span><span class="co">#&gt;   B1    B       Retain     18/20  .90  [.70, .97]  .80  A           &lt; .001</span></span>
+<span><span class="co">#&gt;   B2    B       Retain     17/20  .85  [.64, .95]  .70  A             .001</span></span>
+<span><span class="co">#&gt;   B3    B       Review     14/20  .70  [.48, .85]  .40  A             .058</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
-<span><span class="co">#&gt; item.</span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt;   Judges: assignments to the target construct, out of the judges who sorted</span></span>
+<span><span class="co">#&gt;   the item.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
-<span><span class="co">#&gt;       A     3      .78  Moderate      .57  Moderate</span></span>
-<span><span class="co">#&gt;       B     3      .82  Moderate      .63    Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
-<span><span class="co">#&gt; These bands come from tasks with three definitions (one focal, two orbiting);</span></span>
-<span><span class="co">#&gt; judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
-<span><span class="co">#&gt; comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span></span>
-<span><span class="co">#&gt; do not discuss other numbers.</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           3       .78  Moderate        .57  Moderate</span></span>
+<span><span class="co">#&gt;   B           3       .82  Moderate        .63  Strong</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   These bands come from tasks with three definitions (one focal, two</span></span>
+<span><span class="co">#&gt;   orbiting); judges here used 2 (set `n_constructs` if more were offered), so</span></span>
+<span><span class="co">#&gt;   the comparison is approximate. This is a contentvalidR caution: Colquitt et</span></span>
+<span><span class="co">#&gt;   al. do not discuss other numbers.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt; place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt; so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span></span>
-<span><span class="co">#&gt;       item in the construct it was written for (0 to 1; higher is</span></span>
-<span><span class="co">#&gt;       stronger).</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
+<span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
 <span><span class="co">#&gt;   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the</span></span>
 <span><span class="co">#&gt;       method is named above.</span></span>
-<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges</span></span>
-<span><span class="co">#&gt;       chose the intended construct than its closest rival (-1 to 1; 0 is a</span></span>
-<span><span class="co">#&gt;       tie).</span></span>
-<span><span class="co">#&gt;   competitor -- Strongest competing construct. The construct other than the</span></span>
+<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges chose</span></span>
+<span><span class="co">#&gt;       the intended construct than its closest rival (-1 to 1; 0 is a tie).</span></span>
+<span><span class="co">#&gt;   Competitor -- Strongest competing construct. The construct other than the</span></span>
 <span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
 <span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
 <span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
@@ -183,15 +180,17 @@ comprehensively covers the construct domain.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
 <span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the</span></span>
-<span><span class="co">#&gt;       competitor column shows where judges put it instead.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the competitor</span></span>
+<span><span class="co">#&gt;       column shows where judges put it instead.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
 <span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
-<span><span class="co">#&gt; statistics.</span></span></code></pre></div>
+<span><span class="co">#&gt; statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span></code></pre></div>
 <p>The item table is intentionally diagnostic rather than merely
 numeric. A <code>Review</code> flag is not a command to delete an item.
 The output reports the strongest competing construct so that researchers
@@ -199,38 +198,47 @@ can distinguish weak target correspondence from specific construct
 overlap.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary: item-sort content-validity evidence</span></span>
-<span><span class="co">#&gt; --------------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort summary&gt; Item-sort analysis</span></span>
 <span><span class="co">#&gt; Retain: 4 of 6 | Review: 2 of 6</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level evidence</span></span>
-<span><span class="co">#&gt;  target items retain review mean Psa Psa level mean Csv Csv level</span></span>
-<span><span class="co">#&gt;       A     3      2      1      .78  Moderate      .57  Moderate</span></span>
-<span><span class="co">#&gt;       B     3      2      1      .82  Moderate      .63    Strong</span></span>
+<span><span class="co">#&gt;   Target  Items  Retain  Review  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           3       2       1       .78  Moderate        .57  Moderate</span></span>
+<span><span class="co">#&gt;   B           3       2       1       .82  Moderate        .63  Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Mean Psa and mean Csv both fall in the Moderate band of published scales</span></span>
-<span><span class="co">#&gt;   (Colquitt et al., 2019); review the weaker items before finalizing. These</span></span>
-<span><span class="co">#&gt;   bands come from tasks with three definitions (one focal, two orbiting);</span></span>
-<span><span class="co">#&gt;   judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
-<span><span class="co">#&gt;   comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span></span>
-<span><span class="co">#&gt;   do not discuss other numbers.</span></span>
-<span><span class="co">#&gt; B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of</span></span>
-<span><span class="co">#&gt;   published scales (Colquitt et al., 2019); review the weaker items before</span></span>
-<span><span class="co">#&gt;   finalizing. These bands come from tasks with three definitions (one focal,</span></span>
-<span><span class="co">#&gt;   two orbiting); judges here used 2 (set `n_constructs` if more were</span></span>
-<span><span class="co">#&gt;   offered), so the comparison is approximate. This is a contentvalidR</span></span>
-<span><span class="co">#&gt;   caution: Colquitt et al. do not discuss other numbers.</span></span>
+<span><span class="co">#&gt;   Psa = proportion of substantive agreement; Csv = coefficient of substantive</span></span>
+<span><span class="co">#&gt;   validity (Anderson &amp; Gerbing, 1991).</span></span>
+<span><span class="co">#&gt;   A: Mean Psa and mean Csv both fall in the Moderate band of published scales</span></span>
+<span><span class="co">#&gt;     (Colquitt et al., 2019); review the weaker items before finalizing. These</span></span>
+<span><span class="co">#&gt;     bands come from tasks with three definitions (one focal, two orbiting);</span></span>
+<span><span class="co">#&gt;     judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
+<span><span class="co">#&gt;     comparison is approximate. This is a contentvalidR caution: Colquitt et</span></span>
+<span><span class="co">#&gt;     al. do not discuss other numbers.</span></span>
+<span><span class="co">#&gt;   B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of</span></span>
+<span><span class="co">#&gt;     published scales (Colquitt et al., 2019); review the weaker items before</span></span>
+<span><span class="co">#&gt;     finalizing. These bands come from tasks with three definitions (one focal,</span></span>
+<span><span class="co">#&gt;     two orbiting); judges here used 2 (set `n_constructs` if more were</span></span>
+<span><span class="co">#&gt;     offered), so the comparison is approximate. This is a contentvalidR</span></span>
+<span><span class="co">#&gt;     caution: Colquitt et al. do not discuss other numbers.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Items needing attention</span></span>
-<span><span class="co">#&gt;  item target decision Psa Csv competitor    p</span></span>
-<span><span class="co">#&gt;    A3      A   Review .65 .30          B .132</span></span>
-<span><span class="co">#&gt;    B3      B   Review .70 .40          A .058</span></span>
+<span><span class="co">#&gt; Flagged</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Psa  Csv  Competitor     p</span></span>
+<span><span class="co">#&gt;   A3    A       Review    .65  .30  B           .132</span></span>
+<span><span class="co">#&gt;   B3    B       Review    .70  .40  A           .058</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A3, B3: Target favored, exact criterion not met</span></span>
+<span><span class="co">#&gt;   p = Howard-Melloy exact test of the target assignments.</span></span>
+<span><span class="co">#&gt;   - A3 (Review): The target was at least as common as any competitor but did</span></span>
+<span><span class="co">#&gt;     not meet the exact retention criterion (strongest competitor: B); review</span></span>
+<span><span class="co">#&gt;     before deciding whether to revise or remove the item.</span></span>
+<span><span class="co">#&gt;   - B3 (Review): The target was at least as common as any competitor but did</span></span>
+<span><span class="co">#&gt;     not meet the exact retention criterion (strongest competitor: A); review</span></span>
+<span><span class="co">#&gt;     before deciding whether to revise or remove the item.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Interpret scale norms and item flags alongside theory, domain coverage, and</span></span>
 <span><span class="co">#&gt; qualitative feedback. This analysis does not by itself establish</span></span>
-<span><span class="co">#&gt; comprehensiveness or the full content-validity argument.</span></span></code></pre></div>
+<span><span class="co">#&gt; comprehensiveness or the full content-validity argument.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="item-level-inference-howard-melloy">Item-level inference: Howard-Melloy<a class="anchor" aria-label="anchor" href="#item-level-inference-howard-melloy"></a>
@@ -241,23 +249,27 @@ exceeds <code>.50</code>. At <code>N = 20</code> and
 the one-sided exact criterion.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">15</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Howard-Melloy exact test (one-tailed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_binom&gt; Howard-Melloy exact test (one-tailed)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The item meets the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt; 15 of 20 judges assigned the item to its target construct (Psa = .75). If</span></span>
-<span><span class="co">#&gt; each judge chose the target with probability p0 = .50, a count this high has</span></span>
+<span><span class="co">#&gt; 15 of 20 judges assigned the item to its target construct (Psa = .75). If each</span></span>
+<span><span class="co">#&gt; judge chose the target with probability p0 = .50, a count this high has</span></span>
 <span><span class="co">#&gt; probability p = .021.</span></span>
 <span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20.</span></span>
 <span><span class="co">#&gt; One-sided 95% CI for the target rate: [.54, 1.00].</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the test as one row.</span></span>
 <span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">14</span>, N <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Howard-Melloy exact test (one-tailed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_binom&gt; Howard-Melloy exact test (one-tailed)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; The item does not meet the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt; 14 of 20 judges assigned the item to its target construct (Psa = .70). If</span></span>
-<span><span class="co">#&gt; each judge chose the target with probability p0 = .50, a count this high has</span></span>
+<span><span class="co">#&gt; 14 of 20 judges assigned the item to its target construct (Psa = .70). If each</span></span>
+<span><span class="co">#&gt; judge chose the target with probability p0 = .50, a count this high has</span></span>
 <span><span class="co">#&gt; probability p = .058.</span></span>
 <span><span class="co">#&gt; At alpha = .05 an item needs at least 15 of 20.</span></span>
-<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.49, 1.00].</span></span></code></pre></div>
+<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.49, 1.00].</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the test as one row.</span></span></code></pre></div>
 <p><code><a href="../reference/sort_validity.html">sort_validity()</a></code> therefore uses <strong>Retain</strong>
 to mean “meets this exact statistical screening criterion” and
 <strong>Review</strong> to mean “does not meet it.” Revision or removal
@@ -275,29 +287,33 @@ scale’s mean Psa and mean Csv.</p>
 <p>The default uses the overall norms:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"psa"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .91</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .82</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .72</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .39</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .91</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .82</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .72</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .39</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
 <span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
-<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"csv"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for Csv (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .81</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .61</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .51</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .05</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"csv"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for Csv (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .81</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .61</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .51</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .05</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
-<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span></code></pre></div>
+<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p>The labels—Very Strong, Strong, Moderate, Weak, and Lack of—are
 percentile bands relative to published scales, <strong>not universal
 validity cutoffs</strong>.</p>
@@ -377,19 +393,20 @@ an item will reach the required target-assignment count under a
 plausible true target-assignment probability.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort planning</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort_power&gt; Item-sort planning</span></span>
 <span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  judges required minimum Psa power at .60 power at .70 power at .80</span></span>
-<span><span class="co">#&gt;      20    15/20         .75          .13          .42          .80</span></span>
-<span><span class="co">#&gt;      30    20/30         .67          .29          .73          .97</span></span>
-<span><span class="co">#&gt;      40    26/40         .65          .32          .81          .99</span></span>
+<span><span class="co">#&gt;   Judges  Required  Minimum Psa  Power at .60  Power at .70  Power at .80</span></span>
+<span><span class="co">#&gt;       20     15/20          .75           .13           .42           .80</span></span>
+<span><span class="co">#&gt;       30     20/30          .67           .29           .73           .97</span></span>
+<span><span class="co">#&gt;       40     26/40          .65           .32           .81           .99</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
-<span><span class="co">#&gt; same as a proportion. power at a value: the exact probability of reaching the</span></span>
-<span><span class="co">#&gt; required count if each judge assigns the item to its target with that</span></span>
-<span><span class="co">#&gt; probability.</span></span></code></pre></div>
+<span><span class="co">#&gt; Required: target assignments an item needs to be retained. Minimum Psa: the</span></span>
+<span><span class="co">#&gt; same as a proportion (Psa = proportion of substantive agreement). Power at a</span></span>
+<span><span class="co">#&gt; value: the exact probability of reaching the required count if each judge</span></span>
+<span><span class="co">#&gt; assigns the item to its target with that probability.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See plot(x) for the power curve.</span></span></code></pre></div>
 <p>This is preferable to treating a rule such as “20-40 judges” as a
 universal sample-size requirement. Power depends on the assumed
 target-assignment probability, <code>N</code>, the null probability, and
@@ -450,8 +467,7 @@ package’s shipped example has three constructs:</p>
 <span><span class="op">)</span></span>
 <span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>contentvalidR.show_key <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">three</span>, legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort analysis</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort&gt; Item-sort analysis</span></span>
 <span><span class="co">#&gt; Items: 6 | Judges: 20 | Target constructs: 3</span></span>
 <span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
@@ -461,63 +477,65 @@ package’s shipped example has three constructs:</p>
 <span><span class="co">#&gt; Flagged for review: B2, C2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;  item target decision judges Psa     95% CI Csv competitor      p</span></span>
-<span><span class="co">#&gt;    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C &lt; .001</span></span>
-<span><span class="co">#&gt;    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021</span></span>
-<span><span class="co">#&gt;    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001</span></span>
-<span><span class="co">#&gt;    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132</span></span>
-<span><span class="co">#&gt;    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B &lt; .001</span></span>
-<span><span class="co">#&gt;    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p</span></span>
+<span><span class="co">#&gt;   A1    A       Retain     18/20  .90  [.70, .97]  .85  B; C        &lt; .001</span></span>
+<span><span class="co">#&gt;   A2    A       Retain     15/20  .75  [.53, .89]  .60  B             .021</span></span>
+<span><span class="co">#&gt;   B1    B       Retain     17/20  .85  [.64, .95]  .75  A             .001</span></span>
+<span><span class="co">#&gt;   B2    B       Review     13/20  .65  [.43, .82]  .40  A             .132</span></span>
+<span><span class="co">#&gt;   C1    C       Retain     18/20  .90  [.70, .97]  .85  A; B        &lt; .001</span></span>
+<span><span class="co">#&gt;   C2    C       Review     14/20  .70  [.48, .85]  .50  B             .058</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
-<span><span class="co">#&gt; item.</span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt;   Judges: assignments to the target construct, out of the judges who sorted</span></span>
+<span><span class="co">#&gt;   the item.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
-<span><span class="co">#&gt;       A     2      .82    Strong      .72    Strong</span></span>
-<span><span class="co">#&gt;       B     2      .75  Moderate      .57  Moderate</span></span>
-<span><span class="co">#&gt;       C     2      .80  Moderate      .68    Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           2       .83  Strong          .73  Strong</span></span>
+<span><span class="co">#&gt;   B           2       .75  Moderate        .58  Moderate</span></span>
+<span><span class="co">#&gt;   C           2       .80  Moderate        .68  Strong</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt; place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt; so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Earlier methods, for comparison (not used for the decision)</span></span>
-<span><span class="co">#&gt;  item decision Psa Csv A&amp;G (1991) Yao et al. (2008) extension*</span></span>
-<span><span class="co">#&gt;    A1   Retain .90 .85      meets             meets      meets</span></span>
-<span><span class="co">#&gt;    A2   Retain .75 .60      meets             meets      meets</span></span>
-<span><span class="co">#&gt;    B1   Retain .85 .75      meets             meets      meets</span></span>
-<span><span class="co">#&gt;    B2   Review .65 .40      below             meets      meets</span></span>
-<span><span class="co">#&gt;    C1   Retain .90 .85      meets             meets      meets</span></span>
-<span><span class="co">#&gt;    C2   Review .70 .50      meets             meets      meets</span></span>
+<span><span class="co">#&gt;   Item  Decision  Psa  Csv  A&amp;G (1991)  Yao et al. (2008)  Extension*</span></span>
+<span><span class="co">#&gt;   A1    Retain    .90  .85  Meets       Meets              Meets</span></span>
+<span><span class="co">#&gt;   A2    Retain    .75  .60  Meets       Meets              Meets</span></span>
+<span><span class="co">#&gt;   B1    Retain    .85  .75  Meets       Meets              Meets</span></span>
+<span><span class="co">#&gt;   B2    Review    .65  .40  Below       Meets              Meets</span></span>
+<span><span class="co">#&gt;   C1    Retain    .90  .85  Meets       Meets              Meets</span></span>
+<span><span class="co">#&gt;   C2    Review    .70  .50  Meets       Meets              Meets</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Anderson and Gerbing (1991): Csv of at least .50, their critical value for 20</span></span>
-<span><span class="co">#&gt; judges at alpha = .05 (Equations 5 and 6). Their critical value assumes every</span></span>
-<span><span class="co">#&gt; judge who misses the target picks the same rival. When those judges spread</span></span>
-<span><span class="co">#&gt; across several constructs, Csv can reach it with fewer target assignments</span></span>
-<span><span class="co">#&gt; than the exact test needs.</span></span>
-<span><span class="co">#&gt; Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort</span></span>
-<span><span class="co">#&gt; where chance assignment is .25.</span></span>
-<span><span class="co">#&gt; * extension: a contentvalidR extension, not a published rule. It carries Yao</span></span>
+<span><span class="co">#&gt;   Anderson and Gerbing (1991): Csv of at least .50, their critical value for</span></span>
+<span><span class="co">#&gt;   20 judges at alpha = .05 (Equations 5 and 6). Their critical value assumes</span></span>
+<span><span class="co">#&gt;   every judge who misses the target picks the same rival. When those judges</span></span>
+<span><span class="co">#&gt;   spread across several constructs, Csv can reach it with fewer target</span></span>
+<span><span class="co">#&gt;   assignments than the exact test needs.</span></span>
+<span><span class="co">#&gt;   Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort</span></span>
+<span><span class="co">#&gt;   where chance assignment is .25.</span></span>
+<span><span class="co">#&gt;   Extension*: a contentvalidR extension, not a published rule. It carries Yao</span></span>
 <span><span class="co">#&gt;   et al.'s reasoning to this sort's 3 constructs as chance plus .05, so Psa</span></span>
 <span><span class="co">#&gt;   and Csv both at least .38 (1/3 + .05).</span></span>
-<span><span class="co">#&gt; The 3 constructs are the ones judges used. If more were offered, set</span></span>
-<span><span class="co">#&gt; `n_constructs`, since chance depends on the number offered.</span></span>
-<span><span class="co">#&gt; Agreement with the decision above: Anderson and Gerbing on 5 of 6 items, Yao</span></span>
-<span><span class="co">#&gt; et al. on 4 of 6, the extension on 4 of 6.</span></span>
-<span><span class="co">#&gt; Csv counts only the single most-chosen rival construct (Anderson &amp; Gerbing,</span></span>
-<span><span class="co">#&gt; 1991, p. 734). Pooling every other construct into it instead gives twice Psa</span></span>
-<span><span class="co">#&gt; minus one, a different index.</span></span>
+<span><span class="co">#&gt;   The 3 constructs are the ones judges used. If more were offered, set</span></span>
+<span><span class="co">#&gt;   `n_constructs`, since chance depends on the number offered.</span></span>
+<span><span class="co">#&gt;   Agreement with the decision above: Anderson and Gerbing on 5 of 6 items, Yao</span></span>
+<span><span class="co">#&gt;   et al. on 4 of 6, the extension on 4 of 6.</span></span>
+<span><span class="co">#&gt;   Csv counts only the single most-chosen rival construct (Anderson &amp; Gerbing,</span></span>
+<span><span class="co">#&gt;   1991, p. 734). Pooling every other construct into it instead gives twice Psa</span></span>
+<span><span class="co">#&gt;   minus one, a different index.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
 <span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
 <span><span class="co">#&gt; statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></code></pre></div>
 <p>Look at C2. Fourteen of 20 judges chose its target, one short of the
 15 the exact test needs, so the decision is Review. Anderson and
@@ -527,7 +545,7 @@ so Csv reaches .50 anyway. That is the miscalibration in miniature. Yao
 et al.’s (2008) .30 cutoffs pass every item, because they were set for
 four domains, where chance is .25; with three constructs, chance is
 already above .30.</p>
-<p>The column marked <code>extension*</code> is not a published rule. It
+<p>The column marked <code>Extension*</code> is not a published rule. It
 is this package’s extension of Yao et al.’s reasoning to any number of
 constructs, chance plus .05, which gives their .30 for four constructs
 and .38 for these three, and the printout labels it that way. Chance

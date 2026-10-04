@@ -91,16 +91,29 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 content_report(fit)
-#>  item target judges competitor Psa     95% CI Csv      p decision
-#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
-#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
-#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
-#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
-#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
-#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision
+#>   A1    A        18/20  B; C        .90  [.70, .97]  .85  < .001  Retain
+#>   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain
+#>   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain
+#>   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review
+#>   C1    C        18/20  A; B        .90  [.70, .97]  .85  < .001  Retain
+#>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
+#> 
+#> Note. Psa = proportion of substantive agreement; CI = confidence interval;
+#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
+#> interval. Retain = at least the number of target assignments the exact
+#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
+#> 2016).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 content_report(fit, format = "markdown", include = "flagged")
-#> | item | target | judges | competitor | Psa | 95% CI | Csv | p | decision |
+#> | Item | Target | Judges | Competitor | Psa | 95% CI | Csv | p | Decision |
 #> | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 #> | B2 | B | 13/20 | A | .65 | [.43, .82] | .40 | .132 | Review |
 #> | C2 | C | 14/20 | B | .70 | [.48, .85] | .50 | .058 | Review |
+#> 
+#> *Note.* Psa = proportion of substantive agreement; CI = confidence interval; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence interval. Retain = at least the number of target assignments the exact one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 ```

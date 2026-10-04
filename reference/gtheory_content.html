@@ -230,38 +230,40 @@ content validity ratings. <em>Journal of Educational Measurement, 25</em>(4),
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">ratings</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Judge"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Item"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">gtheory_content</span><span class="op">(</span><span class="va">ratings</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR generalizability analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_gtheory&gt; Generalizability analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Design: items x judges, crossed, one rating per cell</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 6 | Judges: 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Observed design</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Generalizability coefficient (relative, rank ordering): .97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Dependability coefficient (absolute, fixed standard):   .96</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> With 8 judges, absolute decisions about these items would generalize to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> another panel of the same size at Phi = .96, at or above the .80 set for this</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> analysis. Judge differences account for 5.8% of total variance.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   With 8 judges, absolute decisions about these items would generalize to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   another panel of the same size at Phi = .96, at or above the .80 set for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   this analysis. Judge differences account for 5.8% of total variance.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Variance components</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    source df   MS estimate used % of total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      item  5 8.58     1.04 1.04       77.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     judge  7 0.70     0.08 0.08        5.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  residual 35 0.23     0.23 0.23       17.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Source    df    MS  Estimate  Used  % of total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   item       5  8.58      1.04  1.04        77.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   judge      7  0.70      0.08  0.08         5.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   residual  35  0.23      0.23  0.23        17.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> estimate: the ANOVA estimate of each variance component. used: the same with</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> a negative estimate set to 0, which the coefficients use (Brennan, 2001).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   MS: mean square. Estimate: the ANOVA estimate of each variance component.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Used: the same with a negative estimate set to 0, which the coefficients use</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Brennan, 2001).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Judges needed to reach each coefficient</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  target relative (G) absolute (Phi)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .70            1              1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .80            1              2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     .90            2              3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> These panel sizes are estimates from one panel's variance components, with no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> interval: read them as planning figures.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Target  Relative (G)  Absolute (Phi)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      .70             1               1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      .80             1               2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      .90             2               3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   These panel sizes are estimates from one panel's variance components, with</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   no interval: read them as planning figures.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A dependability coefficient describes generalization over judges only. It is</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> not evidence that the items cover the intended content domain.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See x$dstudy for the coefficients projected by panel size.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

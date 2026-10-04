@@ -65,28 +65,31 @@ Psychology, 104*(10), 1243–1265.
 
 ``` r
 colquitt_benchmarks("psa")
-#> Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)
 #> 
-#>         band percentile minimum
-#>  Very Strong  80th-99th     .91
-#>       Strong  60th-79th     .82
-#>     Moderate  40th-59th     .72
-#>         Weak  20th-39th     .39
-#>      Lack of   0th-19th    none
+#>   Band         Percentile  Minimum
+#>   Very Strong  80th-99th       .91
+#>   Strong       60th-79th       .82
+#>   Moderate     40th-59th       .72
+#>   Weak         20th-39th       .39
+#>   Lack of      0th-19th       none
 #> 
 #> A scale-level mean at or above a band's minimum falls in that band. The bands
 #> are percentiles of published scales, not validity cutoffs.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("csv", orbiting_r = .40)
-#> Benchmarks for Csv (Colquitt et al., 2019): More moderate focal-orbiting
-#> correlation (.35-.50)
+#> <contentvalid_colquitt_norms> Benchmarks for Csv (Colquitt et al., 2019): More moderate focal-orbiting correlation (.35-.50)
 #> 
-#>         band percentile minimum
-#>  Very Strong  80th-99th     .83
-#>       Strong  60th-79th     .61
-#>     Moderate  40th-59th     .52
-#>         Weak  20th-39th     .01
-#>      Lack of   0th-19th    none
+#>   Band         Percentile  Minimum
+#>   Very Strong  80th-99th       .83
+#>   Strong       60th-79th       .61
+#>   Moderate     40th-59th       .52
+#>   Weak         20th-39th       .01
+#>   Lack of      0th-19th       none
 #> 
 #> A scale-level mean at or above a band's minimum falls in that band. The bands
 #> are percentiles of published scales, not validity cutoffs.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

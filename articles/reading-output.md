@@ -75,8 +75,7 @@ sorts <- read.csv(
 )
 fit_sort <- sort_validity(sorts)
 fit_sort
-#> contentvalidR item-sort analysis
-#> --------------------------------
+#> <contentvalid_sort> Item-sort analysis
 #> Items: 6 | Judges: 20 | Target constructs: 3
 #> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
 #> Judges: naive, meaning drawn from the kind of people who will answer the
@@ -86,43 +85,41 @@ fit_sort
 #> Flagged for review: B2, C2
 #> 
 #> Item-level evidence
-#>  item target decision judges Psa     95% CI Csv competitor      p
-#>    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C < .001
-#>    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021
-#>    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001
-#>    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132
-#>    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B < .001
-#>    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058
+#>   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p
+#>   A1    A       Retain     18/20  .90  [.70, .97]  .85  B; C        < .001
+#>   A2    A       Retain     15/20  .75  [.53, .89]  .60  B             .021
+#>   B1    B       Retain     17/20  .85  [.64, .95]  .75  A             .001
+#>   B2    B       Review     13/20  .65  [.43, .82]  .40  A             .132
+#>   C1    C       Retain     18/20  .90  [.70, .97]  .85  A; B        < .001
+#>   C2    C       Review     14/20  .70  [.48, .85]  .50  B             .058
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
-#> item.
-#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald interval.
-#> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#>   Judges: assignments to the target construct, out of the judges who sorted
+#>   the item.
+#>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#>   compared seven methods and recommends score intervals over the Wald
+#>   interval. An interval reflects how few ratings an item received, not whether
+#>   the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmarks
-#>  target items mean Psa Psa level mean Csv Csv level
-#>       A     2      .82    Strong      .72    Strong
-#>       B     2      .75  Moderate      .57  Moderate
-#>       C     2      .80  Moderate      .68    Strong
-#> Benchmark set: Overall (not correlation-normed)
+#>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           2       .83  Strong          .73  Strong
+#>   B           2       .75  Moderate        .58  Moderate
+#>   C           2       .80  Moderate        .68  Strong
+#>   Benchmark set: Overall (not correlation-normed)
 #> 
-#> Colquitt labels are empirical percentile norms derived from scale-level
-#> averages, not universal cutoffs or automatic scale-retention rules. They
-#> place a scale against published scales; Psa and Csv sit on different scales,
-#> so their labels are not comparable with each other.
+#>   Colquitt labels are empirical percentile norms derived from scale-level
+#>   averages, not universal cutoffs or automatic scale-retention rules. They
+#>   place a scale against published scales; Psa and Csv sit on different scales,
+#>   so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
 #>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
 #>       method is named above.
-#>   Csv -- Coefficient of Substantive Validity. How much more often judges
-#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
-#>       tie).
-#>   competitor -- Strongest competing construct. The construct other than the
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
+#>   Competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
 #>   p -- Howard-Melloy exact test. Probability of at least this many target
 #>       assignments if each judge picked the target at rate p0; compare with
@@ -130,24 +127,28 @@ fit_sort
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet the exact target-assignment criterion; the
-#>       competitor column shows where judges put it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
 #> statistics.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
 
-The printout opens with a one-line verdict (how many items met the
-criterion, and which were flagged), then one row per item. Working
-across the item table:
+The printout opens with a header line naming the object’s class and what
+it holds (`<contentvalid_sort> Item-sort analysis`), then the facts of
+the design: how many items and judges, and the test applied. Then comes
+the verdict (how many items met the criterion, and which were flagged),
+and then one row per item. Working across the item table:
 
-- **decision** — the workflow’s verdict for the item, stated first so
+- **Decision** — the workflow’s verdict for the item, stated first so
   the numbers after it read as the reasons.
-- **judges** — how many judges put the item where you intended, out of
+- **Judges** — how many judges put the item where you intended, out of
   how many judged it (`n_target` and `n` in `results`). Always read this
   before the coefficients: an impressive Psa computed from four judges
   is not impressive.
@@ -160,7 +161,7 @@ across the item table:
   construct keeps attracting it. That pattern means your two construct
   definitions overlap, which is a definitional problem rather than a
   wording problem.
-- **competitor** — the construct judges picked most often *instead*.
+- **Competitor** — the construct judges picked most often *instead*.
   This is the single most useful diagnostic column in the table, because
   it tells you *where* a weak item drifted, which points at the fix.
 - **p** — the Howard-Melloy exact test against the benchmark rate `p0`,
@@ -172,7 +173,29 @@ Numbers follow the APA style rules (American Psychological Association,
 2020, Section 6.36). A statistic that cannot exceed 1, such as a
 proportion or a *p* value, is printed without a leading zero (.90). One
 that can exceed 1 keeps it (0.57). A *p* value below .001 is printed as
-\< .001. The `results` table keeps every value at full precision.
+\< .001, and one that would round to 1 as \> .999. Exact ties round half
+up, so 5 of 8 judges (.625) prints as .63. A value that could not be
+computed prints as `--`, and the printout says why. The `results` table
+keeps every value at full precision.
+
+A narrow console never squeezes a table into wrapped blocks. Columns
+that do not fit are left out from the right, never the item or its
+decision, and a line beneath the table names them and the call that
+shows them.
+
+The status words read across this package and nomologR as follows (the
+same table is in
+[`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)):
+
+| contentvalidR     | nomologR     |
+|-------------------|--------------|
+| Supported         | no flag      |
+| Review            | review       |
+| (no counterpart)  | concern      |
+| Insufficient data | not computed |
+| Descriptive only  | note         |
+
+“Review” always means look again, never delete.
 
 The scale-level table adds Colquitt strength labels. These are
 **percentile positions relative to scales published in the literature**,
@@ -220,29 +243,33 @@ for retention.
 ``` r
 
 colquitt_benchmarks("htc")
-#> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
 #> 
-#>         band percentile minimum
-#>  Very Strong  80th-99th     .91
-#>       Strong  60th-79th     .87
-#>     Moderate  40th-59th     .84
-#>         Weak  20th-39th     .60
-#>      Lack of   0th-19th    none
+#>   Band         Percentile  Minimum
+#>   Very Strong  80th-99th       .91
+#>   Strong       60th-79th       .87
+#>   Moderate     40th-59th       .84
+#>   Weak         20th-39th       .60
+#>   Lack of      0th-19th       none
 #> 
 #> A scale-level mean at or above a band's minimum falls in that band. The bands
 #> are percentiles of published scales, not validity cutoffs.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("htd")
-#> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
 #> 
-#>         band percentile minimum
-#>  Very Strong  80th-99th     .35
-#>       Strong  60th-79th     .27
-#>     Moderate  40th-59th     .18
-#>         Weak  20th-39th     .04
-#>      Lack of   0th-19th    none
+#>   Band         Percentile  Minimum
+#>   Very Strong  80th-99th       .35
+#>   Strong       60th-79th       .27
+#>   Moderate     40th-59th       .18
+#>   Weak         20th-39th       .04
+#>   Lack of      0th-19th       none
 #> 
 #> A scale-level mean at or above a band's minimum falls in that band. The bands
 #> are percentiles of published scales, not validity cutoffs.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```
 
 ## Reading expert-panel evidence
@@ -320,8 +347,7 @@ produces the same result directly:
 ``` r
 
 panel_agreement(panel, seed = 1)
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 5 | Raters: 8
 #> Krippendorff's alpha (ordinal) = .69, 95% CI [.07, .86]
 #> Identical rating pairs: 62.9%
@@ -343,6 +369,8 @@ panel_agreement(panel, seed = 1)
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 ```
 
 Read two numbers together: the coefficient and the share of identical

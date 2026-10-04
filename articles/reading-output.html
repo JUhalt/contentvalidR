@@ -173,8 +173,7 @@ are the one who looks.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">fit_sort</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorts</span><span class="op">)</span></span>
 <span><span class="va">fit_sort</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort analysis</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort&gt; Item-sort analysis</span></span>
 <span><span class="co">#&gt; Items: 6 | Judges: 20 | Target constructs: 3</span></span>
 <span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
@@ -184,43 +183,41 @@ are the one who looks.</p>
 <span><span class="co">#&gt; Flagged for review: B2, C2</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;  item target decision judges Psa     95% CI Csv competitor      p</span></span>
-<span><span class="co">#&gt;    A1      A   Retain  18/20 .90 [.70, .97] .85       B; C &lt; .001</span></span>
-<span><span class="co">#&gt;    A2      A   Retain  15/20 .75 [.53, .89] .60          B   .021</span></span>
-<span><span class="co">#&gt;    B1      B   Retain  17/20 .85 [.64, .95] .75          A   .001</span></span>
-<span><span class="co">#&gt;    B2      B   Review  13/20 .65 [.43, .82] .40          A   .132</span></span>
-<span><span class="co">#&gt;    C1      C   Retain  18/20 .90 [.70, .97] .85       A; B &lt; .001</span></span>
-<span><span class="co">#&gt;    C2      C   Review  14/20 .70 [.48, .85] .50          B   .058</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p</span></span>
+<span><span class="co">#&gt;   A1    A       Retain     18/20  .90  [.70, .97]  .85  B; C        &lt; .001</span></span>
+<span><span class="co">#&gt;   A2    A       Retain     15/20  .75  [.53, .89]  .60  B             .021</span></span>
+<span><span class="co">#&gt;   B1    B       Retain     17/20  .85  [.64, .95]  .75  A             .001</span></span>
+<span><span class="co">#&gt;   B2    B       Review     13/20  .65  [.43, .82]  .40  A             .132</span></span>
+<span><span class="co">#&gt;   C1    C       Retain     18/20  .90  [.70, .97]  .85  A; B        &lt; .001</span></span>
+<span><span class="co">#&gt;   C2    C       Review     14/20  .70  [.48, .85]  .50  B             .058</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
-<span><span class="co">#&gt; item.</span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt;   Judges: assignments to the target construct, out of the judges who sorted</span></span>
+<span><span class="co">#&gt;   the item.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
-<span><span class="co">#&gt;       A     2      .82    Strong      .72    Strong</span></span>
-<span><span class="co">#&gt;       B     2      .75  Moderate      .57  Moderate</span></span>
-<span><span class="co">#&gt;       C     2      .80  Moderate      .68    Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           2       .83  Strong          .73  Strong</span></span>
+<span><span class="co">#&gt;   B           2       .75  Moderate        .58  Moderate</span></span>
+<span><span class="co">#&gt;   C           2       .80  Moderate        .68  Strong</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt; place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt; so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span></span>
-<span><span class="co">#&gt;       item in the construct it was written for (0 to 1; higher is</span></span>
-<span><span class="co">#&gt;       stronger).</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
+<span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
 <span><span class="co">#&gt;   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the</span></span>
 <span><span class="co">#&gt;       method is named above.</span></span>
-<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges</span></span>
-<span><span class="co">#&gt;       chose the intended construct than its closest rival (-1 to 1; 0 is a</span></span>
-<span><span class="co">#&gt;       tie).</span></span>
-<span><span class="co">#&gt;   competitor -- Strongest competing construct. The construct other than the</span></span>
+<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges chose</span></span>
+<span><span class="co">#&gt;       the intended construct than its closest rival (-1 to 1; 0 is a tie).</span></span>
+<span><span class="co">#&gt;   Competitor -- Strongest competing construct. The construct other than the</span></span>
 <span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
 <span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
 <span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
@@ -228,24 +225,29 @@ are the one who looks.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
 <span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the</span></span>
-<span><span class="co">#&gt;       competitor column shows where judges put it instead.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the competitor</span></span>
+<span><span class="co">#&gt;       column shows where judges put it instead.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
 <span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
-<span><span class="co">#&gt; statistics.</span></span></code></pre></div>
-<p>The printout opens with a one-line verdict (how many items met the
-criterion, and which were flagged), then one row per item. Working
-across the item table:</p>
+<span><span class="co">#&gt; statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span></code></pre></div>
+<p>The printout opens with a header line naming the object’s class and
+what it holds
+(<code>&lt;contentvalid_sort&gt; Item-sort analysis</code>), then the
+facts of the design: how many items and judges, and the test applied.
+Then comes the verdict (how many items met the criterion, and which were
+flagged), and then one row per item. Working across the item table:</p>
 <ul>
 <li>
-<strong>decision</strong> — the workflow’s verdict for the item,
+<strong>Decision</strong> — the workflow’s verdict for the item,
 stated first so the numbers after it read as the reasons.</li>
 <li>
-<strong>judges</strong> — how many judges put the item where you
+<strong>Judges</strong> — how many judges put the item where you
 intended, out of how many judged it (<code>n_target</code> and
 <code>n</code> in <code>results</code>). Always read this before the
 coefficients: an impressive Psa computed from four judges is not
@@ -262,7 +264,7 @@ Csv if one rival construct keeps attracting it. That pattern means your
 two construct definitions overlap, which is a definitional problem
 rather than a wording problem.</li>
 <li>
-<strong>competitor</strong> — the construct judges picked most often
+<strong>Competitor</strong> — the construct judges picked most often
 <em>instead</em>. This is the single most useful diagnostic column in
 the table, because it tells you <em>where</em> a weak item drifted,
 which points at the fix.</li>
@@ -276,8 +278,46 @@ would give, which is 1 divided by the number of constructs.</li>
 Association, 2020, Section 6.36). A statistic that cannot exceed 1, such
 as a proportion or a <em>p</em> value, is printed without a leading zero
 (.90). One that can exceed 1 keeps it (0.57). A <em>p</em> value below
-.001 is printed as &lt; .001. The <code>results</code> table keeps every
-value at full precision.</p>
+.001 is printed as &lt; .001, and one that would round to 1 as &gt;
+.999. Exact ties round half up, so 5 of 8 judges (.625) prints as .63. A
+value that could not be computed prints as <code>--</code>, and the
+printout says why. The <code>results</code> table keeps every value at
+full precision.</p>
+<p>A narrow console never squeezes a table into wrapped blocks. Columns
+that do not fit are left out from the right, never the item or its
+decision, and a line beneath the table names them and the call that
+shows them.</p>
+<p>The status words read across this package and nomologR as follows
+(the same table is in <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code>):</p>
+<table class="table">
+<thead><tr class="header">
+<th>contentvalidR</th>
+<th>nomologR</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Supported</td>
+<td>no flag</td>
+</tr>
+<tr class="even">
+<td>Review</td>
+<td>review</td>
+</tr>
+<tr class="odd">
+<td>(no counterpart)</td>
+<td>concern</td>
+</tr>
+<tr class="even">
+<td>Insufficient data</td>
+<td>not computed</td>
+</tr>
+<tr class="odd">
+<td>Descriptive only</td>
+<td>note</td>
+</tr>
+</tbody>
+</table>
+<p>“Review” always means look again, never delete.</p>
 <p>The scale-level table adds Colquitt strength labels. These are
 <strong>percentile positions relative to scales published in the
 literature</strong>, not absolute judgments, and they are the most
@@ -322,29 +362,33 @@ number with an HTD number, and never treat a benchmark label as a cutoff
 for retention.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .91</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .87</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .84</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .60</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .91</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .87</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .84</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .60</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
 <span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
-<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .35</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .27</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .18</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .04</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .35</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .27</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .18</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .04</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
-<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span></code></pre></div>
+<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="reading-expert-panel-evidence">Reading expert-panel evidence<a class="anchor" aria-label="anchor" href="#reading-expert-panel-evidence"></a>
@@ -413,8 +457,7 @@ result, with its explanation, is in <code>details$agreement</code>, and
 <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> produces the same result directly:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/panel_agreement.html">panel_agreement</a></span><span class="op">(</span><span class="va">panel</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR panel agreement</span></span>
-<span><span class="co">#&gt; -----------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_agreement&gt; Panel agreement</span></span>
 <span><span class="co">#&gt; Items rated by two or more raters: 5 | Raters: 8</span></span>
 <span><span class="co">#&gt; Krippendorff's alpha (ordinal) = .69, 95% CI [.07, .86]</span></span>
 <span><span class="co">#&gt; Identical rating pairs: 62.9%</span></span>
@@ -435,7 +478,9 @@ result, with its explanation, is in <code>details$agreement</code>, and
 <span><span class="co">#&gt; (2016), and varies slightly between runs unless `seed` is set.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Panel agreement describes how consistently raters rated these items. It does</span></span>
-<span><span class="co">#&gt; not show that the items are relevant or that the domain is covered.</span></span></code></pre></div>
+<span><span class="co">#&gt; not show that the items are relevant or that the domain is covered.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the estimate as one row.</span></span></code></pre></div>
 <p>Read two numbers together: the coefficient and the share of identical
 rating pairs. Krippendorff’s alpha, the default, can be low on a panel
 that agrees closely when nearly every rating is the same value, because

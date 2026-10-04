@@ -107,13 +107,24 @@ paste. The unrounded values stay in each fit’s `results`.
 ``` r
 
 content_report(sort_fit)
-#>  item target judges competitor Psa     95% CI Csv      p decision
-#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
-#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
-#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
-#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
-#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
-#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision
+#>   A1    A        18/20  B; C        .90  [.70, .97]  .85  < .001  Retain
+#>   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain
+#>   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain
+#>   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review
+#>   C1    C        18/20  A; B        .90  [.70, .97]  .85  < .001  Retain
+#>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
+#> 
+#> Note. Psa = proportion of substantive agreement; CI = confidence interval;
+#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
+#> interval. Retain = at least the number of target assignments the exact
+#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
+#> 2016).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
 
 At the target-scale level, report mean Psa/Csv and the benchmark set
@@ -125,13 +136,22 @@ individual-item cutoffs.
 ``` r
 
 content_report(rating_fit)
-#>  item target judges HTC HTD                  F test      p contrast p decision
-#>    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
-#>    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
-#>    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item Target Judges HTC HTD F test                       p Contrast p Decision
+#>   A1   A          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   A2   A          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#>   B1   B          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   B2   B          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#>   C1   C          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#> 
+#> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
+#> Retain = omnibus p and every one-sided contrast p at or below alpha = .05
+#> (MacKenzie et al., 2011).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
 
 Report the repeated-measures design and target-versus-orbiting
@@ -144,12 +164,23 @@ informative than a standalone p value.
 ``` r
 
 content_report(expert_fit)
-#>   item experts    V      95% CI I-CVI      95% CI kappa       decision
-#>  Item1       8 1.00 [.86, 1.00]  1.00 [.68, 1.00]  1.00 Strong support
-#>  Item2       8  .92  [.74, .98]  1.00 [.68, 1.00]  1.00 Strong support
-#>  Item3       8  .83  [.64, .93]  1.00 [.68, 1.00]  1.00 Strong support
-#>  Item4       8  .58  [.39, .76]   .75  [.41, .93]   .72         Review
-#>  Item5       8  .42  [.24, .61]   .25  [.07, .59]   .16         Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item   Experts     V       95% CI  I-CVI       95% CI  Kappa  Decision
+#>   Item1        8  1.00  [.86, 1.00]   1.00  [.68, 1.00]   1.00  Strong support
+#>   Item2        8   .92   [.74, .98]   1.00  [.68, 1.00]   1.00  Strong support
+#>   Item3        8   .83   [.64, .93]   1.00  [.68, 1.00]   1.00  Strong support
+#>   Item4        8   .58   [.39, .76]    .75   [.41, .93]    .72  Review
+#>   Item5        8   .42   [.24, .61]    .25   [.07, .59]    .16  Review
+#> 
+#> Note. V = Aiken's content validity coefficient; CI = confidence interval;
+#> I-CVI = item-level content validity index. 95% CI = Penfield-Giacobbi score
+#> confidence interval for V and Wilson score confidence interval for I-CVI.
+#> Strong support = at least the number of experts rating the item relevant that
+#> Lynn's (1986) criterion requires for the panel size.
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 expert_fit$scale_summary[c("S_CVI_Ave", "S_CVI_UA", "agreement")]
 #>   S_CVI_Ave S_CVI_UA agreement
 #> 1       0.8      0.6 0.6934253
@@ -174,30 +205,32 @@ workflows.
 pretest_supported <- sort_fit$results$status == "Supported"
 later_retained <- c(TRUE, TRUE, TRUE, FALSE, TRUE, FALSE)
 signal_detection(pretest_supported, later_retained)
-#> Retention decisions compared with the actual outcome
+#> <contentvalid_signal> Retention decisions compared with the actual outcome
 #> 
-#>               Actual
-#> Predicted      Retain Not retained
-#>   Retain            4            0
-#>   Not retained      0            2
+#>   Predicted     Actual: Retain  Actual: Not retained
+#>   Retain                     4                     0
+#>   Not retained               0                     2
 #> 
 #> accuracy = 1.00, sensitivity = 1.00, specificity = 1.00, phi = 1.00, Fisher's
 #> exact p = .067.
 #> An expected count is below 5, so the exact test is reported in place of the
 #> chi-square approximation (chi-square(1, N = 6) = 6.00, p = .014).
+#> 
+#> See as.data.frame(x) for the counts and the test as one row.
 
 replication_supported <- c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE)
 reproducibility_phi(pretest_supported, replication_supported)
-#> Retention decisions in two pretests
+#> <contentvalid_reproducibility> Retention decisions in two pretests
 #> 
-#>               Pretest2
-#> Pretest1       Retain Not retained
-#>   Retain            4            0
-#>   Not retained      1            1
+#>   Pretest1      Pretest2: Retain  Pretest2: Not retained
+#>   Retain                       4                       0
+#>   Not retained                 1                       1
 #> 
 #> phi = .63, Fisher's exact p = .333.
 #> An expected count is below 5, so the exact test is reported in place of the
 #> chi-square approximation (chi-square(1, N = 6) = 2.40, p = .121).
+#> 
+#> See as.data.frame(x) for the counts and the test as one row.
 ```
 
 With six items every expected count is below 5, so both helpers report
@@ -224,19 +257,20 @@ the target:
 ``` r
 
 sort_power(N = c(20, 30, 40), true_p = c(.60, .70, .80))
-#> contentvalidR item-sort planning
-#> --------------------------------
+#> <contentvalid_sort_power> Item-sort planning
 #> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)
 #> 
-#>  judges required minimum Psa power at .60 power at .70 power at .80
-#>      20    15/20         .75          .13          .42          .80
-#>      30    20/30         .67          .29          .73          .97
-#>      40    26/40         .65          .32          .81          .99
+#>   Judges  Required  Minimum Psa  Power at .60  Power at .70  Power at .80
+#>       20     15/20          .75           .13           .42           .80
+#>       30     20/30          .67           .29           .73           .97
+#>       40     26/40          .65           .32           .81           .99
 #> 
-#> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at a value: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with that
-#> probability.
+#> Required: target assignments an item needs to be retained. Minimum Psa: the
+#> same as a proportion (Psa = proportion of substantive agreement). Power at a
+#> value: the exact probability of reaching the required count if each judge
+#> assigns the item to its target with that probability.
+#> 
+#> See plot(x) for the power curve.
 ```
 
 For an expert panel,
@@ -247,30 +281,31 @@ panel size and an assumed probability that one expert endorses it:
 ``` r
 
 expert_power(n_experts = 3:8, prob = 0.9)
-#> contentvalidR expert-panel planning
-#> -----------------------------------
+#> <contentvalid_expert_power> Expert-panel planning
 #> Criterion: Exact binomial planning against the panel-size I-CVI guideline
 #> 
 #> Probability that an item clears the criterion
-#>  experts required prob = .90
-#>        3      3/3        .73
-#>        4      4/4        .66
-#>        5      5/5        .59
-#>        6      5/6        .89
-#>        7      6/7        .85
-#>        8      7/8        .81
+#>   Experts  Required  Prob = .90
+#>         3       3/3         .73
+#>         4       4/4         .66
+#>         5       5/5         .59
+#>         6       5/6         .89
+#>         7       6/7         .85
+#>         8       7/8         .81
 #> 
-#> required: endorsements the criterion needs from the panel. prob: the
-#> probability you assume that one expert endorses the item.
+#>   Required: endorsements the criterion needs from the panel. Prob: the
+#>   probability you assume that one expert endorses the item.
 #> 
-#> Note the step at six experts. Lynn's criterion requires unanimity with three
-#> to five experts and allows one disagreement from six, so a sixth expert
-#> relaxes the criterion while a fourth or fifth makes unanimity harder. That is
-#> a property of the guideline, not of the items.
+#>   Note the step at six experts. Lynn's criterion requires unanimity with three
+#>   to five experts and allows one disagreement from six, so a sixth expert
+#>   relaxes the criterion while a fourth or fifth makes unanimity harder. That
+#>   is a property of the guideline, not of the items.
 #> 
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.
+#> 
+#> See plot(x) for the probabilities by panel size.
 ```
 
 Note the step. Lynn’s (1986) criterion requires every expert to agree on
@@ -292,38 +327,40 @@ judge_ratings <- rbind(
 )
 dimnames(judge_ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 gtheory_content(judge_ratings)
-#> contentvalidR generalizability analysis
-#> ---------------------------------------
+#> <contentvalid_gtheory> Generalizability analysis
 #> Design: items x judges, crossed, one rating per cell
 #> Items: 6 | Judges: 8
 #> 
 #> Observed design
 #>   Generalizability coefficient (relative, rank ordering): .97
 #>   Dependability coefficient (absolute, fixed standard):   .94
-#> Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
-#> With 8 judges, absolute decisions about these items would generalize to
-#> another panel of the same size at Phi = .94, at or above the .80 set for this
-#> analysis. Judge differences account for 15.6% of total variance.
+#>   Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
+#>   With 8 judges, absolute decisions about these items would generalize to
+#>   another panel of the same size at Phi = .94, at or above the .80 set for
+#>   this analysis. Judge differences account for 15.6% of total variance.
 #> 
 #> Variance components
-#>    source df   MS estimate used % of total
-#>      item  5 7.77     0.94 0.94       66.8
-#>     judge  7 1.57     0.22 0.22       15.6
-#>  residual 35 0.25     0.25 0.25       17.5
+#>   Source    df    MS  Estimate  Used  % of total
+#>   item       5  7.77      0.94  0.94        66.8
+#>   judge      7  1.57      0.22  0.22        15.6
+#>   residual  35  0.25      0.25  0.25        17.5
 #> 
-#> estimate: the ANOVA estimate of each variance component. used: the same with
-#> a negative estimate set to 0, which the coefficients use (Brennan, 2001).
+#>   MS: mean square. Estimate: the ANOVA estimate of each variance component.
+#>   Used: the same with a negative estimate set to 0, which the coefficients use
+#>   (Brennan, 2001).
 #> 
 #> Judges needed to reach each coefficient
-#>  target relative (G) absolute (Phi)
-#>     .70            1              2
-#>     .80            2              2
-#>     .90            3              5
-#> These panel sizes are estimates from one panel's variance components, with no
-#> interval: read them as planning figures.
+#>   Target  Relative (G)  Absolute (Phi)
+#>      .70             1               2
+#>      .80             2               2
+#>      .90             3               5
+#>   These panel sizes are estimates from one panel's variance components, with
+#>   no interval: read them as planning figures.
 #> 
 #> A dependability coefficient describes generalization over judges only. It is
 #> not evidence that the items cover the intended content domain.
+#> 
+#> See x$dstudy for the coefficients projected by panel size.
 ```
 
 The dependability coefficient (Phi) concerns the absolute level of the

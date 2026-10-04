@@ -39,14 +39,15 @@ APA style; the elements themselves are unrounded.
 sig1 <- c(TRUE, TRUE, FALSE, FALSE)
 sig2 <- c(TRUE, FALSE, FALSE, TRUE)
 reproducibility_phi(sig1, sig2)
-#> Retention decisions in two pretests
+#> <contentvalid_reproducibility> Retention decisions in two pretests
 #> 
-#>               Pretest2
-#> Pretest1       Retain Not retained
-#>   Retain            1            1
-#>   Not retained      1            1
+#>   Pretest1      Pretest2: Retain  Pretest2: Not retained
+#>   Retain                       1                       1
+#>   Not retained                 1                       1
 #> 
-#> phi = .00, Fisher's exact p = 1.000.
+#> phi = .00, Fisher's exact p > .999.
 #> An expected count is below 5, so the exact test is reported in place of the
-#> chi-square approximation (chi-square(1, N = 4) = 0.00, p = 1.000).
+#> chi-square approximation (chi-square(1, N = 4) = 0.00, p > .999).
+#> 
+#> See as.data.frame(x) for the counts and the test as one row.
 ```

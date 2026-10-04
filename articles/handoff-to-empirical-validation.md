@@ -45,9 +45,8 @@ fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "status")]
 
 handoff <- content_handoff(fit)
 handoff
-#> contentvalidR handoff (schema version 1)
-#> ----------------------------------------
-#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-03
+#> <contentvalid_handoff> Handoff to empirical validation (schema version 1)
+#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
@@ -57,13 +56,13 @@ handoff
 #>   (item-resampling percentile bootstrap)
 #> 
 #> Held back
-#>   item decision
-#>  Item4   Review
-#>  Item5   Review
+#>   Item   Decision
+#>   Item4  Review
+#>   Item5  Review
 #> 
 #> Carry these items into the empirical workflow once response data are
 #> collected. In nomologR that is
-#>   nomo_screen(data, items = handoff)
+#>     nomo_screen(data, items = handoff)
 #> which screens the items carried here. Passing the whole handoff, rather than
 #> handoff$items, keeps the keying and the reasons for anything held back.
 #> 
@@ -72,6 +71,9 @@ handoff
 #> empirically: an item can be clearly relevant and still correlate poorly with
 #> its construct or load on an unintended factor. Items held back are listed
 #> above rather than deleted, so the record stays complete.
+#> 
+#> See as.data.frame(x) for the item evidence and x$item_statistics for the
+#> statistics.
 ```
 
 ## What the object holds

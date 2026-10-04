@@ -78,14 +78,16 @@ df <- data.frame(
   score = c(1,1,1, 0,-1,0)
 )
 ioc(df)
-#> Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> <contentvalid_ioc> Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
 #> 
-#>  item objective judges mean  IOC
-#>    I1         A      3 1.00  .67
-#>    I1         B      3 -.33 -.67
+#>   Item  Objective  Judges  Mean   IOC
+#>   I1    A               3  1.00   .67
+#>   I1    B               3  -.33  -.67
 #> 
-#> mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap
+#> Mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap
 #> between that mean and their mean on the item's other objectives; 1 only when
 #> every judge rates +1 on the objective and -1 on every other. Rovinelli and
 #> Hambleton applied a criterion of .70.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

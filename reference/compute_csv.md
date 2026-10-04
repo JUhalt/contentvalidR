@@ -62,12 +62,14 @@ df <- data.frame(
   target_construct = rep("A", 8)
 )
 compute_csv(df)
-#> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> <contentvalid_csv> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
 #> 
-#>  item target judges competitor competitor judges   Csv
-#>    I1      A    3/4          B               1/4   .50
-#>    I2      A    0/4          B               4/4 -1.00
+#>   Item  Target  Judges  Competitor  Competitor judges    Csv
+#>   I1    A          3/4  B                         1/4    .50
+#>   I2    A          0/4  B                         4/4  -1.00
 #> 
 #> Csv is the target count minus the count for the most-chosen other construct,
 #> divided by the number of judges.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

@@ -156,38 +156,39 @@ domain_validity(
   cell_col = "construct",
   domain = c("Autonomy", "Competence", "Relatedness", "Belonging")
 )
-#> contentvalidR content-domain coverage
-#> -------------------------------------
+#> <contentvalid_domain> Content-domain coverage
 #> Items: 7 | Blueprint cells: 4
 #> Criteria: at least 2 items per cell, and no cell above 2 times its expected
 #> share (an equal share when no `targets` are given). These criteria are
 #> contentvalidR conventions, not published standards.
 #> 
 #> 1 of 4 cells meet the coverage criteria.
-#> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly
-#> covered), Belonging (Not covered)
+#> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly covered),
+#> Belonging (Not covered)
 #> 
 #> Cells
-#>         cell         decision items share expected
-#>     Autonomy Over-represented     4   57%      25%
-#>   Competence          Covered     2   29%      25%
-#>  Relatedness   Thinly covered     1   14%      25%
-#>    Belonging      Not covered     0    0%      25%
+#>   Cell         Decision          Items  Share  Expected
+#>   Autonomy     Over-represented      4    57%       25%
+#>   Competence   Covered               2    29%       25%
+#>   Relatedness  Thinly covered        1    14%       25%
+#>   Belonging    Not covered           0     0%       25%
 #> 
 #> What these columns mean
-#>   share -- Share of items. Percentage of all items in this cell.
+#>   Share -- Share of items. Percentage of all items in this cell.
 #> 
 #> What the decisions mean
 #>   Covered -- met the coverage criteria.
 #>   Thinly covered -- fewer items than the minimum set for this analysis.
-#>   Over-represented -- more than `over_factor` times its expected share of
-#>       the items.
+#>   Over-represented -- more than `over_factor` times its expected share of the
+#>       items.
 #>   Not covered -- the blueprint includes it, but no item addresses it.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> Coverage shows that items exist for each cell. It does not show that those
 #> items are good ones, or that the blueprint is the right description of the
 #> domain.
+#> 
+#> See summary(x) for the cells needing attention.
 ```

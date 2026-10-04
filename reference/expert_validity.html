@@ -351,57 +351,56 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu">expert_validity</span><span class="op">(</span><span class="va">relevance</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR expert-panel analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_expert&gt; Expert-panel analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: relevance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts/item: 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale: 1 to 4 | Relevant: a rating of 3 or higher</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50.0%.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4 of 4 items meet the I-CVI criterion, all with strong support (modified</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kappa above .74).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> above .74).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item       decision N   V     95% CI I-CVI      95% CI kappa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4 Strong support 4 .92 [.65, .99]  1.00 [.51, 1.00]  1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Decision        Experts    V      95% CI  I-CVI       95% CI  Kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item1  Strong support        4  .92  [.65, .99]   1.00  [.51, 1.00]   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item2  Strong support        4  .92  [.65, .99]   1.00  [.51, 1.00]   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item3  Strong support        4  .92  [.65, .99]   1.00  [.51, 1.00]   1.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item4  Strong support        4  .92  [.65, .99]   1.00  [.51, 1.00]   1.00</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> interval, and I-CVI the proportion interval named below.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kappa is modified kappa, with values above .74 read as excellent (Polit et</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> al., 2007).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986); kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> is modified kappa, with values above .74 read as excellent (Polit et al.,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2007).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> compared seven methods and recommends score intervals over the Wald interval.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> An interval reflects how few ratings an item received, not whether the right</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> judges were chosen.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement is one coefficient for the whole panel, whereas modified</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> kappa (the kappa column) describes each item. Alpha can be low when nearly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> every rating is the same value, even on a panel that agrees closely, so read</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> it beside the share of identical rating pairs. A low alpha with many</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> identical pairs is not by itself evidence of a poor panel. Print</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> `details$agreement` for the full explanation and interval details.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement is one coefficient for the whole panel, whereas modified kappa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (the kappa column) describes each item. Alpha can be low when nearly every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rating is the same value, even on a panel that agrees closely, so read it</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beside the share of identical rating pairs. A low alpha with many identical</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pairs is not by itself evidence of a poor panel. Print `details$agreement` for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the full explanation and interval details.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CVI criteria are published panel-size guidelines, not universal validity</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> cutoffs.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       I-CVIs; Polit and Beck (2006) recommend .90 or higher.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items' I-CVIs;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Polit and Beck (2006) recommend .90 or higher.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       expert rated relevant; it falls as experts are added.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       possible) to 1 (highest).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       item relevant, against Lynn's criterion for the panel size (beyond</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       ten, this package's).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       relevant, against Lynn's criterion for the panel size (beyond ten, this</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       package's).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       small; the method is named above.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       below 0 only when no expert, or one of three, rated it relevant).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Panel agreement -- Panel-level agreement. One coefficient for the whole</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       panel (1 is perfect, 0 is chance); it can be low when nearly every</span>
@@ -411,28 +410,30 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Strong support -- met the I-CVI criterion, which also puts modified kappa</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       above .74.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> comprehensibility review.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the flagged items and content_report(x) for an APA table.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Summary: expert-panel content-validity evidence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_expert summary&gt; Expert-panel analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: relevance</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Supported: 4 | Review: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50.0%.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No items were flagged by the workflow's quantitative review rules.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> These summaries support, but do not replace, qualitative content review.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See x$reviewed_items for the flagged items as a data frame.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Essential counts from 12 experts, beside Lawshe's table and Wilson et al.</span></span></span>
 <span class="r-in"><span><span class="fu">expert_validity</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span>,</span></span>
 <span class="r-in"><span>                legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR expert-panel analysis</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_expert&gt; Expert-panel analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: essentiality</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts/item: 12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Method: Lawshe CVR with exact binomial critical values</span>
@@ -440,45 +441,47 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 of 4 items meet the exact essentiality criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Flagged for review: Item3, Item4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item  decision essential  CVR      p</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 Supported     12/12 1.00 &lt; .001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 Supported     10/12  .67   .019</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3    Review      8/12  .33   .194</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4    Review      6/12  .00   .613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Decision   Essential   CVR       p</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item1  Supported      12/12  1.00  &lt; .001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item2  Supported      10/12   .67    .019</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item3  Review          8/12   .33    .194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item4  Review          6/12   .00    .613</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> essential: experts rating the item essential, out of those who rated it.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Essential: experts rating the item essential, out of those who rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With 12 experts, an item needs at least 10 rating it essential for the exact</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Earlier methods, for comparison (not used for the decision)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 Supported     12/12 1.00         meets                meets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 Supported     10/12  .67         meets                meets</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3    Review      8/12  .33         below                below</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4    Review      6/12  .00         below                below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item1  Supported      12/12  1.00  Meets          Meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item2  Supported      10/12   .67  Meets          Meets</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item3  Review          8/12   .33  Below          Below</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item4  Review          6/12   .00  Below          Below</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe (1975, Table 1): minimum CVR .56 for 12 panelists (10 of 12), which he</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> labeled a one-tailed test at .05. Wilson et al. (2012) found the table closer</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> to a two-tailed test.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Wilson et al. (2012, Table 2): minimum CVR .47, the normal approximation</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> z/sqrt(N) at one-tailed alpha = .05.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The decision above uses the exact binomial test (Ayre &amp; Scally, 2014).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe's content validity index, the mean CVR of the items his table retains:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> .83 (2 items).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lawshe (1975, Table 1): minimum CVR .56 for 12 panelists (10 of 12), which</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   he labeled a one-tailed test at .05. Wilson et al. (2012) found the table</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   closer to a two-tailed test.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Wilson et al. (2012, Table 2): minimum CVR .47, the normal approximation</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   z/sqrt(N) at one-tailed alpha = .05.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   The decision above uses the exact binomial test (Ayre &amp; Scally, 2014).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Lawshe's content validity index, the mean CVR of the items his table</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   retains: .83 (2 items).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the item essential (-1 to 1; above 0 means more than half did).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       item essential (-1 to 1; above 0 means more than half did).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Supported -- enough experts rated it essential to pass the exact test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Review -- too few experts rated it essential to pass the exact test.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Use quantitative indices alongside expert comments, construct coverage, and</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> comprehensibility review.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the flagged items and content_report(x) for an APA table.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -186,8 +186,7 @@ sort_dat <- data.frame(
 )
 fit <- sort_validity(sort_dat)
 fit
-#> contentvalidR item-sort analysis
-#> --------------------------------
+#> <contentvalid_sort> Item-sort analysis
 #> Items: 3 | Judges: 20 | Target constructs: 1
 #> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
 #> Judges: naive, meaning drawn from the kind of people who will answer the
@@ -197,42 +196,40 @@ fit
 #> Flagged for review: A3
 #> 
 #> Item-level evidence
-#>  item target decision judges Psa     95% CI Csv competitor      p
-#>    A1      A   Retain  18/20 .90 [.70, .97] .80          B < .001
-#>    A2      A   Retain  16/20 .80 [.58, .92] .60          B   .006
-#>    A3      A   Review  12/20 .60 [.39, .78] .20          B   .252
+#>   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p
+#>   A1    A       Retain     18/20  .90  [.70, .97]  .80  B           < .001
+#>   A2    A       Retain     16/20  .80  [.58, .92]  .60  B             .006
+#>   A3    A       Review     12/20  .60  [.39, .78]  .20  B             .252
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
-#> item.
-#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald interval.
-#> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#>   Judges: assignments to the target construct, out of the judges who sorted
+#>   the item.
+#>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#>   compared seven methods and recommends score intervals over the Wald
+#>   interval. An interval reflects how few ratings an item received, not whether
+#>   the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmarks
-#>  target items mean Psa Psa level mean Csv Csv level
-#>       A     3      .77  Moderate      .53  Moderate
-#> Benchmark set: Overall (not correlation-normed)
-#> These bands come from tasks with three definitions (one focal, two orbiting);
-#> judges here used 2 (set `n_constructs` if more were offered), so the
-#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
-#> do not discuss other numbers.
+#>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           3       .77  Moderate        .53  Moderate
+#>   Benchmark set: Overall (not correlation-normed)
+#>   These bands come from tasks with three definitions (one focal, two
+#>   orbiting); judges here used 2 (set `n_constructs` if more were offered), so
+#>   the comparison is approximate. This is a contentvalidR caution: Colquitt et
+#>   al. do not discuss other numbers.
 #> 
-#> Colquitt labels are empirical percentile norms derived from scale-level
-#> averages, not universal cutoffs or automatic scale-retention rules. They
-#> place a scale against published scales; Psa and Csv sit on different scales,
-#> so their labels are not comparable with each other.
+#>   Colquitt labels are empirical percentile norms derived from scale-level
+#>   averages, not universal cutoffs or automatic scale-retention rules. They
+#>   place a scale against published scales; Psa and Csv sit on different scales,
+#>   so their labels are not comparable with each other.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
 #>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
 #>       method is named above.
-#>   Csv -- Coefficient of Substantive Validity. How much more often judges
-#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
-#>       tie).
-#>   competitor -- Strongest competing construct. The construct other than the
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
+#>   Competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
 #>   p -- Howard-Melloy exact test. Probability of at least this many target
 #>       assignments if each judge picked the target at rate p0; compare with
@@ -240,45 +237,52 @@ fit
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet the exact target-assignment criterion; the
-#>       competitor column shows where judges put it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
 #> statistics.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 summary(fit)
-#> Summary: item-sort content-validity evidence
-#> --------------------------------------------
+#> <contentvalid_sort summary> Item-sort analysis
 #> Retain: 2 of 3 | Review: 1 of 3
 #> 
 #> Scale-level evidence
-#>  target items retain review mean Psa Psa level mean Csv Csv level
-#>       A     3      2      1      .77  Moderate      .53  Moderate
+#>   Target  Items  Retain  Review  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           3       2       1       .77  Moderate        .53  Moderate
 #> 
-#> A: Mean Psa and mean Csv both fall in the Moderate band of published scales
-#>   (Colquitt et al., 2019); review the weaker items before finalizing. These
-#>   bands come from tasks with three definitions (one focal, two orbiting);
-#>   judges here used 2 (set `n_constructs` if more were offered), so the
-#>   comparison is approximate. This is a contentvalidR caution: Colquitt et al.
-#>   do not discuss other numbers.
+#>   Psa = proportion of substantive agreement; Csv = coefficient of substantive
+#>   validity (Anderson & Gerbing, 1991).
+#>   A: Mean Psa and mean Csv both fall in the Moderate band of published scales
+#>     (Colquitt et al., 2019); review the weaker items before finalizing. These
+#>     bands come from tasks with three definitions (one focal, two orbiting);
+#>     judges here used 2 (set `n_constructs` if more were offered), so the
+#>     comparison is approximate. This is a contentvalidR caution: Colquitt et
+#>     al. do not discuss other numbers.
 #> 
-#> Items needing attention
-#>  item target decision Psa Csv competitor    p
-#>    A3      A   Review .60 .20          B .252
+#> Flagged
+#>   Item  Target  Decision  Psa  Csv  Competitor     p
+#>   A3    A       Review    .60  .20  B           .252
 #> 
-#> A3: Target favored, exact criterion not met
+#>   p = Howard-Melloy exact test of the target assignments.
+#>   - A3 (Review): The target was at least as common as any competitor but did
+#>     not meet the exact retention criterion (strongest competitor: B); review
+#>     before deciding whether to revise or remove the item.
 #> 
 #> Interpret scale norms and item flags alongside theory, domain coverage, and
 #> qualitative feedback. This analysis does not by itself establish
 #> comprehensiveness or the full content-validity argument.
+#> 
+#> See x$reviewed_items for the flagged items as a data frame.
 
 # The same result beside the earlier published rules.
 print(fit, legacy = TRUE)
-#> contentvalidR item-sort analysis
-#> --------------------------------
+#> <contentvalid_sort> Item-sort analysis
 #> Items: 3 | Judges: 20 | Target constructs: 1
 #> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
 #> Judges: naive, meaning drawn from the kind of people who will answer the
@@ -288,66 +292,64 @@ print(fit, legacy = TRUE)
 #> Flagged for review: A3
 #> 
 #> Item-level evidence
-#>  item target decision judges Psa     95% CI Csv competitor      p
-#>    A1      A   Retain  18/20 .90 [.70, .97] .80          B < .001
-#>    A2      A   Retain  16/20 .80 [.58, .92] .60          B   .006
-#>    A3      A   Review  12/20 .60 [.39, .78] .20          B   .252
+#>   Item  Target  Decision  Judges  Psa      95% CI  Csv  Competitor       p
+#>   A1    A       Retain     18/20  .90  [.70, .97]  .80  B           < .001
+#>   A2    A       Retain     16/20  .80  [.58, .92]  .60  B             .006
+#>   A3    A       Review     12/20  .60  [.39, .78]  .20  B             .252
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
-#> item.
-#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald interval.
-#> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#>   Judges: assignments to the target construct, out of the judges who sorted
+#>   the item.
+#>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#>   compared seven methods and recommends score intervals over the Wald
+#>   interval. An interval reflects how few ratings an item received, not whether
+#>   the right judges were chosen.
 #> 
 #> Scale-level Colquitt benchmarks
-#>  target items mean Psa Psa level mean Csv Csv level
-#>       A     3      .77  Moderate      .53  Moderate
-#> Benchmark set: Overall (not correlation-normed)
-#> These bands come from tasks with three definitions (one focal, two orbiting);
-#> judges here used 2 (set `n_constructs` if more were offered), so the
-#> comparison is approximate. This is a contentvalidR caution: Colquitt et al.
-#> do not discuss other numbers.
+#>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           3       .77  Moderate        .53  Moderate
+#>   Benchmark set: Overall (not correlation-normed)
+#>   These bands come from tasks with three definitions (one focal, two
+#>   orbiting); judges here used 2 (set `n_constructs` if more were offered), so
+#>   the comparison is approximate. This is a contentvalidR caution: Colquitt et
+#>   al. do not discuss other numbers.
 #> 
-#> Colquitt labels are empirical percentile norms derived from scale-level
-#> averages, not universal cutoffs or automatic scale-retention rules. They
-#> place a scale against published scales; Psa and Csv sit on different scales,
-#> so their labels are not comparable with each other.
+#>   Colquitt labels are empirical percentile norms derived from scale-level
+#>   averages, not universal cutoffs or automatic scale-retention rules. They
+#>   place a scale against published scales; Psa and Csv sit on different scales,
+#>   so their labels are not comparable with each other.
 #> 
 #> Earlier methods, for comparison (not used for the decision)
-#>  item decision Psa Csv A&G (1991) Yao et al. (2008) extension*
-#>    A1   Retain .90 .80      meets             meets      meets
-#>    A2   Retain .80 .60      meets             meets      meets
-#>    A3   Review .60 .20      below             below      below
+#>   Item  Decision  Psa  Csv  A&G (1991)  Yao et al. (2008)  Extension*
+#>   A1    Retain    .90  .80  Meets       Meets              Meets
+#>   A2    Retain    .80  .60  Meets       Meets              Meets
+#>   A3    Review    .60  .20  Below       Below              Below
 #> 
-#> Anderson and Gerbing (1991): Csv of at least .50, their critical value for 20
-#> judges at alpha = .05 (Equations 5 and 6). Their critical value assumes every
-#> judge who misses the target picks the same rival. When those judges spread
-#> across several constructs, Csv can reach it with fewer target assignments
-#> than the exact test needs.
-#> Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort
-#> where chance assignment is .25.
-#> * extension: a contentvalidR extension, not a published rule. It carries Yao
+#>   Anderson and Gerbing (1991): Csv of at least .50, their critical value for
+#>   20 judges at alpha = .05 (Equations 5 and 6). Their critical value assumes
+#>   every judge who misses the target picks the same rival. When those judges
+#>   spread across several constructs, Csv can reach it with fewer target
+#>   assignments than the exact test needs.
+#>   Yao et al. (2008): Psa and Csv both at least .30, set for a four-domain sort
+#>   where chance assignment is .25.
+#>   Extension*: a contentvalidR extension, not a published rule. It carries Yao
 #>   et al.'s reasoning to this sort's 2 constructs as chance plus .05, so Psa
 #>   and Csv both at least .55 (1/2 + .05).
-#> The 2 constructs are the ones judges used. If more were offered, set
-#> `n_constructs`, since chance depends on the number offered.
-#> Agreement with the decision above: Anderson and Gerbing on 3 of 3 items, Yao
-#> et al. on 3 of 3, the extension on 3 of 3.
-#> Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
-#> 1991, p. 734). Pooling every other construct into it instead gives twice Psa
-#> minus one, a different index.
+#>   The 2 constructs are the ones judges used. If more were offered, set
+#>   `n_constructs`, since chance depends on the number offered.
+#>   Agreement with the decision above: Anderson and Gerbing on 3 of 3 items, Yao
+#>   et al. on 3 of 3, the extension on 3 of 3.
+#>   Csv counts only the single most-chosen rival construct (Anderson & Gerbing,
+#>   1991, p. 734). Pooling every other construct into it instead gives twice Psa
+#>   minus one, a different index.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
 #>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
 #>       method is named above.
-#>   Csv -- Coefficient of Substantive Validity. How much more often judges
-#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
-#>       tie).
-#>   competitor -- Strongest competing construct. The construct other than the
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
+#>   Competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
 #>   p -- Howard-Melloy exact test. Probability of at least this many target
 #>       assignments if each judge picked the target at rate p0; compare with
@@ -355,13 +357,15 @@ print(fit, legacy = TRUE)
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet the exact target-assignment criterion; the
-#>       competitor column shows where judges put it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> 'Review' is not an automatic deletion decision. Use theory, construct-domain
 #> coverage, item wording, and qualitative judge feedback alongside these
 #> statistics.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```

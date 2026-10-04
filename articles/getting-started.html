@@ -121,30 +121,34 @@ substantively identical.</p>
 <span>  <span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">n_target</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">csv</span><span class="op">$</span><span class="va">n</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">decision</span></span>
 <span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">psa</span>; <span class="va">csv</span></span>
-<span><span class="co">#&gt; Proportion of substantive agreement (Psa; Anderson &amp; Gerbing, 1991)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_psa&gt; Proportion of substantive agreement (Psa; Anderson &amp; Gerbing, 1991)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges Psa     95% CI</span></span>
-<span><span class="co">#&gt;    I1      A   9/12 .75 [.47, .91]</span></span>
-<span><span class="co">#&gt;    I2      A   5/12 .42 [.19, .68]</span></span>
-<span><span class="co">#&gt;    I3      B   2/12 .17 [.05, .45]</span></span>
-<span><span class="co">#&gt;    I4      B   5/12 .42 [.19, .68]</span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Psa      95% CI</span></span>
+<span><span class="co">#&gt;   I1    A         9/12  .75  [.47, .91]</span></span>
+<span><span class="co">#&gt;   I2    A         5/12  .42  [.19, .68]</span></span>
+<span><span class="co">#&gt;   I3    B         2/12  .17  [.05, .45]</span></span>
+<span><span class="co">#&gt;   I4    B         5/12  .42  [.19, .68]</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
+<span><span class="co">#&gt; Judges: assignments to the target construct, out of the judges who sorted the</span></span>
 <span><span class="co">#&gt; item.</span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
 <span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
 <span><span class="co">#&gt; judges were chosen.</span></span>
-<span><span class="co">#&gt; Coefficient of substantive validity (Csv; Anderson &amp; Gerbing, 1991)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges competitor competitor judges  Csv</span></span>
-<span><span class="co">#&gt;    I1      A   9/12          B              3/12  .50</span></span>
-<span><span class="co">#&gt;    I2      A   5/12          B              7/12 -.17</span></span>
-<span><span class="co">#&gt;    I3      B   2/12          A             10/12 -.67</span></span>
-<span><span class="co">#&gt;    I4      B   5/12          A              7/12 -.17</span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_csv&gt; Coefficient of substantive validity (Csv; Anderson &amp; Gerbing, 1991)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Competitor  Competitor judges   Csv</span></span>
+<span><span class="co">#&gt;   I1    A         9/12  B                        3/12   .50</span></span>
+<span><span class="co">#&gt;   I2    A         5/12  B                        7/12  -.17</span></span>
+<span><span class="co">#&gt;   I3    B         2/12  A                       10/12  -.67</span></span>
+<span><span class="co">#&gt;   I4    B         5/12  A                        7/12  -.17</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Csv is the target count minus the count for the most-chosen other construct,</span></span>
-<span><span class="co">#&gt; divided by the number of judges.</span></span></code></pre></div>
+<span><span class="co">#&gt; divided by the number of judges.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p><strong>Interpretation</strong> - <strong>Psa</strong> = share
 assigning the intended construct. - <strong>Csv</strong> = margin of
 wins: $ $. - The exact binomial test (null hypothesis: a target rate of
@@ -168,12 +172,11 @@ ANOVA)</strong></p>
 <span></span>
 <span><span class="va">rating_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">toy_ratings</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rating_fit</span></span>
-<span><span class="co">#&gt; contentvalidR construct-rating analysis</span></span>
-<span><span class="co">#&gt; ---------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_rating&gt; Construct-rating analysis</span></span>
 <span><span class="co">#&gt; Items: 3 | Judges: 16 | Target constructs: 2 | Constructs rated: 3</span></span>
 <span><span class="co">#&gt; Design: within-judge ratings on a 1 to 5 scale</span></span>
-<span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus</span></span>
-<span><span class="co">#&gt; p) plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
+<span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p)</span></span>
+<span><span class="co">#&gt; plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
 <span><span class="co">#&gt; adjustment: none.</span></span>
 <span><span class="co">#&gt; Retain: the omnibus p and every contrast p at or below alpha = .05. The</span></span>
 <span><span class="co">#&gt; contrasts are one-sided: the intended construct rated above every other</span></span>
@@ -184,68 +187,71 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; 3 of 3 items meet the full item-level screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;  item target decision  n HTC HTD omnibus p contrast p competitor</span></span>
-<span><span class="co">#&gt;    I1      A   Retain 16 .82 .49    &lt; .001     &lt; .001          C</span></span>
-<span><span class="co">#&gt;    I2      A   Retain 16 .89 .51    &lt; .001     &lt; .001          C</span></span>
-<span><span class="co">#&gt;    I3      B   Retain 16 .88 .54    &lt; .001     &lt; .001          C</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
+<span><span class="co">#&gt;   I1    A       Retain    16  .83  .49     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   I2    A       Retain    16  .89  .51     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   I3    B       Retain    16  .88  .54     &lt; .001      &lt; .001  C</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; n: judges who rated the item against every construct. omnibus p: do the</span></span>
-<span><span class="co">#&gt; item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
-<span><span class="co">#&gt; contrast p: the largest p among the planned target-versus-orbiting contrasts,</span></span>
-<span><span class="co">#&gt; so every contrast is at or below it.</span></span>
+<span><span class="co">#&gt;   n: judges who rated the item against every construct. Omnibus p: do the</span></span>
+<span><span class="co">#&gt;   item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
+<span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
+<span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Target-scale Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean HTC HTC level mean HTD   HTD level</span></span>
-<span><span class="co">#&gt;       A     2      .86  Moderate      .50 Very Strong</span></span>
-<span><span class="co">#&gt;       B     1      .88    Strong      .54 Very Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean HTC  HTC level  Mean HTD  HTD level</span></span>
+<span><span class="co">#&gt;   A           2       .86  Moderate        .50  Very Strong</span></span>
+<span><span class="co">#&gt;   B           1       .88  Strong          .54  Very Strong</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
-<span><span class="co">#&gt; difference between ratings, so they sit on different scales with different</span></span>
-<span><span class="co">#&gt; typical values. A high HTC can be labeled Weak in the same analysis where a</span></span>
-<span><span class="co">#&gt; much smaller HTD is labeled Very Strong. Compare each index against its own</span></span>
-<span><span class="co">#&gt; benchmark, never against the other index's number.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
+<span><span class="co">#&gt;   difference between ratings, so they sit on different scales with different</span></span>
+<span><span class="co">#&gt;   typical values. A high HTC can be labeled Weak in the same analysis where a</span></span>
+<span><span class="co">#&gt;   much smaller HTD is labeled Very Strong. Compare each index against its own</span></span>
+<span><span class="co">#&gt;   benchmark, never against the other index's number.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended</span></span>
 <span><span class="co">#&gt;       definition, divided by the number of scale points (1/points to 1).</span></span>
-<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the</span></span>
-<span><span class="co">#&gt;       other constructs' ratings on average, as a share of the scale</span></span>
-<span><span class="co">#&gt;       (usually small).</span></span>
+<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the other</span></span>
+<span><span class="co">#&gt;       constructs' ratings on average, as a share of the scale (usually small).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
-<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and</span></span>
-<span><span class="co">#&gt;       the intended construct was rated above every other (every planned</span></span>
-<span><span class="co">#&gt;       contrast).</span></span>
+<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and the</span></span>
+<span><span class="co">#&gt;       intended construct was rated above every other (every planned contrast).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Consider construct</span></span>
 <span><span class="co">#&gt; definitions, item wording, orbiting-construct choice, domain coverage, and</span></span>
 <span><span class="co">#&gt; qualitative judge feedback.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary: construct-rating content-validity evidence</span></span>
-<span><span class="co">#&gt; ---------------------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_rating summary&gt; Construct-rating analysis</span></span>
 <span><span class="co">#&gt; Retain: 3 of 3 | Review: 0 of 3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level evidence</span></span>
-<span><span class="co">#&gt;  target items retain review mean HTC HTC level mean HTD   HTD level</span></span>
-<span><span class="co">#&gt;       A     2      2      0      .86  Moderate      .50 Very Strong</span></span>
-<span><span class="co">#&gt;       B     1      1      0      .88    Strong      .54 Very Strong</span></span>
+<span><span class="co">#&gt;   Target  Items  Retain  Review  Mean HTC  HTC level  Mean HTD  HTD level</span></span>
+<span><span class="co">#&gt;   A           2       2       0       .86  Moderate        .50  Very Strong</span></span>
+<span><span class="co">#&gt;   B           1       1       0       .88  Strong          .54  Very Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band</span></span>
-<span><span class="co">#&gt;   of published scales (Colquitt et al., 2019); inspect the weaker items and</span></span>
-<span><span class="co">#&gt;   construct overlap before finalizing the scale.</span></span>
-<span><span class="co">#&gt; B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
-<span><span class="co">#&gt;   published scales (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt;   HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt;   A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band</span></span>
+<span><span class="co">#&gt;     of published scales (Colquitt et al., 2019); inspect the weaker items and</span></span>
+<span><span class="co">#&gt;     construct overlap before finalizing the scale.</span></span>
+<span><span class="co">#&gt;   B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
+<span><span class="co">#&gt;     published scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Interpret these results alongside theory, domain coverage, and qualitative</span></span>
 <span><span class="co">#&gt; feedback. The analysis does not by itself establish comprehensiveness or the</span></span>
-<span><span class="co">#&gt; full content-validity argument.</span></span></code></pre></div>
+<span><span class="co">#&gt; full content-validity argument.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p><strong>Interpretation</strong> - <strong>HTC</strong> summarizes
 definitional correspondence with the intended construct. -
 <strong>HTD</strong> summarizes distinctiveness from orbiting
@@ -266,22 +272,21 @@ when the judge population matches their intended use.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">expert_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">expert_ratings</span>, mode <span class="op">=</span> <span class="st">"relevance"</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">expert_fit</span></span>
-<span><span class="co">#&gt; contentvalidR expert-panel analysis</span></span>
-<span><span class="co">#&gt; -----------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Items: 3 | Experts/item: 6</span></span>
 <span><span class="co">#&gt; Scale: 1 to 4 | Relevant: a rating of 3 or higher</span></span>
 <span><span class="co">#&gt; Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
-<span><span class="co">#&gt;   Identical rating pairs: 71.1%.</span></span>
+<span><span class="co">#&gt;   Identical rating pairs: 71%.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified</span></span>
-<span><span class="co">#&gt; kappa above .74).</span></span>
+<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified kappa</span></span>
+<span><span class="co">#&gt; above .74).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item       decision N    V      95% CI I-CVI      95% CI kappa</span></span>
-<span><span class="co">#&gt;  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00</span></span>
-<span><span class="co">#&gt;  Item2 Strong support 6  .94  [.74, .99]  1.00 [.61, 1.00]  1.00</span></span>
-<span><span class="co">#&gt;  Item3 Strong support 6  .89  [.67, .97]  1.00 [.61, 1.00]  1.00</span></span>
+<span><span class="co">#&gt;   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa</span></span>
+<span><span class="co">#&gt;   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00</span></span>
+<span><span class="co">#&gt;   Item2  Strong support        6   .94   [.74, .99]   1.00  [.61, 1.00]   1.00</span></span>
+<span><span class="co">#&gt;   Item3  Strong support        6   .89   [.67, .97]   1.00  [.61, 1.00]   1.00</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span></span>
 <span><span class="co">#&gt; interval, and I-CVI the proportion interval named below.</span></span>
@@ -293,29 +298,29 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
 <span><span class="co">#&gt; judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas modified</span></span>
-<span><span class="co">#&gt; kappa (the kappa column) describes each item. Alpha can be low when nearly</span></span>
-<span><span class="co">#&gt; every rating is the same value, even on a panel that agrees closely, so read</span></span>
-<span><span class="co">#&gt; it beside the share of identical rating pairs. A low alpha with many</span></span>
-<span><span class="co">#&gt; identical pairs is not by itself evidence of a poor panel. Print</span></span>
-<span><span class="co">#&gt; `details$agreement` for the full explanation and interval details.</span></span>
+<span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas modified kappa</span></span>
+<span><span class="co">#&gt; (the kappa column) describes each item. Alpha can be low when nearly every</span></span>
+<span><span class="co">#&gt; rating is the same value, even on a panel that agrees closely, so read it</span></span>
+<span><span class="co">#&gt; beside the share of identical rating pairs. A low alpha with many identical</span></span>
+<span><span class="co">#&gt; pairs is not by itself evidence of a poor panel. Print `details$agreement` for</span></span>
+<span><span class="co">#&gt; the full explanation and interval details.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI criteria are published panel-size guidelines, not universal validity</span></span>
 <span><span class="co">#&gt; cutoffs.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'</span></span>
-<span><span class="co">#&gt;       I-CVIs; Polit and Beck (2006) recommend .90 or higher.</span></span>
+<span><span class="co">#&gt;   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items' I-CVIs;</span></span>
+<span><span class="co">#&gt;       Polit and Beck (2006) recommend .90 or higher.</span></span>
 <span><span class="co">#&gt;   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every</span></span>
 <span><span class="co">#&gt;       expert rated relevant; it falls as experts are added.</span></span>
 <span><span class="co">#&gt;   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest</span></span>
 <span><span class="co">#&gt;       possible) to 1 (highest).</span></span>
-<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
-<span><span class="co">#&gt;       item relevant, against Lynn's criterion for the panel size (beyond</span></span>
-<span><span class="co">#&gt;       ten, this package's).</span></span>
+<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the item</span></span>
+<span><span class="co">#&gt;       relevant, against Lynn's criterion for the panel size (beyond ten, this</span></span>
+<span><span class="co">#&gt;       package's).</span></span>
 <span><span class="co">#&gt;   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are</span></span>
 <span><span class="co">#&gt;       small; the method is named above.</span></span>
-<span><span class="co">#&gt;   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span></span>
+<span><span class="co">#&gt;   Kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;</span></span>
 <span><span class="co">#&gt;       below 0 only when no expert, or one of three, rated it relevant).</span></span>
 <span><span class="co">#&gt;   Panel agreement -- Panel-level agreement. One coefficient for the whole</span></span>
 <span><span class="co">#&gt;       panel (1 is perfect, 0 is chance); it can be low when nearly every</span></span>
@@ -325,22 +330,25 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt;   Strong support -- met the I-CVI criterion, which also puts modified kappa</span></span>
 <span><span class="co">#&gt;       above .74.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Use quantitative indices alongside expert comments, construct coverage, and</span></span>
 <span><span class="co">#&gt; comprehensibility review.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary: expert-panel content-validity evidence</span></span>
-<span><span class="co">#&gt; -----------------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_expert summary&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
 <span><span class="co">#&gt; Supported: 3 | Review: 0</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
-<span><span class="co">#&gt;   Identical rating pairs: 71.1%.</span></span>
+<span><span class="co">#&gt;   Identical rating pairs: 71%.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; No items were flagged by the workflow's quantitative review rules.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span></code></pre></div>
+<span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>Relevance, essentiality, and congruence are intentionally separate
 expert tasks. Use <code>mode = "relevance"</code> for Aiken V +
 CVI/modified kappa, <code>mode = "essentiality"</code> for Lawshe CVR,
@@ -379,58 +387,66 @@ files.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">*</span><span class="fl">6</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/aikens_v.html">aikens_v</a></span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Aiken's V (Aiken, 1980)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V (Aiken, 1980)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item experts   V     95% CI</span></span>
-<span><span class="co">#&gt;  Item1       5 .60 [.39, .78]</span></span>
-<span><span class="co">#&gt;  Item2       5 .30 [.15, .52]</span></span>
-<span><span class="co">#&gt;  Item3       5 .70 [.48, .85]</span></span>
-<span><span class="co">#&gt;  Item4       5 .35 [.18, .57]</span></span>
-<span><span class="co">#&gt;  Item5       5 .60 [.39, .78]</span></span>
-<span><span class="co">#&gt;  Item6       5 .65 [.43, .82]</span></span>
+<span><span class="co">#&gt;   Item   Experts    V      95% CI</span></span>
+<span><span class="co">#&gt;   Item1        5  .60  [.39, .78]</span></span>
+<span><span class="co">#&gt;   Item2        5  .30  [.15, .52]</span></span>
+<span><span class="co">#&gt;   Item3        5  .70  [.48, .85]</span></span>
+<span><span class="co">#&gt;   Item4        5  .35  [.18, .57]</span></span>
+<span><span class="co">#&gt;   Item5        5  .60  [.39, .78]</span></span>
+<span><span class="co">#&gt;   Item6        5  .65  [.43, .82]</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale: 1 to 5.</span></span>
 <span><span class="co">#&gt; Interval: Penfield-Giacobbi score (Penfield &amp; Giacobbi, 2004).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/cvr.html">cvr</a></span><span class="op">(</span>essential <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>,<span class="fl">10</span>,<span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Content validity ratio (CVR; Lawshe, 1975)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_cvr&gt; Content validity ratio (CVR; Lawshe, 1975)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   item essential  CVR    p needed meets</span></span>
-<span><span class="co">#&gt;  Item1      8/12  .33 .194     10    no</span></span>
-<span><span class="co">#&gt;  Item2     10/12  .67 .019     10   yes</span></span>
-<span><span class="co">#&gt;  Item3      5/12 -.17 .806     10    no</span></span>
+<span><span class="co">#&gt;   Item   Essential   CVR     p  Needed  Meets</span></span>
+<span><span class="co">#&gt;   Item1       8/12   .33  .194      10  no</span></span>
+<span><span class="co">#&gt;   Item2      10/12   .67  .019      10  yes</span></span>
+<span><span class="co">#&gt;   Item3       5/12  -.17  .806      10  no</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; needed: essential ratings the exact one-tailed binomial test requires at</span></span>
+<span><span class="co">#&gt; Needed: essential ratings the exact one-tailed binomial test requires at</span></span>
 <span><span class="co">#&gt; alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span></span>
 <span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">*</span><span class="fl">5</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.3</span>,<span class="fl">.7</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cvi.html">cvi</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR content validity index (CVI)</span></span>
-<span><span class="co">#&gt; ------------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_cvi&gt; Content validity index (CVI)</span></span>
 <span><span class="co">#&gt; Items: 5 | Judges per item: 6</span></span>
 <span><span class="co">#&gt; S-CVI/Ave: .67 | S-CVI/UA: .20</span></span>
+<span><span class="co">#&gt; I-CVI = item-level content validity index; S-CVI/Ave = scale-level CVI, the</span></span>
+<span><span class="co">#&gt; mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every judge rated</span></span>
+<span><span class="co">#&gt; relevant (Polit &amp; Beck, 2006).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level results</span></span>
-<span><span class="co">#&gt;   item agree I-CVI      95% CI   Pc kappa</span></span>
-<span><span class="co">#&gt;  Item1   3/6   .50  [.19, .81] .312   .27</span></span>
-<span><span class="co">#&gt;  Item2   4/6   .67  [.30, .90] .234   .56</span></span>
-<span><span class="co">#&gt;  Item3   3/6   .50  [.19, .81] .312   .27</span></span>
-<span><span class="co">#&gt;  Item4   6/6  1.00 [.61, 1.00] .016  1.00</span></span>
-<span><span class="co">#&gt;  Item5   4/6   .67  [.30, .90] .234   .56</span></span>
+<span><span class="co">#&gt;   Item   Agree  I-CVI       95% CI    Pc  Kappa</span></span>
+<span><span class="co">#&gt;   Item1    3/6    .50   [.19, .81]  .313    .27</span></span>
+<span><span class="co">#&gt;   Item2    4/6    .67   [.30, .90]  .234    .56</span></span>
+<span><span class="co">#&gt;   Item3    3/6    .50   [.19, .81]  .313    .27</span></span>
+<span><span class="co">#&gt;   Item4    6/6   1.00  [.61, 1.00]  .016   1.00</span></span>
+<span><span class="co">#&gt;   Item5    4/6    .67   [.30, .90]  .234    .56</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; agree: judges rating the item relevant, out of those who rated it. Pc: the</span></span>
-<span><span class="co">#&gt; probability that this many judges would agree by chance. kappa: the modified</span></span>
-<span><span class="co">#&gt; kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.</span></span>
+<span><span class="co">#&gt;   Agree: judges rating the item relevant, out of those who rated it. Pc: the</span></span>
+<span><span class="co">#&gt;   probability that this many judges would agree by chance. Kappa: the modified</span></span>
+<span><span class="co">#&gt;   kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.</span></span>
 <span><span class="co">#&gt; Interpretation should consider panel size, item purpose, and qualitative</span></span>
 <span><span class="co">#&gt; expert feedback; CVI statistics alone do not establish comprehensive content</span></span>
 <span><span class="co">#&gt; validity.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the item-level values.</span></span>
 <span></span>
 <span><span class="va">ioc_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"I"</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">9</span><span class="op">)</span>,</span>
@@ -439,58 +455,63 @@ files.</p>
 <span>  score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fl">18</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ioc.html">ioc</a></span><span class="op">(</span><span class="va">ioc_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Index of item-objective congruence (IOC; Rovinelli &amp; Hambleton, 1977)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_ioc&gt; Index of item-objective congruence (IOC; Rovinelli &amp; Hambleton, 1977)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item objective judges mean  IOC</span></span>
-<span><span class="co">#&gt;    I1         A      3  .00  .08</span></span>
-<span><span class="co">#&gt;    I1         B      3  .33  .33</span></span>
-<span><span class="co">#&gt;    I1         C      3 -.67 -.42</span></span>
-<span><span class="co">#&gt;    I2         A      3  .00  .00</span></span>
-<span><span class="co">#&gt;    I2         B      3  .00  .00</span></span>
-<span><span class="co">#&gt;    I2         C      3  .00  .00</span></span>
+<span><span class="co">#&gt;   Item  Objective  Judges  Mean   IOC</span></span>
+<span><span class="co">#&gt;   I1    A               3   .00   .08</span></span>
+<span><span class="co">#&gt;   I1    B               3   .33   .33</span></span>
+<span><span class="co">#&gt;   I1    C               3  -.67  -.42</span></span>
+<span><span class="co">#&gt;   I2    A               3   .00   .00</span></span>
+<span><span class="co">#&gt;   I2    B               3   .00   .00</span></span>
+<span><span class="co">#&gt;   I2    C               3   .00   .00</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap</span></span>
+<span><span class="co">#&gt; Mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap</span></span>
 <span><span class="co">#&gt; between that mean and their mean on the item's other objectives; 1 only when</span></span>
 <span><span class="co">#&gt; every judge rates +1 on the objective and -1 on every other. Rovinelli and</span></span>
-<span><span class="co">#&gt; Hambleton applied a criterion of .70.</span></span></code></pre></div>
+<span><span class="co">#&gt; Hambleton applied a criterion of .70.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p><strong>Diagnostics &amp; reproducibility</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># pretend "kept" after CFA</span></span>
 <span><span class="fu"><a href="../reference/signal_detection.html">signal_detection</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">decision</span> <span class="op">==</span> <span class="st">"significant"</span>, <span class="va">truth</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Retention decisions compared with the actual outcome</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_signal&gt; Retention decisions compared with the actual outcome</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;               Actual</span></span>
-<span><span class="co">#&gt; Predicted      Retain Not retained</span></span>
-<span><span class="co">#&gt;   Retain            0            0</span></span>
-<span><span class="co">#&gt;   Not retained      3            1</span></span>
+<span><span class="co">#&gt;   Predicted     Actual: Retain  Actual: Not retained</span></span>
+<span><span class="co">#&gt;   Retain                     0                     0</span></span>
+<span><span class="co">#&gt;   Not retained               3                     1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; accuracy = .25, sensitivity = .00, specificity = 1.00, phi = NA.</span></span>
+<span><span class="co">#&gt; accuracy = .25, sensitivity = .00, specificity = 1.00, phi = --.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span>
 <span></span>
 <span><span class="va">csv2_sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">csv</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">decision</span> <span class="op">==</span> <span class="st">"significant"</span>, <span class="va">csv2_sig</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Retention decisions in two pretests</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_reproducibility&gt; Retention decisions in two pretests</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;               Pretest2</span></span>
-<span><span class="co">#&gt; Pretest1       Retain Not retained</span></span>
-<span><span class="co">#&gt;   Retain            0            0</span></span>
-<span><span class="co">#&gt;   Not retained      1            3</span></span>
+<span><span class="co">#&gt;   Pretest1      Pretest2: Retain  Pretest2: Not retained</span></span>
+<span><span class="co">#&gt;   Retain                       0                       0</span></span>
+<span><span class="co">#&gt;   Not retained                 1                       3</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; phi = NA.</span></span></code></pre></div>
+<span><span class="co">#&gt; phi = --.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span></code></pre></div>
 <p><strong>Power quick-checks</strong></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.65</span>, <span class="fl">.75</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort planning</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort_power&gt; Item-sort planning</span></span>
 <span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  judges required minimum Psa power at .65 power at .75</span></span>
-<span><span class="co">#&gt;      20    15/20         .75          .25          .62</span></span>
-<span><span class="co">#&gt;      30    20/30         .67          .51          .89</span></span>
+<span><span class="co">#&gt;   Judges  Required  Minimum Psa  Power at .65  Power at .75</span></span>
+<span><span class="co">#&gt;       20     15/20          .75           .25           .62</span></span>
+<span><span class="co">#&gt;       30     20/30          .67           .51           .89</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; required: target assignments an item needs to be retained. minimum Psa: the</span></span>
-<span><span class="co">#&gt; same as a proportion. power at a value: the exact probability of reaching the</span></span>
-<span><span class="co">#&gt; required count if each judge assigns the item to its target with that</span></span>
-<span><span class="co">#&gt; probability.</span></span></code></pre></div>
+<span><span class="co">#&gt; Required: target assignments an item needs to be retained. Minimum Psa: the</span></span>
+<span><span class="co">#&gt; same as a proportion (Psa = proportion of substantive agreement). Power at a</span></span>
+<span><span class="co">#&gt; value: the exact probability of reaching the required count if each judge</span></span>
+<span><span class="co">#&gt; assigns the item to its target with that probability.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See plot(x) for the power curve.</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

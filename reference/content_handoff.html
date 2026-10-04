@@ -112,7 +112,7 @@ was last rated in.</p></dd>
 
 
 <dt id="arg-reverse-keyed">reverse_keyed<a class="anchor" aria-label="anchor" href="#arg-reverse-keyed"></a></dt>
-<dd><p>Names of the reverse-worded items, <code>character(0)</code> if
+<dd><p>Names of the reverse-keyed items, <code>character(0)</code> if
 none is, or <code>NULL</code> (the default) to leave keying unrecorded. See
 "Instrument metadata".</p></dd>
 
@@ -215,9 +215,9 @@ carries the item. There the value equals the criterion, so a recomputed
 package itself compares counts of experts. Read <code>carried</code>, which holds what
 each release decided.</p>
 <p>Keying is read the same way, from the field and not from a default:
-<code>keying</code> is <code>1</code> for a forward-worded item, <code>-1</code> for a reverse-worded one,
+<code>keying</code> is <code>1</code> for a forward-keyed item, <code>-1</code> for a reverse-keyed one,
 and <code>NA</code> when nobody said, as described under "Instrument metadata". Treat
-<code>NA</code> as unknown, never as forward-worded.</p>
+<code>NA</code> as unknown, never as forward-keyed.</p>
     </div>
     <div class="section level2">
     <h2 id="what-version-freezes">What version 1 freezes<a class="anchor" aria-label="anchor" href="#what-version-freezes"></a></h2>
@@ -380,9 +380,9 @@ of <code>item_statistics</code>, described under "The note column".</p>
 
 
 <p>Added in contentvalidR 0.7.0, at the request of the <code>nomologR</code> maintainers,
-because two empirical computations cannot be done correctly without them.</p><ul><li><p><code>keying</code> is <code>1</code> for a forward-worded item, <code>-1</code> for a reverse-worded one,
+because two empirical computations cannot be done correctly without them.</p><ul><li><p><code>keying</code> is <code>1</code> for a forward-keyed item, <code>-1</code> for a reverse-keyed one,
 and <code>NA</code> when nobody said. An even-odd consistency index must recode
-reverse-worded items before splitting the scale, or a perfectly consistent
+reverse-keyed items before splitting the scale, or a perfectly consistent
 respondent looks careless. And a negative corrected item-total correlation
 means opposite things in the two cases: on an item that was never recoded
 it is a coding error, and on a correctly coded item it is evidence against
@@ -398,13 +398,13 @@ not the scale respondents will answer the items on. Copying a fit's <code>lo</co
 <code>hi</code> into <code>response_min</code> and <code>response_max</code> would give a downstream reader
 the wrong limits, and it would then reject every legitimate top-category
 answer. So both default to <code>NA</code>, which means <em>unknown</em>, and a reader should
-treat <code>NA</code> that way rather than assume a forward-worded item or an observed
+treat <code>NA</code> that way rather than assume a forward-keyed item or an observed
 range.</p>
 <p>Supplying <code>reverse_keyed</code> is a statement about every item: the ones named
-are reverse-worded and the rest are not. Pass <code>character(0)</code> to record that
+are reverse-keyed and the rest are not. Pass <code>character(0)</code> to record that
 you checked and none is. So <code>keying</code> is either <code>NA</code> for every item or for
 none of them, and the same holds for the response scale.</p>
-<p>Naming a reverse-worded item without <code>response_scale</code> gives a warning,
+<p>Naming a reverse-keyed item without <code>response_scale</code> gives a warning,
 because such an item cannot be recoded without the scale's limits. A reader
 that recodes would otherwise have to refuse later, where the problem is
 harder to fix.</p>
@@ -443,9 +443,8 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-in"><span>                       agreement <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu">content_handoff</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">handoff</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR handoff (schema version 1)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ----------------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_handoff&gt; Handoff to empirical validation (schema version 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>
@@ -453,12 +452,12 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span>   score, 95%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Held back</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item decision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4   Review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Decision</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item4  Review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carry these items into the empirical workflow once response data are</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> collected. In nomologR that is</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   nomo_screen(data, items = handoff)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     nomo_screen(data, items = handoff)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> which screens the items carried here. Passing the whole handoff, rather than</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> handoff$items, keeps the keying and the reasons for anything held back.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -468,6 +467,8 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> its construct or load on an unintended factor. Items held back are listed</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> above rather than deleted, so the record stays complete.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See as.data.frame(x) for the item evidence and x$item_statistics for the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> statistics.</span>
 <span class="r-in"><span><span class="va">handoff</span><span class="op">$</span><span class="va">items</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Item1" "Item2" "Item3"</span>
 <span class="r-in"><span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span></span></span>

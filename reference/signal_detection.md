@@ -53,15 +53,16 @@ their substantive validities. *Journal of Applied Psychology, 76*(5),
 predicted <- c(TRUE, TRUE, FALSE, FALSE)
 actual    <- c(TRUE, FALSE, TRUE, FALSE)
 signal_detection(predicted, actual)
-#> Retention decisions compared with the actual outcome
+#> <contentvalid_signal> Retention decisions compared with the actual outcome
 #> 
-#>               Actual
-#> Predicted      Retain Not retained
-#>   Retain            1            1
-#>   Not retained      1            1
+#>   Predicted     Actual: Retain  Actual: Not retained
+#>   Retain                     1                     1
+#>   Not retained               1                     1
 #> 
 #> accuracy = .50, sensitivity = .50, specificity = .50, phi = .00, Fisher's
-#> exact p = 1.000.
+#> exact p > .999.
 #> An expected count is below 5, so the exact test is reported in place of the
-#> chi-square approximation (chi-square(1, N = 4) = 0.00, p = 1.000).
+#> chi-square approximation (chi-square(1, N = 4) = 0.00, p > .999).
+#> 
+#> See as.data.frame(x) for the counts and the test as one row.
 ```

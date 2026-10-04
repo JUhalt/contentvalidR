@@ -40,23 +40,22 @@ R <- matrix(
 
 fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
+#> <contentvalid_expert> Expert-panel analysis
 #> Mode: relevance
 #> Items: 4 | Experts/item: 6
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
-#>   Identical rating pairs: 63.3%.
+#>   Identical rating pairs: 63%.
 #> 
-#> 4 of 4 items meet the I-CVI criterion, all with strong support (modified
-#> kappa above .74).
+#> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa
+#> above .74).
 #> 
-#>   item       decision N    V      95% CI I-CVI      95% CI kappa
-#>  Item1 Strong support 6 1.00 [.82, 1.00]  1.00 [.61, 1.00]  1.00
-#>  Item2 Strong support 6  .94  [.74, .99]  1.00 [.61, 1.00]  1.00
-#>  Item3 Strong support 6  .89  [.67, .97]  1.00 [.61, 1.00]  1.00
-#>  Item4 Strong support 6  .67  [.44, .84]   .83  [.44, .97]   .82
+#>   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa
+#>   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00
+#>   Item2  Strong support        6   .94   [.74, .99]   1.00  [.61, 1.00]   1.00
+#>   Item3  Strong support        6   .89   [.67, .97]   1.00  [.61, 1.00]   1.00
+#>   Item4  Strong support        6   .67   [.44, .84]    .83   [.44, .97]    .82
 #> 
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
@@ -68,29 +67,29 @@ fit
 #> An interval reflects how few ratings an item received, not whether the right
 #> judges were chosen.
 #> 
-#> Panel agreement is one coefficient for the whole panel, whereas modified
-#> kappa (the kappa column) describes each item. Alpha can be low when nearly
-#> every rating is the same value, even on a panel that agrees closely, so read
-#> it beside the share of identical rating pairs. A low alpha with many
-#> identical pairs is not by itself evidence of a poor panel. Print
-#> `details$agreement` for the full explanation and interval details.
+#> Panel agreement is one coefficient for the whole panel, whereas modified kappa
+#> (the kappa column) describes each item. Alpha can be low when nearly every
+#> rating is the same value, even on a panel that agrees closely, so read it
+#> beside the share of identical rating pairs. A low alpha with many identical
+#> pairs is not by itself evidence of a poor panel. Print `details$agreement` for
+#> the full explanation and interval details.
 #> 
 #> CVI criteria are published panel-size guidelines, not universal validity
 #> cutoffs.
 #> 
 #> What these columns mean
-#>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items'
-#>       I-CVIs; Polit and Beck (2006) recommend .90 or higher.
+#>   S-CVI/Ave -- Scale-level CVI, averaging method. Mean of the items' I-CVIs;
+#>       Polit and Beck (2006) recommend .90 or higher.
 #>   S-CVI/UA -- Scale-level CVI, universal agreement. Share of items every
 #>       expert rated relevant; it falls as experts are added.
 #>   V -- Aiken's V. Mean relevance rating rescaled to run from 0 (lowest
 #>       possible) to 1 (highest).
-#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, against Lynn's criterion for the panel size (beyond
-#>       ten, this package's).
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the item
+#>       relevant, against Lynn's criterion for the panel size (beyond ten, this
+#>       package's).
 #>   95% CI after I-CVI -- Interval for I-CVI. Wide because expert panels are
 #>       small; the method is named above.
-#>   kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
+#>   Kappa -- Modified kappa. I-CVI corrected for chance agreement (at most 1;
 #>       below 0 only when no expert, or one of three, rated it relevant).
 #>   Panel agreement -- Panel-level agreement. One coefficient for the whole
 #>       panel (1 is perfect, 0 is chance); it can be low when nearly every
@@ -100,22 +99,25 @@ fit
 #>   Strong support -- met the I-CVI criterion, which also puts modified kappa
 #>       above .74.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 summary(fit)
-#> Summary: expert-panel content-validity evidence
-#> -----------------------------------------------
+#> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
 #> Supported: 4 | Review: 0
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
-#>   Identical rating pairs: 63.3%.
+#>   Identical rating pairs: 63%.
 #> 
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.
+#> 
+#> See x$reviewed_items for the flagged items as a data frame.
 ```
 
 Aiken’s V rescales the bounded expert ratings to the 0-1 interval. The
@@ -127,16 +129,18 @@ function:
 ``` r
 
 aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 200, seed = 1)
-#> Aiken's V (Aiken, 1980)
+#> <contentvalid_aiken> Aiken's V (Aiken, 1980)
 #> 
-#>   item experts    V       95% CI
-#>  Item1       6 1.00 [1.00, 1.00]
-#>  Item2       6  .94  [.83, 1.00]
-#>  Item3       6  .89  [.78, 1.00]
-#>  Item4       6  .67   [.50, .83]
+#>   Item   Experts     V        95% CI
+#>   Item1        6  1.00  [1.00, 1.00]
+#>   Item2        6   .94   [.83, 1.00]
+#>   Item3        6   .89   [.78, 1.00]
+#>   Item4        6   .67    [.50, .83]
 #> 
 #> Scale: 1 to 4.
 #> Interval: percentile bootstrap.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```
 
 For CVI, the workflow dichotomizes ratings at `relevance_cut`. On a 1-4
@@ -170,11 +174,10 @@ fit$scale_summary[, c("agreement", "agreement_low", "agreement_high")]
 #>   agreement agreement_low agreement_high
 #> 1 0.3743873    -0.1210084      0.6340909
 fit$details$agreement
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 4 | Raters: 6
 #> Krippendorff's alpha (ordinal) = .37, 95% CI [-.12, .63]
-#> Identical rating pairs: 63.3%
+#> Identical rating pairs: 63%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
 #> expected if these same ratings were assigned to items at random: 1 means
@@ -196,6 +199,8 @@ fit$details$agreement
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 ```
 
 The default coefficient is Krippendorff’s alpha (Krippendorff, 2011). It
@@ -244,15 +249,14 @@ relevance mode, AC1 is computed on the relevant/not-relevant decision at
 ac1_fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4,
                            agreement = "ac1", agreement_B = 0)
 ac1_fit$details$agreement
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 4 | Raters: 6
 #> Gwet's AC1 = .91
-#> Identical rating pairs: 91.7%
+#> Identical rating pairs: 92%
 #> 
 #> AC1 compares observed agreement with the agreement expected by chance,
-#> estimated so that it stays high when nearly every rating falls in one
-#> category (Gwet, 2008).
+#> estimated so that it stays high when nearly every rating falls in one category
+#> (Gwet, 2008).
 #> 
 #> Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show
 #> that it rises as ratings concentrate in one category even when agreement is
@@ -262,6 +266,8 @@ ac1_fit$details$agreement
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 ```
 
 ### The interval
@@ -282,8 +288,7 @@ experts:
 ``` r
 
 expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
+#> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
 #> Items: 3 | Experts/item: 12
 #> Method: Lawshe CVR with exact binomial critical values
@@ -291,28 +296,30 @@ expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
 #> 1 of 3 items meets the exact essentiality criterion.
 #> Flagged for review: Item2, Item3
 #> 
-#>   item  decision essential CVR    p
-#>  Item1 Supported     10/12 .67 .019
-#>  Item2    Review      8/12 .33 .194
-#>  Item3    Review      6/12 .00 .613
+#>   Item   Decision   Essential  CVR     p
+#>   Item1  Supported      10/12  .67  .019
+#>   Item2  Review          8/12  .33  .194
+#>   Item3  Review          6/12  .00  .613
 #> 
-#> essential: experts rating the item essential, out of those who rated it.
+#> Essential: experts rating the item essential, out of those who rated it.
 #> With 12 experts, an item needs at least 10 rating it essential for the exact
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
-#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling
-#>       the item essential (-1 to 1; above 0 means more than half did).
+#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the
+#>       item essential (-1 to 1; above 0 means more than half did).
 #> 
 #> What the decisions mean
 #>   Supported -- enough experts rated it essential to pass the exact test.
 #>   Review -- too few experts rated it essential to pass the exact test.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
 
 [`cvr()`](https://juhalt.github.io/contentvalidR/reference/cvr.md)
@@ -330,8 +337,7 @@ E <- cbind(
   Item2 = c(1,1,1,1,1,0,0,0)
 )
 expert_validity(E, mode = "essentiality")
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
+#> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
 #> Items: 2 | Experts/item: 8
 #> Method: Lawshe CVR with exact binomial critical values
@@ -339,27 +345,29 @@ expert_validity(E, mode = "essentiality")
 #> 1 of 2 items meets the exact essentiality criterion.
 #> Flagged for review: Item2
 #> 
-#>   item  decision essential  CVR    p
-#>  Item1 Supported       8/8 1.00 .004
-#>  Item2    Review       5/8  .25 .363
+#>   Item   Decision   Essential   CVR     p
+#>   Item1  Supported        8/8  1.00  .004
+#>   Item2  Review           5/8   .25  .363
 #> 
-#> essential: experts rating the item essential, out of those who rated it.
+#> Essential: experts rating the item essential, out of those who rated it.
 #> With 8 experts, an item needs at least 7 rating it essential for the exact
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
-#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling
-#>       the item essential (-1 to 1; above 0 means more than half did).
+#>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the
+#>       item essential (-1 to 1; above 0 means more than half did).
 #> 
 #> What the decisions mean
 #>   Supported -- enough experts rated it essential to pass the exact test.
 #>   Review -- too few experts rated it essential to pass the exact test.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
 
 A failure to clear the exact criterion is labeled `Review`, not
@@ -382,8 +390,7 @@ decision, without changing it:
 
 old <- options(contentvalidR.show_key = FALSE)
 expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
+#> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
 #> Items: 3 | Experts/item: 9
 #> Method: Lawshe CVR with exact binomial critical values
@@ -391,32 +398,34 @@ expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
 #> 2 of 3 items meet the exact essentiality criterion.
 #> Flagged for review: Item3
 #> 
-#>   item  decision essential  CVR    p
-#>  Item1 Supported       9/9 1.00 .002
-#>  Item2 Supported       8/9  .78 .020
-#>  Item3    Review       7/9  .56 .090
+#>   Item   Decision   Essential   CVR     p
+#>   Item1  Supported        9/9  1.00  .002
+#>   Item2  Supported        8/9   .78  .020
+#>   Item3  Review           7/9   .56  .090
 #> 
-#> essential: experts rating the item essential, out of those who rated it.
+#> Essential: experts rating the item essential, out of those who rated it.
 #> With 9 experts, an item needs at least 8 rating it essential for the exact
 #> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> Earlier methods, for comparison (not used for the decision)
-#>   item  decision essential  CVR Lawshe (1975) Wilson et al. (2012)
-#>  Item1 Supported       9/9 1.00         meets                meets
-#>  Item2 Supported       8/9  .78         meets                meets
-#>  Item3    Review       7/9  .56         below                meets
+#>   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)
+#>   Item1  Supported        9/9  1.00  Meets          Meets
+#>   Item2  Supported        8/9   .78  Meets          Meets
+#>   Item3  Review           7/9   .56  Below          Meets
 #> 
-#> Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists (8 of 9), which he
-#> labeled a one-tailed test at .05. Wilson et al. (2012) found the table closer
-#> to a two-tailed test.
-#> Wilson et al. (2012, Table 2): minimum CVR .55, the normal approximation
-#> z/sqrt(N) at one-tailed alpha = .05.
-#> The decision above uses the exact binomial test (Ayre & Scally, 2014).
-#> Lawshe's content validity index, the mean CVR of the items his table retains:
-#> .89 (2 items).
+#>   Lawshe (1975, Table 1): minimum CVR .78 for 9 panelists (8 of 9), which he
+#>   labeled a one-tailed test at .05. Wilson et al. (2012) found the table
+#>   closer to a two-tailed test.
+#>   Wilson et al. (2012, Table 2): minimum CVR .55, the normal approximation
+#>   z/sqrt(N) at one-tailed alpha = .05.
+#>   The decision above uses the exact binomial test (Ayre & Scally, 2014).
+#>   Lawshe's content validity index, the mean CVR of the items his table
+#>   retains: .89 (2 items).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 options(old)
 ```
 
@@ -466,22 +475,20 @@ d$target_objective <- ifelse(d$item == "I1", "A", "B")
 d$score <- ifelse(d$objective == d$target_objective, 1, -1)
 
 expert_validity(d, mode = "congruence")
-#> contentvalidR expert-panel analysis
-#> -----------------------------------
+#> <contentvalid_expert> Expert-panel analysis
 #> Mode: congruence
 #> Items: 2 | Experts/cell: 4 | Objectives: 2
 #> Method: Index of item-objective congruence (Rovinelli & Hambleton, 1977)
-#> Criterion: IOC at or above .70, the criterion Rovinelli and Hambleton
-#> applied.
+#> Criterion: IOC at or above .70, the criterion Rovinelli and Hambleton applied.
 #> 
 #> 2 of 2 items meet the congruence criterion for the target objective.
 #> 
-#>  item target  decision experts  IOC mean competitor competitor mean margin
-#>    I1      A Congruent       4 1.00 1.00          B           -1.00   2.00
-#>    I2      B Congruent       4 1.00 1.00          A           -1.00   2.00
+#>   Item Target Decision  Experts  IOC Mean Competitor Competitor mean Margin
+#>   I1   A      Congruent       4 1.00 1.00 B                    -1.00   2.00
+#>   I2   B      Congruent       4 1.00 1.00 A                    -1.00   2.00
 #> 
-#> IOC: the index for the target objective. mean: the experts' mean rating on it
-#> (-1 to 1). competitor mean: the highest mean on another objective. margin:
+#> IOC: the index for the target objective. Mean: the experts' mean rating on it
+#> (-1 to 1). Competitor mean: the highest mean on another objective. Margin:
 #> mean less competitor mean, a description beside the index, not part of its
 #> criterion.
 #> 
@@ -490,18 +497,20 @@ expert_validity(d, mode = "congruence")
 #>   objectives.
 #> 
 #> What these columns mean
-#>   IOC -- Index of item-objective congruence. Whether experts matched the
-#>       item to this objective and not to the others (-1 to 1; Rovinelli and
+#>   IOC -- Index of item-objective congruence. Whether experts matched the item
+#>       to this objective and not to the others (-1 to 1; Rovinelli and
 #>       Hambleton used .70).
 #> 
 #> What the decisions mean
 #>   Congruent -- its index of item-objective congruence met the criterion.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> Use quantitative indices alongside expert comments, construct coverage, and
 #> comprehensibility review.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
 
 An item is `"Congruent"` when its index for the target objective reaches

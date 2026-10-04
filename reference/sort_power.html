@@ -112,31 +112,33 @@ methodological best practices. <em>Journal of Business and Psychology, 31</em>(1
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">sort_power</span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fl">.70</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort planning</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_sort_power&gt; Item-sort planning</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  judges required minimum Psa power at .70</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      20    15/20         .75          .42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      30    20/30         .67          .73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      40    26/40         .65          .81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Judges  Required  Minimum Psa  Power at .70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       20     15/20          .75           .42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       30     20/30          .67           .73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       40     26/40          .65           .81</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at a value: the exact probability of reaching the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with that</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Required: target assignments an item needs to be retained. Minimum Psa: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion (Psa = proportion of substantive agreement). Power at a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> value: the exact probability of reaching the required count if each judge</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assigns the item to its target with that probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See plot(x) for the power curve.</span>
 <span class="r-in"><span><span class="fu">sort_power</span><span class="op">(</span>N <span class="op">=</span> <span class="fl">30</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR item-sort planning</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_sort_power&gt; Item-sort planning</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  judges required minimum Psa power at .60 power at .70 power at .80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      30    20/30         .67          .29          .73          .97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Judges  Required  Minimum Psa  Power at .60  Power at .70  Power at .80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       30     20/30          .67           .29           .73           .97</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required: target assignments an item needs to be retained. minimum Psa: the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion. power at a value: the exact probability of reaching the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> required count if each judge assigns the item to its target with that</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Required: target assignments an item needs to be retained. Minimum Psa: the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> same as a proportion (Psa = proportion of substantive agreement). Power at a</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> value: the exact probability of reaching the required count if each judge</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> assigns the item to its target with that probability.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See plot(x) for the power curve.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

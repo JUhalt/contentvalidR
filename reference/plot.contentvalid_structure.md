@@ -10,7 +10,7 @@ are the ones experts did not group as the blueprint expects.
 
 ``` r
 # S3 method for class 'contentvalid_structure'
-plot(x, show_legend = TRUE, ...)
+plot(x, show_legend = TRUE, type = "map", ...)
 ```
 
 ## Arguments
@@ -22,6 +22,11 @@ plot(x, show_legend = TRUE, ...)
 - show_legend:
 
   Draw the blueprint-cell key.
+
+- type:
+
+  `"map"`, the only view, accepted so that every plot method takes
+  `type`.
 
 - ...:
 

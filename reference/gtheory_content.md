@@ -146,36 +146,38 @@ ratings <- rbind(
 )
 dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 gtheory_content(ratings)
-#> contentvalidR generalizability analysis
-#> ---------------------------------------
+#> <contentvalid_gtheory> Generalizability analysis
 #> Design: items x judges, crossed, one rating per cell
 #> Items: 6 | Judges: 8
 #> 
 #> Observed design
 #>   Generalizability coefficient (relative, rank ordering): .97
 #>   Dependability coefficient (absolute, fixed standard):   .96
-#> Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
-#> With 8 judges, absolute decisions about these items would generalize to
-#> another panel of the same size at Phi = .96, at or above the .80 set for this
-#> analysis. Judge differences account for 5.8% of total variance.
+#>   Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
+#>   With 8 judges, absolute decisions about these items would generalize to
+#>   another panel of the same size at Phi = .96, at or above the .80 set for
+#>   this analysis. Judge differences account for 5.8% of total variance.
 #> 
 #> Variance components
-#>    source df   MS estimate used % of total
-#>      item  5 8.58     1.04 1.04       77.1
-#>     judge  7 0.70     0.08 0.08        5.8
-#>  residual 35 0.23     0.23 0.23       17.1
+#>   Source    df    MS  Estimate  Used  % of total
+#>   item       5  8.58      1.04  1.04        77.1
+#>   judge      7  0.70      0.08  0.08         5.8
+#>   residual  35  0.23      0.23  0.23        17.1
 #> 
-#> estimate: the ANOVA estimate of each variance component. used: the same with
-#> a negative estimate set to 0, which the coefficients use (Brennan, 2001).
+#>   MS: mean square. Estimate: the ANOVA estimate of each variance component.
+#>   Used: the same with a negative estimate set to 0, which the coefficients use
+#>   (Brennan, 2001).
 #> 
 #> Judges needed to reach each coefficient
-#>  target relative (G) absolute (Phi)
-#>     .70            1              1
-#>     .80            1              2
-#>     .90            2              3
-#> These panel sizes are estimates from one panel's variance components, with no
-#> interval: read them as planning figures.
+#>   Target  Relative (G)  Absolute (Phi)
+#>      .70             1               1
+#>      .80             1               2
+#>      .90             2               3
+#>   These panel sizes are estimates from one panel's variance components, with
+#>   no interval: read them as planning figures.
 #> 
 #> A dependability coefficient describes generalization over judges only. It is
 #> not evidence that the items cover the intended content domain.
+#> 
+#> See x$dstudy for the coefficients projected by panel size.
 ```

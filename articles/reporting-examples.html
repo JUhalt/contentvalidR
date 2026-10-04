@@ -190,13 +190,24 @@ manuscript, and <code>format = "data.frame"</code> the rounded numbers.
 The unrounded values stay in <code>sort_fit$results</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">sort_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  item target judges competitor Psa     95% CI Csv      p decision</span></span>
-<span><span class="co">#&gt;    A1      A  18/20       B; C .90 [.70, .97] .85 &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain</span></span>
-<span><span class="co">#&gt;    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain</span></span>
-<span><span class="co">#&gt;    B2      B  13/20          A .65 [.43, .82] .40   .132   Review</span></span>
-<span><span class="co">#&gt;    C1      C  18/20       A; B .90 [.70, .97] .85 &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    C2      C  14/20          B .70 [.48, .85] .50   .058   Review</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision</span></span>
+<span><span class="co">#&gt;   A1    A        18/20  B; C        .90  [.70, .97]  .85  &lt; .001  Retain</span></span>
+<span><span class="co">#&gt;   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain</span></span>
+<span><span class="co">#&gt;   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain</span></span>
+<span><span class="co">#&gt;   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review</span></span>
+<span><span class="co">#&gt;   C1    C        18/20  A; B        .90  [.70, .97]  .85  &lt; .001  Retain</span></span>
+<span><span class="co">#&gt;   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. Psa = proportion of substantive agreement; CI = confidence interval;</span></span>
+<span><span class="co">#&gt; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence</span></span>
+<span><span class="co">#&gt; interval. Retain = at least the number of target assignments the exact</span></span>
+<span><span class="co">#&gt; one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy,</span></span>
+<span><span class="co">#&gt; 2016).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
 <p>Do not report <code>Review</code> as synonymous with deletion. A
 review flag identifies an item for substantive inspection; retaining an
 item for domain coverage can be a reasonable decision when that
@@ -298,13 +309,22 @@ definitions. 3 items were supported by the complete screening rule and 3
 were flagged for review.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  item target judges HTC HTD                  F test      p contrast p decision</span></span>
-<span><span class="co">#&gt;    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
-<span><span class="co">#&gt;    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span>
-<span><span class="co">#&gt;    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 &lt; .001       .052   Review</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item Target Judges HTC HTD F test                       p Contrast p Decision</span></span>
+<span><span class="co">#&gt;   A1   A          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   A2   A          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt;   B1   B          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   B2   B          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt;   C1   C          24 .93 .67 F(1.53, 35.18) = 237.08 &lt; .001     &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.</span></span>
+<span><span class="co">#&gt; Retain = omnibus p and every one-sided contrast p at or below alpha = .05</span></span>
+<span><span class="co">#&gt; (MacKenzie et al., 2011).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
 <p>For review items, report the strongest orbiting competitor, which
 <code>rating_fit$results</code> holds as
 <code>strongest_competitor</code>. That information turns a generic
@@ -461,8 +481,7 @@ item’s ratings are built to show.</p>
 <span><span class="va">sort_stage</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorted</span><span class="op">[</span><span class="va">sorted</span><span class="op">$</span><span class="va">item</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">panel</span><span class="op">$</span><span class="va">items</span>, <span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">evidence</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_evidence.html">content_evidence</a></span><span class="op">(</span>`Relevance panel` <span class="op">=</span> <span class="va">panel</span>, `Item sort` <span class="op">=</span> <span class="va">sort_stage</span><span class="op">)</span></span>
 <span><span class="va">evidence</span></span>
-<span><span class="co">#&gt; Content evidence across 2 stages</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_evidence&gt; Content evidence across 2 stages</span></span>
 <span><span class="co">#&gt; 10 of 12 items carried by every stage that reviewed them. Held back: EF5</span></span>
 <span><span class="co">#&gt; (Relevance panel), TF5 (Item sort).</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -470,36 +489,35 @@ item’s ratings are built to show.</p>
 <span><span class="co">#&gt;   1. Relevance panel: 12 items, 8 experts. Shows I-CVI.</span></span>
 <span><span class="co">#&gt;   2. Item sort: 11 items, 20 judges. Shows Psa.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item     Relevance panel  Item sort                     result</span></span>
-<span><span class="co">#&gt;   EF1 1.00 Strong support .95 Retain                    carried</span></span>
-<span><span class="co">#&gt;   EF2 1.00 Strong support .90 Retain                    carried</span></span>
-<span><span class="co">#&gt;   EF3 1.00 Strong support .90 Retain                    carried</span></span>
-<span><span class="co">#&gt;   EF4 1.00 Strong support .90 Retain                    carried</span></span>
-<span><span class="co">#&gt;   EF5          .50 Review         -- held back: Relevance panel</span></span>
-<span><span class="co">#&gt;   EF6  .88 Strong support .75 Retain                    carried</span></span>
-<span><span class="co">#&gt;   TF1 1.00 Strong support .95 Retain                    carried</span></span>
-<span><span class="co">#&gt;   TF2 1.00 Strong support .85 Retain                    carried</span></span>
-<span><span class="co">#&gt;   TF3 1.00 Strong support .90 Retain                    carried</span></span>
-<span><span class="co">#&gt;   TF4 1.00 Strong support .80 Retain                    carried</span></span>
-<span><span class="co">#&gt;   TF5 1.00 Strong support .30 Review       held back: Item sort</span></span>
-<span><span class="co">#&gt;   TF6 1.00 Strong support .90 Retain                    carried</span></span>
+<span><span class="co">#&gt;   Item  Relevance panel      Item sort   Result</span></span>
+<span><span class="co">#&gt;   EF1   1.00 Strong support  .95 Retain  Carried</span></span>
+<span><span class="co">#&gt;   EF2   1.00 Strong support  .90 Retain  Carried</span></span>
+<span><span class="co">#&gt;   EF3   1.00 Strong support  .90 Retain  Carried</span></span>
+<span><span class="co">#&gt;   EF4   1.00 Strong support  .90 Retain  Carried</span></span>
+<span><span class="co">#&gt;   EF5   .50 Review           --          Held back: Relevance panel</span></span>
+<span><span class="co">#&gt;   EF6   .88 Strong support   .75 Retain  Carried</span></span>
+<span><span class="co">#&gt;   TF1   1.00 Strong support  .95 Retain  Carried</span></span>
+<span><span class="co">#&gt;   TF2   1.00 Strong support  .85 Retain  Carried</span></span>
+<span><span class="co">#&gt;   TF3   1.00 Strong support  .90 Retain  Carried</span></span>
+<span><span class="co">#&gt;   TF4   1.00 Strong support  .80 Retain  Carried</span></span>
+<span><span class="co">#&gt;   TF5   1.00 Strong support  .30 Review  Held back: Item sort</span></span>
+<span><span class="co">#&gt;   TF6   1.00 Strong support  .90 Retain  Carried</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span></span>
-<span><span class="co">#&gt;       item relevant, against Lynn's criterion for the panel size (beyond</span></span>
-<span><span class="co">#&gt;       ten, this package's).</span></span>
-<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span></span>
-<span><span class="co">#&gt;       item in the construct it was written for (0 to 1; higher is</span></span>
-<span><span class="co">#&gt;       stronger).</span></span>
-<span><span class="co">#&gt;   result -- carried when every stage that reviewed the item carried it;</span></span>
+<span><span class="co">#&gt;   I-CVI -- Item-level Content Validity Index. Share of experts rating the item</span></span>
+<span><span class="co">#&gt;       relevant, against Lynn's criterion for the panel size (beyond ten, this</span></span>
+<span><span class="co">#&gt;       package's).</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
+<span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
+<span><span class="co">#&gt;   Result -- Carried when every stage that reviewed the item carried it;</span></span>
 <span><span class="co">#&gt;       otherwise the stages that held it back. -- marks a stage that did not</span></span>
 <span><span class="co">#&gt;       review the item.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Figures: plot(x) for the evidence profile, plot(x, type = "flow")</span></span>
-<span><span class="co">#&gt; for the flow diagram; add apa = FALSE for color.</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span></code></pre></div>
+<span><span class="co">#&gt; See plot(x) for the evidence profile and plot(x, type = "flow") for the flow</span></span>
+<span><span class="co">#&gt; diagram; add apa = FALSE for color.</span></span></code></pre></div>
 <p>The flow diagram follows the items through the stages. It is modeled
 on the PRISMA 2020 flow diagram for systematic reviews (Page et al.,
 2021), with items in place of studies, and it is the figure a Method

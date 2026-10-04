@@ -238,20 +238,22 @@ Integrating new and existing techniques. <em>MIS Quarterly, 35</em>(2), 293–33
 <span class="r-in"><span><span class="va">d</span><span class="op">$</span><span class="va">rating</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">construct</span> <span class="op">==</span> <span class="va">d</span><span class="op">$</span><span class="va">target_construct</span>,</span></span>
 <span class="r-in"><span>                   <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fl">4.5</span>, <span class="fl">.4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span>, <span class="fl">2.3</span>, <span class="fl">.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">anova_content</span><span class="op">(</span><span class="va">d</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content-validity ANOVA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_anova&gt; Content-validity ANOVA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adapted from Hinkin &amp; Tracey (1999) and MacKenzie et al. (2011).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges                  F test      p partial eta^2 contrast p met</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I1      A     12 F(1.89, 20.84) = 193.43 &lt; .001           .95     &lt; .001 yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    I2      B     12 F(1.77, 19.51) = 138.46 &lt; .001           .93     &lt; .001 yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item Target Judges F test                       p Partial eta^2 Contrast p Met</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I1   A          12 F(1.89, 20.84) = 193.43 &lt; .001           .95     &lt; .001 yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I2   B          12 F(1.77, 19.51) = 138.46 &lt; .001           .93     &lt; .001 yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> their degrees of freedom.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contrast p: the largest p among the planned contrasts, each one-sided (the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Contrast p: the largest p among the planned contrasts, each one-sided (the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> intended construct rated above one of the others), at alpha = .05 with no</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> adjustment for their number. It is NA when a contrast has no p because every</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> judge rated the two constructs the same. met: whether every contrast passed.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> adjustment for their number. It is -- when a contrast has no p because every</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> judge rated the two constructs the same. Met: whether every contrast passed.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(x, "contrasts") holds each one.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See as.data.frame(x) for the unrounded values.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

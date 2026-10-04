@@ -159,18 +159,31 @@ one used a different criterion.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">content_report</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  item target judges competitor Psa     95% CI Csv      p decision</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    A1      A  18/20       B; C .90 [.70, .97] .85 &lt; .001   Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    C1      C  18/20       A; B .90 [.70, .97] .85 &lt; .001   Retain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_report&gt; Results table in APA style</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A1    A        18/20  B; C        .90  [.70, .97]  .85  &lt; .001  Retain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   C1    C        18/20  A; B        .90  [.70, .97]  .85  &lt; .001  Retain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note. Psa = proportion of substantive agreement; CI = confidence interval;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> interval. Retain = at least the number of target assignments the exact</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2016).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See content_report(fit, format = "markdown") for the table as Markdown, ready</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> for a manuscript.</span>
 <span class="r-in"><span><span class="fu">content_report</span><span class="op">(</span><span class="va">fit</span>, format <span class="op">=</span> <span class="st">"markdown"</span>, include <span class="op">=</span> <span class="st">"flagged"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> | item | target | judges | competitor | Psa | 95% CI | Csv | p | decision |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> | Item | Target | Judges | Competitor | Psa | 95% CI | Csv | p | Decision |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | --- | --- | --- | --- | --- | --- | --- | --- | --- |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | B2 | B | 13/20 | A | .65 | [.43, .82] | .40 | .132 | Review |</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> | C2 | C | 14/20 | B | .70 | [.48, .85] | .50 | .058 | Review |</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> *Note.* Psa = proportion of substantive agreement; CI = confidence interval; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence interval. Retain = at least the number of target assignments the exact one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy, 2016).</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

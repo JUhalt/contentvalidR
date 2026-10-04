@@ -84,13 +84,15 @@ confidence interval to Aiken's item content-relevance index.
 R <- matrix(c(4,4,3,4, 4,3,4,4, 3,3,4,4), nrow = 4)
 colnames(R) <- c("Item1", "Item2", "Item3")
 aikens_v(R, lo = 1, hi = 4)
-#> Aiken's V (Aiken, 1980)
+#> <contentvalid_aiken> Aiken's V (Aiken, 1980)
 #> 
-#>   item experts   V     95% CI
-#>  Item1       4 .92 [.65, .99]
-#>  Item2       4 .92 [.65, .99]
-#>  Item3       4 .83 [.55, .95]
+#>   Item   Experts    V      95% CI
+#>   Item1        4  .92  [.65, .99]
+#>   Item2        4  .92  [.65, .99]
+#>   Item3        4  .83  [.55, .95]
 #> 
 #> Scale: 1 to 4.
 #> Interval: Penfield-Giacobbi score (Penfield & Giacobbi, 2004).
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

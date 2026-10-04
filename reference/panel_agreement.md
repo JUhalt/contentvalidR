@@ -150,11 +150,10 @@ ratings <- rbind(
   c(4, 4, 3, 2, 4), c(4, 3, 3, 2, 4), c(3, 4, 4, 1, 4), c(4, 4, 3, 2, 3)
 )
 panel_agreement(ratings, seed = 1)
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 5 | Raters: 4
 #> Krippendorff's alpha (ordinal) = .56, 95% CI [-.27, .78]
-#> Identical rating pairs: 50.0%
+#> Identical rating pairs: 50%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
 #> expected if these same ratings were assigned to items at random: 1 means
@@ -173,12 +172,13 @@ panel_agreement(ratings, seed = 1)
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 panel_agreement(ratings, level = "interval", B = 0)
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 5 | Raters: 4
 #> Krippendorff's alpha (interval) = .70
-#> Identical rating pairs: 50.0%
+#> Identical rating pairs: 50%
 #> 
 #> Alpha compares the disagreement observed within items with the disagreement
 #> expected if these same ratings were assigned to items at random: 1 means
@@ -194,16 +194,17 @@ panel_agreement(ratings, level = "interval", B = 0)
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 panel_agreement(ratings >= 3, method = "ac1", B = 0)
-#> contentvalidR panel agreement
-#> -----------------------------
+#> <contentvalid_agreement> Panel agreement
 #> Items rated by two or more raters: 5 | Raters: 4
 #> Gwet's AC1 = 1.00
-#> Identical rating pairs: 100.0%
+#> Identical rating pairs: 100%
 #> 
 #> AC1 compares observed agreement with the agreement expected by chance,
-#> estimated so that it stays high when nearly every rating falls in one
-#> category (Gwet, 2008).
+#> estimated so that it stays high when nearly every rating falls in one category
+#> (Gwet, 2008).
 #> 
 #> Gwet's AC1 is available but is not the default. Vach and Gerke (2023) show
 #> that it rises as ratings concentrate in one category even when agreement is
@@ -213,4 +214,6 @@ panel_agreement(ratings >= 3, method = "ac1", B = 0)
 #> 
 #> Panel agreement describes how consistently raters rated these items. It does
 #> not show that the items are relevant or that the domain is covered.
+#> 
+#> See as.data.frame(x) for the estimate as one row.
 ```

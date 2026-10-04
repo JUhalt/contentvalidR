@@ -120,8 +120,7 @@
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sort_dat</span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
-<span><span class="co">#&gt; contentvalidR item-sort analysis</span></span>
-<span><span class="co">#&gt; --------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort&gt; Item-sort analysis</span></span>
 <span><span class="co">#&gt; Items: 3 | Judges: 20 | Target constructs: 1</span></span>
 <span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
 <span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
@@ -131,42 +130,40 @@
 <span><span class="co">#&gt; Flagged for review: Needs review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;          item target decision judges Psa     95% CI Csv competitor      p</span></span>
-<span><span class="co">#&gt;       Clear 1      A   Retain  18/20 .90 [.70, .97] .80          B &lt; .001</span></span>
-<span><span class="co">#&gt;       Clear 2      A   Retain  16/20 .80 [.58, .92] .60          B   .006</span></span>
-<span><span class="co">#&gt;  Needs review      A   Review  12/20 .60 [.39, .78] .20          B   .252</span></span>
+<span><span class="co">#&gt;   Item         Target Decision Judges Psa     95% CI Csv Competitor      p</span></span>
+<span><span class="co">#&gt;   Clear 1      A      Retain    18/20 .90 [.70, .97] .80 B          &lt; .001</span></span>
+<span><span class="co">#&gt;   Clear 2      A      Retain    16/20 .80 [.58, .92] .60 B            .006</span></span>
+<span><span class="co">#&gt;   Needs review A      Review    12/20 .60 [.39, .78] .20 B            .252</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; judges: assignments to the target construct, out of the judges who sorted the</span></span>
-<span><span class="co">#&gt; item.</span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt;   Judges: assignments to the target construct, out of the judges who sorted</span></span>
+<span><span class="co">#&gt;   the item.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean Psa Psa level mean Csv Csv level</span></span>
-<span><span class="co">#&gt;       A     3      .77  Moderate      .53  Moderate</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
-<span><span class="co">#&gt; These bands come from tasks with three definitions (one focal, two orbiting);</span></span>
-<span><span class="co">#&gt; judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
-<span><span class="co">#&gt; comparison is approximate. This is a contentvalidR caution: Colquitt et al.</span></span>
-<span><span class="co">#&gt; do not discuss other numbers.</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           3       .77  Moderate        .53  Moderate</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   These bands come from tasks with three definitions (one focal, two</span></span>
+<span><span class="co">#&gt;   orbiting); judges here used 2 (set `n_constructs` if more were offered), so</span></span>
+<span><span class="co">#&gt;   the comparison is approximate. This is a contentvalidR caution: Colquitt et</span></span>
+<span><span class="co">#&gt;   al. do not discuss other numbers.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms derived from scale-level</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt; place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt; so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
-<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span></span>
-<span><span class="co">#&gt;       item in the construct it was written for (0 to 1; higher is</span></span>
-<span><span class="co">#&gt;       stronger).</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
+<span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
 <span><span class="co">#&gt;   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the</span></span>
 <span><span class="co">#&gt;       method is named above.</span></span>
-<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges</span></span>
-<span><span class="co">#&gt;       chose the intended construct than its closest rival (-1 to 1; 0 is a</span></span>
-<span><span class="co">#&gt;       tie).</span></span>
-<span><span class="co">#&gt;   competitor -- Strongest competing construct. The construct other than the</span></span>
+<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges chose</span></span>
+<span><span class="co">#&gt;       the intended construct than its closest rival (-1 to 1; 0 is a tie).</span></span>
+<span><span class="co">#&gt;   Competitor -- Strongest competing construct. The construct other than the</span></span>
 <span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
 <span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
 <span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
@@ -174,24 +171,37 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
 <span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
-<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the</span></span>
-<span><span class="co">#&gt;       competitor column shows where judges put it instead.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the competitor</span></span>
+<span><span class="co">#&gt;       column shows where judges put it instead.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
 <span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
-<span><span class="co">#&gt; statistics.</span></span></code></pre></div>
-<p>The verdict comes first: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. <code>Review</code> is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.</p>
+<span><span class="co">#&gt; statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span></code></pre></div>
+<p>The first line names the object, <code>&lt;contentvalid_sort&gt;</code>, and what it holds; then, after the facts of the design, the verdict: two items meet the exact test of Howard and Melloy (2016), and one is flagged for review. <code>Review</code> is not a decision to delete; it marks an item to look at again, together with what the judges wrote about it.</p>
 <p>The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.</p>
 <p>For a manuscript, <code><a href="reference/content_report.html">content_report()</a></code> gives the same evidence as an APA table, and <code>format = "markdown"</code> writes it for Quarto or R Markdown:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;          item target judges competitor Psa     95% CI Csv      p decision</span></span>
-<span><span class="co">#&gt;       Clear 1      A  18/20          B .90 [.70, .97] .80 &lt; .001   Retain</span></span>
-<span><span class="co">#&gt;       Clear 2      A  16/20          B .80 [.58, .92] .60   .006   Retain</span></span>
-<span><span class="co">#&gt;  Needs review      A  12/20          B .60 [.39, .78] .20   .252   Review</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Item         Target Judges Competitor Psa     95% CI Csv      p Decision</span></span>
+<span><span class="co">#&gt;   Clear 1      A       18/20 B          .90 [.70, .97] .80 &lt; .001 Retain</span></span>
+<span><span class="co">#&gt;   Clear 2      A       16/20 B          .80 [.58, .92] .60   .006 Retain</span></span>
+<span><span class="co">#&gt;   Needs review A       12/20 B          .60 [.39, .78] .20   .252 Review</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Note. Psa = proportion of substantive agreement; CI = confidence interval;</span></span>
+<span><span class="co">#&gt; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence</span></span>
+<span><span class="co">#&gt; interval. Retain = at least the number of target assignments the exact</span></span>
+<span><span class="co">#&gt; one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy,</span></span>
+<span><span class="co">#&gt; 2016).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
+<span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> draws each item’s share of judges with its interval, against the share the exact test needs for that item:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
@@ -259,7 +269,7 @@
 <div class="section level2">
 <h2 id="reading-the-output">Reading the output<a class="anchor" aria-label="anchor" href="#reading-the-output"></a>
 </h2>
-<p>Every print opens with its verdict and reports numbers as the APA Publication Manual (7th ed.) prescribes: no leading zero on values that cannot exceed 1, <em>p</em> to three decimals, and intervals as [LL, UL]. A short key under each result explains only the columns and decisions it shows. <code><a href="reference/contentvalid_glossary.html">contentvalid_glossary()</a></code> has the full definitions, and <code>options(contentvalidR.show_key = FALSE)</code> hides the key once the terms are familiar. See <a href="https://juhalt.github.io/contentvalidR/articles/reading-output.html">Reading the output</a>.</p>
+<p>Every print opens with a header naming the object, then the facts of the design and the verdict, and reports numbers as the APA Publication Manual (7th ed.) prescribes: no leading zero on values that cannot exceed 1, <em>p</em> to three decimals, and intervals as [LL, UL]. A short key under each result explains only the columns and decisions it shows. <code><a href="reference/contentvalid_glossary.html">contentvalid_glossary()</a></code> has the full definitions, and <code>options(contentvalidR.show_key = FALSE)</code> hides the key once the terms are familiar. See <a href="https://juhalt.github.io/contentvalidR/articles/reading-output.html">Reading the output</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="what-every-workflow-returns">What every workflow returns<a class="anchor" aria-label="anchor" href="#what-every-workflow-returns"></a>

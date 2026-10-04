@@ -142,15 +142,17 @@ integer scale such as 0-to-4; it shifts that scale internally to the
 equivalent 1-to-5 anchor metric before computing HTC.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/htc.html">htc</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_htc&gt; Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges target mean HTC</span></span>
-<span><span class="co">#&gt;    A1      A     24        4.38 .88</span></span>
-<span><span class="co">#&gt;    A2      A     24        4.46 .89</span></span>
-<span><span class="co">#&gt;    A3      A     24        4.42 .88</span></span>
-<span><span class="co">#&gt;    B1      B     24        4.58 .92</span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Target mean  HTC</span></span>
+<span><span class="co">#&gt;   A1    A           24         4.38  .88</span></span>
+<span><span class="co">#&gt;   A2    A           24         4.46  .89</span></span>
+<span><span class="co">#&gt;   A3    A           24         4.42  .88</span></span>
+<span><span class="co">#&gt;   B1    B           24         4.58  .92</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; HTC expresses the mean target rating as a share of the 5-point scale.</span></span></code></pre></div>
+<span><span class="co">#&gt; HTC expresses the mean target rating as a share of the 5-point scale.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p>Higher HTC means stronger correspondence with the intended
 definition. Because the lowest rating still counts as one point, HTC
 cannot reach 0: it runs from
@@ -173,16 +175,18 @@ values indicate that orbiting definitions are rated more highly on
 average.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/htd.html">htd</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_htd&gt; Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges target mean competitor competitor mean HTD</span></span>
-<span><span class="co">#&gt;    A1      A     24        4.38          B            2.38 .56</span></span>
-<span><span class="co">#&gt;    A2      A     24        4.46          B            2.00 .63</span></span>
-<span><span class="co">#&gt;    A3      A     24        4.42          C            2.25 .55</span></span>
-<span><span class="co">#&gt;    B1      B     24        4.58          C            2.17 .61</span></span>
+<span><span class="co">#&gt;   Item  Target  Judges  Target mean  Competitor  Competitor mean  HTD</span></span>
+<span><span class="co">#&gt;   A1    A           24         4.38  B                      2.38  .56</span></span>
+<span><span class="co">#&gt;   A2    A           24         4.46  B                      2.00  .63</span></span>
+<span><span class="co">#&gt;   A3    A           24         4.42  C                      2.25  .55</span></span>
+<span><span class="co">#&gt;   B1    B           24         4.58  C                      2.17  .61</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; competitor: the other construct with the highest mean rating. HTD itself</span></span>
-<span><span class="co">#&gt; averages the gap over every other construct.</span></span></code></pre></div>
+<span><span class="co">#&gt; Competitor: the other construct with the highest mean rating. HTD itself</span></span>
+<span><span class="co">#&gt; averages the gap over every other construct.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p>The item-level table also identifies the strongest orbiting
 competitor. That is often more useful for revision than merely knowing
 that distinctiveness is weak.</p>
@@ -212,22 +216,24 @@ who rated the item against every definition.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aov_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/anova_content.html">anova_content</a></span><span class="op">(</span><span class="va">rating_dat</span>, design <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
 <span><span class="va">aov_out</span></span>
-<span><span class="co">#&gt; Content-validity ANOVA</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_anova&gt; Content-validity ANOVA</span></span>
 <span><span class="co">#&gt; Adapted from Hinkin &amp; Tracey (1999) and MacKenzie et al. (2011).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  item target judges                  F test      p partial eta^2 contrast p met</span></span>
-<span><span class="co">#&gt;    A1      A     24  F(1.98, 45.65) = 72.64 &lt; .001           .76     &lt; .001 yes</span></span>
-<span><span class="co">#&gt;    A2      A     24 F(1.62, 37.22) = 105.82 &lt; .001           .82     &lt; .001 yes</span></span>
-<span><span class="co">#&gt;    A3      A     24  F(2.00, 45.97) = 82.25 &lt; .001           .78     &lt; .001 yes</span></span>
-<span><span class="co">#&gt;    B1      B     24 F(1.85, 42.61) = 108.29 &lt; .001           .82     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;   Item Target Judges F test                       p Partial eta^2 Contrast p Met</span></span>
+<span><span class="co">#&gt;   A1   A          24 F(1.98, 45.65) = 72.64  &lt; .001           .76     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;   A2   A          24 F(1.62, 37.22) = 105.82 &lt; .001           .82     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;   A3   A          24 F(2.00, 45.97) = 82.25  &lt; .001           .78     &lt; .001 yes</span></span>
+<span><span class="co">#&gt;   B1   B          24 F(1.85, 42.61) = 108.29 &lt; .001           .82     &lt; .001 yes</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces</span></span>
 <span><span class="co">#&gt; their degrees of freedom.</span></span>
-<span><span class="co">#&gt; contrast p: the largest p among the planned contrasts, each one-sided (the</span></span>
+<span><span class="co">#&gt; Contrast p: the largest p among the planned contrasts, each one-sided (the</span></span>
 <span><span class="co">#&gt; intended construct rated above one of the others), at alpha = .05 with no</span></span>
-<span><span class="co">#&gt; adjustment for their number. It is NA when a contrast has no p because every</span></span>
-<span><span class="co">#&gt; judge rated the two constructs the same. met: whether every contrast passed.</span></span>
+<span><span class="co">#&gt; adjustment for their number. It is -- when a contrast has no p because every</span></span>
+<span><span class="co">#&gt; judge rated the two constructs the same. Met: whether every contrast passed.</span></span>
 <span><span class="co">#&gt; attr(x, "contrasts") holds each one.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">aov_out</span>, <span class="st">"contrasts"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   item design target competitor  n mean_target mean_competitor mean_diff</span></span>
 <span><span class="co">#&gt; 1   A1 within      A          B 24    4.375000        2.375000  2.000000</span></span>
@@ -269,12 +275,11 @@ post-hoc tests.</p>
 <span>  scale_max <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
-<span><span class="co">#&gt; contentvalidR construct-rating analysis</span></span>
-<span><span class="co">#&gt; ---------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_rating&gt; Construct-rating analysis</span></span>
 <span><span class="co">#&gt; Items: 4 | Judges: 24 | Target constructs: 2 | Constructs rated: 3</span></span>
 <span><span class="co">#&gt; Design: within-judge ratings on a 1 to 5 scale</span></span>
-<span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus</span></span>
-<span><span class="co">#&gt; p) plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
+<span><span class="co">#&gt; Test: one-way repeated-measures ANOVA (Greenhouse-Geisser corrected omnibus p)</span></span>
+<span><span class="co">#&gt; plus planned paired target-versus-orbiting contrasts; planned-contrast</span></span>
 <span><span class="co">#&gt; adjustment: none.</span></span>
 <span><span class="co">#&gt; Retain: the omnibus p and every contrast p at or below alpha = .05. The</span></span>
 <span><span class="co">#&gt; contrasts are one-sided: the intended construct rated above every other</span></span>
@@ -285,68 +290,71 @@ post-hoc tests.</p>
 <span><span class="co">#&gt; 4 of 4 items meet the full item-level screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;  item target decision  n HTC HTD omnibus p contrast p competitor</span></span>
-<span><span class="co">#&gt;    A1      A   Retain 24 .88 .56    &lt; .001     &lt; .001          B</span></span>
-<span><span class="co">#&gt;    A2      A   Retain 24 .89 .63    &lt; .001     &lt; .001          B</span></span>
-<span><span class="co">#&gt;    A3      A   Retain 24 .88 .55    &lt; .001     &lt; .001          C</span></span>
-<span><span class="co">#&gt;    B1      B   Retain 24 .92 .61    &lt; .001     &lt; .001          C</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
+<span><span class="co">#&gt;   A1    A       Retain    24  .88  .56     &lt; .001      &lt; .001  B</span></span>
+<span><span class="co">#&gt;   A2    A       Retain    24  .89  .63     &lt; .001      &lt; .001  B</span></span>
+<span><span class="co">#&gt;   A3    A       Retain    24  .88  .55     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   B1    B       Retain    24  .92  .61     &lt; .001      &lt; .001  C</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; n: judges who rated the item against every construct. omnibus p: do the</span></span>
-<span><span class="co">#&gt; item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
-<span><span class="co">#&gt; contrast p: the largest p among the planned target-versus-orbiting contrasts,</span></span>
-<span><span class="co">#&gt; so every contrast is at or below it.</span></span>
+<span><span class="co">#&gt;   n: judges who rated the item against every construct. Omnibus p: do the</span></span>
+<span><span class="co">#&gt;   item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
+<span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
+<span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Target-scale Colquitt benchmarks</span></span>
-<span><span class="co">#&gt;  target items mean HTC   HTC level mean HTD   HTD level</span></span>
-<span><span class="co">#&gt;       A     3      .88      Strong      .58 Very Strong</span></span>
-<span><span class="co">#&gt;       B     1      .92 Very Strong      .61 Very Strong</span></span>
-<span><span class="co">#&gt; Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean HTC  HTC level    Mean HTD  HTD level</span></span>
+<span><span class="co">#&gt;   A           3       .88  Strong            .58  Very Strong</span></span>
+<span><span class="co">#&gt;   B           1       .92  Very Strong       .61  Very Strong</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
-<span><span class="co">#&gt; averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
-<span><span class="co">#&gt; difference between ratings, so they sit on different scales with different</span></span>
-<span><span class="co">#&gt; typical values. A high HTC can be labeled Weak in the same analysis where a</span></span>
-<span><span class="co">#&gt; much smaller HTD is labeled Very Strong. Compare each index against its own</span></span>
-<span><span class="co">#&gt; benchmark, never against the other index's number.</span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms for scale-level HTC and HTD</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs. HTC is an average rating and HTD is a</span></span>
+<span><span class="co">#&gt;   difference between ratings, so they sit on different scales with different</span></span>
+<span><span class="co">#&gt;   typical values. A high HTC can be labeled Weak in the same analysis where a</span></span>
+<span><span class="co">#&gt;   much smaller HTD is labeled Very Strong. Compare each index against its own</span></span>
+<span><span class="co">#&gt;   benchmark, never against the other index's number.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   HTC -- Hinkin-Tracey Correspondence. Mean rating against the intended</span></span>
 <span><span class="co">#&gt;       definition, divided by the number of scale points (1/points to 1).</span></span>
-<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the</span></span>
-<span><span class="co">#&gt;       other constructs' ratings on average, as a share of the scale</span></span>
-<span><span class="co">#&gt;       (usually small).</span></span>
+<span><span class="co">#&gt;   HTD -- Hinkin-Tracey Distinctiveness. How far that rating exceeds the other</span></span>
+<span><span class="co">#&gt;       constructs' ratings on average, as a share of the scale (usually small).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What the decisions mean</span></span>
-<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and</span></span>
-<span><span class="co">#&gt;       the intended construct was rated above every other (every planned</span></span>
-<span><span class="co">#&gt;       contrast).</span></span>
+<span><span class="co">#&gt;   Retain -- its ratings differed across constructs (the omnibus test) and the</span></span>
+<span><span class="co">#&gt;       intended construct was rated above every other (every planned contrast).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Full definitions: contentvalid_glossary(). To hide this key:</span></span>
-<span><span class="co">#&gt; options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Consider construct</span></span>
 <span><span class="co">#&gt; definitions, item wording, orbiting-construct choice, domain coverage, and</span></span>
 <span><span class="co">#&gt; qualitative judge feedback.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Summary: construct-rating content-validity evidence</span></span>
-<span><span class="co">#&gt; ---------------------------------------------------</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_rating summary&gt; Construct-rating analysis</span></span>
 <span><span class="co">#&gt; Retain: 4 of 4 | Review: 0 of 4</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level evidence</span></span>
-<span><span class="co">#&gt;  target items retain review mean HTC   HTC level mean HTD   HTD level</span></span>
-<span><span class="co">#&gt;       A     3      3      0      .88      Strong      .58 Very Strong</span></span>
-<span><span class="co">#&gt;       B     1      1      0      .92 Very Strong      .61 Very Strong</span></span>
+<span><span class="co">#&gt;   Target  Items  Retain  Review  Mean HTC  HTC level    Mean HTD  HTD level</span></span>
+<span><span class="co">#&gt;   A           3       3       0       .88  Strong            .58  Very Strong</span></span>
+<span><span class="co">#&gt;   B           1       1       0       .92  Very Strong       .61  Very Strong</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; A: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
-<span><span class="co">#&gt;   published scales (Colquitt et al., 2019).</span></span>
-<span><span class="co">#&gt; B: Mean HTC and mean HTD both fall in the Very Strong band of published</span></span>
-<span><span class="co">#&gt;   scales (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt;   HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness</span></span>
+<span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt;   A: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
+<span><span class="co">#&gt;     published scales (Colquitt et al., 2019).</span></span>
+<span><span class="co">#&gt;   B: Mean HTC and mean HTD both fall in the Very Strong band of published</span></span>
+<span><span class="co">#&gt;     scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All analyzed items met the item-level inferential screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Interpret these results alongside theory, domain coverage, and qualitative</span></span>
 <span><span class="co">#&gt; feedback. The analysis does not by itself establish comprehensiveness or the</span></span>
-<span><span class="co">#&gt; full content-validity argument.</span></span></code></pre></div>
+<span><span class="co">#&gt; full content-validity argument.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>The item-level recommendation has deliberately limited meaning:</p>
 <ul>
 <li>
@@ -386,29 +394,33 @@ normative labels.</p>
 <span><span class="co">#&gt; 1 Mean HTC falls in the Strong band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; 2                Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .91</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .87</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .84</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .60</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .91</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .87</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .84</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .60</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
 <span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
-<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;         band percentile minimum</span></span>
-<span><span class="co">#&gt;  Very Strong  80th-99th     .35</span></span>
-<span><span class="co">#&gt;       Strong  60th-79th     .27</span></span>
-<span><span class="co">#&gt;     Moderate  40th-59th     .18</span></span>
-<span><span class="co">#&gt;         Weak  20th-39th     .04</span></span>
-<span><span class="co">#&gt;      Lack of   0th-19th    none</span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
+<span><span class="co">#&gt;   Very Strong  80th-99th       .35</span></span>
+<span><span class="co">#&gt;   Strong       60th-79th       .27</span></span>
+<span><span class="co">#&gt;   Moderate     40th-59th       .18</span></span>
+<span><span class="co">#&gt;   Weak         20th-39th       .04</span></span>
+<span><span class="co">#&gt;   Lack of      0th-19th       none</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; A scale-level mean at or above a band's minimum falls in that band. The bands</span></span>
-<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span></code></pre></div>
+<span><span class="co">#&gt; are percentiles of published scales, not validity cutoffs.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p>The overall bands are empirical percentile standing, not universal
 validity cutoffs. If the average correlation between a focal scale and
 its orbiting scales is known, correlation-conditional norms can be

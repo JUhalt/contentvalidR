@@ -104,48 +104,50 @@ whose decision study plans panel size against a generalizability target.
 
 ``` r
 expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
-#> contentvalidR expert-panel planning
-#> -----------------------------------
+#> <contentvalid_expert_power> Expert-panel planning
 #> Criterion: Exact binomial planning against the panel-size I-CVI guideline
 #> 
 #> Probability that an item clears the criterion
-#>  experts required prob = .80 prob = .90
-#>        3      3/3        .51        .73
-#>        4      4/4        .41        .66
-#>        5      5/5        .33        .59
-#>        6      5/6        .66        .89
-#>        7      6/7        .58        .85
-#>        8      7/8        .50        .81
-#>        9      7/9        .74        .95
-#>       10     8/10        .68        .93
+#>   Experts  Required  Prob = .80  Prob = .90
+#>         3       3/3         .51         .73
+#>         4       4/4         .41         .66
+#>         5       5/5         .33         .59
+#>         6       5/6         .66         .89
+#>         7       6/7         .58         .85
+#>         8       7/8         .50         .81
+#>         9       7/9         .74         .95
+#>        10      8/10         .68         .93
 #> 
-#> required: endorsements the criterion needs from the panel. prob: the
-#> probability you assume that one expert endorses the item.
+#>   Required: endorsements the criterion needs from the panel. Prob: the
+#>   probability you assume that one expert endorses the item.
 #> 
-#> Note the step at six experts. Lynn's criterion requires unanimity with three
-#> to five experts and allows one disagreement from six, so a sixth expert
-#> relaxes the criterion while a fourth or fifth makes unanimity harder. That is
-#> a property of the guideline, not of the items.
+#>   Note the step at six experts. Lynn's criterion requires unanimity with three
+#>   to five experts and allows one disagreement from six, so a sixth expert
+#>   relaxes the criterion while a fourth or fifth makes unanimity harder. That
+#>   is a property of the guideline, not of the items.
 #> 
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.
+#> 
+#> See plot(x) for the probabilities by panel size.
 expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
-#> contentvalidR expert-panel planning
-#> -----------------------------------
+#> <contentvalid_expert_power> Expert-panel planning
 #> Criterion: Exact binomial planning against the Lawshe CVR critical count
 #> Alpha: .05
 #> 
 #> Probability that an item clears the criterion
-#>  experts required prob = .75
-#>        5      5/5        .24
-#>       10     9/10        .24
-#>       15    12/15        .46
+#>   Experts  Required  Prob = .75
+#>         5       5/5         .24
+#>        10      9/10         .24
+#>        15     12/15         .46
 #> 
-#> required: endorsements the criterion needs from the panel. prob: the
-#> probability you assume that one expert endorses the item.
+#>   Required: endorsements the criterion needs from the panel. Prob: the
+#>   probability you assume that one expert endorses the item.
 #> 
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.
+#> 
+#> See plot(x) for the probabilities by panel size.
 ```

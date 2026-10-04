@@ -6,7 +6,7 @@ Plot an expert-panel planning curve
 
 ``` r
 # S3 method for class 'contentvalid_expert_power'
-plot(x, show_legend = TRUE, ...)
+plot(x, show_legend = TRUE, type = "probability", ...)
 ```
 
 ## Arguments
@@ -18,6 +18,11 @@ plot(x, show_legend = TRUE, ...)
 - show_legend:
 
   Draw the key identifying each assumed endorsement probability.
+
+- type:
+
+  `"probability"`, the only view, accepted so that every plot method
+  takes `type`.
 
 - ...:
 

@@ -108,13 +108,24 @@ unrounded values stay in `sort_fit$results`.
 ``` r
 
 content_report(sort_fit)
-#>  item target judges competitor Psa     95% CI Csv      p decision
-#>    A1      A  18/20       B; C .90 [.70, .97] .85 < .001   Retain
-#>    A2      A  15/20          B .75 [.53, .89] .60   .021   Retain
-#>    B1      B  17/20          A .85 [.64, .95] .75   .001   Retain
-#>    B2      B  13/20          A .65 [.43, .82] .40   .132   Review
-#>    C1      C  18/20       A; B .90 [.70, .97] .85 < .001   Retain
-#>    C2      C  14/20          B .70 [.48, .85] .50   .058   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item  Target  Judges  Competitor  Psa      95% CI  Csv       p  Decision
+#>   A1    A        18/20  B; C        .90  [.70, .97]  .85  < .001  Retain
+#>   A2    A        15/20  B           .75  [.53, .89]  .60    .021  Retain
+#>   B1    B        17/20  A           .85  [.64, .95]  .75    .001  Retain
+#>   B2    B        13/20  A           .65  [.43, .82]  .40    .132  Review
+#>   C1    C        18/20  A; B        .90  [.70, .97]  .85  < .001  Retain
+#>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
+#> 
+#> Note. Psa = proportion of substantive agreement; CI = confidence interval;
+#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
+#> interval. Retain = at least the number of target assignments the exact
+#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
+#> 2016).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
 
 Do not report `Review` as synonymous with deletion. A review flag
@@ -217,13 +228,22 @@ were flagged for review.
 ``` r
 
 content_report(rating_fit)
-#>  item target judges HTC HTD                  F test      p contrast p decision
-#>    A1      A     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    A2      A     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
-#>    B1      B     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    B2      B     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
-#>    C1      C     24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001   Retain
-#>    C2      C     24 .73 .21  F(1.39, 32.00) = 37.37 < .001       .052   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item Target Judges HTC HTD F test                       p Contrast p Decision
+#>   A1   A          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   A2   A          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#>   B1   B          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   B2   B          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#>   C1   C          24 .93 .67 F(1.53, 35.18) = 237.08 < .001     < .001 Retain
+#>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
+#> 
+#> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
+#> Retain = omnibus p and every one-sided contrast p at or below alpha = .05
+#> (MacKenzie et al., 2011).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
 
 For review items, report the strongest orbiting competitor, which
@@ -385,8 +405,7 @@ sorted <- read_example("walkthrough_sort.csv")
 sort_stage <- sort_validity(sorted[sorted$item %in% panel$items, ])
 evidence <- content_evidence(`Relevance panel` = panel, `Item sort` = sort_stage)
 evidence
-#> Content evidence across 2 stages
-#> --------------------------------
+#> <contentvalid_evidence> Content evidence across 2 stages
 #> 10 of 12 items carried by every stage that reviewed them. Held back: EF5
 #> (Relevance panel), TF5 (Item sort).
 #> 
@@ -394,36 +413,35 @@ evidence
 #>   1. Relevance panel: 12 items, 8 experts. Shows I-CVI.
 #>   2. Item sort: 11 items, 20 judges. Shows Psa.
 #> 
-#>  item     Relevance panel  Item sort                     result
-#>   EF1 1.00 Strong support .95 Retain                    carried
-#>   EF2 1.00 Strong support .90 Retain                    carried
-#>   EF3 1.00 Strong support .90 Retain                    carried
-#>   EF4 1.00 Strong support .90 Retain                    carried
-#>   EF5          .50 Review         -- held back: Relevance panel
-#>   EF6  .88 Strong support .75 Retain                    carried
-#>   TF1 1.00 Strong support .95 Retain                    carried
-#>   TF2 1.00 Strong support .85 Retain                    carried
-#>   TF3 1.00 Strong support .90 Retain                    carried
-#>   TF4 1.00 Strong support .80 Retain                    carried
-#>   TF5 1.00 Strong support .30 Review       held back: Item sort
-#>   TF6 1.00 Strong support .90 Retain                    carried
+#>   Item  Relevance panel      Item sort   Result
+#>   EF1   1.00 Strong support  .95 Retain  Carried
+#>   EF2   1.00 Strong support  .90 Retain  Carried
+#>   EF3   1.00 Strong support  .90 Retain  Carried
+#>   EF4   1.00 Strong support  .90 Retain  Carried
+#>   EF5   .50 Review           --          Held back: Relevance panel
+#>   EF6   .88 Strong support   .75 Retain  Carried
+#>   TF1   1.00 Strong support  .95 Retain  Carried
+#>   TF2   1.00 Strong support  .85 Retain  Carried
+#>   TF3   1.00 Strong support  .90 Retain  Carried
+#>   TF4   1.00 Strong support  .80 Retain  Carried
+#>   TF5   1.00 Strong support  .30 Review  Held back: Item sort
+#>   TF6   1.00 Strong support  .90 Retain  Carried
 #> 
 #> What these columns mean
-#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the
-#>       item relevant, against Lynn's criterion for the panel size (beyond
-#>       ten, this package's).
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
-#>   result -- carried when every stage that reviewed the item carried it;
+#>   I-CVI -- Item-level Content Validity Index. Share of experts rating the item
+#>       relevant, against Lynn's criterion for the panel size (beyond ten, this
+#>       package's).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
+#>   Result -- Carried when every stage that reviewed the item carried it;
 #>       otherwise the stages that held it back. -- marks a stage that did not
 #>       review the item.
 #> 
-#> Figures: plot(x) for the evidence profile, plot(x, type = "flow")
-#> for the flow diagram; add apa = FALSE for color.
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#> See plot(x) for the evidence profile and plot(x, type = "flow") for the flow
+#> diagram; add apa = FALSE for color.
 ```
 
 The flow diagram follows the items through the stages. It is modeled on

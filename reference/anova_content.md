@@ -154,18 +154,20 @@ d$target_construct <- ifelse(d$item == "I1", "A", "B")
 d$rating <- ifelse(d$construct == d$target_construct,
                    rnorm(nrow(d), 4.5, .4), rnorm(nrow(d), 2.3, .5))
 anova_content(d)
-#> Content-validity ANOVA
+#> <contentvalid_anova> Content-validity ANOVA
 #> Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).
 #> 
-#>  item target judges                  F test      p partial eta^2 contrast p met
-#>    I1      A     12 F(1.89, 20.84) = 193.43 < .001           .95     < .001 yes
-#>    I2      B     12 F(1.77, 19.51) = 138.46 < .001           .93     < .001 yes
+#>   Item Target Judges F test                       p Partial eta^2 Contrast p Met
+#>   I1   A          12 F(1.89, 20.84) = 193.43 < .001           .95     < .001 yes
+#>   I2   B          12 F(1.77, 19.51) = 138.46 < .001           .93     < .001 yes
 #> 
 #> Within-judge omnibus tests are Greenhouse-Geisser corrected, which reduces
 #> their degrees of freedom.
-#> contrast p: the largest p among the planned contrasts, each one-sided (the
+#> Contrast p: the largest p among the planned contrasts, each one-sided (the
 #> intended construct rated above one of the others), at alpha = .05 with no
-#> adjustment for their number. It is NA when a contrast has no p because every
-#> judge rated the two constructs the same. met: whether every contrast passed.
+#> adjustment for their number. It is -- when a contrast has no p because every
+#> judge rated the two constructs the same. Met: whether every contrast passed.
 #> attr(x, "contrasts") holds each one.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

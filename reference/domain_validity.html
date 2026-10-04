@@ -222,40 +222,41 @@ Measurement, 19</em>(3), 241–255. <a href="https://doi.org/10.1177/01466216950
 <span class="r-in"><span>  cell_col <span class="op">=</span> <span class="st">"construct"</span>,</span></span>
 <span class="r-in"><span>  domain <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Autonomy"</span>, <span class="st">"Competence"</span>, <span class="st">"Relatedness"</span>, <span class="st">"Belonging"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR content-domain coverage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_domain&gt; Content-domain coverage</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 7 | Blueprint cells: 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Criteria: at least 2 items per cell, and no cell above 2 times its expected</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> share (an equal share when no `targets` are given). These criteria are</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> contentvalidR conventions, not published standards.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 of 4 cells meet the coverage criteria.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> covered), Belonging (Not covered)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly covered),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Belonging (Not covered)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Cells</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         cell         decision items share expected</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     Autonomy Over-represented     4   57%      25%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Competence          Covered     2   29%      25%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Relatedness   Thinly covered     1   14%      25%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Belonging      Not covered     0    0%      25%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Cell         Decision          Items  Share  Expected</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Autonomy     Over-represented      4    57%       25%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Competence   Covered               2    29%       25%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Relatedness  Thinly covered        1    14%       25%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Belonging    Not covered           0     0%       25%</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   share -- Share of items. Percentage of all items in this cell.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Share -- Share of items. Percentage of all items in this cell.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Covered -- met the coverage criteria.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Thinly covered -- fewer items than the minimum set for this analysis.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Over-represented -- more than `over_factor` times its expected share of</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       the items.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Over-represented -- more than `over_factor` times its expected share of the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       items.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Not covered -- the blueprint includes it, but no item addresses it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coverage shows that items exist for each cell. It does not show that those</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> items are good ones, or that the blueprint is the right description of the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> domain.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x) for the cells needing attention.</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

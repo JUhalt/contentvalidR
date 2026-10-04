@@ -178,8 +178,7 @@ sim <- matrix(c(
   1, 1, 3, 1, 2, 2, 4, 4, 5
 ), 9, 9, dimnames = list(items, items))
 content_structure(sim, membership = blueprint)
-#> contentvalidR content structure (expert item similarity)
-#> --------------------------------------------------------
+#> <contentvalid_structure> Content structure from expert similarity
 #> Items: 9 | Dimensions retained: 2 | Clusters: 3
 #> Status: Supported (criterion: adjusted Rand index >= .60, a contentvalidR
 #>   convention)
@@ -189,28 +188,29 @@ content_structure(sim, membership = blueprint)
 #> the domain as subject-matter experts see it.
 #> 
 #> Fit by dimensionality
-#>  dimensions GOF distortion
-#>           1 .29        .45
-#>           2 .50        .24
-#>           3 .65        .20
-#>           4 .79        .25
+#>   Dimensions  GOF  Distortion
+#>            1  .29         .45
+#>            2  .50         .24
+#>            3  .65         .20
+#>            4  .79         .25
 #> 
-#> GOF: goodness of fit from classical scaling, the share of the sum of the
-#> absolute eigenvalues that the retained dimensions account for. distortion:
-#> how far the map's distances depart from the dissimilarities (0 is an exact
-#> map); it need not fall as dimensions are added. It is not Kruskal's stress-1,
-#> so his benchmarks do not apply.
+#>   GOF: goodness of fit from classical scaling, the share of the sum of the
+#>   absolute eigenvalues that the retained dimensions account for. Distortion:
+#>   how far the map's distances depart from the dissimilarities (0 is an exact
+#>   map); it need not fall as dimensions are added. It is not Kruskal's
+#>   stress-1, so his benchmarks do not apply.
 #> 
 #> Blueprint cell by recovered cluster (counts of items)
-#>              cluster
-#> blueprint     1 2 3
-#>   Autonomy    3 0 0
-#>   Competence  0 3 0
-#>   Relatedness 0 0 3
+#>   Blueprint    Cluster: 1  Cluster: 2  Cluster: 3
+#>   Autonomy              3           0           0
+#>   Competence            0           3           0
+#>   Relatedness           0           0           3
 #> 
-#> Adjusted Rand index: 1.00
+#>   Adjusted Rand index: 1.00
 #> 
 #> The clusters come from the item coordinates on the 2 retained dimensions
 #> (average linkage), so they change with the number of dimensions. Choose that
 #> number for how interpretable the dimensions are.
+#> 
+#> See plot(x) for the content map.
 ```

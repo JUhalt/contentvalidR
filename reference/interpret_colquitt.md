@@ -71,17 +71,21 @@ Psychology, 104*(10), 1243–1265.
 
 ``` r
 interpret_colquitt(.84, "psa")
-#> Benchmark bands (Colquitt et al., 2019)
+#> <contentvalid_colquitt> Benchmark bands (Colquitt et al., 2019)
 #> 
-#>  statistic value   band                       benchmarks
-#>        Psa   .84 Strong Overall (not correlation-normed)
+#>   Statistic  Value  Band    Benchmarks
+#>   Psa          .84  Strong  Overall (not correlation-normed)
 #> 
 #> Empirical percentile norm from scale-level averages; not a universal cutoff.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 interpret_colquitt(.70, "csv", orbiting_r = .40)
-#> Benchmark bands (Colquitt et al., 2019)
+#> <contentvalid_colquitt> Benchmark bands (Colquitt et al., 2019)
 #> 
-#>  statistic value   band                                         benchmarks
-#>        Csv   .70 Strong More moderate focal-orbiting correlation (.35-.50)
+#>   Statistic  Value  Band    Benchmarks
+#>   Csv          .70  Strong  More moderate focal-orbiting correlation (.35-.50)
 #> 
 #> Empirical percentile norm from scale-level averages; not a universal cutoff.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

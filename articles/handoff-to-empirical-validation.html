@@ -124,9 +124,8 @@ item is rated poorly, and one is borderline:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="va">handoff</span></span>
-<span><span class="co">#&gt; contentvalidR handoff (schema version 1)</span></span>
-<span><span class="co">#&gt; ----------------------------------------</span></span>
-<span><span class="co">#&gt; Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-03</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_handoff&gt; Handoff to empirical validation (schema version 1)</span></span>
+<span><span class="co">#&gt; Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04</span></span>
 <span><span class="co">#&gt; Items carried forward: 3 of 5</span></span>
 <span><span class="co">#&gt; Carried when status is: Supported</span></span>
 <span><span class="co">#&gt; Constructs: none in this design; the panel rated one item set.</span></span>
@@ -136,13 +135,13 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt;   (item-resampling percentile bootstrap)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Held back</span></span>
-<span><span class="co">#&gt;   item decision</span></span>
-<span><span class="co">#&gt;  Item4   Review</span></span>
-<span><span class="co">#&gt;  Item5   Review</span></span>
+<span><span class="co">#&gt;   Item   Decision</span></span>
+<span><span class="co">#&gt;   Item4  Review</span></span>
+<span><span class="co">#&gt;   Item5  Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Carry these items into the empirical workflow once response data are</span></span>
 <span><span class="co">#&gt; collected. In nomologR that is</span></span>
-<span><span class="co">#&gt;   nomo_screen(data, items = handoff)</span></span>
+<span><span class="co">#&gt;     nomo_screen(data, items = handoff)</span></span>
 <span><span class="co">#&gt; which screens the items carried here. Passing the whole handoff, rather than</span></span>
 <span><span class="co">#&gt; handoff$items, keeps the keying and the reasons for anything held back.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -150,7 +149,10 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt; expert judgment. It does not establish that an item will behave well</span></span>
 <span><span class="co">#&gt; empirically: an item can be clearly relevant and still correlate poorly with</span></span>
 <span><span class="co">#&gt; its construct or load on an unintended factor. Items held back are listed</span></span>
-<span><span class="co">#&gt; above rather than deleted, so the record stays complete.</span></span></code></pre></div>
+<span><span class="co">#&gt; above rather than deleted, so the record stays complete.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the item evidence and x$item_statistics for the</span></span>
+<span><span class="co">#&gt; statistics.</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-the-object-holds">What the object holds<a class="anchor" aria-label="anchor" href="#what-the-object-holds"></a>

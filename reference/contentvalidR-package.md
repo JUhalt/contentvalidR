@@ -33,6 +33,40 @@ through arguments with evidence-based defaults. User-facing workflows
 emphasize interpretable summaries and transparent review recommendations
 rather than isolated coefficients.
 
+## Reading the output
+
+The printouts follow a style shared with nomologR, so the two packages
+read alike. Every printout opens with a header naming the object's class
+and what it holds, such as `<contentvalid_sort> Item-sort analysis`,
+then its facts, then its verdict.
+[`print()`](https://rdrr.io/r/base/print.html) shows the full evidence
+with a key to its columns;
+[`summary()`](https://rdrr.io/r/base/summary.html) shows what needs
+attention, the flagged units with a sentence each. A workflow's printout
+ends with what the evidence does not decide, and every printout ends
+with a line pointing to what else the object holds. Markdown output from
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+is the one exception: it prints only the lines to paste. Numbers follow
+APA 7: no leading zero where a value cannot exceed 1, two decimals and
+three for *p*, `--` for a value that could not be computed, and `> .999`
+for a *p* that would round to 1.
+
+The statuses read across the two packages as follows:
+
+|                   |              |
+|-------------------|--------------|
+| contentvalidR     | nomologR     |
+| Supported         | no flag      |
+| Review            | review       |
+| (no counterpart)  | concern      |
+| Insufficient data | not computed |
+| Descriptive only  | note         |
+
+"Review" always means look again, never delete. In the `results` and the
+handoff of this package, `recommendation` is the decision word (such as
+`"Retain"` or `"Strong support"`); `status` is the shared vocabulary
+above.
+
 ## What you can rely on
 
 Code written against contentvalidR should keep working. This section

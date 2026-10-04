@@ -254,8 +254,7 @@ ratings <- rbind(
 dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:10))
 fit <- judge_validity(ratings, lo = 1, hi = 4)
 fit
-#> contentvalidR judge heterogeneity
-#> ---------------------------------
+#> <contentvalid_judge> Judge heterogeneity
 #> Judges: 8 | Items: 10
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Dependability (Phi): .85 | Judge share of variance: 15.2%
@@ -264,51 +263,51 @@ fit
 #> Flagged for review: Judge8 (Severe)
 #> 
 #> Judges
-#>   judge decision mean severity logit infit outfit scale use
-#>  Judge1  Typical 3.20    -0.30 -0.40  0.59   0.51      0.98
-#>  Judge2  Typical 3.00    -0.10  0.30  1.55   1.59      1.02
-#>  Judge3  Typical 2.90     0.00  0.30  0.65   0.59      0.92
-#>  Judge4  Typical 2.90     0.00  0.30  1.39   1.54      1.24
-#>  Judge5  Typical 2.90     0.00  0.30  0.90   0.82      0.92
-#>  Judge6  Typical 3.00    -0.10 -0.40  1.36   1.18      1.17
-#>  Judge7  Typical 3.30    -0.40 -0.40  0.59   0.51      1.03
-#>  Judge8   Severe 2.00     0.90    NA    NA     NA      0.83
+#>   Judge   Decision  Mean  Severity  Logit  Infit  Outfit  Scale use
+#>   Judge1  Typical   3.20     -0.30  -0.40   0.59    0.51       0.98
+#>   Judge2  Typical   3.00     -0.10   0.30   1.55    1.59       1.02
+#>   Judge3  Typical   2.90      0.00   0.30   0.65    0.59       0.92
+#>   Judge4  Typical   2.90      0.00   0.30   1.39    1.54       1.24
+#>   Judge5  Typical   2.90      0.00   0.30   0.90    0.82       0.92
+#>   Judge6  Typical   3.00     -0.10  -0.40   1.36    1.18       1.17
+#>   Judge7  Typical   3.30     -0.40  -0.40   0.59    0.51       1.03
+#>   Judge8  Severe    2.00      0.90     --     --      --       0.83
 #> 
-#> mean: the judge's mean rating. severity: how far the judge rates below the
-#> panel, in rating points (negative is more lenient); logit: severity on the
-#> relevant/not-relevant decision from the facets model, against the judges it
-#> placed, which the flags use.
+#>   Mean: the judge's mean rating. Severity: how far the judge rates below the
+#>   panel, in rating points (negative is more lenient). Logit: severity on the
+#>   relevant/not-relevant decision from the facets model, against the judges it
+#>   placed, which the flags use.
 #> 
-#> A judge is flagged when severity exceeds 1 logit in either direction (0.75
-#> rating points for a judge the model could not place) or scale use is below
-#> 0.50. These cuts are contentvalidR conventions, not published standards.
+#>   A judge is flagged when severity exceeds 1 logit in either direction (0.75
+#>   rating points for a judge the model could not place) or scale use is below
+#>   0.50. These cuts are contentvalidR conventions, not published standards.
 #> 
-#> Fit: a judge is flagged as erratic when infit or outfit is above 1.5, the top
-#> of the range Linacre (2002) calls productive for measurement, and the model
-#> scored at least 30 of their decisions. The flag and the minimum are
-#> contentvalidR conventions.
-#> Here the model scored at most 6 of any judge's decisions (items every judge
-#> agreed on are set aside), so the fit statistics are shown and not flagged.
+#>   Fit: a judge is flagged as erratic when infit or outfit is above 1.5, the
+#>   top of the range Linacre (2002) calls productive for measurement, and the
+#>   model scored at least 30 of their decisions. The flag and the minimum are
+#>   contentvalidR conventions.
+#>   Here the model scored at most 6 of any judge's decisions (items every judge
+#>   agreed on are set aside), so the fit statistics are shown and not flagged.
 #> 
 #> Items whose status changes if one judge is removed
-#>   item relevant status changes without
-#>  Item4   6 of 8 Review  Judge4, Judge8
+#>   Item   Relevant  Status  Changes without
+#>   Item4  6 of 8    Review  Judge4, Judge8
 #> 
-#> changes without: removing any one of these judges changes the item's status.
-#> Such an item is one judge away from the other side of the CVI criterion for
-#> its panel size (Lynn, 1986): at the criterion, or one short of it. This
-#> describes the item, not the judges named, and is a contentvalidR check, not a
-#> published index.
+#>   Changes without: removing any one of these judges changes the item's status.
+#>   Such an item is one judge away from the other side of the CVI criterion for
+#>   its panel size (Lynn, 1986): at the criterion, or one short of it. This
+#>   describes the item, not the judges named, and is a contentvalidR check, not
+#>   a published index.
 #> 
 #> What these columns mean
-#>   severity -- Judge severity. How much harsher (positive) or more lenient
+#>   Severity -- Judge severity. How much harsher (positive) or more lenient
 #>       (negative) the judge is than the panel, in rating points.
-#>   logit -- Judge severity in logits. Severity on the relevant/not-relevant
+#>   Logit -- Judge severity in logits. Severity on the relevant/not-relevant
 #>       decision from the facets model; the flags use it when estimable.
-#>   infit, outfit -- Fit mean squares. How predictable the judge's decisions
-#>       are: about 1 is expected, high is erratic, low is more predictable
-#>       than expected.
-#>   scale use -- Scale use. Spread of the judge's ratings compared with a
+#>   Infit, outfit -- Fit mean squares. How predictable the judge's decisions
+#>       are: about 1 is expected, high is erratic, low is more predictable than
+#>       expected.
+#>   Scale use -- Scale use. Spread of the judge's ratings compared with a
 #>       typical judge (1 is typical; low means few distinctions).
 #>   Phi -- Dependability coefficient. How well the absolute ratings would
 #>       reproduce with another panel of this size (0 to 1).
@@ -317,14 +316,15 @@ fit
 #>   Typical -- consistent with the panel.
 #>   Severe -- rates markedly lower than the panel.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
 #> A 'Review' judge is not a judge to remove. Disagreement can be substantive
 #> expertise; the flag marks ratings worth a closer look.
+#> 
+#> See summary(x) for the flagged judges and the judges needed.
 summary(fit)
-#> Summary: judge and rater heterogeneity
-#> --------------------------------------
+#> <contentvalid_judge summary> Judge heterogeneity
 #> Judges: 8 | Items: 10
 #> Consistent with panel: 7 | Flagged for review: 1 | Insufficient: 0
 #> 
@@ -333,29 +333,30 @@ summary(fit)
 #>   Generalizability (rank ordering):   .89
 #> 
 #> Judges needed to reach each coefficient
-#>  target relative (G) absolute (Phi)
-#>     .70            3              4
-#>     .80            5              6
-#>     .90           10             13
+#>   Target  Relative (G)  Absolute (Phi)
+#>      .70             3               4
+#>      .80             5               6
+#>      .90            10              13
 #> 
-#> Judges flagged for review
-#> 
-#>   Judge8 (Severe)
-#>     This judge is markedly more severe than the panel (0.90 rating points
-#>     relative to the panel mean). Consistent severity does not invalidate
-#>     their ratings, but it shifts absolute indices such as CVI, which is why
-#>     the dependability coefficient is penalized by judge differences.
+#> Flagged
+#>   - Judge8 (Severe): This judge is markedly more severe than the panel (0.90
+#>     rating points relative to the panel mean). Consistent severity does not
+#>     invalidate their ratings, but it shifts absolute indices such as CVI,
+#>     which is why the dependability coefficient is penalized by judge
+#>     differences.
 #> 
 #> Items whose status changes if one judge is removed
-#>   item relevant status changes without
-#>  Item4   6 of 8 Review  Judge4, Judge8
+#>   Item   Relevant  Status  Changes without
+#>   Item4  6 of 8    Review  Judge4, Judge8
 #> 
-#> changes without: removing any one of these judges changes the item's status.
-#> Such an item is one judge away from the other side of the CVI criterion for
-#> its panel size (Lynn, 1986): at the criterion, or one short of it. This
-#> describes the item, not the judges named, and is a contentvalidR check, not a
-#> published index.
+#>   Changes without: removing any one of these judges changes the item's status.
+#>   Such an item is one judge away from the other side of the CVI criterion for
+#>   its panel size (Lynn, 1986): at the criterion, or one short of it. This
+#>   describes the item, not the judges named, and is a contentvalidR check, not
+#>   a published index.
 #> 
 #> This analysis describes how much conclusions depend on these judges. It does
 #> not establish that the items cover the intended content domain.
+#> 
+#> See x$reviewed_judges for the flagged judges as a data frame.
 ```

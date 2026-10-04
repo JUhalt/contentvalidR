@@ -217,37 +217,35 @@ systematic reviews. <em>BMJ, 372</em>, Article n71. <a href="https://doi.org/10.
 <span class="r-in"><span><span class="va">evidence</span> <span class="op">&lt;-</span> <span class="fu">content_evidence</span><span class="op">(</span>`Relevance panel` <span class="op">=</span> <span class="va">panel</span>,</span></span>
 <span class="r-in"><span>                             `Item sort` <span class="op">=</span> <span class="fu"><a href="sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorts</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">evidence</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Content evidence across 2 stages</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> --------------------------------</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 of 4 items carried by every stage that reviewed them. Held back: Item3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Item sort), Item4 (Relevance panel).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_evidence&gt; Content evidence across 2 stages</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 of 4 items carried by every stage that reviewed them. Held back: Item3 (Item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sort), Item4 (Relevance panel).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stages, in order</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   1. Relevance panel: 4 items, 4 experts. Shows I-CVI.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   2. Item sort: 3 items, 12 judges. Shows Psa.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item     Relevance panel  Item sort                     result</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item1 1.00 Strong support .92 Retain                    carried</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item2 1.00 Strong support .83 Retain                    carried</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item3 1.00 Strong support .42 Review       held back: Item sort</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Item4          .00 Review         -- held back: Relevance panel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Relevance panel      Item sort   Result</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item1  1.00 Strong support  .92 Retain  Carried</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item2  1.00 Strong support  .83 Retain  Carried</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item3  1.00 Strong support  .42 Review  Held back: Item sort</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item4  .00 Review           --          Held back: Relevance panel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       item relevant, against Lynn's criterion for the panel size (beyond</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       ten, this package's).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Psa -- Proportion of Substantive Agreement. Share of judges who put the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       item in the construct it was written for (0 to 1; higher is</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       stronger).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   result -- carried when every stage that reviewed the item carried it;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   I-CVI -- Item-level Content Validity Index. Share of experts rating the item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       relevant, against Lynn's criterion for the panel size (beyond ten, this</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       package's).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       in the construct it was written for (0 to 1; higher is stronger).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Result -- Carried when every stage that reviewed the item carried it;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       otherwise the stages that held it back. -- marks a stage that did not</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       review the item.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Figures: plot(x) for the evidence profile, plot(x, type = "flow")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> for the flow diagram; add apa = FALSE for color.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Full definitions: contentvalid_glossary(). To hide this key:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   options(contentvalidR.show_key = FALSE).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Full definitions: contentvalid_glossary(). To hide this key:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> options(contentvalidR.show_key = FALSE).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See plot(x) for the evidence profile and plot(x, type = "flow") for the flow</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> diagram; add apa = FALSE for color.</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="content_evidence-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span>, type <span class="op">=</span> <span class="st">"flow"</span><span class="op">)</span></span></span>

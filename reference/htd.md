@@ -73,11 +73,13 @@ Psychology, 104*(10), 1243–1265.
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B", "C"))
 d$rating <- c(5,4,5,4, 2,2,1,2, 3,2,2,1)
 htd(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
-#> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
+#> <contentvalid_htd> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
 #> 
-#>  item target judges target mean competitor competitor mean HTD
-#>    I1      A      4        4.50          C            2.00 .66
+#>   Item  Target  Judges  Target mean  Competitor  Competitor mean  HTD
+#>   I1    A            4         4.50  C                      2.00  .66
 #> 
-#> competitor: the other construct with the highest mean rating. HTD itself
+#> Competitor: the other construct with the highest mean rating. HTD itself
 #> averages the gap over every other construct.
+#> 
+#> See as.data.frame(x) for the unrounded values.
 ```

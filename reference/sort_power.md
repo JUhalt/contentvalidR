@@ -50,29 +50,31 @@ methodological best practices. *Journal of Business and Psychology,
 
 ``` r
 sort_power(N = c(20, 30, 40), true_p = .70)
-#> contentvalidR item-sort planning
-#> --------------------------------
+#> <contentvalid_sort_power> Item-sort planning
 #> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)
 #> 
-#>  judges required minimum Psa power at .70
-#>      20    15/20         .75          .42
-#>      30    20/30         .67          .73
-#>      40    26/40         .65          .81
+#>   Judges  Required  Minimum Psa  Power at .70
+#>       20     15/20          .75           .42
+#>       30     20/30          .67           .73
+#>       40     26/40          .65           .81
 #> 
-#> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at a value: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with that
-#> probability.
+#> Required: target assignments an item needs to be retained. Minimum Psa: the
+#> same as a proportion (Psa = proportion of substantive agreement). Power at a
+#> value: the exact probability of reaching the required count if each judge
+#> assigns the item to its target with that probability.
+#> 
+#> See plot(x) for the power curve.
 sort_power(N = 30, true_p = c(.60, .70, .80))
-#> contentvalidR item-sort planning
-#> --------------------------------
+#> <contentvalid_sort_power> Item-sort planning
 #> Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)
 #> 
-#>  judges required minimum Psa power at .60 power at .70 power at .80
-#>      30    20/30         .67          .29          .73          .97
+#>   Judges  Required  Minimum Psa  Power at .60  Power at .70  Power at .80
+#>       30     20/30          .67           .29           .73           .97
 #> 
-#> required: target assignments an item needs to be retained. minimum Psa: the
-#> same as a proportion. power at a value: the exact probability of reaching the
-#> required count if each judge assigns the item to its target with that
-#> probability.
+#> Required: target assignments an item needs to be retained. Minimum Psa: the
+#> same as a proportion (Psa = proportion of substantive agreement). Power at a
+#> value: the exact probability of reaching the required count if each judge
+#> assigns the item to its target with that probability.
+#> 
+#> See plot(x) for the power curve.
 ```
