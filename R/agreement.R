@@ -76,8 +76,10 @@
     stop("`", B_name, "` must be one non-negative integer; use 0 to skip the interval.",
          call. = FALSE)
   }
-  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed))) {
-    stop("`seed` must be NULL or one number.", call. = FALSE)
+  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L ||
+                         !is.finite(seed) || abs(seed) > .Machine$integer.max)) {
+    stop("`seed` must be NULL or one number, no larger in size than ",
+         .Machine$integer.max, ".", call. = FALSE)
   }
   invisible(TRUE)
 }

@@ -135,8 +135,10 @@ aikens_v <- function(ratings, lo, hi,
   }
   B <- as.integer(B)
   if (!is.null(seed)) {
-    if (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed) || seed != floor(seed)) {
-      stop("`seed` must be NULL or one finite integer.", call. = FALSE)
+    if (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed) ||
+        seed != floor(seed) || abs(seed) > .Machine$integer.max) {
+      stop("`seed` must be NULL or one finite integer, no larger in size than ",
+           .Machine$integer.max, ".", call. = FALSE)
     }
   }
   qlo <- alpha / 2

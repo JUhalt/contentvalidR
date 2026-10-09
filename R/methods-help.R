@@ -59,9 +59,10 @@
 #' `n_insufficient`, `n_descriptive`, `scale_summary`, `reviewed_items` (the
 #' units whose status is `Review` or `Insufficient data`), `settings`, and
 #' `design`. The Delphi summary adds `panel` and `stability_method`; the
-#' expert-panel summary `mode` and `agreement`; the judge summary `gtheory`,
-#' `influence_items`, and `reviewed_judges`; and the coverage summary `gaps`,
-#' the cells under review.
+#' expert-panel summary `mode` and, when an agreement coefficient was
+#' computed, `agreement`; the judge summary `gtheory`, `influence_items`, and
+#' `reviewed_judges`; and the coverage summary `gaps`, the cells under
+#' review.
 #'
 #' `summary()` of a [compare_rounds()] result returns a
 #' `summary.contentvalid_rounds` list whose `changed` holds the units that

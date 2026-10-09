@@ -131,9 +131,10 @@ holding, among others, \code{n_items}, \code{n_supported}, \code{n_review},
 \code{n_insufficient}, \code{n_descriptive}, \code{scale_summary}, \code{reviewed_items} (the
 units whose status is \code{Review} or \verb{Insufficient data}), \code{settings}, and
 \code{design}. The Delphi summary adds \code{panel} and \code{stability_method}; the
-expert-panel summary \code{mode} and \code{agreement}; the judge summary \code{gtheory},
-\code{influence_items}, and \code{reviewed_judges}; and the coverage summary \code{gaps},
-the cells under review.
+expert-panel summary \code{mode} and, when an agreement coefficient was
+computed, \code{agreement}; the judge summary \code{gtheory}, \code{influence_items}, and
+\code{reviewed_judges}; and the coverage summary \code{gaps}, the cells under
+review.
 
 \code{summary()} of a \code{\link[=compare_rounds]{compare_rounds()}} result returns a
 \code{summary.contentvalid_rounds} list whose \code{changed} holds the units that
