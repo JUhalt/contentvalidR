@@ -10,7 +10,8 @@
 #
 # Stages, in order:
 #   1. build  - document, README, spelling, URLs, build the tarball, inspect it
-#   2. smoke  - install the tarball into an empty library, run it there
+#   2. smoke  - install the tarball into a library that holds nothing else but
+#               the packages it declares it needs, and run it there
 #   3. check  - R CMD check --as-cran on the tarball, with CRAN's incoming checks
 #
 # Output directory defaults to a short path, because Windows' 260-character

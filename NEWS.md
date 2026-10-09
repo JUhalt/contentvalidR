@@ -1022,7 +1022,10 @@ review of the close-out itself found.
   `tools/cran-release-date` and ignores a malformed one.
 * The release gate waits two minutes for the helper process that looks up
   the package's dependencies, where the default five seconds stopped the
-  build stage on a busy machine.
+  build stage on a busy machine. Its smoke test, which runs the installed
+  package in a library holding nothing but base R, now adds the packages the
+  install declares it needs and no others, so a package used without being
+  declared still fails it.
 * `?contentvalid-methods` has a Value section, which CRAN asks of every help
   page that documents a function or a method.
 * The package now imports withr, its first dependency beyond `stats`. withr

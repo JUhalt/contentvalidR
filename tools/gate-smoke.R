@@ -5,7 +5,8 @@
 # warns "package is in use" and carries on, leaving the smoke test to fail on a
 # package that was never installed (#51). The gate therefore runs this stage as
 # its own process, and the smoke script itself runs in a third one so its
-# library path holds only base R and the new install.
+# library path holds only base R, the new install, and the packages the new
+# install declares it needs.
 
 args <- commandArgs(trailingOnly = TRUE)
 out <- args[[1]]
@@ -39,6 +40,41 @@ if (!dir.exists(file.path(lib, "contentvalidR"))) {
   quit(status = 1)
 }
 cat("installed: ", dir(lib), "\n", sep = "")
+
+# The clean library also gets the packages the install declares it needs
+# (Depends, Imports and LinkingTo, and theirs in turn), copied from this
+# machine's library, and nothing else. A package that is used without being
+# declared is then still missing, and the smoke test fails on it.
+declared <- function(description) {
+  fields <- read.dcf(description, fields = c("Depends", "Imports", "LinkingTo"))
+  x <- unlist(strsplit(fields[!is.na(fields)], ","))
+  x <- trimws(gsub("[(][^)]*[)]", "", x))
+  setdiff(x[nzchar(x)], "R")
+}
+added <- character(0)
+todo <- declared(file.path(lib, "contentvalidR", "DESCRIPTION"))
+while (length(todo)) {
+  pkg <- todo[1]
+  todo <- todo[-1]
+  # Packages that ship with R are on the smoke test's path already.
+  if (pkg %in% added || dir.exists(file.path(.Library, pkg))) next
+  from <- tryCatch(find.package(pkg), error = function(e) NA_character_)
+  if (is.na(from)) {
+    cat("FAIL: the package declares ", pkg, ", which is not installed on this",
+        " machine.\n", sep = "")
+    quit(status = 1)
+  }
+  if (!file.copy(from, lib, recursive = TRUE)) {
+    cat("FAIL: could not copy ", pkg, " into ", lib, ".\n", sep = "")
+    quit(status = 1)
+  }
+  added <- c(added, pkg)
+  cat("declared dependency added: ", pkg, " ",
+      read.dcf(file.path(from, "DESCRIPTION"), fields = "Version")[1, 1],
+      " (copied from ", dirname(from), ")\n", sep = "")
+  todo <- c(todo, declared(file.path(from, "DESCRIPTION")))
+}
+if (!length(added)) cat("declared dependencies beyond base R: none\n")
 
 cat("\n-- running the smoke test against that library\n")
 rscript <- file.path(R.home("bin"),
