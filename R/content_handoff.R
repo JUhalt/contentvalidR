@@ -75,6 +75,14 @@
   stats
 }
 
+# An interval whose bounds coincide, so every resample gave the same value.
+# Its bounds are real, computed values, but they say nothing about precision,
+# so a row carrying one says so in its note.
+.handoff_zero_width <- function(lower, upper) {
+  is.finite(lower) & is.finite(upper) &
+    abs(upper - lower) < sqrt(.Machine$double.eps)
+}
+
 .handoff_interval_label <- function(method) {
   if (!is.character(method) || length(method) != 1L) return(NA_character_)
   switch(method,
@@ -168,6 +176,11 @@
     } else if (!has_interval) {
       paste("The bootstrap interval could not be computed: too few resamples",
             "produced a usable coefficient.")
+    } else if (.handoff_zero_width(ag$ci_low, ag$ci_high)) {
+      # The bounds are kept, as computed; the note says what they mean, as
+      # panel_agreement() does in its printout.
+      paste("Every resample of the items gave the same value, so the interval",
+            "has no width: that reflects items rated alike, not precision.")
     },
     # The console warns that the interval for AC1 is unvalidated. The caveat
     # belongs with the number wherever it is shown, not only where it was
@@ -199,17 +212,22 @@
 # item rated in a single round has no pair at all, and therefore no row in the
 # fit to take a note from, so that sentence is written here.
 #
-# Returns two notes for each item. `gap` says when the stability rows describe
-# an earlier pair than the item's last round (rated in rounds 1, 2 and 4: the
-# pair is 1 and 2, and the rows are dated round 4), and goes on every row
-# taken from that pair. `stability` is the note for the stability statistic
-# itself: the gap sentence, and why the statistic is undefined when it is.
+# Returns three notes for each item. `pair` goes on every row taken from the
+# item's last pair of rounds. It says when that pair is earlier than the
+# item's last round (rated in rounds 1, 2 and 4: the pair is 1 and 2, and the
+# rows are dated round 4), and how many experts the pair compared when that
+# is fewer than rated the item in its last round, the n a reader sees beside
+# it. `stability` is the note for the stability statistic itself: the pair's
+# note, why the statistic is undefined when it is, and what an interval of
+# zero width means. `reading` says which way the method's criterion reads and
+# whether the fit read the item as stable, for the methods that decide that.
 .handoff_delphi_notes <- function(fit, results) {
   stab <- fit$details$stability
   rounds <- fit$design$rounds
   rated <- .delphi_rated_rounds(fit)
   n <- nrow(results)
   gap <- character(n)
+  paired <- character(n)
   own <- character(n)
   for (i in seq_len(n)) {
     rows <- which(stab$item == results$item[i])
@@ -236,9 +254,71 @@
                        "pair; it was last rated in round ", rounds[max(idx)],
                        ".")
     }
+    # Stability compares only the experts who rated the item in both rounds,
+    # which can be fewer than the last round's n when the panel changed.
+    np <- if (is.null(stab$n_paired)) NA_integer_ else stab$n_paired[last]
+    if (!is.na(np) && np > 0L && isTRUE(np < results$n_experts[i])) {
+      paired[i] <- sprintf(paste("From the %d experts who rated the item in",
+                                 "both rounds; %d rated it in its last round."),
+                           as.integer(np), as.integer(results$n_experts[i]))
+    }
   }
   own[is.na(own)] <- ""
-  list(gap = gap, stability = trimws(paste(gap, own)))
+  # The bounds are kept as computed; the note says what they mean.
+  width <- ifelse(
+    .handoff_zero_width(.handoff_column(results, "stability_low"),
+                        .handoff_column(results, "stability_high")),
+    paste("Every resample of the experts gave the same value, so the interval",
+          "has no width: that reflects how alike the paired ratings were, not",
+          "precision."),
+    ""
+  )
+  pair <- .handoff_join(gap, paired)
+  list(pair = pair, stability = .handoff_join(pair, own, width),
+       reading = .handoff_delphi_reading(fit$settings$stability, results))
+}
+
+# Which way a stability criterion reads, and what the fit read. The two
+# chi-square methods put the same alpha in `criterion` but read it in
+# opposite directions, so the row says which, and carries the fit's own
+# reading (`stable` in the results) rather than leave a reader to compare
+# `value` with `criterion`. Kappa and lambda have no criterion and make no
+# such call.
+.handoff_delphi_reading <- function(method, results) {
+  n <- nrow(results)
+  rule <- switch(
+    if (is.character(method) && length(method) == 1L) method else "",
+    chisq_individual = paste("Stable when p is below alpha: Chaffin and",
+                             "Talley (1980) read dependence between the two",
+                             "rounds' ratings as stability."),
+    chisq_group = paste("Stable when p is at or above alpha: Dajani et al.",
+                        "(1979) read no detectable difference between the",
+                        "two rounds' distributions as stability."),
+    percent_change = paste("Stable when the change is below .15, the rule of",
+                           "Scheibe et al. (1975/2002)."),
+    NULL
+  )
+  if (is.null(rule)) return(character(n))
+  stable <- rep_len(as.logical(.handoff_column(results, "stable")), n)
+  verdict <- ifelse(is.na(stable), "",
+                    ifelse(stable, "Read as stable.", "Not read as stable."))
+  .handoff_join(rep_len(rule, n), verdict)
+}
+
+# Joins sentences row by row, skipping the empty ones, so a missing part
+# never leaves a doubled space.
+.handoff_join <- function(...) {
+  parts <- lapply(list(...), function(p) {
+    p <- as.character(p)
+    p[is.na(p)] <- ""
+    trimws(p)
+  })
+  n <- max(0L, lengths(parts))
+  parts <- lapply(parts, rep_len, n)
+  vapply(seq_len(n), function(i) {
+    bits <- vapply(parts, `[[`, character(1), i)
+    paste(bits[nzchar(bits)], collapse = " ")
+  }, character(1))
 }
 
 # A Delphi study ends one item at a time: an item's evidence is dated by the
@@ -337,7 +417,10 @@
     # 0.74 kappa rule that expert_validity() applies.
     .handoff_stat(results$item, "modified kappa", last_fit_stat("kappa_mod")),
     .handoff_stat(results$item, "proportion unchanged", results$prop_unchanged,
-                  note = notes$gap),
+                  note = notes$pair),
+    # The row that carries a stability criterion also says which way it
+    # reads and what the fit read: net percent change here, the p value of
+    # the chi-square methods below.
     .handoff_stat(results$item, stability_label, results$stability,
                   criterion = if (s$stability == "percent_change") {
                     .delphi_scheibe_cut
@@ -352,13 +435,17 @@
                     NA_character_
                   },
                   interval_level = level,
-                  note = notes$stability)
+                  note = if (s$stability == "percent_change") {
+                    .handoff_join(notes$stability, notes$reading)
+                  } else {
+                    notes$stability
+                  })
   )
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
     statistics <- rbind(
       statistics,
       .handoff_stat(results$item, "stability p_value", results$stability_p,
-                    s$alpha, note = notes$gap)
+                    s$alpha, note = .handoff_join(notes$pair, notes$reading))
     )
   }
 
@@ -476,8 +563,11 @@
     return(list(
       scale = as.character(results$target),
       n_judges = as.integer(results$n_complete),
-      # The statistics carry the omnibus p only (schema 1 is frozen), so the
-      # rule says in words that every contrast must pass as well.
+      # The statistics carry the omnibus p only, so the rule says in words
+      # that every contrast must pass as well, and the p row's note names the
+      # contrast that held an item back. Schema 1 freezes the columns, not
+      # the set of rows or the statistic labels, so a contrast-p row could be
+      # added without a new schema version.
       rule = rep(sprintf(
         paste("Greenhouse-Geisser corrected omnibus test and every planned",
               "target-versus-orbiting contrast significant%s",
@@ -833,7 +923,9 @@
 #' says when a statistic that meets its criterion is not what decided: the
 #' construct-rating `p_value` is the omnibus *p*, and for an item held back by
 #' a planned contrast its note says so, with the largest contrast *p* or, when
-#' a contrast has none, the constructs that tied.
+#' a contrast has none, the constructs that tied. On a Delphi stability
+#' criterion it says which way the criterion reads and whether the fit read
+#' the item as stable, as described under "A Delphi handoff".
 #'
 #' Its contract, agreed with the `nomologR` maintainers:
 #'
@@ -857,15 +949,25 @@
 #'
 #' * Aiken's V: the Penfield-Giacobbi score interval.
 #' * I-CVI and Psa: the method chosen with `proportion_ci`, the Wilson score
-#'   interval by default.
+#'   interval by default. A Delphi handoff takes it from each item's last
+#'   round.
 #' * Panel agreement: the item-resampling percentile bootstrap of
 #'   [panel_agreement()].
+#' * Delphi weighted kappa: the expert-resampling percentile bootstrap of
+#'   [delphi_validity()], at `1 - alpha`, when it was run with `B` above 0.
 #'
 #' The four columns are `NA` together when a statistic has no interval. That
 #' happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-#' count, modified kappa, IOC, and p values), when intervals were switched off
-#' with `proportion_ci = "none"`, or when the statistic itself could not be
-#' computed. `NA` there never stands for missing data.
+#' count, modified kappa, IOC and the mean ratings beside it, proportion
+#' unchanged, lambda, the chi-squares, net percent change, and p values), when
+#' intervals were switched off with `proportion_ci = "none"` or `B = 0`, or
+#' when the statistic itself could not be computed. `NA` there never stands
+#' for missing data.
+#'
+#' A bootstrap interval can have zero width (`lower` equal to `upper`), when
+#' every resample gave the same value: a panel whose experts all kept their
+#' ratings, say. The bounds are kept as computed, and the row's `note` says
+#' that the width reflects how alike the ratings were, not precision.
 #'
 #' The handoff reports intervals only. It does not turn them into priors or
 #' weights for a later analysis; that is a question for the consuming package.
@@ -886,24 +988,43 @@
 #' Two more statistics record whether the panel had stopped moving:
 #' `proportion unchanged`, and the stability statistic that ran, named for its
 #' method, such as `weighted kappa (quadratic)` or `Goodman-Kruskal lambda`.
-#' The chi-square methods add `stability p_value` against `alpha`. Stability
-#' travels as evidence beside the decision; it never decides what is carried,
-#' exactly as it never sets an item's status in [delphi_validity()].
+#' The chi-square methods add `stability p_value` against `alpha`, and net
+#' percent change carries its own criterion, .15. Stability travels as
+#' evidence beside the decision; it never decides what is carried, exactly as
+#' it never sets an item's status in [delphi_validity()].
+#'
+#' **The stability criteria do not all read the same way.** The individual
+#' chi-square reads *p* below `alpha` as stable, because Chaffin and Talley
+#' (1980) take dependence between the rounds' ratings as stability; the group
+#' chi-square reads *p* at or above `alpha` as stable, because Dajani et al.
+#' (1979) take no detectable difference between the rounds' distributions as
+#' stability; and net percent change reads a value below .15 as stable
+#' (Scheibe et al., 1975/2002). The same `criterion` therefore cannot be read
+#' without the method. The row that carries the criterion (`stability
+#' p_value`, or `net percent change`) says in its `note` which way it reads
+#' and whether the fit read the item as stable ("Read as stable." or "Not
+#' read as stable."), the call [delphi_validity()] records in `stable`. Kappa
+#' and lambda have no criterion and make no such call.
 #'
 #' The stability rows come from the item's last pair of consecutive rounds.
 #' For an item rated again after a gap (rounds 1, 2 and 4) that pair is
 #' earlier than the round the rows are dated by, and their `note` says which
-#' rounds they compare.
+#' rounds they compare. Stability uses only the experts who rated the item in
+#' both rounds of the pair; when they are fewer than `n_judges`, the experts
+#' in the item's last round, the `note` gives their number.
 #'
 #' @section When a stability statistic is NA:
 #' A stability row is always present for a carried item, so an `NA` there is a
-#' statement about the data rather than a missing record. There are two cases,
-#' and they can be told apart from the object alone:
+#' statement about the data rather than a missing record. There are two kinds
+#' of case, and they can be told apart from the object alone:
 #'
 #' \describe{
-#'   \item{`proportion unchanged` is also `NA`}{The item has no pair of
-#'     consecutive rounds: it was rated in one round only, so there was nothing
-#'     to compare.}
+#'   \item{`proportion unchanged` is also `NA`}{No pair of ratings was
+#'     compared, for one of three reasons: the item was rated in one round
+#'     only; it was rated in rounds that are not consecutive (1 and 3), and
+#'     only consecutive rounds are compared; or it was rated in two
+#'     consecutive rounds, but no expert rated it in both, as when the panel
+#'     was replaced between them. The `note` says which.}
 #'   \item{`proportion unchanged` has a value}{A pair exists, but the
 #'     statistic is undefined for that data.}
 #' }
@@ -967,9 +1088,24 @@
 #' evidence rather than as a bare list of names.
 #'
 #' @references
+#' Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
+#' studies. *Technological Forecasting and Social Change, 16*(1), 67–73.
+#' \doi{10.1016/0040-1625(80)90074-8}
+#'
+#' Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
+#' agreement criteria for the termination of Delphi studies. *Technological
+#' Forecasting and Social Change, 13*(1), 83–90.
+#' \doi{10.1016/0040-1625(79)90007-6}
+#'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
 #' \doi{10.1097/00006199-198611000-00017}
+#'
+#' Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
+#' methodology. In H. A. Linstone & M. Turoff (Eds.), *The Delphi method:
+#' Techniques and applications* (pp. 257–281).
+#' \url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
+#' (Original work published 1975)
 #'
 #' @param fit A fitted `contentvalid_sort`, `contentvalid_rating`,
 #'   `contentvalid_expert`, or `contentvalid_delphi` object.
@@ -1120,6 +1256,40 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
   out
 }
 
+# The keying and response scale the handoff carries, as one header line:
+# "Keying: reverse-keyed A2, B3; response scale 1 to 5". A handoff from
+# before 0.7.0 has neither column, which reads as not stated.
+.handoff_keying_line <- function(evidence) {
+  keying <- evidence$keying
+  keyed <- if (is.null(keying) || all(is.na(keying))) {
+    "not stated"
+  } else {
+    reversed <- unique(evidence$item[keying %in% -1L])
+    if (length(reversed)) {
+      paste("reverse-keyed", paste(reversed, collapse = ", "))
+    } else {
+      "no item reverse-keyed"
+    }
+  }
+  lo <- evidence$response_min
+  hi <- evidence$response_max
+  known <- !is.null(lo) && !is.null(hi) && any(!is.na(lo) & !is.na(hi))
+  scale <- if (known) {
+    i <- which(!is.na(lo) & !is.na(hi))[1]
+    paste("response scale", lo[i], "to", hi[i])
+  } else {
+    "response scale not stated"
+  }
+  paste0("Keying: ", keyed, "; ", scale)
+}
+
+# `keep` as it would be typed: "Supported" or c("Supported", "Review").
+.handoff_keep_text <- function(keep) {
+  quoted <- paste0("\"", keep, "\"")
+  if (length(keep) == 1L) return(quoted)
+  paste0("c(", paste(quoted, collapse = ", "), ")")
+}
+
 #' @export
 print.contentvalid_handoff <- function(x, ...) {
   p <- x$provenance
@@ -1136,11 +1306,15 @@ print.contentvalid_handoff <- function(x, ...) {
 
   if (is.null(x$scales)) {
     cat("Constructs: none in this design; the panel rated one item set.\n")
+  } else if (!length(x$scales)) {
+    cat("Constructs: none carried\n")
   } else {
-    cat("Constructs: ", paste(sprintf("%s (%d)", names(x$scales),
-                                      lengths(x$scales)), collapse = ", "),
-        "\n", sep = "")
+    .say(paste0("Constructs: ", paste(sprintf("%s (%d)", names(x$scales),
+                                              lengths(x$scales)),
+                                      collapse = ", ")),
+         exdent = 2L)
   }
+  .say(.handoff_keying_line(x$item_evidence), exdent = 2L)
 
   st <- x$item_statistics
   if (!is.null(st$interval_method) && any(!is.na(st$interval_method))) {
@@ -1157,10 +1331,16 @@ print.contentvalid_handoff <- function(x, ...) {
     for (i in seq_len(nrow(ps))) {
       line <- sprintf("Panel: %s = %s", ps$statistic[i], .fmt(ps$value[i]))
       if (!is.na(ps$interval_method[i])) {
-        line <- sprintf("%s, %s%% interval [%s, %s] (%s)", line,
-                        format(100 * ps$interval_level[i]),
-                        .fmt(ps$lower[i]), .fmt(ps$upper[i]),
-                        ps$interval_method[i])
+        ci <- paste0(format(100 * ps$interval_level[i]), "% CI")
+        # An interval with no width says nothing about precision, so it is
+        # said in words, as panel_agreement() prints it.
+        line <- if (.handoff_zero_width(ps$lower[i], ps$upper[i])) {
+          paste0(line, "; no ", ci, ", because every resample of the items ",
+                 "gave the same value")
+        } else {
+          sprintf("%s, %s %s (%s)", line, ci,
+                  .fmt_ci(ps$lower[i], ps$upper[i]), ps$interval_method[i])
+        }
       }
       .say(line, exdent = 2L)
     }
@@ -1181,13 +1361,40 @@ print.contentvalid_handoff <- function(x, ...) {
     .end_section()
   }
 
-  cat("\n")
-  .say("Carry these items into the empirical workflow once response data are",
-       "collected. In nomologR that is")
-  cat("    nomo_screen(data, items = handoff)\n")
-  .say("which screens the items carried here. Passing the whole handoff,",
-       "rather than handoff$items, keeps the keying and the reasons for",
-       "anything held back.")
+  # An item no decision rule was applied to is held back by `keep`, not by
+  # its evidence, so the print says so and how to carry it.
+  descriptive <- held$item[held$status %in% "Descriptive only"]
+  every_item <- length(descriptive) == nrow(x$item_evidence)
+  if (length(descriptive)) {
+    cat("\n")
+    .say(if (every_item) {
+      paste("No decision rule was applied in this analysis, so every item is",
+            "Descriptive only and none is carried. keep = \"Descriptive",
+            "only\" carries such items, as in content_handoff(fit, keep =",
+            "\"Descriptive only\").")
+    } else {
+      paste0("No decision rule was applied to ",
+             paste(descriptive, collapse = ", "), ", so ",
+             if (length(descriptive) == 1L) "it is" else "they are",
+             " Descriptive only and not carried. Adding \"Descriptive only\" ",
+             "to keep carries such items, as in content_handoff(fit, keep = ",
+             .handoff_keep_text(unique(c(p$keep, "Descriptive only"))), ").")
+    })
+  }
+
+  if (length(x$items)) {
+    cat("\n")
+    .say("Carry these items into the empirical workflow once response data",
+         "are collected. In nomologR that is")
+    cat("    nomo_screen(data, items = handoff)\n")
+    .say("which screens the items carried here. Passing the whole handoff,",
+         "rather than handoff$items, keeps the keying and the reasons for",
+         "anything held back.")
+  } else if (!every_item) {
+    cat("\n")
+    .say("No item met `keep`, so nothing is carried into the empirical",
+         "workflow yet.")
+  }
 
   .closing(c("Surviving content review is evidence about relevance,",
              "representation, and expert judgment. It does not establish that",

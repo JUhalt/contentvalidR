@@ -675,7 +675,9 @@ test_that("the printed handoff names the intervals and the panel statistic", {
                fixed = TRUE)
   expect_match(out, "I-CVI (Wilson score, 95%)", fixed = TRUE)
   expect_match(out, "Panel: Krippendorff's alpha (ordinal) = ", fixed = TRUE)
-  expect_match(out, "95% interval", fixed = TRUE)
+  # Written as every other printout writes an interval.
+  expect_match(out, "95% CI", fixed = TRUE)
+  expect_false(grepl("95% interval", out, fixed = TRUE))
 
   rated <- paste(capture.output(print(content_handoff(rating_fit()))),
                  collapse = " ")

@@ -31,7 +31,7 @@
     ds <- htd_i$interpretation[1]
     # Each index is read against its own benchmark, as Colquitt et al. (2019)
     # publish them; they publish no combined band. The advice follows the
-    # weaker of the two.
+    # lower of the two and is labeled as this package's.
     weaker <- if (is.na(hs) || is.na(ds)) NA_character_ else {
       if (unname(rank[hs]) <= unname(rank[ds])) hs else ds
     }
@@ -41,27 +41,29 @@
              .rating_left_out, ".")
     } else ""
     evidence <- if (judge_type == "expert") {
-      paste0("HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.", partial_note)
+      paste0(.colquitt_expert_sentence, partial_note)
     } else if (is.na(weaker)) {
       paste0("Insufficient scale-level rating evidence is available for normative interpretation.", partial_note)
     } else {
       band <- if (identical(hs, ds)) {
         sprintf(paste("Mean HTC and mean HTD both fall in the %s band of",
-                      "published scales (Colquitt et al., 2019)"), hs)
+                      "published scales (Colquitt et al., 2019)."), hs)
       } else {
         sprintf(paste("Mean HTC falls in the %s band and mean HTD in the %s",
-                      "band of published scales (Colquitt et al., 2019)"),
+                      "band of published scales (Colquitt et al., 2019)."),
                 hs, ds)
       }
       advice <- if (weaker %in% c("Very Strong", "Strong")) {
-        "."
+        ""
       } else if (weaker == "Moderate") {
-        "; inspect the weaker items and construct overlap before finalizing the scale."
+        paste("inspect the weaker items and construct overlap before",
+              "finalizing the scale")
       } else {
-        paste("; review item wording, construct boundaries, and the choice of",
-              "orbiting constructs, and consider pretesting the revised items again.")
+        paste("review item wording, construct boundaries, and the choice of",
+              "orbiting constructs, and consider pretesting the revised items",
+              "again")
       }
-      paste0(band, advice,
+      paste0(band, .colquitt_advice(c(hs, ds), advice),
              .colquitt_definitions_caution(defs_for(target), "rated"),
              partial_note)
     }
@@ -102,6 +104,24 @@
            .rating_means_used(sc$n_htc[i], sc$n_htd[i], sc$n_items[i]),
            "; ", .rating_left_out, ".")
   }, character(1))
+}
+
+# The scale-level table shared by print and summary. A mean is printed with
+# a third decimal when two would round it up to the minimum of a band it is
+# below (.868 beside Moderate, where Strong starts at .87); expert judges get
+# means and no levels.
+.rating_scale_table <- function(sc, expert, digits) {
+  fmt_mean <- function(v, statistic) {
+    if (expert) .fmt(v, digits) else
+      .fmt_band_mean(v, statistic, sc$orbiting_r, digits)
+  }
+  st <- data.frame(target = sc$target, items = sc$n_items,
+                   `mean HTC` = fmt_mean(sc$mean_htc, "htc"),
+                   stringsAsFactors = FALSE, check.names = FALSE)
+  if (!expert) st$`HTC level` <- sc$htc_strength
+  st$`mean HTD` <- fmt_mean(sc$mean_htd, "htd")
+  if (!expert) st$`HTD level` <- sc$htd_strength
+  st
 }
 
 # "mean HTC and mean HTD use 2 of 3 items".
@@ -150,7 +170,10 @@
 #'
 #' Colquitt et al. (2019) norms are applied only to **target-scale averages** of
 #' HTC and HTD, matching the level at which those empirical benchmarks were
-#' constructed. The labels are suppressed for expert judges.
+#' constructed. The labels are not applied to expert judges. Each index is
+#' read against its own band; the advice in `scale_summary$evidence`, keyed to
+#' the lower of the two bands, is labeled as this package's suggestion, not
+#' Colquitt et al.'s.
 #'
 #' @param ratings Long-format rating data.
 #' @param item_col,rater_col,construct_col,rating_col Column names.
@@ -179,7 +202,51 @@
 #'   `p_omnibus`, `df1` and `df2` are the uncorrected test; and
 #'   `max_contrast_p` is the largest *p* among the planned contrasts, `NA`
 #'   when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd` count
-#'   the items in each mean.
+#'   the items in each mean. `print()`, `summary()`, and `plot()` are
+#'   described in [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per item:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`target`}{The construct the item was written for.}
+#'     \item{`n_raters`}{Judges who rated the item.}
+#'     \item{`n_complete`}{Judges who rated it against every construct, on
+#'       whom HTD and the tests rest.}
+#'     \item{`n_incomplete`}{`n_raters - n_complete`.}
+#'     \item{`n_target`}{Judges who rated it against its intended construct,
+#'       on whom HTC rests.}
+#'     \item{`n_constructs`}{Construct definitions the item was rated
+#'       against.}
+#'     \item{`target_mean`}{The mean rating on the intended construct, from
+#'       the `n_target` judges, on the scale as given.}
+#'     \item{`target_mean_complete`}{The same mean from the `n_complete`
+#'       judges.}
+#'     \item{`strongest_competitor`}{The other construct with the highest
+#'       mean rating among the `n_complete` judges, ties joined by `" / "`.}
+#'     \item{`competitor_mean`}{That construct's mean rating.}
+#'     \item{`htc`}{HTC, the intended construct's mean rating as a share of
+#'       the scale.}
+#'     \item{`htd`}{HTD, the intended construct's average lead over every
+#'       other construct, -1 to 1.}
+#'     \item{`F`, `df1`, `df2`, `p_omnibus`}{The uncorrected repeated-measures
+#'       *F* test.}
+#'     \item{`epsilon_gg`}{The Greenhouse-Geisser epsilon.}
+#'     \item{`df1_gg`, `df2_gg`}{The corrected degrees of freedom.}
+#'     \item{`p_value`}{The omnibus *p* the decision reads: corrected where a
+#'       correction applies.}
+#'     \item{`partial_eta2`}{Partial eta-squared of the omnibus test.}
+#'     \item{`min_mean_diff`}{The smallest lead of the intended construct's
+#'       mean over another construct's, among the planned contrasts.}
+#'     \item{`max_contrast_p`}{The largest planned-contrast *p*.}
+#'     \item{`contrast_pass`}{Whether every planned contrast met `alpha`.}
+#'     \item{`recommendation`}{`"Retain"`, `"Review"`, or
+#'       `"Insufficient data"` (fewer than two complete judges).}
+#'     \item{`issue`}{The reason in a few words, such as `"Orbiting construct
+#'       rated higher"`.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Retain"`,
+#'       `"Review"`, or `"Insufficient data"`.}
+#'   }
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
@@ -448,17 +515,19 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   }
 
   .section("Item-level evidence")
+  # The judge count is headed as content_report() heads it.
   tab <- data.frame(item = r$item, target = r$target,
-                    decision = r$recommendation, n = r$n_complete,
+                    decision = r$recommendation, judges = r$n_complete,
                     HTC = .fmt(r$htc, digits), HTD = .fmt(r$htd, digits),
                     `omnibus p` = .fmt_p(r$p_value),
                     `contrast p` = .fmt_p(r$max_contrast_p),
                     competitor = r$strongest_competitor,
                     stringsAsFactors = FALSE, check.names = FALSE)
-  .print_table(tab)
+  shown <- .print_table(tab)
   cat("\n")
   .say(paste0(
-    "n: judges who rated the item against every construct. Omnibus p: do ",
+    "Judges: the number who rated the item against every construct. ",
+    "Omnibus p: do ",
     "the item's ratings differ across constructs (Greenhouse-Geisser ",
     "corrected). Contrast p: the largest ",
     if (identical(s$adjust, "holm")) "Holm-adjusted ",
@@ -481,14 +550,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
     lab <- if (is.na(s)) NULL else .colquitt_norm_label(s)
     if (is.null(lab)) s else lab
   }, character(1), USE.NAMES = FALSE)
-  st <- data.frame(target = sc$target, items = sc$n_items,
-                   `mean HTC` = .fmt(sc$mean_htc, digits),
-                   stringsAsFactors = FALSE, check.names = FALSE)
-  # No benchmark is applied for expert judges, so no level columns and no
-  # benchmark set are shown for them.
-  if (!expert) st$`HTC level` <- sc$htc_strength
-  st$`mean HTD` <- .fmt(sc$mean_htd, digits)
-  if (!expert) st$`HTD level` <- sc$htd_strength
+  st <- .rating_scale_table(sc, expert, digits)
   .print_table(st, more = 'as.data.frame(x, component = "scale_summary")')
   # How many items are behind each mean, said only when some were left out.
   for (line in .rating_partial_means(sc)) .say(line)
@@ -496,9 +558,8 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   if (!expert) for (line in .colquitt_caution_lines(sc, "rated")) .say(line)
 
   cat("\n")
-  if (identical(s$judge_type, "expert")) {
-    .say("Colquitt benchmark labels are suppressed because the analysis was",
-         "marked as using expert judges.")
+  if (expert) {
+    .say(.colquitt_expert_sentence)
   } else {
     .say("Colquitt labels are empirical percentile norms for scale-level HTC",
          "and HTD averages, not universal cutoffs. HTC is an average rating",
@@ -512,6 +573,7 @@ print.contentvalid_rating <- function(x, digits = 2, ...) {
   if (.show_key()) {
     .print_key(c("htc", "htd"), headings = c("HTC", "HTD"))
     .print_decision_legend(x$results$recommendation, "construct-rating")
+    .say_competitor_hidden(r$recommendation, shown)
     .print_key_footer()
   }
 
@@ -542,26 +604,20 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 
   .section("Scale-level evidence")
   s <- x$scale_summary
-  tab <- data.frame(target = s$target, items = s$n_items,
-                    stringsAsFactors = FALSE, check.names = FALSE)
-  # The sentence under the table says how many items are behind each mean
-  # when some were left out.
-  tab$retain <- s$n_retain
-  tab$review <- s$n_review
-  tab$`mean HTC` <- .fmt(s$mean_htc, digits)
-  tab$`HTC level` <- s$htc_strength
-  tab$`mean HTD` <- .fmt(s$mean_htd, digits)
-  tab$`HTD level` <- s$htd_strength
   # Expert-judge analyses carry no benchmark labels, so the columns that
   # would hold them are left out. The judge type decides, as in the main
   # print, so a naive-judge analysis keeps the columns even when empty.
-  if (identical(x$settings$judge_type, "expert")) {
-    tab <- tab[!names(tab) %in% c("HTC level", "HTD level")]
-  }
+  st <- .rating_scale_table(s, identical(x$settings$judge_type, "expert"),
+                            digits)
+  tab <- cbind(st[c("target", "items")],
+               data.frame(retain = s$n_retain, review = s$n_review),
+               st[setdiff(names(st), c("target", "items"))])
   .print_table(tab, more = "x$scale_summary")
   cat("\n")
   .say("HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey",
        "distinctiveness (Colquitt et al., 2019).")
+  # Each sentence also says how many items are behind each mean when some
+  # were left out.
   .say_grouped(s$target, s$evidence)
 
   f <- x$reviewed_items
@@ -602,6 +658,13 @@ print.summary.contentvalid_rating <- function(x, digits = 2, ...) {
 #' against every construct, the judges the tests use. An item without a
 #' decision has no gap: a cross marks its mean target rating.
 #'
+#' The key sits above the data, in as many rows as the figure's width needs.
+#' Where a vertical axis title would not fit the figure's height, as the HTD
+#' title does at 7 by 4 inches, the axis shows the index's name alone and the
+#' key's heading gives the full definition. The item plot widens its bottom
+#' margin for long item names, shortening a name in the middle with "..."
+#' when it would take more than about 40% of the figure's height.
+#'
 #' @param x A `contentvalid_rating` object.
 #' @param metric Either `"htc"` or `"htd"` for `type = "item"`.
 #' @param type One of `"item"`, `"map"`, or `"profile"`.
@@ -637,6 +700,7 @@ plot.contentvalid_rating <- function(x,
                                      show_legend = TRUE,
                                      ...) {
   type <- .choose(type)
+  metric <- .choose(metric)
   label <- .choose(label)
   .validate_flag(show_legend, "show_legend")
   op <- .plot_margins(list(...))
@@ -647,35 +711,56 @@ plot.contentvalid_rating <- function(x,
   htd_lab <- "HTD: lead of the target over the other constructs"
 
   if (type == "item") {
-    metric <- .choose(metric)
     y <- r[[metric]]
     xs <- seq_along(y)
     lo <- if (metric == "htc") 0 else -1
-    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "Item",
-                    ylab = if (metric == "htc") htc_lab else htd_lab,
-                    xlim = c(0.5, length(y) + 0.5),
-                    ylim = c(lo, 1 + 0.2 * (1 - lo))), list(...))
-    graphics::axis(1, at = xs, labels = r$item, las = 2)
-    .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5))
+    full <- if (metric == "htc") htc_lab else htd_lab
+    # The item names set the bottom margin, so they come first.
+    below <- .item_axis_below(r$item)
+    ylab <- .ylab_fit(full, toupper(metric))
+    # A shortened axis title is defined in the key's heading.
+    key <- if (isTRUE(show_legend)) {
+      leg <- .decision_legend(r$recommendation)
+      .legend_fit(leg$legend, leg$pch, title = if (!identical(ylab, full)) full)
+    }
+    # The axis title is set below the item names.
+    dots <- list(...)
+    .plot_with(list(x = xs, y = y, type = "n", xaxt = "n", yaxt = "n", xlab = "",
+                    ylab = ylab, xlim = c(0.5, length(y) + 0.5),
+                    ylim = c(lo, .legend_room(lo, 1, 1 + 0.2 * (1 - lo), key))),
+               dots, protect = c("type", "xaxt", "yaxt", "axes", "xlab"))
+    graphics::axis(1, at = xs, labels = below$labels, las = 2)
+    graphics::title(xlab = if (is.null(dots$xlab)) "Item" else dots$xlab,
+                    line = below$line)
+    .axis_bounded(2, at = if (metric == "htc") seq(0, 1, 0.25) else seq(-1, 1, 0.5),
+                  las = 1)
     if (metric == "htd") .hline(0)
     has <- is.finite(y)
     graphics::points(xs[has], y[has], pch = pch[has])
     graphics::points(xs[!has], rep(lo, sum(!has)), pch = 4)
-    if (isTRUE(show_legend)) {
-      leg <- .decision_legend(r$recommendation)
-      .legend_top(leg$legend, leg$pch)
-    }
+    .legend_draw(key)
     return(invisible(x))
   }
 
   if (type == "map") {
     ok <- is.finite(r$htc) & is.finite(r$htd)
-    .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1), ylim = c(-1, 1.4),
-                    xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = htd_lab,
+    s <- x$scale_summary
+    s_ok <- is.finite(s$mean_htc) & is.finite(s$mean_htd)
+    ylab <- .ylab_fit(htd_lab, "HTD")
+    key <- if (isTRUE(show_legend)) {
+      leg <- .decision_legend(r$recommendation[ok])
+      .legend_fit(c(leg$legend, if (any(s_ok)) "Scale mean"),
+                  c(leg$pch, if (any(s_ok)) 17),
+                  title = if (!identical(ylab, htd_lab)) htd_lab)
+    }
+    # Item labels sit above their points, so the key clears them too.
+    .plot_with(list(x = r$htc[ok], y = r$htd[ok], xlim = c(0, 1),
+                    ylim = c(-1, .legend_room(-1, 1, 1.4, key, above_in = 0.2)),
+                    xaxt = "n", yaxt = "n", xlab = htc_lab, ylab = ylab,
                     pch = pch[ok]), list(...),
                protect = c("type", "xaxt", "yaxt", "axes", "pch"))
     .axis_bounded(1, at = seq(0, 1, 0.25))
-    .axis_bounded(2, at = seq(-1, 1, 0.5))
+    .axis_bounded(2, at = seq(-1, 1, 0.5), las = 1)
     .hline(0)
 
     lab_idx <- switch(
@@ -689,8 +774,6 @@ plot.contentvalid_rating <- function(x,
                      pos = 3, cex = 0.70, offset = 0.35)
     }
 
-    s <- x$scale_summary
-    s_ok <- is.finite(s$mean_htc) & is.finite(s$mean_htd)
     if (any(s_ok)) {
       sx <- s$mean_htc[s_ok]
       sy <- s$mean_htd[s_ok]
@@ -698,11 +781,7 @@ plot.contentvalid_rating <- function(x,
       label_y <- .map_scale_label_y(sx, sy)
       graphics::text(sx, label_y, labels = s$target[s_ok], cex = 0.72)
     }
-    if (isTRUE(show_legend)) {
-      leg <- .decision_legend(r$recommendation[ok])
-      .legend_top(c(leg$legend, if (any(s_ok)) "Scale mean"),
-                  c(leg$pch, if (any(s_ok)) 17))
-    }
+    .legend_draw(key)
     return(invisible(x))
   }
 
@@ -711,12 +790,17 @@ plot.contentvalid_rating <- function(x,
   n <- nrow(r)
   y <- rev(seq_len(n))
   xlim <- c(x$settings$scale_min, x$settings$scale_max)
-  # A key of five entries takes two rows, and the headroom to hold them.
-  two_rows <- length(lay$legend) > 4L
+  # The left margin is sized to the item names before the key is laid out,
+  # since the key fits the width that remains.
+  item_labels <- .item_axis_left(r$item)
+  # The key takes as many rows as the width needs, and the frame holds them
+  # above the first item's row.
+  key <- if (isTRUE(show_legend)) .legend_fit(lay$legend, lay$pch, lay$lty)
   .plot_with(list(x = NA, xlim = xlim,
-                  ylim = c(0.5, n + if (two_rows) 1.7 else 1.25), yaxt = "n",
-                  xlab = "Mean rating against each definition", ylab = ""), list(...))
-  graphics::axis(2, at = y, labels = r$item, las = 1)
+                  ylim = c(0.5, .legend_room(0.5, n + 0.25, n + 0.5, key)),
+                  yaxt = "n", xlab = "Mean rating against each definition",
+                  ylab = ""), list(...))
+  graphics::axis(2, at = y, labels = item_labels, las = 1)
   both <- lay$both
   if (any(both)) {
     graphics::segments(lay$competitor[both], y[both], lay$target[both],
@@ -725,10 +809,7 @@ plot.contentvalid_rating <- function(x,
     graphics::points(lay$target[both], y[both], pch = 19)
   }
   graphics::points(lay$cross[lay$loose], y[lay$loose], pch = 4)
-  if (isTRUE(show_legend)) {
-    .legend_top(lay$legend, lay$pch, lay$lty,
-                ncol = if (two_rows) 3L else NULL)
-  }
+  .legend_draw(key)
   invisible(x)
 }
 

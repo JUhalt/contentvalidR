@@ -32,7 +32,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 Development plans: [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open issues](https://github.com/JUhalt/contentvalidR/issues).
 Documentation: [Package website](https://juhalt.github.io/contentvalidR/) · [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
 
-**contentvalidR** analyzes the content-validity evidence that judges and experts provide before a scale reaches respondents: whether each item represents the construct it was written for, whether a panel agrees on it, whether the conclusions depend on who sat on the panel, and whether the items cover the domain at all. Every analysis prints its verdict first, reports its numbers in APA style, and explains each index it shows, so the output can be read without first consulting the source papers.
+**contentvalidR** analyzes the content-validity evidence that judges and experts provide before a scale reaches respondents: whether each item represents the construct it was written for, whether a panel agrees on it, whether the conclusions depend on who sat on the panel, and whether the items cover the domain at all. Every analysis prints a header naming what it holds, then the facts of the design, then its verdict; it reports its numbers in APA style and explains each index it shows, so the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader validity argument. They complement, rather than replace, construct definition, domain coverage, qualitative expert feedback, cognitive interviewing, and other evidence about relevance, comprehensiveness, and comprehensibility.
 
@@ -91,11 +91,13 @@ The first line names the object, `<contentvalid_sort>`, and what it holds; then,
 
 The scale-level bands place the mean Psa and Csv against published scales (Colquitt et al., 2019). Those norms come from sorts with three definitions, and these judges used two, so the printout says the comparison is approximate.
 
-For a manuscript, `content_report()` gives the same evidence as an APA table, with a general note that defines its abbreviations and columns and states the criterion behind each decision; `format = "markdown"` writes it for Quarto or R Markdown:
+For a manuscript, `content_report()` gives the same evidence as an APA table, with a general note that defines its abbreviations and columns and states the criterion behind each decision:
 
 ```{r first-report}
 content_report(fit)
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown; print it from a chunk with the option `results = "asis"`, so that it renders as a table.
 
 `plot()` draws each item's share of judges with its interval, against the share the exact test needs for that item:
 

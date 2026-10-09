@@ -74,6 +74,6 @@
   paste0(
     level, " intervals for proportions: ", what,
     " An interval reflects how few ratings an item received, not whether the",
-    " right judges were chosen."
+    " right people rated it."
   )
 }

@@ -5,8 +5,15 @@
 # * axes for statistics that cannot exceed 1 are labeled as APA prints them
 #   (.25, .50, not 0.25, 0.50);
 # * a legend lists only what the figure draws, and sits in headroom reserved
-#   above the data rather than on top of it;
-# * reference lines stop below that headroom.
+#   above the data rather than on top of it, in as many rows as the plot's
+#   width needs;
+# * reference lines stop below that headroom;
+# * a vertical axis title too long for the figure gives way to the index's
+#   name, which the legend's heading defines;
+# * an axis of counts, such as experts or judges, ticks whole numbers only;
+# * item names get the margin they need, shortened in the middle when long;
+# * the tick labels of a vertical statistic axis are set horizontally, so a
+#   short figure drops none of them.
 
 # Narrows the top margin unless the caller asked for a title. Returns the old
 # settings for on.exit(graphics::par(op)).
@@ -71,6 +78,30 @@
   list(labels = out, lines = base + max(wide(out), 0) / csi)
 }
 
+# Item names down the left of a horizontal figure: shortened by
+# .item_labels(), with the left margin widened to hold them. Called before the
+# frame is drawn; returns the labels to draw.
+.item_axis_left <- function(items) {
+  lab <- .item_labels(items, width_in = graphics::par("din")[1])
+  mar <- graphics::par("mar")
+  graphics::par(mar = c(mar[1], max(mar[2], lab$lines + 0.2), mar[3:4]))
+  lab$labels
+}
+
+# Item names set upright under a vertical figure (axis(1, las = 2)):
+# shortened by .item_labels() to 40% of the figure's height less an inch kept
+# for the data, with the bottom margin widened to hold them and the axis
+# title moved below them. Called before the frame is drawn; returns the
+# labels and the title's line.
+.item_axis_below <- function(items) {
+  lab <- .item_labels(items, width_in = graphics::par("din")[2],
+                      reserve_in = 1)
+  mar <- graphics::par("mar")
+  line <- max(graphics::par("mgp")[1], lab$lines + 0.2)
+  graphics::par(mar = c(max(mar[1], line + 1.2), mar[-1]))
+  list(labels = lab$labels, line = line)
+}
+
 # Tick labels in APA style for a bounded statistic: 0, .25, .50, .75, 1.00.
 .tick_labels <- function(at, digits = 2) {
   out <- formatC(at, format = "f", digits = digits)
@@ -79,8 +110,13 @@
   out
 }
 
+# On a vertical axis the labels are set horizontally unless the caller says
+# otherwise: set along the axis, each needs its width between ticks, and a
+# short figure under a tall key would drop some of them.
 .axis_bounded <- function(side, at, digits = 2, ...) {
-  graphics::axis(side, at = at, labels = .tick_labels(at, digits), ...)
+  args <- list(side, at = at, labels = .tick_labels(at, digits), ...)
+  if (side %in% c(2, 4) && is.null(args$las)) args$las <- 1
+  do.call(graphics::axis, args)
 }
 
 # One plotting symbol per decision: met (filled), review (open), no decision
@@ -98,28 +134,130 @@
   list(legend = words[ord], pch = pch[ord])
 }
 
-# A horizontal legend in the headroom at the top of the plot. `entries` is a
-# list of legend(), pch, lty values; NA marks "no symbol" or "no line".
-.legend_top <- function(legend, pch = NA, lty = NA, col = "black", ncol = NULL) {
+# How a legend in the headroom at the top of the plot fits the plot's width:
+# one row at the usual size when it fits, else two rows, else three, and so
+# on up to a single column, and only then smaller type, never below 8 points,
+# so the text keeps its size wherever rows can hold it. Rows read across in
+# the order given. NA in `pch` or `lty` marks "no symbol" or "no line";
+# `title` is a heading above the entries. Widths follow legend()'s own
+# arithmetic in inches on the open device, so a figure can size its headroom
+# (.legend_room()) before its frame is drawn.
+.legend_fit <- function(legend, pch = NA, lty = NA, col = "black", title = NULL,
+                        width_in = graphics::par("pin")[1], cex = 0.72) {
   n <- length(legend)
   # Nothing drawn, nothing to explain (for example, every value is missing).
-  if (!n) return(invisible(NULL))
-  args <- list("top", legend = legend, pch = rep_len(pch, n),
-               col = rep_len(col, n), bty = "n", horiz = is.null(ncol),
-               ncol = if (is.null(ncol)) 1 else ncol, cex = 0.72,
-               x.intersp = 0.7, seg.len = 1.6)
-  # legend() cannot draw a key whose line types are all missing. When lines
-  # and symbols are mixed, a horizontal key underestimates the room a line
-  # needs and runs the label before it into the line, so that label is padded.
+  if (!n) return(NULL)
+  pch <- rep_len(pch, n)
   lty <- rep_len(lty, n)
-  if (any(!is.na(lty))) {
-    args$lty <- lty
-    if (is.null(ncol) && n > 1L) {
-      before_line <- c(is.na(lty[-n]) & !is.na(lty[-1L]), FALSE)
-      args$legend[before_line] <- paste0(legend[before_line], "     ")
+  col <- rep_len(col, n)
+  lines <- any(!is.na(lty))
+  layout <- function(rows, cex) {
+    ncol <- ceiling(n / rows)
+    rows <- ceiling(n / ncol)
+    # legend() fills its columns first; this order makes the rows read
+    # across. The slots after the last entry are left blank, so a short last
+    # row moves no entry into another column.
+    blank <- rows * ncol - n
+    ord <- as.vector(matrix(seq_len(rows * ncol), rows, byrow = TRUE))
+    labels <- c(legend, rep("", blank))[ord]
+    # With lines in the key, legend() starts each line a little before its
+    # column, which runs the widest label of the column before into it, so
+    # every column but the last is padded.
+    if (lines) {
+      inner <- ceiling(seq_along(labels) / rows) < ncol
+      labels[inner] <- paste0(labels[inner], "     ")
     }
+    # Each column is as wide as the widest label, plus the symbol and its gap
+    # (x.intersp = 0.7) and, with lines, the segment (seg.len = 1.6) less the
+    # 0.7 character a merged symbol overlaps.
+    xchar <- cex * graphics::par("cex") * graphics::par("cin")[1]
+    ychar <- cex * graphics::par("cex") * graphics::par("cin")[2]
+    text <- max(graphics::strwidth(labels, units = "inches", cex = cex))
+    column <- text + 1.7 * xchar + if (lines) 0.9 * xchar else 0
+    width <- ncol * column + 0.5 * xchar
+    if (!is.null(title)) {
+      heading <- graphics::strwidth(title, units = "inches", cex = cex)
+      width <- max(width, heading + 0.5 * xchar)
+    }
+    pad <- function(v) c(v, rep(NA, blank))[ord]
+    list(legend = labels, pch = pad(pch), lty = pad(lty), col = pad(col),
+         title = title, ncol = ncol, rows = rows, cex = cex, width = width,
+         height = (rows + 1 + !is.null(title)) * ychar)
   }
+  # A tenth of an inch spare absorbs the difference between measured and
+  # drawn text on bitmap devices.
+  room <- width_in - 0.1
+  for (rows in seq_len(n)) {
+    fit <- layout(rows, cex)
+    if (fit$width <= room) return(fit)
+  }
+  # Too wide even in one column: that column in type shrunk to fit, to no
+  # less than 8 points. Some devices set text in whole points, so the width
+  # is checked again.
+  smallest <- min(cex, 8 / (graphics::par("ps") * graphics::par("cex")))
+  fit <- layout(n, max(smallest, cex * room / fit$width))
+  while (fit$width > room && fit$cex > smallest) {
+    fit <- layout(n, max(smallest, 0.95 * fit$cex))
+  }
+  fit
+}
+
+# Draws a legend laid out by .legend_fit() at the top of the plot.
+.legend_draw <- function(fit) {
+  if (is.null(fit)) return(invisible(NULL))
+  args <- list("top", legend = fit$legend, pch = fit$pch, col = fit$col,
+               bty = "n", ncol = fit$ncol, cex = fit$cex, x.intersp = 0.7,
+               seg.len = 1.6, title = fit$title)
+  # legend() cannot draw a key whose line types are all missing.
+  if (any(!is.na(fit$lty))) args$lty <- fit$lty
   do.call(graphics::legend, args)
+}
+
+# A legend in the headroom at the top of the plot, laid out to fit the plot's
+# width. A figure that sizes its headroom for the key lays it out with
+# .legend_fit() and draws it with .legend_draw() instead.
+.legend_top <- function(legend, pch = NA, lty = NA, col = "black",
+                        title = NULL) {
+  invisible(.legend_draw(.legend_fit(legend, pch, lty, col, title)))
+}
+
+# The top of a frame's y range that keeps a legend laid out by .legend_fit()
+# clear of data reaching `hi`, and never lower than `top`. The frame runs
+# from `lo` with R's usual 4% padding at each end over `height_in` inches;
+# `above_in` is what the data draw above `hi`, such as half a symbol or a
+# label set above a point.
+.legend_room <- function(lo, hi, top, fit, above_in = 0.05,
+                         height_in = graphics::par("pin")[2]) {
+  if (is.null(fit)) return(top)
+  share <- 1.08 * (fit$height + above_in) / height_in
+  # A key taller than most of the plot cannot be cleared on this device;
+  # the data then keep at least a third of the height.
+  max(top, lo + (hi - lo) / max(1.04 - share, 0.35))
+}
+
+# The title of the vertical axis: the full label where it fits the figure's
+# height, centered on the plot, and the index's name alone where it does
+# not, for the key to define.
+.ylab_fit <- function(full, short) {
+  room <- graphics::par("pin")[2] +
+    2 * min(graphics::par("mai")[c(1L, 3L)]) - 0.1
+  need <- graphics::strwidth(full, units = "inches",
+                             cex = graphics::par("cex.lab"))
+  if (need <= room) full else short
+}
+
+# Ticks for an axis of counts, such as experts or judges: whole numbers only,
+# so a narrow range never shows 3.2 experts. Returns the ticks, invisibly.
+.axis_counts <- function(side) {
+  at <- graphics::axTicks(side)
+  at <- at[abs(at - round(at)) < 1e-8]
+  if (!length(at)) {
+    usr <- graphics::par("usr")[if (side %in% c(1, 3)) 1:2 else 3:4]
+    whole <- ceiling(min(usr)):floor(max(usr))
+    at <- whole[whole >= min(usr) & whole <= max(usr)]
+  }
+  graphics::axis(side, at = at)
+  invisible(at)
 }
 
 # A vertical reference line that stops at `top`, below the legend's headroom.

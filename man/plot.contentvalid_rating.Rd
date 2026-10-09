@@ -40,6 +40,13 @@ graphical analogue of the mean-rating tables used in Hinkin and Tracey
 (1999). Both ends of a gap are means over the judges who rated the item
 against every construct, the judges the tests use. An item without a
 decision has no gap: a cross marks its mean target rating.
+
+The key sits above the data, in as many rows as the figure's width needs.
+Where a vertical axis title would not fit the figure's height, as the HTD
+title does at 7 by 4 inches, the axis shows the index's name alone and the
+key's heading gives the full definition. The item plot widens its bottom
+margin for long item names, shortening a name in the middle with "..."
+when it would take more than about 40\% of the figure's height.
 }
 \examples{
 set.seed(12)

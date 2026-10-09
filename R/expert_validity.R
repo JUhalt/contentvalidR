@@ -27,12 +27,15 @@
   ifelse(is.na(req), NA_real_, req / N)
 }
 
+# The bands of Cicchetti and Sparrow (1981) and Fleiss (1981), which Polit et
+# al. (2007) apply to modified kappa: above .74 excellent, .60 to .74 good,
+# .40 to .59 fair, and below .40 poor, the word that scheme uses.
 .kappa_quality <- function(k) {
   ifelse(
     is.na(k), NA_character_,
     ifelse(k > 0.74, "Excellent",
            ifelse(k >= 0.60, "Good",
-                  ifelse(k >= 0.40, "Fair", "Low")))
+                  ifelse(k >= 0.40, "Fair", "Poor")))
   )
 }
 
@@ -42,8 +45,8 @@
 #' Provides a user-facing workflow for three common expert-panel tasks:
 #'
 #' * `mode = "relevance"`: bounded ordinal relevance ratings, combining Aiken's
-#'   V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
-#'   the modified kappa of Polit et al. (2007), and a
+#'   (1980) V (with the score intervals of Penfield and Giacobbi, 2004), the
+#'   CVI with the modified kappa of Polit et al. (2007), and a
 #'   panel-level agreement coefficient.
 #' * `mode = "essentiality"`: Lawshe CVR with exact binomial critical values.
 #' * `mode = "congruence"`: the index of item-objective congruence of
@@ -172,9 +175,93 @@
 #'   while retaining mode-specific `recommendation` wording. In relevance mode,
 #'   `scale_summary` also holds `agreement`, `agreement_low`, and
 #'   `agreement_high`, and `details$agreement` holds the full
-#'   [panel_agreement()] result.
+#'   [panel_agreement()] result. `print()`, `summary()`, and `plot()` are
+#'   described in [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per item, and its columns
+#'   depend on `mode`. Every mode ends with `recommendation`, the decision in
+#'   the mode's own words; `interpretation`, the decision explained in a
+#'   sentence; and `status`, the shared status.
+#'
+#'   In relevance mode:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`N`}{Experts who rated the item.}
+#'     \item{`n_missing`}{Experts who did not.}
+#'     \item{`V`}{Aiken's V.}
+#'     \item{`ci_low`, `ci_high`}{The interval for V at level `1 - alpha`.}
+#'     \item{`ci_method`}{The method of that interval, the score interval of
+#'       Penfield and Giacobbi (2004).}
+#'     \item{`A`}{Experts who rated the item relevant, at or above
+#'       `relevance_cut`.}
+#'     \item{`I_CVI`}{The I-CVI, `A / N`.}
+#'     \item{`I_CVI_low`, `I_CVI_high`}{The interval for the I-CVI, by the
+#'       method in `proportion_ci`; `NA` with `"none"`.}
+#'     \item{`Pc`}{The probability of chance agreement that modified kappa
+#'       corrects for (Polit et al., 2007).}
+#'     \item{`kappa_mod`}{Modified kappa.}
+#'     \item{`cvi_criterion`}{The I-CVI that Lynn's (1986) criterion requires
+#'       for the item's panel size, as a proportion; `NA` below three
+#'       experts. It is shown for reading: the decision compares counts.}
+#'     \item{`kappa_quality`}{The band of `kappa_mod` in the guidelines of
+#'       Cicchetti and Sparrow (1981) and Fleiss (1981), as cited in Polit et
+#'       al. (2007), who apply them to modified kappa: `"Excellent"` above
+#'       .74, `"Good"` from .60 to .74, `"Fair"` from .40 to .59, and
+#'       `"Poor"` below .40. The band describes the item and decides nothing;
+#'       every item that meets the I-CVI criterion is `"Excellent"`.}
+#'     \item{`ci_width`}{The width of the interval for V,
+#'       `ci_high - ci_low`.}
+#'     \item{`recommendation`}{`"Strong support"` (the item meets the I-CVI
+#'       criterion), `"Review"`, or `"Insufficient panel"` (fewer than three
+#'       experts).}
+#'   }
+#'
+#'   In essentiality mode:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`ne`}{Experts who rated the item essential.}
+#'     \item{`N`}{Experts who rated the item.}
+#'     \item{`cvr`}{Lawshe's CVR, `(ne - N / 2) / (N / 2)`.}
+#'     \item{`p_value`}{The one-sided exact binomial *p* of `ne` at a rate
+#'       of .5.}
+#'     \item{`critical_ne`}{The fewest essential ratings that meet the
+#'       criterion at `alpha`; `NA` when no count can.}
+#'     \item{`critical_cvr`}{The CVR of `critical_ne`.}
+#'     \item{`pass`}{Whether `ne` reaches `critical_ne`.}
+#'     \item{`recommendation`}{`"Supported"`, `"Review"`,
+#'       `"Insufficient panel"` (no count could meet the test), or
+#'       `"Insufficient data"` (no expert rated the item).}
+#'   }
+#'
+#'   In congruence mode, with a target objective for each item:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`target`}{The objective the item was written for.}
+#'     \item{`n_judges`}{Experts who rated the item on its target.}
+#'     \item{`target_ioc`}{The index of item-objective congruence for the
+#'       target.}
+#'     \item{`target_mean`}{The experts' mean rating on the target, -1 to
+#'       1.}
+#'     \item{`strongest_competitor`}{The other objective with the highest
+#'       mean rating, ties joined by `", "`.}
+#'     \item{`competitor_mean`}{The mean rating on that objective.}
+#'     \item{`margin`}{`target_mean - competitor_mean`, a description beside
+#'       the index, not part of its criterion.}
+#'     \item{`recommendation`}{`"Congruent"` (`target_ioc` at or above
+#'       `ioc_cut`), `"Review"`, `"Target described"` (the item was rated on
+#'       its target alone, so there is no index), or `"Insufficient data"`.}
+#'   }
+#'
+#'   Without a target objective, congruence `results` hold `item`,
+#'   `n_objectives` (objectives the item was rated on), `best_objective` and
+#'   `best_ioc` (the objective with the highest index, and that index), and
+#'   `recommendation`, which is `"Descriptive only"`.
 #'
 #' @references
+#' Aiken, L. R. (1980). Content validity and reliability of single items or
+#' questionnaires. *Educational and Psychological Measurement, 40*(4), 955–959.
+#' \doi{10.1177/001316448004000419}
+#'
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 #' validity ratio: Revisiting the original methods of calculation.
 #' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
@@ -209,8 +296,8 @@
 #' *Research in Nursing & Health, 29*(5), 489–497. \doi{10.1002/nur.20147}
 #'
 #' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-#' indicator of content validity? *Research in Nursing & Health, 30*(4),
-#' 459–467. \doi{10.1002/nur.20199}
+#' indicator of content validity? Appraisal and recommendations. *Research in
+#' Nursing & Health, 30*(4), 459–467. \doi{10.1002/nur.20199}
 #'
 #' Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
 #' specialists in the assessment of criterion-referenced test item validity.
@@ -311,7 +398,7 @@ expert_validity <- function(data,
         return("Fewer than three usable expert ratings are available; treat the quantitative result as descriptive.")
       }
       if (item$recommendation[i] == "Strong support") {
-        return("The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.")
+        return("The item meets the panel-size I-CVI criterion, which also puts its modified kappa above .74; Aiken's V and its score interval quantify relevance level and precision.")
       }
       "The item does not meet the panel-size I-CVI criterion; review wording, relevance, construct coverage, and expert comments before revising or removing it."
     }, character(1))
@@ -520,8 +607,8 @@ expert_validity <- function(data,
         competitors <- g[g$objective != target, , drop = FALSE]
         target_mean <- target_row$mean_rating
         target_ioc <- target_row$ioc
-        # The closest other objective, by the judges' mean rating on it. The
-        # margin over it is a description beside the index, not a rule.
+        # The other objective with the highest mean rating. The margin over
+        # it is a description beside the index, not a rule.
         if (nrow(competitors) > 0L && any(is.finite(competitors$mean_rating))) {
           mx <- max(competitors$mean_rating, na.rm = TRUE)
           strongest <- paste(
@@ -648,7 +735,10 @@ expert_validity <- function(data,
 
 # The printed item table for one expert-panel mode, from any subset of the
 # results rows. print() shows every item; summary() shows the flagged ones.
-.expert_item_table <- function(r, mode, digits, alpha) {
+# The criterion each item needs is a column when panel sizes differ (`needed`;
+# by default, when they differ among the rows given), since then no single
+# criterion can be stated beside the table.
+.expert_item_table <- function(r, mode, digits, alpha, needed = NULL) {
   if (mode == "relevance") {
     ci <- .ci_label(alpha)
     tab <- data.frame(item = r$item, decision = r$recommendation, experts = r$N,
@@ -666,8 +756,10 @@ expert_validity <- function(data,
     }
     tab$kappa <- .fmt(r$kappa_mod, digits)
     # One panel size means one criterion, stated once rather than on every row.
-    sizes <- unique(r$N[!is.na(r$cvi_criterion)])
-    if (length(sizes) > 1L) tab$`I-CVI needed` <- .fmt(r$cvi_criterion, digits)
+    if (is.null(needed)) {
+      needed <- length(unique(r$N[!is.na(r$cvi_criterion)])) > 1L
+    }
+    if (needed) tab$`I-CVI needed` <- .fmt(r$cvi_criterion, digits)
     return(tab)
   }
   if (mode == "essentiality") {
@@ -677,7 +769,8 @@ expert_validity <- function(data,
                       stringsAsFactors = FALSE, check.names = FALSE)
     # "none" where no count can meet the test at that panel size, and "--"
     # where no expert rated the item, as cvr() prints them.
-    if (length(unique(r$N)) > 1L) {
+    if (is.null(needed)) needed <- length(unique(r$N)) > 1L
+    if (needed) {
       tab$needed <- ifelse(is.na(r$critical_ne),
                            ifelse(r$N >= 1L, "none", "--"),
                            as.character(r$critical_ne))
@@ -717,6 +810,33 @@ expert_validity <- function(data,
              stringsAsFactors = FALSE, check.names = FALSE)
 }
 
+# What the congruence item table's columns hold, for the headings it printed
+# (.print_table() returns them): an item rated against its target objective
+# alone has no index, competitor or margin, and the console may drop a column
+# for width.
+.congruence_column_note <- function(shown) {
+  has <- function(h) h %in% shown
+  out <- c(
+    if (has("IOC")) "IOC: the index for the target objective.",
+    if (has("mean")) {
+      paste("Mean: the experts' mean rating on the target objective",
+            "(-1 to 1).")
+    },
+    if (has("competitor mean")) {
+      "Competitor mean: the highest mean on another objective."
+    },
+    if (has("margin")) {
+      paste("Margin: mean less competitor mean, a description beside the",
+            "index, not part of its criterion.")
+    },
+    if (has("best IOC")) {
+      paste("Best IOC: the highest index over the item's objectives,",
+            "described without a decision.")
+    }
+  )
+  if (length(out)) paste(out, collapse = " ")
+}
+
 # A congruence fit saved before 1.0 decided on mean ratings, which it stored
 # as `target_ioc`, and holds no index. It cannot be read as the index, so the
 # print shows it as it is and everything else asks for a new fit.
@@ -743,6 +863,71 @@ expert_validity <- function(data,
   }
 }
 
+# The rating scale and the relevance cut, which decide every relevance index,
+# as one header line; NULL for a fit that does not record them.
+.relevance_scale_line <- function(st) {
+  if (!is.numeric(st$lo) || !is.numeric(st$hi) ||
+      !is.numeric(st$relevance_cut)) {
+    return(NULL)
+  }
+  pts <- .fmt_scale(c(st$lo, st$hi, st$relevance_cut))
+  sprintf("Scale: %s to %s | Relevant: a rating of %s%s", pts[1], pts[2],
+          pts[3], if (st$relevance_cut < st$hi) " or higher" else "")
+}
+
+# Lynn's (1986) I-CVI criterion as a sentence, from the panel sizes that have
+# one: the count for a single size, or, for several, what the "I-CVI needed"
+# column holds (`column`) or the range of sizes when no table shows it.
+.relevance_criterion_text <- function(sizes, digits = 2, column = TRUE) {
+  sizes <- sort(unique(sizes[!is.na(sizes)]))
+  if (!length(sizes)) return(NULL)
+  if (length(sizes) == 1L) {
+    need <- .cvi_required_count(sizes)
+    return(sprintf("I-CVI criterion for %d experts: %d agreeing (%s), %s.",
+                   sizes, need, .fmt(need / sizes, digits),
+                   if (sizes > 10L) {
+                     paste("holding the lowest proportion in Lynn's (1986)",
+                           "table, 7 of 9, beyond the ten experts it covers",
+                           "(a contentvalidR extension)")
+                   } else {
+                     "following Lynn (1986)"
+                   }))
+  }
+  paste0(if (column) {
+           paste("I-CVI needed: the criterion of Lynn (1986) for each item's",
+                 "panel size")
+         } else {
+           sprintf(paste("I-CVI criterion: the count of Lynn (1986) for each",
+                         "item's panel size, from %d to %d experts here"),
+                   min(sizes), max(sizes))
+         },
+         if (any(sizes > 10L)) {
+           paste0(", holding her lowest tabled proportion, 7 of 9, beyond the",
+                  " ten experts her table covers (a contentvalidR extension)")
+         }, ".")
+}
+
+# The exact test behind an essentiality decision, stated whatever the panel
+# sizes: the count for a single size, what the "Needed" column holds
+# (`column`), or the test alone when no count can be stated.
+.essentiality_criterion_text <- function(n, critical, alpha, column = FALSE) {
+  test <- sprintf(paste("the exact one-sided binomial test at alpha = %s",
+                        "(Ayre & Scally, 2014)"), .fmt_alpha(alpha))
+  one <- unique(n)
+  if (length(one) == 1L && isTRUE(one >= 1L) && !is.na(critical[1])) {
+    return(sprintf(paste("With %d experts, an item needs at least %d rating",
+                         "it essential for %s."), one, critical[1], test))
+  }
+  if (column) {
+    return(paste0("Needed: the fewest essential ratings that meet, for the ",
+                  "item's panel size, ", test,
+                  if (any(is.na(critical) & n >= 1L)) {
+                    "; none where no count can meet it"
+                  }, "."))
+  }
+  paste0("Each decision uses ", test, ".")
+}
+
 # The opening verdict every workflow print shares: how many items met the
 # criterion, then the items flagged and the items with too little data, by name.
 .expert_verdict <- function(r, mode, alpha = 0.05) {
@@ -751,14 +936,11 @@ expert_validity <- function(data,
     r$status <- .workflow_status_from_recommendation(r$recommendation)
   }
   if (identical(mode, "relevance")) {
+    # Meeting the criterion is what Strong support means; that it also puts
+    # modified kappa above .74 is said once, beside the criterion.
     met <- sum(r$recommendation %in% "Strong support")
-    .say(sprintf("%d of %s %s the I-CVI criterion%s.", met, .n_noun(n, "item"),
-                 if (met == 1L || n == 1L) "meets" else "meet",
-                 if (met == 0L) "" else if (met == 1L) {
-                   ", with strong support (modified kappa above .74)"
-                 } else {
-                   ", all with strong support (modified kappa above .74)"
-                 }))
+    .say(sprintf("%d of %s %s the I-CVI criterion.", met, .n_noun(n, "item"),
+                 if (met == 1L || n == 1L) "meets" else "meet"))
   } else if (identical(mode, "essentiality")) {
     met <- sum(r$status %in% "Supported")
     .say(met, "of", .n_noun(n, "item"),
@@ -822,18 +1004,13 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
 
   if (x$mode == "relevance") {
     s <- x$scale[1, ]
-    cat("Items: ", s$n_items, " | Experts/item: ", s$n_experts_min,
-        if (s$n_experts_min != s$n_experts_max) paste0("-", s$n_experts_max),
+    cat("Items: ", s$n_items, " | Experts per item: ", s$n_experts_min,
+        if (s$n_experts_min != s$n_experts_max) paste0(" to ", s$n_experts_max),
         "\n", sep = "")
     # The scale and the cut decide every index below, so they are stated.
-    st <- x$settings
-    if (is.numeric(st$lo) && is.numeric(st$hi) && is.numeric(st$relevance_cut)) {
-      pts <- .fmt_scale(c(st$lo, st$hi, st$relevance_cut))
-      .say(sprintf("Scale: %s to %s | Relevant: a rating of %s%s", pts[1],
-                   pts[2], pts[3],
-                   if (st$relevance_cut < st$hi) " or higher" else ""))
-    }
-    cat("Mean Aiken V: ", .fmt(s$mean_Aiken_V, digits),
+    scale_line <- .relevance_scale_line(x$settings)
+    if (length(scale_line)) .say(scale_line)
+    cat("Mean Aiken's V: ", .fmt(s$mean_Aiken_V, digits),
         " | S-CVI/Ave: ", .fmt(s$S_CVI_Ave, digits),
         " | S-CVI/UA: ", .fmt(s$S_CVI_UA, digits), "\n", sep = "")
     if (show_agreement) {
@@ -846,42 +1023,57 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     r <- x$results
     ci <- .ci_label(x$settings$alpha)
     sizes <- unique(r$N[!is.na(r$cvi_criterion)])
-    # I-CVI decides, so a narrow console never drops it.
+    # I-CVI and, with panels of several sizes, the criterion each item was
+    # held to decide, so a narrow console never drops them.
     shown <- .print_table(.expert_item_table(r, "relevance", digits,
                                              x$settings$alpha),
-                          keep = c(.table_keep, "I-CVI"))
-    cat("\n")
-    .say("Each", ci, "follows its estimate: Aiken's V has a Penfield-Giacobbi",
-         "score interval, and I-CVI the proportion interval named below.")
-    kappa_note <- paste("kappa is modified kappa, with values above .74 read",
-                        "as excellent (Polit et al., 2007).")
-    if (length(sizes) == 1L) {
-      need <- .cvi_required_count(sizes)
-      .say(sprintf("I-CVI criterion for %d experts: %d agreeing (%s), %s; %s",
-                   sizes, need, .fmt(need / sizes, digits),
-                   if (sizes > 10L) {
-                     paste("holding the lowest proportion in Lynn's (1986)",
-                           "table, 7 of 9, beyond the ten experts it covers",
-                           "(a contentvalidR extension)")
-                   } else {
-                     "following Lynn (1986)"
-                   }, kappa_note))
-    } else if (length(sizes) > 1L) {
-      .say(sprintf("I-CVI needed: the criterion of Lynn (1986) for each item's panel size%s; %s",
-                   if (any(sizes > 10L)) {
-                     paste0(", holding her lowest tabled proportion, 7 of 9,",
-                            " beyond the ten experts her table covers (a",
-                            " contentvalidR extension)")
-                   } else {
-                     ""
-                   }, kappa_note))
+                          keep = c(.table_keep, "I-CVI", "I-CVI needed"))
+    # Each interval follows its estimate, so a column's estimate says whose
+    # interval was printed.
+    ci_after <- function(est) {
+      i <- match(est, shown)
+      !is.na(i) && i < length(shown) && identical(shown[i + 1L], ci)
     }
-    if (!is.null(x$settings$proportion_ci)) {
+    v_ci <- ci_after("V")
+    cvi_ci <- ci_after("I-CVI")
+    cat("\n")
+    # The notes explain only the columns the console had room for.
+    if (v_ci && cvi_ci) {
+      .say("Each", ci, "follows its estimate: Aiken's V has a",
+           "Penfield-Giacobbi score interval, and I-CVI the proportion",
+           "interval named below.")
+    } else if (v_ci) {
+      .say("The", ci, "follows Aiken's V: a Penfield-Giacobbi score interval.")
+    } else if (cvi_ci) {
+      .say("The", ci, "follows I-CVI: the proportion interval named below.")
+    }
+    # That meeting the criterion puts modified kappa above .74 is said once:
+    # here, unless the key's decision legend says it.
+    legend_says <- .show_key() && any(r$recommendation %in% "Strong support")
+    .say(.relevance_criterion_text(sizes, digits,
+                                   column = "I-CVI needed" %in% shown),
+         if ("kappa" %in% shown && legend_says) {
+           paste("Kappa is modified kappa, read as excellent above .74",
+                 "(Polit et al., 2007).")
+         } else if ("kappa" %in% shown) {
+           paste("Kappa is modified kappa; meeting the I-CVI criterion puts",
+                 "it above .74, the band read as excellent (Polit et al.,",
+                 "2007).")
+         })
+    # The interval method is named when that interval is shown, and its
+    # absence explained when none was computed.
+    if (!is.null(x$settings$proportion_ci) &&
+        (cvi_ci || identical(x$settings$proportion_ci, "none"))) {
       .say(.proportion_ci_note(x$settings$proportion_ci, x$settings$alpha))
     }
     if (show_agreement && !is.null(x$details$agreement)) {
       cat("\n")
-      .say(.expert_agreement_note(x$details$agreement))
+      note <- .expert_agreement_note(x$details$agreement)
+      # A kappa column the console had no room for is not pointed to.
+      if (!"kappa" %in% shown) {
+        note <- sub(" (the kappa column)", "", note, fixed = TRUE)
+      }
+      .say(note)
     }
     cat("\n")
     if (any(sizes > 10L)) {
@@ -892,8 +1084,8 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
            "validity cutoffs.")
     }
   } else if (x$mode == "essentiality") {
-    cat("Items: ", d$n_items, " | Experts/item: ", d$n_judges_min,
-        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max),
+    cat("Items: ", d$n_items, " | Experts per item: ", d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0(" to ", d$n_judges_max),
         "\n", sep = "")
     missing_line("item")
     .say("Method:", x$settings$method)
@@ -901,22 +1093,20 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     .expert_verdict(x$results, "essentiality", alpha = x$settings$alpha)
     cat("\n")
     r <- x$results
-    sizes <- unique(r$N)
-    .print_table(.expert_item_table(r, "essentiality", digits,
-                                    x$settings$alpha))
+    # With panels of several sizes the count each item needed is the
+    # criterion it was held to, so a narrow console never drops it.
+    shown <- .print_table(.expert_item_table(r, "essentiality", digits,
+                                             x$settings$alpha),
+                          keep = c(.table_keep, "needed"))
     cat("\n")
     .say("Essential: experts rating the item essential, out of those who",
          "rated it.")
-    # With no usable ratings there is no critical count to state.
-    if (length(sizes) == 1L && sizes >= 1L && !is.na(r$critical_ne[1])) {
-      .say(sprintf(paste("With %d experts, an item needs at least %d rating it",
-                         "essential for the exact one-sided binomial test at",
-                         "alpha = %s (Ayre & Scally, 2014)."),
-                   sizes, r$critical_ne[1], .fmt_alpha(x$settings$alpha)))
-    }
+    # The test, its alpha and its source are stated whatever the panel sizes.
+    .say(.essentiality_criterion_text(r$N, r$critical_ne, x$settings$alpha,
+                                      column = "needed" %in% shown))
   } else {
-    cat("Items: ", d$n_items, " | Experts/cell: ", d$n_judges_min,
-        if (d$n_judges_min != d$n_judges_max) paste0("-", d$n_judges_max),
+    cat("Items: ", d$n_items, " | Experts per cell: ", d$n_judges_min,
+        if (d$n_judges_min != d$n_judges_max) paste0(" to ", d$n_judges_max),
         " | Objectives: ", d$n_objectives, "\n", sep = "")
     missing_line("cell")
     .say("Method:", x$settings$method)
@@ -929,7 +1119,11 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     }
     cut <- x$settings$ioc_cut
     targeted <- "target_mean" %in% names(x$results)
-    if (targeted && is.numeric(cut)) {
+    # The criterion is stated when some item was held to it, as in the
+    # summary and the report: not when every item was rated on its target
+    # alone.
+    if (targeted && is.numeric(cut) &&
+        any(x$results$recommendation %in% c("Congruent", "Review"))) {
       .say(paste0("Criterion: IOC at or above ", .ioc_cut_source(cut, digits),
                   "."))
     }
@@ -945,22 +1139,18 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
     cells <- if (is.list(x$details)) x$details$cells else NULL
     if (!targeted && is.data.frame(cells) && "mean_rating" %in% names(cells)) {
       # Without targets the item-by-objective table is the result.
-      .print_table(.ioc_cells_table(cells, digits), more = "x$details$cells")
+      shown <- .print_table(.ioc_cells_table(cells, digits),
+                            more = "x$details$cells")
+      cat("\n")
+      .say("Mean: the experts' mean rating on the objective (-1 to 1). IOC:",
+           "half the gap between that mean and their mean on the item's other",
+           "objectives.")
     } else {
-      .print_table(.expert_item_table(r, "congruence", digits,
-                                      x$settings$alpha))
+      shown <- .print_table(.expert_item_table(r, "congruence", digits,
+                                               x$settings$alpha))
+      cat("\n")
+      .say(.congruence_column_note(shown))
     }
-    cat("\n")
-    .say(if (targeted) {
-      paste("IOC: the index for the target objective. Mean: the experts'",
-            "mean rating on it (-1 to 1). Competitor mean: the highest mean",
-            "on another objective. Margin: mean less competitor mean, a",
-            "description beside the index, not part of its criterion.")
-    } else {
-      paste("Mean: the experts' mean rating on the objective (-1 to 1). IOC:",
-            "half the gap between that mean and their mean on the item's other",
-            "objectives.")
-    })
     # Each distinct interpretation is printed once, with the items it covers.
     if (targeted && "interpretation" %in% names(r)) {
       cat("\n")
@@ -993,9 +1183,11 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
         # interval column).
         shown = c("S-CVI/Ave", "S-CVI/UA", "Panel agreement",
                   intersect(c("V", "I-CVI", "kappa"), shown),
-                  if (sum(shown == ci) >= 2L) paste(ci, "after I-CVI"))),
-      essentiality = .print_key("cvr", headings = "CVR"),
-      .print_key("ioc", headings = "IOC")
+                  if (cvi_ci) paste(ci, "after I-CVI"))),
+      essentiality = .print_key("cvr", headings = "CVR", shown = shown),
+      # An item rated against its target alone has no index to explain.
+      .print_key(c("ioc", "ioc"), headings = c("IOC", "best IOC"),
+                 shown = shown)
     )
     .print_decision_legend(x$results$recommendation, x$mode)
     .print_key_footer()
@@ -1012,6 +1204,16 @@ summary.contentvalid_expert <- function(object, ...) {
   out <- .workflow_summary_core(object)
   out$mode <- object$mode
   out$agreement <- if (is.list(object$details)) object$details$agreement else NULL
+  # What the criterion needs depends on every item's panel size, not only on
+  # the flagged items', so the sizes are kept for the printout.
+  r <- object$results
+  out$criterion <- if (identical(object$mode, "relevance") &&
+                       all(c("N", "cvi_criterion") %in% names(r))) {
+    list(sizes = unique(r$N[!is.na(r$cvi_criterion)]))
+  } else if (identical(object$mode, "essentiality") &&
+             all(c("N", "critical_ne") %in% names(r))) {
+    list(n = r$N, critical = r$critical_ne)
+  }
   # Compatibility aliases retained for pre-v0.0.6 user code.
   out$scale <- out$scale_summary
   out$flagged <- out$reviewed_items
@@ -1024,6 +1226,12 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_header(x, "Expert-panel analysis")
   cat("Mode: ", x$mode, "\n", sep = "")
+  relevance <- identical(x$mode, "relevance")
+  essentiality <- identical(x$mode, "essentiality")
+  if (relevance) {
+    scale_line <- .relevance_scale_line(x$settings)
+    if (length(scale_line)) .say(scale_line)
+  }
   passing <- switch(x$mode, relevance = "Strong support",
                     essentiality = "Supported", congruence = "Congruent",
                     "Supported")
@@ -1040,9 +1248,32 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
   if (x$n_insufficient - n_few > 0L) {
     cat(" | Insufficient data: ", x$n_insufficient - n_few, sep = "")
   }
-  if (x$n_descriptive > 0L) cat(" | Descriptive only: ", x$n_descriptive, sep = "")
+  # With target objectives, the only undecided status is an item rated on
+  # its target alone, which the printout calls "Target described".
+  targeted <- identical(x$mode, "congruence") &&
+    "target_mean" %in% names(x$flagged)
+  if (x$n_descriptive > 0L) {
+    cat(" | ", if (targeted) "Target described" else "Descriptive only", ": ",
+        x$n_descriptive, sep = "")
+  }
   cat("\n")
-  if (identical(x$mode, "relevance") && is.character(x$settings$agreement) &&
+  # The criterion the decisions applied, as the printout states it: with
+  # panels of several sizes, the flagged table gives each item's. A
+  # congruence fit states it only when some item was held to it.
+  cr <- x$criterion
+  several <- FALSE
+  if (relevance && length(cr$sizes)) {
+    several <- length(cr$sizes) > 1L
+    .say(.relevance_criterion_text(cr$sizes, digits, column = FALSE))
+  } else if (essentiality && length(cr$n)) {
+    several <- length(unique(cr$n)) > 1L
+    .say(.essentiality_criterion_text(cr$n, cr$critical, x$settings$alpha))
+  } else if (targeted && x$n_supported + x$n_review > 0L &&
+             is.numeric(x$settings$ioc_cut)) {
+    .say(paste0("Criterion: IOC at or above ",
+                .ioc_cut_source(x$settings$ioc_cut, digits), "."))
+  }
+  if (relevance && is.character(x$settings$agreement) &&
       !identical(x$settings$agreement, "none")) {
     .say(.expert_agreement_line(x$agreement, digits), exdent = 2L)
   }
@@ -1053,18 +1284,33 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
     .say("No items were flagged by the workflow's quantitative review rules.")
   } else {
     .section("Flagged")
-    .print_table(.expert_item_table(f, x$mode, digits, x$settings$alpha),
-                 more = "x$flagged")
+    shown <- .print_table(
+      .expert_item_table(f, x$mode, digits, x$settings$alpha,
+                         needed = if (relevance || essentiality) several),
+      keep = c(.table_keep, "I-CVI", "I-CVI needed", "needed", "IOC"),
+      more = "x$flagged"
+    )
     cat("\n")
     if (identical(x$mode, "congruence") && "target_mean" %in% names(f)) {
-      .say("IOC: the index of item-objective congruence for the target",
-           "objective, which decides. Mean: the experts' mean rating on it.",
-           "Margin: mean less competitor mean, a description.")
+      .say(.congruence_column_note(shown))
     } else {
       .say(switch(x$mode,
-                  relevance = paste("V = Aiken's content validity coefficient;",
-                                    "I-CVI = item-level content validity index."),
-                  essentiality = "CVR = content validity ratio.",
+                  relevance = paste0(
+                    "V = Aiken's content validity coefficient; I-CVI = ",
+                    "item-level content validity index",
+                    if ("I-CVI needed" %in% shown) {
+                      paste("; I-CVI needed = the I-CVI the criterion asks of",
+                            "the item's panel size")
+                    }, "."),
+                  essentiality = paste0(
+                    "CVR = content validity ratio",
+                    if ("needed" %in% shown) {
+                      paste0("; Needed = the fewest essential ratings that ",
+                             "meet the test for the item's panel size",
+                             if (any(is.na(f$critical_ne) & f$N >= 1L)) {
+                               ", none where no count can meet it"
+                             })
+                    }, "."),
                   "IOC = index of item-objective congruence."))
     }
     if ("interpretation" %in% names(f)) {
@@ -1087,9 +1333,22 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
 #' same number of experts. Essentiality mode shows each observed CVR against the
 #' CVR the exact test needs for that item. Congruence mode shows each item's
 #' index for its intended objective against the `ioc_cut` criterion (dashed),
-#' with the experts' mean ratings on the target and on the closest other
-#' objective in gray, when a target mapping is available; an item with no
-#' index is marked with a cross.
+#' with the experts' mean ratings on the target (a triangle pointing up) and
+#' on the other objective with the highest mean (pointing down) in gray, when
+#' a target mapping is available; an item with no index is marked with a
+#' cross.
+#'
+#' Filled and open symbols mean what the key says. In congruence mode, as in
+#' the item-sort and construct-rating figures, a filled index met the
+#' criterion and an open one fell below it. In relevance and essentiality
+#' mode they tell apart the two values drawn on each row: Aiken's V (filled)
+#' from I-CVI (open), and the observed CVR (filled) from the CVR the exact test
+#' needs (open). There, an item met the criterion when its I-CVI reaches the
+#' dashed criterion line, or its observed CVR reaches the CVR needed. The key
+#' sits above the first item and the reference lines, in as many rows as the
+#' figure's width needs. The left margin widens for long item names, and a
+#' name that would take more than about 40% of the figure's width is
+#' shortened in the middle with "...".
 #'
 #' In relevance mode, `type = "distribution"` draws every expert's rating as
 #' a diverging stacked bar (Heiberger & Robbins, 2014), split at the relevance
@@ -1171,20 +1430,42 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   n <- nrow(r)
-  # The first item is drawn at the top, in the order of the results table.
+  # The first item is drawn at the top, in the order of the results table,
+  # with the left margin sized to its name.
   y <- rev(seq_len(n))
   top <- n + 0.5
+  item_labels <- .item_axis_left(r$item)
   ci_label <- .ci_label(if (is.numeric(x$settings$alpha)) x$settings$alpha else 0.05)
 
+  # The key is laid out before the frame, so the frame can hold it above the
+  # first item's row and above the reference lines, which reach `top`.
+  dots <- list(...)
+  frame <- function(xlim, xlab, key) {
+    .plot_with(list(x = NA, xlim = xlim,
+                    ylim = c(0.5, .legend_room(0.5, top, n + 1.35, key)),
+                    xaxt = "n", yaxt = "n", xlab = xlab, ylab = ""), dots)
+  }
+
   if (x$mode == "relevance") {
-    .plot_with(list(x = NA, xlim = c(0, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "Relevance (0 to 1)", ylab = ""), list(...))
-    .axis_bounded(1, at = seq(0, 1, 0.25))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
     # The I-CVI criterion depends on the panel size, so it is drawn as a line
     # only when every item had the same number of experts.
     crit <- unique(r$cvi_criterion[is.finite(r$cvi_criterion)])
     one_crit <- length(crit) == 1L
+    key <- if (isTRUE(show_legend)) {
+      need <- if (one_crit) {
+        size <- unique(r$N[is.finite(r$cvi_criterion)])
+        if (length(size) == 1L) {
+          sprintf("I-CVI criterion (%d of %d%s)", .cvi_required_count(size), size,
+                  if (size > 10L) ", package extension" else "")
+        } else "I-CVI criterion"
+      }
+      .legend_fit(c("Aiken's V", "I-CVI", ci_label, need),
+                  c(19, 1, NA, if (one_crit) NA),
+                  c(NA, NA, 1, if (one_crit) 2))
+    }
+    frame(c(0, 1), "Relevance (0 to 1)", key)
+    .axis_bounded(1, at = seq(0, 1, 0.25))
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
     if (one_crit) .vline_below(crit, 0.5, top, lty = 2)
     # Aiken's V just above each item's row, I-CVI just below, each with its
     # interval, so the two never hide each other.
@@ -1196,80 +1477,80 @@ plot.contentvalid_expert <- function(x, show_legend = TRUE,
     graphics::segments(r$I_CVI_low[c_ci], yc[c_ci], r$I_CVI_high[c_ci], yc[c_ci])
     graphics::points(r$V, yv, pch = 19)
     graphics::points(r$I_CVI, yc, pch = 1)
-    if (isTRUE(show_legend)) {
-      need <- if (one_crit) {
-        size <- unique(r$N[is.finite(r$cvi_criterion)])
-        if (length(size) == 1L) {
-          sprintf("I-CVI criterion (%d of %d%s)", .cvi_required_count(size), size,
-                  if (size > 10L) ", package extension" else "")
-        } else "I-CVI criterion"
-      }
-      .legend_top(c("Aiken's V", "I-CVI", ci_label, need),
-                  c(19, 1, NA, if (one_crit) NA),
-                  c(NA, NA, 1, if (one_crit) 2))
-    }
+    .legend_draw(key)
   } else if (x$mode == "essentiality") {
-    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "CVR (-1 to 1)", ylab = ""), list(...))
-    .axis_bounded(1, at = seq(-1, 1, 0.5))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
-    .vline_below(0, 0.5, top)
     good <- is.finite(r$critical_cvr) & is.finite(r$cvr)
     # A panel too small for the exact test has no needed value to draw, so its
     # CVR is marked with a cross: no decision, as in the other figures.
     undecided <- is.finite(r$cvr) & !is.finite(r$critical_cvr)
+    # Only what is drawn is listed.
+    key <- if (isTRUE(show_legend)) {
+      .legend_fit(c(if (any(good)) c("Observed CVR", "Needed (exact test)"),
+                    if (any(undecided)) "Too few experts to test"),
+                  c(if (any(good)) c(19, 1), if (any(undecided)) 4))
+    }
+    frame(c(-1, 1), "CVR (-1 to 1)", key)
+    .axis_bounded(1, at = seq(-1, 1, 0.5))
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
+    .vline_below(0, 0.5, top)
     graphics::segments(r$critical_cvr[good], y[good], r$cvr[good], y[good])
     graphics::points(r$critical_cvr[good], y[good], pch = 1)
     graphics::points(r$cvr[!undecided], y[!undecided], pch = 19)
     graphics::points(r$cvr[undecided], y[undecided], pch = 4)
-    if (isTRUE(show_legend)) {
-      # Only what was drawn is listed.
-      .legend_top(c(if (any(good)) c("Observed CVR", "Needed (exact test)"),
-                    if (any(undecided)) "Too few experts to test"),
-                  c(if (any(good)) c(19, 1), if (any(undecided)) 4))
-    }
+    .legend_draw(key)
   } else {
     # Each item's index against the criterion, with the experts' mean rating
-    # on the target objective and on the closest other objective for context.
+    # on the target objective and on the other objective with the highest
+    # mean for context.
+    # As in the other figures, a filled index met the criterion and an open
+    # one fell below it; the means are triangles, pointing up for the target
+    # and down for the competitor.
     cut <- x$settings$ioc_cut
-    .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.5, n + 1.35), xaxt = "n",
-                    yaxt = "n", xlab = "IOC and mean rating (-1 to 1)",
-                    ylab = ""), list(...))
+    has_ioc <- is.finite(r$target_ioc)
+    ioc_pch <- .decision_pch(r$recommendation)
+    met <- has_ioc & ioc_pch == 19L
+    below <- has_ioc & !met
+    t_mean <- is.finite(r$target_mean)
+    c_mean <- is.finite(r$competitor_mean)
+    both <- t_mean & c_mean
+    key <- if (isTRUE(show_legend)) {
+      crit_lab <- if (is.numeric(cut)) paste0("Criterion (", .fmt(cut), ")")
+      .legend_fit(c(if (any(met)) "IOC: meets criterion",
+                    if (any(below)) "IOC: below criterion",
+                    if (any(t_mean)) "Mean: target",
+                    if (any(c_mean)) "Mean: competitor",
+                    if (any(!has_ioc)) "No index",
+                    crit_lab),
+                  c(if (any(met)) 19, if (any(below)) 1, if (any(t_mean)) 2,
+                    if (any(c_mean)) 6, if (any(!has_ioc)) 4,
+                    if (is.numeric(cut)) NA),
+                  c(if (any(met)) NA, if (any(below)) NA, if (any(t_mean)) NA,
+                    if (any(c_mean)) NA, if (any(!has_ioc)) NA,
+                    if (is.numeric(cut)) 2),
+                  col = c(if (any(met)) "black", if (any(below)) "black",
+                          if (any(t_mean)) "grey40", if (any(c_mean)) "grey40",
+                          if (any(!has_ioc)) "black",
+                          if (is.numeric(cut)) "black"))
+    }
+    frame(c(-1, 1), "IOC and mean rating (-1 to 1)", key)
     .axis_bounded(1, at = seq(-1, 1, 0.5))
-    graphics::axis(2, at = y, labels = r$item, las = 1)
+    graphics::axis(2, at = y, labels = item_labels, las = 1)
     .vline_below(0, 0.5, top)
     if (is.numeric(cut)) .vline_below(cut, 0.5, top, lty = 2)
     # The index on the item's row; the two means just below it, so a mean
     # equal to the index stays visible.
-    has_ioc <- is.finite(r$target_ioc)
-    t_mean <- is.finite(r$target_mean)
-    c_mean <- is.finite(r$competitor_mean)
-    both <- t_mean & c_mean
     ym <- y - 0.22
     graphics::segments(r$competitor_mean[both], ym[both], r$target_mean[both],
                        ym[both], col = "grey60")
-    graphics::points(r$competitor_mean[c_mean], ym[c_mean], pch = 1, col = "grey40")
+    graphics::points(r$competitor_mean[c_mean], ym[c_mean], pch = 6,
+                     col = "grey40")
     graphics::points(r$target_mean[t_mean], ym[t_mean], pch = 2, col = "grey40")
-    graphics::points(r$target_ioc[has_ioc], y[has_ioc], pch = 19)
+    graphics::points(r$target_ioc[met], y[met], pch = 19)
+    graphics::points(r$target_ioc[below], y[below], pch = 1)
     # An item with no index has no decision: a cross at 0, as in the other
     # expert figures.
     graphics::points(rep(0, sum(!has_ioc)), y[!has_ioc], pch = 4)
-    if (isTRUE(show_legend)) {
-      crit_lab <- if (is.numeric(cut)) paste0("Criterion (", .fmt(cut), ")")
-      .legend_top(c(if (any(has_ioc)) "IOC", if (any(t_mean)) "Mean: target",
-                    if (any(c_mean)) "Mean: competitor",
-                    if (any(!has_ioc)) "No index",
-                    crit_lab),
-                  c(if (any(has_ioc)) 19, if (any(t_mean)) 2,
-                    if (any(c_mean)) 1, if (any(!has_ioc)) 4,
-                    if (is.numeric(cut)) NA),
-                  c(if (any(has_ioc)) NA, if (any(t_mean)) NA,
-                    if (any(c_mean)) NA, if (any(!has_ioc)) NA,
-                    if (is.numeric(cut)) 2),
-                  col = c(if (any(has_ioc)) "black", if (any(t_mean)) "grey40",
-                          if (any(c_mean)) "grey40", if (any(!has_ioc)) "black",
-                          if (is.numeric(cut)) "black"))
-    }
+    .legend_draw(key)
   }
   invisible(x)
 }

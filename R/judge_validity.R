@@ -130,7 +130,42 @@
 #'   (`fragile`; `NA` when it could not be checked), and the judges whose
 #'   removal changes it. In `results`, `n_items_flipped` and `flipped_items`
 #'   give the same information by judge; they describe the items and are not
-#'   a flag.
+#'   a flag. `print()` and `summary()` are described in
+#'   [contentvalid-methods].
+#'
+#'   **Results columns.** `results` has one row per judge:
+#'   \describe{
+#'     \item{`judge`}{The judge: the row name in `ratings`, or `Judge1`,
+#'       `Judge2`, and so on when `ratings` has none.}
+#'     \item{`n_ratings`}{Items the judge rated.}
+#'     \item{`mean_rating`}{The judge's mean rating.}
+#'     \item{`sd_rating`}{The standard deviation of the judge's ratings.}
+#'     \item{`severity_raw`}{Severity in rating points: the panel's mean
+#'       rating on the items the judge rated, less the judge's. Positive
+#'       means harsher than the panel.}
+#'     \item{`severity`}{Severity in logits from the many-facet Rasch model,
+#'       positive for harsher; `NA` when it is not estimable.}
+#'     \item{`se`}{The standard error of `severity`.}
+#'     \item{`infit`, `outfit`}{The judge's infit and outfit mean squares.}
+#'     \item{`n_scored`}{Relevance decisions of the judge that the model
+#'       scored.}
+#'     \item{`severity_estimable`}{Whether the model could estimate the
+#'       judge's severity.}
+#'     \item{`differentiation`}{Scale use: the standard deviation of the
+#'       judge's ratings over the median judge's, on the items the judge
+#'       rated.}
+#'     \item{`central_prop`}{The share of the judge's ratings strictly between
+#'       `lo` and `hi`.}
+#'     \item{`extreme_prop`}{The share at `lo` or `hi`.}
+#'     \item{`n_items_flipped`}{Items whose review status changes when this
+#'       judge is removed; `NA` when none could be checked.}
+#'     \item{`flipped_items`}{Those items, comma-separated.}
+#'     \item{`recommendation`}{`"Typical"`, `"Severe"`, `"Lenient"`,
+#'       `"Erratic"`, `"Low differentiation"`, or `"Insufficient data"`.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Typical"`,
+#'       `"Review"` for a flag, or `"Insufficient data"`.}
+#'     \item{`interpretation`}{The decision explained in a sentence.}
+#'   }
 #'
 #' @section What is published and what is this package's choice:
 #' The generalizability analysis, the many-facet Rasch model, the infit and
@@ -141,7 +176,9 @@
 #' * The cuts that flag a judge: `severity_cut` (1 logit),
 #'   `severity_raw_cut` (a quarter of the scale range) and
 #'   `differentiation_cut` (0.5). The scale-use ratio itself is this
-#'   package's index of the differentiation Engelhard (1994) describes.
+#'   package's index of the differentiation Engelhard (1994) describes. A
+#'   cut, or a `fit_min_ratings`, given other than its default is printed as
+#'   set for this analysis.
 #' * Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
 #'   guide to how productive data are for measurement: below 0.5 is "less
 #'   productive for measurement, but not degrading", 1.5 to 2.0 is
@@ -579,6 +616,51 @@ judge_validity <- function(ratings,
   paste0("; Phi uses the ", .n_noun(kept, "judge"), " who rated every item")
 }
 
+# Which of the cuts that flag a judge are the package's defaults, its
+# conventions, and which the analyst set. A cut equal to its default reads
+# as the convention however it was given. Objects saved before 1.0 carry no
+# differentiation_cut or fit_min_ratings, so those were the defaults.
+.judge_cut_is_default <- function(st) {
+  same <- function(v, default) is.null(v) || isTRUE(all.equal(v, default))
+  raw_default <- if (is.null(st$hi) || is.null(st$lo)) NULL else
+    0.25 * (st$hi - st$lo)
+  c(severity = same(st$severity_cut, 1),
+    severity_raw = is.null(raw_default) ||
+      same(st$severity_raw_cut, raw_default),
+    differentiation = same(st$differentiation_cut, 0.5),
+    fit_min = same(st$fit_min_ratings, 30L))
+}
+
+# The sentence that says where the printed cuts come from: "These cuts are
+# contentvalidR conventions, ...", "These cuts were set for this analysis.",
+# or each named when some are of each kind ("The logit severity cut was set
+# for this analysis; the scale-use cut is ..."). `cuts` names each cut as the
+# sentence calls it; `default` says which are the defaults. A single cut, as
+# a report note can state, is "This cut".
+.judge_cut_source <- function(cuts, default) {
+  if (length(cuts) == 1L) {
+    return(if (default) {
+      "This cut is a contentvalidR convention, not a published standard."
+    } else {
+      "This cut was set for this analysis."
+    })
+  }
+  if (all(default)) {
+    return("These cuts are contentvalidR conventions, not published standards.")
+  }
+  if (!any(default)) return("These cuts were set for this analysis.")
+  set <- cuts[!default]
+  conv <- cuts[default]
+  paste0("The ", paste(set, collapse = " and "),
+         if (length(set) == 1L) " cut was" else " cuts were",
+         " set for this analysis; the ", paste(conv, collapse = " and "),
+         if (length(conv) == 1L) {
+           " cut is a contentvalidR convention, not a published standard."
+         } else {
+           " cuts are contentvalidR conventions, not published standards."
+         })
+}
+
 # The fit rule as printed. Linacre is cited only for his own bound, and judges
 # above the bound on too few scored decisions are named, so that a high mean
 # square beside "Typical" is explained.
@@ -593,8 +675,13 @@ judge_validity <- function(ratings,
     } else {
       "the upper bound set for this analysis"
     },
-    ", and the model scored at least ", min_n, " of their decisions. The ",
-    "flag and the minimum are contentvalidR conventions."
+    ", and the model scored at least ", min_n, " of their decisions. ",
+    if (.judge_cut_is_default(st)[["fit_min"]]) {
+      "The flag and the minimum are contentvalidR conventions."
+    } else {
+      paste("The flag is a contentvalidR convention; the minimum was set for",
+            "this analysis.")
+    }
   )
   above <- (!is.na(r$infit) & r$infit > upper) |
     (!is.na(r$outfit) & r$outfit > upper)
@@ -684,16 +771,30 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
   diff_cut <- if (is.null(st$differentiation_cut)) 0.5 else st$differentiation_cut
   points_rule <- paste0(.fmt(st$severity_raw_cut, digits, bounded = FALSE),
                         " rating points")
+  by_points <- estimable && anyNA(r$severity)
+  # Each cut the sentence states, named as its closing sentence names it.
+  cuts <- if (estimable) {
+    c(severity = "logit severity",
+      if (by_points) c(severity_raw = "rating-point severity"))
+  } else {
+    c(severity_raw = "severity")
+  }
+  cuts <- c(cuts, differentiation = "scale-use")
   .say(paste0(
     "A judge is flagged when severity exceeds ",
-    if (estimable) paste0(format(st$severity_cut), " logit") else points_rule,
+    if (estimable) {
+      paste(format(st$severity_cut),
+            if (isTRUE(st$severity_cut == 1)) "logit" else "logits")
+    } else {
+      points_rule
+    },
     " in either direction",
-    if (estimable && anyNA(r$severity)) {
+    if (by_points) {
       paste0(" (", points_rule, " for a judge the model could not place)")
     },
     " or scale use is below ",
-    .fmt(diff_cut, digits, bounded = FALSE),
-    ". These cuts are contentvalidR conventions, not published standards."
+    .fmt(diff_cut, digits, bounded = FALSE), ". ",
+    .judge_cut_source(cuts, .judge_cut_is_default(st)[names(cuts)])
   ))
   if (estimable && !is.null(r$n_scored) && !is.null(st$fit_min_ratings)) {
     cat("\n")

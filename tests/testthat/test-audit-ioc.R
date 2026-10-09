@@ -351,17 +351,17 @@ test_that("a congruence fit saved before 1.0 asks to be fitted again", {
 
 test_that("the congruence plot marks items with no index and labels the criterion", {
   legend <- NULL
-  local_mocked_bindings(.legend_top = function(labels, ...) {
+  local_mocked_bindings(.legend_fit = function(labels, ...) {
     legend <<- labels
-    invisible(NULL)
+    NULL
   })
   pdf(NULL)
   on.exit(grDevices::dev.off(), add = TRUE)
   d <- rbind(ioc_long("I1", "A", rep(1, 4), "A"), ioc_long("I1", "B", rep(-1, 4), "A"),
              ioc_long("I2", "B", rep(1, 4), "B"))
   plot(expert_validity(d, mode = "congruence"))
-  expect_identical(legend, c("IOC", "Mean: target", "Mean: competitor",
-                             "No index", "Criterion (.70)"))
+  expect_identical(legend, c("IOC: meets criterion", "Mean: target",
+                             "Mean: competitor", "No index", "Criterion (.70)"))
 })
 
 test_that("the bands are stated apart when they differ", {

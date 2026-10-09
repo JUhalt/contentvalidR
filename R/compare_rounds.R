@@ -49,6 +49,37 @@
   if (is.numeric(n) && length(n) == 1L && is.finite(n)) format(n) else NA_character_
 }
 
+# Settings that are proportions between 0 and 1: an alpha level, the Delphi
+# consensus threshold, the congruence cut and the item-sort null rate. A
+# cut on the rating scale, such as agree_cut, is not one.
+.proportion_settings <- c("alpha", "consensus_threshold", "ioc_cut", "p0")
+
+# Two values of a proportion setting as APA writes them, .05 and .75 rather
+# than 0.05 and 0.75, each to the digits it was given with at least two, as
+# .fmt_alpha() writes an alpha level (to three significant digits). Two
+# values that would still read alike there (2/3 and .667) get the
+# significant digits that tell them apart.
+.fmt_setting_pair <- function(a, b) {
+  one <- function(v, sig) {
+    v <- signif(v, sig)
+    given <- format(v, digits = 15, scientific = FALSE, drop0trailing = TRUE,
+                    decimal.mark = ".")
+    decimals <- if (grepl(".", given, fixed = TRUE)) {
+      nchar(sub("^[^.]*[.]", "", given))
+    } else {
+      0L
+    }
+    txt <- formatC(v, format = "f", digits = max(2L, decimals),
+                   decimal.mark = ".")
+    sub("^(-?)0[.]", "\\1.", txt)
+  }
+  for (sig in 3:15) {
+    out <- c(one(a, sig), one(b, sig))
+    if (!identical(out[1], out[2])) break
+  }
+  out
+}
+
 .settings_diff <- function(a, b) {
   keys <- union(names(a), names(b))
   keys <- setdiff(keys, c("method", .resampling_settings))
@@ -58,13 +89,25 @@
     vb <- b[[k]]
     same <- isTRUE(all.equal(va, vb))
     if (same) next
+    # A proportion is written as APA writes it, .05 and .75 rather than 0.05
+    # and 0.75, so a threshold reads like the alpha beside it.
+    prop <- function(v) {
+      k %in% .proportion_settings && is.numeric(v) && length(v) == 1L &&
+        is.finite(v)
+    }
     fmt <- function(v) {
       if (is.null(v)) return("(not set)")
+      if (prop(v)) return(.fmt_alpha(v))
       if (is.atomic(v) && length(v) <= 4L) return(paste(format(v), collapse = ", "))
       paste0("<", class(v)[1], ">")
     }
+    shown <- if (prop(va) && prop(vb)) {
+      .fmt_setting_pair(va, vb)
+    } else {
+      c(fmt(va), fmt(vb))
+    }
     rows[[length(rows) + 1L]] <- data.frame(
-      setting = k, previous = fmt(va), current = fmt(vb),
+      setting = k, previous = shown[[1]], current = shown[[2]],
       stringsAsFactors = FALSE
     )
   }
@@ -99,20 +142,33 @@
 #' @param ... Two or more fitted workflow objects, in round order. All must come
 #'   from the same workflow, and from the same mode of [expert_validity()],
 #'   since status labels from different workflows rest on different criteria
-#'   and are not comparable.
-#' @param labels Optional round labels. Defaults to `Round 1`, `Round 2`, and so
-#'   on, or to the names supplied in `...`. A label cannot be the name of the
-#'   unit column (`item`, `judge` or `cell`) or `change`.
+#'   and are not comparable. Name them to label the rounds:
+#'   `compare_rounds(pilot = f1, revised = f2)`.
+#' @param labels Optional round labels. Defaults to the names supplied in
+#'   `...` when every round is named, and otherwise to `Round 1`, `Round 2`,
+#'   and so on, with a warning when only some rounds were named. A label
+#'   cannot be the name of the unit column (`item`, `judge` or `cell`) or
+#'   `change`.
 #'
 #' @return An object of class `contentvalid_rounds`, a list containing:
 #'   \describe{
-#'     \item{transitions}{One row per unit, with its status in each round and
-#'       the direction of any change.}
-#'     \item{summary}{Counts of stable, improved, weakened, added, and removed
-#'       units for each consecutive pair of rounds.}
+#'     \item{transitions}{One row per unit, with its status in each round and,
+#'       in `change`, how its status in the last round compares with the
+#'       first: `Unchanged`, `Strengthened`, `Weakened`, `Changed` (to or
+#'       from `Descriptive only`, which is neither stronger nor weaker),
+#'       `Added`, `Removed`, or `Not in first or last` for a unit present
+#'       only in the rounds between. A unit that changed and changed back
+#'       reads `Unchanged`; the round columns show the path.}
+#'     \item{summary}{For each consecutive pair of rounds, the units compared
+#'       (present in both) and how they split: unchanged, strengthened,
+#'       weakened, and otherwise changed (`n_changed`, to or from
+#'       `Descriptive only`), which add up to `n_compared`; and the units
+#'       added and removed.}
 #'     \item{settings_changes}{Analysis settings that differ between consecutive
 #'       rounds, and a changed panel size, which is the audit trail for whether
-#'       a status change can be read as an evidence change at all.}
+#'       a status change can be read as an evidence change at all. The values
+#'       are text; a proportion (`alpha`, `consensus_threshold`, `ioc_cut`,
+#'       `p0`) is written as APA writes it, `.05` or `.75`.}
 #'     \item{comparable}{`FALSE` when any consecutive pair differs in settings
 #'       or, where the criterion depends on it, in panel size. The seed and
 #'       the number of bootstrap resamples are ignored, because they cannot
@@ -186,9 +242,18 @@ compare_rounds <- function(..., labels = NULL) {
 
   if (is.null(labels)) {
     supplied <- names(rounds)
-    labels <- if (!is.null(supplied) && all(nzchar(supplied))) {
+    named <- !is.null(supplied) & nzchar(supplied)
+    labels <- if (length(named) && all(named)) {
       supplied
     } else {
+      # Some rounds named and some not: mixing the given names with numbers
+      # could repeat a label ("Round 2" given to the first round), so no name
+      # is used, and the dropped name is said rather than lost in silence.
+      if (any(named)) {
+        warning("Names in `...` label the rounds only when every round is ",
+                "named, so the rounds are labeled Round 1, Round 2, and so ",
+                "on. Name every round, or give `labels`.", call. = FALSE)
+      }
       paste("Round", seq_along(rounds))
     }
   }
@@ -239,7 +304,10 @@ compare_rounds <- function(..., labels = NULL) {
   rank_first <- .status_rank(first)
   rank_last <- .status_rank(last)
 
+  # The change is from the first round to the last, so every unit gets one:
+  # a unit present only in the rounds between is said to be, not left NA.
   direction <- rep(NA_character_, length(ids))
+  direction[is.na(first) & is.na(last)] <- "Not in first or last"
   direction[is.na(first) & !is.na(last)] <- "Added"
   direction[!is.na(first) & is.na(last)] <- "Removed"
   both <- !is.na(first) & !is.na(last)
@@ -274,13 +342,18 @@ compare_rounds <- function(..., labels = NULL) {
         diff[c("from", "to", "setting", "previous", "current")]
     }
 
+    # Every unit in both rounds falls in exactly one of unchanged, stronger,
+    # weaker, or changed: a move to or from "Descriptive only", which is
+    # unranked, is a change in neither direction.
+    in_both <- !is.na(a) & !is.na(b)
     pair_rows[[i]] <- data.frame(
       from = labels[i],
       to = labels[i + 1L],
-      n_compared = sum(!is.na(a) & !is.na(b)),
-      n_unchanged = sum(!is.na(a) & !is.na(b) & a == b),
+      n_compared = sum(in_both),
+      n_unchanged = sum(in_both & a == b),
       n_strengthened = sum(cmp & rb > ra),
       n_weakened = sum(cmp & rb < ra),
+      n_changed = sum(in_both & a != b & !cmp),
       n_added = sum(is.na(a) & !is.na(b)),
       n_removed = sum(!is.na(a) & is.na(b)),
       settings_changed = nrow(diff) > 0L,
@@ -317,6 +390,13 @@ compare_rounds <- function(..., labels = NULL) {
   )
   class(out) <- "contentvalid_rounds"
   out
+}
+
+# The change column compares the first round with the last only, so a unit
+# that fell and recovered reads "Unchanged". Its heading says so.
+.rounds_change_heading <- function(tab) {
+  names(tab)[names(tab) == "change"] <- "first to last"
+  tab
 }
 
 #' @export
@@ -370,17 +450,36 @@ print.contentvalid_rounds <- function(x, ...) {
   }
 
   .section("Status by round")
-  .print_table(x$transitions, more = "x$transitions", as_is = x$labels)
+  .print_table(.rounds_change_heading(x$transitions), more = "x$transitions",
+               as_is = x$labels)
 
   .section("Round-to-round summary")
   s <- x$summary
-  .print_table(data.frame(
+  # A move to or from "Descriptive only" is neither stronger nor weaker. Its
+  # count is shown when there is one, so the counts add up to Compared. An
+  # object from an earlier version has no such count, and it is what the
+  # other three leave of Compared.
+  other <- if (is.null(s$n_changed)) {
+    s$n_compared - s$n_unchanged - s$n_strengthened - s$n_weakened
+  } else {
+    s$n_changed
+  }
+  tab <- data.frame(
     from = s$from, to = s$to, compared = s$n_compared,
     unchanged = s$n_unchanged, stronger = s$n_strengthened,
-    weaker = s$n_weakened, added = s$n_added, removed = s$n_removed,
-    `same rule` = ifelse(s$settings_changed, "no", "yes"),
+    weaker = s$n_weakened,
     stringsAsFactors = FALSE, check.names = FALSE
-  ), more = "x$summary")
+  )
+  if (any(other > 0L)) tab$other <- other
+  tab$added <- s$n_added
+  tab$removed <- s$n_removed
+  tab$`same rule` <- ifelse(s$settings_changed, "no", "yes")
+  shown <- .print_table(tab, more = "x$summary")
+  if ("other" %in% shown) {
+    cat("\n")
+    .say("Other: a change to or from Descriptive only, which applies no",
+         "decision rule, so it is neither stronger nor weaker.")
+  }
 
   if (x$comparable) {
     cat("\n")
@@ -435,8 +534,9 @@ print.summary.contentvalid_rounds <- function(x, ...) {
   }
 
   if (nrow(x$changed)) {
-    .section("Units whose status changed")
-    .print_table(x$changed, more = "summary(x)$changed", as_is = x$labels)
+    .section("Units that changed status, entered or left")
+    .print_table(.rounds_change_heading(x$changed), more = "summary(x)$changed",
+                 as_is = x$labels)
   } else {
     .end_section()
     cat("\n")

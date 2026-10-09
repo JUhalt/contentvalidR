@@ -29,10 +29,10 @@ website](https://juhalt.github.io/contentvalidR/) ·
 experts provide before a scale reaches respondents: whether each item
 represents the construct it was written for, whether a panel agrees on
 it, whether the conclusions depend on who sat on the panel, and whether
-the items cover the domain at all. Every analysis prints its verdict
-first, reports its numbers in APA style, and explains each index it
-shows, so the output can be read without first consulting the source
-papers.
+the items cover the domain at all. Every analysis prints a header naming
+what it holds, then the facts of the design, then its verdict; it
+reports its numbers in APA style and explains each index it shows, so
+the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader
 > validity argument. They complement, rather than replace, construct
@@ -111,7 +111,7 @@ fit
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -124,8 +124,9 @@ fit
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
@@ -168,8 +169,7 @@ comparison is approximate.
 
 For a manuscript, `content_report()` gives the same evidence as an APA
 table, with a general note that defines its abbreviations and columns
-and states the criterion behind each decision; `format = "markdown"`
-writes it for Quarto or R Markdown:
+and states the criterion behind each decision:
 
 ``` r
 content_report(fit)
@@ -189,6 +189,10 @@ content_report(fit)
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown;
+print it from a chunk with the option `results = "asis"`, so that it
+renders as a table.
 
 `plot()` draws each item’s share of judges with its interval, against
 the share the exact test needs for that item:

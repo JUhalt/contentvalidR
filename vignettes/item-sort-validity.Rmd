@@ -129,12 +129,26 @@ Their criteria should not simply be transferred to expert panels.
 
 ```{r}
 expert_fit <- sort_validity(sort_dat, judge_type = "expert")
-expert_fit$scale_summary[, c("target", "mean_psa", "psa_strength",
-                             "mean_csv", "csv_strength")]
+summary(expert_fit)
 ```
 
 The Psa/Csv statistics and item-level screening remain available, but Colquitt
-normative labels are suppressed.
+normative labels are not applied: the scale-level table has no level columns,
+and the summary says why. In `expert_fit$scale_summary` the label columns are
+kept, as `NA`.
+
+Judge type also bears on the exact test. Its default null target rate,
+`p0 = .50`, follows Howard and Melloy (2016), who describe .50 as arbitrary
+and lenient. They suggest a higher value, such as .60 or .75, when the
+alternative constructs are clearly different from the target or the judges are
+subject-matter experts. Choose `p0` before the data are collected, and report
+it:
+
+```{r}
+csv_binom_test(n_c = 15, N = 20, p0 = .60)
+```
+
+With a null rate of .60, 15 of 20 judges no longer meets the criterion.
 
 ## Planning judge sample size
 

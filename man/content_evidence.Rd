@@ -10,7 +10,8 @@ content_evidence(..., keep = "Supported")
 \item{...}{Handoffs from \code{\link[=content_handoff]{content_handoff()}}, or fitted workflows that
 \code{\link[=content_handoff]{content_handoff()}} accepts, in the order the stages ran. Name them to
 label the stages, as in \code{content_evidence(Panel = h1, Sort = h2)}.
-Unnamed stages are labeled by their workflow.}
+Unnamed stages are labeled by their workflow. A stage cannot be labeled
+\code{"item"} or \code{"result"}, which head the printed table's other columns.}
 
 \item{keep}{Statuses carried forward when a stage is given as a fitted
 workflow rather than a handoff, as in \code{\link[=content_handoff]{content_handoff()}}. A handoff
@@ -26,9 +27,12 @@ An object of class \code{contentvalid_evidence}, a list with:
 \code{recommendation}, \code{status}, and \code{carried}. \code{as.data.frame()} returns
 it.}
 \item{\code{flow}}{for each stage, the items it reviewed, those an earlier
-stage had already held back, those it held back itself, and those
-carried so far that it did not review.}
-\item{\code{carried}}{the items carried by every stage that reviewed them.}
+stage had already held back, those it held back itself, those
+not held back so far that it did not review, and \code{decided}, whether
+it applied a decision rule to any of its items.}
+\item{\code{carried}}{the items that at least one stage applied a decision
+rule to and that every such stage carried. An item no stage decided
+on is left out.}
 }
 }
 \description{
@@ -39,11 +43,12 @@ item sort. Each stage can be a handoff from \code{\link[=content_handoff]{conten
 workflow, which is handed off with \code{keep}.
 
 The result prints one row per item, with each stage's decision beside the
-statistic its rule read, and it draws two figures for a paper or poster:
+statistic behind it, and it draws two figures for a paper or poster:
 \itemize{
 \item \code{plot(x)}, the \strong{item evidence profile}. One panel per stage shows the
-statistic each decision read, its interval, and its criterion, and a last
-column names the stages that held an item back.
+statistic behind each decision, its interval, and its criterion where the
+stage's rule has one, and a last column names the stages that held an
+item back.
 \item \code{plot(x, type = "flow")}, the \strong{item flow diagram}. Each stage's box says
 how many items it reviewed, a side box lists what it held back with the
 number behind each decision, and the last box lists what was carried
@@ -68,13 +73,29 @@ on its planned contrasts.
 }
 
 Decisions are read from each handoff, never recomputed from the statistic.
+A congruence handoff made before contentvalidR 1.0 is refused, because its
+"target IOC" holds a mean rating rather than the index; fit the panel again
+with \code{\link[=expert_validity]{expert_validity()}} and hand that fit off.
 
 \strong{Stages in sequence or side by side.} Usually a stage reviews only what
 the stage before it carried forward, and the flow diagram reads that way.
 When two methods reviewed the same items side by side, a stage's box says
 how many of its items an earlier stage had already held back, and its side
 box lists only the items it held back itself. Either way, an item is carried
-forward when every stage that reviewed it carried it.
+forward when every stage that applied a decision rule to it carried it.
+
+\strong{A stage holds back only the items it decided on.} An item whose status
+in a stage is "Descriptive only" was described there, not judged, as in a
+Delphi study run without a consensus threshold or congruence ratings
+without a target mapping. That stage's handoff does not carry the item, but
+that is not a judgment against it, so here the stage does not hold it back,
+even when it decided on its other items: a Delphi study without a threshold
+still holds back an item it found to have too few experts. An item is
+carried when at least one stage applied a decision rule to it and every
+such stage carried it. An item that no stage applied a decision rule to is
+neither carried nor held back: its result is "No decision", and \code{carried}
+leaves it out. Its statistic is still shown. To carry such items on, hand
+the stage off with \code{keep = "Descriptive only"} in \code{\link[=content_handoff]{content_handoff()}}.
 }
 \section{Where the displays come from}{
 

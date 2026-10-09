@@ -164,7 +164,8 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   sl <- x$scale_level
   it <- x$item_level
   .print_header(x, "Content validity index (CVI)")
-  cat("Items: ", sl$n_items, " | Judges per item: ", sep = "")
+  # The raters are experts here, as in every expert-panel printout.
+  cat("Items: ", sl$n_items, " | Experts per item: ", sep = "")
   if (length(unique(it$N)) == 1L) {
     cat(unique(it$N), "\n", sep = "")
   } else {
@@ -174,7 +175,7 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
       .fmt(sl$S_CVI_UA, digits), "\n", sep = "")
   .say("I-CVI = item-level content validity index; S-CVI/Ave = scale-level",
        "CVI, the mean I-CVI; S-CVI/UA = scale-level CVI, the share of items",
-       "every judge rated relevant (Polit & Beck, 2006).")
+       "every expert rated relevant (Polit & Beck, 2006).")
 
   .section("Item-level results")
   tab <- data.frame(item = it$item, agree = paste0(it$A, "/", it$N),
@@ -189,8 +190,8 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   tab$kappa <- .fmt(it$kappa_mod, digits)
   .print_table(tab, more = "x$item_level")
   cat("\n")
-  .say("Agree: judges rating the item relevant, out of those who rated it.",
-       "Pc: the probability that this many judges would agree by chance.",
+  .say("Agree: experts rating the item relevant, out of those who rated it.",
+       "Pc: the probability that this many experts would agree by chance.",
        "Kappa: the modified kappa of Polit et al. (2007), the I-CVI",
        "chance-corrected by Pc.")
   if (has_ci) {

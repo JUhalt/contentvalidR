@@ -111,9 +111,10 @@
 # empty in every row is dropped, except the status and the tests a decision
 # rests on, whose "--" the notes explain (`keep`, matched in any case). A
 # table wider than the console tightens its columns, then drops trailing
-# ones, never the stub or a `keep` column, and names them with the call that
-# shows them (`more`). Returns the headings it printed, invisibly, so a key
-# can leave out a column that was not shown.
+# ones, never the stub or a `keep` column, and names them, a shared heading
+# after the estimate it follows, with the call that shows them (`more`).
+# Returns the headings it printed, invisibly, so a key can leave out a
+# column that was not shown.
 .print_table <- function(tab, keep = .table_keep, more = "as.data.frame(x)",
                          indent = 2L, gap = 2L, as_is = character(0)) {
   tab <- as.data.frame(tab, stringsAsFactors = FALSE, check.names = FALSE)
@@ -143,17 +144,40 @@
   total <- function() indent + sum(widths) + gap * (length(widths) - 1L)
   # Tighter columns before fewer columns.
   if (total() > room && gap > 1L) gap <- 1L
+  # A column left out is named by its heading, or, where two share one,
+  # after the estimate it follows ("95% CI for V, 95% CI for I-CVI").
+  named <- shown
+  shared <- which(shown %in% shown[duplicated(shown)] & seq_along(shown) > 1L)
+  named[shared] <- paste(shown[shared], "for", shown[shared - 1L])
   dropped <- character(0)
   while (total() > room) {
     can_go <- which(seq_along(heads) > 1L & !kept(heads))
     if (!length(can_go)) break
     j <- max(can_go)
-    dropped <- c(shown[j], dropped)
+    dropped <- c(named[j], dropped)
     cells <- cells[-j]
     heads <- heads[-j]
     shown <- shown[-j]
+    named <- named[-j]
     right <- right[-j]
     widths <- widths[-j]
+  }
+  # Nothing left to drop and still too wide (long item names beside the
+  # columns a decision rests on): the names are shortened in the middle,
+  # keeping their start and end, to no fewer than 12 columns, and only while
+  # they stay distinct.
+  shortened <- FALSE
+  if (total() > room && widths[1] > 12L) {
+    names_now <- cells[[1]]
+    for (w in seq(max(12L, widths[1] - (total() - room)), widths[1] - 1L)) {
+      short <- .shorten_middle(names_now, w)
+      if (!anyDuplicated(short)) break
+    }
+    if (!anyDuplicated(short) && !identical(short, names_now)) {
+      cells[[1]] <- short
+      widths[1] <- max(nchar(c(shown[1], short), type = "width"))
+      shortened <- TRUE
+    }
   }
   pad <- function(v, w, r) {
     sp <- strrep(" ", pmax(0L, w - nchar(v, type = "width")))
@@ -175,15 +199,34 @@
                 ". See ", more, " for every column."), indent = indent,
          exdent = indent)
   }
+  if (shortened) {
+    .say(paste0("Long names are shortened in the middle to fit. See ", more,
+                " for them in full."), indent = indent, exdent = indent)
+  }
   invisible(heads)
 }
 
 .table_keep <- c("decision", "status", "result", "p", "omnibus p",
                  "contrast p", "F test", "met", "meets")
 
+# Text no wider than `w` columns: a longer string keeps its start and end,
+# joined by "...", so names that share an opening stay apart.
+.shorten_middle <- function(x, w) {
+  x <- as.character(x)
+  n <- nchar(x, type = "chars")
+  long <- !is.na(x) & n > w
+  keep <- max(2L, w - 3L)
+  head <- ceiling(keep / 2)
+  tail <- keep - head
+  x[long] <- paste0(substr(x[long], 1L, head), "...",
+                    substring(x[long], n[long] - tail + 1L))
+  x
+}
+
 # A percentage: whole numbers when the base is under 100, one decimal
 # otherwise, rounded half up, with the missing marker for NA.
 .fmt_pct <- function(p, base) {
+  if (!length(p)) return(character(0))
   digits <- if (isTRUE(base >= 100)) 1L else 0L
   out <- paste0(formatC(.half_up(100 * as.numeric(p), digits), format = "f",
                         digits = digits), "%")
@@ -219,9 +262,9 @@
 
 # Whether a column of formatted text holds numbers, to be right-aligned:
 # estimates, intervals, counts such as "18/20", percentages, "< .001". The
-# missing marker and "none" do not decide it.
+# missing marker (an em dash in Markdown) and "none" do not decide it.
 .looks_numeric <- function(v) {
-  v <- v[!(v %in% c("", .missing_mark, "none", "NA"))]
+  v <- v[!(v %in% c("", .missing_mark, "\u2014", "none", "NA"))]
   if (!length(v)) return(TRUE)
   num <- "^([<>] )?-?([0-9]+([.][0-9]+)?|[.][0-9]+)%?$"
   all(grepl(num, v) | grepl("^\\[.*\\]$", v) | grepl("^[0-9]+/[0-9]+$", v) |
@@ -295,6 +338,10 @@
   x <- gsub("\\[([^]\\[]*), ([^]\\[]*)\\]", paste0("[\\1,", .nbsp, "\\2]"),
             x, perl = TRUE)
   x <- gsub("\\(([0-9.]+), ", paste0("(\\1,", .nbsp), x, perl = TRUE)
+  # "F test", "contrast p", "omnibus p": two-word terms a note defines.
+  # Split, the second word would read as the term ("test = within-judge").
+  x <- gsub("\\b(F|[Cc]ontrast|[Oo]mnibus) (test|p)\\b",
+            paste0("\\1", .nbsp, "\\2"), x, perl = TRUE)
   x
 }
 

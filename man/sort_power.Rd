@@ -12,7 +12,13 @@ sort_power(N, true_p, p0 = 0.5, alpha = 0.05)
 \item{true_p}{Assumed true probability that a judge assigns the item to its
 intended construct. May be scalar or vector.}
 
-\item{p0}{Null target-assignment probability. Default \code{0.5}.}
+\item{p0}{Null target-assignment probability for the exact binomial test.
+Default \code{0.5}, following Howard and Melloy (2016). It is not the rate
+expected from random assignment, which is 1 divided by the number of
+constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+suggest a higher value such as .6 or .75, chosen before data collection,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts.}
 
 \item{alpha}{Significance level. Default \code{0.05}.}
 }

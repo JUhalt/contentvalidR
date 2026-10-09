@@ -435,7 +435,7 @@
     ),
     "construct-rating" = c(
       Retain = "its ratings differed across constructs (the omnibus test) and the intended construct was rated above every other (every planned contrast).",
-      Review = "did not meet every criterion; the competitor column shows the closest rival.",
+      Review = "did not meet every criterion; the competitor column shows the other construct with the highest mean rating.",
       "Insufficient data" = "fewer than two judges rated it against every construct."
     ),
     relevance = c(
@@ -451,7 +451,7 @@
     ),
     congruence = c(
       Congruent = "its index of item-objective congruence met the criterion.",
-      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the closest other.",
+      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the other objective with the highest mean rating.",
       "Target described" = "only its intended objective was rated, so there is nothing to compare.",
       "Insufficient data" = "no usable ratings for its intended objective.",
       "Descriptive only" = "no intended objective was given, so the index is only described."
@@ -555,7 +555,6 @@
     headings <- headings[on_screen]
     if (!length(terms)) return(invisible(NULL))
   }
-  heads <- stats::setNames(headings, terms)
   defs <- .term_defs()
   # A term with no definition would otherwise be dropped in silence, so a typo
   # in a print method's key would quietly stop explaining a column.
@@ -564,19 +563,25 @@
     stop("Unknown glossary term(s): ", paste(unknown, collapse = ", "), ".",
          call. = FALSE)
   }
-  defs <- defs[defs$term %in% terms, , drop = FALSE]
-  if (!nrow(defs)) return(invisible(NULL))
-  defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
+  # One line per heading the reader sees. Two headings can share a term
+  # ("Target IOC" and "Highest IOC" are both the index), and each is
+  # explained under its own name; a heading repeated for the same term is
+  # explained once.
+  once <- !duplicated(paste(terms, tolower(headings), sep = "\r"))
+  terms <- terms[once]
+  headings <- headings[once]
+  if (!length(terms)) return(invisible(NULL))
 
   short <- .term_short()
   .section("What these columns mean")
-  for (i in seq_len(nrow(defs))) {
-    body <- short[[defs$term[i]]]
-    head <- .sentence_case(heads[[defs$term[i]]])
-    label <- if (identical(tolower(head), tolower(defs$label[i]))) {
+  for (i in seq_along(terms)) {
+    def <- defs[match(terms[i], defs$term), , drop = FALSE]
+    body <- short[[terms[i]]]
+    head <- .sentence_case(headings[i])
+    label <- if (identical(tolower(head), tolower(def$label))) {
       ""
     } else {
-      paste0(defs$label[i], ". ")
+      paste0(def$label, ". ")
     }
     .say(paste0(head, " -- ", label, body), indent = 2L, exdent = 6L,
          width = width)
@@ -613,11 +618,11 @@
 #' @section A note on benchmark labels:
 #' Strength labels such as `Strong` or `Weak` from [interpret_colquitt()] are
 #' percentile positions relative to scales published in the measurement
-#' literature. They are not absolute judgments, and they are not comparable
-#' across indices: HTC and HTD sit on different scales with different typical
+#' literature. They are not absolute judgments. Each index is read against its
+#' own benchmark: HTC and HTD sit on different scales with different typical
 #' values, so an HTC of .83 can be labeled `Weak` in the same analysis where
-#' an HTD of .44 is labeled `Very Strong`. Compare each index against its own
-#' benchmark, never against another index's number.
+#' an HTD of .44 is labeled `Very Strong`. Two indices' labels can be compared,
+#' because each is a percentile position; their numbers cannot.
 #'
 #' @seealso [interpret_colquitt()] for the benchmark bands themselves.
 #'
@@ -680,8 +685,9 @@ print.contentvalid_glossary <- function(x, width = NULL, ...) {
          "in the `status` column of `results`.", indent = 2L, width = width)
   }
   .closing(c("Strength labels such as Strong or Weak are percentile positions",
-             "relative to published scales, not absolute judgments, and are not",
-             "comparable across different indices."),
+             "relative to published scales, not absolute judgments. Compare two",
+             "indices by their labels, never by their numbers, which sit on",
+             "different scales."),
            "See as.data.frame(x) for the definitions as a table.", width = width)
   invisible(x)
 }

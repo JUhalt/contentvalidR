@@ -72,11 +72,13 @@
 #'
 #' @references
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-#' validity ratio. *Measurement and Evaluation in Counseling and Development,
-#' 47*(1), 79–86. \doi{10.1177/0748175613513808}
+#' validity ratio: Revisiting the original methods of calculation.
+#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
+#' \doi{10.1177/0748175613513808}
 #'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
+#' \doi{10.1097/00006199-198611000-00017}
 #'
 #' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
 #' sure you know what's being reported? Critique and recommendations.
@@ -235,7 +237,19 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "contentvalidR extension.")
   }
 
-  .closing(c("This table reports the consequences of the panel sizes you asked",
+  # The calculation is the package's own, which a report should say.
+  .closing(c("This is a contentvalidR planning tool, not a published power",
+             "method: it treats the experts as endorsing the item",
+             "independently, each with probability `prob`, while the criterion",
+             "it applies is",
+             if (st$criterion == "cvi" && any(sizes > 10)) {
+               "Lynn's (1986), extended past ten experts as stated above."
+             } else if (st$criterion == "cvi") {
+               "Lynn's (1986)."
+             } else {
+               "the exact test of Ayre and Scally (2014)."
+             },
+             "This table reports the consequences of the panel sizes you asked",
              "about. It does not recommend one. `prob` is an assumption you supply,",
              "so treat the result as conditional on it and report the value you",
              "assumed."),
@@ -244,6 +258,13 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 }
 
 #' Plot an expert-panel planning curve
+#'
+#' @description
+#' Draws the probability that an item clears the criterion against the number
+#' of experts on the panel, as a step function because the criterion itself
+#' changes with panel size. Each assumed endorsement probability is a solid
+#' line told apart by its marker. The key sits above the curves, and the
+#' panel-size axis is ticked at whole numbers of experts.
 #'
 #' @param x A `contentvalid_expert_power` object.
 #' @param type `"probability"`, the only view, accepted so that every plot
@@ -263,10 +284,19 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   probs <- sort(unique(r$prob))
+  # Every curve is a solid line told apart by its marker, since a dashed
+  # line marks a reference value in the other figures.
+  marks <- (seq_along(probs) - 1L) %% 25L + 1L
+  key <- if (isTRUE(show_legend)) {
+    .legend_fit(paste("prob =", .fmt(probs)), marks, 1)
+  }
 
-  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", yaxt = "n",
+  # Headroom above 1 holds the key, clear of the curves.
+  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", xaxt = "n",
+                  yaxt = "n", ylim = c(0, .legend_room(0, 1, 1, key)),
                   xlab = "Experts on the panel",
                   ylab = "Probability of clearing the criterion"), list(...))
+  .axis_counts(1)
   .axis_bounded(2, at = seq(0, 1, 0.25))
   for (i in seq_along(probs)) {
     sub <- r[r$prob == probs[i], , drop = FALSE]
@@ -274,15 +304,9 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
     # Drawn as a step function: the criterion itself changes with panel size,
     # so joining the points with straight lines would imply smooth behavior
     # the decision rule does not have.
-    graphics::lines(sub$n_experts, sub$power, type = "s",
-                    lty = (i - 1L) %% 5L + 1L)
-    graphics::points(sub$n_experts, sub$power, pch = (i - 1L) %% 25L + 1L)
+    graphics::lines(sub$n_experts, sub$power, type = "s")
+    graphics::points(sub$n_experts, sub$power, pch = marks[i])
   }
-  if (isTRUE(show_legend)) {
-    graphics::legend("bottomright", legend = paste("prob =", .fmt(probs)),
-                     lty = (seq_along(probs) - 1L) %% 5L + 1L,
-                     pch = (seq_along(probs) - 1L) %% 25L + 1L,
-                     bty = "n", cex = 0.7)
-  }
+  .legend_draw(key)
   invisible(x)
 }

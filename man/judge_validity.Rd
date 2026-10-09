@@ -71,7 +71,42 @@ the full panel, whether that status changes when one judge is removed
 (\code{fragile}; \code{NA} when it could not be checked), and the judges whose
 removal changes it. In \code{results}, \code{n_items_flipped} and \code{flipped_items}
 give the same information by judge; they describe the items and are not
-a flag.
+a flag. \code{print()} and \code{summary()} are described in
+\link{contentvalid-methods}.
+
+\strong{Results columns.} \code{results} has one row per judge:
+\describe{
+\item{\code{judge}}{The judge: the row name in \code{ratings}, or \code{Judge1},
+\code{Judge2}, and so on when \code{ratings} has none.}
+\item{\code{n_ratings}}{Items the judge rated.}
+\item{\code{mean_rating}}{The judge's mean rating.}
+\item{\code{sd_rating}}{The standard deviation of the judge's ratings.}
+\item{\code{severity_raw}}{Severity in rating points: the panel's mean
+rating on the items the judge rated, less the judge's. Positive
+means harsher than the panel.}
+\item{\code{severity}}{Severity in logits from the many-facet Rasch model,
+positive for harsher; \code{NA} when it is not estimable.}
+\item{\code{se}}{The standard error of \code{severity}.}
+\item{\code{infit}, \code{outfit}}{The judge's infit and outfit mean squares.}
+\item{\code{n_scored}}{Relevance decisions of the judge that the model
+scored.}
+\item{\code{severity_estimable}}{Whether the model could estimate the
+judge's severity.}
+\item{\code{differentiation}}{Scale use: the standard deviation of the
+judge's ratings over the median judge's, on the items the judge
+rated.}
+\item{\code{central_prop}}{The share of the judge's ratings strictly between
+\code{lo} and \code{hi}.}
+\item{\code{extreme_prop}}{The share at \code{lo} or \code{hi}.}
+\item{\code{n_items_flipped}}{Items whose review status changes when this
+judge is removed; \code{NA} when none could be checked.}
+\item{\code{flipped_items}}{Those items, comma-separated.}
+\item{\code{recommendation}}{\code{"Typical"}, \code{"Severe"}, \code{"Lenient"},
+\code{"Erratic"}, \code{"Low differentiation"}, or \code{"Insufficient data"}.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Typical"},
+\code{"Review"} for a flag, or \code{"Insufficient data"}.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+}
 }
 \description{
 Examines whether content-validity conclusions depend on the particular judges
@@ -108,7 +143,9 @@ standard behind the numbers:
 \item The cuts that flag a judge: \code{severity_cut} (1 logit),
 \code{severity_raw_cut} (a quarter of the scale range) and
 \code{differentiation_cut} (0.5). The scale-use ratio itself is this
-package's index of the differentiation Engelhard (1994) describes.
+package's index of the differentiation Engelhard (1994) describes. A
+cut, or a \code{fit_min_ratings}, given other than its default is printed as
+set for this analysis.
 \item Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
 guide to how productive data are for measurement: below 0.5 is "less
 productive for measurement, but not degrading", 1.5 to 2.0 is

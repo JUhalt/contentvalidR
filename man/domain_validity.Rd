@@ -65,7 +65,27 @@ coverage.}
 \value{
 An object of class \code{contentvalid_domain} and \code{contentvalid_workflow}.
 \code{results} has \strong{one row per blueprint cell}. \code{details$structure} holds the
-content-structure analysis when similarity data was supplied.
+content-structure analysis when similarity data was supplied. \code{print()}
+and \code{summary()} are described in \link{contentvalid-methods}.
+
+\strong{Results columns.}
+\describe{
+\item{\code{cell}}{The blueprint cell; with \code{facet_col}, the two labels
+joined by \code{" / "}.}
+\item{\code{n_items}}{Items assigned to the cell.}
+\item{\code{share}}{\code{n_items} as a share of all the items.}
+\item{\code{target_items}}{The cell's entry in \code{targets}; \code{NA} without
+\code{targets}.}
+\item{\code{expected_share}}{The cell's share of \code{targets}, or one over the
+number of cells without them.}
+\item{\code{recommendation}}{\code{"Covered"}, \code{"Not covered"} (no item),
+\code{"Thinly covered"} (below the floor \code{min_items} sets),
+\code{"Over-represented"},
+or \code{"Under-represented"} (judged only against \code{targets}).}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Covered"}, and
+\code{"Review"} otherwise.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+}
 }
 \description{
 Answers two questions that item-level relevance indices cannot: whether the

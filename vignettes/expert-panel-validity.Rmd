@@ -233,8 +233,8 @@ expert_validity(d, mode = "congruence")
 
 An item is `"Congruent"` when its index for the target objective reaches
 `ioc_cut`, by default the .70 Rovinelli and Hambleton applied. The printout
-also shows the experts' mean rating on the target and on the closest other
-objective, and the margin between those means. Applied work often reports
+also shows the experts' mean rating on the target and on the other objective
+with the highest mean rating, and the margin between those means. Applied work often reports
 the mean rating on the target as "the IOC"; it is an ingredient of the index,
 not the index, because it reaches 1 whatever the experts say about the other
 objectives. The margin is a description beside the index, not part of its
@@ -253,7 +253,7 @@ actual panel size.
 Each mode uses a plot matched to the expert task rather than forcing unlike
 indices into one generic chart.
 
-```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's index of item-objective congruence for its intended objective (filled), with the experts' mean rating on the intended objective (triangle) and on the closest other objective (open circle) in gray, a dotted line at zero, and a dashed line at the .70 criterion.")}
+```{r expert-plots, fig.width=7, fig.height=4, fig.alt=c("Expert relevance plot: for each item, Aiken's V (filled) and I-CVI (open), each with its 95% interval, and a dashed line at the I-CVI criterion for the panel size.", "Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero.", "Congruence plot: each item's index of item-objective congruence for its intended objective, filled when it meets the .70 criterion and open below it, with the experts' mean rating on the intended objective (a triangle pointing up) and on the other objective with the highest mean (a triangle pointing down) in gray, a dotted line at zero, and a dashed line at the .70 criterion.")}
 plot(expert_validity(R, mode = "relevance", lo = 1, hi = 4))
 plot(expert_validity(c(10, 8, 6), mode = "essentiality", N = 12))
 plot(expert_validity(d, mode = "congruence"))

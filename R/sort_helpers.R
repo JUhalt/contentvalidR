@@ -107,6 +107,13 @@
   split(d, factor(d$item, levels = attr(d, "item_order")), drop = TRUE)
 }
 
+# The fewest target assignments whose upper-tail probability is at or below
+# alpha, the rule csv_binom_test() decides by: a p equal to alpha meets the
+# criterion. Anderson and Gerbing's critical count (.ag_critical_count())
+# asks for a tail below alpha, as their Equation 5 does. The two differ only
+# when a tail probability equals alpha exactly, which never happens at
+# p0 = .5 and alpha = .05, where every tail probability is a multiple of
+# 1 / 2^N.
 .critical_target_count <- function(N, p0 = 0.5, alpha = 0.05) {
   if (!is.numeric(N) || length(N) != 1L || !is.finite(N) || N < 1 || N != floor(N)) {
     stop("`N` must be a positive finite integer.", call. = FALSE)

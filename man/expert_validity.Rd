@@ -98,14 +98,94 @@ alias for \code{scale_summary}. Results include a standardized \code{status} fie
 while retaining mode-specific \code{recommendation} wording. In relevance mode,
 \code{scale_summary} also holds \code{agreement}, \code{agreement_low}, and
 \code{agreement_high}, and \code{details$agreement} holds the full
-\code{\link[=panel_agreement]{panel_agreement()}} result.
+\code{\link[=panel_agreement]{panel_agreement()}} result. \code{print()}, \code{summary()}, and \code{plot()} are
+described in \link{contentvalid-methods}.
+
+\strong{Results columns.} \code{results} has one row per item, and its columns
+depend on \code{mode}. Every mode ends with \code{recommendation}, the decision in
+the mode's own words; \code{interpretation}, the decision explained in a
+sentence; and \code{status}, the shared status.
+
+In relevance mode:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{N}}{Experts who rated the item.}
+\item{\code{n_missing}}{Experts who did not.}
+\item{\code{V}}{Aiken's V.}
+\item{\code{ci_low}, \code{ci_high}}{The interval for V at level \code{1 - alpha}.}
+\item{\code{ci_method}}{The method of that interval, the score interval of
+Penfield and Giacobbi (2004).}
+\item{\code{A}}{Experts who rated the item relevant, at or above
+\code{relevance_cut}.}
+\item{\code{I_CVI}}{The I-CVI, \code{A / N}.}
+\item{\code{I_CVI_low}, \code{I_CVI_high}}{The interval for the I-CVI, by the
+method in \code{proportion_ci}; \code{NA} with \code{"none"}.}
+\item{\code{Pc}}{The probability of chance agreement that modified kappa
+corrects for (Polit et al., 2007).}
+\item{\code{kappa_mod}}{Modified kappa.}
+\item{\code{cvi_criterion}}{The I-CVI that Lynn's (1986) criterion requires
+for the item's panel size, as a proportion; \code{NA} below three
+experts. It is shown for reading: the decision compares counts.}
+\item{\code{kappa_quality}}{The band of \code{kappa_mod} in the guidelines of
+Cicchetti and Sparrow (1981) and Fleiss (1981), as cited in Polit et
+al. (2007), who apply them to modified kappa: \code{"Excellent"} above
+.74, \code{"Good"} from .60 to .74, \code{"Fair"} from .40 to .59, and
+\code{"Poor"} below .40. The band describes the item and decides nothing;
+every item that meets the I-CVI criterion is \code{"Excellent"}.}
+\item{\code{ci_width}}{The width of the interval for V,
+\code{ci_high - ci_low}.}
+\item{\code{recommendation}}{\code{"Strong support"} (the item meets the I-CVI
+criterion), \code{"Review"}, or \code{"Insufficient panel"} (fewer than three
+experts).}
+}
+
+In essentiality mode:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{ne}}{Experts who rated the item essential.}
+\item{\code{N}}{Experts who rated the item.}
+\item{\code{cvr}}{Lawshe's CVR, \code{(ne - N / 2) / (N / 2)}.}
+\item{\code{p_value}}{The one-sided exact binomial \emph{p} of \code{ne} at a rate
+of .5.}
+\item{\code{critical_ne}}{The fewest essential ratings that meet the
+criterion at \code{alpha}; \code{NA} when no count can.}
+\item{\code{critical_cvr}}{The CVR of \code{critical_ne}.}
+\item{\code{pass}}{Whether \code{ne} reaches \code{critical_ne}.}
+\item{\code{recommendation}}{\code{"Supported"}, \code{"Review"},
+\code{"Insufficient panel"} (no count could meet the test), or
+\code{"Insufficient data"} (no expert rated the item).}
+}
+
+In congruence mode, with a target objective for each item:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{target}}{The objective the item was written for.}
+\item{\code{n_judges}}{Experts who rated the item on its target.}
+\item{\code{target_ioc}}{The index of item-objective congruence for the
+target.}
+\item{\code{target_mean}}{The experts' mean rating on the target, -1 to
+1.}
+\item{\code{strongest_competitor}}{The other objective with the highest
+mean rating, ties joined by \code{", "}.}
+\item{\code{competitor_mean}}{The mean rating on that objective.}
+\item{\code{margin}}{\code{target_mean - competitor_mean}, a description beside
+the index, not part of its criterion.}
+\item{\code{recommendation}}{\code{"Congruent"} (\code{target_ioc} at or above
+\code{ioc_cut}), \code{"Review"}, \code{"Target described"} (the item was rated on
+its target alone, so there is no index), or \code{"Insufficient data"}.}
+}
+
+Without a target objective, congruence \code{results} hold \code{item},
+\code{n_objectives} (objectives the item was rated on), \code{best_objective} and
+\code{best_ioc} (the objective with the highest index, and that index), and
+\code{recommendation}, which is \code{"Descriptive only"}.
 }
 \description{
 Provides a user-facing workflow for three common expert-panel tasks:
 \itemize{
 \item \code{mode = "relevance"}: bounded ordinal relevance ratings, combining Aiken's
-V (with the score intervals of Penfield and Giacobbi, 2004), the CVI with
-the modified kappa of Polit et al. (2007), and a
+(1980) V (with the score intervals of Penfield and Giacobbi, 2004), the
+CVI with the modified kappa of Polit et al. (2007), and a
 panel-level agreement coefficient.
 \item \code{mode = "essentiality"}: Lawshe CVR with exact binomial critical values.
 \item \code{mode = "congruence"}: the index of item-objective congruence of
@@ -196,6 +276,10 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
                 legacy = TRUE)
 }
 \references{
+Aiken, L. R. (1980). Content validity and reliability of single items or
+questionnaires. \emph{Educational and Psychological Measurement, 40}(4), 955–959.
+\doi{10.1177/001316448004000419}
+
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
 \emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79–86.
@@ -230,8 +314,8 @@ sure you know what's being reported? Critique and recommendations.
 \emph{Research in Nursing & Health, 29}(5), 489–497. \doi{10.1002/nur.20147}
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459–467. \doi{10.1002/nur.20199}
+indicator of content validity? Appraisal and recommendations. \emph{Research in
+Nursing & Health, 30}(4), 459–467. \doi{10.1002/nur.20199}
 
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
 specialists in the assessment of criterion-referenced test item validity.

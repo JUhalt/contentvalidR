@@ -21,7 +21,9 @@ APA requires.}
 \item{format}{\code{"apa"} (default), a table of formatted text in APA style;
 \code{"markdown"}, the same table as Markdown lines; or \code{"data.frame"}, the
 selected columns as rounded numbers under their names in \code{results}, for
-further computation.}
+further computation. In the data frame, \emph{p} values are rounded to three
+decimals, so one below .0005 becomes 0: report it as \verb{< .001}, as the APA
+table does, or take the exact value from \code{x$results}.}
 
 \item{include}{\code{"all"} (default) or \code{"flagged"}, which keeps only units whose
 status is not \code{Supported}.}
@@ -33,7 +35,9 @@ For \code{"apa"}, a data frame of character columns that prints without
 row names; \code{as.data.frame()} drops its print class. An interval column is
 named after its estimate (\verb{V 95\% CI}, \verb{I-CVI 95\% CI}) and printed under
 the shared heading \verb{95\% CI}. For \code{"data.frame"}, a
-plain data frame with \code{recommendation} and \code{status} columns. For
+plain data frame with \code{recommendation} and \code{status} columns; for an
+essentiality fit it keeps the essential count \code{ne} and \code{critical_ne},
+the count the exact test needed. For
 \code{"markdown"}, a character vector of Markdown lines that prints as the
 table, carrying the analysis provenance as its \code{"settings"} attribute.
 }
@@ -47,6 +51,17 @@ as \verb{[LL, UL]} under a heading that names their level.
 Markdown output is generated directly, so no reporting package is required to
 use it. Nothing in the core analysis depends on one.
 }
+\section{Markdown in a Quarto or R Markdown document}{
+
+The Markdown lines become a table only when the document receives them as
+Markdown, so print them in a code chunk with the option
+\code{results = "asis"} (in Quarto, \verb{#| output: asis}). In a chunk with the
+default option, they show as console output, pipes and all. The
+rule row aligns the first column, which names the units, and the other
+text columns left and numeric columns right, and the \verb{*Note.*} paragraph
+follows the table after a blank line.
+}
+
 \section{Changed in 0.9.0}{
 
 The default is now \code{format = "apa"}. Earlier versions returned the numeric
@@ -79,6 +94,8 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 content_report(fit)
+# In a Quarto or R Markdown chunk with `results = "asis"`, these lines
+# render as a table:
 content_report(fit, format = "markdown", include = "flagged")
 }
 \seealso{

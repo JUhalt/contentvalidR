@@ -296,10 +296,18 @@
           "Stability is weighted kappa between each expert's ratings in",
           "consecutive rounds (Holey et al., 2007), with", weights, "weights.",
           if (weights == "quadratic") {
+            # The equality holds for the sums-of-squares form Fleiss and
+            # Cohen derive; the mean-squares ICC most software reports
+            # differs by a term in 1 / n, which a Delphi panel is small
+            # enough to show.
             paste("A change of two scale points counts four times a change of",
                   "one. With these weights kappa equals the intraclass",
-                  "correlation of the two rounds' ratings, so a shift of the",
-                  "whole panel counts as instability (Fleiss & Cohen, 1973).")
+                  "correlation of the two rounds' ratings in its",
+                  "sums-of-squares form, so a shift of the whole panel counts",
+                  "as instability (Fleiss & Cohen, 1973). The intraclass",
+                  "correlation computed from mean squares, the more common",
+                  "form, differs from it by a term that shrinks as the panel",
+                  "grows, so in a panel of Delphi size the two can differ.")
           } else {
             paste("A change of two scale points counts twice a change of one",
                   "(Cohen, 1968).")
@@ -408,10 +416,13 @@
 #' * `"kappa"` (default): weighted kappa between each expert's ratings in the
 #'   two rounds (Holey et al., 2007), read as a trend with no cutoff.
 #'   Quadratic weights (the default) make kappa the intraclass correlation of
-#'   the two rounds' ratings (Fleiss & Cohen, 1973); linear weights count a
-#'   two-point change twice a one-point change (Cohen, 1968). The interval is
-#'   a percentile bootstrap over the experts; see *Reading the kappa interval*
-#'   below.
+#'   the two rounds' ratings in its sums-of-squares form (Fleiss & Cohen,
+#'   1973). The intraclass correlation computed from mean squares, the form
+#'   most software reports, differs from it by a term that shrinks as the
+#'   panel grows, so with a Delphi-sized panel the two do not match exactly.
+#'   Linear weights count a two-point change twice a one-point change (Cohen,
+#'   1968). The interval is a percentile bootstrap over the experts; see
+#'   *Reading the kappa interval* below.
 #' * `"lambda"`: Chaffin and Talley's (1980) index of predictive association.
 #' * `"chisq_individual"`: Chaffin and Talley's (1980) chi-square test on
 #'   each expert's pair of ratings; a significant result is read as stable.
@@ -444,11 +455,15 @@
 #'
 #' @section When a stability statistic is undefined:
 #' A stability statistic can be `NA` for different reasons, and
-#' `prop_unchanged` tells them apart. When `prop_unchanged` is also `NA`, the
-#' item has no pair of consecutive rounds: it was rated in one round only, or
-#' in rounds that are not consecutive. When `prop_unchanged` has a value, a
-#' pair exists but the statistic is undefined for that data, and
-#' `details$stability$note` says why.
+#' `prop_unchanged` tells them apart. When `prop_unchanged` is also `NA`, no
+#' expert's ratings could be paired, for one of three reasons: the item was
+#' rated in one round only; it was rated in rounds that are not consecutive;
+#' or it was rated in consecutive rounds, but by different experts, so no
+#' expert rated it in both (two disjoint panels, for example). Only the last
+#' case has a row in `details$stability`, with `n_paired` 0 and a `note`
+#' saying so. When `prop_unchanged` has a value, a pair exists but the
+#' statistic is undefined for that data, and `details$stability$note` says
+#' why.
 #'
 #' The common case is the one that reads worst if reported bare. Kappa is
 #' chance-corrected, so when every paired rating in both rounds falls in one
@@ -519,21 +534,60 @@
 #' @param alpha Significance level for the chi-square methods, and
 #'   `1 - alpha` is the interval level.
 #' @param B Bootstrap resamples for the kappa interval. Use `0` to skip it.
-#' @param seed Optional seed for the bootstrap. The random-number stream of
-#'   the session is left as it was.
+#' @param seed Optional seed for the bootstrap. Every item and pair of rounds
+#'   is resampled from this same seed, so pairs with the same number of
+#'   paired experts draw the same resample indices, and their intervals are
+#'   not independent of one another. The random-number stream of the session
+#'   is left as it was.
 #'
 #' @return An object of class `contentvalid_delphi` and
-#'   `contentvalid_workflow`. `results` has one row per item: its last round,
-#'   `n_experts` there, `prop_agree`, `consensus`, and, for the last pair of
-#'   consecutive rounds, `prop_unchanged`, `stability` with `stability_low`
-#'   and `stability_high` where an interval exists, `stability_df` and
-#'   `stability_p` for the chi-square methods, and `stable` for the methods
-#'   that make a decision.
-#'   `details` holds `consensus` (every item and round), `stability` (every
-#'   item and pair of rounds, including `n_paired`, `min_expected` for the
-#'   chi-square methods, `n_boot_usable` for the kappa interval, and a
-#'   `note` where a statistic is undefined or unreliable), `panel` (experts
-#'   per round), and `round_fits`, the [expert_validity()] fit for each round.
+#'   `contentvalid_workflow`. `details` holds `consensus` (every item and
+#'   round), `stability` (every item and pair of rounds, including
+#'   `n_paired`, `min_expected` for the chi-square methods, `n_boot_usable`
+#'   for the kappa interval, and a `note` where a statistic is undefined or
+#'   unreliable), `panel` (experts per round), and `round_fits`, the
+#'   [expert_validity()] fit for each round.
+#'
+#'   **Results columns.** `results` has one row per item. Consensus is read
+#'   in the item's last round, and stability in its last pair of consecutive
+#'   rounds:
+#'   \describe{
+#'     \item{`item`}{The item.}
+#'     \item{`n_rounds`}{Rounds in which the item was rated.}
+#'     \item{`last_round`}{The last of them.}
+#'     \item{`n_experts`}{Experts who rated the item in its last round.}
+#'     \item{`prop_agree`}{The share of them rating it `agree_cut` or
+#'       higher.}
+#'     \item{`consensus`}{Whether `prop_agree` meets `consensus_threshold`;
+#'       `NA` when no threshold was set.}
+#'     \item{`prop_unchanged`}{The share of experts who kept their rating
+#'       between the two rounds of the last pair, among those who rated the
+#'       item in both (`n_paired` in `details$stability`); `NA` when no
+#'       expert's ratings could be paired.}
+#'     \item{`stability`}{The statistic chosen in `stability` for that pair:
+#'       weighted kappa, lambda, a chi-square, or the net change.}
+#'     \item{`stability_low`, `stability_high`}{The bootstrap interval for
+#'       kappa at level `1 - alpha`; `NA` for the other methods, with
+#'       `B = 0`, and where kappa has no interval.}
+#'     \item{`stability_df`, `stability_p`}{The degrees of freedom and *p* of
+#'       a chi-square; `NA` for the other methods.}
+#'     \item{`stable`}{The stability rule's decision for the chi-square and
+#'       net-change methods (see Details); `NA` for kappa and lambda, which
+#'       apply no rule, where the item has no pair, and where the individual
+#'       chi-square cannot be computed.}
+#'     \item{`recommendation`}{`"Consensus"`, `"No consensus"`,
+#'       `"Descriptive only"` (no `consensus_threshold` was set), or
+#'       `"Insufficient panel"` (fewer than three experts rated the item in
+#'       its last round, whether or not a threshold was set). Stability never
+#'       changes it.}
+#'     \item{`interpretation`}{The decision explained in a sentence. Shares
+#'       and the threshold are percentages to at most one decimal (66.7%), as
+#'       in the handoff; `print()` and `summary()` give a share just under the
+#'       threshold, and the threshold, the decimals that tell them apart.}
+#'     \item{`status`}{The shared status: `"Supported"` for `"Consensus"`,
+#'       `"Review"` for `"No consensus"`, `"Descriptive only"`, or
+#'       `"Insufficient data"` for `"Insufficient panel"`.}
+#'   }
 #'
 #' @references
 #' Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
@@ -723,39 +777,11 @@ delphi_validity <- function(ratings,
     ifelse(is.na(results$consensus), "Descriptive only",
            ifelse(results$consensus, "Consensus", "No consensus"))
   )
-  # The same percent text as the header and the handoff rule, so a threshold
-  # of 2/3 is 66.7% everywhere and a share just under it is not printed as
-  # equal to it.
-  pct <- .delphi_percent
-  threshold_txt <- if (is.null(consensus_threshold)) "" else pct(consensus_threshold)
-  results$interpretation <- vapply(seq_len(nrow(results)), function(i) {
-    r <- results[i, ]
-    switch(
-      r$recommendation,
-      "Insufficient panel" = paste(
-        "Fewer than three experts rated this item in its last round, so no",
-        "consensus judgment is made."),
-      "Descriptive only" = paste0(
-        pct(r$prop_agree), " of experts agreed in the last round. No consensus ",
-        "threshold was set, so no decision is made."),
-      "Consensus" = paste0(
-        "Consensus in the last round: ", pct(r$prop_agree), " agreed, against ",
-        "a threshold of ", threshold_txt, ". Check the stability trend before ",
-        "closing the item."),
-      paste0(
-        "No consensus in the last round: ", pct(r$prop_agree), " agreed, ",
-        "against a threshold of ", threshold_txt, ". ",
-        if (1 - r$prop_agree >= consensus_threshold) {
-          paste0("The panel did agree in the other direction: ",
-                 pct(1 - r$prop_agree), " rated it below the agreement cut. ",
-                 "Whether that is consensus to exclude is for your protocol ",
-                 "to say.")
-        } else {
-          paste("Consider another round, rewording, or reporting the item as",
-                "without consensus.")
-        })
-    )
-  }, character(1))
+  # The stored text writes a share and the threshold to one decimal, as the
+  # handoff rule and the figure legend do, so a threshold of 2/3 is 66.7% in
+  # all of them. The printouts and content_report() add the decimals a share
+  # just under the threshold needs (.delphi_interpretation()).
+  results$interpretation <- .delphi_interpretation(results, consensus_threshold)
   results$status <- .workflow_status_from_recommendation(results$recommendation)
 
   panel <- data.frame(
@@ -845,12 +871,94 @@ delphi_validity <- function(ratings,
 
 # A share as a percentage: whole when it is whole (75%), and to one decimal
 # otherwise (66.7%, not 66.66667%), rounded half up like every printed
-# number. The text goes into the handoff, so it does not depend on the
-# session's `digits` or `OutDec` options.
-.delphi_percent <- function(p) {
-  txt <- formatC(.half_up(100 * p, 1), format = "f", digits = 1,
+# number. More `digits` keep their zeros (66.70%), so a share and the
+# threshold beside it show the same precision. The text goes into the
+# handoff, so it does not depend on the session's `digits` or `OutDec`
+# options.
+.delphi_percent <- function(p, digits = 1L) {
+  txt <- formatC(.half_up(100 * p, digits), format = "f", digits = digits,
                  decimal.mark = ".")
-  paste0(sub("\\.0$", "", txt), "%")
+  paste0(sub("\\.0+$", "", txt), "%")
+}
+
+# The decimals each share needs beside the consensus threshold: `digits`,
+# or more where a share that falls short of the threshold would print as
+# equal to it (6 of 9 against .667 prints 66.7% beside 66.7%). `fmt` writes
+# a value at a given number of decimals. As .fmt_beside_cut() does for a
+# value beside its cut, but to as many decimals as it takes, up to four
+# more.
+.delphi_beside_digits <- function(share, threshold, digits, fmt) {
+  if (is.null(threshold) || !length(share)) {
+    return(rep(as.integer(digits), length(share)))
+  }
+  vapply(share, function(p) {
+    d <- as.integer(digits)
+    while (!is.na(p) && p < threshold && d < digits + 4L &&
+           identical(fmt(p, d), fmt(threshold, d))) {
+      d <- d + 1L
+    }
+    d
+  }, integer(1))
+}
+
+# Shares as proportions beside the consensus threshold (.6667 against
+# .667), for the Agree column of the printout and of content_report().
+.delphi_fmt_share <- function(share, threshold, digits = 2L) {
+  d <- .delphi_beside_digits(share, threshold, digits,
+                             function(p, k) .fmt(p, k))
+  vapply(seq_along(share), function(i) .fmt(share[i], d[i]), character(1))
+}
+
+# Each item's interpretation. The fit stores it with every share and the
+# threshold to one decimal (the default `share_digits`). A printout passes
+# the decimals each share needs beside the threshold, which then takes the
+# most of them, so 6 of 9 against .667 reads 66.67% against 66.70%.
+.delphi_interpretation <- function(results, threshold, share_digits = 1L) {
+  share_digits <- rep_len(as.integer(share_digits), nrow(results))
+  pct <- .delphi_percent
+  threshold_txt <- if (is.null(threshold)) "" else
+    pct(threshold, max(c(1L, share_digits)))
+  vapply(seq_len(nrow(results)), function(i) {
+    r <- results[i, ]
+    switch(
+      r$recommendation,
+      "Insufficient panel" = paste(
+        "Fewer than three experts rated this item in its last round, so no",
+        "consensus judgment is made."),
+      "Descriptive only" = paste0(
+        pct(r$prop_agree), " of experts agreed in the last round. No consensus ",
+        "threshold was set, so no decision is made."),
+      "Consensus" = paste0(
+        "Consensus in the last round: ", pct(r$prop_agree), " agreed, against ",
+        "a threshold of ", threshold_txt, ". Check the stability trend before ",
+        "closing the item."),
+      paste0(
+        "No consensus in the last round: ",
+        pct(r$prop_agree, share_digits[i]), " agreed, ",
+        "against a threshold of ", threshold_txt, ". ",
+        if (1 - r$prop_agree >= threshold) {
+          paste0("The panel did agree in the other direction: ",
+                 pct(1 - r$prop_agree), " rated it below the agreement cut. ",
+                 "Whether that is consensus to exclude is for your protocol ",
+                 "to say.")
+        } else {
+          paste("Consider another round, rewording, or reporting the item as",
+                "without consensus.")
+        })
+    )
+  }, character(1))
+}
+
+# The experts each item's Unchanged and stability statistic rest on: those
+# who rated it in both rounds of its last pair, which can be fewer than rated
+# it in its last round. NA for an item with no pair.
+.delphi_last_paired <- function(x, items) {
+  stab <- x$details$stability
+  if (!is.data.frame(stab) || !nrow(stab) || is.null(stab$n_paired)) {
+    return(rep(NA_integer_, length(items)))
+  }
+  last <- stab[!duplicated(stab$item, fromLast = TRUE), , drop = FALSE]
+  last$n_paired[match(items, last$item)]
 }
 
 # "1 and 3", "1, 2 and 4".
@@ -955,10 +1063,19 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     if (s$agree_cut < s$hi) " or higher", " on the ",
     format(s$lo), " to ", format(s$hi), " scale."
   ))
+  # A share that falls short of the threshold is never printed as equal to
+  # it, so the printed threshold carries the decimals the closest such share
+  # needs, here, in the Agree column and in summary(). The stored text keeps
+  # one decimal, as the handoff does.
+  threshold <- s$consensus_threshold
+  pct_digits <- .delphi_beside_digits(r$prop_agree, threshold, 1L,
+                                      .delphi_percent)
+  threshold_txt <- if (is.null(threshold)) "" else
+    .delphi_percent(threshold, max(c(1L, pct_digits)))
   .say(paste0(
     "Consensus threshold: ",
-    if (is.null(s$consensus_threshold)) "none set, so agreement is descriptive." else
-      paste0(.delphi_percent(s$consensus_threshold), ", as supplied.")
+    if (is.null(threshold)) "none set, so agreement is descriptive." else
+      paste0(threshold_txt, ", as supplied.")
   ))
   .say("Stability:", .delphi_method_label(s), "between consecutive rounds")
   if (s$stability %in% c("chisq_individual", "chisq_group")) {
@@ -969,32 +1086,63 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   n_c <- sum(r$recommendation == "Consensus")
   n_n <- sum(r$recommendation == "No consensus")
   n_i <- sum(r$recommendation == "Insufficient panel")
-  if (is.null(s$consensus_threshold)) {
+  thin <- paste(r$item[r$recommendation == "Insufficient panel"],
+                collapse = ", ")
+  if (is.null(threshold)) {
     cat("No consensus threshold was set; agreement is reported descriptively.\n")
+    if (n_i) {
+      .say(paste0(.n_noun(n_i, "item"), " had too few experts in ",
+                  if (n_i == 1L) "its" else "their", " last round for any ",
+                  "judgment (", thin, ")."))
+    }
   } else {
     .say(paste0(n_c, " of ", .n_noun(nrow(r), "item"), " reached consensus ",
                 "in ", if (nrow(r) == 1L) "its" else "their", " last round",
-                if (n_i) paste0("; ", n_i, " had too few experts"), "."))
+                if (n_i) paste0("; ", n_i, " had too few experts (", thin, ")"),
+                "."))
     if (n_n) .say("No consensus:", paste(r$item[r$recommendation == "No consensus"],
                                          collapse = ", "))
+    # A panel that agrees an item does not belong has not reached "no
+    # consensus" in the ordinary sense; the interpretation says what to do.
+    other <- r$recommendation == "No consensus" &
+      1 - r$prop_agree >= threshold
+    if (any(other)) {
+      .say(paste0("Agreed in the other direction (", threshold_txt,
+                  " or more rated ", if (sum(other) == 1L) "it" else "each",
+                  " below ", format(s$agree_cut), "): ",
+                  paste(r$item[other], collapse = ", ")))
+    }
   }
 
   .section("Item-level evidence (last round, and the last pair of rounds)")
   val <- .delphi_value_label(s$stability)
+  # The column is headed as content_report() heads it.
+  heading <- switch(val, chi_sq = "chi-square", change = "net change", val)
   bounded <- .delphi_bounded(s$stability)
+  # Unchanged and the stability statistic rest on the experts who rated the
+  # item in both rounds of its last pair, which can be fewer than rated it in
+  # its last round.
+  last <- stab[!duplicated(stab$item, fromLast = TRUE), , drop = FALSE]
+  paired <- .delphi_last_paired(x, r$item)
+  short <- !is.na(paired) & paired < r$n_experts
+  # A share just under the threshold gets the decimals that keep it from
+  # printing as the threshold, as in the header.
   tab <- data.frame(item = r$item, decision = r$recommendation,
-                    `last round` = r$last_round, n = r$n_experts,
-                    agree = .fmt(r$prop_agree, digits),
+                    `last round` = r$last_round, experts = r$n_experts,
+                    agree = .delphi_fmt_share(r$prop_agree, threshold, digits),
                     unchanged = .fmt(r$prop_unchanged, digits),
                     stringsAsFactors = FALSE, check.names = FALSE)
   if (val == "chi_sq") {
     # APA reports a chi-square with its degrees of freedom, which vary by item
     # with the categories the experts used.
-    last <- stab[!duplicated(stab$item, fromLast = TRUE), , drop = FALSE]
     tab$df <- last$df[match(r$item, last$item)]
   }
-  tab[[if (val == "chi_sq") "chi-square" else val]] <-
-    .fmt(r$stability, digits, bounded)
+  tab[[heading]] <- .fmt(r$stability, digits, bounded)
+  # Every resample can give the same kappa (every expert kept their rating).
+  # The interval then has no width, which says nothing about precision. Its
+  # bounds are printed, as content_report() prints them, and a note says so.
+  flat <- is.finite(r$stability_low) & is.finite(r$stability_high) &
+    abs(r$stability_high - r$stability_low) <= sqrt(.Machine$double.eps)
   # With B = 0, or when no item's kappa could be given an interval, the column
   # would be empty. Leave it out rather than print a blank promise.
   if (s$stability == "kappa" && any(!is.na(r$stability_low))) {
@@ -1007,19 +1155,43 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (s$stability %in% c("chisq_individual", "chisq_group", "percent_change")) {
     tab$stable <- ifelse(is.na(r$stable), .missing_mark, ifelse(r$stable, "yes", "no"))
   }
-  shown <- .print_table(tab)
+  # Shown when it differs from the last round's count for some item; where
+  # it never does, Experts already gives it. It comes last, so a narrow
+  # console leaves it out first.
+  if (any(short)) tab$paired <- paired
+  # The columns a decision rests on stay at any width: Agree for consensus,
+  # and the statistic, with the df APA reports beside a chi-square, its p and
+  # Stable for stability. Paired, the interval and Unchanged give way first,
+  # in that order.
+  keep <- c(.table_keep, "agree",
+            if (any(!is.na(r$stability))) c(heading, if (val == "chi_sq") "df"),
+            if ("stable" %in% names(tab) && any(!is.na(r$stable))) "stable")
+  # The paired count is not a results column, so a table that can leave it
+  # out says where it is.
+  more <- if (any(short)) "as.data.frame(x) and x$details$stability" else
+    "as.data.frame(x)"
+  shown <- tolower(.print_table(tab, keep = keep, more = more))
   cat("\n")
-  .say("Agree: share of experts agreeing in the item's last round. Unchanged:",
-       "share who kept their rating between the item's last pair of",
-       "consecutive rounds.")
+  # Each column is defined only where the table shows it.
+  .say(
+    if ("agree" %in% shown) {
+      "Agree: share of experts agreeing in the item's last round."
+    },
+    if ("unchanged" %in% shown) {
+      paste("Unchanged: share who kept their rating between the item's last",
+            "pair of consecutive rounds.")
+    },
+    if ("paired" %in% shown) {
+      paste("Paired: experts who rated the item in both rounds of that",
+            "pair, on whom Unchanged and", heading, "rest.")
+    })
   # An item rated in rounds that are not consecutive has no pair to compare,
   # and one whose last pair is not its last two rounds would otherwise be
   # misread, so both are named.
   .delphi_pair_notes(x)
 
   if (nrow(stab) && length(unique(paste(stab$from_round, stab$to_round))) > 1L) {
-    cat("\nStability trend (", if (val == "chi_sq") "chi-square" else val,
-        ") by pair of rounds\n", sep = "")
+    cat("\nStability trend (", heading, ") by pair of rounds\n", sep = "")
     .print_table(.delphi_wide(stab, "value", digits, bounded,
                               rounds = x$design$rounds))
     .section("Share of experts who kept their rating, by pair of rounds")
@@ -1027,16 +1199,34 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                               rounds = x$design$rounds))
   }
 
+  # The notes the fit recorded, and why an interval can have no width.
   flagged <- stab[nzchar(stab$note), , drop = FALSE]
-  if (nrow(flagged)) {
+  where <- if (nrow(flagged)) {
+    paste0(flagged$item, " (",
+           .delphi_pair_label(flagged$from_round, flagged$to_round), ")")
+  } else {
+    character(0)
+  }
+  notes <- flagged$note
+  if (s$stability == "kappa" && any(flat)) {
+    at <- match(r$item[flat], last$item)
+    where <- c(where, paste0(last$item[at], " (",
+                             .delphi_pair_label(last$from_round[at],
+                                                last$to_round[at]), ")"))
+    notes <- c(notes, paste0(
+      "The ", .ci_label(s$alpha), " has no width because ",
+      ifelse(r$prop_unchanged[flat] %in% 1,
+             "every expert kept their rating, so ", ""),
+      "every resample of the experts gave the same kappa; it does not mean ",
+      "kappa is known exactly."
+    ))
+  }
+  if (length(notes)) {
     # One line per distinct note, naming every item and pair it applies to,
     # so a warning that fits the whole panel is read once rather than per row.
     .section("Notes")
-    where <- paste0(flagged$item, " (",
-                    .delphi_pair_label(flagged$from_round, flagged$to_round),
-                    ")")
-    for (nt in unique(flagged$note)) {
-      .say(paste0(paste(where[flagged$note == nt], collapse = ", "), ": ", nt),
+    for (nt in unique(notes)) {
+      .say(paste0(paste(where[notes == nt], collapse = ", "), ": ", nt),
            indent = 2L, exdent = 4L)
     }
   }
@@ -1067,13 +1257,30 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
     .say("Diamond et al. (2014) recommend fixing the consensus threshold",
          "before the study. Report whether this one was.")
   }
-  if (length(unique(panel$n_experts)) > 1L) {
+  # Experts replaced at a constant panel size, or an item some experts
+  # skipped, also leave stability on fewer experts than the table's count, so
+  # the caution turns on the paired count, not only on the panel's size.
+  resized <- length(unique(panel$n_experts)) > 1L
+  if (resized || any(short)) {
     cat("\n")
     .say(paste0(
-      "The panel changed size across rounds (", paste(panel$n_experts,
-                                                        collapse = ", "),
-      " experts). Stability uses only the experts who rated an item in both ",
-      "rounds, and a result from fewer experts is weaker evidence."
+      if (resized) {
+        paste0("The panel changed size across rounds (",
+               paste(panel$n_experts, collapse = ", "), " experts). ")
+      },
+      "Stability uses only the experts who rated an item in both rounds, and ",
+      "a result from fewer experts is weaker evidence.",
+      if (any(short)) {
+        which_items <- if (all(short)) "every item" else .and_list(r$item[short])
+        paste0(" For ", which_items, ", those are fewer than rated ",
+               if (sum(short) == 1L) "it" else "the item", " in its last round",
+               # The Paired column gives way first at a narrow width.
+               if ("paired" %in% shown) {
+                 " (Paired against Experts)."
+               } else {
+                 " (n_paired in details$stability)."
+               })
+      }
     ))
   }
 
@@ -1090,8 +1297,7 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
                     chisq_individual = "chi_sq_individual",
                     chisq_group = "chi_sq_group",
                     percent_change = "percent_change"))
-    .print_key(key, headings = c("agree", "unchanged",
-                                 if (val == "chi_sq") "chi-square" else val),
+    .print_key(key, headings = c("agree", "unchanged", heading),
                shown = shown)
     .print_decision_legend(x$results$recommendation, "delphi")
     .print_key_footer()
@@ -1104,8 +1310,12 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   invisible(x)
 }
 
-.delphi_item_colours <- function(n) {
+# One colour per item's line. An APA figure uses shades of gray from black to
+# mid gray, still dark enough to read on white; the label at each line's end
+# names the item, since shades alone are hard to tell apart.
+.delphi_item_colours <- function(n, apa = FALSE) {
   if (n == 1L) return("black")
+  if (isTRUE(apa)) return(grDevices::grey(seq(0, 0.55, length.out = n)))
   grDevices::hcl.colors(n, palette = "Dark 3")
 }
 
@@ -1222,6 +1432,12 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #' so a shaded "good" region would mislead exactly when a Delphi is
 #' succeeding. See [delphi_validity()].
 #'
+#' In both line views each item's line is labeled at its last point. Items
+#' with the same values throughout share one line: their labels are set
+#' apart, but the lines lie on top of each other, so only the stacked labels
+#' show that more than one item is there. `type = "distribution"` draws every
+#' item on its own.
+#'
 #' `type = "distribution"` draws every rating in every round as a diverging
 #' stacked bar (Heiberger & Robbins, 2014), one bar per round for each item,
 #' split at `agree_cut`. The right-hand length is the share agreeing, read
@@ -1236,12 +1452,14 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
 #'   code runs: `plot(fit, which = "stability")` is `type = "stability"`.
 #'   Give one or the other: supplying both is an error.
 #' @param show_legend Draw the legend. Defaults to `TRUE`.
-#' @param apa Used by `type = "distribution"`. `TRUE` (default) draws in
-#'   gray, with darker meaning a higher rating, as an APA figure is printed.
-#'   `FALSE` draws ratings below the agreement cut in brown and ratings at or
-#'   above it in teal, a colorblind-safe scheme for slides and posters. The
-#'   consensus and stability views color each item's line so the lines can be
-#'   told apart.
+#' @param apa `TRUE` (default) draws in black, white and gray, as an APA
+#'   figure is printed: in the distribution view darker means a higher
+#'   rating, and in the consensus and stability views each item's line is a
+#'   shade of gray from black to mid gray, named by the label at its end.
+#'   `FALSE` draws for slides and posters: the distribution view shows
+#'   ratings below the agreement cut in brown and ratings at or above it in
+#'   teal, a colorblind-safe scheme, and the consensus and stability views
+#'   give each item's line its own color.
 #' @param labels For `type = "distribution"`, one label per rating category,
 #'   lowest first. Defaults to `"Rated 1"`, `"Rated 2"`, and so on.
 #' @param ... Passed to [graphics::plot()].
@@ -1312,11 +1530,18 @@ plot.contentvalid_delphi <- function(x,
     )
     return(invisible(x))
   }
+  # Checked before the margins are set, which opens a device, so a call that
+  # cannot draw leaves none open.
+  stab <- x$details$stability
+  if (type == "stability" && !nrow(stab)) {
+    stop("This analysis has no pair of consecutive rounds to plot.",
+         call. = FALSE)
+  }
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   rounds <- x$design$rounds
   items <- unique(x$results$item)
-  colours <- .delphi_item_colours(length(items))
+  colours <- .delphi_item_colours(length(items), apa = apa)
   # Room on the right for the item labels.
   right_pad <- 1 + 0.35 * max(nchar(items))
 
@@ -1348,11 +1573,6 @@ plot.contentvalid_delphi <- function(x,
     return(invisible(x))
   }
 
-  stab <- x$details$stability
-  if (!nrow(stab)) {
-    stop("This analysis has no pair of consecutive rounds to plot.",
-         call. = FALSE)
-  }
   # A chi-square runs far above 1, so it gets an axis of its own scale, and
   # the share who kept their rating (0 to 1) is not drawn against it.
   unbounded <- !.delphi_bounded(x$settings$stability)
@@ -1416,10 +1636,19 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
     who <- f$item[f$status %in% status]
     if (length(who)) paste0(" (", paste(who, collapse = ", "), ")") else ""
   }
-  if (x$n_descriptive > 0L) {
-    cat("Descriptive only: ", x$n_descriptive, " of ",
-        .n_noun(x$n_items, "item"), "; no consensus threshold was set.\n",
-        sep = "")
+  # Whether a threshold was set decides the lines, not how many items are
+  # descriptive: with no threshold and every item short of experts, there
+  # are none, and "Consensus: 0 of 1" would claim a rule that was not
+  # applied.
+  if (is.null(x$settings$consensus_threshold)) {
+    if (x$n_descriptive > 0L) {
+      cat("Descriptive only: ", x$n_descriptive, " of ",
+          .n_noun(x$n_items, "item"), "; no consensus threshold was set.\n",
+          sep = "")
+    } else {
+      cat("No consensus threshold was set; agreement is reported ",
+          "descriptively.\n", sep = "")
+    }
   } else {
     cat("Consensus: ", x$n_supported, " of ", x$n_items, "\n", sep = "")
     .say(paste0("No consensus: ", x$n_review, " of ", x$n_items,
@@ -1437,6 +1666,17 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
         .fmt(med, digits), "\n", sep = "")
   }
   if (is.data.frame(f) && nrow(f) && "interpretation" %in% names(f)) {
+    # The stored text gives one decimal. Where a share just under the
+    # threshold would read as equal to it, the printout gives both the
+    # decimals it takes to tell them apart, as print(x) does.
+    threshold <- x$settings$consensus_threshold
+    if (is.numeric(threshold) && "prop_agree" %in% names(f)) {
+      share_digits <- .delphi_beside_digits(f$prop_agree, threshold, 1L,
+                                            .delphi_percent)
+      if (any(share_digits > 1L)) {
+        f$interpretation <- .delphi_interpretation(f, threshold, share_digits)
+      }
+    }
     .section("Flagged")
     .say_flagged(f$item, f$recommendation, f$interpretation)
   }
