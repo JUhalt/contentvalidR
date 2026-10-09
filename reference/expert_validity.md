@@ -304,8 +304,9 @@ fit
 #> Items: 4 | Experts/item: 4
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
-#> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].
-#>   Identical rating pairs: 50%.
+#> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because
+#>   every resample of the items gave the same value. Identical rating pairs:
+#>   50%.
 #> 
 #> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa
 #> above .74).
@@ -330,7 +331,7 @@ fit
 #> (the kappa column) describes each item. Alpha can be low when nearly every
 #> rating is the same value, even on a panel that agrees closely, so read it
 #> beside the share of identical rating pairs. A low alpha with many identical
-#> pairs is not by itself evidence of a poor panel. Print `details$agreement` for
+#> pairs is not by itself evidence of a poor panel. Print x$details$agreement for
 #> the full explanation and interval details.
 #> 
 #> CVI criteria are published panel-size guidelines, not universal validity
@@ -368,15 +369,16 @@ fit
 summary(fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
-#> Supported: 4 | Review: 0
-#> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].
-#>   Identical rating pairs: 50%.
+#> Strong support: 4 of 4 | Review: 0 of 4
+#> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because
+#>   every resample of the items gave the same value. Identical rating pairs:
+#>   50%.
 #> 
 #> No items were flagged by the workflow's quantitative review rules.
 #> 
 #> These summaries support, but do not replace, qualitative content review.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 
 # Essential counts from 12 experts, beside Lawshe's table and Wilson et al.
 expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
@@ -397,7 +399,7 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
 #> 
 #> Essential: experts rating the item essential, out of those who rated it.
 #> With 12 experts, an item needs at least 10 rating it essential for the exact
-#> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
+#> one-sided binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> Earlier methods, for comparison (not used for the decision)
 #>   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)

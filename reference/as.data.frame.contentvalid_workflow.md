@@ -87,21 +87,10 @@ head(as.data.frame(fit, include_interpretation = FALSE))
 #> 4         Review Target favored, exact criterion not met    Review
 #> 5         Retain                               Supported Supported
 #> 6         Review Target favored, exact criterion not met    Review
-as.data.frame(fit, component = "scale_summary")
-#>    workflow target n_items n_items_usable n_retain n_review mean_psa
-#> 1 item-sort      A       2              2        2        0    0.825
-#> 2 item-sort      B       2              2        1        1    0.750
-#> 3 item-sort      C       2              2        1        1    0.800
-#>   psa_strength mean_csv csv_strength orbiting_r
-#> 1       Strong    0.725       Strong         NA
-#> 2     Moderate    0.575     Moderate         NA
-#> 3     Moderate    0.675       Strong         NA
-#>                      benchmark_set benchmark_applicable n_definitions
-#> 1 Overall (not correlation-normed)                 TRUE             3
-#> 2 Overall (not correlation-normed)                 TRUE             3
-#> 3 Overall (not correlation-normed)                 TRUE             3
-#>                                                                                                                                                      evidence
-#> 1                                                             Mean Psa and mean Csv both fall in the Strong band of published scales (Colquitt et al., 2019).
-#> 2                Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
-#> 3 Mean Psa falls in the Moderate band and mean Csv in the Strong band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+as.data.frame(fit, component = "scale_summary")[, c("target", "mean_psa",
+                                                  "psa_strength")]
+#>   target mean_psa psa_strength
+#> 1      A    0.825       Strong
+#> 2      B    0.750     Moderate
+#> 3      C    0.800     Moderate
 ```

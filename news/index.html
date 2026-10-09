@@ -57,6 +57,23 @@
 <h2 class="pkg-version" data-toc-text="0.10.1.9000" id="contentvalidr-01019000-development-version">contentvalidR 0.10.1.9000 (development version)<a class="anchor" aria-label="anchor" href="#contentvalidr-01019000-development-version"></a></h2>
 <p>Fixes from the audit before 1.0. Some of them change values, so check any analysis that matches the cases below.</p>
 <div class="section level3">
+<h3 id="removed-0-10-1-9000">Removed<a class="anchor" aria-label="anchor" href="#removed-0-10-1-9000"></a></h3>
+<ul><li>
+<code>agreement_summary()</code> is removed, as announced when it was deprecated in 0.9.0. Use <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>, which takes raters in rows like every other ratings function. The deprecation warning shipped only on GitHub and R-universe, so a user updating from 0.4.0 on CRAN meets the removal without it.</li>
+<li>Five returned fields are removed without a notice period, because the audit found them wrong or unreachable; <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> records the exception to the deprecation policy. Each is explained in the section named:
+<ul><li>
+<code>overall_strength</code> in the <code>scale_summary</code> of <code><a href="../reference/sort_validity.html">sort_validity()</a></code> and <code><a href="../reference/rating_validity.html">rating_validity()</a></code> (“Congruence and method attribution: values that change”);</li>
+<li>
+<code>n_support</code> in the <code>scale_summary</code> of <code><a href="../reference/expert_validity.html">expert_validity()</a></code> (same section);</li>
+<li>
+<code>competitor_ioc</code> in the congruence <code>results</code> of <code><a href="../reference/expert_validity.html">expert_validity()</a></code>, whose results without a target mapping now have one row per item (same section; the congruence handoff statistics <code>competitor IOC</code> and <code>IOC margin</code> give way to <code>target IOC</code> and the two mean ratings);</li>
+<li>
+<code>n_influential</code> in the <code>scale_summary</code> of <code><a href="../reference/judge_validity.html">judge_validity()</a></code> (“Judges, domain and structure: values that change”);</li>
+<li>
+<code>fit_label</code> in the <code>fit</code> table of <code><a href="../reference/content_structure.html">content_structure()</a></code> (same section).</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
 <h3 id="item-sort-values-that-change-0-10-1-9000">Item sort: values that change<a class="anchor" aria-label="anchor" href="#item-sort-values-that-change-0-10-1-9000"></a></h3>
 <ul><li>
 <strong>Constructs coded as numbers or factors now give the right counts.</strong> When the target construct was a number (1, 2, 3) or a factor, <code><a href="../reference/compute_csv.html">compute_csv()</a></code> read the target’s count by position in its table, not by label. The target count, Csv, the exact <em>p</em> value, the Retain or Review decision, and the items <code><a href="../reference/content_handoff.html">content_handoff()</a></code> carried could all be wrong, with no error: an item with 16 of 20 judges on target could print 4/20, Csv .00, and Review. Every earlier release had this, including 0.4.0, the version on CRAN. Constructs stored as text in both columns were always right. Rerun any sort whose construct columns are numbers or factors. Labels are now compared as text, whatever they are stored as, so <code>target</code> in <code>results</code> is always text, and tied competitors are listed in alphabetical order.</li>
@@ -326,33 +343,47 @@
 </ul></div>
 <div class="section level3">
 <h3 id="output-style-shared-with-nomologr-0-10-1-9000">Output style shared with nomologR<a class="anchor" aria-label="anchor" href="#output-style-shared-with-nomologr-0-10-1-9000"></a></h3>
-<p>The printouts of contentvalidR and nomologR now follow one style, agreed between the two packages (JUhalt/nomologR#144), so a researcher moving from content review to empirical validation reads both alike. No stored number, field or handoff column changes. The few stored sentences that state a rounded number or a <em>p</em> value now follow the same rules (listed at the end), and two plot methods gain <code>type</code>.</p>
+<p>The printouts of contentvalidR and nomologR now follow one style, agreed between the two packages (JUhalt/nomologR#144), so a researcher moving from content review to empirical validation reads both alike. No stored number or handoff column changes, and <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> gains one field, <code>n_pairs</code> (the number of rating pairs behind the share of identical pairs). The few stored sentences that state a rounded number or a <em>p</em> value now follow the same rules (listed at the end), and two plot methods gain <code>type</code>.</p>
 <ul><li>
 <strong>Headers.</strong> Every printout opens with the object’s class and a plain-language title on one line, with no rule beneath: <code>&lt;contentvalid_sort&gt; Item-sort analysis</code>; a summary’s tag ends in “summary”.</li>
 <li>
-<strong>Numbers.</strong> Values round half away from zero for display, so 5 of 8 prints .63, where R’s own rounding gave .62 beside 3 of 8 as .38. A value that could not be computed prints “–”, never “NA”. A <em>p</em> value that would print 1.000 prints “&gt; .999”. Percentages are whole numbers on a base under 100 and carry one decimal on a larger base; the share of identical rating pairs follows the same rule, on the number of pairs. Results objects keep full precision.</li>
+<strong>Numbers.</strong> Values round half away from zero for display, so 5 of 8 prints .63, where R’s own rounding gave .62 beside 3 of 8 as .38. A value that could not be computed prints “–”, never “NA”. A <em>p</em> value that would print 1.000 prints “&gt; .999”. Percentages are whole numbers on a base under 100 and carry one decimal on a larger base; the share of identical rating pairs follows the same rule, on the number of pairs. Delphi interpretations keep one decimal where a share is not whole (12.5% of 8 experts), as their stored text always has. Results objects keep full precision.</li>
 <li>
 <strong>Prose</strong> wraps at 79 columns, and so do the keys, the decision legends and the glossary. It never breaks inside “p &lt; .001”, “Phi &gt;= .80”, “N = 40”, “F(2, 14) = 3.21” or an interval.</li>
 <li>
-<strong>Tables</strong> are indented two spaces, with text left-aligned, numbers right-aligned and headings in sentence case. A column empty in every row is dropped, unless a decision rests on it. A table too wide for the console tightens its columns, then drops trailing ones and names them with the call that shows them. It never drops the item, its decision, the tests the decision rests on, the statistic a component exists to show, or the benchmark set beside a Colquitt level. A key leaves out a column the table did not show. Contingency tables and the item similarity matrix print the same way.</li>
+<strong>Tables</strong> are indented two spaces, with text left-aligned, numbers right-aligned and headings in sentence case; a heading that is data, such as an item ID or a round label, keeps its case. A column empty in every row is dropped, unless a decision rests on it. A table too wide for the console tightens its columns, then drops trailing ones and names them with the call that shows them. It never drops the item, its decision, the statistic or test the decision rests on, or the statistic a component exists to show; a table with nothing else to drop prints wider than the console. Different Colquitt benchmark sets are named for their targets beneath the scale-level table. The item-sort, Delphi and relevance keys leave out a column the table did not show. The item similarity matrix prints in blocks of columns that fit the console, with its diagonal blank.</li>
 <li>
-<strong>Sections</strong> indent their content; summaries list flagged units in a “Flagged” section, one bullet per unit with a complete sentence, “- B2 (Review): …”, and define the abbreviations they show. A workflow’s printout ends with what the evidence does not decide, and every printout ends with one line pointing to what else the object holds (“See summary(x) for the flagged items …”). Markdown output from <code><a href="../reference/content_report.html">content_report()</a></code> prints only the lines to paste.</li>
+<strong>Sections</strong> indent their content; summaries list flagged units in a “Flagged” section, one bullet per unit with a complete sentence, “- B2 (Review): …”, and define the abbreviations they show. A workflow’s printout ends with what the evidence does not decide, and every printout ends with one line pointing to what else the object holds (“See summary(x) for the flagged items …”; a summary points to its own fields, such as <code>summary(x)$reviewed_items</code>). Markdown output from <code><a href="../reference/content_report.html">content_report()</a></code> prints only the lines to paste.</li>
+<li>
+<strong>Status words.</strong> The handoff and <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> printouts say what the shared status words mean in the workflow’s own terms (“Supported is this analysis’s passing decision (Retain)”); <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> keeps the expert-panel <code>mode</code> for this. The expert-panel summary counts its own decision word (“Strong support: 3 of 5”).</li>
 <li>
 <strong>Errors</strong> for a wrong choice name the argument and the choices: <code>`format` must be one of "apa", "data.frame", or "markdown", not "latex".</code> As with <code><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg()</a></code>, <code>NULL</code> still selects the default.</li>
 <li>
-<strong>Plots.</strong> Every plot method takes <code>type</code>. For the content map and the expert power curve the argument is new, so a <code>type</code> passed through <code>...</code> to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">graphics::plot()</a></code> is no longer accepted there. A dashed line marks a reference value, and the legend names it.</li>
+<strong>Plots.</strong> Every plot method takes <code>type</code>. For the content map and the expert power curve the argument is new, so a <code>type</code> passed through <code>...</code> to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">graphics::plot()</a></code> is no longer accepted there. A dashed line marks a reference value, and the legend names it. <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a judge, domain or round-comparison result, which have no figure, stops with a message saying so (and, for a domain result with similarity data, how to draw its content map) instead of a base-graphics error.</li>
 <li>
-<strong>Manuscript tables.</strong> <code><a href="../reference/content_report.html">content_report()</a></code> prints under a header and adds the APA general note: the abbreviations in the order the columns show them, the interval method (including the Penfield-Giacobbi interval for V when I-CVI has none), any Holm adjustment, the criterion behind the decisions, and “– = not computed” when a cell is missing. Its headings are shown in sentence case; the names of the returned columns do not change. In Markdown the note reads “<em>Note.</em> …” and a value that could not be computed is an em dash.</li>
+<strong>Manuscript tables.</strong> <code><a href="../reference/content_report.html">content_report()</a></code> prints under a header and adds the APA general note: the abbreviations in the order the columns show them, a definition of each column whose heading alone does not say what it holds, the interval method (including the Penfield-Giacobbi interval for V when I-CVI has none), any Holm adjustment, the criterion behind the decisions, and “– = not computed” when a cell is missing. Judge and domain tables now state their criteria, as contentvalidR conventions, and the domain table shows each cell’s expected share. Headings are shown in sentence case; the names of the returned columns do not change. In Markdown the note reads “<em>Note.</em> …”, the symbols <em>p</em>, <em>F</em>, <em>V</em>, <em>n</em> and <em>N</em> are italic, and a value that could not be computed is an em dash.</li>
 <li>
-<strong>Wording.</strong> Published rules are “criteria”, not “cutoffs”; <code>reverse_keyed</code> messages say “reverse-keyed”; the expert item tables head the per-item count “Experts”; earlier-method verdicts read “Meets” and “Below”.</li>
+<strong>Wording.</strong> Published rules are “criteria”, not “cutoffs”; tests are “one-sided” throughout; <code>reverse_keyed</code> messages say “reverse-keyed”; the expert item tables head the per-item count “Experts”; earlier-method verdicts read “Meets” and “Below”; both Colquitt sections are headed “Scale-level”; closing caveats speak of “a flag for review” rather than quoting a label the printout may not show. The evidence headline names every stage that held an item back, and an agreement interval with no width (every resample gave the same value) is said in words.</li>
 <li>
 <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> and the “Reading the output” article describe the conventions and give the crosswalk between the statuses of the two packages.</li>
-</ul><p>Stored text that changes, on exact ties only, so that it matches the printout:</p>
+</ul><p>Stored text that changes so that it matches the printout:</p>
 <ul><li>
-<code>content_report(format = "data.frame")</code> rounds half up, like the APA table: 5 of 8 is 0.63 in both.</li>
-<li>A handoff note that gave a largest contrast <em>p</em> as “p = 1.000” now says “p &gt; .999”.</li>
-<li>An interpretation that states a rounded value (the adjusted Rand index of a content map, Phi of a generalizability analysis, a domain cell’s share, a Delphi consensus percentage) rounds half up; a Delphi rule in the handoff states its percentage the same way.</li>
-<li>A domain cell’s interpretation states its share as the table does (13% for 1 of 8) and an over-represented cell’s sentence gives its item count.</li>
+<code>content_report(format = "data.frame")</code> rounds half up, like the APA table: 5 of 8 is 0.63 in both (exact ties only).</li>
+<li>A handoff note that gave a largest contrast <em>p</em> as “p = 1.000” now says “p &gt; .999”, whenever the <em>p</em> would print as 1.000.</li>
+<li>An interpretation that states a rounded value (the adjusted Rand index of a content map, Phi of a generalizability analysis, a Delphi consensus percentage) rounds half up on an exact tie; a Delphi rule in the handoff states its percentage the same way.</li>
+<li>A domain cell’s interpretation states its share as the table does: 13% for 1 of 8 (a tie), and one decimal on 100 or more items. An over-represented cell’s sentence gives its item count.</li>
+<li>The Markdown note of <code><a href="../reference/content_report.html">content_report()</a></code> wraps at 79 columns, so it spans several elements of the returned vector.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="release-housekeeping-0-10-1-9000">Release housekeeping<a class="anchor" aria-label="anchor" href="#release-housekeeping-0-10-1-9000"></a></h3>
+<ul><li>The lifecycle badge reads “stable”.</li>
+<li>DESCRIPTION names the Hinkin-Tracey correspondence and distinctiveness indices in full and credits them, with the benchmarks, to Colquitt et al. (2019); it cites MacKenzie et al. (2011) for the repeated-measures screening, says the content-structure analysis is adapted from Sireci and Geisinger (1992), and wraps at 80 columns.</li>
+<li>
+<code><a href="../reference/cvi.html">?cvi</a></code> typesets the modified kappa formula with I-CVI as one symbol, and gives a plain-text form of both formulas.</li>
+<li>Component printouts put their source on the line beneath the header, so every header fits in 80 columns; the help examples print no line wider than that, and the Markdown note of <code><a href="../reference/content_report.html">content_report()</a></code> wraps. The vignettes print narrow selections of their tables.</li>
+<li>
+<code><a href="../reference/panel_agreement.html">?panel_agreement</a></code> credits the irr package, against which the tests check Krippendorff’s alpha and Fleiss’ kappa; irr stays in Suggests.</li>
+<li>The release gate reads the date of the last CRAN release from <code>tools/cran-release-date</code> and ignores a malformed one.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-changes-0-10-1-9000">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-10-1-9000"></a></h3>
@@ -373,7 +404,7 @@
 <p>contentvalidR is on CRAN: 0.4.0 was published there on 2026-09-28. CRAN asks for updates no more often than every one to two months, so 0.10.0 is released on GitHub and R-universe, and the next CRAN submission is the joint 1.0.</p>
 <p>The package continues to declare <code>Imports: stats</code> only.</p>
 <p><strong>No computed value changes.</strong> Across 25 analyses spanning every workflow, every value 0.9.0 returns is identical in 0.10.0. Relevance fits gain <code>details$ratings</code>. Some printed wording changes: the Delphi printout’s method paragraphs move into its key, <code><a href="../reference/anova_content.html">anova_content()</a></code> prints within 80 columns, the printed handoff advises passing the whole handoff to nomologR, and the <code>citation</code> a handoff carries for <code>stability = "percent_change"</code> reads “Scheibe et al. (1975/2002)”.</p>
-<p><strong>No breaking changes.</strong> The plot methods gain arguments after their existing ones: <code>type</code>, <code>apa</code>, and <code>labels</code> for expert-panel fits, and <code>which = "distribution"</code>, <code>apa</code>, and <code>labels</code> for Delphi fits. <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> remains deprecated and is removed in 1.0.0.</p>
+<p><strong>No breaking changes.</strong> The plot methods gain arguments after their existing ones: <code>type</code>, <code>apa</code>, and <code>labels</code> for expert-panel fits, and <code>which = "distribution"</code>, <code>apa</code>, and <code>labels</code> for Delphi fits. <code>agreement_summary()</code> remains deprecated and is removed in 1.0.0.</p>
 <div class="section level3">
 <h3 id="figures-for-papers-posters-and-teaching-0-10-0">Figures for papers, posters, and teaching<a class="anchor" aria-label="anchor" href="#figures-for-papers-posters-and-teaching-0-10-0"></a></h3>
 <p>Each new figure draws what the fits and handoffs already decided, and says whether it follows a published form or is this package’s own design.</p>
@@ -431,7 +462,7 @@
 <ul><li>
 <code><a href="../reference/content_report.html">content_report()</a></code> writes an APA table by default. For the numeric table that used to be the default, pass <code>format = "data.frame"</code>; its <em>p</em> values now keep three decimals whatever <code>digits</code> is.</li>
 <li>The component functions’ results (<code><a href="../reference/compute_psa.html">compute_psa()</a></code>, <code><a href="../reference/aikens_v.html">aikens_v()</a></code>, <code><a href="../reference/cvr.html">cvr()</a></code>, and eleven others) gain a class, so they print as formatted tables. Every value is unchanged and <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> returns the plain data frame; only code that tests <code>class(x) == "data.frame"</code> exactly would notice.</li>
-</ul><p><strong>Deprecated.</strong> <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> warns and will be removed in 1.0.0; use <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>, which takes raters in rows like every other ratings function.</p>
+</ul><p><strong>Deprecated.</strong> <code>agreement_summary()</code> warns and will be removed in 1.0.0; use <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>, which takes raters in rows like every other ratings function.</p>
 <p>New: <code>content_report(format = "apa")</code>, and <code><a href="../reference/csv_binom_test.html">csv_binom_test()</a></code> returns its inputs (<code>n_target</code>, <code>N</code>, <code>p0</code>, <code>alpha</code>) beside its result.</p>
 <p>Published on GitHub and R-universe. 0.4.0 is still in CRAN’s review queue, and CRAN policy asks that no further version be submitted while one is pending.</p>
 <div class="section level3">
@@ -469,7 +500,7 @@
 <h3 id="agreement_summary-is-deprecated-0-9-0">
 <code>agreement_summary()</code> is deprecated<a class="anchor" aria-label="anchor" href="#agreement_summary-is-deprecated-0-9-0"></a></h3>
 <ul><li>
-<strong>Deprecated in 0.9.0, to be removed in 1.0.0.</strong> Use <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>. <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> is the only function that takes items in rows; every other ratings function, <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> included, takes raters in rows, so one matrix passed to both was read two different ways. <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> also reports an interval and needs no other package. <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> still works in 0.9.0 and warns when called. Removing it at 1.0.0 leaves nothing deprecated past 1.0, as the stability policy in <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> sets out.</li>
+<strong>Deprecated in 0.9.0, to be removed in 1.0.0.</strong> Use <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>. <code>agreement_summary()</code> is the only function that takes items in rows; every other ratings function, <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> included, takes raters in rows, so one matrix passed to both was read two different ways. <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code> also reports an interval and needs no other package. <code>agreement_summary()</code> still works in 0.9.0 and warns when called. Removing it at 1.0.0 leaves nothing deprecated past 1.0, as the stability policy in <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code> sets out.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="references-follow-apa-everywhere-0-9-0">References follow APA 7 everywhere<a class="anchor" aria-label="anchor" href="#references-follow-apa-everywhere-0-9-0"></a></h3>
@@ -593,7 +624,7 @@
 <li>
 <code><a href="../reference/cvr.html">cvr()</a></code> cites Wilson, Pan and Schumsky (2012) and explains why the exact values replace Lawshe’s original table: Wilson et al. found the table unexplained, non-monotonic at eight experts, and closer to a two-tailed than the one-tailed test it was labeled as.</li>
 <li>
-<code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> credited nobody. It now cites Fleiss (1971) for the statistic and the irr package’s authors for the code it calls.</li>
+<code>agreement_summary()</code> credited nobody. It now cites Fleiss (1971) for the statistic and the irr package’s authors for the code it calls.</li>
 </ul></li>
 <li>
 <code><a href="../reference/sort_power.html">sort_power()</a></code> and <code><a href="../reference/simulate_csv_power.html">simulate_csv_power()</a></code> cite Howard and Melloy (2016), whose test they plan for. Two incomplete entries are completed.</li>
@@ -886,7 +917,7 @@ Each alternative’s limits are printed. The two chi-square tests read in opposi
 <ul><li>
 <code>DESCRIPTION</code> now gives DOIs for the methods it cites, and citation metadata is stamped for 0.3.0.</li>
 <li>
-<code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> and the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods for sort, rating, expert, and sort-power objects now have runnable examples, so every help page shows how to use its function. <code><a href="../reference/agreement_summary.html">agreement_summary()</a></code> also points to <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>.</li>
+<code>agreement_summary()</code> and the <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods for sort, rating, expert, and sort-power objects now have runnable examples, so every help page shows how to use its function. <code>agreement_summary()</code> also points to <code><a href="../reference/panel_agreement.html">panel_agreement()</a></code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="selectable-intervals-for-proportion-indices-0-3-0">Selectable intervals for proportion indices<a class="anchor" aria-label="anchor" href="#selectable-intervals-for-proportion-indices-0-3-0"></a></h3>

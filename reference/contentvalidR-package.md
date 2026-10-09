@@ -6,11 +6,13 @@ pretesting. Implements item-sort indices from Anderson and Gerbing
 [doi:10.1037/0021-9010.76.5.732](https://doi.org/10.1037/0021-9010.76.5.732)
 , exact item-sort inference following Howard and Melloy (2016)
 [doi:10.1007/s10869-015-9404-y](https://doi.org/10.1007/s10869-015-9404-y)
-, empirical interpretation benchmarks from Colquitt et al. (2019)
-[doi:10.1037/apl0000406](https://doi.org/10.1037/apl0000406) , and the
-construct-rating procedure of Hinkin and Tracey (1999)
-[doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004)
-with HTC/HTD indices and repeated-measures item screening. The
+, and the construct-rating procedure of Hinkin and Tracey (1999)
+[doi:10.1177/109442819922004](https://doi.org/10.1177/109442819922004) ,
+with the Hinkin-Tracey correspondence and distinctiveness indices and
+empirical interpretation benchmarks of Colquitt et al. (2019)
+[doi:10.1037/apl0000406](https://doi.org/10.1037/apl0000406) and
+repeated-measures item screening following MacKenzie et al. (2011)
+[doi:10.2307/23044045](https://doi.org/10.2307/23044045) . The
 expert-panel workflow combines Aiken's V with score confidence
 intervals, Lawshe content validity ratios with exact inference, content
 validity indices with modified kappa and score intervals, item-objective
@@ -21,8 +23,8 @@ described by Hayes and Krippendorff (2007)
 generalizability-theory treatment of content-validity ratings in Crocker
 et al. (1988)
 [doi:10.1111/j.1745-3984.1988.tb00309.x](https://doi.org/10.1111/j.1745-3984.1988.tb00309.x)
-, content-domain coverage and expert-perceived content structure
-following Sireci and Geisinger (1992)
+, content-domain coverage against a blueprint, expert-perceived content
+structure adapted from Sireci and Geisinger (1992)
 [doi:10.1177/014662169201600102](https://doi.org/10.1177/014662169201600102)
 , consensus and stability across Delphi rounds with between-round
 weighted kappa following Holey et al. (2007)
@@ -129,7 +131,6 @@ arguments, and their return values may gain fields. Anything that would
 break working code goes through the deprecation cycle.
 
 **Tier 3, auxiliary and compatibility helpers.**
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
 [`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md),
 [`reproducibility_phi()`](https://juhalt.github.io/contentvalidR/reference/reproducibility_phi.md),
 [`signal_detection()`](https://juhalt.github.io/contentvalidR/reference/signal_detection.md),
@@ -171,13 +172,32 @@ removed in 0.7.0. Its `posthoc_pass` returned column, a duplicate of
 deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded
 in `NEWS.md`.
 
-One deprecation is in progress.
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
-a Tier 3 helper, is deprecated in 0.9.0 and will be removed in 1.0.0: it
-is the only function that takes items in rows rather than raters, and
+`agreement_summary()`, a Tier 3 helper, was deprecated in 0.9.0 and is
+removed in 1.0.0: it was the only function that took items in rows
+rather than raters, and
 [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
-does its job. It warns when called. Removing it at 1.0.0 means nothing
-deprecated is carried past 1.0.
+does its job. Nothing deprecated is carried past 1.0.
+
+Five returned fields were removed at 1.0.0 without that notice, because
+the audit before 1.0 found them wrong or unreachable, and a release that
+kept them would have kept wrong values in use: `overall_strength` in the
+`scale_summary` of
+[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+and
+[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)
+(a combination of the two Colquitt et al. levels that they do not
+publish), `n_support` in that of
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+(a count of a decision that could not occur), `competitor_ioc` in its
+congruence `results` (a mean labeled as the index), `n_influential` in
+the `scale_summary` of
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+(a flag that was withdrawn), and `fit_label` in the `fit` table of
+[`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+(Kruskal's labels, which belong to a different statistic). With the
+congruence index corrected, its handoff statistics `competitor IOC` and
+`IOC margin` gave way to `target IOC` and the two mean ratings.
+`NEWS.md` gives the reason for each.
 
 ## Changing a default
 

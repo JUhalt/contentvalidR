@@ -82,14 +82,15 @@ Evaluation in Counseling and Development, 45*(3), 197–210.
 
 ``` r
 cvr(essential = c(8, 10, 5), N = 12)
-#> <contentvalid_cvr> Content validity ratio (CVR; Lawshe, 1975)
+#> <contentvalid_cvr> Content validity ratio (CVR)
+#> Lawshe (1975).
 #> 
 #>   Item   Essential   CVR     p  Needed  Meets
 #>   Item1       8/12   .33  .194      10  no
 #>   Item2      10/12   .67  .019      10  yes
 #>   Item3       5/12  -.17  .806      10  no
 #> 
-#> Needed: essential ratings the exact one-tailed binomial test requires at
+#> Needed: essential ratings the exact one-sided binomial test requires at
 #> alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> See as.data.frame(x) for the unrounded values.

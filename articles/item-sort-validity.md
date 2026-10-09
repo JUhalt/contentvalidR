@@ -101,9 +101,9 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
@@ -156,7 +156,7 @@ summary(fit)
 #> qualitative feedback. This analysis does not by itself establish
 #> comprehensiveness or the full content-validity argument.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 ## Item-level inference: Howard-Melloy
@@ -168,7 +168,7 @@ assignments to meet the one-sided exact criterion.
 ``` r
 
 csv_binom_test(n_c = 15, N = 20)
-#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
 #> 
 #> The item meets the exact target-assignment criterion.
 #> 15 of 20 judges assigned the item to its target construct (Psa = .75). If each
@@ -179,7 +179,7 @@ csv_binom_test(n_c = 15, N = 20)
 #> 
 #> See as.data.frame(x) for the test as one row.
 csv_binom_test(n_c = 14, N = 20)
-#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
 #> 
 #> The item does not meet the exact target-assignment criterion.
 #> 14 of 20 judges assigned the item to its target construct (Psa = .70). If each
@@ -211,7 +211,8 @@ The default uses the overall norms:
 ``` r
 
 colquitt_benchmarks("psa")
-#> <contentvalid_colquitt_norms> Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for Psa
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .91
@@ -225,7 +226,8 @@ colquitt_benchmarks("psa")
 #> 
 #> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("csv")
-#> <contentvalid_colquitt_norms> Benchmarks for Csv (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for Csv
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .81
@@ -257,22 +259,16 @@ fit_normed <- sort_validity(
   sort_dat,
   orbiting_r = c(A = .42, B = .28)
 )
-fit_normed$scale_summary
-#>   target n_items n_items_usable n_retain n_review  mean_psa psa_strength
-#> 1      A       3              3        2        1 0.7833333     Moderate
-#> 2      B       3              3        2        1 0.8166667         Weak
-#>    mean_csv csv_strength orbiting_r
-#> 1 0.5666667     Moderate       0.42
-#> 2 0.6333333         Weak       0.28
-#>                                        benchmark_set benchmark_applicable
-#> 1 More moderate focal-orbiting correlation (.35-.50)                 TRUE
-#> 2       Weaker focal-orbiting correlation (r <= .34)                 TRUE
-#>   n_definitions
-#> 1             2
-#> 2             2
-#>                                                                                                                                                                                                                                                                                                                                                                                                                                                 evidence
-#> 1                                              Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing. These bands come from tasks with three definitions (one focal, two orbiting); judges here used 2 (set `n_constructs` if more were offered), so the comparison is approximate. This is a contentvalidR caution: Colquitt et al. do not discuss other numbers.
-#> 2 Mean Psa and mean Csv both fall in the Weak band of published scales (Colquitt et al., 2019); review item wording and construct overlap, and consider pretesting the revised items again. These bands come from tasks with three definitions (one focal, two orbiting); judges here used 2 (set `n_constructs` if more were offered), so the comparison is approximate. This is a contentvalidR caution: Colquitt et al. do not discuss other numbers.
+fit_normed$scale_summary[, c("target", "orbiting_r", "psa_strength",
+                             "csv_strength")]
+#>   target orbiting_r psa_strength csv_strength
+#> 1      A       0.42     Moderate     Moderate
+#> 2      B       0.28         Weak         Weak
+# The benchmark set behind each target's labels
+writeLines(paste0(fit_normed$scale_summary$target, ": ",
+                  fit_normed$scale_summary$benchmark_set))
+#> A: More moderate focal-orbiting correlation (.35-.50)
+#> B: Weaker focal-orbiting correlation (r <= .34)
 ```
 
 The conditional panels are:
@@ -295,19 +291,11 @@ expert panels.
 ``` r
 
 expert_fit <- sort_validity(sort_dat, judge_type = "expert")
-expert_fit$scale_summary
-#>   target n_items n_items_usable n_retain n_review  mean_psa psa_strength
-#> 1      A       3              3        2        1 0.7833333         <NA>
-#> 2      B       3              3        2        1 0.8166667         <NA>
-#>    mean_csv csv_strength orbiting_r                    benchmark_set
-#> 1 0.5666667         <NA>         NA Overall (not correlation-normed)
-#> 2 0.6333333         <NA>         NA Overall (not correlation-normed)
-#>   benchmark_applicable n_definitions
-#> 1                FALSE             2
-#> 2                FALSE             2
-#>                                                                              evidence
-#> 1 Colquitt norms not applied because this workflow was marked as using expert judges.
-#> 2 Colquitt norms not applied because this workflow was marked as using expert judges.
+expert_fit$scale_summary[, c("target", "mean_psa", "psa_strength",
+                             "mean_csv", "csv_strength")]
+#>   target  mean_psa psa_strength  mean_csv csv_strength
+#> 1      A 0.7833333         <NA> 0.5666667         <NA>
+#> 2      B 0.8166667         <NA> 0.6333333         <NA>
 ```
 
 The Psa/Csv statistics and item-level screening remain available, but
@@ -503,9 +491,9 @@ sort_validity(three, legacy = TRUE)
 #>   1991, p. 734). Pooling every other construct into it instead gives twice Psa
 #>   minus one, a different index.
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 options(old)

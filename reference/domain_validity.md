@@ -162,7 +162,7 @@ domain_validity(
 #> share (an equal share when no `targets` are given). These criteria are
 #> contentvalidR conventions, not published standards.
 #> 
-#> 1 of 4 cells meet the coverage criteria.
+#> 1 of 4 cells meets the coverage criteria.
 #> Flagged for review: Autonomy (Over-represented), Relatedness (Thinly covered),
 #> Belonging (Not covered)
 #> 

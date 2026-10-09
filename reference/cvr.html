@@ -152,14 +152,15 @@ Evaluation in Counseling and Development, 45</em>(3), 197–210.
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">cvr</span><span class="op">(</span>essential <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">10</span>, <span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_cvr&gt; Content validity ratio (CVR; Lawshe, 1975)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_cvr&gt; Content validity ratio (CVR)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Lawshe (1975).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Essential   CVR     p  Needed  Meets</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item1       8/12   .33  .194      10  no</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item2      10/12   .67  .019      10  yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item3       5/12  -.17  .806      10  no</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Needed: essential ratings the exact one-tailed binomial test requires at</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Needed: essential ratings the exact one-sided binomial test requires at</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> alpha = .05 (Ayre &amp; Scally, 2014).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See as.data.frame(x) for the unrounded values.</span>

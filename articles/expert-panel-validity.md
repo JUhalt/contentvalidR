@@ -71,7 +71,7 @@ fit
 #> (the kappa column) describes each item. Alpha can be low when nearly every
 #> rating is the same value, even on a panel that agrees closely, so read it
 #> beside the share of identical rating pairs. A low alpha with many identical
-#> pairs is not by itself evidence of a poor panel. Print `details$agreement` for
+#> pairs is not by itself evidence of a poor panel. Print x$details$agreement for
 #> the full explanation and interval details.
 #> 
 #> CVI criteria are published panel-size guidelines, not universal validity
@@ -109,7 +109,7 @@ fit
 summary(fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
-#> Supported: 4 | Review: 0
+#> Strong support: 4 of 4 | Review: 0 of 4
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
 #>   Identical rating pairs: 63%.
 #> 
@@ -117,7 +117,7 @@ summary(fit)
 #> 
 #> These summaries support, but do not replace, qualitative content review.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 Aiken’s V rescales the bounded expert ratings to the 0-1 interval. The
@@ -129,7 +129,8 @@ function:
 ``` r
 
 aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 200, seed = 1)
-#> <contentvalid_aiken> Aiken's V (Aiken, 1980)
+#> <contentvalid_aiken> Aiken's V
+#> Aiken (1980).
 #> 
 #>   Item   Experts     V        95% CI
 #>   Item1        6  1.00  [1.00, 1.00]
@@ -303,7 +304,7 @@ expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
 #> 
 #> Essential: experts rating the item essential, out of those who rated it.
 #> With 12 experts, an item needs at least 10 rating it essential for the exact
-#> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
+#> one-sided binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
 #>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the
@@ -351,7 +352,7 @@ expert_validity(E, mode = "essentiality")
 #> 
 #> Essential: experts rating the item essential, out of those who rated it.
 #> With 8 experts, an item needs at least 7 rating it essential for the exact
-#> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
+#> one-sided binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> What these columns mean
 #>   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the
@@ -405,7 +406,7 @@ expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
 #> 
 #> Essential: experts rating the item essential, out of those who rated it.
 #> With 9 experts, an item needs at least 8 rating it essential for the exact
-#> one-tailed binomial test at alpha = .05 (Ayre & Scally, 2014).
+#> one-sided binomial test at alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> Earlier methods, for comparison (not used for the decision)
 #>   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)

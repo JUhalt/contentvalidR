@@ -84,7 +84,8 @@ confidence interval to Aiken's item content-relevance index.
 R <- matrix(c(4,4,3,4, 4,3,4,4, 3,3,4,4), nrow = 4)
 colnames(R) <- c("Item1", "Item2", "Item3")
 aikens_v(R, lo = 1, hi = 4)
-#> <contentvalid_aiken> Aiken's V (Aiken, 1980)
+#> <contentvalid_aiken> Aiken's V
+#> Aiken (1980).
 #> 
 #>   Item   Experts    V      95% CI
 #>   Item1        4  .92  [.65, .99]

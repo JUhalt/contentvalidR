@@ -204,10 +204,10 @@ unrounded values stay in each fit’s <code>results</code>.</p>
 <span><span class="co">#&gt;   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Note. Psa = proportion of substantive agreement; CI = confidence interval;</span></span>
-<span><span class="co">#&gt; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence</span></span>
-<span><span class="co">#&gt; interval. Retain = at least the number of target assignments the exact</span></span>
-<span><span class="co">#&gt; one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy,</span></span>
-<span><span class="co">#&gt; 2016).</span></span>
+<span><span class="co">#&gt; Csv = coefficient of substantive validity. Judges = target assignments, out of</span></span>
+<span><span class="co">#&gt; the judges who sorted the item. 95% CI = Wilson score confidence interval.</span></span>
+<span><span class="co">#&gt; Retain = at least the number of target assignments the exact one-sided</span></span>
+<span><span class="co">#&gt; binomial test needs at alpha = .05 with p0 = .50 (Howard &amp; Melloy, 2016).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
 <span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
@@ -231,8 +231,12 @@ individual-item cutoffs.</p>
 <span><span class="co">#&gt;   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.</span></span>
-<span><span class="co">#&gt; Retain = omnibus p and every one-sided contrast p at or below alpha = .05</span></span>
-<span><span class="co">#&gt; (MacKenzie et al., 2011).</span></span>
+<span><span class="co">#&gt; Judges = judges who rated the item against every construct. F</span></span>
+<span><span class="co">#&gt; test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of</span></span>
+<span><span class="co">#&gt; freedom where the correction applied. Contrast p = the largest one-sided p</span></span>
+<span><span class="co">#&gt; among the planned contrasts of the intended construct with each other</span></span>
+<span><span class="co">#&gt; construct. Retain = omnibus p and every one-sided contrast p at or below</span></span>
+<span><span class="co">#&gt; alpha = .05 (MacKenzie et al., 2011).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
 <span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
@@ -257,10 +261,11 @@ standalone p value.</p>
 <span><span class="co">#&gt;   Item5        8   .42   [.24, .61]    .25   [.07, .59]    .16  Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Note. V = Aiken's content validity coefficient; CI = confidence interval;</span></span>
-<span><span class="co">#&gt; I-CVI = item-level content validity index. 95% CI = Penfield-Giacobbi score</span></span>
-<span><span class="co">#&gt; confidence interval for V and Wilson score confidence interval for I-CVI.</span></span>
-<span><span class="co">#&gt; Strong support = at least the number of experts rating the item relevant that</span></span>
-<span><span class="co">#&gt; Lynn's (1986) criterion requires for the panel size.</span></span>
+<span><span class="co">#&gt; I-CVI = item-level content validity index. Kappa = modified kappa (Polit et</span></span>
+<span><span class="co">#&gt; al., 2007). 95% CI = Penfield-Giacobbi score confidence interval for V and</span></span>
+<span><span class="co">#&gt; Wilson score confidence interval for I-CVI. Strong support = at least the</span></span>
+<span><span class="co">#&gt; number of experts rating the item relevant that Lynn's (1986) criterion</span></span>
+<span><span class="co">#&gt; requires for the panel size.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
 <span><span class="co">#&gt; for a manuscript.</span></span>

@@ -46,7 +46,7 @@ fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "status")]
 handoff <- content_handoff(fit)
 handoff
 #> <contentvalid_handoff> Handoff to empirical validation (schema version 1)
-#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04
+#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-09
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
@@ -54,6 +54,10 @@ handoff
 #>   score, 95%)
 #> Panel: Krippendorff's alpha (ordinal) = .69, 95% interval [-.27, .77]
 #>   (item-resampling percentile bootstrap)
+#> 
+#> Status uses the words shared with nomologR: Supported is this analysis's
+#> passing decision (Strong support), and Review marks an item to look at again,
+#> not to delete.
 #> 
 #> Held back
 #>   Item   Decision
@@ -82,40 +86,25 @@ handoff
 
 handoff$items
 #> [1] "Item1" "Item2" "Item3"
-handoff$item_evidence
-#>    item scale carried    status recommendation n_judges
-#> 1 Item1  <NA>    TRUE Supported Strong support        4
-#> 2 Item2  <NA>    TRUE Supported Strong support        4
-#> 3 Item3  <NA>    TRUE Supported Strong support        4
-#> 4 Item4  <NA>   FALSE    Review         Review        4
-#> 5 Item5  <NA>   FALSE    Review         Review        4
-#>                                                                                                                                        rule
-#> 1 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
-#> 2 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
-#> 3 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
-#> 4 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
-#> 5 at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)
-#>   round keying response_min response_max
-#> 1     1     NA           NA           NA
-#> 2     1     NA           NA           NA
-#> 3     1     NA           NA           NA
-#> 4     1     NA           NA           NA
-#> 5     1     NA           NA           NA
-head(handoff$item_statistics)
-#>    item statistic     value criterion round      lower     upper
-#> 1 Item1 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
-#> 2 Item2 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
-#> 3 Item3 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349
-#> 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184
-#> 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053
-#> 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000
-#>           interval_method interval_level note
-#> 1 Penfield-Giacobbi score           0.95     
-#> 2 Penfield-Giacobbi score           0.95     
-#> 3 Penfield-Giacobbi score           0.95     
-#> 4 Penfield-Giacobbi score           0.95     
-#> 5 Penfield-Giacobbi score           0.95     
-#> 6            Wilson score           0.95
+handoff$item_evidence[, c("item", "carried", "status", "recommendation",
+                          "n_judges")]
+#>    item carried    status recommendation n_judges
+#> 1 Item1    TRUE Supported Strong support        4
+#> 2 Item2    TRUE Supported Strong support        4
+#> 3 Item3    TRUE Supported Strong support        4
+#> 4 Item4   FALSE    Review         Review        4
+#> 5 Item5   FALSE    Review         Review        4
+writeLines(strwrap(handoff$item_evidence$rule[1]))
+#> at least 4 of 4 experts rate the item relevant (I-CVI >= 1.00; Lynn,
+#> 1986), which also puts modified kappa above .74 (Polit et al., 2007)
+head(handoff$item_statistics[, c("item", "statistic", "value", "criterion")])
+#>    item statistic     value criterion
+#> 1 Item1 Aiken's V 0.9166667        NA
+#> 2 Item2 Aiken's V 0.9166667        NA
+#> 3 Item3 Aiken's V 0.9166667        NA
+#> 4 Item4 Aiken's V 0.5000000        NA
+#> 5 Item5 Aiken's V 0.2500000        NA
+#> 6 Item1     I-CVI 1.0000000         1
 ```
 
 `items` is what the next stage consumes: the carried items only, so what
@@ -129,14 +118,14 @@ sets one.
 ``` r
 
 str(handoff$provenance[c("schema_version", "workflow", "mode", "keep",
-                         "method", "citation")])
+                         "method", "citation")], nchar.max = 50, vec.len = 1.5)
 #> List of 6
 #>  $ schema_version: int 1
 #>  $ workflow      : chr "expert-panel"
 #>  $ mode          : chr "relevance"
 #>  $ keep          : chr "Supported"
-#>  $ method        : chr "Aiken V with score intervals plus CVI/modified kappa"
-#>  $ citation      : chr [1:4] "Aiken (1980)" "Penfield & Giacobbi (2004)" "Lynn (1986)" "Polit et al. (2007)"
+#>  $ method        : chr "Aiken V with score intervals plus"| __truncated__
+#>  $ citation      : chr [1:4] "Aiken (1980)" "Penfield & Giacobbi (2004)" ...
 ```
 
 By default only items with a `Supported` status travel. Some protocols

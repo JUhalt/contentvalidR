@@ -118,10 +118,10 @@ content_report(sort_fit)
 #>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
 #> 
 #> Note. Psa = proportion of substantive agreement; CI = confidence interval;
-#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
-#> interval. Retain = at least the number of target assignments the exact
-#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
-#> 2016).
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
@@ -147,8 +147,12 @@ content_report(rating_fit)
 #>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
 #> 
 #> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
-#> Retain = omnibus p and every one-sided contrast p at or below alpha = .05
-#> (MacKenzie et al., 2011).
+#> Judges = judges who rated the item against every construct. F
+#> test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of
+#> freedom where the correction applied. Contrast p = the largest one-sided p
+#> among the planned contrasts of the intended construct with each other
+#> construct. Retain = omnibus p and every one-sided contrast p at or below
+#> alpha = .05 (MacKenzie et al., 2011).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
@@ -174,10 +178,11 @@ content_report(expert_fit)
 #>   Item5        8   .42   [.24, .61]    .25   [.07, .59]    .16  Review
 #> 
 #> Note. V = Aiken's content validity coefficient; CI = confidence interval;
-#> I-CVI = item-level content validity index. 95% CI = Penfield-Giacobbi score
-#> confidence interval for V and Wilson score confidence interval for I-CVI.
-#> Strong support = at least the number of experts rating the item relevant that
-#> Lynn's (1986) criterion requires for the panel size.
+#> I-CVI = item-level content validity index. Kappa = modified kappa (Polit et
+#> al., 2007). 95% CI = Penfield-Giacobbi score confidence interval for V and
+#> Wilson score confidence interval for I-CVI. Strong support = at least the
+#> number of experts rating the item relevant that Lynn's (1986) criterion
+#> requires for the panel size.
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.

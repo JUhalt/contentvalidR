@@ -155,7 +155,7 @@ d$rating <- ifelse(d$construct == d$target_construct,
                    rnorm(nrow(d), 4.5, .4), rnorm(nrow(d), 2.3, .5))
 anova_content(d)
 #> <contentvalid_anova> Content-validity ANOVA
-#> Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).
+#> Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011).
 #> 
 #>   Item Target Judges F test                       p Partial eta^2 Contrast p Met
 #>   I1   A          12 F(1.89, 20.84) = 193.43 < .001           .95     < .001 yes

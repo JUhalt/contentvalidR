@@ -62,7 +62,8 @@ df <- data.frame(
   target_construct = rep("A", 8)
 )
 compute_csv(df)
-#> <contentvalid_csv> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> <contentvalid_csv> Coefficient of substantive validity (Csv)
+#> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Competitor  Competitor judges    Csv
 #>   I1    A          3/4  B                         1/4    .50

@@ -5,6 +5,39 @@
 Fixes from the audit before 1.0. Some of them change values, so check
 any analysis that matches the cases below.
 
+### Removed
+
+- `agreement_summary()` is removed, as announced when it was deprecated
+  in 0.9.0. Use
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md),
+  which takes raters in rows like every other ratings function. The
+  deprecation warning shipped only on GitHub and R-universe, so a user
+  updating from 0.4.0 on CRAN meets the removal without it.
+- Five returned fields are removed without a notice period, because the
+  audit found them wrong or unreachable;
+  [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+  records the exception to the deprecation policy. Each is explained in
+  the section named:
+  - `overall_strength` in the `scale_summary` of
+    [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+    and
+    [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)
+    (“Congruence and method attribution: values that change”);
+  - `n_support` in the `scale_summary` of
+    [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+    (same section);
+  - `competitor_ioc` in the congruence `results` of
+    [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+    whose results without a target mapping now have one row per item
+    (same section; the congruence handoff statistics `competitor IOC`
+    and `IOC margin` give way to `target IOC` and the two mean ratings);
+  - `n_influential` in the `scale_summary` of
+    [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+    (“Judges, domain and structure: values that change”);
+  - `fit_label` in the `fit` table of
+    [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+    (same section).
+
 ### Item sort: values that change
 
 - **Constructs coded as numbers or factors now give the right counts.**
@@ -842,9 +875,12 @@ any analysis that matches the cases below.
 The printouts of contentvalidR and nomologR now follow one style, agreed
 between the two packages (JUhalt/nomologR#144), so a researcher moving
 from content review to empirical validation reads both alike. No stored
-number, field or handoff column changes. The few stored sentences that
-state a rounded number or a *p* value now follow the same rules (listed
-at the end), and two plot methods gain `type`.
+number or handoff column changes, and
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+gains one field, `n_pairs` (the number of rating pairs behind the share
+of identical pairs). The few stored sentences that state a rounded
+number or a *p* value now follow the same rules (listed at the end), and
+two plot methods gain `type`.
 
 - **Headers.** Every printout opens with the object’s class and a
   plain-language title on one line, with no rule beneath:
@@ -856,27 +892,41 @@ at the end), and two plot methods gain `type`.
   that would print 1.000 prints “\> .999”. Percentages are whole numbers
   on a base under 100 and carry one decimal on a larger base; the share
   of identical rating pairs follows the same rule, on the number of
-  pairs. Results objects keep full precision.
+  pairs. Delphi interpretations keep one decimal where a share is not
+  whole (12.5% of 8 experts), as their stored text always has. Results
+  objects keep full precision.
 - **Prose** wraps at 79 columns, and so do the keys, the decision
   legends and the glossary. It never breaks inside “p \< .001”, “Phi \>=
   .80”, “N = 40”, “F(2, 14) = 3.21” or an interval.
 - **Tables** are indented two spaces, with text left-aligned, numbers
-  right-aligned and headings in sentence case. A column empty in every
-  row is dropped, unless a decision rests on it. A table too wide for
-  the console tightens its columns, then drops trailing ones and names
-  them with the call that shows them. It never drops the item, its
-  decision, the tests the decision rests on, the statistic a component
-  exists to show, or the benchmark set beside a Colquitt level. A key
-  leaves out a column the table did not show. Contingency tables and the
-  item similarity matrix print the same way.
+  right-aligned and headings in sentence case; a heading that is data,
+  such as an item ID or a round label, keeps its case. A column empty in
+  every row is dropped, unless a decision rests on it. A table too wide
+  for the console tightens its columns, then drops trailing ones and
+  names them with the call that shows them. It never drops the item, its
+  decision, the statistic or test the decision rests on, or the
+  statistic a component exists to show; a table with nothing else to
+  drop prints wider than the console. Different Colquitt benchmark sets
+  are named for their targets beneath the scale-level table. The
+  item-sort, Delphi and relevance keys leave out a column the table did
+  not show. The item similarity matrix prints in blocks of columns that
+  fit the console, with its diagonal blank.
 - **Sections** indent their content; summaries list flagged units in a
   “Flagged” section, one bullet per unit with a complete sentence, “- B2
   (Review): …”, and define the abbreviations they show. A workflow’s
   printout ends with what the evidence does not decide, and every
   printout ends with one line pointing to what else the object holds
-  (“See summary(x) for the flagged items …”). Markdown output from
+  (“See summary(x) for the flagged items …”; a summary points to its own
+  fields, such as `summary(x)$reviewed_items`). Markdown output from
   [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
   prints only the lines to paste.
+- **Status words.** The handoff and
+  [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  printouts say what the shared status words mean in the workflow’s own
+  terms (“Supported is this analysis’s passing decision (Retain)”);
+  [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  keeps the expert-panel `mode` for this. The expert-panel summary
+  counts its own decision word (“Strong support: 3 of 5”).
 - **Errors** for a wrong choice name the argument and the choices:
   `` `format` must be one of "apa", "data.frame", or "markdown", not "latex". ``
   As with [`match.arg()`](https://rdrr.io/r/base/match.arg.html), `NULL`
@@ -887,38 +937,75 @@ at the end), and two plot methods gain `type`.
   [`graphics::plot()`](https://rdrr.io/r/graphics/plot.default.html) is
   no longer accepted there. A dashed line marks a reference value, and
   the legend names it.
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) on a judge,
+  domain or round-comparison result, which have no figure, stops with a
+  message saying so (and, for a domain result with similarity data, how
+  to draw its content map) instead of a base-graphics error.
 - **Manuscript tables.**
   [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
   prints under a header and adds the APA general note: the abbreviations
-  in the order the columns show them, the interval method (including the
-  Penfield-Giacobbi interval for V when I-CVI has none), any Holm
-  adjustment, the criterion behind the decisions, and “– = not computed”
-  when a cell is missing. Its headings are shown in sentence case; the
-  names of the returned columns do not change. In Markdown the note
-  reads “*Note.* …” and a value that could not be computed is an em
-  dash.
-- **Wording.** Published rules are “criteria”, not “cutoffs”;
-  `reverse_keyed` messages say “reverse-keyed”; the expert item tables
-  head the per-item count “Experts”; earlier-method verdicts read
-  “Meets” and “Below”.
+  in the order the columns show them, a definition of each column whose
+  heading alone does not say what it holds, the interval method
+  (including the Penfield-Giacobbi interval for V when I-CVI has none),
+  any Holm adjustment, the criterion behind the decisions, and “– = not
+  computed” when a cell is missing. Judge and domain tables now state
+  their criteria, as contentvalidR conventions, and the domain table
+  shows each cell’s expected share. Headings are shown in sentence case;
+  the names of the returned columns do not change. In Markdown the note
+  reads “*Note.* …”, the symbols *p*, *F*, *V*, *n* and *N* are italic,
+  and a value that could not be computed is an em dash.
+- **Wording.** Published rules are “criteria”, not “cutoffs”; tests are
+  “one-sided” throughout; `reverse_keyed` messages say “reverse-keyed”;
+  the expert item tables head the per-item count “Experts”;
+  earlier-method verdicts read “Meets” and “Below”; both Colquitt
+  sections are headed “Scale-level”; closing caveats speak of “a flag
+  for review” rather than quoting a label the printout may not show. The
+  evidence headline names every stage that held an item back, and an
+  agreement interval with no width (every resample gave the same value)
+  is said in words.
 - [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
   and the “Reading the output” article describe the conventions and give
   the crosswalk between the statuses of the two packages.
 
-Stored text that changes, on exact ties only, so that it matches the
-printout:
+Stored text that changes so that it matches the printout:
 
 - `content_report(format = "data.frame")` rounds half up, like the APA
-  table: 5 of 8 is 0.63 in both.
+  table: 5 of 8 is 0.63 in both (exact ties only).
 - A handoff note that gave a largest contrast *p* as “p = 1.000” now
-  says “p \> .999”.
+  says “p \> .999”, whenever the *p* would print as 1.000.
 - An interpretation that states a rounded value (the adjusted Rand index
-  of a content map, Phi of a generalizability analysis, a domain cell’s
-  share, a Delphi consensus percentage) rounds half up; a Delphi rule in
+  of a content map, Phi of a generalizability analysis, a Delphi
+  consensus percentage) rounds half up on an exact tie; a Delphi rule in
   the handoff states its percentage the same way.
-- A domain cell’s interpretation states its share as the table does (13%
-  for 1 of 8) and an over-represented cell’s sentence gives its item
-  count.
+- A domain cell’s interpretation states its share as the table does: 13%
+  for 1 of 8 (a tie), and one decimal on 100 or more items. An
+  over-represented cell’s sentence gives its item count.
+- The Markdown note of
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  wraps at 79 columns, so it spans several elements of the returned
+  vector.
+
+### Release housekeeping
+
+- The lifecycle badge reads “stable”.
+- DESCRIPTION names the Hinkin-Tracey correspondence and distinctiveness
+  indices in full and credits them, with the benchmarks, to Colquitt et
+  al. (2019); it cites MacKenzie et al. (2011) for the repeated-measures
+  screening, says the content-structure analysis is adapted from Sireci
+  and Geisinger (1992), and wraps at 80 columns.
+- [`?cvi`](https://juhalt.github.io/contentvalidR/reference/cvi.md)
+  typesets the modified kappa formula with I-CVI as one symbol, and
+  gives a plain-text form of both formulas.
+- Component printouts put their source on the line beneath the header,
+  so every header fits in 80 columns; the help examples print no line
+  wider than that, and the Markdown note of
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  wraps. The vignettes print narrow selections of their tables.
+- [`?panel_agreement`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  credits the irr package, against which the tests check Krippendorff’s
+  alpha and Fleiss’ kappa; irr stays in Suggests.
+- The release gate reads the date of the last CRAN release from
+  `tools/cran-release-date` and ignores a malformed one.
 
 ### Other changes
 
@@ -981,8 +1068,7 @@ handoff to nomologR, and the `citation` a handoff carries for
 **No breaking changes.** The plot methods gain arguments after their
 existing ones: `type`, `apa`, and `labels` for expert-panel fits, and
 `which = "distribution"`, `apa`, and `labels` for Delphi fits.
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-remains deprecated and is removed in 1.0.0.
+`agreement_summary()` remains deprecated and is removed in 1.0.0.
 
 ### Figures for papers, posters, and teaching
 
@@ -1138,9 +1224,8 @@ it.
   the plain data frame; only code that tests `class(x) == "data.frame"`
   exactly would notice.
 
-**Deprecated.**
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-warns and will be removed in 1.0.0; use
+**Deprecated.** `agreement_summary()` warns and will be removed in
+1.0.0; use
 [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md),
 which takes raters in rows like every other ratings function.
 
@@ -1257,17 +1342,16 @@ No computed value changes; this is about what is printed.
 
 - **Deprecated in 0.9.0, to be removed in 1.0.0.** Use
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
-  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  is the only function that takes items in rows; every other ratings
-  function,
+  `agreement_summary()` is the only function that takes items in rows;
+  every other ratings function,
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
   included, takes raters in rows, so one matrix passed to both was read
   two different ways.
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
   also reports an interval and needs no other package.
-  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  still works in 0.9.0 and warns when called. Removing it at 1.0.0
-  leaves nothing deprecated past 1.0, as the stability policy in
+  `agreement_summary()` still works in 0.9.0 and warns when called.
+  Removing it at 1.0.0 leaves nothing deprecated past 1.0, as the
+  stability policy in
   [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
   sets out.
 
@@ -1578,9 +1662,9 @@ holds every value at full precision.
     values replace Lawshe’s original table: Wilson et al. found the
     table unexplained, non-monotonic at eight experts, and closer to a
     two-tailed than the one-tailed test it was labeled as.
-  - [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-    credited nobody. It now cites Fleiss (1971) for the statistic and
-    the irr package’s authors for the code it calls.
+  - `agreement_summary()` credited nobody. It now cites Fleiss (1971)
+    for the statistic and the irr package’s authors for the code it
+    calls.
 - [`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
   and
   [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md)
@@ -2251,12 +2335,11 @@ New function:
 
 - `DESCRIPTION` now gives DOIs for the methods it cites, and citation
   metadata is stamped for 0.3.0.
-- [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  and the [`plot()`](https://rdrr.io/r/graphics/plot.default.html)
-  methods for sort, rating, expert, and sort-power objects now have
-  runnable examples, so every help page shows how to use its function.
-  [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  also points to
+- `agreement_summary()` and the
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods for
+  sort, rating, expert, and sort-power objects now have runnable
+  examples, so every help page shows how to use its function.
+  `agreement_summary()` also points to
   [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
 
 ### Selectable intervals for proportion indices

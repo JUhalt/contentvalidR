@@ -243,9 +243,9 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 summary(fit)
@@ -278,7 +278,7 @@ summary(fit)
 #> qualitative feedback. This analysis does not by itself establish
 #> comprehensiveness or the full content-validity argument.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 
 # The same result beside the earlier published rules.
 print(fit, legacy = TRUE)
@@ -363,9 +363,9 @@ print(fit, legacy = TRUE)
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```

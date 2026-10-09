@@ -100,7 +100,8 @@ df <- data.frame(
   target_construct = rep(c("A", "B"), each = 4)
 )
 compute_psa(df)
-#> <contentvalid_psa> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> <contentvalid_psa> Proportion of substantive agreement (Psa)
+#> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Psa      95% CI
 #>   I1    A          3/4  .75  [.30, .95]
@@ -115,7 +116,8 @@ compute_psa(df)
 #> 
 #> See as.data.frame(x) for the unrounded values.
 compute_psa(df, ci = "exact")
-#> <contentvalid_psa> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> <contentvalid_psa> Proportion of substantive agreement (Psa)
+#> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Psa      95% CI
 #>   I1    A          3/4  .75  [.19, .99]

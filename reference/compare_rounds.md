@@ -69,6 +69,12 @@ An object of class `contentvalid_rounds`, a list containing:
   Whether the panel size was part of the comparison: `TRUE` for the item
   sort and for expert relevance and essentiality.
 
+- mode:
+
+  The mode of
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  fits, `NA` for other workflows.
+
 ## Reading a comparison
 
 A status change means the evidence crossed a criterion, not that an item
@@ -109,8 +115,11 @@ compare_rounds(sort_validity(round1), sort_validity(round2))
 #> <contentvalid_rounds> Comparison across pretest rounds
 #> Workflow: item-sort | Rounds: 2 | Units compared: 2
 #> 
-#> 1 of 2 units in both the first and last round changed status (1 stronger, 0
-#> weaker).
+#> Of the 2 units present in the first and last rounds, 1 changed status (1
+#> stronger, 0 weaker).
+#> Status uses the words shared with nomologR: Supported is this analysis's
+#> passing decision (Retain), and Review marks an item to look at again, not to
+#> delete.
 #> 
 #> Status by round
 #>   Item  Round 1  Round 2    Change

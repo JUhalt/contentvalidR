@@ -20,7 +20,7 @@ the probability of observing exactly `A` agreements among `N` judges:
 
 and
 
-\$\$k^\* = (I_CVI - P_c) / (1 - P_c).\$\$
+\$\$k^\* = \frac{\textrm{I-CVI} - P_c}{1 - P_c}.\$\$
 
 I-CVI is a proportion of what is usually a small panel, so an interval
 is reported alongside it. The interval method is selectable; see `ci`.

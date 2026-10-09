@@ -422,8 +422,11 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 #> <contentvalid_rounds> Comparison across pretest rounds
 #> Workflow: expert-panel | Rounds: 3 | Units compared: 6
 #> 
-#> 1 of 5 units in both the first and last round changed status (1 stronger, 0
-#> weaker).
+#> Of the 5 units present in the first and last rounds, 1 changed status (1
+#> stronger, 0 weaker).
+#> Status uses the words shared with nomologR: Supported is this analysis's
+#> passing decision (Strong support), and Review marks an item to look at again,
+#> not to delete.
 #> 
 #> !! The rounds were not analyzed under the same decision rule.
 #> The panel changed size, and the criterion an item must meet depends on the
@@ -482,9 +485,12 @@ content_report(fit)
 #>   S5            3       9  1.00       .78   .53   [.00, 1.00] Consensus
 #>   S6            3       9   .56       .00  -.99 [-1.00, -.30] No consensus
 #> 
-#> Note. CI = confidence interval. 95% CI = percentile bootstrap confidence
-#> interval. Consensus = at least 75% of experts agreeing in the last round. -- =
-#> not computed.
+#> Note. CI = confidence interval. Agree = share of experts rating the item 3 or
+#> higher in its last round. Unchanged = share of experts who kept their rating
+#> between the item's last two consecutive rounds. Kappa = quadratic-weighted
+#> kappa between those rounds. 95% CI = percentile bootstrap confidence interval.
+#> Consensus = at least 75% of experts agreeing in the last round. -- = not
+#> computed.
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.

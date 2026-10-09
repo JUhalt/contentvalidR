@@ -10,7 +10,9 @@ number of raters and with missing ratings. Zapf et al. (2016) recommend it
 specifically when data are ordinal or ratings are missing, which is typical
 of expert panels. It is a general reliability coefficient (Hayes &amp;amp;
 Krippendorff, 2007); no publication applying it specifically to
-content-validity panels was found.
+content-validity panels was found. Its value agrees with kripp.alpha()
+of the irr package (Gamer et al., 2026) to numerical precision, which
+the package's tests check.
 &quot;ac1&quot;: Gwet's (2008) AC1, designed for high-agreement data where
 kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
 affected than Cohen's kappa by how often each category is used. It is
@@ -34,7 +36,9 @@ number of raters and with missing ratings. Zapf et al. (2016) recommend it
 specifically when data are ordinal or ratings are missing, which is typical
 of expert panels. It is a general reliability coefficient (Hayes &amp;amp;
 Krippendorff, 2007); no publication applying it specifically to
-content-validity panels was found.
+content-validity panels was found. Its value agrees with kripp.alpha()
+of the irr package (Gamer et al., 2026) to numerical precision, which
+the package's tests check.
 &quot;ac1&quot;: Gwet's (2008) AC1, designed for high-agreement data where
 kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
 affected than Cohen's kappa by how often each category is used. It is
@@ -113,7 +117,9 @@ number of raters and with missing ratings. Zapf et al. (2016) recommend it
 specifically when data are ordinal or ratings are missing, which is typical
 of expert panels. It is a general reliability coefficient (Hayes &amp;
 Krippendorff, 2007); no publication applying it specifically to
-content-validity panels was found.</p></li>
+content-validity panels was found. Its value agrees with <code>kripp.alpha()</code>
+of the irr package (Gamer et al., 2026) to numerical precision, which
+the package's tests check.</p></li>
 <li><p><code>"ac1"</code>: Gwet's (2008) AC1, designed for high-agreement data where
 kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
 affected than Cohen's kappa by how often each category is used. It is
@@ -179,7 +185,8 @@ stream of the session is left as it was.</p></dd>
 <code>level</code>, <code>estimate</code>, <code>ci_low</code>, <code>ci_high</code>, <code>alpha</code>, <code>B</code>, <code>n_boot_usable</code>,
 <code>n_items</code> (items rated by at least two raters), <code>n_raters</code>,
 <code>percent_agreement</code> (share of within-item rating pairs that are identical),
-<code>interpretation</code>, and <code>critique</code>.</p>
+<code>interpretation</code>, <code>critique</code>, and <code>n_pairs</code> (the number of within-item
+rating pairs, the base of <code>percent_agreement</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="why-a-close-agreeing-panel-can-have-a-low-alpha">Why a close-agreeing panel can have a low alpha<a class="anchor" aria-label="anchor" href="#why-a-close-agreeing-panel-can-have-a-low-alpha"></a></h2>
@@ -209,6 +216,9 @@ extension. Intervals vary slightly between runs unless <code>seed</code> is set.
     <p>Feinstein, A. R., &amp; Cicchetti, D. V. (1990). High agreement but low kappa:
 I. The problems of two paradoxes. <em>Journal of Clinical Epidemiology,
 43</em>(6), 543–549. <a href="https://doi.org/10.1016/0895-4356%2890%2990158-L" class="external-link">doi:10.1016/0895-4356(90)90158-L</a></p>
+<p>Gamer, M., Lemon, J., Fellows, I., &amp; Singh, P. (2026). <em>irr: Various
+coefficients of interrater reliability and agreement</em> (R package version
+0.85) [Computer software]. <a href="https://doi.org/10.32614/CRAN.package.irr" class="external-link">doi:10.32614/CRAN.package.irr</a></p>
 <p>Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 the presence of high agreement. <em>British Journal of Mathematical and
 Statistical Psychology, 61</em>(1), 29–48. <a href="https://doi.org/10.1348/000711006X126600" class="external-link">doi:10.1348/000711006X126600</a></p>

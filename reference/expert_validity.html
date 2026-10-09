@@ -356,8 +356,9 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items: 4 | Experts/item: 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale: 1 to 4 | Relevant: a rating of 3 or higher</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50%.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   every resample of the items gave the same value. Identical rating pairs:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   50%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> above .74).</span>
@@ -382,7 +383,7 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-out co"><span class="r-pr">#&gt;</span> (the kappa column) describes each item. Alpha can be low when nearly every</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> rating is the same value, even on a panel that agrees closely, so read it</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> beside the share of identical rating pairs. A low alpha with many identical</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> pairs is not by itself evidence of a poor panel. Print `details$agreement` for</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pairs is not by itself evidence of a poor panel. Print x$details$agreement for</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> the full explanation and interval details.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> CVI criteria are published panel-size guidelines, not universal validity</span>
@@ -420,15 +421,16 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;contentvalid_expert summary&gt; Expert-panel analysis</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mode: relevance</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Supported: 4 | Review: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25, 95% CI [-.25, -.25].</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Identical rating pairs: 50%.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Strong support: 4 of 4 | Review: 0 of 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   every resample of the items gave the same value. Identical rating pairs:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   50%.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No items were flagged by the workflow's quantitative review rules.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> These summaries support, but do not replace, qualitative content review.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> See x$reviewed_items for the flagged items as a data frame.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> See summary(x)$reviewed_items for the flagged items as a data frame.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Essential counts from 12 experts, beside Lawshe's table and Wilson et al.</span></span></span>
 <span class="r-in"><span><span class="fu">expert_validity</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span>,</span></span>
@@ -449,7 +451,7 @@ intervals are appropriate? <em>BMC Medical Research Methodology, 16</em>, Articl
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Essential: experts rating the item essential, out of those who rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> With 12 experts, an item needs at least 10 rating it essential for the exact</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> one-sided binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Earlier methods, for comparison (not used for the decision)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)</span>

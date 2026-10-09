@@ -78,7 +78,8 @@ df <- data.frame(
   score = c(1,1,1, 0,-1,0)
 )
 ioc(df)
-#> <contentvalid_ioc> Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> <contentvalid_ioc> Index of item-objective congruence (IOC)
+#> Rovinelli and Hambleton (1977).
 #> 
 #>   Item  Objective  Judges  Mean   IOC
 #>   I1    A               3  1.00   .67

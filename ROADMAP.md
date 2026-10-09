@@ -1001,8 +1001,7 @@ verdict; the modified-kappa range is corrected.
 Show a short key tailored to each result, print the component functions
 in APA style, make
 [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
-APA by default, and deprecate
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
+APA by default, and deprecate `agreement_summary()`
 ([\#73](https://github.com/JUhalt/contentvalidR/pull/73)).
 
 Make the plots show the criterion and the uncertainty, and give every
@@ -1129,10 +1128,9 @@ Waiting on CRAN’s review of nomologR 0.3.0, submitted on 2026-09-26.
 both public APIs are stable, under a written deprecation policy, as far
 as this package goes (0.7.0).
 [`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)’s
-`posthoc_pass` column was removed in 0.8.0.
-[`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md),
-the one function taking items in rows, is deprecated in 0.9.0 and is
-removed in 1.0.0, so nothing deprecated is carried past 1.0.
+`posthoc_pass` column was removed in 0.8.0. `agreement_summary()`, the
+one function taking items in rows, is deprecated in 0.9.0 and is removed
+in 1.0.0, so nothing deprecated is carried past 1.0.
 
 there is a joint walkthrough from content review to empirical validation
 (0.7.0).
@@ -1154,18 +1152,17 @@ nomologR on 2026-09-29:
 - **2026-10-17, release-candidate day,** for both packages, in this
   order, agreed with nomologR so that its tests pass before either
   package tags:
-  1.  contentvalidR removes
-      [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-      with its export, tests, policy text, and `_pkgdown.yml` entry,
-      sets the version to 0.99.0, and merges that change. Merges to
-      `master` then pause until the tag. The commit as it sits on
-      `origin/master` must have green CI, including the `--as-cran` and
-      pkgdown jobs, and must pass `tools/release-gate.R` in a detached
-      worktree. It is never a PR head, because a squash merge changes
-      the SHA. Only then are the fixtures generated, in a detached
-      worktree at that commit. The manifest’s `tag` column says
-      “untagged”, `commit_sha` holds the commit, and the fixtures README
-      says the files come from that untagged commit.
+  1.  contentvalidR removes `agreement_summary()` with its export,
+      tests, policy text, and `_pkgdown.yml` entry, sets the version to
+      0.99.0, and merges that change. Merges to `master` then pause
+      until the tag. The commit as it sits on `origin/master` must have
+      green CI, including the `--as-cran` and pkgdown jobs, and must
+      pass `tools/release-gate.R` in a detached worktree. It is never a
+      PR head, because a squash merge changes the SHA. Only then are the
+      fixtures generated, in a detached worktree at that commit. The
+      manifest’s `tag` column says “untagged”, `commit_sha` holds the
+      commit, and the fixtures README says the files come from that
+      untagged commit.
   2.  nomologR adds the fixtures, and regenerates its stored walkthrough
       handoff from the same commit, in a PR that merges only after its
       suite and CI pass. If a failure needs a contentvalidR change, step

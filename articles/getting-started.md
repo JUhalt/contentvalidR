@@ -49,7 +49,8 @@ csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
   csv_binom_test(csv$n_target[i], csv$n[i])$decision
 }, character(1))
 psa; csv
-#> <contentvalid_psa> Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)
+#> <contentvalid_psa> Proportion of substantive agreement (Psa)
+#> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Psa      95% CI
 #>   I1    A         9/12  .75  [.47, .91]
@@ -65,7 +66,8 @@ psa; csv
 #> judges were chosen.
 #> 
 #> See as.data.frame(x) for the unrounded values.
-#> <contentvalid_csv> Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)
+#> <contentvalid_csv> Coefficient of substantive validity (Csv)
+#> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Competitor  Competitor judges   Csv
 #>   I1    A         9/12  B                        3/12   .50
@@ -129,7 +131,7 @@ rating_fit
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 
-#> Target-scale Colquitt benchmarks
+#> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean HTC  HTC level  Mean HTD  HTD level
 #>   A           2       .86  Moderate        .50  Very Strong
 #>   B           1       .88  Strong          .54  Very Strong
@@ -155,7 +157,7 @@ rating_fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Consider construct
+#> A flag for review is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
 #> qualitative judge feedback.
 #> 
@@ -183,7 +185,7 @@ summary(rating_fit)
 #> feedback. The analysis does not by itself establish comprehensiveness or the
 #> full content-validity argument.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 **Interpretation** - **HTC** summarizes definitional correspondence with
@@ -238,7 +240,7 @@ expert_fit
 #> (the kappa column) describes each item. Alpha can be low when nearly every
 #> rating is the same value, even on a panel that agrees closely, so read it
 #> beside the share of identical rating pairs. A low alpha with many identical
-#> pairs is not by itself evidence of a poor panel. Print `details$agreement` for
+#> pairs is not by itself evidence of a poor panel. Print x$details$agreement for
 #> the full explanation and interval details.
 #> 
 #> CVI criteria are published panel-size guidelines, not universal validity
@@ -276,7 +278,7 @@ expert_fit
 summary(expert_fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
-#> Supported: 3 | Review: 0
+#> Strong support: 3 of 3 | Review: 0 of 3
 #> Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].
 #>   Identical rating pairs: 71%.
 #> 
@@ -284,7 +286,7 @@ summary(expert_fit)
 #> 
 #> These summaries support, but do not replace, qualitative content review.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 Relevance, essentiality, and congruence are intentionally separate
@@ -308,19 +310,11 @@ example_files <- c(
   "expert_essentiality_example.csv",
   "expert_congruence_example.csv"
 )
-vapply(example_files, function(x) {
+paths <- vapply(example_files, function(x) {
   system.file("extdata", x, package = "contentvalidR")
 }, character(1))
-#>                                                                        sort_example.csv 
-#>                "/home/runner/work/_temp/Library/contentvalidR/extdata/sort_example.csv" 
-#>                                                                      rating_example.csv 
-#>              "/home/runner/work/_temp/Library/contentvalidR/extdata/rating_example.csv" 
-#>                                                            expert_relevance_example.csv 
-#>    "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_relevance_example.csv" 
-#>                                                         expert_essentiality_example.csv 
-#> "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_essentiality_example.csv" 
-#>                                                           expert_congruence_example.csv 
-#>   "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_congruence_example.csv"
+file.exists(paths)
+#> [1] TRUE TRUE TRUE TRUE TRUE
 ```
 
 See
@@ -333,7 +327,8 @@ for manuscript-ready reporting scaffolds built from those same files.
 
 R <- matrix(sample(1:5, 5*6, replace = TRUE), nrow = 5)
 aikens_v(R, lo = 1, hi = 5)
-#> <contentvalid_aiken> Aiken's V (Aiken, 1980)
+#> <contentvalid_aiken> Aiken's V
+#> Aiken (1980).
 #> 
 #>   Item   Experts    V      95% CI
 #>   Item1        5  .60  [.39, .78]
@@ -349,14 +344,15 @@ aikens_v(R, lo = 1, hi = 5)
 #> See as.data.frame(x) for the unrounded values.
 
 cvr(essential = c(8,10,5), N = 12)
-#> <contentvalid_cvr> Content validity ratio (CVR; Lawshe, 1975)
+#> <contentvalid_cvr> Content validity ratio (CVR)
+#> Lawshe (1975).
 #> 
 #>   Item   Essential   CVR     p  Needed  Meets
 #>   Item1       8/12   .33  .194      10  no
 #>   Item2      10/12   .67  .019      10  yes
 #>   Item3       5/12  -.17  .806      10  no
 #> 
-#> Needed: essential ratings the exact one-tailed binomial test requires at
+#> Needed: essential ratings the exact one-sided binomial test requires at
 #> alpha = .05 (Ayre & Scally, 2014).
 #> 
 #> See as.data.frame(x) for the unrounded values.
@@ -401,7 +397,8 @@ ioc_df <- data.frame(
   score = sample(c(-1,0,1), 18, replace = TRUE)
 )
 ioc(ioc_df)
-#> <contentvalid_ioc> Index of item-objective congruence (IOC; Rovinelli & Hambleton, 1977)
+#> <contentvalid_ioc> Index of item-objective congruence (IOC)
+#> Rovinelli and Hambleton (1977).
 #> 
 #>   Item  Objective  Judges  Mean   IOC
 #>   I1    A               3   .00   .08

@@ -121,7 +121,8 @@ substantively identical.</p>
 <span>  <span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">n_target</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">csv</span><span class="op">$</span><span class="va">n</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">decision</span></span>
 <span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">psa</span>; <span class="va">csv</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_psa&gt; Proportion of substantive agreement (Psa; Anderson &amp; Gerbing, 1991)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_psa&gt; Proportion of substantive agreement (Psa)</span></span>
+<span><span class="co">#&gt; Anderson and Gerbing (1991).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Target  Judges  Psa      95% CI</span></span>
 <span><span class="co">#&gt;   I1    A         9/12  .75  [.47, .91]</span></span>
@@ -137,7 +138,8 @@ substantively identical.</p>
 <span><span class="co">#&gt; judges were chosen.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_csv&gt; Coefficient of substantive validity (Csv; Anderson &amp; Gerbing, 1991)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_csv&gt; Coefficient of substantive validity (Csv)</span></span>
+<span><span class="co">#&gt; Anderson and Gerbing (1991).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Target  Judges  Competitor  Competitor judges   Csv</span></span>
 <span><span class="co">#&gt;   I1    A         9/12  B                        3/12   .50</span></span>
@@ -197,7 +199,7 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
 <span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Target-scale Colquitt benchmarks</span></span>
+<span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
 <span><span class="co">#&gt;   Target  Items  Mean HTC  HTC level  Mean HTD  HTD level</span></span>
 <span><span class="co">#&gt;   A           2       .86  Moderate        .50  Very Strong</span></span>
 <span><span class="co">#&gt;   B           1       .88  Strong          .54  Very Strong</span></span>
@@ -223,7 +225,7 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Consider construct</span></span>
+<span><span class="co">#&gt; A flag for review is not an automatic deletion decision. Consider construct</span></span>
 <span><span class="co">#&gt; definitions, item wording, orbiting-construct choice, domain coverage, and</span></span>
 <span><span class="co">#&gt; qualitative judge feedback.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -251,7 +253,7 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; feedback. The analysis does not by itself establish comprehensiveness or the</span></span>
 <span><span class="co">#&gt; full content-validity argument.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
+<span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p><strong>Interpretation</strong> - <strong>HTC</strong> summarizes
 definitional correspondence with the intended construct. -
 <strong>HTD</strong> summarizes distinctiveness from orbiting
@@ -302,7 +304,7 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; (the kappa column) describes each item. Alpha can be low when nearly every</span></span>
 <span><span class="co">#&gt; rating is the same value, even on a panel that agrees closely, so read it</span></span>
 <span><span class="co">#&gt; beside the share of identical rating pairs. A low alpha with many identical</span></span>
-<span><span class="co">#&gt; pairs is not by itself evidence of a poor panel. Print `details$agreement` for</span></span>
+<span><span class="co">#&gt; pairs is not by itself evidence of a poor panel. Print x$details$agreement for</span></span>
 <span><span class="co">#&gt; the full explanation and interval details.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI criteria are published panel-size guidelines, not universal validity</span></span>
@@ -340,7 +342,7 @@ when the judge population matches their intended use.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert summary&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
-<span><span class="co">#&gt; Supported: 3 | Review: 0</span></span>
+<span><span class="co">#&gt; Strong support: 3 of 3 | Review: 0 of 3</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71%.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -348,7 +350,7 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
+<span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>Relevance, essentiality, and congruence are intentionally separate
 expert tasks. Use <code>mode = "relevance"</code> for Aiken V +
 CVI/modified kappa, <code>mode = "essentiality"</code> for Lawshe CVR,
@@ -366,19 +368,11 @@ contain no participant data, and are regenerated from
 <span>  <span class="st">"expert_essentiality_example.csv"</span>,</span>
 <span>  <span class="st">"expert_congruence_example.csv"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">example_files</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="va">x</span>, package <span class="op">=</span> <span class="st">"contentvalidR"</span><span class="op">)</span></span>
 <span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                                                                        sort_example.csv </span></span>
-<span><span class="co">#&gt;                "/home/runner/work/_temp/Library/contentvalidR/extdata/sort_example.csv" </span></span>
-<span><span class="co">#&gt;                                                                      rating_example.csv </span></span>
-<span><span class="co">#&gt;              "/home/runner/work/_temp/Library/contentvalidR/extdata/rating_example.csv" </span></span>
-<span><span class="co">#&gt;                                                            expert_relevance_example.csv </span></span>
-<span><span class="co">#&gt;    "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_relevance_example.csv" </span></span>
-<span><span class="co">#&gt;                                                         expert_essentiality_example.csv </span></span>
-<span><span class="co">#&gt; "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_essentiality_example.csv" </span></span>
-<span><span class="co">#&gt;                                                           expert_congruence_example.csv </span></span>
-<span><span class="co">#&gt;   "/home/runner/work/_temp/Library/contentvalidR/extdata/expert_congruence_example.csv"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE TRUE TRUE TRUE TRUE</span></span></code></pre></div>
 <p>See
 <code><a href="../articles/reporting-examples.html">vignette("reporting-examples", package = "contentvalidR")</a></code>
 for manuscript-ready reporting scaffolds built from those same
@@ -387,7 +381,8 @@ files.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">*</span><span class="fl">6</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/aikens_v.html">aikens_v</a></span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V (Aiken, 1980)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V</span></span>
+<span><span class="co">#&gt; Aiken (1980).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item   Experts    V      95% CI</span></span>
 <span><span class="co">#&gt;   Item1        5  .60  [.39, .78]</span></span>
@@ -403,14 +398,15 @@ files.</p>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/cvr.html">cvr</a></span><span class="op">(</span>essential <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span>,<span class="fl">10</span>,<span class="fl">5</span><span class="op">)</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_cvr&gt; Content validity ratio (CVR; Lawshe, 1975)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_cvr&gt; Content validity ratio (CVR)</span></span>
+<span><span class="co">#&gt; Lawshe (1975).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item   Essential   CVR     p  Needed  Meets</span></span>
 <span><span class="co">#&gt;   Item1       8/12   .33  .194      10  no</span></span>
 <span><span class="co">#&gt;   Item2      10/12   .67  .019      10  yes</span></span>
 <span><span class="co">#&gt;   Item3       5/12  -.17  .806      10  no</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Needed: essential ratings the exact one-tailed binomial test requires at</span></span>
+<span><span class="co">#&gt; Needed: essential ratings the exact one-sided binomial test requires at</span></span>
 <span><span class="co">#&gt; alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
@@ -455,7 +451,8 @@ files.</p>
 <span>  score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>, <span class="fl">18</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ioc.html">ioc</a></span><span class="op">(</span><span class="va">ioc_df</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_ioc&gt; Index of item-objective congruence (IOC; Rovinelli &amp; Hambleton, 1977)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_ioc&gt; Index of item-objective congruence (IOC)</span></span>
+<span><span class="co">#&gt; Rovinelli and Hambleton (1977).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Objective  Judges  Mean   IOC</span></span>
 <span><span class="co">#&gt;   I1    A               3   .00   .08</span></span>

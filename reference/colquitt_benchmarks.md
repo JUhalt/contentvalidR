@@ -65,7 +65,8 @@ Psychology, 104*(10), 1243–1265.
 
 ``` r
 colquitt_benchmarks("psa")
-#> <contentvalid_colquitt_norms> Benchmarks for Psa (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for Psa
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .91
@@ -79,7 +80,9 @@ colquitt_benchmarks("psa")
 #> 
 #> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("csv", orbiting_r = .40)
-#> <contentvalid_colquitt_norms> Benchmarks for Csv (Colquitt et al., 2019): More moderate focal-orbiting correlation (.35-.50)
+#> <contentvalid_colquitt_norms> Benchmarks for Csv
+#> Colquitt et al. (2019). Benchmark set: More moderate focal-orbiting
+#> correlation (.35-.50).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .83

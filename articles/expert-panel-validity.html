@@ -156,7 +156,7 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; (the kappa column) describes each item. Alpha can be low when nearly every</span></span>
 <span><span class="co">#&gt; rating is the same value, even on a panel that agrees closely, so read it</span></span>
 <span><span class="co">#&gt; beside the share of identical rating pairs. A low alpha with many identical</span></span>
-<span><span class="co">#&gt; pairs is not by itself evidence of a poor panel. Print `details$agreement` for</span></span>
+<span><span class="co">#&gt; pairs is not by itself evidence of a poor panel. Print x$details$agreement for</span></span>
 <span><span class="co">#&gt; the full explanation and interval details.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; CVI criteria are published panel-size guidelines, not universal validity</span></span>
@@ -194,7 +194,7 @@ of the content-validity argument.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert summary&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
-<span><span class="co">#&gt; Supported: 4 | Review: 0</span></span>
+<span><span class="co">#&gt; Strong support: 4 of 4 | Review: 0 of 4</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 63%.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -202,7 +202,7 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; These summaries support, but do not replace, qualitative content review.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
+<span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>Aiken’s V rescales the bounded expert ratings to the 0-1 interval.
 The default confidence interval is the score interval proposed by
 Penfield and Giacobbi (2004), rather than a simulation-dependent
@@ -210,7 +210,8 @@ bootstrap interval. Bootstrap intervals remain available through the
 low-level function:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/aikens_v.html">aikens_v</a></span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">4</span>, ci <span class="op">=</span> <span class="st">"bootstrap"</span>, B <span class="op">=</span> <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V (Aiken, 1980)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V</span></span>
+<span><span class="co">#&gt; Aiken (1980).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item   Experts     V        95% CI</span></span>
 <span><span class="co">#&gt;   Item1        6  1.00  [1.00, 1.00]</span></span>
@@ -376,7 +377,7 @@ experts:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Essential: experts rating the item essential, out of those who rated it.</span></span>
 <span><span class="co">#&gt; With 12 experts, an item needs at least 10 rating it essential for the exact</span></span>
-<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; one-sided binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the</span></span>
@@ -419,7 +420,7 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Essential: experts rating the item essential, out of those who rated it.</span></span>
 <span><span class="co">#&gt; With 8 experts, an item needs at least 7 rating it essential for the exact</span></span>
-<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; one-sided binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   CVR -- Lawshe's Content Validity Ratio. Lean of the panel toward calling the</span></span>
@@ -469,7 +470,7 @@ beside the exact decision, without changing it:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Essential: experts rating the item essential, out of those who rated it.</span></span>
 <span><span class="co">#&gt; With 9 experts, an item needs at least 8 rating it essential for the exact</span></span>
-<span><span class="co">#&gt; one-tailed binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
+<span><span class="co">#&gt; one-sided binomial test at alpha = .05 (Ayre &amp; Scally, 2014).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Earlier methods, for comparison (not used for the decision)</span></span>
 <span><span class="co">#&gt;   Item   Decision   Essential   CVR  Lawshe (1975)  Wilson et al. (2012)</span></span>

@@ -148,17 +148,15 @@ cell</strong>.</p>
 <p>Every <code>results</code> table carries a <code>status</code> column
 drawn from a shared vocabulary:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="../reference/contentvalid_glossary.html">contentvalid_glossary</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"statuses"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              status</span></span>
-<span><span class="co">#&gt; 1         Supported</span></span>
-<span><span class="co">#&gt; 2            Review</span></span>
-<span><span class="co">#&gt; 3 Insufficient data</span></span>
-<span><span class="co">#&gt; 4  Descriptive only</span></span>
-<span><span class="co">#&gt;                                                                              meaning</span></span>
-<span><span class="co">#&gt; 1                               The evidence met the criteria set for this analysis.</span></span>
-<span><span class="co">#&gt; 2 Something here needs a closer look. This is not an instruction to delete anything.</span></span>
-<span><span class="co">#&gt; 3                                        Too little usable data to reach a judgment.</span></span>
-<span><span class="co">#&gt; 4                       Reported for description only; no decision rule was applied.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">statuses</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="fu"><a href="../reference/contentvalid_glossary.html">contentvalid_glossary</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"statuses"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">statuses</span><span class="op">$</span><span class="va">status</span>, <span class="st">": "</span>, <span class="va">statuses</span><span class="op">$</span><span class="va">meaning</span><span class="op">)</span>,</span>
+<span>                   exdent <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Supported: The evidence met the criteria set for this analysis.</span></span>
+<span><span class="co">#&gt; Review: Something here needs a closer look. This is not an instruction</span></span>
+<span><span class="co">#&gt;   to delete anything.</span></span>
+<span><span class="co">#&gt; Insufficient data: Too little usable data to reach a judgment.</span></span>
+<span><span class="co">#&gt; Descriptive only: Reported for description only; no decision rule was</span></span>
+<span><span class="co">#&gt;   applied.</span></span></code></pre></div>
 <p><code>Review</code> is the one people misread. It does not mean
 “delete this.” It means something here rewards a closer look, and you
 are the one who looks.</p>
@@ -231,9 +229,9 @@ are the one who looks.</p>
 <span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Use theory, construct-domain</span></span>
-<span><span class="co">#&gt; coverage, item wording, and qualitative judge feedback alongside these</span></span>
-<span><span class="co">#&gt; statistics.</span></span>
+<span><span class="co">#&gt; A flag for review is not an automatic deletion decision. Use theory,</span></span>
+<span><span class="co">#&gt; construct-domain coverage, item wording, and qualitative judge feedback</span></span>
+<span><span class="co">#&gt; alongside these statistics.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span></code></pre></div>
 <p>The printout opens with a header line naming the object’s class and
@@ -283,10 +281,11 @@ as a proportion or a <em>p</em> value, is printed without a leading zero
 value that could not be computed prints as <code>--</code>, and the
 printout says why. The <code>results</code> table keeps every value at
 full precision.</p>
-<p>A narrow console never squeezes a table into wrapped blocks. Columns
-that do not fit are left out from the right, never the item or its
-decision, and a line beneath the table names them and the call that
-shows them.</p>
+<p>In a narrow console, columns that do not fit are left out from the
+right, never the item, its decision or the statistic the decision rests
+on, and a line beneath the table names them and the call that shows
+them. A table with nothing it may leave out prints wider than the
+console.</p>
 <p>The status words read across this package and nomologR as follows
 (the same table is in <code><a href="../reference/contentvalidR-package.html">?contentvalidR</a></code>):</p>
 <table class="table">
@@ -362,7 +361,8 @@ number with an HTD number, and never treat a benchmark label as a cutoff
 for retention.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
 <span><span class="co">#&gt;   Very Strong  80th-99th       .91</span></span>
@@ -376,7 +376,8 @@ for retention.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
 <span><span class="co">#&gt;   Very Strong  80th-99th       .35</span></span>

@@ -61,7 +61,8 @@ equivalent 1-to-5 anchor metric before computing HTC.
 ``` r
 
 htc(rating_dat, scale_min = 1, scale_max = 5)
-#> <contentvalid_htc> Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)
+#> <contentvalid_htc> Hinkin-Tracey correspondence (HTC)
+#> Colquitt et al. (2019).
 #> 
 #>   Item  Target  Judges  Target mean  HTC
 #>   A1    A           24         4.38  .88
@@ -96,7 +97,8 @@ that orbiting definitions are rated more highly on average.
 ``` r
 
 htd(rating_dat, scale_min = 1, scale_max = 5)
-#> <contentvalid_htd> Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)
+#> <contentvalid_htd> Hinkin-Tracey distinctiveness (HTD)
+#> Colquitt et al. (2019).
 #> 
 #>   Item  Target  Judges  Target mean  Competitor  Competitor mean  HTD
 #>   A1    A           24         4.38  B                      2.38  .56
@@ -143,7 +145,7 @@ definition.
 aov_out <- anova_content(rating_dat, design = "within")
 aov_out
 #> <contentvalid_anova> Content-validity ANOVA
-#> Adapted from Hinkin & Tracey (1999) and MacKenzie et al. (2011).
+#> Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011).
 #> 
 #>   Item Target Judges F test                       p Partial eta^2 Contrast p Met
 #>   A1   A          24 F(1.98, 45.65) = 72.64  < .001           .76     < .001 yes
@@ -229,7 +231,7 @@ fit
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 
-#> Target-scale Colquitt benchmarks
+#> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean HTC  HTC level    Mean HTD  HTD level
 #>   A           3       .88  Strong            .58  Very Strong
 #>   B           1       .92  Very Strong       .61  Very Strong
@@ -255,7 +257,7 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Consider construct
+#> A flag for review is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
 #> qualitative judge feedback.
 #> 
@@ -282,7 +284,7 @@ summary(fit)
 #> feedback. The analysis does not by itself establish comprehensiveness or the
 #> full content-validity argument.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 The item-level recommendation has deliberately limited meaning:
@@ -311,18 +313,14 @@ assigning those descriptive normative labels.
 
 ``` r
 
-fit$scale_summary
-#>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
-#> 1      A       3     3     3        3        0              0 0.8833333
-#> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
-#> 1       Strong 0.5781250  Very Strong             3         NA       overall
-#> 2  Very Strong 0.6145833  Very Strong             3         NA       overall
-#>                                                                                                              evidence
-#> 1 Mean HTC falls in the Strong band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019).
-#> 2                Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).
+fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
+                      "mean_htd", "htd_strength")]
+#>   target n_items  mean_htc htc_strength  mean_htd htd_strength
+#> 1      A       3 0.8833333       Strong 0.5781250  Very Strong
+#> 2      B       1 0.9166667  Very Strong 0.6145833  Very Strong
 colquitt_benchmarks("htc")
-#> <contentvalid_colquitt_norms> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTC
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .91
@@ -336,7 +334,8 @@ colquitt_benchmarks("htc")
 #> 
 #> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("htd")
-#> <contentvalid_colquitt_norms> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTD
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .35
@@ -358,19 +357,15 @@ requested:
 
 ``` r
 
-rating_validity(
+conditional <- rating_validity(
   rating_dat,
   orbiting_r = c(A = .42, B = .55)
-)$scale_summary
-#>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
-#> 1      A       3     3     3        3        0              0 0.8833333
-#> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
-#> 1     Moderate 0.5781250  Very Strong             3       0.42      moderate
-#> 2  Very Strong 0.6145833  Very Strong             3       0.55      stronger
-#>                                                                                                                                                                                            evidence
-#> 1 Mean HTC falls in the Moderate band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.
-#> 2                                                                                              Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).
+)
+conditional$scale_summary[, c("target", "orbiting_r", "htc_strength",
+                              "htd_strength", "benchmark_set")]
+#>   target orbiting_r htc_strength htd_strength benchmark_set
+#> 1      A       0.42     Moderate  Very Strong      moderate
+#> 2      B       0.55  Very Strong  Very Strong      stronger
 ```
 
 A given level of distinctiveness can be more impressive when the focal
@@ -385,16 +380,11 @@ therefore separates calculation from norm applicability:
 
 ``` r
 
-rating_validity(rating_dat, judge_type = "expert")$scale_summary
-#>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
-#> 1      A       3     3     3        3        0              0 0.8833333
-#> 2      B       1     1     1        1        0              0 0.9166667
-#>   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set
-#> 1         <NA> 0.5781250         <NA>             3         NA       overall
-#> 2         <NA> 0.6145833         <NA>             3         NA       overall
-#>                                                                                                        evidence
-#> 1 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.
-#> 2 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.
+rating_validity(rating_dat, judge_type = "expert")$scale_summary[
+  , c("target", "mean_htc", "htc_strength", "mean_htd", "htd_strength")]
+#>   target  mean_htc htc_strength  mean_htd htd_strength
+#> 1      A 0.8833333         <NA> 0.5781250         <NA>
+#> 2      B 0.9166667         <NA> 0.6145833         <NA>
 ```
 
 HTC/HTD are still computed, but the Colquitt labels are suppressed.

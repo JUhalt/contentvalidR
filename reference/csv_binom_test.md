@@ -72,7 +72,7 @@ methodological best practices. *Journal of Business and Psychology,
 
 ``` r
 csv_binom_test(n_c = 15, N = 20)
-#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
 #> 
 #> The item meets the exact target-assignment criterion.
 #> 15 of 20 judges assigned the item to its target construct (Psa = .75). If each
@@ -83,7 +83,7 @@ csv_binom_test(n_c = 15, N = 20)
 #> 
 #> See as.data.frame(x) for the test as one row.
 csv_binom_test(n_c = 14, N = 20)
-#> <contentvalid_binom> Howard-Melloy exact test (one-tailed)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
 #> 
 #> The item does not meet the exact target-assignment criterion.
 #> 14 of 20 judges assigned the item to its target construct (Psa = .70). If each

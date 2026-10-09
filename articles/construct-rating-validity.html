@@ -142,7 +142,8 @@ integer scale such as 0-to-4; it shifts that scale internally to the
 equivalent 1-to-5 anchor metric before computing HTC.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/htc.html">htc</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_htc&gt; Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_htc&gt; Hinkin-Tracey correspondence (HTC)</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Target  Judges  Target mean  HTC</span></span>
 <span><span class="co">#&gt;   A1    A           24         4.38  .88</span></span>
@@ -175,7 +176,8 @@ values indicate that orbiting definitions are rated more highly on
 average.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/htd.html">htd</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_htd&gt; Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_htd&gt; Hinkin-Tracey distinctiveness (HTD)</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Target  Judges  Target mean  Competitor  Competitor mean  HTD</span></span>
 <span><span class="co">#&gt;   A1    A           24         4.38  B                      2.38  .56</span></span>
@@ -217,7 +219,7 @@ who rated the item against every definition.</p>
 <code class="sourceCode R"><span><span class="va">aov_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/anova_content.html">anova_content</a></span><span class="op">(</span><span class="va">rating_dat</span>, design <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
 <span><span class="va">aov_out</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_anova&gt; Content-validity ANOVA</span></span>
-<span><span class="co">#&gt; Adapted from Hinkin &amp; Tracey (1999) and MacKenzie et al. (2011).</span></span>
+<span><span class="co">#&gt; Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item Target Judges F test                       p Partial eta^2 Contrast p Met</span></span>
 <span><span class="co">#&gt;   A1   A          24 F(1.98, 45.65) = 72.64  &lt; .001           .76     &lt; .001 yes</span></span>
@@ -301,7 +303,7 @@ post-hoc tests.</p>
 <span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
 <span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Target-scale Colquitt benchmarks</span></span>
+<span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
 <span><span class="co">#&gt;   Target  Items  Mean HTC  HTC level    Mean HTD  HTD level</span></span>
 <span><span class="co">#&gt;   A           3       .88  Strong            .58  Very Strong</span></span>
 <span><span class="co">#&gt;   B           1       .92  Very Strong       .61  Very Strong</span></span>
@@ -327,7 +329,7 @@ post-hoc tests.</p>
 <span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 'Review' is not an automatic deletion decision. Consider construct</span></span>
+<span><span class="co">#&gt; A flag for review is not an automatic deletion decision. Consider construct</span></span>
 <span><span class="co">#&gt; definitions, item wording, orbiting-construct choice, domain coverage, and</span></span>
 <span><span class="co">#&gt; qualitative judge feedback.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -354,7 +356,7 @@ post-hoc tests.</p>
 <span><span class="co">#&gt; feedback. The analysis does not by itself establish comprehensiveness or the</span></span>
 <span><span class="co">#&gt; full content-validity argument.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See x$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
+<span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>The item-level recommendation has deliberately limited meaning:</p>
 <ul>
 <li>
@@ -383,18 +385,14 @@ published scales. <code><a href="../reference/rating_validity.html">rating_valid
 HTC/HTD within each target scale before assigning those descriptive
 normative labels.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">scale_summary</span></span>
-<span><span class="co">#&gt;   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc</span></span>
-<span><span class="co">#&gt; 1      A       3     3     3        3        0              0 0.8833333</span></span>
-<span><span class="co">#&gt; 2      B       1     1     1        1        0              0 0.9166667</span></span>
-<span><span class="co">#&gt;   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set</span></span>
-<span><span class="co">#&gt; 1       Strong 0.5781250  Very Strong             3         NA       overall</span></span>
-<span><span class="co">#&gt; 2  Very Strong 0.6145833  Very Strong             3         NA       overall</span></span>
-<span><span class="co">#&gt;                                                                                                              evidence</span></span>
-<span><span class="co">#&gt; 1 Mean HTC falls in the Strong band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019).</span></span>
-<span><span class="co">#&gt; 2                Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).</span></span>
+<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_htc"</span>, <span class="st">"htc_strength"</span>,</span>
+<span>                      <span class="st">"mean_htd"</span>, <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   target n_items  mean_htc htc_strength  mean_htd htd_strength</span></span>
+<span><span class="co">#&gt; 1      A       3 0.8833333       Strong 0.5781250  Very Strong</span></span>
+<span><span class="co">#&gt; 2      B       1 0.9166667  Very Strong 0.6145833  Very Strong</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
 <span><span class="co">#&gt;   Very Strong  80th-99th       .91</span></span>
@@ -408,7 +406,8 @@ normative labels.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTD</span></span>
+<span><span class="co">#&gt; Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Band         Percentile  Minimum</span></span>
 <span><span class="co">#&gt;   Very Strong  80th-99th       .35</span></span>
@@ -426,19 +425,15 @@ validity cutoffs. If the average correlation between a focal scale and
 its orbiting scales is known, correlation-conditional norms can be
 requested:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">conditional</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span></span>
 <span>  <span class="va">rating_dat</span>,</span>
 <span>  orbiting_r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">.42</span>, B <span class="op">=</span> <span class="fl">.55</span><span class="op">)</span></span>
-<span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span></span>
-<span><span class="co">#&gt;   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc</span></span>
-<span><span class="co">#&gt; 1      A       3     3     3        3        0              0 0.8833333</span></span>
-<span><span class="co">#&gt; 2      B       1     1     1        1        0              0 0.9166667</span></span>
-<span><span class="co">#&gt;   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set</span></span>
-<span><span class="co">#&gt; 1     Moderate 0.5781250  Very Strong             3       0.42      moderate</span></span>
-<span><span class="co">#&gt; 2  Very Strong 0.6145833  Very Strong             3       0.55      stronger</span></span>
-<span><span class="co">#&gt;                                                                                                                                                                                            evidence</span></span>
-<span><span class="co">#&gt; 1 Mean HTC falls in the Moderate band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); inspect the weaker items and construct overlap before finalizing the scale.</span></span>
-<span><span class="co">#&gt; 2                                                                                              Mean HTC and mean HTD both fall in the Very Strong band of published scales (Colquitt et al., 2019).</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="va">conditional</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"orbiting_r"</span>, <span class="st">"htc_strength"</span>,</span>
+<span>                              <span class="st">"htd_strength"</span>, <span class="st">"benchmark_set"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   target orbiting_r htc_strength htd_strength benchmark_set</span></span>
+<span><span class="co">#&gt; 1      A       0.42     Moderate  Very Strong      moderate</span></span>
+<span><span class="co">#&gt; 2      B       0.55  Very Strong  Very Strong      stronger</span></span></code></pre></div>
 <p>A given level of distinctiveness can be more impressive when the
 focal and orbiting constructs are known to correlate strongly.</p>
 </div>
@@ -450,16 +445,11 @@ judges representative of substantive target populations. Their paper
 cautions against applying those norms to expert panels. The package
 therefore separates calculation from norm applicability:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, judge_type <span class="op">=</span> <span class="st">"expert"</span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span></span>
-<span><span class="co">#&gt;   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc</span></span>
-<span><span class="co">#&gt; 1      A       3     3     3        3        0              0 0.8833333</span></span>
-<span><span class="co">#&gt; 2      B       1     1     1        1        0              0 0.9166667</span></span>
-<span><span class="co">#&gt;   htc_strength  mean_htd htd_strength n_definitions orbiting_r benchmark_set</span></span>
-<span><span class="co">#&gt; 1         &lt;NA&gt; 0.5781250         &lt;NA&gt;             3         NA       overall</span></span>
-<span><span class="co">#&gt; 2         &lt;NA&gt; 0.6145833         &lt;NA&gt;             3         NA       overall</span></span>
-<span><span class="co">#&gt;                                                                                                        evidence</span></span>
-<span><span class="co">#&gt; 1 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.</span></span>
-<span><span class="co">#&gt; 2 HTC/HTD are reported descriptively; Colquitt et al. (2019) normative labels are suppressed for expert judges.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, judge_type <span class="op">=</span> <span class="st">"expert"</span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span></span>
+<span>  , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"mean_htc"</span>, <span class="st">"htc_strength"</span>, <span class="st">"mean_htd"</span>, <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;   target  mean_htc htc_strength  mean_htd htd_strength</span></span>
+<span><span class="co">#&gt; 1      A 0.8833333         &lt;NA&gt; 0.5781250         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      B 0.9166667         &lt;NA&gt; 0.6145833         &lt;NA&gt;</span></span></code></pre></div>
 <p>HTC/HTD are still computed, but the Colquitt labels are suppressed.
 <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> leave out the columns
 that would hold them; the stored table, shown here, keeps them as

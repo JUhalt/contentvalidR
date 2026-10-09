@@ -125,7 +125,7 @@ item is rated poorly, and one is borderline:</p>
 <code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="va">handoff</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_handoff&gt; Handoff to empirical validation (schema version 1)</span></span>
-<span><span class="co">#&gt; Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-04</span></span>
+<span><span class="co">#&gt; Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-09</span></span>
 <span><span class="co">#&gt; Items carried forward: 3 of 5</span></span>
 <span><span class="co">#&gt; Carried when status is: Supported</span></span>
 <span><span class="co">#&gt; Constructs: none in this design; the panel rated one item set.</span></span>
@@ -133,6 +133,10 @@ item is rated poorly, and one is borderline:</p>
 <span><span class="co">#&gt;   score, 95%)</span></span>
 <span><span class="co">#&gt; Panel: Krippendorff's alpha (ordinal) = .69, 95% interval [-.27, .77]</span></span>
 <span><span class="co">#&gt;   (item-resampling percentile bootstrap)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Status uses the words shared with nomologR: Supported is this analysis's</span></span>
+<span><span class="co">#&gt; passing decision (Strong support), and Review marks an item to look at again,</span></span>
+<span><span class="co">#&gt; not to delete.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Held back</span></span>
 <span><span class="co">#&gt;   Item   Decision</span></span>
@@ -160,40 +164,25 @@ item is rated poorly, and one is borderline:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">handoff</span><span class="op">$</span><span class="va">items</span></span>
 <span><span class="co">#&gt; [1] "Item1" "Item2" "Item3"</span></span>
-<span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span></span>
-<span><span class="co">#&gt;    item scale carried    status recommendation n_judges</span></span>
-<span><span class="co">#&gt; 1 Item1  &lt;NA&gt;    TRUE Supported Strong support        4</span></span>
-<span><span class="co">#&gt; 2 Item2  &lt;NA&gt;    TRUE Supported Strong support        4</span></span>
-<span><span class="co">#&gt; 3 Item3  &lt;NA&gt;    TRUE Supported Strong support        4</span></span>
-<span><span class="co">#&gt; 4 Item4  &lt;NA&gt;   FALSE    Review         Review        4</span></span>
-<span><span class="co">#&gt; 5 Item5  &lt;NA&gt;   FALSE    Review         Review        4</span></span>
-<span><span class="co">#&gt;                                                                                                                                        rule</span></span>
-<span><span class="co">#&gt; 1 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
-<span><span class="co">#&gt; 2 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
-<span><span class="co">#&gt; 3 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
-<span><span class="co">#&gt; 4 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
-<span><span class="co">#&gt; 5 at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn, 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
-<span><span class="co">#&gt;   round keying response_min response_max</span></span>
-<span><span class="co">#&gt; 1     1     NA           NA           NA</span></span>
-<span><span class="co">#&gt; 2     1     NA           NA           NA</span></span>
-<span><span class="co">#&gt; 3     1     NA           NA           NA</span></span>
-<span><span class="co">#&gt; 4     1     NA           NA           NA</span></span>
-<span><span class="co">#&gt; 5     1     NA           NA           NA</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    item statistic     value criterion round      lower     upper</span></span>
-<span><span class="co">#&gt; 1 Item1 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
-<span><span class="co">#&gt; 2 Item2 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
-<span><span class="co">#&gt; 3 Item3 Aiken's V 0.9166667        NA     1 0.64612009 0.9851349</span></span>
-<span><span class="co">#&gt; 4 Item4 Aiken's V 0.5000000        NA     1 0.25378160 0.7462184</span></span>
-<span><span class="co">#&gt; 5 Item5 Aiken's V 0.2500000        NA     1 0.08894167 0.5323053</span></span>
-<span><span class="co">#&gt; 6 Item1     I-CVI 1.0000000         1     1 0.51010916 1.0000000</span></span>
-<span><span class="co">#&gt;           interval_method interval_level note</span></span>
-<span><span class="co">#&gt; 1 Penfield-Giacobbi score           0.95     </span></span>
-<span><span class="co">#&gt; 2 Penfield-Giacobbi score           0.95     </span></span>
-<span><span class="co">#&gt; 3 Penfield-Giacobbi score           0.95     </span></span>
-<span><span class="co">#&gt; 4 Penfield-Giacobbi score           0.95     </span></span>
-<span><span class="co">#&gt; 5 Penfield-Giacobbi score           0.95     </span></span>
-<span><span class="co">#&gt; 6            Wilson score           0.95</span></span></code></pre></div>
+<span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"carried"</span>, <span class="st">"status"</span>, <span class="st">"recommendation"</span>,</span>
+<span>                          <span class="st">"n_judges"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    item carried    status recommendation n_judges</span></span>
+<span><span class="co">#&gt; 1 Item1    TRUE Supported Strong support        4</span></span>
+<span><span class="co">#&gt; 2 Item2    TRUE Supported Strong support        4</span></span>
+<span><span class="co">#&gt; 3 Item3    TRUE Supported Strong support        4</span></span>
+<span><span class="co">#&gt; 4 Item4   FALSE    Review         Review        4</span></span>
+<span><span class="co">#&gt; 5 Item5   FALSE    Review         Review        4</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strwrap.html" class="external-link">strwrap</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">item_evidence</span><span class="op">$</span><span class="va">rule</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; at least 4 of 4 experts rate the item relevant (I-CVI &gt;= 1.00; Lynn,</span></span>
+<span><span class="co">#&gt; 1986), which also puts modified kappa above .74 (Polit et al., 2007)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">item_statistics</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"statistic"</span>, <span class="st">"value"</span>, <span class="st">"criterion"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    item statistic     value criterion</span></span>
+<span><span class="co">#&gt; 1 Item1 Aiken's V 0.9166667        NA</span></span>
+<span><span class="co">#&gt; 2 Item2 Aiken's V 0.9166667        NA</span></span>
+<span><span class="co">#&gt; 3 Item3 Aiken's V 0.9166667        NA</span></span>
+<span><span class="co">#&gt; 4 Item4 Aiken's V 0.5000000        NA</span></span>
+<span><span class="co">#&gt; 5 Item5 Aiken's V 0.2500000        NA</span></span>
+<span><span class="co">#&gt; 6 Item1     I-CVI 1.0000000         1</span></span></code></pre></div>
 <p><code>items</code> is what the next stage consumes: the carried items
 only, so what you read here is exactly what you pass along.
 <code>item_evidence</code> keeps every reviewed item, including those
@@ -203,14 +192,14 @@ statistics long, one row per item per statistic, with the criterion each
 was compared against where the method sets one.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">handoff</span><span class="op">$</span><span class="va">provenance</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schema_version"</span>, <span class="st">"workflow"</span>, <span class="st">"mode"</span>, <span class="st">"keep"</span>,</span>
-<span>                         <span class="st">"method"</span>, <span class="st">"citation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>                         <span class="st">"method"</span>, <span class="st">"citation"</span><span class="op">)</span><span class="op">]</span>, nchar.max <span class="op">=</span> <span class="fl">50</span>, vec.len <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 6</span></span>
 <span><span class="co">#&gt;  $ schema_version: int 1</span></span>
 <span><span class="co">#&gt;  $ workflow      : chr "expert-panel"</span></span>
 <span><span class="co">#&gt;  $ mode          : chr "relevance"</span></span>
 <span><span class="co">#&gt;  $ keep          : chr "Supported"</span></span>
-<span><span class="co">#&gt;  $ method        : chr "Aiken V with score intervals plus CVI/modified kappa"</span></span>
-<span><span class="co">#&gt;  $ citation      : chr [1:4] "Aiken (1980)" "Penfield &amp; Giacobbi (2004)" "Lynn (1986)" "Polit et al. (2007)"</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ method        : chr "Aiken V with score intervals plus"| __truncated__</span></span>
+<span><span class="co">#&gt;  $ citation      : chr [1:4] "Aiken (1980)" "Penfield &amp; Giacobbi (2004)" ...</span></span></code></pre></div>
 <p>By default only items with a <code>Supported</code> status travel.
 Some protocols carry items flagged for review, on the grounds that a
 weak content-validity result deserves an empirical test rather than

@@ -517,8 +517,11 @@ directly:</p>
 <span><span class="co">#&gt; &lt;contentvalid_rounds&gt; Comparison across pretest rounds</span></span>
 <span><span class="co">#&gt; Workflow: expert-panel | Rounds: 3 | Units compared: 6</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 1 of 5 units in both the first and last round changed status (1 stronger, 0</span></span>
-<span><span class="co">#&gt; weaker).</span></span>
+<span><span class="co">#&gt; Of the 5 units present in the first and last rounds, 1 changed status (1</span></span>
+<span><span class="co">#&gt; stronger, 0 weaker).</span></span>
+<span><span class="co">#&gt; Status uses the words shared with nomologR: Supported is this analysis's</span></span>
+<span><span class="co">#&gt; passing decision (Strong support), and Review marks an item to look at again,</span></span>
+<span><span class="co">#&gt; not to delete.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; !! The rounds were not analyzed under the same decision rule.</span></span>
 <span><span class="co">#&gt; The panel changed size, and the criterion an item must meet depends on the</span></span>
@@ -575,9 +578,12 @@ manuscript:</p>
 <span><span class="co">#&gt;   S5            3       9  1.00       .78   .53   [.00, 1.00] Consensus</span></span>
 <span><span class="co">#&gt;   S6            3       9   .56       .00  -.99 [-1.00, -.30] No consensus</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Note. CI = confidence interval. 95% CI = percentile bootstrap confidence</span></span>
-<span><span class="co">#&gt; interval. Consensus = at least 75% of experts agreeing in the last round. -- =</span></span>
-<span><span class="co">#&gt; not computed.</span></span>
+<span><span class="co">#&gt; Note. CI = confidence interval. Agree = share of experts rating the item 3 or</span></span>
+<span><span class="co">#&gt; higher in its last round. Unchanged = share of experts who kept their rating</span></span>
+<span><span class="co">#&gt; between the item's last two consecutive rounds. Kappa = quadratic-weighted</span></span>
+<span><span class="co">#&gt; kappa between those rounds. 95% CI = percentile bootstrap confidence interval.</span></span>
+<span><span class="co">#&gt; Consensus = at least 75% of experts agreeing in the last round. -- = not</span></span>
+<span><span class="co">#&gt; computed.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
 <span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>

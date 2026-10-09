@@ -21,59 +21,21 @@ study.
 sort_dat <- read_example("sort_example.csv")
 sort_fit <- sort_validity(sort_dat)
 sort_sum <- summary(sort_fit)
-sort_fit$results
-#>   item target n_total  n n_missing n_target competitor n_other_max  psa
-#> 1   A1      A      20 20         0       18       B; C           1 0.90
-#> 2   A2      A      20 20         0       15          B           3 0.75
-#> 3   B1      B      20 20         0       17          A           2 0.85
-#> 4   B2      B      20 20         0       13          A           5 0.65
-#> 5   C1      C      20 20         0       18       A; B           1 0.90
-#> 6   C2      C      20 20         0       14          B           4 0.70
-#>     psa_low  psa_high  csv      p_value critical_n_target passes_chance
-#> 1 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
-#> 2 0.5312991 0.8881383 0.60 0.0206947327                15          TRUE
-#> 3 0.6395811 0.9476313 0.75 0.0012884140                15          TRUE
-#> 4 0.4328543 0.8188082 0.40 0.1315879822                15         FALSE
-#> 5 0.6989664 0.9721335 0.85 0.0002012253                15          TRUE
-#> 6 0.4810272 0.8545228 0.50 0.0576591492                15         FALSE
-#>   recommendation                                   issue
-#> 1         Retain                               Supported
-#> 2         Retain                               Supported
-#> 3         Retain                               Supported
-#> 4         Review Target favored, exact criterion not met
-#> 5         Retain                               Supported
-#> 6         Review Target favored, exact criterion not met
-#>                                                                                                                                                                               interpretation
-#> 1                                                                                                        Target assignment meets the exact retention criterion (strongest competitor: B; C).
-#> 2                                                                                                           Target assignment meets the exact retention criterion (strongest competitor: B).
-#> 3                                                                                                           Target assignment meets the exact retention criterion (strongest competitor: A).
-#> 4 The target was at least as common as any competitor but did not meet the exact retention criterion (strongest competitor: A); review before deciding whether to revise or remove the item.
-#> 5                                                                                                        Target assignment meets the exact retention criterion (strongest competitor: A; B).
-#> 6 The target was at least as common as any competitor but did not meet the exact retention criterion (strongest competitor: B); review before deciding whether to revise or remove the item.
-#>      status
-#> 1 Supported
-#> 2 Supported
-#> 3 Supported
-#> 4    Review
-#> 5 Supported
-#> 6    Review
-sort_fit$scale_summary
-#>   target n_items n_items_usable n_retain n_review mean_psa psa_strength
-#> 1      A       2              2        2        0    0.825       Strong
-#> 2      B       2              2        1        1    0.750     Moderate
-#> 3      C       2              2        1        1    0.800     Moderate
-#>   mean_csv csv_strength orbiting_r                    benchmark_set
-#> 1    0.725       Strong         NA Overall (not correlation-normed)
-#> 2    0.575     Moderate         NA Overall (not correlation-normed)
-#> 3    0.675       Strong         NA Overall (not correlation-normed)
-#>   benchmark_applicable n_definitions
-#> 1                 TRUE             3
-#> 2                 TRUE             3
-#> 3                 TRUE             3
-#>                                                                                                                                                      evidence
-#> 1                                                             Mean Psa and mean Csv both fall in the Strong band of published scales (Colquitt et al., 2019).
-#> 2                Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
-#> 3 Mean Psa falls in the Moderate band and mean Csv in the Strong band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.
+sort_fit$results[, c("item", "target", "psa", "csv", "p_value",
+                    "recommendation")]
+#>   item target  psa  csv      p_value recommendation
+#> 1   A1      A 0.90 0.85 0.0002012253         Retain
+#> 2   A2      A 0.75 0.60 0.0206947327         Retain
+#> 3   B1      B 0.85 0.75 0.0012884140         Retain
+#> 4   B2      B 0.65 0.40 0.1315879822         Review
+#> 5   C1      C 0.90 0.85 0.0002012253         Retain
+#> 6   C2      C 0.70 0.50 0.0576591492         Review
+sort_fit$scale_summary[, c("target", "n_items", "mean_psa", "psa_strength",
+                           "mean_csv", "csv_strength")]
+#>   target n_items mean_psa psa_strength mean_csv csv_strength
+#> 1      A       2    0.825       Strong    0.725       Strong
+#> 2      B       2    0.750     Moderate    0.575     Moderate
+#> 3      C       2    0.800     Moderate    0.675       Strong
 ```
 
 ### Methods scaffold
@@ -119,10 +81,10 @@ content_report(sort_fit)
 #>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
 #> 
 #> Note. Psa = proportion of substantive agreement; CI = confidence interval;
-#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
-#> interval. Retain = at least the number of target assignments the exact
-#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
-#> 2016).
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
@@ -140,69 +102,21 @@ documented.
 rating_dat <- read_example("rating_example.csv")
 rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
 rating_sum <- summary(rating_fit)
-rating_fit$results
-#>   item target n_raters n_complete n_incomplete n_target n_constructs
-#> 1   A1      A       24         24            0       24            3
-#> 2   A2      A       24         24            0       24            3
-#> 3   B1      B       24         24            0       24            3
-#> 4   B2      B       24         24            0       24            3
-#> 5   C1      C       24         24            0       24            3
-#> 6   C2      C       24         24            0       24            3
-#>   target_mean target_mean_complete strongest_competitor competitor_mean
-#> 1    4.666667             4.666667                    C        2.333333
-#> 2    3.666667             3.666667                    B        3.333333
-#> 3    4.666667             4.666667                    C        2.333333
-#> 4    3.666667             3.666667                    A        3.333333
-#> 5    4.666667             4.666667                    B        2.333333
-#> 6    3.666667             3.666667                    B        3.333333
-#>         htc       htd        F df1 df2    p_omnibus epsilon_gg   df1_gg
-#> 1 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
-#> 2 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
-#> 3 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
-#> 4 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
-#> 5 0.9333333 0.6666667 237.0769   2  46 5.921046e-25  0.7647059 1.529412
-#> 6 0.7333333 0.2083333  37.3750   2  46 2.291004e-10  0.6956522 1.391304
-#>     df2_gg      p_value partial_eta2 min_mean_diff max_contrast_p contrast_pass
-#> 1 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
-#> 2 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
-#> 3 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
-#> 4 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
-#> 5 35.17647 1.274299e-19    0.9115646     2.3333333   1.122784e-13          TRUE
-#> 6 32.00000 7.375102e-08    0.6190476     0.3333333   5.173102e-02         FALSE
-#>   recommendation                                        issue
-#> 1         Retain                                    Supported
-#> 2         Review Target highest, planned contrasts incomplete
-#> 3         Retain                                    Supported
-#> 4         Review Target highest, planned contrasts incomplete
-#> 5         Retain                                    Supported
-#> 6         Review Target highest, planned contrasts incomplete
-#>                                                                                                                                                                                                        interpretation
-#> 1                                                               The intended construct is rated higher than all orbiting constructs and all planned contrasts meet the screening criterion (strongest competitor: C).
-#> 2 The intended construct has the highest mean but the full inferential screening criterion was not met (strongest competitor: B); review the weakest target-orbiting comparison before revising or removing the item.
-#> 3                                                               The intended construct is rated higher than all orbiting constructs and all planned contrasts meet the screening criterion (strongest competitor: C).
-#> 4 The intended construct has the highest mean but the full inferential screening criterion was not met (strongest competitor: A); review the weakest target-orbiting comparison before revising or removing the item.
-#> 5                                                               The intended construct is rated higher than all orbiting constructs and all planned contrasts meet the screening criterion (strongest competitor: B).
-#> 6 The intended construct has the highest mean but the full inferential screening criterion was not met (strongest competitor: B); review the weakest target-orbiting comparison before revising or removing the item.
-#>      status
-#> 1 Supported
-#> 2    Review
-#> 3 Supported
-#> 4    Review
-#> 5 Supported
-#> 6    Review
-rating_fit$scale_summary
-#>   target n_items n_htc n_htd n_retain n_review n_insufficient  mean_htc
-#> 1      A       2     2     2        1        1              0 0.8333333
-#> 2      B       2     2     2        1        1              0 0.8333333
-#> 3      C       2     2     2        1        1              0 0.8333333
-#>   htc_strength mean_htd htd_strength n_definitions orbiting_r benchmark_set
-#> 1         Weak   0.4375  Very Strong             3         NA       overall
-#> 2         Weak   0.4375  Very Strong             3         NA       overall
-#> 3         Weak   0.4375  Very Strong             3         NA       overall
-#>                                                                                                                                                                                                                                               evidence
-#> 1 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 2 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
-#> 3 Mean HTC falls in the Weak band and mean HTD in the Very Strong band of published scales (Colquitt et al., 2019); review item wording, construct boundaries, and the choice of orbiting constructs, and consider pretesting the revised items again.
+rating_fit$results[, c("item", "target", "htc", "htd", "p_value",
+                      "max_contrast_p", "recommendation")]
+#>   item target       htc       htd      p_value max_contrast_p recommendation
+#> 1   A1      A 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
+#> 2   A2      A 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
+#> 3   B1      B 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
+#> 4   B2      B 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
+#> 5   C1      C 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
+#> 6   C2      C 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
+rating_fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
+                             "mean_htd", "htd_strength")]
+#>   target n_items  mean_htc htc_strength mean_htd htd_strength
+#> 1      A       2 0.8333333         Weak   0.4375  Very Strong
+#> 2      B       2 0.8333333         Weak   0.4375  Very Strong
+#> 3      C       2 0.8333333         Weak   0.4375  Very Strong
 ```
 
 ### Methods scaffold
@@ -239,8 +153,12 @@ content_report(rating_fit)
 #>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
 #> 
 #> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
-#> Retain = omnibus p and every one-sided contrast p at or below alpha = .05
-#> (MacKenzie et al., 2011).
+#> Judges = judges who rated the item against every construct. F
+#> test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of
+#> freedom where the correction applied. Contrast p = the largest one-sided p
+#> among the planned contrasts of the intended construct with each other
+#> construct. Retain = omnibus p and every one-sided contrast p at or below
+#> alpha = .05 (MacKenzie et al., 2011).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
@@ -266,42 +184,18 @@ expert_fit <- expert_validity(
   hi = 4
 )
 expert_sum <- summary(expert_fit)
-expert_fit$results
-#>    item N n_missing         V    ci_low   ci_high               ci_method A
-#> 1 Item1 8         0 1.0000000 0.8620238 1.0000000 Penfield-Giacobbi score 8
-#> 2 Item2 8         0 0.9166667 0.7415120 0.9768412 Penfield-Giacobbi score 8
-#> 3 Item3 8         0 0.8333333 0.6414693 0.9332132 Penfield-Giacobbi score 8
-#> 4 Item4 8         0 0.5833333 0.3883467 0.7553240 Penfield-Giacobbi score 6
-#> 5 Item5 8         0 0.4166667 0.2446760 0.6116533 Penfield-Giacobbi score 2
-#>   I_CVI  I_CVI_low I_CVI_high         Pc kappa_mod cvi_criterion kappa_quality
-#> 1  1.00 0.67559244  1.0000000 0.00390625 1.0000000         0.875     Excellent
-#> 2  1.00 0.67559244  1.0000000 0.00390625 1.0000000         0.875     Excellent
-#> 3  1.00 0.67559244  1.0000000 0.00390625 1.0000000         0.875     Excellent
-#> 4  0.75 0.40927543  0.9285208 0.10937500 0.7192982         0.875          Good
-#> 5  0.25 0.07147921  0.5907246 0.10937500 0.1578947         0.875           Low
-#>    ci_width recommendation
-#> 1 0.1379762 Strong support
-#> 2 0.2353292 Strong support
-#> 3 0.2917439 Strong support
-#> 4 0.3669773         Review
-#> 5 0.3669773         Review
-#>                                                                                                                                                           interpretation
-#> 1 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 2 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 3 The item meets the panel-size I-CVI criterion and shows excellent chance-corrected agreement; Aiken's V and its score interval quantify relevance level and precision.
-#> 4              The item does not meet the panel-size I-CVI criterion; review wording, relevance, construct coverage, and expert comments before revising or removing it.
-#> 5              The item does not meet the panel-size I-CVI criterion; review wording, relevance, construct coverage, and expert comments before revising or removing it.
-#>      status
-#> 1 Supported
-#> 2 Supported
-#> 3 Supported
-#> 4    Review
-#> 5    Review
-expert_fit$scale_summary
-#>   n_items n_experts_min n_experts_max mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
-#> 1       5             8             8         0.75       0.8      0.6 0.6934253
-#>   agreement_low agreement_high n_strong_support n_review n_insufficient
-#> 1    0.07142857      0.8457143                3        2              0
+expert_fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod",
+                      "recommendation")]
+#>    item N         V I_CVI kappa_mod recommendation
+#> 1 Item1 8 1.0000000  1.00 1.0000000 Strong support
+#> 2 Item2 8 0.9166667  1.00 1.0000000 Strong support
+#> 3 Item3 8 0.8333333  1.00 1.0000000 Strong support
+#> 4 Item4 8 0.5833333  0.75 0.7192982         Review
+#> 5 Item5 8 0.4166667  0.25 0.1578947         Review
+expert_fit$scale_summary[, c("n_items", "mean_Aiken_V", "S_CVI_Ave",
+                             "S_CVI_UA", "agreement")]
+#>   n_items mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
+#> 1       5         0.75       0.8      0.6 0.6934253
 ```
 
 > Experts rated the relevance of each candidate item on a bounded
@@ -322,27 +216,13 @@ supported items and 2 review items under its quantitative rules.
 expert_ess <- read_example("expert_essentiality_example.csv")
 expert_ess_matrix <- as.matrix(expert_ess[setdiff(names(expert_ess), "expert")])
 ess_fit <- expert_validity(expert_ess_matrix, mode = "essentiality")
-ess_fit$results
-#>    item ne  N       cvr     p_value critical_ne critical_cvr  pass
-#> 1 Item1 11 12 0.8333333 0.003173828          10    0.6666667  TRUE
-#> 2 Item2 10 12 0.6666667 0.019287109          10    0.6666667  TRUE
-#> 3 Item3  8 12 0.3333333 0.193847656          10    0.6666667 FALSE
-#> 4 Item4  6 12 0.0000000 0.612792969          10    0.6666667 FALSE
-#>   recommendation
-#> 1      Supported
-#> 2      Supported
-#> 3         Review
-#> 4         Review
-#>                                                                                                                                       interpretation
-#> 1                                                                 Essential ratings meet the exact one-sided binomial criterion for this panel size.
-#> 2                                                                 Essential ratings meet the exact one-sided binomial criterion for this panel size.
-#> 3 Essential ratings do not meet the exact panel-size criterion; review the item and expert rationale before deciding whether to revise or remove it.
-#> 4 Essential ratings do not meet the exact panel-size criterion; review the item and expert rationale before deciding whether to revise or remove it.
-#>      status
-#> 1 Supported
-#> 2 Supported
-#> 3    Review
-#> 4    Review
+ess_fit$results[, c("item", "ne", "N", "cvr", "p_value", "critical_ne",
+                   "recommendation")]
+#>    item ne  N       cvr     p_value critical_ne recommendation
+#> 1 Item1 11 12 0.8333333 0.003173828          10      Supported
+#> 2 Item2 10 12 0.6666667 0.019287109          10      Supported
+#> 3 Item3  8 12 0.3333333 0.193847656          10         Review
+#> 4 Item4  6 12 0.0000000 0.612792969          10         Review
 ```
 
 For an essentiality task, state that CVR is tied to a different expert
@@ -356,23 +236,16 @@ relevance/CVI threshold.
 
 expert_ioc <- read_example("expert_congruence_example.csv")
 ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
-ioc_fit$results
-#>   item target n_judges target_ioc target_mean strongest_competitor
-#> 1   I1      A        6  0.9166667   1.0000000                    B
-#> 2   I2      B        6  0.8750000   1.0000000                    A
-#> 3   I3      C        6  0.4583333   0.8333333                    B
-#>   competitor_mean    margin recommendation
-#> 1      -0.6666667 1.6666667      Congruent
-#> 2      -0.6666667 1.6666667      Congruent
-#> 3       0.5000000 0.3333333         Review
-#>                                                                                                                                                                                                                                                interpretation
-#> 1                                                                                                   The index of item-objective congruence for the intended objective is at or above .70: the experts matched the item to it and not to the other objectives.
-#> 2                                                                                                   The index of item-objective congruence for the intended objective is at or above .70: the experts matched the item to it and not to the other objectives.
-#> 3 The index of item-objective congruence for the intended objective is below .70: the experts matched the item to its intended objective but did not clearly rule out the others. Review the item's wording against the objectives and the experts' comments.
-#>      status
-#> 1 Supported
-#> 2 Supported
-#> 3    Review
+ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
+                   "strongest_competitor", "margin", "recommendation")]
+#>   item target target_ioc target_mean strongest_competitor    margin
+#> 1   I1      A  0.9166667   1.0000000                    B 1.6666667
+#> 2   I2      B  0.8750000   1.0000000                    A 1.6666667
+#> 3   I3      C  0.4583333   0.8333333                    B 0.3333333
+#>   recommendation
+#> 1      Congruent
+#> 2      Congruent
+#> 3         Review
 ```
 
 For congruence, report each item’s intended objective, its index of

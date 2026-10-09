@@ -67,6 +67,13 @@ numeric table by default, with *p* values rounded to `digits`; use
 `format = "data.frame"` for that table, where *p* values now keep three
 decimals.
 
+## Changed in 1.0.0
+
+Numbers in `format = "data.frame"` round half up, as the APA table does,
+so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
+own rounding gave 0.62. The APA table prints under a header and carries
+its general note as the `"note"` attribute.
+
 ## Reporting the decision rules
 
 A results table alone is not a reproducible report. The thresholds that
@@ -102,18 +109,22 @@ content_report(fit)
 #>   C2    C        14/20  B           .70  [.48, .85]  .50    .058  Review
 #> 
 #> Note. Psa = proportion of substantive agreement; CI = confidence interval;
-#> Csv = coefficient of substantive validity. 95% CI = Wilson score confidence
-#> interval. Retain = at least the number of target assignments the exact
-#> one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy,
-#> 2016).
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
 content_report(fit, format = "markdown", include = "flagged")
-#> | Item | Target | Judges | Competitor | Psa | 95% CI | Csv | p | Decision |
+#> | Item | Target | Judges | Competitor | Psa | 95% CI | Csv | *p* | Decision |
 #> | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 #> | B2 | B | 13/20 | A | .65 | [.43, .82] | .40 | .132 | Review |
 #> | C2 | C | 14/20 | B | .70 | [.48, .85] | .50 | .058 | Review |
 #> 
-#> *Note.* Psa = proportion of substantive agreement; CI = confidence interval; Csv = coefficient of substantive validity. 95% CI = Wilson score confidence interval. Retain = at least the number of target assignments the exact one-sided binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
+#> *Note.* Psa = proportion of substantive agreement; CI = confidence interval;
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
 ```

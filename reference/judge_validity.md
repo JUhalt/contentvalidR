@@ -307,8 +307,8 @@ fit
 #>   Infit, outfit -- Fit mean squares. How predictable the judge's decisions
 #>       are: about 1 is expected, high is erratic, low is more predictable than
 #>       expected.
-#>   Scale use -- Scale use. Spread of the judge's ratings compared with a
-#>       typical judge (1 is typical; low means few distinctions).
+#>   Scale use -- Spread of the judge's ratings compared with a typical judge (1
+#>       is typical; low means few distinctions).
 #>   Phi -- Dependability coefficient. How well the absolute ratings would
 #>       reproduce with another panel of this size (0 to 1).
 #> 
@@ -319,7 +319,7 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> A 'Review' judge is not a judge to remove. Disagreement can be substantive
+#> A flagged judge is not a judge to remove. Disagreement can be substantive
 #> expertise; the flag marks ratings worth a closer look.
 #> 
 #> See summary(x) for the flagged judges and the judges needed.
@@ -358,5 +358,5 @@ summary(fit)
 #> This analysis describes how much conclusions depend on these judges. It does
 #> not establish that the items cover the intended content domain.
 #> 
-#> See x$reviewed_judges for the flagged judges as a data frame.
+#> See summary(x)$reviewed_judges for the flagged judges as a data frame.
 ```

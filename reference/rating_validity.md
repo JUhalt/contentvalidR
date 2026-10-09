@@ -177,7 +177,7 @@ fit
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 
-#> Target-scale Colquitt benchmarks
+#> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean HTC  HTC level    Mean HTD  HTD level
 #>   A           2       .89  Strong            .63  Very Strong
 #>   B           1       .93  Very Strong       .69  Very Strong
@@ -203,7 +203,7 @@ fit
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Consider construct
+#> A flag for review is not an automatic deletion decision. Consider construct
 #> definitions, item wording, orbiting-construct choice, domain coverage, and
 #> qualitative judge feedback.
 #> 
@@ -230,5 +230,5 @@ summary(fit)
 #> feedback. The analysis does not by itself establish comprehensiveness or the
 #> full content-validity argument.
 #> 
-#> See x$reviewed_items for the flagged items as a data frame.
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```

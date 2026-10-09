@@ -150,23 +150,12 @@ visible in the analysis script and in the manuscript.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 4         Review Target favored, exact criterion not met    Review</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 5         Retain                               Supported Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 6         Review Target favored, exact criterion not met    Review</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">fit</span>, component <span class="op">=</span> <span class="st">"scale_summary"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    workflow target n_items n_items_usable n_retain n_review mean_psa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 item-sort      A       2              2        2        0    0.825</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 item-sort      B       2              2        1        1    0.750</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 item-sort      C       2              2        1        1    0.800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   psa_strength mean_csv csv_strength orbiting_r</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       Strong    0.725       Strong         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2     Moderate    0.575     Moderate         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3     Moderate    0.675       Strong         NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      benchmark_set benchmark_applicable n_definitions</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Overall (not correlation-normed)                 TRUE             3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 Overall (not correlation-normed)                 TRUE             3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Overall (not correlation-normed)                 TRUE             3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                                                                                      evidence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                             Mean Psa and mean Csv both fall in the Strong band of published scales (Colquitt et al., 2019).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                Mean Psa and mean Csv both fall in the Moderate band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3 Mean Psa falls in the Moderate band and mean Csv in the Strong band of published scales (Colquitt et al., 2019); review the weaker items before finalizing.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">fit</span>, component <span class="op">=</span> <span class="st">"scale_summary"</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"mean_psa"</span>,</span></span>
+<span class="r-in"><span>                                                  <span class="st">"psa_strength"</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   target mean_psa psa_strength</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1      A    0.825       Strong</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      B    0.750     Moderate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      C    0.800     Moderate</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -155,11 +155,3 @@ workflows.
   : Legacy independent-groups ANOVA power simulator
 - [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md)
   : Legacy simulation of item-sort target-count power
-
-## Deprecated
-
-Still works in 0.9.0, with a warning naming its replacement; removed in
-1.0.0.
-
-- [`agreement_summary()`](https://juhalt.github.io/contentvalidR/reference/agreement_summary.md)
-  : Agreement summary (deprecated)

@@ -78,7 +78,8 @@ to content validation. *Organizational Research Methods, 2*(2), 175–186.
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))
 d$rating <- c(5, 4, 5, 4, 2, 2, 1, 2)
 htc(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 5)
-#> <contentvalid_htc> Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)
+#> <contentvalid_htc> Hinkin-Tracey correspondence (HTC)
+#> Colquitt et al. (2019).
 #> 
 #>   Item  Target  Judges  Target mean  HTC
 #>   I1    A            4         4.50  .90

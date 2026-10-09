@@ -48,17 +48,15 @@ vocabulary:
 
 ``` r
 
-attr(contentvalid_glossary(), "statuses")
-#>              status
-#> 1         Supported
-#> 2            Review
-#> 3 Insufficient data
-#> 4  Descriptive only
-#>                                                                              meaning
-#> 1                               The evidence met the criteria set for this analysis.
-#> 2 Something here needs a closer look. This is not an instruction to delete anything.
-#> 3                                        Too little usable data to reach a judgment.
-#> 4                       Reported for description only; no decision rule was applied.
+statuses <- attr(contentvalid_glossary(), "statuses")
+writeLines(strwrap(paste0(statuses$status, ": ", statuses$meaning),
+                   exdent = 2))
+#> Supported: The evidence met the criteria set for this analysis.
+#> Review: Something here needs a closer look. This is not an instruction
+#>   to delete anything.
+#> Insufficient data: Too little usable data to reach a judgment.
+#> Descriptive only: Reported for description only; no decision rule was
+#>   applied.
 ```
 
 `Review` is the one people misread. It does not mean “delete this.” It
@@ -133,9 +131,9 @@ fit_sort
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
 #> 
 #> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
@@ -178,10 +176,11 @@ up, so 5 of 8 judges (.625) prints as .63. A value that could not be
 computed prints as `--`, and the printout says why. The `results` table
 keeps every value at full precision.
 
-A narrow console never squeezes a table into wrapped blocks. Columns
-that do not fit are left out from the right, never the item or its
-decision, and a line beneath the table names them and the call that
-shows them.
+In a narrow console, columns that do not fit are left out from the
+right, never the item, its decision or the statistic the decision rests
+on, and a line beneath the table names them and the call that shows
+them. A table with nothing it may leave out prints wider than the
+console.
 
 The status words read across this package and nomologR as follows (the
 same table is in
@@ -243,7 +242,8 @@ for retention.
 ``` r
 
 colquitt_benchmarks("htc")
-#> <contentvalid_colquitt_norms> Benchmarks for HTC (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTC
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .91
@@ -257,7 +257,8 @@ colquitt_benchmarks("htc")
 #> 
 #> See as.data.frame(x) for the unrounded values.
 colquitt_benchmarks("htd")
-#> <contentvalid_colquitt_norms> Benchmarks for HTD (Colquitt et al., 2019): Overall (not correlation-normed)
+#> <contentvalid_colquitt_norms> Benchmarks for HTD
+#> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
 #> 
 #>   Band         Percentile  Minimum
 #>   Very Strong  80th-99th       .35

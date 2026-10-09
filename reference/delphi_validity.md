@@ -473,8 +473,9 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #>       threshold.
 #>   Unchanged -- Share of experts keeping their rating. Share of experts giving
 #>       the same rating in two consecutive rounds (1 means nobody changed).
-#>   Change -- Net change in the rating distribution. Net change in the rating
-#>       distribution between rounds (stable below .15 by its authors' rule).
+#>   Change -- Net change in the rating distribution. How far the distribution
+#>       moved between rounds, as a share of the experts (stable below .15 by its
+#>       authors' rule).
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.
