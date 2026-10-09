@@ -20,6 +20,24 @@ what each method does for each kind of result. The function that made a
 result documents the result itself, such as the columns of a workflow's
 `results`.
 
+## Value
+
+- [`print()`](https://rdrr.io/r/base/print.html) returns its argument,
+  invisibly.
+
+- [`summary()`](https://rdrr.io/r/base/summary.html) returns a list of
+  class `summary.` plus the fit's class (`summary.contentvalid_rounds`
+  for a comparison of rounds), holding the elements named under
+  "summary()" above.
+
+- [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html) returns
+  a data frame.
+
+- [`plot()`](https://rdrr.io/r/graphics/plot.default.html) of a
+  judge-heterogeneity fit, a coverage analysis, or a comparison of
+  rounds returns nothing: it stops with an error whose message says
+  where to look instead.
+
 ## print()
 
 Every printout follows the style shared with nomologR (see
@@ -105,10 +123,10 @@ each unit to look at again. The object is a list holding, among others,
 `n_items`, `n_supported`, `n_review`, `n_insufficient`, `n_descriptive`,
 `scale_summary`, `reviewed_items` (the units whose status is `Review` or
 `Insufficient data`), `settings`, and `design`. The Delphi summary adds
-`panel` and `stability_method`; the expert-panel summary `mode` and
-`agreement`; the judge summary `gtheory`, `influence_items`, and
-`reviewed_judges`; and the coverage summary `gaps`, the cells under
-review.
+`panel` and `stability_method`; the expert-panel summary `mode` and,
+when an agreement coefficient was computed, `agreement`; the judge
+summary `gtheory`, `influence_items`, and `reviewed_judges`; and the
+coverage summary `gaps`, the cells under review.
 
 [`summary()`](https://rdrr.io/r/base/summary.html) of a
 [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
