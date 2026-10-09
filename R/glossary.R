@@ -37,9 +37,12 @@
       term = "p_value", workflow = "item-sort",
       label = "Howard-Melloy exact test",
       definition = paste(
-        "Probability of seeing at least this many target assignments if judges",
-        "were assigning at the chance rate p0. Small values mean the item's",
-        "assignment pattern is unlikely to be chance."
+        "Probability of seeing at least this many target assignments if each",
+        "judge chose the intended construct with probability p0. The default,",
+        ".50, is the benchmark Howard and Melloy (2016) used; it is not the",
+        "rate expected from random assignment, which is 1 divided by the",
+        "number of constructs. Small values mean judges chose the intended",
+        "construct more often than that benchmark."
       ),
       range = "0 to 1; compared against alpha",
       stringsAsFactors = FALSE
@@ -49,20 +52,22 @@
       label = "Hinkin-Tracey Correspondence",
       definition = paste(
         "Average rating of the item against its intended construct definition,",
-        "expressed as a proportion of the rating scale."
+        "divided by the number of scale points. The lowest possible rating",
+        "still counts as one point, so the index cannot reach 0."
       ),
-      range = "0 to 1; higher is stronger",
+      range = "1 / (scale points) to 1, so .20 to 1 on a 5-point scale; higher is stronger",
       stringsAsFactors = FALSE
     ),
     data.frame(
       term = "htd", workflow = "construct-rating",
       label = "Hinkin-Tracey Distinctiveness",
       definition = paste(
-        "How far the intended construct's average rating exceeds the best",
-        "competing construct's, as a proportion of the rating scale. It is a",
-        "difference, so its typical values are far smaller than HTC's."
+        "How far the intended construct's rating exceeds the other constructs'",
+        "ratings, averaged over every other construct and every judge, as a",
+        "proportion of the widest possible difference. It is a difference, so",
+        "its typical values are far smaller than HTC's."
       ),
-      range = "usually a small positive number; higher is stronger",
+      range = "-1 to 1, usually a small positive number; higher is stronger",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -79,7 +84,9 @@
       term = "I_CVI", workflow = "expert-panel",
       label = "Item-level Content Validity Index",
       definition = "Proportion of experts who rated the item as relevant, after applying the relevance cut.",
-      range = "0 to 1; compared against a panel-size guideline",
+      range = paste("0 to 1; compared with Lynn's (1986) criterion for the",
+                    "panel size, which this package extends past ten experts",
+                    "at her 7 of 9"),
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -112,8 +119,8 @@
         "rating at random. With small panels, chance agreement is substantial,",
         "which is why the raw I-CVI alone can overstate consensus."
       ),
-      range = paste("at most 1; below 0 when fewer experts agree than chance",
-                    "predicts; higher is stronger"),
+      range = paste("at most 1; below 0 only when no expert, or one of three,",
+                    "rated the item relevant; higher is stronger"),
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -121,13 +128,51 @@
       label = "Panel-level agreement",
       definition = paste(
         "One coefficient describing how consistently the whole panel rated the",
-        "item set: Krippendorff's alpha by default, or Gwet's AC1 if chosen. It",
-        "is separate from modified kappa, which describes one item at a time."
+        "item set: Krippendorff's alpha, the default (see agreement_ac1 for",
+        "Gwet's AC1). It is separate from modified kappa, which describes one",
+        "item at a time."
       ),
       range = paste(
         "1 is perfect agreement and 0 is agreement no better than chance; it can",
         "be low on a close-agreeing panel whose ratings cluster on one value"
       ),
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "agreement_ac1", workflow = "expert-panel",
+      label = "Panel-level agreement (Gwet's AC1)",
+      definition = paste(
+        "One coefficient describing how consistently the whole panel made the",
+        "relevant/not-relevant decision, with chance agreement estimated so",
+        "that it stays small when nearly every rating falls in one category.",
+        "It is separate from modified kappa, which describes one item at a time."
+      ),
+      range = paste(
+        "1 is perfect agreement; 0 is agreement equal to AC1's own chance",
+        "estimate, which independent raters need not reach; it stays high when",
+        "nearly every rating is the same"
+      ),
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "S_CVI_Ave", workflow = "expert-panel",
+      label = "Scale-level CVI, averaging method",
+      definition = paste(
+        "The mean of the items' I-CVIs, the same quantity as the average",
+        "congruency percentage. Polit and Beck (2006) recommend .90 or higher."
+      ),
+      range = "0 to 1",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "S_CVI_UA", workflow = "expert-panel",
+      label = "Scale-level CVI, universal agreement",
+      definition = paste(
+        "The share of items that every expert rated relevant. It falls as",
+        "experts are added, so Polit and Beck (2006) recommend reporting it",
+        "beside S-CVI/Ave."
+      ),
+      range = "0 to 1",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -139,21 +184,40 @@
     ),
     data.frame(
       term = "ioc", workflow = "expert-panel",
-      label = "Item-Objective Congruence",
-      definition = "How consistently experts linked the item to the objective it was written for rather than to another objective.",
-      range = "-1 to 1; higher is stronger",
+      label = "Index of item-objective congruence",
+      definition = paste(
+        "Whether experts matched the item to an objective and not to the",
+        "item's other objectives: half the gap between their mean rating on",
+        "the objective and their mean rating on the others (Rovinelli &",
+        "Hambleton, 1977). It is 1 only when every expert rates the item +1 on",
+        "the objective and -1 on every other."
+      ),
+      range = "-1 to 1; Rovinelli and Hambleton applied a criterion of .70",
+      stringsAsFactors = FALSE
+    ),
+    data.frame(
+      term = "severity_raw", workflow = "judge-heterogeneity",
+      label = "Judge severity",
+      definition = paste(
+        "How harsh or lenient a judge is compared with the panel, on the items",
+        "that judge rated, in rating points (`severity_raw` in `results`,",
+        "printed as severity). Positive means the judge rates lower than the",
+        "panel."
+      ),
+      range = "0 means typical of this panel",
       stringsAsFactors = FALSE
     ),
     data.frame(
       term = "severity", workflow = "judge-heterogeneity",
-      label = "Judge severity",
+      label = "Judge severity in logits",
       definition = paste(
-        "How harsh or lenient a judge is compared with the rest of the panel.",
-        "Positive means the judge rates lower than the panel. Reported in logits",
-        "from the facets model when it can be estimated, otherwise in rating",
-        "points."
+        "Severity estimated by the many-facet Rasch model on the",
+        "relevant/not-relevant decision, against the judges the model placed",
+        "(`severity` in `results`, printed as logit), by default corrected for",
+        "the bias of joint maximum likelihood (`bias_correct`). Positive means",
+        "harsher. It can differ from the rating-point severity, even in sign."
       ),
-      range = "0 means typical of this panel",
+      range = "0 means typical of the judges placed; flagged beyond the logit cut",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -162,9 +226,11 @@
       definition = paste(
         "Whether a judge's pattern of decisions is as predictable as the model",
         "expects. Around 1 is expected; high values mean erratic ratings, low",
-        "values mean ratings more predictable than expected."
+        "values mean ratings more predictable than expected. Linacre (2002)",
+        "calls 0.5 to 1.5 productive for measurement. Only a value above that",
+        "range is flagged, and only when it rests on enough decisions."
       ),
-      range = "around 1.0 is expected",
+      range = "around 1.0 is expected; 0.5 to 1.5 is productive for measurement",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -220,12 +286,15 @@
     ),
     data.frame(
       term = "stress", workflow = "domain-coverage",
-      label = "Kruskal stress-1",
+      label = "Map distortion",
       definition = paste(
-        "How much distortion was introduced by squeezing the similarity data",
-        "into the chosen number of dimensions. Lower is a closer fit."
+        "How far the distances on the content map depart from the experts'",
+        "dissimilarities: the root of their squared differences over the",
+        "squared dissimilarities. Lower is a closer map. It is not Kruskal's",
+        "(1964) stress-1, which belongs to nonmetric scaling, so his verbal",
+        "benchmarks do not apply to it."
       ),
-      range = "0 is perfect; below .10 is conventionally called fair or better",
+      range = "0 is an exact map; no published benchmark applies",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -234,7 +303,7 @@
       definition = paste(
         "Share of the experts rating an item in a round whose rating was at",
         "or above the agreement cut. On a relevance scale this is the I-CVI.",
-        "Consensus means it reached the threshold set before the study."
+        "Consensus means it reached the consensus threshold supplied."
       ),
       range = "0 to 1; higher is broader agreement",
       stringsAsFactors = FALSE
@@ -256,9 +325,9 @@
       definition = paste(
         "Agreement between each expert's ratings in two consecutive rounds,",
         "corrected for chance, with larger changes counting more. Read it as",
-        "a trend across rounds. It falls when ratings bunch in one category,",
-        "so a converged panel can show a low kappa even when almost no one",
-        "changed their rating."
+        "a trend across rounds. It can be low when ratings bunch in one",
+        "category, so a converged panel can show a low kappa even when almost",
+        "no one changed their rating."
       ),
       range = "-1 to 1; 1 is perfect stability, 0 is no better than chance",
       stringsAsFactors = FALSE
@@ -282,7 +351,7 @@
         "A significant result is read as stability. It needs expected counts",
         "of at least 5, which small panels rarely have."
       ),
-      range = "0 or more; read with its p-value",
+      range = "0 or more; read with its p value",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -294,7 +363,7 @@
         "look stable because the test has little power, and experts swapping",
         "ratings go unseen."
       ),
-      range = "0 or more; read with its p-value",
+      range = "0 or more; read with its p value",
       stringsAsFactors = FALSE
     ),
     data.frame(
@@ -303,7 +372,7 @@
       definition = paste(
         "How far the panel's rating distribution moved between two rounds, as",
         "a share of the experts compared. Change below 15% is read as stable,",
-        "a cut-off its authors set from one study without statistical theory."
+        "a threshold its authors set from one study without statistical theory."
       ),
       range = "0 to 1; stable below .15",
       stringsAsFactors = FALSE
@@ -319,32 +388,36 @@
     psa = "Share of judges who put the item in the construct it was written for (0 to 1; higher is stronger).",
     csv = "How much more often judges chose the intended construct than its closest rival (-1 to 1; 0 is a tie).",
     competitor = "The construct other than the intended one that judges chose most often.",
-    p_value = "Chance of at least this many target assignments if judges assigned at the rate p0; compared with alpha.",
-    htc = "Mean rating against the intended definition, as a share of the rating scale (0 to 1).",
-    htd = "How far that mean exceeds the closest rival's, as a share of the scale (usually small).",
+    p_value = "Probability of at least this many target assignments if each judge picked the target at rate p0; compare with alpha.",
+    htc = "Mean rating against the intended definition, divided by the number of scale points (1/points to 1).",
+    htd = "How far that rating exceeds the other constructs' ratings on average, as a share of the scale (usually small).",
     V = "Mean relevance rating rescaled to run from 0 (lowest possible) to 1 (highest).",
-    I_CVI = "Share of experts rating the item relevant, compared with Lynn's criterion for the panel size.",
+    I_CVI = "Share of experts rating the item relevant, against Lynn's criterion for the panel size (beyond ten, this package's).",
     `I_CVI_low/I_CVI_high` = "Wide because expert panels are small; the method is named above.",
     `psa_low/psa_high` = "Wider when fewer judges sorted the item; the method is named above.",
-    kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 when agreement is below chance).",
+    kappa_mod = "I-CVI corrected for chance agreement (at most 1; below 0 only when no expert, or one of three, rated it relevant).",
     agreement = "One coefficient for the whole panel (1 is perfect, 0 is chance); it can be low when nearly every rating is the same.",
+    agreement_ac1 = "Panel agreement on the relevant/not-relevant decision (1 is perfect); not 0 for independent raters.",
+    S_CVI_Ave = "Mean of the items' I-CVIs; Polit and Beck (2006) recommend .90 or higher.",
+    S_CVI_UA = "Share of items every expert rated relevant; it falls as experts are added.",
     cvr = "Lean of the panel toward calling the item essential (-1 to 1; above 0 means more than half did).",
-    ioc = "How consistently experts linked the item to its own objective rather than another (-1 to 1).",
-    severity = "How much harsher (positive) or more lenient (negative) the judge is than the panel.",
-    `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is too predictable.",
+    ioc = "Whether experts matched the item to this objective and not to the others (-1 to 1; Rovinelli and Hambleton used .70).",
+    severity_raw = "How much harsher (positive) or more lenient (negative) the judge is than the panel, in rating points.",
+    severity = "Severity on the relevant/not-relevant decision from the facets model; the flags use it when estimable.",
+    `infit/outfit` = "How predictable the judge's decisions are: about 1 is expected, high is erratic, low is more predictable than expected.",
     differentiation = "Spread of the judge's ratings compared with a typical judge (1 is typical; low means few distinctions).",
     g_coefficient = "How well the ranking of items would reproduce with another panel of this size (0 to 1).",
     phi_coefficient = "How well the absolute ratings would reproduce with another panel of this size (0 to 1).",
     share = "Percentage of all items in this cell.",
     adjusted_rand = "Match between the experts' groupings and the blueprint, corrected for chance (0 is chance, 1 is exact).",
-    stress = "Distortion from fitting the similarities into few dimensions (0 is perfect; below .10 is fair or better).",
-    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the preset threshold.",
+    stress = "How far the map's distances depart from the experts' dissimilarities (0 is an exact map; no benchmark applies).",
+    prop_agree = "Share of experts at or above the agreement cut in a round; consensus means reaching the consensus threshold.",
     prop_unchanged = "Share of experts giving the same rating in two consecutive rounds (1 means nobody changed).",
-    kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cut-off.",
+    kappa_w = "Chance-corrected agreement of each expert's ratings across two rounds; read it as a trend, not against a cutoff.",
     lambda = "How much an expert's earlier rating predicts the later one (0 to 1): predictability, not agreement.",
     chi_sq_individual = "Tests whether later ratings depend on earlier ones; needs expected counts of 5 or more.",
     chi_sq_group = "Tests whether the two rounds' distributions differ; small panels often look stable for lack of power.",
-    percent_change = "Net change in the rating distribution between rounds (stable below .15 by its authors' rule)."
+    percent_change = "How far the distribution moved between rounds, as a share of the experts (stable below .15 by its authors' rule)."
   )
 }
 
@@ -356,32 +429,32 @@
     workflow,
     "item-sort" = c(
       Retain = "met the exact target-assignment criterion.",
-      Review = "did not meet it; the competitor column shows where judges put it instead.",
+      Review = "did not meet the exact target-assignment criterion; the competitor column shows where judges put it instead.",
+      "Insufficient panel" = "too few judges sorted it for any count to meet the exact criterion.",
       "Insufficient data" = "no judge sorted it."
     ),
     "construct-rating" = c(
-      Retain = "rated highest against its intended construct, with every planned contrast meeting the screening criterion.",
-      Review = "did not meet every criterion; the competitor column shows the closest rival.",
+      Retain = "its ratings differed across constructs (the omnibus test) and the intended construct was rated above every other (every planned contrast).",
+      Review = "did not meet every criterion; the competitor column shows the other construct with the highest mean rating.",
       "Insufficient data" = "fewer than two judges rated it against every construct."
     ),
     relevance = c(
-      "Strong support" = "met the I-CVI criterion, with modified kappa above .74.",
-      Support = "met the I-CVI criterion.",
+      "Strong support" = "met the I-CVI criterion, which also puts modified kappa above .74.",
       Review = "did not meet the I-CVI criterion.",
       "Insufficient panel" = "fewer than three experts rated it."
     ),
     essentiality = c(
       Supported = "enough experts rated it essential to pass the exact test.",
       Review = "too few experts rated it essential to pass the exact test.",
+      "Insufficient panel" = "too few experts rated it for any count to pass the exact test.",
       "Insufficient data" = "no expert rated it."
     ),
     congruence = c(
-      "Target favored" = "experts linked it most strongly to its intended objective.",
-      "Tie / review" = "its intended objective tied with another.",
-      Review = "experts linked it more strongly to another objective.",
+      Congruent = "its index of item-objective congruence met the criterion.",
+      Review = "its index fell below the criterion; the margin shows how its intended objective compares with the other objective with the highest mean rating.",
       "Target described" = "only its intended objective was rated, so there is nothing to compare.",
       "Insufficient data" = "no usable ratings for its intended objective.",
-      "Descriptive only" = "no intended objective was given, so IOC is only described."
+      "Descriptive only" = "no intended objective was given, so the index is only described."
     ),
     delphi = c(
       Consensus = "reached the consensus threshold in its last round.",
@@ -393,16 +466,15 @@
       Typical = "consistent with the panel.",
       Severe = "rates markedly lower than the panel.",
       Lenient = "rates markedly higher than the panel.",
-      Erratic = "decisions noisier than the model expects.",
-      "Too predictable" = "decisions more predictable than the model expects.",
+      Erratic = "decisions noisier than the model expects (infit or outfit above the range).",
       "Low differentiation" = "draws few distinctions among items compared with other judges.",
-      Influential = "at least one item's review status changes without this judge.",
-      "Insufficient data" = "fewer than two usable ratings."
+      "Insufficient data" = "fewer than two usable ratings, or no other judge to compare with."
     ),
     domain = c(
       Covered = "met the coverage criteria.",
-      "Thinly covered" = "fewer items than the minimum set.",
-      "Over-represented" = "a larger share of the items than expected.",
+      "Thinly covered" = "fewer items than the minimum set for this analysis.",
+      "Over-represented" = "more than `over_factor` times its expected share of the items.",
+      "Under-represented" = "less than its target share divided by `over_factor`.",
       "Not covered" = "the blueprint includes it, but no item addresses it."
     ),
     stop("No decision meanings for workflow '", workflow, "'.", call. = FALSE)
@@ -410,16 +482,48 @@
 }
 
 # Explains the decision words present in `decisions`, in the order defined.
-.print_decision_legend <- function(decisions, workflow, width = 76) {
+# Entries wrap like all prose, to min(width, 80) - 1 unless `width` is given.
+.print_decision_legend <- function(decisions, workflow, width = NULL) {
   meanings <- .decision_meanings(workflow)
   present <- meanings[names(meanings) %in% as.character(decisions)]
   if (!length(present)) return(invisible(NULL))
-  cat("\nWhat the decisions mean\n")
+  .section("What the decisions mean")
   for (nm in names(present)) {
-    cat(strwrap(paste0(nm, " -- ", present[[nm]]), width = width,
-                initial = "  ", prefix = "      "), sep = "\n")
+    .say(paste0(nm, " -- ", present[[nm]]), indent = 2L, exdent = 6L,
+         width = width)
   }
   invisible(NULL)
+}
+
+# One sentence relating the shared status words to a workflow's decision
+# words: from the decisions on hand, or from the workflow's name and mode.
+.status_meaning <- function(recommendation, status, workflow = NULL,
+                            mode = NULL) {
+  passing <- if (length(recommendation)) {
+    unique(recommendation[!is.na(status) & status == "Supported"])
+  } else {
+    character(0)
+  }
+  if (!length(passing) && length(workflow)) {
+    passing <- switch(as.character(workflow)[1],
+                      "item-sort" = "Retain", "construct-rating" = "Retain",
+                      "delphi" = "Consensus", "judge-heterogeneity" = "Typical",
+                      "domain-coverage" = "Covered",
+                      "expert-panel" = switch(
+                        if (length(mode) && !is.na(mode[1])) mode[1] else "",
+                        relevance = "Strong support",
+                        essentiality = "Supported", congruence = "Congruent",
+                        character(0)),
+                      character(0))
+  }
+  paste0("Status uses the words shared with nomologR: Supported is ",
+         if (length(passing)) {
+           paste0("this analysis's passing decision (",
+                  paste(passing, collapse = ", "), ")")
+         } else {
+           "the analysis's passing decision"
+         },
+         ", and Review marks an item to look at again, not to delete.")
 }
 
 .status_definitions <- function() {
@@ -441,10 +545,16 @@
 
 # `terms` are glossary ids. When a table prints a column under a different
 # heading, pass `headings` (same length as `terms`) so the key names the column
-# the reader can see, not the id behind it.
-.print_key <- function(terms, width = 76, headings = terms) {
+# the reader can see, not the id behind it. `shown`, the headings a table
+# printed (.print_table() returns them), leaves out a column it did not show.
+.print_key <- function(terms, width = NULL, headings = terms, shown = NULL) {
   stopifnot(length(headings) == length(terms))
-  shown <- stats::setNames(headings, terms)
+  if (!is.null(shown)) {
+    on_screen <- tolower(headings) %in% tolower(.sentence_case(shown))
+    terms <- terms[on_screen]
+    headings <- headings[on_screen]
+    if (!length(terms)) return(invisible(NULL))
+  }
   defs <- .term_defs()
   # A term with no definition would otherwise be dropped in silence, so a typo
   # in a print method's key would quietly stop explaining a column.
@@ -453,23 +563,36 @@
     stop("Unknown glossary term(s): ", paste(unknown, collapse = ", "), ".",
          call. = FALSE)
   }
-  defs <- defs[defs$term %in% terms, , drop = FALSE]
-  if (!nrow(defs)) return(invisible(NULL))
-  defs <- defs[match(terms[terms %in% defs$term], defs$term), , drop = FALSE]
+  # One line per heading the reader sees. Two headings can share a term
+  # ("Target IOC" and "Highest IOC" are both the index), and each is
+  # explained under its own name; a heading repeated for the same term is
+  # explained once.
+  once <- !duplicated(paste(terms, tolower(headings), sep = "\r"))
+  terms <- terms[once]
+  headings <- headings[once]
+  if (!length(terms)) return(invisible(NULL))
 
   short <- .term_short()
-  cat("\nWhat these columns mean\n")
-  for (i in seq_len(nrow(defs))) {
-    body <- short[[defs$term[i]]]
-    cat(strwrap(paste0(shown[[defs$term[i]]], " -- ", defs$label[i], ". ", body),
-                width = width, initial = "  ", prefix = "      "), sep = "\n")
+  .section("What these columns mean")
+  for (i in seq_along(terms)) {
+    def <- defs[match(terms[i], defs$term), , drop = FALSE]
+    body <- short[[terms[i]]]
+    head <- .sentence_case(headings[i])
+    label <- if (identical(tolower(head), tolower(def$label))) {
+      ""
+    } else {
+      paste0(def$label, ". ")
+    }
+    .say(paste0(head, " -- ", label, body), indent = 2L, exdent = 6L,
+         width = width)
   }
   invisible(NULL)
 }
 
 .print_key_footer <- function() {
-  cat("\nFull definitions: contentvalid_glossary(). To hide this key:\n",
-      "options(contentvalidR.show_key = FALSE).\n", sep = "")
+  cat("\n")
+  .say("Full definitions: contentvalid_glossary(). To hide this key:",
+       "options(contentvalidR.show_key = FALSE).")
 }
 
 
@@ -495,11 +618,11 @@
 #' @section A note on benchmark labels:
 #' Strength labels such as `Strong` or `Weak` from [interpret_colquitt()] are
 #' percentile positions relative to scales published in the measurement
-#' literature. They are not absolute judgments, and they are not comparable
-#' across indices: HTC and HTD sit on different scales with different typical
+#' literature. They are not absolute judgments. Each index is read against its
+#' own benchmark: HTC and HTD sit on different scales with different typical
 #' values, so an HTC of .83 can be labeled `Weak` in the same analysis where
-#' an HTD of .44 is labeled `Very Strong`. Compare each index against its own
-#' benchmark, never against another index's number.
+#' an HTD of .44 is labeled `Very Strong`. Two indices' labels can be compared,
+#' because each is a percentile position; their numbers cannot.
 #'
 #' @seealso [interpret_colquitt()] for the benchmark bands themselves.
 #'
@@ -513,11 +636,7 @@ contentvalid_glossary <- function(workflow = NULL) {
     if (!is.character(workflow) || length(workflow) != 1L || is.na(workflow)) {
       stop("`workflow` must be one workflow name or NULL.", call. = FALSE)
     }
-    known <- unique(defs$workflow)
-    if (!workflow %in% known) {
-      stop("`workflow` must be one of: ", paste(known, collapse = ", "), ".",
-           call. = FALSE)
-    }
+    workflow <- .choose(workflow, unique(defs$workflow), "workflow")
     defs <- defs[defs$workflow == workflow, , drop = FALSE]
   }
   rownames(defs) <- NULL
@@ -527,16 +646,16 @@ contentvalid_glossary <- function(workflow = NULL) {
 }
 
 #' @export
-print.contentvalid_glossary <- function(x, width = 76, ...) {
-  cat("contentvalidR glossary\n")
+print.contentvalid_glossary <- function(x, width = NULL, ...) {
+  .print_header(x, "Glossary")
   for (wf in unique(x$workflow)) {
-    cat("\n", wf, "\n", sep = "")
+    .section(paste0(.sentence_case(wf), " workflow (\"", wf, "\")"))
     sub <- x[x$workflow == wf, , drop = FALSE]
     for (i in seq_len(nrow(sub))) {
       body <- sub$definition[i]
       if (nzchar(sub$range[i])) body <- paste0(body, " (", sub$range[i], ")")
-      cat(strwrap(paste0(sub$term[i], " -- ", sub$label[i], ". ", body),
-                  width = width, initial = "  ", prefix = "      "), sep = "\n")
+      .say(paste0(sub$term[i], " -- ", sub$label[i], ". ", body),
+           indent = 2L, exdent = 6L, width = width)
     }
     # The words each workflow prints in its decision column.
     sets <- switch(wf,
@@ -545,30 +664,30 @@ print.contentvalid_glossary <- function(x, width = 76, ...) {
                    "domain-coverage" = "domain",
                    wf)
     for (s in sets) {
-      cat("  decisions", if (length(sets) > 1L) paste0(" (", s, ")"), ":\n",
+      cat("  Decisions", if (length(sets) > 1L) paste0(" (", s, ")"), "\n",
           sep = "")
       meanings <- .decision_meanings(s)
       for (nm in names(meanings)) {
-        cat(strwrap(paste0(nm, " -- ", meanings[[nm]]), width = width,
-                    initial = "    ", prefix = "        "), sep = "\n")
+        .say(paste0(nm, " -- ", meanings[[nm]]), indent = 4L, exdent = 8L,
+             width = width)
       }
     }
   }
 
   st <- attr(x, "statuses")
   if (is.data.frame(st) && nrow(st)) {
-    cat("\nstatus labels\n")
+    .section("Status labels")
     for (i in seq_len(nrow(st))) {
-      cat(strwrap(paste0(st$status[i], " -- ", st$meaning[i]),
-                  width = width, initial = "  ", prefix = "      "), sep = "\n")
+      .say(paste0(st$status[i], " -- ", st$meaning[i]), indent = 2L,
+           exdent = 6L, width = width)
     }
-    cat(strwrap(paste("Each decision word above maps onto one of these",
-                      "statuses, stored in the `status` column of `results`."),
-                width = width, initial = "  ", prefix = "  "), sep = "\n")
+    .say("Each decision word above maps onto one of these statuses, stored",
+         "in the `status` column of `results`.", indent = 2L, width = width)
   }
-  cat("\n")
-  .say("Strength labels such as Strong or Weak are percentile positions",
-       "relative to published scales, not absolute judgments, and are not",
-       "comparable across different indices.")
+  .closing(c("Strength labels such as Strong or Weak are percentile positions",
+             "relative to published scales, not absolute judgments. Compare two",
+             "indices by their labels, never by their numbers, which sit on",
+             "different scales."),
+           "See as.data.frame(x) for the definitions as a table.", width = width)
   invisible(x)
 }

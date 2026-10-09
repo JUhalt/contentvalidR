@@ -130,9 +130,9 @@ test_that("each workflow shows the statistic its decision rule reads", {
   }
   expect_identical(stat_of(ess), "CVR")
   expect_identical(stat_of(expert_validity(con_t, mode = "congruence")),
-                   "IOC margin")
+                   "target IOC")
   expect_identical(stat_of(expert_validity(con_d, mode = "congruence"),
-                           keep = "Descriptive only"), "IOC")
+                           keep = "Descriptive only"), "highest IOC")
   expect_identical(stat_of(rating_validity(rd, scale_min = 1, scale_max = 5)),
                    "HTC")
   expect_identical(stat_of(delphi), "Share agreeing")
@@ -149,13 +149,16 @@ test_that("content_evidence() refuses what it cannot read", {
 
 test_that("the print opens with the verdict and names who held what back", {
   out <- capture.output(print(wt_sequential()))
-  expect_match(out[3], "10 of 12 items carried by every stage that reviewed")
+  expect_match(out[2], "10 of 12 items carried by every stage that reviewed")
   # Wrapped lines are joined, so a phrase split across two still matches.
   txt <- gsub("\\s+", " ", paste(out, collapse = " "))
   expect_match(txt, "Held back: EF5 \\(Relevance panel\\), TF5 \\(Item sort\\)")
   expect_match(txt, "1\\. Relevance panel: 12 items, 8 experts\\. Shows I-CVI\\.")
   expect_match(txt, "2\\. Item sort: 11 items, 20 judges\\. Shows Psa\\.")
-  expect_match(txt, "held back: Item sort")
+  # The result column names the stage by its number in the list above.
+  expect_match(txt, "TF5 .* Held back: 2")
+  expect_match(txt, "Carried")
+  expect_match(txt, "Result -- Carried when every stage")
   expect_match(txt, "What these columns mean")
 
   old <- options(contentvalidR.show_key = FALSE)
@@ -163,8 +166,10 @@ test_that("the print opens with the verdict and names who held what back", {
   hidden <- gsub("\\s+", " ", paste(capture.output(print(wt_sequential())),
                                     collapse = " "))
   expect_no_match(hidden, "What these columns mean")
-  # The result stays readable with the key hidden.
-  expect_match(hidden, "held back: Item sort")
+  # The result stays readable with the key hidden: the numbered list of
+  # stages is not part of the key.
+  expect_match(hidden, "2\\. Item sort:")
+  expect_match(hidden, "Held back: 2")
 })
 
 test_that("the profile and the flow draw in gray and in color", {

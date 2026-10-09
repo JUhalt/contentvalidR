@@ -11,7 +11,7 @@ status](https://www.r-pkg.org/badges/version/contentvalidR)](https://CRAN.R-proj
 [![License: GPL v3
 only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://github.com/JUhalt/contentvalidR/blob/master/LICENSE.md)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
 **Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see
@@ -29,10 +29,10 @@ website](https://juhalt.github.io/contentvalidR/) ·
 experts provide before a scale reaches respondents: whether each item
 represents the construct it was written for, whether a panel agrees on
 it, whether the conclusions depend on who sat on the panel, and whether
-the items cover the domain at all. Every analysis prints its verdict
-first, reports its numbers in APA style, and explains each index it
-shows, so the output can be read without first consulting the source
-papers.
+the items cover the domain at all. Every analysis prints a header naming
+what it holds, then the facts of the design, then its verdict; it
+reports its numbers in APA style and explains each index it shows, so
+the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader
 > validity argument. They complement, rather than replace, construct
@@ -91,8 +91,7 @@ sort_dat <- data.frame(
 
 fit <- sort_validity(sort_dat)
 fit
-#> contentvalidR item-sort analysis
-#> --------------------------------
+#> <contentvalid_sort> Item-sort analysis
 #> Items: 3 | Judges: 20 | Target constructs: 1
 #> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
 #> Judges: naive, meaning drawn from the kind of people who will answer the
@@ -102,70 +101,98 @@ fit
 #> Flagged for review: Needs review
 #> 
 #> Item-level evidence
-#>          item target decision judges Psa     95% CI Csv competitor      p
-#>       Clear 1      A   Retain  18/20 .90 [.70, .97] .80          B < .001
-#>       Clear 2      A   Retain  16/20 .80 [.58, .92] .60          B   .006
-#>  Needs review      A   Review  12/20 .60 [.39, .78] .20          B   .252
+#>   Item         Target Decision Judges Psa     95% CI Csv Competitor      p
+#>   Clear 1      A      Retain    18/20 .90 [.70, .97] .80 B          < .001
+#>   Clear 2      A      Retain    16/20 .80 [.58, .92] .60 B            .006
+#>   Needs review A      Review    12/20 .60 [.39, .78] .20 B            .252
 #> 
-#> judges: assignments to the target construct, out of the judges who sorted the
-#> item.
-#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald interval.
-#> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#>   Judges: assignments to the target construct, out of the judges who sorted
+#>   the item.
+#>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#>   compared seven methods and recommends score intervals over the Wald
+#>   interval. An interval reflects how few ratings an item received, not whether
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
-#>  target items mean Psa Psa level mean Csv Csv level
-#>       A     3      .77  Moderate      .53  Moderate
-#> Benchmark set: Overall (not correlation-normed)
+#>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           3       .77  Moderate        .53  Moderate
+#>   Benchmark set: Overall (not correlation-normed)
+#>   These bands come from tasks with three definitions (one focal, two
+#>   orbiting); judges here used 2 (set `n_constructs` if more were offered), so
+#>   the comparison is approximate. This is a contentvalidR caution: Colquitt et
+#>   al. do not discuss other numbers.
 #> 
-#> Colquitt labels are empirical percentile norms derived from scale-level
-#> averages, not universal cutoffs or automatic scale-retention rules. They
-#> place a scale against published scales; Psa and Csv sit on different scales,
-#> so their labels are not comparable with each other.
+#>   Colquitt labels are empirical percentile norms derived from scale-level
+#>   averages, not universal cutoffs or automatic scale-retention rules. They
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
-#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the
-#>       item in the construct it was written for (0 to 1; higher is
-#>       stronger).
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
 #>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
 #>       method is named above.
-#>   Csv -- Coefficient of Substantive Validity. How much more often judges
-#>       chose the intended construct than its closest rival (-1 to 1; 0 is a
-#>       tie).
-#>   competitor -- Strongest competing construct. The construct other than the
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
+#>   Competitor -- Strongest competing construct. The construct other than the
 #>       intended one that judges chose most often.
-#>   p -- Howard-Melloy exact test. Chance of at least this many target
-#>       assignments if judges assigned at the rate p0; compared with alpha.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
 #> 
 #> What the decisions mean
 #>   Retain -- met the exact target-assignment criterion.
-#>   Review -- did not meet it; the competitor column shows where judges put
-#>       it instead.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
 #> 
-#> Full definitions: contentvalid_glossary(). To hide this key:
-#> options(contentvalidR.show_key = FALSE).
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
 #> 
-#> 'Review' is not an automatic deletion decision. Use theory, construct-domain
-#> coverage, item wording, and qualitative judge feedback alongside these
-#> statistics.
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
 ```
 
-The verdict comes first: two items meet the exact test of Howard and
-Melloy (2016), and one is flagged for review. `Review` is not a decision
-to delete; it marks an item to look at again, together with what the
-judges wrote about it.
+The first line names the object, `<contentvalid_sort>`, and what it
+holds; then, after the facts of the design, the verdict: two items meet
+the exact test of Howard and Melloy (2016), and one is flagged for
+review. `Review` is not a decision to delete; it marks an item to look
+at again, together with what the judges wrote about it.
+
+The scale-level bands place the mean Psa and Csv against published
+scales (Colquitt et al., 2019). Those norms come from sorts with three
+definitions, and these judges used two, so the printout says the
+comparison is approximate.
 
 For a manuscript, `content_report()` gives the same evidence as an APA
-table, and `format = "markdown"` writes it for Quarto or R Markdown:
+table, with a general note that defines its abbreviations and columns
+and states the criterion behind each decision:
 
 ``` r
 content_report(fit)
-#>          item target judges competitor Psa     95% CI Csv      p decision
-#>       Clear 1      A  18/20          B .90 [.70, .97] .80 < .001   Retain
-#>       Clear 2      A  16/20          B .80 [.58, .92] .60   .006   Retain
-#>  Needs review      A  12/20          B .60 [.39, .78] .20   .252   Review
+#> <contentvalid_report> Results table in APA style
+#> 
+#>   Item         Target Judges Competitor Psa     95% CI Csv      p Decision
+#>   Clear 1      A       18/20 B          .90 [.70, .97] .80 < .001 Retain
+#>   Clear 2      A       16/20 B          .80 [.58, .92] .60   .006 Retain
+#>   Needs review A       12/20 B          .60 [.39, .78] .20   .252 Review
+#> 
+#> Note. Psa = proportion of substantive agreement; CI = confidence interval;
+#> Csv = coefficient of substantive validity. Judges = target assignments, out of
+#> the judges who sorted the item. 95% CI = Wilson score confidence interval.
+#> Retain = at least the number of target assignments the exact one-sided
+#> binomial test needs at alpha = .05 with p0 = .50 (Howard & Melloy, 2016).
+#> 
+#> See content_report(fit, format = "markdown") for the table as Markdown, ready
+#> for a manuscript.
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown;
+print it from a chunk with the option `results = "asis"`, so that it
+renders as a table.
 
 `plot()` draws each item’s share of judges with its interval, against
 the share the exact test needs for that item:
@@ -187,11 +214,11 @@ belongs in your own visible code.
 | Question put to judges or experts | Workflow | Built on | Guide |
 |----|----|----|----|
 | Which construct does each item belong to? | `sort_validity()` | Anderson & Gerbing (1991); Howard & Melloy (2016); Colquitt et al. (2019) | [Item sorts](https://juhalt.github.io/contentvalidR/articles/item-sort-validity.html) |
-| How well does each item match each construct definition? | `rating_validity()` | Hinkin & Tracey (1999); Colquitt et al. (2019) | [Construct ratings](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.html) |
+| How well does each item match each construct definition? | `rating_validity()` | Hinkin & Tracey (1999); MacKenzie et al. (2011); Colquitt et al. (2019) | [Construct ratings](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.html) |
 | Is each item relevant, essential, or matched to its objective? | `expert_validity()` | Aiken (1980); Lawshe (1975); Lynn (1986); Polit et al. (2007); Rovinelli & Hambleton (1977) | [Expert panels](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.html) |
 | Has a Delphi panel reached consensus, and stopped changing? | `delphi_validity()` | Holey et al. (2007) | [Delphi rounds](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.html) |
-| Do the conclusions depend on the particular judges? | `judge_validity()` | Crocker et al. (1988); Engelhard (1994) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
-| Do the items cover the blueprint? | `domain_validity()` | Sireci & Geisinger (1992) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
+| Do the conclusions depend on the particular judges? | `judge_validity()` | Crocker et al. (1988); Linacre (1989); Engelhard (1994) | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
+| Do the items cover the blueprint? | `domain_validity()` | A blueprint tally; Sireci & Geisinger (1992, 1995) for the optional structure analysis | [Reading the output](https://juhalt.github.io/contentvalidR/articles/reading-output.html) |
 
 The first four ask whether each **item** behaves as intended or, in a
 Delphi study, whether the panel has settled on it. The last two ask
@@ -201,9 +228,10 @@ covers the **domain** you set out to measure. An item can only be rated
 if someone wrote it, so a perfect relevance index says nothing about the
 facet you forgot.
 
-How many judges or experts to recruit is answered exactly, rather than
-by a rule of thumb, by `sort_power()`, `expert_power()`, and
-`gtheory_content()`; see [Design and
+How many judges or experts to recruit is answered from the design rather
+than by a rule of thumb: exactly by `sort_power()` and `expert_power()`,
+and as an estimate from a panel’s ratings by `gtheory_content()`; see
+[Design and
 reporting](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.html).
 When the items move on to response data, `content_handoff()` carries
 them and their evidence; see [the handoff
@@ -215,11 +243,12 @@ started](https://juhalt.github.io/contentvalidR/articles/getting-started.html).
 
 ## Reading the output
 
-Every print opens with its verdict and reports numbers as the APA
-Publication Manual (7th ed.) prescribes: no leading zero on values that
-cannot exceed 1, *p* to three decimals, and intervals as \[LL, UL\]. A
-short key under each result explains only the columns and decisions it
-shows. `contentvalid_glossary()` has the full definitions, and
+Every print opens with a header naming the object, then the facts of the
+design and the verdict, and reports numbers as the APA Publication
+Manual (7th ed.) prescribes: no leading zero on values that cannot
+exceed 1, *p* to three decimals, and intervals as \[LL, UL\]. A short
+key under each result explains only the columns and decisions it shows.
+`contentvalid_glossary()` has the full definitions, and
 `options(contentvalidR.show_key = FALSE)` hides the key once the terms
 are familiar. See [Reading the
 output](https://juhalt.github.io/contentvalidR/articles/reading-output.html).
@@ -260,6 +289,8 @@ Five deterministic example data sets, covering the item-sort,
 construct-rating, relevance, essentiality, and congruence input shapes,
 are installed as CSV files, for example
 `system.file("extdata", "sort_example.csv", package = "contentvalidR")`.
+Four more files hold the one item set the walkthrough follows through
+every stage: its items, the sort, the expert ratings, and the responses.
 `vignette("reporting-examples")` gives methods and results scaffolds and
 a minimum reproducibility statement.
 
@@ -349,11 +380,6 @@ Works cited in this README, the help pages, and the vignettes.
 - Cohen, J. (1968). Weighted kappa: Nominal scale agreement provision
   for scaled disagreement or partial credit. *Psychological Bulletin,
   70*(4), 213–220. <https://doi.org/10.1037/h0026256>
-- Colquitt, J. A., Baer, M. D., Long, D. M., &
-  Halvorsen-Ganepola, M. D. K. (2014). Scale indicators of social
-  exchange relationships: A comparison of relative content validity.
-  *Journal of Applied Psychology, 99*(4), 599–618.
-  <https://doi.org/10.1037/a0036374>
 - Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
   Content validation guidelines: Evaluation criteria for definitional
   correspondence and definitional distinctiveness. *Journal of Applied
@@ -388,10 +414,17 @@ Works cited in this README, the help pages, and the vignettes.
   and the intraclass correlation coefficient as measures of reliability.
   *Educational and Psychological Measurement, 33*(3), 613–619.
   <https://doi.org/10.1177/001316447303300309>
+- Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). *irr: Various
+  coefficients of interrater reliability and agreement* (R package
+  version 0.85) \[Computer software\].
+  <https://doi.org/10.32614/CRAN.package.irr>
 - Glorfeld, L. W. (1995). An improvement on Horn’s parallel analysis
   methodology for selecting the correct number of factors to retain.
   *Educational and Psychological Measurement, 55*(3), 377–393.
   <https://doi.org/10.1177/0013164495055003002>
+- Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of
+  profile data. *Psychometrika, 24*(2), 95–112.
+  <https://doi.org/10.1007/BF02289823>
 - Gwet, K. L. (2008). Computing inter-rater reliability and its variance
   in the presence of high agreement. *British Journal of Mathematical
   and Statistical Psychology, 61*(1), 29–48.
@@ -412,8 +445,8 @@ Works cited in this README, the help pages, and the vignettes.
   2*(2), 175–186. <https://doi.org/10.1177/109442819922004>
 - Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
   exploration of the use of simple statistics to measure consensus and
-  stability in Delphi studies. *BMC Medical Research Methodology,
-  7*, 52. <https://doi.org/10.1186/1471-2288-7-52>
+  stability in Delphi studies. *BMC Medical Research Methodology, 7*,
+  Article 52. <https://doi.org/10.1186/1471-2288-7-52>
 - Horn, J. L. (1965). A rationale and test for the number of factors in
   factor analysis. *Psychometrika, 30*(2), 179–185.
   <https://doi.org/10.1007/BF02289447>
@@ -431,16 +464,29 @@ Works cited in this README, the help pages, and the vignettes.
 - Krippendorff, K. (2011). *Computing Krippendorff’s alpha-reliability*.
   Annenberg School for Communication, University of Pennsylvania.
   <https://www.asc.upenn.edu/sites/default/files/2021-03/Computing%20Krippendorff%27s%20Alpha-Reliability.pdf>
+- Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness
+  of fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27.
+  <https://doi.org/10.1007/BF02289565>
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer
   agreement for categorical data. *Biometrics, 33*(1), 159–174.
   <https://doi.org/10.2307/2529310>
 - Lawshe, C. H. (1975). A quantitative approach to content validity.
   *Personnel Psychology, 28*(4), 563–575.
   <https://doi.org/10.1111/j.1744-6570.1975.tb01393.x>
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
+  bias* $$Facets help$$. Winsteps.com. Retrieved October 2, 2026, from
+  <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
+- Linacre, J. M. (2002). What do infit and outfit, mean-square and
+  standardized mean? *Rasch Measurement Transactions, 16*(2), 878.
+  <https://www.rasch.org/rmt/rmt162f.htm>
 - Lynn, M. R. (1986). Determination and quantification of content
   validity. *Nursing Research, 35*(6), 382–385.
   <https://doi.org/10.1097/00006199-198611000-00017>
+- MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011).
+  Construct measurement and validation procedures in MIS and behavioral
+  research: Integrating new and existing techniques. *MIS Quarterly,
+  35*(2), 293–334. <https://doi.org/10.2307/23044045>
 - Newcombe, R. G. (1998). Two-sided confidence intervals for the single
   proportion: Comparison of seven methods. *Statistics in Medicine,
   17*(8), 857–872. <https://doi.org/10/cpchjg>
@@ -497,8 +543,8 @@ Works cited in this README, the help pages, and the vignettes.
   congruence for multidimensional items. *International Journal of
   Testing, 3*(2), 163–171. <https://doi.org/10.1207/S15327574IJT0302_5>
 - Vach, W., & Gerke, O. (2023). Gwet’s AC1 is not a substitute for
-  Cohen’s kappa: A comparison of basic properties. *MethodsX,
-  10*, 102212. <https://doi.org/10.1016/j.mex.2023.102212>
+  Cohen’s kappa: A comparison of basic properties. *MethodsX, 10*,
+  Article 102212. <https://doi.org/10.1016/j.mex.2023.102212>
 - Wilson, E. B. (1927). Probable inference, the law of succession, and
   statistical inference. *Journal of the American Statistical
   Association, 22*(158), 209–212.
@@ -510,8 +556,15 @@ Works cited in this README, the help pages, and the vignettes.
 - Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
   comparison of Cohen’s kappa and Gwet’s AC1 when calculating
   inter-rater reliability coefficients: A study conducted with
-  personality disorder samples. *BMC Medical Research Methodology,
-  13*, 61. <https://doi.org/10.1186/1471-2288-13-61>
+  personality disorder samples. *BMC Medical Research Methodology, 13*,
+  Article 61. <https://doi.org/10.1186/1471-2288-13-61>
+- Wright, B. D. (1988). The efficacy of unconditional maximum likelihood
+  bias correction: Comment on Jansen, van den Wollenberg, and Wierda.
+  *Applied Psychological Measurement, 12*(3), 315–318.
+  <https://doi.org/10.1177/014662168801200309>
+- Wright, B. D., & Douglas, G. A. (1977). Best procedures for
+  sample-free item analysis. *Applied Psychological Measurement, 1*(2),
+  281–295. <https://doi.org/10.1177/014662167700100216>
 - Yao, G., Wu, C.-H., & Yang, C.-T. (2008). Examining the content
   validity of the WHOQOL-BREF from respondents’ perspective by
   quantitative methods. *Social Indicators Research, 85*(3), 483–498.
@@ -519,7 +572,8 @@ Works cited in this README, the help pages, and the vignettes.
 - Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
   inter-rater reliability for nominal data: Which coefficients and
   confidence intervals are appropriate? *BMC Medical Research
-  Methodology, 16*, 93. <https://doi.org/10.1186/s12874-016-0200-9>
+  Methodology, 16*, Article 93.
+  <https://doi.org/10.1186/s12874-016-0200-9>
 - Zwick, W. R., & Velicer, W. F. (1986). Comparison of five rules for
   determining the number of components to retain. *Psychological
   Bulletin, 99*(3), 432–442.

@@ -12,29 +12,52 @@ csv_binom_test(n_c, N, p0 = 0.5, alpha = 0.05)
 \item{N}{Integer; total number of non-missing assignments for the item.}
 
 \item{p0}{Null target-assignment probability. Default \code{0.5}, following
-Howard and Melloy (2016).}
+Howard and Melloy (2016); see Details.}
 
-\item{alpha}{Significance level. Default \code{0.05}.}
+\item{alpha}{Significance level. Default \code{0.05}. A \emph{p} equal to \code{alpha}
+meets the criterion; see Details.}
 }
 \value{
-A list containing the exact p-value, observed target proportion,
-one-sided confidence interval, the minimum critical target count,
-a logical \code{passes_chance} flag, a backward-compatible \code{decision} label,
-and a plain-language \code{interpretation}.
+A list containing the exact \emph{p} value, observed target proportion,
+one-sided confidence interval at level \code{1 - alpha}, the minimum critical
+target count, a logical \code{passes_chance} flag (\code{TRUE} when the count meets
+the exact criterion), a backward-compatible \code{decision} label, and a
+plain-language \code{interpretation}.
 The inputs are returned too, as \code{n_target}, \code{N}, \code{p0}, and \code{alpha}.
 It prints as a short report in APA style; the elements themselves are
 unrounded.
 }
 \description{
 Tests whether the number of assignments to an item's intended construct
-exceeds the count expected under a binomial chance model. With the default
-\code{p0 = 0.5}, this implements the Howard and Melloy (2016) retention test for
-item-sort tasks by testing the target-assignment count directly. Unlike the
-legacy critical-Csv procedure, the count-based test remains applicable when
-respondents choose among more than two construct alternatives.
+exceeds the count expected under a binomial model with null probability
+\code{p0}. With the default \code{p0 = 0.5}, this implements the Howard and Melloy
+(2016) retention test for item-sort tasks by testing the target-assignment
+count directly. Unlike the legacy critical-Csv procedure, the count-based
+test remains applicable when respondents choose among more than two
+construct alternatives.
 
 The function name is retained for backward compatibility even though the
 inferential test is performed on \code{n_c}, not on the observed Csv value.
+}
+\details{
+\code{p0} is the null probability that a judge assigns the item to its intended
+construct. It is not the rate expected from random assignment, which is 1
+divided by the number of constructs offered. Howard and Melloy (2016)
+describe .5 as arbitrary and lenient, kept because earlier work used it,
+and suggest a higher value such as .6 or .75, chosen before data
+collection, when the alternative constructs are clearly different from the
+target or the judges are subject-matter experts.
+
+The criterion is met when the exact \emph{p} is at or below \code{alpha}, so a \emph{p}
+equal to \code{alpha} counts as meeting it, and \code{critical_n_target} is the
+fewest target assignments whose \emph{p} is at or below \code{alpha}. A strict "below
+\code{alpha}" gives the same decision unless a tail probability equals \code{alpha}
+exactly, which cannot happen at \code{p0 = 0.5} and \code{alpha = 0.05}: every tail
+probability is then a multiple of 1 / 2^N.
+
+With very few judges no count can reach \code{alpha}: at \code{p0 = 0.5} and
+\code{alpha = 0.05}, four judges who all choose the target give \emph{p} = .0625.
+\code{critical_n_target} is then \code{NA}, and the printout says so.
 }
 \examples{
 csv_binom_test(n_c = 15, N = 20)

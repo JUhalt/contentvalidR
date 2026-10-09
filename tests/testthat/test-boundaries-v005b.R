@@ -25,7 +25,9 @@ test_that("Howard-Melloy exact boundaries remain discrete at tiny and canonical 
 
 test_that("exact sort power handles probability extremes and impossible tiny-N criteria", {
   out <- sort_power(N = c(1, 5, 10), true_p = c(0, 1))$table
-  expect_true(all(is.na(out$power[out$N == 1])))
+  # One judge can never reach the criterion, so no item is retained: power 0.
+  expect_true(all(is.na(out$critical_n_target[out$N == 1])))
+  expect_identical(out$power[out$N == 1], c(0, 0))
   expect_equal(out$power[out$N == 5 & out$true_p == 0], 0)
   expect_equal(out$power[out$N == 5 & out$true_p == 1], 1)
   expect_equal(out$power[out$N == 10 & out$true_p == 0], 0)
@@ -218,5 +220,6 @@ test_that("expert workflows retain explicit insufficient and single-objective st
   )
   cfit <- expert_validity(con, mode = "congruence")
   expect_equal(cfit$results$recommendation, "Target described")
-  expect_true(is.na(cfit$results$competitor_ioc))
+  expect_true(is.na(cfit$results$competitor_mean))
+  expect_true(is.na(cfit$results$target_ioc))
 })

@@ -1,44 +1,51 @@
-## Resubmission
+## Update
 
-This is a resubmission. Both earlier versions were returned by the incoming
-checks, and this version fixes each problem:
+This is an update of contentvalidR from 0.4.0, on CRAN since 2026-09-28, to
+1.0.0. The versions in between were released on GitHub and R-universe only.
 
-* 0.3.0 was returned for "Found the following (possibly) invalid file URIs:
-  LICENSE.md, ROADMAP.md (from README.md)". README.md now links to both files
-  with full URLs.
-* 0.3.1 was returned for "Found the following hidden files and directories:
-  .git". That tarball had been built from a git worktree checkout, where `.git`
-  is a file rather than a directory, and `R CMD build` did not drop it.
-  `.Rbuildignore` now excludes `.git`, `.gitignore`, and `.gitattributes`, and
-  the contents of the built tarball were listed to confirm it contains no
-  hidden files.
-
-The version is 0.4.0 rather than a further patch because it also adds new
-functionality: a documented handoff of content-reviewed items to downstream
-empirical workflows, and a selectable criterion for parallel analysis.
+* One exported function is removed: `agreement_summary()`. It was deprecated
+  in 0.9.0, with a warning naming its replacement, `panel_agreement()`. That
+  warning shipped only on GitHub and R-universe, so CRAN users go from 0.4.0,
+  where the function works, to 1.0.0, where it is gone; NEWS.md records the
+  removal and the replacement.
+* Also removed since 0.4.0, each recorded in NEWS.md with its reason:
+  `anova_content()`'s `posthoc` argument (deprecated from the first release,
+  removed in 0.7.0) and its `posthoc_pass` column (removed in 0.8.0);
+  `overall_strength` in the `scale_summary` of `sort_validity()` and
+  `rating_validity()`, `n_support` in that of `expert_validity()` and
+  `competitor_ioc` in its congruence results, `n_influential` in the
+  `scale_summary` of `judge_validity()`, and `fit_label` in the `fit`
+  table of `content_structure()`. These five fields were removed in 1.0.0
+  without a notice period because they were wrong or unreachable;
+  `?contentvalidR` says so beside the deprecation policy.
+* `content_report()` returns an APA table by default since 0.9.0;
+  `format = "data.frame"` gives the numeric table.
+* Several results change because methods were corrected after an audit of the
+  package against its sources. NEWS.md lists each change under "values that
+  change", with the reason, and lists the stored sentences that now follow
+  the printed rounding rules under "Stored text that changes".
+* The printed output of every function changed to a style shared with the
+  companion package nomologR. Printed output is outside the package's
+  stability policy (`?contentvalidR`).
+* The package now imports withr. A function given `seed` runs its bootstrap
+  or parallel analysis inside `withr::with_seed()`, which leaves the
+  session's random stream as it was; the package does not write to the
+  global environment.
 
 ## Test environments
+
+To be completed at submission, from the release gate and win-builder:
 
 * Local: Windows 11, R 4.6.1, `R CMD check --as-cran` on the built source
   tarball
 * win-builder: R-devel
-* GitHub Actions:
-  * Windows, R release
-  * macOS, R release
-  * Ubuntu, R release
-  * Ubuntu, R oldrel-1
-  * Ubuntu, R devel
-  * Ubuntu, R devel with `--as-cran`, configured to fail on any NOTE
+* GitHub Actions: Windows, macOS and Ubuntu with R release; Ubuntu with R
+  oldrel-1 and R devel; Ubuntu R devel with `--as-cran`, configured to fail on
+  any NOTE
 
 ## R CMD check results
 
-0 errors | 0 warnings | 2 notes
-
-* checking CRAN incoming feasibility ... NOTE
-  New submission
-
-  No version of contentvalidR is on CRAN yet. On win-builder the same NOTE
-  also lists possibly misspelled words in DESCRIPTION, explained below.
+To be completed at submission from the raw win-builder log (00check.log).
 
 * checking HTML version of manual ... NOTE
   Skipping checking math rendering: package 'V8' unavailable
@@ -46,27 +53,19 @@ empirical workflows, and a selectable criterion for parallel analysis.
   This comes from the local Windows check machine, where the optional V8
   package is not installed. It does not concern the package.
 
-The built tarball contains no hidden files. Installed into an empty library,
-it ran the examples for all 40 help topics, all eight vignettes, and the
-citation.
+## Reverse dependencies
+
+To be confirmed at submission with `tools::package_dependencies("contentvalidR",
+reverse = TRUE, which = "all")`. The companion package nomologR reads
+contentvalidR's handoff object; it is maintained by the same author.
 
 ## Submission notes
 
-* No version of contentvalidR is on CRAN yet, so the incoming checks report a
-  new submission.
 * The words flagged as possibly misspelled in DESCRIPTION are spelled
-  correctly. Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
-  Lawshe, Llabre, Melloy, and Sireci are author surnames. HTC and HTD are the
-  Hinkin-Tracey correspondence and distinctiveness indices, and "et al." is the
-  standard citation abbreviation.
-* contentvalidR is distinct from the CRAN package contentValidity (version
-  0.2.0). contentValidity computes item- and scale-level content validity
-  indices: I-CVI, S-CVI, modified kappa, Aiken's V, and Lawshe's CVR.
-  contentvalidR also provides substantive-validity item sorting (Anderson and
-  Gerbing, 1991), the construct-rating procedure of Hinkin and Tracey (1999),
-  judge-heterogeneity and content-domain coverage analyses, and panel-level
-  agreement, organized into workflows that return interpretable summaries.
-  Some expert-panel indices overlap, but the scope differs, and the package
-  names differ.
-* The package imports only `stats` and contains no compiled code.
-* The Description field gives DOIs for the implemented methods.
+  correctly: Colquitt, Crocker, Geisinger, Gerbing, Hinkin, Krippendorff,
+  Lawshe, MacKenzie, Melloy, and Sireci are author surnames;
+  "generalizability" is the standard term of generalizability theory; and
+  "et al." is the standard citation abbreviation. To be confirmed against
+  the raw win-builder log at submission.
+* The package imports only `stats` and `withr` and contains no compiled code.
+* The Description field gives DOIs for the principal methods.

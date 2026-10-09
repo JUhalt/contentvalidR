@@ -52,8 +52,10 @@ handoff
 
 ```{r components}
 handoff$items
-handoff$item_evidence
-head(handoff$item_statistics)
+handoff$item_evidence[, c("item", "carried", "status", "recommendation",
+                          "n_judges")]
+writeLines(strwrap(handoff$item_evidence$rule[1]))
+head(handoff$item_statistics[, c("item", "statistic", "value", "criterion")])
 ```
 
 `items` is what the next stage consumes: the carried items only, so what you
@@ -65,7 +67,7 @@ compared against where the method sets one.
 
 ```{r provenance}
 str(handoff$provenance[c("schema_version", "workflow", "mode", "keep",
-                         "method", "citation")])
+                         "method", "citation")], nchar.max = 50, vec.len = 1.5)
 ```
 
 By default only items with a `Supported` status travel. Some protocols carry
@@ -142,7 +144,9 @@ through screening, dimensionality, measurement models, reliability, invariance,
 and nomological networks.
 
 ```{r nomologr, eval=FALSE}
-# install.packages("nomologR", repos = "https://juhalt.r-universe.dev")
+# install.packages("nomologR",
+#                  repos = c("https://juhalt.r-universe.dev",
+#                            "https://cloud.r-project.org"))
 library(nomologR)
 
 # `responses` is your collected data: one row per respondent, one column per item.

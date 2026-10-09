@@ -1,10 +1,14 @@
 # Gwet's AC1 for any number of raters and categories, following the computation
 # in Gwet's own irrCAC implementation: agreement is averaged over items rated by
 # at least two raters, category probabilities over every rated item.
-.gwet_ac1 <- function(X) {
+#
+# `values` is the set of rating categories. AC1 depends on how many there are
+# (Gwet, 2008), so a bootstrap passes the categories of the full data to every
+# resample; left NULL, they are the categories observed, irrCAC's default.
+.gwet_ac1 <- function(X, values = NULL) {
   rated <- colSums(!is.na(X)) >= 1L
   X <- X[, rated, drop = FALSE]
-  values <- sort(unique(as.vector(X[!is.na(X)])))
+  if (is.null(values)) values <- sort(unique(as.vector(X[!is.na(X)])))
   q <- length(values)
   empty <- list(estimate = NA_real_, pa = NA_real_, pe = NA_real_, n_items = 0L)
   if (ncol(X) < 1L || q < 1L) return(empty)
@@ -42,14 +46,38 @@
   if (total == 0) NA_real_ else same / total
 }
 
+# The number of within-item rating pairs, the base of that share.
+.pair_count <- function(X) {
+  m <- colSums(!is.na(X))
+  sum(m * (m - 1) / 2)
+}
+
+# The interval beside an agreement coefficient. When every resample gave the
+# same value the interval has no width, which reflects items rated alike,
+# not precision, so that is said instead.
+.agreement_ci_text <- function(ag, digits) {
+  if (!is.finite(ag$ci_low) || !is.finite(ag$ci_high)) return("")
+  if (isTRUE(all.equal(ag$ci_low, ag$ci_high))) {
+    return(paste0("; no ", .ci_label(ag$alpha), ", because every resample of ",
+                  "the items gave the same value"))
+  }
+  paste0(", ", .ci_label(ag$alpha), " ", .fmt_ci(ag$ci_low, ag$ci_high, digits))
+}
+
+# The share of identical pairs as printed: whole numbers on fewer than 100
+# pairs. An object saved before `n_pairs` existed prints whole numbers.
+.pairs_percent <- function(ag) {
+  .fmt_pct(ag$percent_agreement,
+           base = if (is.null(ag$n_pairs)) NA else ag$n_pairs)
+}
+
 # Percentile bootstrap resampling items with every rater's rating intact
 # (Zapf et al., 2016).
 .unit_bootstrap <- function(X, stat, B, alpha, seed = NULL) {
-  if (!is.null(seed)) set.seed(seed)
   n_units <- ncol(X)
-  estimates <- vapply(seq_len(B), function(b) {
+  estimates <- .with_seed(seed, vapply(seq_len(B), function(b) {
     stat(X[, sample.int(n_units, n_units, replace = TRUE), drop = FALSE])
-  }, numeric(1))
+  }, numeric(1)))
   usable <- is.finite(estimates)
   limits <- if (sum(usable) >= 2L) {
     stats::quantile(estimates[usable], c(alpha / 2, 1 - alpha / 2), names = FALSE)
@@ -85,17 +113,25 @@
 #'   specifically when data are ordinal or ratings are missing, which is typical
 #'   of expert panels. It is a general reliability coefficient (Hayes &
 #'   Krippendorff, 2007); no publication applying it specifically to
-#'   content-validity panels was found.
+#'   content-validity panels was found. Its value agrees with `kripp.alpha()`
+#'   of the irr package (Gamer et al., 2026) to numerical precision, which
+#'   the package's tests check.
 #' * `"ac1"`: Gwet's (2008) AC1, designed for high-agreement data where
-#'   kappa-type coefficients fall. It is never the default: Vach and Gerke
+#'   kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
+#'   affected than Cohen's kappa by how often each category is used. It is
+#'   never the default: Vach and Gerke
 #'   (2023) show that it rises as ratings concentrate in one category even at a
 #'   fixed level of agreement, and that it can be non-zero when raters are
 #'   independent. Its printed output always repeats that critique. AC1 treats
-#'   the supplied values as unordered categories.
+#'   the supplied values as unordered categories. It depends on how many
+#'   categories there are: they are the values observed in `ratings`, as in
+#'   Gwet's own software by default, and the bootstrap holds them fixed, so a
+#'   resample that happens to miss a category is scored on the same scale.
 #'
 #' @section Why a close-agreeing panel can have a low alpha:
 #' Alpha compares observed disagreement with the disagreement expected if the
-#' same ratings were assigned to items at random. When ratings cluster on a few
+#' same ratings were assigned to items at random. Feinstein and Cicchetti
+#' (1990) described the same paradox for kappa. When ratings cluster on a few
 #' values, as they do when nearly every item is rated relevant, very little
 #' disagreement is expected by chance, so even a few disagreements pull alpha
 #' down. The output reports the share of identical rating pairs alongside the
@@ -110,25 +146,33 @@
 #' extension. Intervals vary slightly between runs unless `seed` is set.
 #'
 #' @param ratings A numeric matrix or data frame with raters in rows and items
-#'   in columns. Missing ratings are allowed.
+#'   in columns. Missing ratings are allowed. A column whose name looks like a
+#'   rater ID (such as `expert` or `rater_id`) stops the function, so remove
+#'   it, or rename an item that has such a name.
 #' @param method `"krippendorff"` (default) or `"ac1"`.
 #' @param level Measurement level for Krippendorff's alpha: `"ordinal"`
 #'   (default), `"nominal"`, or `"interval"`. Ignored for AC1.
 #' @param B Number of bootstrap resamples. Use `0` to skip the interval.
 #' @param alpha Two-sided error rate for the bootstrap interval; `0.05` gives a
 #'   95% interval. This is not Krippendorff's alpha.
-#' @param seed Optional seed for a reproducible interval.
+#' @param seed Optional seed for a reproducible interval. The random-number
+#'   stream of the session is left as it was.
 #'
 #' @return An object of class `contentvalid_agreement`: a list with `method`,
 #'   `level`, `estimate`, `ci_low`, `ci_high`, `alpha`, `B`, `n_boot_usable`,
 #'   `n_items` (items rated by at least two raters), `n_raters`,
 #'   `percent_agreement` (share of within-item rating pairs that are identical),
-#'   `interpretation`, and `critique`.
+#'   `interpretation`, `critique`, and `n_pairs` (the number of within-item
+#'   rating pairs, the base of `percent_agreement`).
 #'
 #' @references
 #' Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
 #' I. The problems of two paradoxes. *Journal of Clinical Epidemiology,
 #' 43*(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
+#'
+#' Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). *irr: Various
+#' coefficients of interrater reliability and agreement* (R package version
+#' 0.85) \[Computer software\]. \doi{10.32614/CRAN.package.irr}
 #'
 #' Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 #' the presence of high agreement. *British Journal of Mathematical and
@@ -143,18 +187,18 @@
 #' \url{https://www.asc.upenn.edu/sites/default/files/2021-03/Computing\%20Krippendorff\%27s\%20Alpha-Reliability.pdf}
 #'
 #' Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
-#' kappa: A comparison of basic properties. *MethodsX, 10*, 102212.
+#' kappa: A comparison of basic properties. *MethodsX, 10*, Article 102212.
 #' \doi{10.1016/j.mex.2023.102212}
 #'
 #' Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
 #' comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater
 #' reliability coefficients: A study conducted with personality disorder
-#' samples. *BMC Medical Research Methodology, 13*, 61.
+#' samples. *BMC Medical Research Methodology, 13*, Article 61.
 #' \doi{10.1186/1471-2288-13-61}
 #'
 #' Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 #' inter-rater reliability for nominal data: Which coefficients and confidence
-#' intervals are appropriate? *BMC Medical Research Methodology, 16*, 93.
+#' intervals are appropriate? *BMC Medical Research Methodology, 16*, Article 93.
 #' \doi{10.1186/s12874-016-0200-9}
 #'
 #' @seealso [expert_validity()] for item-level expert-panel evidence.
@@ -173,9 +217,10 @@ panel_agreement <- function(ratings,
                             B = 1000,
                             alpha = 0.05,
                             seed = NULL) {
-  method <- match.arg(method)
-  level <- match.arg(level)
+  method <- .choose(method)
+  level <- .choose(level)
 
+  .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
   if (is.logical(X)) storage.mode(X) <- "numeric"
   if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
@@ -193,7 +238,10 @@ panel_agreement <- function(ratings,
   stat <- if (method == "krippendorff") {
     function(M) .krippendorff_alpha(M, level)$estimate
   } else {
-    function(M) .gwet_ac1(M)$estimate
+    # The categories are fixed from the full data, so a resample that happens
+    # to miss one is still scored on the same scale.
+    categories <- sort(unique(as.vector(X[!is.na(X)])))
+    function(M) .gwet_ac1(M, categories)$estimate
   }
   estimate <- stat(X)
   boot <- if (B > 0) {
@@ -243,7 +291,8 @@ panel_agreement <- function(ratings,
     n_raters = nrow(X),
     percent_agreement = pct,
     interpretation = interpretation,
-    critique = if (method == "ac1") .ac1_critique() else NA_character_
+    critique = if (method == "ac1") .ac1_critique() else NA_character_,
+    n_pairs = .pair_count(X)
   )
   class(out) <- "contentvalid_agreement"
   out
@@ -254,21 +303,21 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   label <- .agreement_label(x$method, x$level)
 
-  cat("contentvalidR panel agreement\n")
-  cat(strrep("-", 29), "\n", sep = "")
+  .print_header(x, "Panel agreement")
   cat("Items rated by two or more raters: ", x$n_items, " | Raters: ",
       x$n_raters, "\n", sep = "")
   # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
-  line <- paste0(label, " = ", .fmt(x$estimate, digits))
-  if (is.finite(x$ci_low) && is.finite(x$ci_high)) {
-    line <- paste0(line, ", ", .ci_label(x$alpha), " ",
-                   .fmt_ci(x$ci_low, x$ci_high, digits))
+  defined <- is.finite(x$estimate)
+  line <- if (defined) {
+    paste0(label, " = ", .fmt(x$estimate, digits))
+  } else {
+    # The reason is in the interpretation printed below.
+    paste0(label, ": undefined")
   }
+  if (defined) line <- paste0(line, .agreement_ci_text(x, digits))
   .say(line)
   if (is.finite(x$percent_agreement)) {
-    cat("Identical rating pairs: ",
-        formatC(100 * x$percent_agreement, format = "f", digits = 1), "%\n",
-        sep = "")
+    cat("Identical rating pairs: ", .pairs_percent(x), "\n", sep = "")
   }
 
   cat("\n")
@@ -285,7 +334,9 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     .say(x$critique)
   }
 
-  if (x$B > 0) {
+  # An undefined coefficient has no interval, so there is no bootstrap to
+  # describe.
+  if (x$B > 0 && defined) {
     cat("\n")
     note <- paste(
       "The interval resamples items with all of their ratings, following Zapf",
@@ -309,10 +360,10 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     .say(note)
   }
 
-  cat("\n")
-  .say("Panel agreement describes how consistently raters rated these items.",
-       "It does not show that the items are relevant or that the domain is",
-       "covered.")
+  .closing(c("Panel agreement describes how consistently raters rated these items.",
+             "It does not show that the items are relevant or that the domain is",
+             "covered."),
+           "See as.data.frame(x) for the estimate as one row.")
   invisible(x)
 }
 
@@ -326,14 +377,9 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
   if (is.na(ag$estimate)) return(paste0(head, "undefined; every paired rating was identical."))
 
   # Agreement coefficients cannot exceed 1, so no leading zero (APA 7, 6.36).
-  out <- paste0(head, .fmt(ag$estimate, digits))
-  if (is.finite(ag$ci_low) && is.finite(ag$ci_high)) {
-    out <- paste0(out, ", ", .ci_label(ag$alpha), " ",
-                  .fmt_ci(ag$ci_low, ag$ci_high, digits))
-  }
+  out <- paste0(head, .fmt(ag$estimate, digits), .agreement_ci_text(ag, digits))
   if (is.finite(ag$percent_agreement)) {
-    out <- paste0(out, ". Identical rating pairs: ",
-                  format(round(100 * ag$percent_agreement, 1), nsmall = 1), "%")
+    out <- paste0(out, ". Identical rating pairs: ", .pairs_percent(ag))
   }
   paste0(out, ".")
 }
@@ -349,7 +395,7 @@ print.contentvalid_agreement <- function(x, digits = 2, ...) {
     "nearly every rating is the same value, even on a panel that agrees",
     "closely, so read it beside the share of",
     "identical rating pairs. A low alpha with many identical pairs is not by",
-    "itself evidence of a poor panel. Print `details$agreement` for the full",
+    "itself evidence of a poor panel. Print x$details$agreement for the full",
     "explanation and interval details."
   )
 }

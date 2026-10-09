@@ -3,7 +3,7 @@
 #' @description
 #' Computes item-level Content Validity Index (I-CVI), scale-level average CVI
 #' (S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
-#' described by Polit, Beck, and Owen (2007).
+#' described by Polit et al. (2007).
 #'
 #' The I-CVI is the proportion of experts rating an item 3 or 4 on a 4-point
 #' relevance scale (Lynn, 1986). Polit and Beck (2006) named the two
@@ -16,17 +16,19 @@
 #' For each item, modified kappa adjusts I-CVI for chance agreement using the
 #' probability of observing exactly `A` agreements among `N` judges:
 #'
-#' \deqn{P_c = {N \choose A}(0.5)^N}
+#' \deqn{P_c = {N \choose A}(0.5)^N}{Pc = choose(N, A) * 0.5^N}
 #'
 #' and
 #'
-#' \deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
+#' \deqn{k^* = \frac{\textrm{I-CVI} - P_c}{1 - P_c}.}{k* = (I-CVI - Pc) / (1 - Pc).}
 #'
 #' I-CVI is a proportion of what is usually a small panel, so an interval is
 #' reported alongside it. The interval method is selectable; see `ci`.
 #'
 #' @param binary Matrix/data.frame with judges in rows and items in columns,
-#'   coded `1 = relevant` and `0 = not relevant`.
+#'   coded `1 = relevant` and `0 = not relevant`. Every column is an item; a
+#'   column whose name looks like a rater ID (such as `expert` or `rater_id`)
+#'   stops the function, so remove it, or rename an item that has such a name.
 #' @param na.rm Logical. If `FALSE` (default), missing ratings are an error.
 #'   If `TRUE`, missing ratings are removed itemwise and each item's effective
 #'   judge count is reported in `N`.
@@ -92,7 +94,8 @@ cvi <- function(binary,
                 ci = c("wilson", "agresti_coull", "exact", "none"),
                 alpha = 0.05) {
   .validate_flag(na.rm, "na.rm")
-  ci <- match.arg(ci)
+  ci <- .choose(ci)
+  .check_no_id_column(binary, "binary")
   X <- as.matrix(binary)
   if (length(dim(X)) != 2L || nrow(X) < 1L || ncol(X) < 1L) {
     stop("`binary` must contain at least one judge and one item.", call. = FALSE)
@@ -160,9 +163,9 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   sl <- x$scale_level
   it <- x$item_level
-  cat("contentvalidR content validity index (CVI)\n")
-  cat(strrep("-", 42), "\n", sep = "")
-  cat("Items: ", sl$n_items, " | Judges per item: ", sep = "")
+  .print_header(x, "Content validity index (CVI)")
+  # The raters are experts here, as in every expert-panel printout.
+  cat("Items: ", sl$n_items, " | Experts per item: ", sep = "")
   if (length(unique(it$N)) == 1L) {
     cat(unique(it$N), "\n", sep = "")
   } else {
@@ -170,8 +173,11 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   cat("S-CVI/Ave: ", .fmt(sl$S_CVI_Ave, digits), " | S-CVI/UA: ",
       .fmt(sl$S_CVI_UA, digits), "\n", sep = "")
+  .say("I-CVI = item-level content validity index; S-CVI/Ave = scale-level",
+       "CVI, the mean I-CVI; S-CVI/UA = scale-level CVI, the share of items",
+       "every expert rated relevant (Polit & Beck, 2006).")
 
-  cat("\nItem-level results\n")
+  .section("Item-level results")
   tab <- data.frame(item = it$item, agree = paste0(it$A, "/", it$N),
                     `I-CVI` = .fmt(it$I_CVI, digits),
                     stringsAsFactors = FALSE, check.names = FALSE)
@@ -182,20 +188,20 @@ print.contentvalid_cvi <- function(x, digits = 2, ...) {
   }
   tab$Pc <- .fmt_p(it$Pc)
   tab$kappa <- .fmt(it$kappa_mod, digits)
-  .print_table(tab)
+  .print_table(tab, more = "x$item_level")
   cat("\n")
-  .say("agree: judges rating the item relevant, out of those who rated it.",
-       "Pc: the probability that this many judges would agree by chance.",
-       "kappa: the modified kappa of Polit, Beck and Owen (2007), the I-CVI",
+  .say("Agree: experts rating the item relevant, out of those who rated it.",
+       "Pc: the probability that this many experts would agree by chance.",
+       "Kappa: the modified kappa of Polit et al. (2007), the I-CVI",
        "chance-corrected by Pc.")
   if (has_ci) {
     cat("\n")
     .say(.proportion_ci_note(x$ci, x$alpha))
   }
-  cat("\n")
-  .say("Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.",
-       "Interpretation should consider panel size, item purpose, and",
-       "qualitative expert feedback; CVI statistics alone do not establish",
-       "comprehensive content validity.")
+  .closing(c("Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.",
+             "Interpretation should consider panel size, item purpose, and",
+             "qualitative expert feedback; CVI statistics alone do not establish",
+             "comprehensive content validity."),
+           "See as.data.frame(x) for the item-level values.")
   invisible(x)
 }

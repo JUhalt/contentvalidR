@@ -134,7 +134,7 @@ test_that("the rule states the decision criterion each workflow applied", {
   expect_match(h$item_evidence$rule[1],
                sprintf("at least %d of %d experts rate the item relevant",
                        contentvalidR:::.cvi_required_count(N), N), fixed = TRUE)
-  expect_match(h$item_evidence$rule[1], "modified kappa > .74", fixed = TRUE)
+  expect_match(h$item_evidence$rule[1], "modified kappa above .74", fixed = TRUE)
   expect_true("Lynn (1986)" %in% h$provenance$citation)
 })
 
@@ -207,13 +207,14 @@ test_that("essentiality and congruence modes hand off", {
 
   con <- content_handoff(congruence_fit(), keep = c("Supported", "Review"))
   expect_named(con$scales, c("A", "B"))
-  expect_match(con$item_evidence$rule[1], "target-objective IOC exceeds")
+  expect_match(con$item_evidence$rule[1],
+               "for the target objective >= .70, the criterion they applied", fixed = TRUE)
 
   desc <- content_handoff(congruence_fit(target = FALSE),
                           keep = "Descriptive only")
   expect_null(desc$scales)
   expect_match(desc$item_evidence$rule[1], "no target-objective mapping")
-  expect_true(all(desc$item_statistics$statistic == "IOC"))
+  expect_true(all(desc$item_statistics$statistic == "highest IOC"))
 })
 
 test_that("keep widens what travels and round is recorded", {
@@ -272,7 +273,7 @@ delphi_fit <- function(..., threshold = 0.75) {
                   lo = 1, hi = 4, consensus_threshold = threshold, ...)
 }
 
-test_that("a Delphi fit hands off, dating each item by the round it settled in", {
+test_that("a Delphi fit hands off, dating each item by its last rated round", {
   fit <- delphi_fit(B = 0)
   h <- content_handoff(fit, keep = c("Supported", "Review"))
 
@@ -288,7 +289,12 @@ test_that("a Delphi fit hands off, dating each item by the round it settled in",
   expect_identical(ev$n_judges[ev$item == "S1"], 6L)
   expect_identical(ev$n_judges[ev$item == "S2"], 5L)
   expect_match(ev$rule[ev$item == "S1"], "at least 75% of experts")
-  expect_match(ev$rule[ev$item == "S1"], "settled in round 2 of 3")
+  expect_match(ev$rule[ev$item == "S1"], "last rated in round 2 of 3$")
+  # The rule reports the threshold as supplied; when it was fixed is for the
+  # analyst to say.
+  expect_match(ev$rule[ev$item == "S1"], "threshold as supplied", fixed = TRUE)
+  expect_false(any(grepl("with the threshold fixed before", ev$rule,
+                         fixed = TRUE)))
 
   # Statistics carry the same per-item round.
   st <- h$item_statistics
@@ -445,8 +451,8 @@ test_that("other workflows carry an empty note, and zero-row blocks survive", {
     expect_type(h$item_statistics$note, "character")
     expect_true(all(h$item_statistics$note == ""))
   }
-  # A congruence fit with no target mapping emits a zero-row statistics block;
-  # the note default must not force it to one row.
+  # A congruence fit with no target mapping carries one row per item, each
+  # with a note naming the objective.
   desc <- content_handoff(congruence_fit(target = FALSE),
                           keep = "Descriptive only")
   expect_true(is.data.frame(desc$item_statistics))
@@ -505,7 +511,7 @@ test_that("a Delphi study with no consensus threshold hands off descriptively", 
   h <- content_handoff(fit, keep = "Descriptive only")
 
   expect_setequal(h$items, c("S1", "S2", "S3"))
-  expect_match(h$item_evidence$rule[1], "no consensus threshold was set")
+  expect_match(h$item_evidence$rule[1], "no consensus threshold was supplied")
   icvi <- h$item_statistics[h$item_statistics$statistic == "I-CVI", ]
   expect_true(all(is.na(icvi$criterion)))
 })
@@ -669,7 +675,9 @@ test_that("the printed handoff names the intervals and the panel statistic", {
                fixed = TRUE)
   expect_match(out, "I-CVI (Wilson score, 95%)", fixed = TRUE)
   expect_match(out, "Panel: Krippendorff's alpha (ordinal) = ", fixed = TRUE)
-  expect_match(out, "95% interval", fixed = TRUE)
+  # Written as every other printout writes an interval.
+  expect_match(out, "95% CI", fixed = TRUE)
+  expect_false(grepl("95% interval", out, fixed = TRUE))
 
   rated <- paste(capture.output(print(content_handoff(rating_fit()))),
                  collapse = " ")

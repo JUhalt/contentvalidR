@@ -13,7 +13,9 @@ cvi(
 }
 \arguments{
 \item{binary}{Matrix/data.frame with judges in rows and items in columns,
-coded \code{1 = relevant} and \verb{0 = not relevant}.}
+coded \code{1 = relevant} and \verb{0 = not relevant}. Every column is an item; a
+column whose name looks like a rater ID (such as \code{expert} or \code{rater_id})
+stops the function, so remove it, or rename an item that has such a name.}
 
 \item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
 If \code{TRUE}, missing ratings are removed itemwise and each item's effective
@@ -46,7 +48,7 @@ A classed list with:
 \description{
 Computes item-level Content Validity Index (I-CVI), scale-level average CVI
 (S-CVI/Ave), universal-agreement CVI (S-CVI/UA), and the modified kappa
-described by Polit, Beck, and Owen (2007).
+described by Polit et al. (2007).
 
 The I-CVI is the proportion of experts rating an item 3 or 4 on a 4-point
 relevance scale (Lynn, 1986). Polit and Beck (2006) named the two
@@ -59,11 +61,11 @@ experts are added, so Polit and Beck recommend reporting both.
 For each item, modified kappa adjusts I-CVI for chance agreement using the
 probability of observing exactly \code{A} agreements among \code{N} judges:
 
-\deqn{P_c = {N \choose A}(0.5)^N}
+\deqn{P_c = {N \choose A}(0.5)^N}{Pc = choose(N, A) * 0.5^N}
 
 and
 
-\deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
+\deqn{k^* = \frac{\textrm{I-CVI} - P_c}{1 - P_c}.}{k* = (I-CVI - Pc) / (1 - Pc).}
 
 I-CVI is a proportion of what is usually a small panel, so an interval is
 reported alongside it. The interval method is selectable; see \code{ci}.

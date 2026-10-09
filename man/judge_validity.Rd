@@ -13,19 +13,28 @@ judge_validity(
   bias_correct = TRUE,
   severity_cut = 1,
   severity_raw_cut = NULL,
-  fit_range = c(0.5, 1.5)
+  fit_range = c(0.5, 1.5),
+  fit_min_ratings = 30,
+  differentiation_cut = 0.5
 )
 }
 \arguments{
 \item{ratings}{A judges-by-items numeric matrix or data frame of relevance
-ratings: one row per judge, one column per item.}
+ratings: one row per judge, one column per item. A column whose name
+looks like a rater ID (such as \code{expert} or \code{rater_id}) stops the
+function, so remove it, or rename an item that has such a name. Judge
+names (row names) and item names must be unique.}
 
 \item{lo, hi}{Rating-scale bounds.}
 
-\item{relevance_cut}{Lowest rating treated as relevant. Defaults to \code{hi - 1}.}
+\item{relevance_cut}{Lowest rating treated as relevant. Defaults to
+\code{hi - 1}, and to \code{hi} on a two-point scale. It must lie above \code{lo}: at
+\code{lo} every rating would count as relevant.}
 
-\item{na.rm}{Permit missing ratings. Generalizability analysis additionally
-requires complete cases and drops incomplete judges, reporting how many.}
+\item{na.rm}{Permit missing ratings. Each judge is then compared with the
+panel on the items that judge rated. Generalizability analysis
+additionally requires complete cases and drops incomplete judges; the
+printout says how many.}
 
 \item{bias_correct}{Apply the Wright-Douglas joint-maximum-likelihood bias
 correction to logit severity estimates. See the estimation note below.}
@@ -38,15 +47,66 @@ judge is flagged when logit severity is not estimable. Defaults to a
 quarter of the scale range. Severity is signed so that positive values
 mean the judge rates lower than the panel.}
 
-\item{fit_range}{Length-2 vector giving the acceptable infit/outfit mean
-square range. Values outside it flag erratic or overly predictable judges.}
+\item{fit_range}{Length-2 vector giving the infit/outfit mean-square range
+read as acceptable. The default, 0.5 to 1.5, is the range Linacre (2002)
+calls productive for measurement. A judge above it is flagged as erratic
+when \code{fit_min_ratings} is met. A judge below it is described, not
+flagged.}
+
+\item{fit_min_ratings}{Fewest decisions the facets model must have scored
+for a judge before a fit flag is raised. Default 30.}
+
+\item{differentiation_cut}{Scale use below which a judge is flagged for low
+differentiation. Scale use is the judge's standard deviation over the
+median judge's. Default 0.5.}
 }
 \value{
 An object of class \code{contentvalid_judge} and \code{contentvalid_workflow}.
 Unlike the item-oriented workflows, \code{results} has \strong{one row per judge}.
 \code{scale_summary} describes the panel, and \code{details} contains the
-generalizability analysis, the facets model, raw rater effects, and the
-item-level influence table.
+generalizability analysis, the facets model, raw rater effects, and
+\code{influence_items}, the item-level table of fragile items: for each item
+its number of raters, the number who rated it relevant, its status with
+the full panel, whether that status changes when one judge is removed
+(\code{fragile}; \code{NA} when it could not be checked), and the judges whose
+removal changes it. In \code{results}, \code{n_items_flipped} and \code{flipped_items}
+give the same information by judge; they describe the items and are not
+a flag. \code{print()} and \code{summary()} are described in
+\link{contentvalid-methods}.
+
+\strong{Results columns.} \code{results} has one row per judge:
+\describe{
+\item{\code{judge}}{The judge: the row name in \code{ratings}, or \code{Judge1},
+\code{Judge2}, and so on when \code{ratings} has none.}
+\item{\code{n_ratings}}{Items the judge rated.}
+\item{\code{mean_rating}}{The judge's mean rating.}
+\item{\code{sd_rating}}{The standard deviation of the judge's ratings.}
+\item{\code{severity_raw}}{Severity in rating points: the panel's mean
+rating on the items the judge rated, less the judge's. Positive
+means harsher than the panel.}
+\item{\code{severity}}{Severity in logits from the many-facet Rasch model,
+positive for harsher; \code{NA} when it is not estimable.}
+\item{\code{se}}{The standard error of \code{severity}.}
+\item{\code{infit}, \code{outfit}}{The judge's infit and outfit mean squares.}
+\item{\code{n_scored}}{Relevance decisions of the judge that the model
+scored.}
+\item{\code{severity_estimable}}{Whether the model could estimate the
+judge's severity.}
+\item{\code{differentiation}}{Scale use: the standard deviation of the
+judge's ratings over the median judge's, on the items the judge
+rated.}
+\item{\code{central_prop}}{The share of the judge's ratings strictly between
+\code{lo} and \code{hi}.}
+\item{\code{extreme_prop}}{The share at \code{lo} or \code{hi}.}
+\item{\code{n_items_flipped}}{Items whose review status changes when this
+judge is removed; \code{NA} when none could be checked.}
+\item{\code{flipped_items}}{Those items, comma-separated.}
+\item{\code{recommendation}}{\code{"Typical"}, \code{"Severe"}, \code{"Lenient"},
+\code{"Erratic"}, \code{"Low differentiation"}, or \code{"Insufficient data"}.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Typical"},
+\code{"Review"} for a flag, or \code{"Insufficient data"}.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+}
 }
 \description{
 Examines whether content-validity conclusions depend on the particular judges
@@ -56,32 +116,87 @@ indices that average heterogeneity away.
 The workflow reports four complementary kinds of evidence:
 \itemize{
 \item \strong{Generalizability.} How dependably the panel's ratings would reproduce
-with a different panel of the same size, via \code{\link[=gtheory_content]{gtheory_content()}}.
+with a different panel of the same size, via \code{\link[=gtheory_content]{gtheory_content()}}, the
+analysis Crocker et al. (1988) applied to content-validity ratings.
 \item \strong{Severity.} How harsh or lenient each judge is relative to the panel,
 both in raw rating units and, where estimable, on a logit scale from a
-many-facet Rasch model fitted as a logistic regression.
+many-facet Rasch model (Linacre, 1989) fitted as a logistic regression.
 \item \strong{Response style.} How much each judge differentiates among items, and how
-much they concentrate on middle or extreme categories.
-\item \strong{Influence.} Which items would change their CVI-based review status if any
-single judge were removed from the panel.
+much they concentrate on middle or extreme categories, two of the rater
+effects Engelhard (1994) describes.
+\item \strong{Fragile items.} Which items would change their CVI-based review status
+(Lynn, 1986) if any single judge were removed from the panel.
 }
 
 A judge flagged for \code{Review} is not a judge to discard. Disagreement may be
 substantive expertise rather than error, and removing inconvenient judges is
-not a validity procedure. The flag identifies where a conclusion rests on one
-person's ratings and therefore deserves a closer look.
+not a validity procedure. The flag marks a judge whose ratings deserve a
+closer look.
 }
+\section{What is published and what is this package's choice}{
+
+The generalizability analysis, the many-facet Rasch model, the infit and
+outfit mean squares and the rater effects are published methods, cited
+above. These parts are contentvalidR conventions, with no published
+standard behind the numbers:
+\itemize{
+\item The cuts that flag a judge: \code{severity_cut} (1 logit),
+\code{severity_raw_cut} (a quarter of the scale range) and
+\code{differentiation_cut} (0.5). The scale-use ratio itself is this
+package's index of the differentiation Engelhard (1994) describes. A
+cut, or a \code{fit_min_ratings}, given other than its default is printed as
+set for this analysis.
+\item Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
+guide to how productive data are for measurement: below 0.5 is "less
+productive for measurement, but not degrading", 1.5 to 2.0 is
+"unproductive for construction of measurement, but not degrading", and
+only above 2.0 does misfit distort the measurement. The package flags
+above 1.5 and never below 0.5 because a high mean square means noise in
+a judge's decisions, which bears on whether to trust them, while a low
+one means decisions more predictable than the model expects. A mean square from
+a handful of yes-or-no decisions varies widely by chance even for a
+judge who fits the model exactly, so a judge above the range is flagged
+only when the model scored at least \code{fit_min_ratings} of their
+decisions. Thirty follows the guidance in the Facets documentation
+(Linacre, n.d.) that stable estimates need at least 30 observations per
+element. With the item counts usual in content validation the fit
+statistics are therefore shown and not flagged.
+\item The fragile-item check. It reapplies Lynn's (1986) criterion with one
+judge removed. An item one judge away from the other side of the
+criterion for its panel size (at the criterion, or one short of it,
+depending on the size) changes status when any judge on one side is
+removed, so the check describes the item and flags no judge. An item
+rated by three or fewer judges is not checked, because one fewer leaves
+no criterion.
+\item Applying the Wright-Douglas correction to judges (see the estimation
+note).
+}
+}
+
 \section{Estimation note}{
 
 Logit severity comes from a many-facet Rasch model fitted by joint maximum
 likelihood as a logistic regression, the generalized linear model
 formulation described by De Boeck and Wilson (2004). Joint maximum
-likelihood is known to over-disperse facet estimates in small designs. The
-standard Wright-Douglas \code{(L-1)/L} correction is applied by default and
-reported in \code{settings$bias_correction}, but it reduces rather than removes
-that bias. Where precise severity calibration matters, marginal maximum
-likelihood estimation is preferable, and the raw rating-unit severity in
-\code{severity_raw} is free of this particular issue.
+likelihood stretches estimates. Wright and Douglas (1977) found that
+multiplying item difficulties by \code{(L - 1) / L}, with \code{L} the number of
+items in the test, approximately removes the bias (see also Wright, 1988).
+Here the judges stand where the test items do, and the rated items where
+the persons do, so the package multiplies the severities by
+\code{(J - 1) / J}, with \code{J} the number of judges who rated each item in the
+model (with missing ratings, the mean of that number over the items), and
+the standard errors by its square root, as the Facets documentation
+describes for the standard errors (Linacre, n.d.). That application to
+judges is this package's choice. The factor is reported in
+\code{settings$bias_correction}. Versions before 1.0 counted items instead,
+which left most of the bias in place on a small panel. The correction is
+approximate: Wright and Douglas recommended it for tests of more than 20
+items, and Wright (1988) notes that it is slightly inexact for very short
+tests, which is what a panel of a few judges amounts to. With two or
+three judges no single factor is trustworthy. Where precise severity
+calibration matters,
+marginal maximum likelihood estimation is preferable, and the raw
+rating-unit severity in \code{severity_raw} is free of this particular issue.
 
 Severity is estimated from the dichotomized relevance decision, consistent
 with how the package computes CVI. Judges and items showing no variation in
@@ -90,12 +205,15 @@ from the model, which is reported rather than silent.
 }
 
 \examples{
+# Eight judges rate ten items for relevance on a 1-4 scale. Judge8 rates
+# lower than the rest, and Item4 is one judge short of the CVI criterion.
 ratings <- rbind(
-  c(4, 4, 4, 3, 2, 2), c(4, 4, 3, 4, 2, 1), c(4, 3, 4, 4, 1, 2),
-  c(3, 4, 4, 4, 2, 2), c(4, 4, 4, 4, 2, 1), c(4, 3, 4, 3, 1, 2),
-  c(4, 4, 3, 4, 2, 2), c(2, 2, 2, 2, 1, 1)
+  c(4, 4, 3, 4, 3, 2, 3, 2, 4, 3), c(4, 3, 4, 3, 2, 3, 2, 3, 4, 2),
+  c(3, 4, 4, 3, 3, 2, 2, 2, 3, 3), c(4, 4, 3, 2, 3, 3, 3, 1, 4, 2),
+  c(4, 3, 3, 4, 2, 2, 3, 2, 3, 3), c(3, 4, 4, 3, 3, 3, 2, 3, 4, 1),
+  c(4, 4, 4, 4, 3, 2, 3, 2, 4, 3), c(3, 2, 3, 2, 2, 1, 2, 1, 2, 2)
 )
-dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
+dimnames(ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:10))
 fit <- judge_validity(ratings, lo = 1, hi = 4)
 fit
 summary(fit)
@@ -113,7 +231,28 @@ Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. \emph{Journal of Educational
 Measurement, 31}(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
 
+Linacre, J. M. (n.d.). \emph{Estimation considerations: JMLE estimation bias}
+[Facets help]. Winsteps.com. Retrieved October 2, 2026, from
+\url{https://www.winsteps.com/facetman/estimationconsiderations.htm}
+
 Linacre, J. M. (1989). \emph{Many-facet Rasch measurement}. MESA Press.
+
+Linacre, J. M. (2002). What do infit and outfit, mean-square and
+standardized mean? \emph{Rasch Measurement Transactions, 16}(2), 878.
+\url{https://www.rasch.org/rmt/rmt162f.htm}
+
+Lynn, M. R. (1986). Determination and quantification of content validity.
+\emph{Nursing Research, 35}(6), 382–385.
+\doi{10.1097/00006199-198611000-00017}
+
+Wright, B. D. (1988). The efficacy of unconditional maximum likelihood bias
+correction: Comment on Jansen, van den Wollenberg, and Wierda. \emph{Applied
+Psychological Measurement, 12}(3), 315–318.
+\doi{10.1177/014662168801200309}
+
+Wright, B. D., & Douglas, G. A. (1977). Best procedures for sample-free
+item analysis. \emph{Applied Psychological Measurement, 1}(2), 281–295.
+\doi{10.1177/014662167700100216}
 }
 \seealso{
 \code{\link[=gtheory_content]{gtheory_content()}} for the generalizability analysis alone,

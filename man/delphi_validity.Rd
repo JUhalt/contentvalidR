@@ -25,17 +25,22 @@ delphi_validity(
 \item{ratings}{A data frame with one row per expert, item, and round.
 Rows with a missing rating are ignored.}
 
-\item{expert_col, item_col, round_col, rating_col}{Column names in \code{ratings}.}
+\item{expert_col, item_col, rating_col}{Column names in \code{ratings}.}
+
+\item{round_col}{Name of the round column. Rounds may be numbers, a
+factor, or text labels that carry a number; see \emph{Round order} in Details.}
 
 \item{lo, hi}{Lowest and highest points of the rating scale, as whole
 numbers.}
 
 \item{agree_cut}{Rating at or above which an expert counts as agreeing.
-Defaults to \code{hi - 1}, the usual relevance cut on a 4-point scale.}
+Defaults to \code{hi - 1}, the usual relevance cut on a 4-point scale, and to
+\code{hi} on a two-point scale. It must lie above \code{lo}: at \code{lo} every rating
+would count as agreement.}
 
 \item{consensus_threshold}{Share of experts that must agree for consensus,
-between 0 and 1, fixed before the study. \code{NULL} (default) reports
-agreement descriptively.}
+between 0 and 1. Fix it before the study (Diamond et al., 2014). \code{NULL}
+(default) reports agreement descriptively.}
 
 \item{stability}{Stability statistic; see Details.}
 
@@ -47,20 +52,61 @@ agreement descriptively.}
 
 \item{B}{Bootstrap resamples for the kappa interval. Use \code{0} to skip it.}
 
-\item{seed}{Optional seed for the bootstrap.}
+\item{seed}{Optional seed for the bootstrap. Every item and pair of rounds
+is resampled from this same seed, so pairs with the same number of
+paired experts draw the same resample indices, and their intervals are
+not independent of one another. The random-number stream of the session
+is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_delphi} and
-\code{contentvalid_workflow}. \code{results} has one row per item: its last round,
-\code{n_experts} there, \code{prop_agree}, \code{consensus}, and, for the last pair of
-consecutive rounds, \code{prop_unchanged}, \code{stability} with \code{stability_low}
-and \code{stability_high} where an interval exists, \code{stability_p} for the
-chi-square methods, and \code{stable} for the methods that make a decision.
-\code{details} holds \code{consensus} (every item and round), \code{stability} (every
-item and pair of rounds, including \code{n_paired}, \code{min_expected} for the
-chi-square methods, \code{n_boot_usable} for the kappa interval, and a
-\code{note} where a statistic is undefined or unreliable), \code{panel} (experts
-per round), and \code{round_fits}, the \code{\link[=expert_validity]{expert_validity()}} fit for each round.
+\code{contentvalid_workflow}. \code{details} holds \code{consensus} (every item and
+round), \code{stability} (every item and pair of rounds, including
+\code{n_paired}, \code{min_expected} for the chi-square methods, \code{n_boot_usable}
+for the kappa interval, and a \code{note} where a statistic is undefined or
+unreliable), \code{panel} (experts per round), and \code{round_fits}, the
+\code{\link[=expert_validity]{expert_validity()}} fit for each round.
+
+\strong{Results columns.} \code{results} has one row per item. Consensus is read
+in the item's last round, and stability in its last pair of consecutive
+rounds:
+\describe{
+\item{\code{item}}{The item.}
+\item{\code{n_rounds}}{Rounds in which the item was rated.}
+\item{\code{last_round}}{The last of them.}
+\item{\code{n_experts}}{Experts who rated the item in its last round.}
+\item{\code{prop_agree}}{The share of them rating it \code{agree_cut} or
+higher.}
+\item{\code{consensus}}{Whether \code{prop_agree} meets \code{consensus_threshold};
+\code{NA} when no threshold was set.}
+\item{\code{prop_unchanged}}{The share of experts who kept their rating
+between the two rounds of the last pair, among those who rated the
+item in both (\code{n_paired} in \code{details$stability}); \code{NA} when no
+expert's ratings could be paired.}
+\item{\code{stability}}{The statistic chosen in \code{stability} for that pair:
+weighted kappa, lambda, a chi-square, or the net change.}
+\item{\code{stability_low}, \code{stability_high}}{The bootstrap interval for
+kappa at level \code{1 - alpha}; \code{NA} for the other methods, with
+\code{B = 0}, and where kappa has no interval.}
+\item{\code{stability_df}, \code{stability_p}}{The degrees of freedom and \emph{p} of
+a chi-square; \code{NA} for the other methods.}
+\item{\code{stable}}{The stability rule's decision for the chi-square and
+net-change methods (see Details); \code{NA} for kappa and lambda, which
+apply no rule, where the item has no pair, and where the individual
+chi-square cannot be computed.}
+\item{\code{recommendation}}{\code{"Consensus"}, \code{"No consensus"},
+\code{"Descriptive only"} (no \code{consensus_threshold} was set), or
+\code{"Insufficient panel"} (fewer than three experts rated the item in
+its last round, whether or not a threshold was set). Stability never
+changes it.}
+\item{\code{interpretation}}{The decision explained in a sentence. Shares
+and the threshold are percentages to at most one decimal (66.7\%), as
+in the handoff; \code{print()} and \code{summary()} give a share just under the
+threshold, and the threshold, the decimals that tell them apart.}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Consensus"},
+\code{"Review"} for \code{"No consensus"}, \code{"Descriptive only"}, or
+\code{"Insufficient data"} for \code{"Insufficient panel"}.}
+}
 }
 \description{
 Analyzes an expert panel rated over successive Delphi rounds. For each item
@@ -77,10 +123,12 @@ their answers. A Delphi can reach one without the other, so both are shown.
 \code{agree_cut}. \code{prop_agree} is the share of responding experts who agree,
 which on a relevance scale is the I-CVI. An item reaches consensus when
 \code{prop_agree} meets \code{consensus_threshold}. There is deliberately no default
-threshold: Diamond et al. (2014) recommend fixing it before the study,
-and the 75\% median they report describes common practice rather than a
-validated cut-off. Without a threshold, items are reported as
-\verb{Descriptive only}.
+threshold: Diamond et al. (2014) recommend fixing it before the study.
+Among the 25 studies in their review that defined consensus as a
+percentage of agreement, the median threshold was 75\%, which describes
+common practice rather than a validated cutoff. The function cannot know
+when a threshold was chosen, so its output says only that one was
+supplied. Without a threshold, items are reported as \verb{Descriptive only}.
 
 \strong{Stability} is computed for each item and each pair of consecutive
 rounds, on the experts who rated the item in both. \code{prop_unchanged}, the
@@ -88,16 +136,19 @@ share who kept their rating, is always reported. The \code{stability} argument
 chooses the statistic reported beside it:
 \itemize{
 \item \code{"kappa"} (default): weighted kappa between each expert's ratings in the
-two rounds (Holey et al., 2007), read as a trend with no cut-off.
+two rounds (Holey et al., 2007), read as a trend with no cutoff.
 Quadratic weights (the default) make kappa the intraclass correlation of
-the two rounds' ratings (Fleiss & Cohen, 1973); linear weights count a
-two-point change twice a one-point change (Cohen, 1968). The interval is
-a percentile bootstrap over the experts; see \emph{Reading the kappa interval}
-below.
+the two rounds' ratings in its sums-of-squares form (Fleiss & Cohen,
+1973). The intraclass correlation computed from mean squares, the form
+most software reports, differs from it by a term that shrinks as the
+panel grows, so with a Delphi-sized panel the two do not match exactly.
+Linear weights count a two-point change twice a one-point change (Cohen,
+1968). The interval is a percentile bootstrap over the experts; see
+\emph{Reading the kappa interval} below.
 \item \code{"lambda"}: Chaffin and Talley's (1980) index of predictive association.
 \item \code{"chisq_individual"}: Chaffin and Talley's (1980) chi-square test on
 each expert's pair of ratings; a significant result is read as stable.
-\item \code{"chisq_group"}: Dajani, Sincoff and Talley's (1979) chi-square test on
+\item \code{"chisq_group"}: the chi-square test of Dajani et al. (1979) on
 the two rounds' distributions; a non-significant result is read as
 stable.
 \item \code{"percent_change"}: the net change of Scheibe et al. (1975/2002),
@@ -111,15 +162,32 @@ beside it.
 
 Items may enter or leave between rounds. An item's last round is the last
 one in which anyone rated it, and stability is computed only between
-consecutive rounds in which it was rated.
+consecutive rounds in which it was rated. An item rated in rounds 1 and 3
+but not 2 therefore has no pair to compare, and an item rated in rounds 1,
+2 and 4 reports the stability of rounds 1 and 2 beside its round 4
+consensus. \code{details$stability} names the rounds of every pair.
+
+\strong{Round order.} Numbered rounds are put in numeric order, dates in date
+order, and a factor keeps the order of its levels. Text labels are ordered
+by the number each carries (\code{"R1"}, \code{"Round 2"}, \code{"wave 10"}), whatever
+order the rows are in, when that number is all that differs between them.
+Text labels without a number (\code{"pre"}, \code{"post"}), or that differ in more
+than one number (\code{"Q4 2023"}, \code{"Q1 2024"}), cannot be ordered from the
+text, so they stop with a request for a factor. The printout lists the
+rounds in the order used.
 }
 \section{When a stability statistic is undefined}{
 
-A stability statistic can be \code{NA} for two different reasons, and
-\code{prop_unchanged} tells them apart. When \code{prop_unchanged} is also \code{NA}, the
-item has no pair of consecutive rounds: it was rated in one round only.
-When \code{prop_unchanged} has a value, a pair exists but the statistic is
-undefined for that data, and \code{details$stability$note} says why.
+A stability statistic can be \code{NA} for different reasons, and
+\code{prop_unchanged} tells them apart. When \code{prop_unchanged} is also \code{NA}, no
+expert's ratings could be paired, for one of three reasons: the item was
+rated in one round only; it was rated in rounds that are not consecutive;
+or it was rated in consecutive rounds, but by different experts, so no
+expert rated it in both (two disjoint panels, for example). Only the last
+case has a row in \code{details$stability}, with \code{n_paired} 0 and a \code{note}
+saying so. When \code{prop_unchanged} has a value, a pair exists but the
+statistic is undefined for that data, and \code{details$stability$note} says
+why.
 
 The common case is the one that reads worst if reported bare. Kappa is
 chance-corrected, so when every paired rating in both rounds falls in one
@@ -134,10 +202,14 @@ chi-square methods when a table has fewer than two occupied rows or columns.
 
 Landis and Koch (1977) introduced the familiar labels (slight, fair,
 moderate, substantial, almost perfect) and called their divisions clearly
-arbitrary. Kappa also falls when ratings converge on one category, which is
-what a Delphi aims for: in Holey et al. (2007), the statement experts agreed
-on most had the lowest kappa. A label would therefore tend to worsen as a
-panel succeeds. Read kappa as a trend, next to \code{prop_unchanged}.
+arbitrary. Kappa is also low when ratings concentrate in one category
+(Feinstein & Cicchetti, 1990), which is where a Delphi aims to end. In
+Holey et al. (2007), the statement nearly every expert agreed with, and
+ranked most important in every round, had the lowest kappa between rounds
+1 and 2 (.31) and one of the highest between rounds 2 and 3 (.71); they
+suggest the narrow range of answers as the reason. A label could therefore
+worsen as a panel succeeds. Read kappa as a trend, next to
+\code{prop_unchanged}.
 }
 
 \section{Reading the kappa interval}{
@@ -215,6 +287,10 @@ review recommends methodologic criteria for reporting of Delphi studies.
 \emph{Journal of Clinical Epidemiology, 67}(4), 401–409.
 \doi{10.1016/j.jclinepi.2013.12.002}
 
+Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
+I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
+43}(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
+
 Fleiss, J. L., & Cohen, J. (1973). The equivalence of weighted kappa and
 the intraclass correlation coefficient as measures of reliability.
 \emph{Educational and Psychological Measurement, 33}(3), 613–619.
@@ -222,8 +298,8 @@ the intraclass correlation coefficient as measures of reliability.
 
 Holey, E. A., Feeley, J. L., Dixon, J., & Whittaker, V. J. (2007). An
 exploration of the use of simple statistics to measure consensus and
-stability in Delphi studies. \emph{BMC Medical Research Methodology, 7}, 52.
-\doi{10.1186/1471-2288-7-52}
+stability in Delphi studies. \emph{BMC Medical Research Methodology, 7},
+Article 52. \doi{10.1186/1471-2288-7-52}
 
 Klar, N., Lipsitz, S. R., Parzen, M., & Leong, T. (2002). An exact
 bootstrap confidence interval for kappa in small samples. \emph{Journal of the

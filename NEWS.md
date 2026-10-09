@@ -7,36 +7,1067 @@ freeze the 1.0 interface so that the handoff tests in nomologR can run
 against it before either package tags. If it needs another round, the next
 candidate is 0.99.1.
 
-**No computed value changes.** Apart from the removal below, every value
-0.10.1 returns is identical in 0.99.0, across 25 analyses spanning every
-workflow. The handoff is unchanged: schema version 1, with the same fields
-and columns.
+This candidate carries the fixes from the audit before 1.0. Some of them
+change values, so check any analysis that matches the cases below. The
+handoff keeps schema version 1, with the same fields and columns; what
+changed inside the congruence handoff is under "Congruence and method
+attribution: values that change".
 
-**Breaking change.**
+## Removed
 
-* `agreement_summary()` is removed, as the stability policy said it would be
-  for 1.0.0. It was deprecated in 0.9.0 and has warned since, naming its
-  replacement. CRAN still has 0.4.0, from before the deprecation, so code
-  installed from CRAN will not have shown that warning. Nothing deprecated is
-  carried past 1.0.
+* `agreement_summary()` is removed, as announced when it was deprecated in
+  0.9.0. Use `panel_agreement()`, which takes raters in rows like every other
+  ratings function. The deprecation warning shipped only on GitHub and
+  R-universe, so a user updating from 0.4.0 on CRAN meets the removal
+  without it.
 
   `agreement_summary()` returned Fleiss' kappa from the irr package, with
-  items in rows. Its replacement, `panel_agreement()`, reports Krippendorff's
-  alpha or Gwet's AC1 with an interval, and like every other ratings function
-  it takes raters in rows. To move to it, transpose the matrix with `t()`,
-  code the categories as numbers, and pass `level = "nominal"` for unordered
-  categories: the default is `"ordinal"`, which gives a different coefficient.
-  For Fleiss' kappa itself, call `irr::kappam.fleiss()` directly.
-  `expert_validity(legacy = TRUE)` still reports it for the relevant or
-  not-relevant decision.
+  items in rows. `panel_agreement()` reports Krippendorff's alpha or Gwet's
+  AC1 with an interval. To move to it, transpose the matrix with `t()`, code
+  the categories as numbers, and pass `level = "nominal"` for unordered
+  categories: the default is `"ordinal"`, which gives a different
+  coefficient. For Fleiss' kappa itself, call `irr::kappam.fleiss()`
+  directly. `expert_validity(legacy = TRUE)` still reports it for the
+  relevant or not-relevant decision.
+* Five returned fields are removed without a notice period, because the
+  audit found them wrong or unreachable; `?contentvalidR` records the
+  exception to the deprecation policy. Each is explained in the section
+  named:
+  * `overall_strength` in the `scale_summary` of `sort_validity()` and
+    `rating_validity()` ("Congruence and method attribution: values that
+    change");
+  * `n_support` in the `scale_summary` of `expert_validity()` (same
+    section);
+  * `competitor_ioc` in the congruence `results` of `expert_validity()`,
+    whose results without a target mapping now have one row per item (same
+    section; the congruence handoff statistics `competitor IOC` and `IOC
+    margin` give way to `target IOC` and the two mean ratings);
+  * `n_influential` in the `scale_summary` of `judge_validity()` ("Judges,
+    domain and structure: values that change");
+  * `fit_label` in the `fit` table of `content_structure()` (same section).
 
-**Also.**
+## Item sort: values that change
+
+* **Constructs coded as numbers or factors now give the right counts.** When
+  the target construct was a number (1, 2, 3) or a factor, `compute_csv()`
+  read the target's count by position in its table, not by label. The target
+  count, Csv, the exact *p* value, the Retain or Review decision, and the
+  items `content_handoff()` carried could all be wrong, with no error: an
+  item with 16 of 20 judges on target could print 4/20, Csv .00, and Review.
+  Every earlier release had this, including 0.4.0, the version on CRAN.
+  Constructs stored as text in both columns were always right. Rerun any sort
+  whose construct columns are numbers or factors. Labels are now compared as
+  text, whatever they are stored as, so `target` in `results` is always text,
+  and tied competitors are listed in alphabetical order.
+* **An item sorted by too few judges for the exact test gets no decision.**
+  With four or fewer judges at the defaults no count can reach alpha (4 of 4
+  gives *p* = .0625). Such items were labeled `"Review"`, as if judges had
+  disagreed. They are now `"Insufficient panel"`, with status
+  `"Insufficient data"`; the printout and `summary()` say why; and the `rule`
+  text in the handoff says that no count can meet the test, where it used to
+  read "target assignments >= NA of 4". Scale means are unchanged: they still
+  average every item that has a Psa and a Csv.
+* **The `csv_binom_test()` interval follows `alpha`.** It was always a 95%
+  interval, so at `alpha = .10` a significant result could sit beside an
+  interval that included `p0`. It is now one-sided at `1 - alpha`, the level
+  of the test, so its lower limit is above `p0` whenever *p* is below alpha.
+  At the default alpha nothing changes.
+* **`sort_power()` reports a power of 0, not `NA`,** for a panel too small
+  for any count to reach alpha, and says so under the table.
+* **Leading and trailing spaces in labels are ignored,** non-breaking spaces
+  included, in item, judge and construct labels. `"A"` and `" A"` were
+  counted as two constructs.
+* **Items are listed in the order of the data,** or of the levels when the
+  item column is a factor. They used to be sorted as text, so Q10 came before
+  Q2. The order reaches `results`, the figures, and `items` in the handoff,
+  and the rows of `scale_summary` follow the order in which each scale first
+  appears. Item names in `results` are always text.
+
+## Every workflow: values that change
+
+* **A scale mean exactly on a published Colquitt band minimum now falls in
+  that band.** A mean such as 4.35 / 5 is stored a hair under .87 and was put
+  in the band below. This affects `interpret_colquitt()` and the scale labels
+  of both `sort_validity()` and `rating_validity()`.
+* **An alpha with more than two decimals is printed in full.**
+  `alpha = .001` printed as "alpha = .00" in every workflow and in the `rule`
+  text of the handoff. A computed level such as .05 / 3 prints to three
+  significant digits (.0167).
+
+## Item sort: other fixes
+
+* Two factor construct columns with different level sets no longer stop
+  `compute_psa()` and `sort_validity()` with "level sets of factors are
+  different".
+* `csv_binom_test()` prints its verdict first, in the item-sort workflow's
+  words ("meets the exact target-assignment criterion"). It printed
+  "Decision: n.s.." at the end. The stored `decision` values are unchanged;
+  the stored `interpretation` text now says "meet the exact criterion" where
+  it said "exceed the exact chance criterion".
+* The `sort_power()` printout and figure no longer call the assumed
+  target-assignment probability "p", which APA reserves for a *p* value: the
+  note says "power at a value" and the legend "Target rate".
+* The legacy comparison says so when no item has a decision to compare with,
+  where it printed "0 of 0 items".
+* "Missing assignments: 2 across 1 items" now reads "1 item".
+* The help for `p0` no longer calls it a chance rate. It is the null
+  probability of a target assignment; random assignment would give 1 divided
+  by the number of constructs. The help now passes on the caution Howard and
+  Melloy (2016) give themselves: that .5 is arbitrary and lenient.
+* The help for `proportion_ci` says the interval is two-sided while the test
+  is one-sided, so a retained item's interval can include `p0`.
+* The item-sort and construct-rating vignettes said scale means are drawn as
+  diamonds; the figures draw triangles.
+* `?interpret_colquitt` gives the full reference for Colquitt et al. (2019).
+
+## Expert panel: values that change
+
+* **On a two-point scale the default cut is the top point.** The cut for
+  "relevant" defaulted to `hi - 1`, which is the bottom of a 0/1 or 1/2 scale,
+  so every rating counted. An item no expert rated relevant got an I-CVI of
+  1.00 and "Strong support". `expert_validity()`, `judge_validity()` and
+  `delphi_validity()` now default to `hi` on a two-point scale, and refuse a
+  cut at the bottom of any scale. `cvi()` was always right.
+* **`aikens_v()` needs `lo` and `hi`.** It assumed a 1-5 scale, while
+  `expert_validity()` and `judge_validity()` assume 1-4, so `aikens_v(R)` on
+  1-4 ratings returned .75 for an item every expert rated 4. V depends on the
+  scale, so the scale is no longer assumed, and the printout states it.
+* **A rater-ID column is no longer analyzed as an item.** With four experts
+  on a 1-4 scale, an `expert` column holding 1 to 4 was rated as an item and
+  changed S-CVI, the agreement coefficient and the handoff. Every function
+  that takes a judge-by-item table now stops when a column looks like a
+  rater ID, and says which column to remove. The check goes by name
+  (`expert`, `judge`, `rater_id`, `ID` and the like), and also catches the
+  row-number column a CSV round trip adds (`X`) when it counts 1, 2, 3. It
+  cannot catch an ID column with an item-like name, and an item that really
+  is named `Subject` has to be renamed. `delphi_validity()` takes long data
+  and is not affected.
+* **An essentiality item rated by too few experts for the exact test gets no
+  decision.** With four or fewer experts at the defaults no count can reach
+  alpha. Such items were `"Review"`, with a legend saying too few experts had
+  rated them essential, even at 4 of 4. They are now `"Insufficient panel"`,
+  with status `"Insufficient data"`, the printout says why, and the `rule`
+  text in the handoff no longer reads "CVR >= NA, i.e. at least NA of 4".
+* **Named essential counts keep their names.** `cvr()` and
+  `expert_validity(mode = "essentiality")` renamed the items of a named count
+  vector to Item1, Item2, so the handoff carried names that matched no
+  response data. Names are used when every count has a distinct, non-blank
+  name; otherwise the items are numbered, as before.
+* **Lawshe's table at nine panelists.** In the comparison block, 8 of 9
+  panelists (a CVR of .778) was reported as below his .78, and the vignette
+  said his table asks for all nine. His .78 is 8 of 9 printed to two
+  decimals: nine panelists can give no other value near it (Ayre & Scally,
+  2014). The comparison now uses the count each tabled value implies, so 8 of
+  9 meets it and his content validity index includes that item. Ten of 13
+  (.538 against .54) still falls short, the one size where his table and the
+  exact test differ.
+* **A seed no longer resets the random stream of the session.** Every `seed`
+  argument called `set.seed()` and left it set, so a seeded call inside a
+  simulation loop made every later replicate draw the same data. Seeded
+  resampling now restores the stream it found. Results for a given seed are
+  unchanged.
+* **The AC1 bootstrap scores every resample on the same categories.** A
+  resample that happened to miss a rating category was scored with fewer
+  categories, which pulled the interval down. It affected
+  `panel_agreement(method = "ac1")` on scales with three or more categories;
+  the point estimate, and AC1 inside `expert_validity()`, are unchanged.
+
+## Expert panel: other fixes
+
+* The relevance printout states the rating scale and the cut it used.
+* In `aikens_v()` and `expert_validity()`, a rating outside the scale names
+  its column and the scale in the error, and says to set `lo` and `hi`.
+* `cvr()` and the essentiality table print "none" where no count can meet the
+  test, with a sentence saying why, where they printed `NA`. `summary()`
+  counts such items as "Too few experts", apart from items no expert rated.
+* The essentiality figure marks an item whose panel was too small to test
+  with a cross, and its legend lists only what is drawn.
+* With panels of different sizes, the Lawshe comparison says that his minimum
+  is applied as a count, and no longer reads an unrated first item as "no
+  minimum for this panel size".
+* `?cvr` no longer calls the step in Lawshe's table at eight experts a
+  defect.
+* `panel_agreement()` prints "undefined" for a coefficient that cannot be
+  computed, where it printed "= NA" followed by a note about resamples.
+
+## Delphi and round comparison: values that change
+
+* **Text round labels are ordered by their number, not by row order.**
+  Rounds labeled `"R1"`, `"R2"`, `"R3"` were taken in the order the rows
+  appeared, so data sorted any other way was analyzed in the wrong sequence:
+  the wrong last round, the wrong stability pairs, and so the wrong consensus
+  decisions, with no message. Text labels are now ordered by the number each
+  carries, so `"wave 10"` follows `"wave 2"`, when that number is all that
+  differs between them. Labels with no number (`"pre"`, `"post"`), or that
+  differ in more than one number (`"Q4 2023"`, `"Q1 2024"`), stop with a
+  request for a factor, because their order cannot be read from the text. A
+  date column is ordered by date. Numeric and factor rounds are unchanged.
+* **`compare_rounds()` treats a changed panel size as a changed rule,**
+  where the rule depends on it. The exact tests and Lynn's criterion depend
+  on the number of judges, so 5 of 6 and 10 of 12, the same Psa, give
+  different decisions. The comparison called such rounds identical in
+  settings and their transitions "changes in evidence". For item-sort fits
+  and for expert relevance and essentiality fits, `comparable` is now
+  `FALSE` and the printout says the panel changed. Other workflows decide on
+  a fixed share or cut, so their panel size is not compared. A changed seed
+  or number of bootstrap resamples no longer makes rounds non-comparable,
+  because neither can move a status.
+* **`compare_rounds()` refuses fits from different expert-panel modes,** which
+  it compared as if a relevance and an essentiality decision were the same,
+  and refuses a round label that is missing, empty, or would overwrite the
+  item or change column.
+* **The Delphi handoff `rule` text is reworded.** It gives the round by its
+  position, so rounds labeled 2, 3, 4 no longer read "round 4 of 3". It says
+  the threshold was supplied, where it stated as fact that it was "fixed
+  before the study", which the software cannot know. An item with fewer than
+  three experts in its last round gets its own sentence, not the consensus
+  rule, whether or not a threshold was supplied. Three-author works are cited
+  with "et al.", here and in the relevance handoff.
+* **An item rated in rounds that are not consecutive is described as such.**
+  Rated in rounds 1 and 3, it has no pair to compare; the handoff note said
+  it "was rated in only one round". The printout names such items, and items
+  whose stability comes from an earlier pair than their last round (rated in
+  rounds 1, 2 and 4). For those, the stability rows of the handoff carry a
+  note naming the pair, since the rows are dated by the last round. The printed
+  trend tables list the pairs of rounds in round order; a late-entry item
+  listed first put a later pair to the left.
+* `results` gains `stability_df`, the degrees of freedom of the chi-square
+  stability tests.
+
+## Delphi and round comparison: other fixes
+
+* `plot()` on a Delphi fit takes `type`, like the other plot methods with
+  more than one view. The earlier name, `which`, is still accepted in its
+  place; giving both is an error.
+* In the distribution view, a round rated by fewer than three experts is
+  marked as no decision. It was drawn as "Met the criterion" when the two who
+  rated it agreed, against the fit's own "Insufficient panel".
+* The stability view scales a chi-square on its own axis. The ticks stopped at
+  1 while the statistic ran to 30, so the figure could not be read. The share
+  who kept their rating is drawn only beside the statistics that share its 0
+  to 1 scale. Round-pair labels are placed at their own positions; they were
+  swapped when the first item entered late.
+* The printout no longer says the consensus threshold was "fixed before the
+  study". It says the threshold was supplied, and that Diamond et al. (2014)
+  recommend fixing it in advance. Their 75% median is described as what it
+  is: the median among the 25 reviewed studies that defined consensus as a
+  percentage of agreement.
+* The kappa caveat states the interval level in use. It said "their stated
+  95%" under a 90% interval.
+* Holey et al. (2007) are cited for what they found: the statement nearly all
+  their experts agreed with had the lowest kappa between rounds 1 and 2, and
+  one of the highest between rounds 2 and 3. The general point, that kappa
+  can be low when ratings concentrate in one category, is cited to Feinstein
+  and Cicchetti (1990), who showed it for kappa on two categories. The key
+  no longer calls the consensus threshold "preset".
+* `summary()` of a Delphi fit names the items without consensus and those
+  with too few experts beside their counts, names the stability statistic in
+  words, and ends with the same caution as the printout.
+* `content_report()` heads the Delphi stability column with the statistic it
+  holds, and reports a chi-square with its leading zero and its degrees of
+  freedom.
+* `compare_rounds()` opens with its verdict: how many units changed status.
+* A consensus threshold such as 2/3 prints as 66.7%, not 66.66667%, in the
+  header, the figure, the handoff and each item's interpretation, whatever
+  the session's `digits` option. An interpretation could read "67% agreed,
+  against a threshold of 67%" for an item just short of it. (The printout
+  and the report add the decimals that tell a share just under the
+  threshold apart from it; see the close-out below.)
+* In the distribution views, a rating between two scale points is drawn on
+  the side of the cut where the rule counts it. A 2.5 was rounded up into the
+  relevant side, so the bar read 1.00 beside an I-CVI of .83.
+* The Delphi vignette restores the option it changes.
+
+## Construct rating: values that change
+
+* **An index from one judge stays out of the scale means.** An item with
+  fewer than two judges who rated it against every construct is
+  `"Insufficient data"`, yet its HTD, from that one judge, was averaged into
+  its scale's mean and could move the scale's Colquitt band. Each scale mean
+  of `rating_validity()` now uses the items whose index rests on at least
+  two judges. HTC rests on every judge who rated the item against its
+  intended construct, so such an item usually stays in mean HTC and leaves
+  mean HTD only. In `scale_summary`, `n_htc` and `n_htd` now count the items
+  in each mean, and `results` gains `n_target`, the judges behind HTC. Unlike
+  the item sort, this does not depend on alpha.
+* **Judges whose ratings run exactly parallel give `F = Inf`.** When every
+  judge's ratings differed across the constructs by the same amounts there
+  is no error variance. Rounding left a sum of squares near 1e-15 where it
+  should be 0, so the test printed an *F* in the quadrillions with degrees
+  of freedom "corrected" by an epsilon built from that noise, and the
+  contrasts a *t* of the same size. The error is now treated as zero: *F*
+  and the contrast *t* are `Inf`, *p* is 0, no sphericity correction is
+  reported, and the printout and the help say what happened. When every
+  rating is the same, *F* and *p* are `NA` as before.
+* **`max_contrast_p` is `NA` when a contrast has no *p*.** When every judge
+  rates the intended construct and another the same, that contrast cannot be
+  tested and fails. The largest *p* was taken over the other contrasts, so an
+  item could show an omnibus *p* and a contrast *p* that both met alpha
+  beside a `"Review"` decision. The value is now `NA`, and the printout and
+  the handoff note say which constructs tied.
+* **Leading and trailing spaces in labels are ignored** in item, judge and
+  construct labels and in the names of `target_map`, as in the item sort.
+  Names of `target_map` that are the same once trimmed are an error.
+* **Items are listed in the order of the data,** or of the levels when the
+  item column is a factor, in `htc()`, `htd()`, `anova_content()` and
+  `rating_validity()`. They were sorted as text, so Q10 came before Q2. The
+  rows of `scale_summary` follow the order in which each scale first appears.
+  Item names in `results` are always text.
+
+## Construct rating: other fixes
+
+* **The test is credited to its sources.** The printout and the handoff
+  credited the repeated-measures ANOVA with planned contrasts to Hinkin and
+  Tracey (1999). They proposed the rating task and analyzed it with a one-way
+  ANOVA and Duncan's multiple range test. The repeated-measures ANOVA
+  followed, when its *F* is significant, by a planned contrast is MacKenzie et
+  al.'s (2011) recommendation for that task. The help for `anova_content()`
+  now says which details are published and which are this package's choices
+  (the Greenhouse-Geisser screening *p*, one one-sided contrast for each
+  orbiting construct with every one required, no adjustment by default, the
+  two-judge minimum, and Welch contrasts in a between-judge design). The
+  printout says "Adapted from Hinkin & Tracey (1999) and MacKenzie et al.
+  (2011)", the `rule` text in the handoff says the same and names both
+  conditions, and its `citation` adds MacKenzie et al. (2011). The numbers
+  are unchanged.
+* **HTD is defined as what it is.** The key and the glossary said HTD is the
+  lead over the closest rival. It is the intended construct's lead averaged
+  over every other construct, as in Colquitt et al. (2019); the closest rival
+  is reported beside it. The range of HTC is given as 1 divided by the number
+  of scale points to 1 (.20 to 1 on a five-point scale); it said 0 to 1.
+* The printout of `rating_validity()` states its rule and its alpha: Retain
+  means the omnibus *p* and every contrast *p* are at or below alpha. The
+  meaning of "Retain" in the key names the omnibus test too.
+* `anova_content()` prints whole degrees of freedom as whole numbers,
+  "F(2, 14)", and mentions the Greenhouse-Geisser correction only when it
+  changed them. With two constructs it printed "F(1.00, 7.00)" under a note
+  about fractional degrees of freedom. A missing *F* test prints "--".
+* `content_report()` on a construct-rating fit shows the *F* test, with the
+  degrees of freedom its *p* was read from. To keep the table within 80
+  columns it no longer shows the closest competitor; that and partial
+  eta-squared are in `format = "data.frame"`, whose new columns sit before
+  `p_value`, so read its columns by name. `results` gains `df1_gg` and
+  `df2_gg`, the corrected degrees of freedom, after `epsilon_gg`.
+* The profile figure draws both ends of each gap from the judges with
+  complete ratings, the judges the tests use. The target end used every
+  rating, so with missing ratings a gap could point the wrong way for its own
+  decision. An item without a decision is marked with a cross and has no gap,
+  and the legend lists only what is drawn.
+* For expert judges, the scale tables of `rating_validity()` and
+  `sort_validity()` leave out the level columns and the benchmark set, which
+  were printed as columns of `NA` under a named benchmark set that was not
+  applied, and are headed "means", not "Colquitt benchmarks".
+* An item whose every contrast passed but whose omnibus test did not is told
+  so, with the new `issue` text "Every contrast met, omnibus test not met".
+  Its advice pointed at "the weakest target-orbiting comparison", which had
+  passed. With two constructs this is the usual way to miss: the one-sided
+  contrast *p* is half the omnibus *p*.
+* In the handoff, the `p_value` of a construct-rating item is the omnibus
+  *p*. For an item that meets it and is held back by a contrast, the `note`
+  on that row now says so, with the largest contrast *p* or the constructs
+  that tied; a missing *p* carries a note saying why. With `adjust =
+  "holm"`, the rule and the note say the contrasts were Holm-adjusted. No
+  column or statistic is added.
+* `anova_content()` prints the alpha and the adjustment its contrasts were
+  judged at, and says they are one-sided. Its help describes the columns of
+  the contrast table, including that `dz` is Cohen's *d* with the pooled
+  standard deviation in a between-judge design. The help page is titled for
+  what it runs, a repeated-measures ANOVA.
+* A single `orbiting_r` named for a construct other than the one target is an
+  error in `rating_validity()` and `sort_validity()`. It was applied to the
+  target whatever its name said.
+* When a scale's means leave items out, a sentence under the table says how
+  many items are in each. The columns "with HTC" and "with HTD" are gone.
+* "Incomplete judge profiles occurred for 1 item-judge profiles" now reads
+  "1 item-judge profile was incomplete", and the sentence says which
+  statistics use which judges. "0 of 1 items meet" reads "0 of 1 item
+  meets", and "1 of 3 items meet" reads "1 of 3 items meets".
+* The help for `adjust` no longer calls unadjusted contrasts "historical":
+  Hinkin and Tracey (1999) used Duncan's test, not planned contrasts.
+* `?htd` gives the full reference for Colquitt et al. (2019). Colquitt et al.
+  (2014), no longer cited on any page, leaves the reference lists.
+* Label handling is faster on large data with numeric identifiers: each
+  distinct value is converted once.
+
+## Judges, domain and structure: values that change
+
+* **An item one judge from the criterion no longer flags its judges.** With
+  five of six
+  judges rating an item relevant, removing any of the five changes the
+  item's CVI status, so all five were `"Influential"` and flagged for
+  review, and the lone dissenter was the only `"Typical"` judge. On a panel
+  of three every judge was `"Influential"` for every item, because one judge
+  fewer leaves no criterion at all. `judge_validity()` now reports such items
+  in their own table, with the judges whose removal changes each one, and
+  flags no judge for it. An item rated by three or fewer judges is "not
+  checked". `"Influential"` is no longer a decision, `scale_summary` loses
+  `n_influential` and gains `n_items_unchecked`, and
+  `details$influence_items` gains `n_raters`, `n_relevant` and
+  `changes_without`. Such an item sits at the criterion or one short of it,
+  depending on the panel size.
+* **Fit statistics flag a judge only above the range, and only with enough
+  decisions.** Infit or outfit outside 0.5 to 1.5 sent a judge to review
+  either way. That range is Linacre's (2002) guide to how productive data are
+  for measurement: below 0.5 is "less productive for measurement, but not
+  degrading", and misfit distorts the measurement only above 2.0. On six to
+  ten items, a third to a half of
+  judges who fit the model exactly fell outside it by chance. A judge below
+  the range is now described and not flagged (`"Too predictable"` is no
+  longer a decision), and a judge above it is `"Erratic"` only when the model
+  scored at least `fit_min_ratings` of their decisions (default 30). With the
+  item counts usual in content validation the fit statistics are shown and
+  not flagged, and a judge above the range on too few decisions is named
+  with the number scored. Linacre is cited only for his own bounds; a
+  `fit_range` set by the analyst is called that.
+* **Logit severity is corrected by the number of judges.** Joint maximum
+  likelihood stretches the judge severities by about J / (J - 1), with J the
+  number of judges behind each item parameter. The correction multiplied by
+  (L - 1) / L with L the number of items, which left nearly all of the
+  stretch in place on a small panel: about 1.4 times too large with four
+  judges. It now uses the judges who rated each item (their mean over the
+  items when ratings are missing). Printed logits change: smaller when the
+  model holds fewer judges than items, slightly larger when it holds more.
+  Standard errors are scaled by the square root of the factor, as the
+  Facets documentation describes. Applying the Wright and Douglas (1977)
+  correction to judges is labeled as this package's choice, with Wright's
+  (1988) note that it is inexact for very short tests.
+* **With missing ratings a judge is compared on the items they rated.** A
+  judge who rated only the low-rated items, exactly as everyone else did, was
+  flagged `"Severe"`. Severity in rating points and scale use now compare
+  each judge with the panel on the same items. With complete ratings the
+  values are computed as before.
+* **A judge exactly at a cut is not flagged.** Severity and scale use are
+  compared with their cuts allowing for rounding error in the last digit,
+  so a judge printed at 0.75 beside "exceeds 0.75" is no longer flagged.
+* **`content_structure()` clusters the map coordinates.** It named the
+  procedure of Sireci and Geisinger (1992, 1995), who clustered the items'
+  scaling coordinates, but clustered the original dissimilarities, so the
+  number of dimensions never affected the clusters or the adjusted Rand
+  index. It now clusters the coordinates on the retained dimensions with
+  average linkage (this package's choice; the sources checked do not state
+  their linkage). Clusters, the adjusted Rand index and the status can
+  change, and now depend on `dims`. The help says what still differs from
+  their procedure.
+* **A one-cell blueprint, or one cluster, has no adjusted Rand index.** It
+  was .00 and "Review: correspond only weakly". It is `NA`, with status
+  `"Insufficient data"`, because nothing can be compared.
+* **The map's fit is no longer called Kruskal's stress-1.** The statistic
+  compares the map's distances with the dissimilarities; Kruskal's (1964)
+  stress-1 belongs to nonmetric scaling and is computed differently. It
+  keeps its value and its name in the object, `stress`, is printed as
+  "distortion", and loses the labels "good", "fair" and "poor", which were
+  his benchmarks for a different quantity. The `fit` table loses
+  `fit_label`. The goodness of fit, `gof`, is described as the share of the
+  sum of the absolute eigenvalues, which is what it is.
+* **`domain_validity()` with `targets`.** A cell far below its intended share
+  was `"Covered"`: it is now `"Under-represented"` when its share is below
+  the expected share divided by `over_factor`. A cell that met a target of
+  one item was `"Thinly covered"`: the minimum is now the smaller of
+  `min_items` and the cell's target (rounded up), and the printed criteria
+  say so. A cell named in `targets` that holds no item was left out, and
+  its target with it; it is now reported as `"Not covered"`. With `domain`,
+  a target for a cell not in `domain` is an error. Without `targets`
+  nothing changes.
+* **`similarity_from_sort()` keeps the items in the order of the data.**
+  It sorted them. A `membership` vector built by position to match the old
+  sorted order is now misaligned, so name it by item.
+* **`reproducibility_phi()` and `signal_detection()` report Fisher's exact
+  *p* when an expected count is below 5.** They printed a chi-square *p* with
+  R's warning suppressed, on tables of six to twenty items: .121 where the
+  exact *p* is .333. `p` is now the exact *p* in that case, `p_method` says
+  which test it is, and `p_chisq` keeps the chi-square *p*.
+
+## Judges, domain and structure: other fixes
+
+* The cuts behind a status are arguments, printed beside it and labeled as
+  contentvalidR conventions: `phi_cut` in `gtheory_content()` (.80),
+  `ari_cut` in `content_structure()` (.60), and `differentiation_cut` and
+  `fit_min_ratings` in `judge_validity()`. No published standard sets them.
+  A cut the analyst sets is printed as "set for this analysis", and a value
+  that rounds to its cut gets a third decimal (".797, below the .80").
+* `gtheory_content(max_judges = 1)` no longer stops with "wrong sign in 'by'
+  argument".
+* `gtheory_content()` states its coefficient against the criterion. It called
+  any Phi below .80 "moderately" generalizable, .31 included. When no item
+  variance is found, the text says where the variance is; it said both
+  coefficients are 0 when one is undefined. A design too small to analyze
+  prints its reason without an empty variance table.
+* The projected panel sizes are described as estimates from one panel, in the
+  printout, the help and the README, which said the question is "answered
+  exactly".
+* A named `membership` whose names do not match the items is an error. It
+  was read by position, so one typo reordered the blueprint.
+* Equal similarities, repeated judge or item names, and a matrix with no
+  rows stop with a message that says what is wrong.
+* `plot()` on a content structure accepts `xlab`, `pch`, `xlim` and the like:
+  they replace the method's own. A `pch` or `col` with one value per cell is
+  applied by cell and kept in the key. A map with one dimension keeps its
+  symbols and legend.
+* `judge_validity()` prints the scale and the relevance cut, the number of
+  missing ratings and how many judges Phi rests on (in `summary()` too),
+  "not estimable" where it printed `NA%`, and one judge as "Insufficient
+  data", with nothing after the verdict. `results` gains `n_scored`, the
+  decisions the facets model scored for each judge.
+* `domain_validity()`: `scale_summary` gains `n_under` and `settings` gains
+  `over_possible`; a cell named twice in `targets` stops; item labels in
+  `similarity` are trimmed like the assignments. `content_structure()`
+  accepts a factor `membership`. `reproducibility_phi()` and
+  `signal_detection()` return `n` and `p_method` (`NA` when no test can be
+  run), and no longer fail on tables of more than about 430 items.
+* `compare_rounds()` ignores the settings the data decide (`bias_correction`,
+  `over_possible`), so two rounds analyzed alike stay comparable.
+* Judge objects saved before 1.0 print and summarize again.
+* `content_report()` for judges shows logit severity, infit and outfit, and
+  drops the count of flipped items.
+* `chi-square(1, N = 60) = 41.71`: the two-by-two comparators print the
+  sample size with the degrees of freedom, as APA asks.
+* `domain_validity()` says when no cell can be flagged as over-represented
+  (two equal cells at the default factor), and its key no longer defines
+  "stress", which that printout does not show.
+* `qfactor_content()` says its loadings are unrotated and how that differs
+  from the published approach. The message about Kaiser's rule is wrapped.
+* `similarity_from_sort()` compares labels as trimmed text;
+  `domain_validity()` trims cell and item labels.
+* The examples for `judge_validity()` and `content_structure()` now show the
+  logit columns and a two-dimensional map whose nine items are all visible.
+* `?domain_validity` says its structure analysis is adapted from Sireci and
+  Geisinger (1992, 1995), as `?content_structure` does.
+* A congruence plot without a target mapping stops before it opens a
+  graphics device, so the failed call leaves no empty `Rplots.pdf`.
+
+## Congruence and method attribution: values that change
+
+* **`ioc()` returns the published index.** Its `ioc` column held each
+  objective's mean rating, which applied work often reports as "the IOC" but
+  which reaches 1 whenever every expert gives +1 to the objective, whatever
+  they say about the others. It is now the index of Rovinelli and
+  Hambleton (1977): half the gap between the mean rating on the objective
+  and the mean on the item's other objectives, 1 only when every expert
+  gives +1 to the objective and -1 to every other. The mean is kept as
+  `mean_rating`, beside the index in the print, and `n_objectives` is added.
+  The index is `NA` for an item rated against one objective, because it
+  compares objectives. Items and objectives keep the order of the data.
+  With missing ratings each objective's mean counts once, the package's own
+  handling of an incomplete design, which `?ioc` and the printout say.
+* **Congruence decisions use the index and a criterion.** An item was
+  `"Target favored"` when the mean on its target beat the mean on every other
+  objective, or `"Tie / review"`, so a mean of .25 against -.25 passed. It is
+  now `"Congruent"` when its index for the target objective reaches
+  `ioc_cut`, by default the .70 Rovinelli and Hambleton applied, and
+  `"Review"` otherwise; `"Target described"` when only the target objective
+  was rated. `results` holds `target_ioc` (the index), `target_mean`,
+  `competitor_mean` and `margin` (the gap between the means, a description
+  beside the index), with `n_judges`; `competitor_ioc` is gone. A criterion
+  set with `ioc_cut` is printed as set for the analysis; only .70 is
+  credited to Rovinelli and Hambleton. Because the index averages over
+  every other objective, an item can meet it while one rival is rated as
+  high as the target; its interpretation then says so.
+* **Congruence fits saved before 1.0 are not read as the index.** Their
+  `target_ioc` held a mean. They still print, with a note, but
+  `content_handoff()`, `content_report()` and `plot()` stop and ask for a
+  new fit, since anything else would present a mean as the index.
+* **Congruence without a target mapping has one row per item,** as every
+  item-level table does: the objective the item matched best and its index.
+  The item-by-objective table is in `details$cells`, and the printout shows
+  it.
+* **The congruence handoff carries the index.** Its statistics are
+  `target IOC` (the index, with `ioc_cut` as the criterion), `target mean
+  rating` and `competitor mean rating` (its note names the objective);
+  `competitor IOC` and `IOC margin` are gone. Without a target mapping each
+  item carries `highest IOC`, its note naming the objective.
+  `content_evidence()` shows `target IOC`. The schema is unchanged.
+* **The relevance decision `"Support"` is gone.** Every count that meets
+  Lynn's criterion puts modified kappa above .74 (the lowest is .76, at 7 of
+  9), so an item meeting the criterion always had `"Strong support"` and
+  `"Support"` could not occur. `scale_summary` loses `n_support`.
+* **No "overall" strength in the item-sort and construct-rating
+  summaries.** `overall_strength` was the weaker of the two Colquitt et al.
+  (2019) levels, a combination they do not publish. It is gone from
+  `scale_summary`, the printouts and the summary tables; the two levels
+  stay, each against its published benchmark.
+
+## Congruence and method attribution: other fixes
+
+* Lynn's (1986) table stops at ten experts. Beyond it the package holds her
+  lowest tabled proportion, 7 of 9, and now says that this is its own
+  extension wherever it applies it: the relevance printout and its closing
+  line and figure legend, the handoff rule (whose citations then also
+  include Polit & Beck, 2006, who restate her rule as no lower than .78 for
+  six or more experts, though their own recommendation covers six to ten),
+  the `expert_power()` printout, the fragile-item note of
+  `judge_validity()`, the glossary, the help pages and both vignettes. With
+  mixed panel sizes the relevance printout now states the criterion it
+  applies.
+* `expert_power()` is described as a contentvalidR planning tool, not a
+  published method.
+* The Colquitt et al. (2019) bands carry a caution, labeled as this
+  package's own, when judges saw a number of definitions other than three:
+  every one of their 112 scales was sorted into, or rated against, its own
+  definition and two orbiting ones, and they did not examine other numbers.
+  In a sort the count is `n_constructs`, or the constructs judges used when
+  it is not given; in ratings it is the constructs each scale's items were
+  rated against, so two focal scales with two orbiting constructs each get
+  no caution. The caution is printed under the benchmark table too, and
+  `scale_summary` gains `n_definitions`. `?colquitt_benchmarks` describes
+  their design.
+* The relevance handoff rule says that meeting the criterion also puts
+  modified kappa above .74, in place of a separate kappa rule.
+* Verdicts agree in number in every workflow: "1 of 3 items meets the exact
+  essentiality criterion."
+* `content_report()` for congruence shows the experts, the index, both means
+  and the margin.
+* `?expert_validity` cites Rovinelli and Hambleton (1977) and Turner and
+  Carlson (2003), and documents `ioc_cut`; the expert-panel vignette cites
+  Turner and Carlson too.
+* `plot()` for congruence shows each item's index against the criterion
+  line, with the two mean ratings below it in gray and a cross for an item
+  with no index; the legend gives the criterion's value.
+* When every item was rated against its target objective only, the
+  printout says so; it said no target objective was supplied. `summary()`
+  explains its congruence columns, and the handoff names tied rivals as
+  "Objectives B, C.".
+* The reporting vignette's congruence guidance reports the index against
+  its criterion, with the means and margin as description.
+
+## Keys, help pages, figures and tables: values that change
+
+* **Report intervals are named after their estimates.** `content_report()`
+  returned two columns both named "95% CI" in a relevance report, so
+  `tab$"95% CI"` found only the first. Every interval column is now named
+  after its estimate (`Psa 95% CI`, `V 95% CI`, `I-CVI 95% CI`), and the
+  printed table and the Markdown head it "95% CI", beside that estimate. A
+  column the user renames prints under the new name.
+* **`plot()` takes `xlab`, `ylab`, `xlim`, `ylim` and `main` everywhere.**
+  Most plot methods set these themselves and also passed `...` on, so giving
+  one stopped with "formal argument matched by multiple actual arguments".
+  An argument the caller gives now replaces the method's own, except those
+  the figure's encoding depends on: the frame type, the axes the method
+  draws, and the decision symbols a map's legend keys. A `NULL` leaves the
+  method's value, and an unnamed argument is dropped with a warning. In the
+  distribution views and the evidence profile a title is drawn once, above
+  the legend, and the item labels take the place of a y-axis label.
+* **Long item names no longer stop a figure.** The distribution views and
+  the evidence profile sized the label margin to the longest name, and a
+  long one left no room to draw ("figure margins too large"). Labels are
+  measured on the device; one wider than 40% of the width left for labels
+  is shortened in the middle, keeping its start and end, so names that
+  share an opening stay apart.
+
+## Keys, help pages, figures and tables: other fixes
+
+* `as.data.frame()` works on every result: `cvi()`, `gtheory_content()`,
+  `content_structure()`, `compare_rounds()`, `content_handoff()`,
+  `sort_power()`, `expert_power()` and `panel_agreement()` had no method, and
+  `csv_binom_test()`, `signal_detection()` and `reproducibility_phi()` gave
+  two to four rows for one test. A result holding several tables takes
+  `component`; a single test is one row, with an interval as two columns and
+  a two-by-two table as four named counts. The agreement row names the
+  interval's error rate `ci_alpha`, and the binomial row marks its interval
+  one-sided. See `?"contentvalid-data-frames"`.
+* The key said modified kappa falls below 0 "when agreement is below
+  chance". It does so only when no expert, or one of three, rated the item
+  relevant: 2 of 8 gives .16.
+* The relevance key defines S-CVI/Ave and S-CVI/UA, which the header prints.
+* With `agreement = "ac1"`, the key describes AC1, which is not 0 for
+  independent raters and stays high when ratings concentrate; it repeated
+  the Krippendorff caution that the coefficient "can be low when nearly
+  every rating is the same". The generic agreement entry now describes
+  Krippendorff's alpha alone.
+* The glossary said judge severity is in logits when the model is
+  estimable. Its terms now follow the `results` columns: `severity_raw`,
+  printed as severity, in rating points, and `severity`, printed as logit,
+  from the facets model on the relevant/not-relevant decision, which can
+  differ even in sign. The key gives both.
+* The domain decision meanings state the rules: more than `over_factor`
+  times the expected share, and less than the target share divided by it.
+* Three-author works are cited with "et al." in the `cvi()` printout and
+  help, the legacy sort printout and `?sort_validity` (Yao et al., 2008),
+  the item-sort and reporting vignettes, and DESCRIPTION; "p value" is no
+  longer hyphenated; article numbers read "Article 93".
+* Help pages cite every work they list, by author and date: the interval
+  methods in `?compute_psa`, Colquitt et al. (2019) in `?htd`, Hinkin and
+  Tracey (1999) in `?htc`, Aiken (1980) in `?aikens_v`, Howard and Melloy
+  (2016) in `?simulate_csv_power` and `?sort_power`, Feinstein and
+  Cicchetti (1990) and Wongpakaran et al. (2013) in `?panel_agreement`, and
+  Penfield and Giacobbi (2004), Polit et al. (2007), Hayes and Krippendorff
+  (2007) and Zapf et al. (2016) in `?expert_validity`; the expert-panel and
+  reading-output vignettes likewise.
+* `?contentvalidR` promised `plot()` for all six workflows; judge and domain
+  fits have none, and it now says how to draw a domain fit's content map
+  when similarity data were supplied.
+* The reporting vignettes build their tables with `content_report()` rather
+  than from raw `results` columns, and point to the strongest competitor and
+  the scale-level CVIs, which those tables leave out.
+* `reading-output` says what `Strong` means: the 60th to 79th percentile of
+  the scales Colquitt et al. (2019) collected, not "typical of published
+  work".
+* The walkthrough says seven items, not five, each set a test for one
+  stage; that the fifteen assignments follow from the null probability of
+  .50, not from "two plausible answers"; calls `csv` the substantive validity
+  coefficient; and no longer says the judges "never considered", or "saw
+  only one of", the facets of an item four of them sorted elsewhere.
+* The handoff vignette's nomologR install line names CRAN as well as
+  R-universe, so it works in a fresh library.
+
+## Output style shared with nomologR
+
+The printouts of contentvalidR and nomologR now follow one style, agreed
+between the two packages (JUhalt/nomologR#144), so a researcher moving from
+content review to empirical validation reads both alike. No stored number or
+handoff column changes, and `panel_agreement()` gains one field, `n_pairs`
+(the number of rating pairs behind the share of identical pairs). The few
+stored sentences that state a rounded number or a *p* value now follow the
+same rules (listed at the end), and two plot methods gain `type`.
+
+* **Headers.** Every printout opens with the object's class and a
+  plain-language title on one line, with no rule beneath:
+  `<contentvalid_sort> Item-sort analysis`; a summary's tag ends in
+  "summary".
+* **Numbers.** Values round half away from zero for display, so 5 of 8
+  prints .63, where R's own rounding gave .62 beside 3 of 8 as .38. A value
+  that could not be computed prints "--", never "NA". A *p* value that
+  would print 1.000 prints "> .999". Percentages are whole numbers on a base
+  under 100 and carry one decimal on a larger base; the share of identical
+  rating pairs follows the same rule, on the number of pairs. Delphi
+  interpretations keep one decimal where a share is not whole (12.5% of 8
+  experts), as their stored text always has. Results objects keep full
+  precision.
+* **Prose** wraps at 79 columns, and so do the keys, the decision legends
+  and the glossary. It never breaks inside "p < .001", "Phi >= .80",
+  "N = 40", "F(2, 14) = 3.21" or an interval.
+* **Tables** are indented two spaces, with text left-aligned, numbers
+  right-aligned and headings in sentence case; a heading that is data, such
+  as an item ID or a round label, keeps its case. A column empty in every
+  row is dropped, unless a decision rests on it. A table too wide for the
+  console tightens its columns, then drops trailing ones and names them
+  with the call that shows them. It never drops the item, its decision, the
+  statistic or test the decision rests on, or the statistic a component
+  exists to show; a table with nothing else to drop prints wider than the
+  console. Different Colquitt benchmark sets are named for their targets
+  beneath the scale-level table. The item-sort, Delphi and relevance keys
+  leave out a column the table did not show. The item similarity matrix
+  prints in blocks of columns that fit the console, with its diagonal
+  blank.
+* **Sections** indent their content; summaries list flagged units in a
+  "Flagged" section, one bullet per unit with a complete sentence,
+  "- B2 (Review): ...", and define the abbreviations they show. A
+  workflow's printout ends with what the evidence does not decide, and
+  every printout ends with one line pointing to what else the object holds
+  ("See summary(x) for the flagged items ..."; a summary points to its own
+  fields, such as `summary(x)$reviewed_items`). Markdown output from
+  `content_report()` prints only the lines to paste.
+* **Status words.** The handoff and `compare_rounds()` printouts say what
+  the shared status words mean in the workflow's own terms ("Supported is
+  this analysis's passing decision (Retain)"); `compare_rounds()` keeps the
+  expert-panel `mode` for this. The expert-panel summary counts its own
+  decision word ("Strong support: 3 of 5").
+* **Errors** for a wrong choice name the argument and the choices:
+  `` `format` must be one of "apa", "data.frame", or "markdown", not
+  "latex". `` As with `match.arg()`, `NULL` still selects the default.
+* **Plots.** Every plot method takes `type`. For the content map and the
+  expert power curve the argument is new, so a `type` passed through `...`
+  to `graphics::plot()` is no longer accepted there. A dashed line marks a
+  reference value, and the legend names it. `plot()` on a judge, domain or
+  round-comparison result, which have no figure, stops with a message
+  saying so (and, for a domain result with similarity data, how to draw its
+  content map) instead of a base-graphics error.
+* **Manuscript tables.** `content_report()` prints under a header and adds
+  the APA general note: the abbreviations in the order the columns show
+  them, a definition of each column whose heading alone does not say what
+  it holds, the interval method (including the Penfield-Giacobbi interval
+  for V when I-CVI has none), any Holm adjustment, the criterion behind the
+  decisions, and "-- = not computed" when a cell is missing. Judge and
+  domain tables now state their criteria, as contentvalidR conventions, and
+  the domain table shows each cell's expected share. Headings are shown in
+  sentence case; the names of the returned columns do not change. In
+  Markdown the note reads "*Note.* ...", the symbols *p*, *F*, *V*, *n* and
+  *N* are italic, and a value that could not be computed is an em dash.
+* **Wording.** Published rules are "criteria", not "cutoffs"; tests are
+  "one-sided" throughout; `reverse_keyed` messages say "reverse-keyed"; the
+  expert item tables head the per-item count "Experts"; earlier-method
+  verdicts read "Meets" and "Below"; both Colquitt sections are headed
+  "Scale-level"; closing caveats speak of "a flag for review" rather than
+  quoting a label the printout may not show. The evidence headline names
+  every stage that held an item back, and an agreement interval with no
+  width (every resample gave the same value) is said in words.
+* `?contentvalidR` and the "Reading the output" article describe the
+  conventions and give the crosswalk between the statuses of the two
+  packages.
+
+Stored text that changes so that it matches the printout:
+
+* `content_report(format = "data.frame")` rounds half up, like the APA
+  table: 5 of 8 is 0.63 in both (exact ties only).
+* A handoff note that gave a largest contrast *p* as "p = 1.000" now says
+  "p > .999", whenever the *p* would print as 1.000.
+* An interpretation that states a rounded value (the adjusted Rand index of
+  a content map, Phi of a generalizability analysis, a Delphi consensus
+  percentage) rounds half up on an exact tie; a Delphi rule in the handoff
+  states its percentage the same way.
+* A domain cell's interpretation states its share as the table does: 13%
+  for 1 of 8 (a tie), and one decimal on 100 or more items. An
+  over-represented cell's sentence gives its item count.
+* The Markdown note of `content_report()` wraps at 79 columns, so it spans
+  several elements of the returned vector.
+
+## Close-out of the audit: values that change
+
+A final check of every audit finding against the release branch found 85
+still open and 16 new ones. These are closed here, together with what a
+review of the close-out itself found.
+
+* **Modified kappa below .40 is labeled "Poor".** The `kappa_quality` column
+  of the relevance `results` read "Low" below .40, a word the cited scheme
+  does not use. The bands are those of Cicchetti and Sparrow (1981) and
+  Fleiss (1981), which Polit et al. (2007) apply to modified kappa:
+  Excellent above .74, Good from .60 to .74, Fair from .40 to .59, and Poor
+  below .40. `?expert_validity` documents them. Code that tests for "Low"
+  should test for "Poor".
+* **A stage holds back only the items it decided on.** In
+  `content_evidence()`, an item whose status in a stage is "Descriptive only"
+  is no longer held back by that stage, even when the stage decided on other
+  items: a Delphi study without a threshold still holds back an item with
+  too few experts, but not the items it described. An item that no stage
+  applied a decision rule to is neither carried nor held back: its Result
+  reads "No decision" in the printout, the evidence profile and the flow
+  diagram, which lists such items beside "Carried forward", and `carried`
+  leaves it out. `carried` holds the items some stage decided on and every
+  such stage carried. Each stage's handoff is unchanged; the printout says
+  that a stage's own handoff carries none of the items it only described,
+  and that `keep = "Descriptive only"` in `content_handoff()` carries them.
+* **`compare_rounds()` names every unit's change and counts every
+  transition.** A unit present only between the first and last rounds had
+  `change` `NA`; it now reads "Not in first or last" and `summary()` lists
+  it. `summary` gains `n_changed`, for moves to or from "Descriptive only",
+  so `n_compared` is the sum of unchanged, strengthened, weakened and
+  changed. A proportion in `settings_changes` (`alpha`,
+  `consensus_threshold`, `ioc_cut`, `p0`) reads as APA writes it, `.05` and
+  `.75`, where it read `0.05` and `0.75`; two values that would read alike get
+  the digits that tell them apart (`.6667` and `.667`).
+* **The advice beside the Colquitt bands is labeled as this package's.** In
+  the item-sort and construct-rating `scale_summary$evidence`, the sentence
+  naming each index's band (Colquitt et al., 2019) ends there, and the advice
+  keyed to the lower band follows as "A contentvalidR suggestion for the
+  lower band ...". Expert judges get one sentence in both workflows: "Colquitt
+  benchmark labels are not applied because the analysis was marked as using
+  expert judges." The stored text changes.
+* **The relevance `interpretation` of a Strong support item** says that
+  meeting the criterion also puts its modified kappa above .74, where it said
+  the item "shows excellent chance-corrected agreement", which read as
+  separate evidence.
+* **`gtheory_content()` interpretation.** With the default `phi_cut`, the
+  stored `interpretation` reads "at or above the .80 criterion" (or "below the
+  .80 criterion"), as the printed Status line already calls .80 a
+  contentvalidR convention; "set for this analysis" is kept for a cut the
+  analyst changed.
+* **`content_report()`.** A Delphi table for the chi-square and
+  percent-change methods has a Stable column and keeps Agree and the
+  chi-square or net change beside it at any console width; a share just under
+  the consensus threshold, and the threshold in the note, get the decimals
+  that tell them apart (6 of 9 against .667 reads .6667 against 66.70%); and
+  the note says when Unchanged and the stability statistic rest on fewer
+  experts than the Experts column shows. The essentiality
+  `format = "data.frame"` table keeps `ne` and `critical_ne`. The Markdown rule
+  row always aligns the item column left, other text left and numbers
+  right. Notes say when an interval has equal limits because every resample
+  gave the same value; name which judge cuts were set for the analysis and
+  which are contentvalidR conventions; say when a retained item's two-sided
+  interval includes p0; and call a congruence competitor the other objective
+  with the highest mean.
+* **Handoff notes.** Each Delphi stability row's `note` says which way its
+  criterion reads (the individual chi-square takes *p* below alpha as stable,
+  the group chi-square *p* at or above alpha, net percent change a value
+  below .15) and whether the fit read the item as stable. A zero-width
+  interval and a pair with fewer experts than the item's last round are
+  noted, and a panel interval with no width is described in words in
+  `panel_statistics$note`. No column changes.
+
+## Close-out of the audit: other fixes
+
+* **Delphi printout.** A zero-width kappa interval prints its bounds, as
+  `content_report()` does, with a note that every resample gave the same
+  value, which does not mean kappa is known exactly. The item table heads its
+  count "Experts" and percent change "Net change", as the report does; keeps
+  Agree and the stability statistic, with its degrees of freedom, *p* and
+  Stable, at any width, letting the interval and Unchanged go first; shows a
+  Paired column, last so
+  that a narrow console drops it first, when stability rests on fewer experts
+  than rated the item last; and defines only the columns shown. The caution
+  about fewer experts prints whatever the panel size. A share below the
+  consensus threshold is never printed as equal to it in `print()`,
+  `summary()` or `content_report()` (6 of 9 against .667 reads 66.67% against
+  66.70%); the stored `interpretation` keeps one decimal, as the handoff rule
+  and the figure legend do. The verdict names items with too few experts and
+  those the panel agreed in the other direction, and a summary without a
+  threshold no longer prints "Consensus: 0 of 1". Quadratic-weighted kappa is
+  said to equal the intraclass correlation in its sums-of-squares form
+  (Fleiss & Cohen, 1973). The consensus and stability views draw in grays
+  under `apa = TRUE`, and `plot(type = "stability")` on a fit with no pair of
+  consecutive rounds stops before opening a device. `?delphi_validity` lists
+  its `results` columns, names the third reason a stability statistic can be
+  `NA`, and says each item and pair is resampled from the same seed.
+* **`compare_rounds()`** heads its change column "First to last", and a call
+  that names only some rounds warns that the names were not used.
+* **Handoff printout.** It says no decision rule was applied when every item
+  is "Descriptive only", and how to carry such items, instead of telling the
+  reader to carry an empty set. A "Keying:" line gives the reverse-keyed
+  items and the response scale; the "Constructs:" line wraps and reads "none
+  carried" when nothing is carried; the panel interval reads "95% CI".
+  `?content_handoff` covers the Delphi kappa interval, the statistics
+  without one, and all three reasons a stability statistic can be `NA`, and
+  lists Chaffin and Talley (1980), Dajani et al. (1979) and Scheibe et al.
+  (1975/2002) among its references.
+* **`content_evidence()`.** A congruence handoff made before 1.0, whose
+  "target IOC" held a mean rating, is refused, as such fits already were.
+  Stage labels "item" and "result" are refused. The Result column gives stage
+  numbers, and when the stages' names would push their columns off the console
+  the columns are headed by the same numbers, so two or three stages fit an
+  80-column console; the key explains the numbers and only the columns shown,
+  and "Highest IOC" has its own definition, without a criterion. Short stage
+  names are kept when numbering them would not make the table fit. The profile
+  keys a cross as an item not judged against a criterion (described only, or
+  too few raters), labels only the ends of a crowded axis, and shortens panel
+  titles with "..." on a small device. The flow diagram says "still in play,
+  not reviewed here" for items no earlier stage held back. The evidence
+  profile draws at full size, fits its key to the width inside the item
+  labels, names every item in type sized to the rows, sets numbered verdicts
+  that would still wrap on one line at 8 points, draws the promised cross, and
+  keys a construct-rating panel by its decision rule. The flow diagram keeps
+  its text at 8 points or more wherever the device is tall enough, and
+  `?plot.contentvalid_evidence` says which sizes hold it.
+* **Expert panel.** The relevance printout keeps the `I-CVI needed` column on
+  an 80-column console and explains only the columns shown. Essentiality
+  states alpha, the exact one-sided test and Ayre and Scally (2014) whatever
+  the panel sizes. `summary()` states the scale, the cut and the criterion;
+  a congruence summary states its criterion only when some item was held to
+  it, and counts an item rated on its target alone as "Target described".
+  The verdict no longer repeats "with strong support (modified kappa above
+  .74)" in every analysis. Printouts call the raters experts ("Experts per
+  item", "Mean Aiken's V"). `expert_power()` says it is a contentvalidR
+  planning tool. With `proportion_ci = "none"` no sentence mentions an
+  interval that was not computed. A congruence report without targets
+  explains "Descriptive only" instead of stating a criterion no item was held
+  to, and the Review decision legend names the other objective with the
+  highest mean rating, not "the closest other". `?expert_validity` describes
+  `cvi_criterion` and `kappa_quality` once, and it and `?expert_power` give
+  complete references.
+* **Item sort and construct ratings.** The item-sort print explains a
+  retained item whose two-sided interval includes p0, gives the judges per
+  item when panels differ, and cautions when a scale's bands rest on a panel
+  too small to decide any item. The labels of Psa and Csv can be compared,
+  as percentile positions; their values cannot, and the prints and the
+  glossary now say so. A scale mean never prints as a band minimum it falls
+  below (".868 Moderate" where Strong starts at .87). A key that explains a
+  column the table left out for width says where to find it. The
+  construct-rating print heads its judge count "Judges". `?csv_binom_test` and
+  `?sort_validity` say that *p* equal to alpha meets the criterion,
+  `?sort_power` carries the caveat of Howard and Melloy about `p0 = .50`, `?htd`
+  and the construct-rating legend describe the competitor as the other
+  construct with the highest mean rating, and `?anova_content` says which
+  judges its means use.
+* **Judges.** A cut the analyst set prints as "set for this analysis" in the
+  printout and in the report note, which names each cut that was set and
+  each that is a convention, and a severity cut of 2 reads "2 logits".
+  `?content_structure` gives the default `k` the code uses.
+* **Figures.** Keys too wide for one row take as many rows as they need, down
+  to a single column, before their type shrinks, never below 8 points, and sit
+  in headroom above the data and the reference lines; the construct-rating
+  profile lays out its key the same way, and so do the planning plots, whose
+  axes tick whole numbers of experts or judges and whose curves are solid and
+  told apart by markers. The tick labels of a bounded vertical axis are set
+  horizontally, so a short figure under a tall key drops none. The
+  expert-panel, item-sort and construct-rating item plots and the
+  construct-rating profile widen their label margins for long item names,
+  shortening a name in the middle only when it would take more than about 40%
+  of the figure. A long vertical axis title gives way to the index's name
+  ("HTD"). The congruence plot fills an index that met the criterion and
+  leaves one below it open. A one-dimensional content map stacks the labels of
+  items at the same position. `plot()` checks `metric` and `reference_power`
+  whatever the `type`: an unknown `metric` with `type = "map"` or `"profile"`,
+  or an invalid `reference_power` with `type = "critical"`, used to be ignored
+  and is now an error, raised before a graphics device opens.
+* **Text.** A table that still does not fit once nothing is left to drop,
+  such as a Delphi table of long statements beside the columns its decisions
+  rest on, shortens the long item names in the middle, keeping their start
+  and end, and says so; the object keeps them in full. A console report whose
+  table left out columns for width says that its note describes the full
+  table. `content_report(include = "flagged")` of a domain fit with nothing
+  flagged prints "No units matched the requested selection." where it
+  stopped with an error. "F test", "contrast p" and "omnibus p" are never
+  split across lines. A column left out for width that shares its heading with another is
+  named after the estimate it follows ("Not shown for width: 95% CI for V,
+  95% CI for I-CVI"). An interval note says it reflects how few ratings an
+  item received, not whether the right people rated it.
+* **Documentation.** Every print, summary and plot method has a help page,
+  `?contentvalid-methods`, which also names the three helpers with no
+  `print()` method (`qfactor_content()`, `simulate_csv_power()`,
+  `simulate_anova_power()`) and says what `summary(compare_rounds())$changed`
+  holds. The help of each workflow lists its `results` columns.
+  `?content_report` says the Markdown lines render as a table only with
+  `results = "asis"` (`#| output: asis` in Quarto) and that a *p* below .0005
+  becomes 0 in `format = "data.frame"`.
+* **Vignettes.** Getting started uses headings and real lists, restores the
+  Csv formula, retains two items in its toy sort, and points to every
+  workflow. The reading-output write-up reports intervals and exact *p*
+  values and cites Howard and Melloy (2016). The walkthrough counts its
+  items correctly and calls its first stage the item sort. The Delphi
+  vignette calls the threshold line dashed and qualifies kappa and the
+  intraclass correlation. The design guide's sentence about unreachable
+  targets is conditional. Tables in the construct-rating, item-sort and
+  reporting vignettes print rounded, with *p* values below .001 written
+  "< .001", and the reporting vignette shows the Markdown report rendered.
+  The congruence figure's alt text describes the symbols it draws. The README
+  says a printout opens with a header, then the facts, then the verdict. The
+  Scheibe et al. (1975/2002) chapter keeps no publisher, because APA 7 omits
+  one that repeats the editors, as the 2002 web edition's issuers do.
+
+## Release housekeeping
+
+* The lifecycle badge reads "stable".
+* DESCRIPTION names the Hinkin-Tracey correspondence and distinctiveness
+  indices in full and credits them, with the benchmarks, to Colquitt et al.
+  (2019); it cites MacKenzie et al. (2011) for the repeated-measures
+  screening, says the content-structure analysis is adapted from Sireci and
+  Geisinger (1992), and wraps at 80 columns.
+* `?cvi` typesets the modified kappa formula with I-CVI as one symbol, and
+  gives a plain-text form of both formulas.
+* Component printouts put their source on the line beneath the header, so
+  every header fits in 80 columns; the help examples print no line wider
+  than that, and the Markdown note of `content_report()` wraps. The
+  vignettes print narrow selections of their tables.
+* `?panel_agreement` credits the irr package, against which the tests check
+  Krippendorff's alpha and Fleiss' kappa; irr stays in Suggests.
+* The release gate reads the date of the last CRAN release from
+  `tools/cran-release-date` and ignores a malformed one.
+* The release gate waits two minutes for the helper process that looks up
+  the package's dependencies, where the default five seconds stopped the
+  build stage on a busy machine. Its smoke test, which runs the installed
+  package beside nothing but the packages that ship with R, now adds the
+  packages the install declares it needs and no others, so a package from
+  outside R's own library that is used without being declared still fails
+  it. A stage name the gate does not know stops it, where it ran nothing and
+  reported that all stages had passed.
+* `?contentvalid-methods` has a Value section, which CRAN asks of every help
+  page that documents a function or a method.
+* The package now imports withr, its first dependency beyond `stats`. withr
+  is written in R alone and needs nothing beyond base R, so installing still
+  takes no compiler. A function given `seed` (`aikens_v()`,
+  `panel_agreement()`, `expert_validity()`, `delphi_validity()`,
+  `qfactor_content()`) seeds its resampling inside `withr::with_seed()`.
+  That is how the session's random stream is put back afterwards (see "A
+  seed no longer resets the random stream of the session" under "Expert
+  panel: values that change"): restoring it by hand would mean writing to
+  the global environment, which CRAN does not allow. Results for a given
+  seed are unchanged. Under `RNGkind("Marsaglia-Multicarry")` and
+  `normal.kind = "Buggy Kinderman-Ramage"`, two settings R itself warns
+  about, R repeats its warning each time the stream is put back.
+* A `seed` too large to be an integer (beyond 2147483647 in size) is refused
+  by name. It was passed on and failed inside `set.seed()`.
+
+## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR
   0.6.0 through 0.10.1, and the README says so.
-* The irr package is no longer cited, because the one help page that cited it
-  is gone. It stays in Suggests: the tests still check Krippendorff's alpha
-  and Fleiss' kappa against it.
 
 # contentvalidR 0.10.1
 

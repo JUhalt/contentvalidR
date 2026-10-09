@@ -206,7 +206,7 @@ test_that("attrition and items leaving the panel are handled explicitly", {
                "changed size across rounds")
 })
 
-test_that("rounds are ordered numerically, by factor levels, or by appearance", {
+test_that("rounds are ordered numerically, by factor levels, or by the number in a label", {
   d <- small_delphi()
   d10 <- d
   d10$round[d10$round == 2] <- 10
@@ -219,11 +219,34 @@ test_that("rounds are ordered numerically, by factor levels, or by appearance", 
   expect_identical(delphi_validity(df, lo = 1, hi = 4, B = 0)$design$rounds,
                    c("first", "second"))
 
+  # Text labels follow the number each carries, whatever order the rows are
+  # in. Row order once decided, so data sorted last round first was analyzed
+  # backwards.
   dc <- d[order(-d$round), ]
-  dc$round <- ifelse(dc$round == 1, "b", "a")
-  # Order of appearance: "a" (round 2 rows) comes first here.
-  expect_identical(delphi_validity(dc, lo = 1, hi = 4, B = 0)$design$rounds,
-                   c("a", "b"))
+  dc$round <- paste0("R", dc$round)
+  fit <- delphi_validity(dc, lo = 1, hi = 4, B = 0)
+  expect_identical(fit$design$rounds, c("R1", "R2"))
+  expect_identical(unique(fit$results$last_round), "R2")
+  ref <- delphi_validity(d, lo = 1, hi = 4, B = 0)
+  expect_equal(fit$results$prop_agree, ref$results$prop_agree)
+  expect_equal(fit$results$prop_unchanged, ref$results$prop_unchanged)
+
+  # "wave 10" comes after "wave 2", not before it as text would sort.
+  d3 <- rbind(d, transform(d[d$round == 2, ], round = 3))
+  d3$round <- c("wave 1", "wave 2", "wave 10")[d3$round]
+  d3 <- d3[order(d3$round), ]
+  expect_identical(delphi_validity(d3, lo = 1, hi = 4, B = 0)$design$rounds,
+                   c("wave 1", "wave 2", "wave 10"))
+
+  # Labels that carry no number cannot be ordered from their text, so the
+  # analysis asks for a factor and does not guess.
+  dn <- d
+  dn$round <- ifelse(dn$round == 1, "pre", "post")
+  expect_error(delphi_validity(dn, lo = 1, hi = 4, B = 0),
+               "do not say which round came first")
+  dn$round <- factor(dn$round, levels = c("pre", "post"))
+  expect_identical(delphi_validity(dn, lo = 1, hi = 4, B = 0)$design$rounds,
+                   c("pre", "post"))
 })
 
 test_that("the kappa interval resamples experts, reproducibly", {
@@ -258,8 +281,9 @@ test_that("inputs are validated with messages a user can act on", {
 test_that("the printout explains each method, and kappa carries no verbal labels", {
   d <- small_delphi()
   text <- function(...) {
-    paste(capture.output(print(delphi_validity(d, lo = 1, hi = 4, B = 0, ...))),
-          collapse = " ")
+    gsub("[[:space:]]+", " ",
+         paste(capture.output(print(delphi_validity(d, lo = 1, hi = 4, B = 0, ...))),
+               collapse = " "))
   }
   k <- text()
   expect_match(k, "weighted kappa \\(quadratic weights\\)")
@@ -273,7 +297,14 @@ test_that("the printout explains each method, and kappa carries no verbal labels
   expect_match(text(stability = "chisq_individual"), "significant result \\(p < alpha\\)")
   expect_match(text(stability = "chisq_group"), "non-significant")
   expect_match(text(stability = "percent_change"), "no statistical theory")
-  expect_match(text(consensus_threshold = 0.75), "fixed before the study")
+  # The printout says a threshold was supplied, never when it was chosen.
+  with_threshold <- text(consensus_threshold = 0.75)
+  expect_match(with_threshold, "Consensus threshold: 75%, as supplied.",
+               fixed = TRUE)
+  expect_false(grepl("fixed before the study.", with_threshold, fixed = TRUE))
+  expect_match(with_threshold, "recommend fixing the consensus threshold")
+  expect_match(text(consensus_threshold = 2 / 3), "Consensus threshold: 66.7%",
+               fixed = TRUE)
 
   s <- paste(capture.output(print(summary(delphi_validity(
     d, lo = 1, hi = 4, consensus_threshold = 0.75, B = 0)))), collapse = " ")

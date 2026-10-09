@@ -25,17 +25,19 @@ test_that("rating_validity returns informative item and scale evidence", {
   expect_equal(fit$results$issue[fit$results$item == "A2"], "Orbiting construct rated higher")
   expect_equal(fit$results$strongest_competitor[fit$results$item == "A2"], "B")
   expect_equal(nrow(fit$scale_summary), 2L)
-  expect_true(all(c("mean_htc", "mean_htd", "overall_strength", "evidence") %in% names(fit$scale_summary)))
+  expect_true(all(c("mean_htc", "mean_htd", "htc_strength", "htd_strength",
+                    "evidence") %in% names(fit$scale_summary)))
+  expect_false("overall_strength" %in% names(fit$scale_summary))
 })
 
 test_that("rating_validity print and summary explain the evidence", {
   fit <- rating_validity(.make_rating_v003())
-  expect_output(print(fit), "construct-rating analysis")
+  expect_output(print(fit), "Construct-rating analysis")
   expect_output(print(fit), "Flagged for review: A2")
   s <- summary(fit)
   expect_s3_class(s, "summary.contentvalid_rating")
-  expect_output(print(s), "Items needing attention")
-  expect_output(print(s), "Orbiting construct rated higher")
+  expect_output(print(s), "Flagged")
+  expect_output(print(s), "- A2 \\(Review\\): The intended construct was not rated highest")
 })
 
 test_that("rating_validity uses scale-level Colquitt HTC/HTD norms", {
@@ -50,7 +52,7 @@ test_that("Colquitt labels are suppressed for expert rating panels", {
   fit <- rating_validity(.make_rating_v003(), judge_type = "expert")
   expect_true(all(is.na(fit$scale_summary$htc_strength)))
   expect_true(all(is.na(fit$scale_summary$htd_strength)))
-  expect_match(fit$scale_summary$evidence[1], "suppressed")
+  expect_match(fit$scale_summary$evidence[1], "not applied")
 })
 
 test_that("rating_validity reports incomplete judge profiles itemwise", {

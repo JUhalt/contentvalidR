@@ -111,12 +111,14 @@ test_that("the README reference list and REFERENCES.bib list the same works", {
                            grep("^\\s*doi = ", bib_text, value = TRUE)))
   expect_setequal(readme_dois, bib_dois)
 
-  # APA 7 orders the reference list alphabetically by author.
-  authors <- sub("\\s\\(\\d{4}\\).*$", "", sub("^- ", "", entries))
+  # APA 7 orders the reference list alphabetically by author, and an
+  # author's undated work before the dated ones (Section 9.47).
+  authors <- sub("\\s\\((\\d{4}|n\\.d\\.)\\).*$", "", sub("^- ", "", entries))
   plain <- tolower(iconv(authors, "UTF-8", "ASCII//TRANSLIT"))
   plain <- gsub("[^a-z ]", " ", gsub("(eds.)", "", plain, fixed = TRUE))
   plain <- trimws(gsub("\\s+", " ", plain))
-  years <- sub("^.*\\((\\d{4})\\).*$", "\\1", entries)
+  years <- sub("^.*\\((\\d{4}|n\\.d\\.)\\).*$", "\\1", entries)
+  years[years == "n.d."] <- "0000"
   expect_identical(order(plain, years, method = "radix"), seq_along(entries))
 })
 
@@ -136,7 +138,8 @@ test_that("citation and the BibTeX reference list are installed", {
     "10.1177/0748175613513808",
     "10.1002/nur.20199",
     "10.1097/00006199-198611000-00017",
-    "10.1037/a0036374"
+    "10.2307/23044045",
+    "10.1007/bf02289823"
   )) {
     # DOIs are case-insensitive; the file keeps each publisher's capitals.
     expect_true(grepl(doi, tolower(bib_text), fixed = TRUE), info = doi)

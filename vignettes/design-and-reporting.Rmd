@@ -96,13 +96,14 @@ random-number generation.
 
 ## Table templates
 
+`content_report()` turns a fit into a manuscript table, with the columns a
+reader needs and numbers in APA form; `format = "markdown"` gives the same
+table to paste. The unrounded values stay in each fit's `results`.
+
 ### Item sort
 
 ```{r sort-table}
-sort_fit$results[c(
-  "item", "target", "n", "n_target", "competitor",
-  "psa", "csv", "p_value", "status", "recommendation"
-)]
+content_report(sort_fit)
 ```
 
 At the target-scale level, report mean Psa/Csv and the benchmark set actually
@@ -111,25 +112,19 @@ used. Do not convert Colquitt's scale-level norms into individual-item cutoffs.
 ### Construct rating
 
 ```{r rating-table}
-rating_fit$results[c(
-  "item", "target", "n_complete", "strongest_competitor",
-  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
-)]
-rating_fit$scale_summary
+content_report(rating_fit)
 ```
 
 Report the repeated-measures design and target-versus-orbiting contrasts. For a
-review item, naming the strongest competitor is often more informative than a
-standalone p value.
+review item, naming the strongest competitor, which `rating_fit$results` holds
+as `strongest_competitor`, is often more informative than a standalone p
+value.
 
 ### Expert relevance
 
 ```{r expert-table}
-expert_fit$results[c(
-  "item", "N", "V", "ci_low", "ci_high", "I_CVI",
-  "kappa_mod", "status", "recommendation"
-)]
-expert_fit$scale_summary
+content_report(expert_fit)
+expert_fit$scale_summary[c("S_CVI_Ave", "S_CVI_UA", "agreement")]
 ```
 
 Essentiality and congruence require different expert tasks. Do not place CVR,
@@ -152,10 +147,16 @@ replication_supported <- c(TRUE, TRUE, TRUE, FALSE, TRUE, TRUE)
 reproducibility_phi(pretest_supported, replication_supported)
 ```
 
+With six items every expected count is below 5, so both helpers report
+Fisher's exact *p* and show the chi-square approximation beside it for
+reference. With enough items for the approximation they report the chi-square
+test, with its degrees of freedom and *N*.
+
 ## Planning how many judges to recruit
 
-Each planning function answers the question for one design exactly, from the
-decision rule the analysis will apply, rather than from a rule of thumb.
+`sort_power()` and `expert_power()` answer the question exactly for one
+design, from the decision rule the analysis will apply, rather than from a
+rule of thumb. `gtheory_content()` estimates it from a panel's ratings.
 
 For an item sort, `sort_power()` gives the probability that an item reaches the
 exact retention count, for each panel size and each rate at which you expect
@@ -195,8 +196,13 @@ gtheory_content(judge_ratings)
 
 The dependability coefficient (Phi) concerns the absolute level of the ratings
 and is lowered by differences in judge severity, which is usually what a
-content-validity decision rests on. A target no realistic panel reaches shows
-as `NA`: the judges barely distinguished the items.
+content-validity decision rests on. The status beside it compares Phi with
+`phi_cut` (.80 by default), a convention of this package, not a published
+standard. Here every target is reached with five judges or fewer, because the
+items account for most of the variance. Had the judges barely distinguished the
+items, a target no realistic panel reaches would print as "unreachable" (`NA`
+in the data). The projected panel sizes come from one panel's variance
+components and carry no interval, so read them as planning figures.
 
 Across pretest rounds, `compare_rounds()` sets each item's status side by side
 and checks whether the analysis settings changed between rounds, so a relaxed

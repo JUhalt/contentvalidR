@@ -4,30 +4,51 @@
 \alias{plot.contentvalid_structure}
 \title{Plot an expert content map}
 \usage{
-\method{plot}{contentvalid_structure}(x, show_legend = TRUE, ...)
+\method{plot}{contentvalid_structure}(x, show_legend = TRUE, type = "map", ...)
 }
 \arguments{
 \item{x}{A \code{contentvalid_structure} object.}
 
 \item{show_legend}{Draw the blueprint-cell key.}
 
-\item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
+\item{type}{\code{"map"}, the only view, accepted so that every plot method
+takes \code{type}.}
+
+\item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}. An argument given here, such as
+\code{xlab}, \code{xlim} or \code{main}, replaces the one the method would set. A \code{pch}
+or \code{col} with one value per blueprint cell (or cluster) is applied cell
+by cell and shown in the key; a \code{pch} of any other length leaves the key
+out, because it could no longer tell the cells apart.}
 }
 \value{
 \code{x}, invisibly. Called for the plot.
 }
 \description{
 Plots the multidimensional scaling content map from \code{\link[=content_structure]{content_structure()}},
-with each item positioned by expert-perceived similarity and labeled by its
-blueprint cell. Items that sit away from others sharing their cell are the
-ones experts did not group as the blueprint expects.
+with each item positioned by expert-perceived similarity, labeled by its
+name, and drawn with its blueprint cell's symbol (its recovered cluster's,
+when no blueprint was supplied), which the key names. Items that sit away
+from others sharing their cell are the ones experts did not group as the
+blueprint expects.
+
+A map with one usable dimension is drawn as a strip, each name to the right
+of its point. Items whose names would run into each other, such as items at
+the same position, are stacked one above another; on a strip the height
+carries no meaning.
 }
 \examples{
-items <- paste0("I", 1:6)
-blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-sim <- matrix(1, 6, 6, dimnames = list(items, items))
-sim[1:3, 1:3] <- 5
-sim[4:6, 4:6] <- 5
-diag(sim) <- 5
+items <- paste0("I", 1:9)
+blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+sim <- matrix(c(
+  5, 4, 3, 2, 2, 1, 1, 2, 1,
+  4, 5, 4, 3, 1, 2, 2, 1, 1,
+  3, 4, 5, 1, 2, 2, 1, 1, 3,
+  2, 3, 1, 5, 4, 3, 2, 2, 1,
+  2, 1, 2, 4, 5, 4, 1, 3, 2,
+  1, 2, 2, 3, 4, 5, 2, 1, 2,
+  1, 2, 1, 2, 1, 2, 5, 3, 4,
+  2, 1, 1, 2, 3, 1, 3, 5, 4,
+  1, 1, 3, 1, 2, 2, 4, 4, 5
+), 9, 9, dimnames = list(items, items))
 plot(content_structure(sim, membership = blueprint))
 }

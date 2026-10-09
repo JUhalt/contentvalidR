@@ -50,6 +50,112 @@
   )
 }
 
+# The caution added to a scale-level reading of the Colquitt et al. (2019)
+# bands when a study did not offer three definitions, the design behind every
+# one of their 112 scales. It is this package's caution: they do not discuss
+# other numbers.
+# `how` says what was counted: the definitions the study offered (given as
+# `n_constructs`), the ones judges used (observed in a sort), or the ones
+# each item was rated against.
+# The Colquitt benchmark set behind each scale's levels: one line when every
+# scale shares it, otherwise one line per set naming its targets.
+.say_benchmark_sets <- function(targets, sets) {
+  sets <- as.character(sets)
+  if (length(unique(sets)) == 1L) {
+    .say("Benchmark set:", sets[1])
+    return(invisible(NULL))
+  }
+  for (s in unique(sets)) {
+    who <- paste(targets[sets == s], collapse = ", ")
+    .say(paste0("Benchmark set for ", who, ": ", s))
+  }
+  invisible(NULL)
+}
+
+.colquitt_definitions_caution <- function(n_definitions,
+                                          how = c("offered", "used", "rated")) {
+  how <- .choose(how)
+  if (is.null(n_definitions) || is.na(n_definitions) || n_definitions == 3L) {
+    return("")
+  }
+  n <- as.integer(n_definitions)
+  here <- switch(how,
+    offered = sprintf("this study offered %d", n),
+    used = sprintf(paste("judges here used %d (set `n_constructs` if more",
+                         "were offered)"), n),
+    rated = sprintf("items here were rated against %d", n)
+  )
+  sprintf(paste(" These bands come from tasks with three definitions (one",
+                "focal, two orbiting); %s, so the comparison is approximate.",
+                "This is a contentvalidR caution: Colquitt et al. do not",
+                "discuss other numbers."), here)
+}
+
+# What the item-sort and construct-rating workflows say, in print and in
+# their scale evidence, when expert judges leave the bands unapplied.
+.colquitt_expert_sentence <- paste(
+  "Colquitt benchmark labels are not applied because the analysis was",
+  "marked as using expert judges."
+)
+
+# The advice that follows a scale's two Colquitt bands. Colquitt et al.
+# (2019) publish a band for each index and no combined one, so advice keyed
+# to the lower of the two bands is this package's, and it is set apart from
+# the cited sentence and labeled as such. `labels` holds the two bands;
+# `advice` is empty when the lower band needs none.
+.colquitt_advice <- function(labels, advice) {
+  if (!nzchar(advice)) return("")
+  rank <- c("Lack of" = 1L, Weak = 2L, Moderate = 3L, Strong = 4L,
+            `Very Strong` = 5L)
+  if (identical(labels[1], labels[2])) {
+    return(paste0(" A contentvalidR suggestion for that band: ", advice, "."))
+  }
+  lower <- labels[which.min(rank[labels])]
+  paste0(" A contentvalidR suggestion for the lower band, ", lower, ": ",
+         advice, ".")
+}
+
+# A scale mean printed beside its Colquitt band. A mean just below a band's
+# minimum can round to it (.868 prints .87, where the overall HTC Strong band
+# starts), which would print ".87 Moderate" beside a benchmark table that puts
+# .87 in Strong. Such a mean gets more decimals, as .fmt_beside_cut() gives a
+# value beside its cut. `orbiting_r` picks the benchmark set, as it does for
+# the label.
+.fmt_band_mean <- function(value, statistic, orbiting_r = NA_real_,
+                           digits = 2L) {
+  orbiting_r <- rep_len(as.numeric(orbiting_r), length(value))
+  vapply(seq_along(value), function(i) {
+    v <- value[i]
+    if (is.na(v)) return(.fmt(v, digits))
+    r <- orbiting_r[i]
+    cp <- .colquitt_cutpoints(statistic,
+                              .colquitt_norm(if (is.na(r)) NULL else r))
+    # Only a band the mean is below can be confused with its own: the same
+    # tolerance as interpret_colquitt() decides which those are.
+    above <- unname(cp[v < cp - 1e-9])
+    d <- digits
+    while (d < digits + 6L && any(.fmt(v, d) == .fmt(above, d))) d <- d + 1L
+    .fmt(v, d)
+  }, character(1), USE.NAMES = FALSE)
+}
+
+# The same caution under a printed benchmark table, once for each count that
+# is not three, naming the scales when they differ.
+.colquitt_caution_lines <- function(sc, how) {
+  if (!"n_definitions" %in% names(sc)) return(character(0))
+  off <- !is.na(sc$n_definitions) & sc$n_definitions != 3L
+  if (!any(off)) return(character(0))
+  counts <- unique(sc$n_definitions[off])
+  vapply(counts, function(k) {
+    txt <- trimws(.colquitt_definitions_caution(k, how))
+    if (length(counts) > 1L || !all(off)) {
+      txt <- paste0(paste(sc$target[off & sc$n_definitions == k],
+                          collapse = ", "), ": ", txt)
+    }
+    txt
+  }, character(1))
+}
+
 #' Colquitt et al. (2019) empirical content-validation benchmarks
 #'
 #' @description
@@ -57,6 +163,13 @@
 #' (2019) for Psa, Csv, HTC, or HTD. The benchmarks were created from
 #' scale-level averages for 112 scales and are percentile-based norms, not
 #' universal psychometric cutoffs.
+#'
+#' Colquitt et al. (2019) built these norms from tasks in which naive judges
+#' saw three definitions, the focal construct and two orbiting constructs, and
+#' either sorted each item into one of them (Psa, Csv) or rated it against each
+#' on a 7-point scale (HTC, HTD). They did not examine tasks offering more or
+#' fewer definitions. [sort_validity()] and [rating_validity()] therefore add a
+#' caution, this package's own, when a study offers a different number.
 #'
 #' If `orbiting_r` is supplied, the correlation-conditional benchmark set is
 #' selected. Otherwise the overall, non-correlation-normed criteria are used.
@@ -87,7 +200,7 @@
 #' @export
 colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
                                 orbiting_r = NULL) {
-  statistic <- match.arg(statistic)
+  statistic <- .choose(statistic)
   norm <- .colquitt_norm(orbiting_r)
   cp <- .colquitt_cutpoints(statistic, norm)
   out <- data.frame(
@@ -111,6 +224,13 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #' study populations. They should therefore be treated as contextual norms,
 #' not pass/fail rules.
 #'
+#' Colquitt et al. (2019) built these norms from tasks in which naive judges
+#' saw three definitions, the focal construct and two orbiting constructs, and
+#' either sorted each item into one of them (Psa, Csv) or rated it against each
+#' on a 7-point scale (HTC, HTD). They did not examine tasks offering more or
+#' fewer definitions. [sort_validity()] and [rating_validity()] therefore add a
+#' caution, this package's own, when a study offers a different number.
+#'
 #' When `judge_type = "expert"`, the Colquitt classification is deliberately
 #' not applied because the authors caution against using their norms for expert
 #' judges.
@@ -128,8 +248,9 @@ colquitt_benchmarks <- function(statistic = c("psa", "csv", "htc", "htd"),
 #'
 #' @references
 #' Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-#' *Journal of Applied Psychology, 104*(10), 1243–1265.
-#' \doi{10.1037/apl0000406}
+#' Content validation guidelines: Evaluation criteria for definitional
+#' correspondence and definitional distinctiveness. *Journal of Applied
+#' Psychology, 104*(10), 1243–1265. \doi{10.1037/apl0000406}
 #'
 #' @examples
 #' interpret_colquitt(.84, "psa")
@@ -139,8 +260,8 @@ interpret_colquitt <- function(value,
                                statistic = c("psa", "csv", "htc", "htd"),
                                orbiting_r = NULL,
                                judge_type = c("naive", "expert")) {
-  statistic <- match.arg(statistic)
-  judge_type <- match.arg(judge_type)
+  statistic <- .choose(statistic)
+  judge_type <- .choose(judge_type)
   if (!is.numeric(value) || length(value) < 1L) {
     stop("`value` must be a non-empty numeric vector.", call. = FALSE)
   }
@@ -173,7 +294,10 @@ interpret_colquitt <- function(value,
     label <- NA_character_
     if (!is.na(v)) {
       cp <- .colquitt_cutpoints(statistic, norm)
-      hit <- which(v >= cp)
+      # A mean that equals a band's printed minimum belongs to that band. The
+      # tolerance keeps a value such as 4.35 / 5, stored a hair under .87,
+      # from falling into the band below.
+      hit <- which(v >= cp - 1e-9)
       label <- if (length(hit)) names(cp)[min(hit)] else "Lack of"
     }
     data.frame(

@@ -107,11 +107,11 @@ test_that("every number printed for an item is the number the object holds", {
 test_that("printed numbers follow APA: no leading zero only where it cannot exceed 1", {
   expect_identical(apa(c(.9, -.43, 1, 0, -1e-4)), c(".90", "-.43", "1.00", ".00", ".00"))
   expect_identical(contentvalidR:::.fmt(c(.9, -.43, 1, 0, -1e-4, NA)),
-                   c(".90", "-.43", "1.00", ".00", ".00", "NA"))
+                   c(".90", "-.43", "1.00", ".00", ".00", "--"))
   expect_identical(contentvalidR:::.fmt(c(0.57, 2.3), bounded = FALSE),
                    c("0.57", "2.30"))
   expect_identical(contentvalidR:::.fmt_p(c(.0002, .0207, .5, 1)),
-                   c("< .001", ".021", ".500", "1.000"))
+                   c("< .001", ".021", ".500", "> .999"))
   expect_identical(contentvalidR:::.fmt_ci(c(.699, -.133), c(.972, .15)),
                    c("[.70, .97]", "[-.13, .15]"))
   expect_identical(contentvalidR:::.ci_label(c(.05, .10)), c("95% CI", "90% CI"))
@@ -136,7 +136,7 @@ test_that("the printed settings are the settings that ran", {
 
   d <- fit_delphi(consensus_threshold = 0.8, agree_cut = 4, B = 0)
   out <- squashed(d)
-  expect_match(out, "a rating of 4 or higher on the 1-4 scale", fixed = TRUE)
+  expect_match(out, "a rating of 4 on the 1 to 4 scale", fixed = TRUE)
   expect_match(out, "Consensus threshold: 80%", fixed = TRUE)
   expect_match(out, paste("Experts:", d$design$n_judges), fixed = TRUE)
 
@@ -320,10 +320,13 @@ test_that("percentages written into prose match the computed proportions", {
   d <- fit_delphi(consensus_threshold = 0.75, B = 0)
   r <- d$results
   for (i in seq_len(nrow(r))) {
+    # Whole when the share is whole (83%), one decimal otherwise (16.7%).
     stated <- regmatches(r$interpretation[i],
-                         regexpr("[0-9]+(?=% agreed)", r$interpretation[i],
+                         regexpr("[0-9.]+(?=% agreed)", r$interpretation[i],
                                  perl = TRUE))
-    expect_identical(stated, format(round(100 * r$prop_agree[i])),
+    expect_identical(stated,
+                     sub("\\.0$", "", formatC(round(100 * r$prop_agree[i], 1),
+                                              format = "f", digits = 1)),
                      info = paste("interpretation for", r$item[i]))
   }
   # And the threshold quoted in the prose is the threshold that ran.
@@ -375,12 +378,12 @@ test_that("the handoff prints the interval methods it actually carries", {
 test_that("compare_rounds only claims comparability when settings match", {
   same <- compare_rounds(fit_sort(), fit_sort())
   expect_true(same$comparable)
-  expect_match(squashed(same), "Settings were identical across rounds")
+  expect_match(squashed(same), "settings and the panel size were the same in every round")
 
   changed <- compare_rounds(fit_sort(p0 = 0.5), fit_sort(p0 = 0.7))
   expect_false(changed$comparable)
   out <- squashed(changed)
-  expect_false(grepl("Settings were identical across rounds", out, fixed = TRUE))
+  expect_false(grepl("were the same in every round", out, fixed = TRUE))
   expect_match(out, "p0")
 })
 
@@ -417,7 +420,7 @@ test_that("nothing printed claims a statistic the analysis did not compute", {
   expect_match(with_interval, "The intervals are percentile bootstraps")
   expect_false(grepl("The intervals are percentile bootstraps", no_interval,
                      fixed = TRUE))
-  expect_match(with_interval, "kappa 95% CI", fixed = TRUE)
+  expect_match(with_interval, "Kappa 95% CI", fixed = TRUE)
   expect_false(grepl("95% CI", no_interval, fixed = TRUE))
 
   expect_false(grepl("The intervals are percentile bootstraps",

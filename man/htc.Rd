@@ -36,14 +36,17 @@ It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
-Computes the Hinkin-Tracey correspondence index for each item. Following
-Colquitt et al. (2019), HTC is the average definitional-correspondence rating
+Computes the Hinkin-Tracey correspondence index for each item, named for
+the rating task of Hinkin and Tracey (1999). Following Colquitt et al.
+(2019), HTC is the average definitional-correspondence rating
 for the intended construct divided by \code{a}, the number of rating anchors.
 Ratings are internally shifted to a 1-to-\code{a} metric when a scale such as
 0-to-4 is supplied, preserving the meaning of the published formula.
 
 HTC describes definitional correspondence. Higher values indicate that
 judges see the item as more representative of its intended construct.
+Because the lowest rating is 1 on the 1-to-\code{a} metric, HTC runs from
+\code{1 / a} to 1 (.20 to 1 on a five-point scale), not from 0.
 }
 \examples{
 d <- expand.grid(item = "I1", rater = 1:4, construct = c("A", "B"))

@@ -14,7 +14,21 @@
 
 .lawshe_minimum <- function(N) unname(.lawshe_minimum_cvr[as.character(N)])
 
-# Wilson, Pan and Schumsky (2012, Table 2): the normal approximation to the
+# The fewest essential ratings that meet each tabled minimum. Up to nine
+# panelists the tabled value is a reachable CVR printed to two decimals: .75
+# is 7 of 8 and .78 is 8 of 9 (.778), the only values near them that nine
+# panelists can produce. From ten up the table follows a normal approximation
+# (Ayre & Scally, 2014), so the count is the first whose CVR reaches the
+# printed value: 11 of 13, because 10 of 13 is .538 against .54. Comparing
+# counts keeps 8 of 9 from failing a .78 that is itself 8 of 9 rounded.
+.lawshe_minimum_count <- c(`5` = 5L, `6` = 6L, `7` = 7L, `8` = 7L, `9` = 8L,
+                           `10` = 9L, `11` = 9L, `12` = 10L, `13` = 11L,
+                           `14` = 11L, `15` = 12L, `20` = 15L, `25` = 18L,
+                           `30` = 20L, `35` = 23L, `40` = 26L)
+
+.lawshe_count <- function(N) unname(.lawshe_minimum_count[as.character(N)])
+
+# Wilson et al. (2012, Table 2): the normal approximation to the
 # binomial, z(1 - alpha) / sqrt(N) for a one-tailed test, with a value of 1 or
 # more listed as .99.
 .wilson_critical_cvr <- function(N, alpha) {
@@ -36,7 +50,7 @@
   }, integer(1))
 }
 
-# Yao, Wu and Yang (2008, p. 486): Psa and Csv both at least .30, chosen for a
+# Yao et al. (2008, p. 486): Psa and Csv both at least .30, chosen for a
 # four-domain sort, where an item assigned at random reaches its domain with
 # probability .25.
 .yao_cut <- .30
@@ -111,7 +125,8 @@
 .essentiality_earlier_methods <- function(res, alpha, show) {
   lawshe_min <- .lawshe_minimum(res$N)
   wilson <- ifelse(res$N < 1L, NA_real_, .wilson_critical_cvr(res$N, alpha))
-  lawshe_meets <- .meets(res$cvr, lawshe_min)
+  lawshe_need <- .lawshe_count(res$N)
+  lawshe_meets <- ifelse(is.na(lawshe_need), NA, res$ne >= lawshe_need)
   retained <- which(lawshe_meets %in% TRUE)
   list(
     show = isTRUE(show),
@@ -197,16 +212,16 @@
 }
 
 .verdict <- function(meets) {
-  ifelse(is.na(meets), "n/a", ifelse(meets, "meets", "below"))
+  ifelse(is.na(meets), .missing_mark, ifelse(meets, "Meets", "Below"))
 }
 
 .earlier_heading <- function() {
-  cat("\nEarlier methods, for comparison (not used for the decision)\n")
+  .section("Earlier methods, for comparison (not used for the decision)")
 }
 
-# An estimate can print as equal to its cutoff and still miss it, such as 8 of
-# 9 experts (a CVR of .778) against Lawshe's .78. Say so with three decimals,
-# so the table does not appear to contradict itself.
+# An estimate can print as equal to its cutoff and still miss it, such as 10
+# of 13 experts (a CVR of .538) against Lawshe's .54. Say so with three
+# decimals, so the table does not appear to contradict itself.
 .rounding_note <- function(items, value, cut, meets, rule, digits) {
   hit <- which(meets %in% FALSE & .fmt(value, digits) == .fmt(cut, digits))
   if (!length(hit)) return(invisible(NULL))
@@ -220,7 +235,7 @@
     .say(paste0(
       paste0(items[h], " (", .fmt(value[h], 3), ")", collapse = ", "),
       if (length(h) == 1L) " prints" else " print",
-      " at the ", rule, " cutoff of ", shown_cut,
+      " at the ", rule, " criterion of ", shown_cut,
       " but ", if (length(h) == 1L) "falls" else "fall",
       " short of it before rounding."
     ))
@@ -238,7 +253,11 @@
   it <- em$items
   if (is.null(it) || !nrow(it)) return(invisible(NULL))
   .earlier_heading()
-  tab <- data.frame(item = it$item, decision = it$decision,
+  # The main table gives the full decision word. This one is wide, so the two
+  # "no decision" words are shortened to keep each row on one line.
+  decision <- ifelse(it$decision %in% c("Insufficient panel", "Insufficient data"),
+                     "No decision", it$decision)
+  tab <- data.frame(item = it$item, decision = decision,
                     Psa = .fmt(it$psa, digits), Csv = .fmt(it$csv, digits),
                     stringsAsFactors = FALSE, check.names = FALSE)
   sizes <- unique(it$n[it$n >= 1L])
@@ -250,10 +269,14 @@
   show_ext <- !is.null(ext_cut) && !is.na(ext_cut) &&
     abs(ext_cut - .yao_cut) > 1e-9
   if (show_ext) tab$`extension*` <- .verdict(it$extension_meets)
-  .print_table(tab)
+  # Each earlier rule's verdict is the point of the table, so a narrow console
+  # loses the cut columns first.
+  .print_table(tab, keep = c(.table_keep, "A&G (1991)", "Yao et al. (2008)",
+                             "extension*"),
+               more = "x$details$earlier_methods$items")
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   worst_case <- paste(
     "Their critical value assumes every judge who misses the target picks the",
     "same rival. When those judges spread across several constructs, Csv can",
@@ -277,11 +300,11 @@
   }
   k <- em$n_constructs
   counted <- !isTRUE(em$constructs_given)
-  .say("Yao, Wu and Yang (2008): Psa and Csv both at least .30, set for a",
+  .say("Yao et al. (2008): Psa and Csv both at least .30, set for a",
        "four-domain sort where chance assignment is .25.")
   if (show_ext) {
     .say(paste0(
-      "* extension: a contentvalidR extension, not a published rule. It ",
+      "Extension*: a contentvalidR extension, not a published rule. It ",
       "carries Yao et al.'s reasoning to this sort's ", k, " constructs as ",
       "chance plus .05, so Psa and Csv both at least ", .fmt(ext_cut, digits),
       " (1/", k, " + .05)."
@@ -301,12 +324,19 @@
   ag <- .agreement_count(it$ag_meets, supported)
   yao <- .agreement_count(it$yao_meets, supported)
   ext <- .agreement_count(it$extension_meets, supported)
-  .say(paste0("Agreement with the decision above: Anderson and Gerbing on ",
-              ag[["agree"]], " of ", ag[["of"]], " items, Yao et al. on ",
-              yao[["agree"]], " of ", yao[["of"]],
-              if (show_ext) paste0(", the extension on ", ext[["agree"]],
-                                   " of ", ext[["of"]]),
-              "."))
+  if (!any(!is.na(supported))) {
+    # Every item is without a decision (too few judges, or none), so there is
+    # nothing for the earlier rules to agree with.
+    .say("No item has a Retain or Review decision above, so there is nothing",
+         "to compare the earlier rules with.")
+  } else {
+    .say(paste0("Agreement with the decision above: Anderson and Gerbing on ",
+                ag[["agree"]], " of ", ag[["of"]], " items, Yao et al. on ",
+                yao[["agree"]], " of ", yao[["of"]],
+                if (show_ext) paste0(", the extension on ", ext[["agree"]],
+                                     " of ", ext[["of"]]),
+                "."))
+  }
   # Each cut applies to both indices; name whichever one rounding hides.
   .rounding_note(it$item, it$psa, rep(.yao_cut, nrow(it)),
                  .meets(it$psa, .yao_cut), "Yao et al. Psa", digits)
@@ -339,31 +369,49 @@
   }
   tab$`Lawshe (1975)` <- .verdict(it$lawshe_meets)
   tab$`Wilson et al. (2012)` <- .verdict(it$wilson_meets)
-  .print_table(tab)
+  .print_table(tab, keep = c(.table_keep, "Lawshe (1975)", "Wilson et al. (2012)"),
+               more = "x$details$earlier_methods$items")
   cat("\n")
 
-  alpha <- .fmt(em$alpha)
+  alpha <- .fmt_alpha(em$alpha)
   if (length(sizes) == 1L) {
-    lmin <- it$lawshe_minimum[1]
+    # The minimums of the one panel size in play, from an item that was rated:
+    # an unrated first item has none.
+    rated <- which(it$N >= 1L)[1]
+    lmin <- it$lawshe_minimum[rated]
     .say(if (is.na(lmin)) {
       paste0("Lawshe (1975, Table 1) lists no minimum for ", sizes,
              " panelists; the table covers 5 to 15, then every fifth size to ",
              "40.")
     } else {
-      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, digits),
-             " for ", sizes, " panelists, labeled a one-tailed test at .05. ",
-             "Wilson, Pan and Schumsky (2012) found the table closer to a ",
-             "two-tailed test.")
+      # His table gives two decimals, whatever `digits` the estimates use.
+      paste0("Lawshe (1975, Table 1): minimum CVR ", .fmt(lmin, 2),
+             " for ", sizes, " panelists (", .lawshe_count(sizes), " of ",
+             sizes, "), which he labeled a one-tailed test at .05. ",
+             "Wilson et al. (2012) found the table closer to a two-tailed ",
+             "test.")
     })
     .say(paste0("Wilson et al. (2012, Table 2): minimum CVR ",
-                .fmt(it$wilson_critical[1], digits), ", the normal ",
+                .fmt(it$wilson_critical[rated], digits), ", the normal ",
                 "approximation z/sqrt(N) at one-tailed alpha = ", alpha, "."))
   } else {
     .say("Lawshe (1975, Table 1) and Wilson et al. (2012, Table 2) set the",
          "minimum CVR by panel size, so each item's minimum is shown. Lawshe",
-         "labeled his a one-tailed test at .05; Wilson, Pan and Schumsky",
-         "(2012) found it closer to a two-tailed test. Wilson's is z/sqrt(N)",
-         "at one-tailed alpha =", paste0(alpha, "."))
+         "labeled his a one-tailed test at .05; Wilson et al. (2012) found it",
+         "closer to a two-tailed test. Wilson's is z/sqrt(N) at one-tailed",
+         "alpha =", paste0(alpha, "."))
+    # Two rows can show a CVR equal to its minimum and get opposite verdicts,
+    # so the rule that separates them is stated.
+    .say(paste0(
+      "Lawshe's minimum is applied as the fewest essential ratings that reach ",
+      "it",
+      if (any(it$N == 9L)) {
+        paste0(": for 9 panelists his .78 is 8 of 9 (.778) printed to two ",
+               "decimals, so 8 of 9 meets it.")
+      } else {
+        "."
+      }
+    ))
   }
   .rounding_note(it$item, it$cvr, it$lawshe_minimum, it$lawshe_meets,
                  "Lawshe", digits)
@@ -424,7 +472,7 @@
               ", with Aiken's V beside it"))
   tab <- data.frame(item = cc$item, V = .fmt(cc$V, digits),
                     Ccv = .fmt(cc$ccv_corrected, digits),
-                    `book label` = ifelse(is.na(cc$label), "NA", cc$label),
+                    `book label` = ifelse(is.na(cc$label), .missing_mark, cc$label),
                     stringsAsFactors = FALSE, check.names = FALSE)
   .print_table(tab)
   cat("\n")
@@ -451,28 +499,38 @@
   pe_text <- if (length(pe) == 1L) small(pe) else
     paste(small(max(pe)), "to", small(min(pe)))
   .say("Its shortcomings, which is why it does not decide anything here:")
+  # Bullets hang: a wrapped line starts under the text, not under the "*".
+  hang <- .cv_print$indent + 2L
   .say(paste(
     "* It uses only the mean rating, so it cannot reflect agreement,",
     "although the book presents it as measuring agreement too: in its own",
     "Table 7, ratings of 1, 3, 4, 5, 2 and of 3, 3, 3, 3, 3 both get .60."
-  ), exdent = 2L)
+  ), exdent = hang)
   .say(paste0(
     "* The correction for chance, (1/J)^J, depends only on the number of ",
     "judges, not on the ratings or the number of scale points, and is ",
     pe_text, " here."
-  ), exdent = 2L)
+  ), exdent = hang)
+  floor_after <- if (length(pe) == 1L) {
+    .fmt(em$lo / em$hi - pe, digits)
+  } else {
+    paste(.fmt(em$lo / em$hi - max(pe), digits), "to",
+          .fmt(em$lo / em$hi - min(pe), digits))
+  }
   .say(if (isTRUE(em$lo == 0)) {
     paste("* On a scale starting at 0, as here, Ccv before the correction is",
           "Aiken's V.")
   } else {
-    paste0("* On a scale starting at ", format(em$lo), ", as here, it ",
-           "cannot fall below ", .fmt(em$lo / em$hi, digits), " (",
-           format(em$lo), "/", format(em$hi), "), so unlike Aiken's V it does ",
-           "not reach 0 when every judge gives the lowest rating.")
-  }, exdent = 2L)
+    paste0("* On a scale starting at ", format(em$lo), ", as here, Ccv ",
+           "before the correction cannot fall below ",
+           .fmt(em$lo / em$hi, digits), " (", format(em$lo), "/",
+           format(em$hi), "), and after it not below that less (1/J)^J (",
+           floor_after, " here), so unlike Aiken's V it does not reach 0 when ",
+           "every judge gives the lowest rating.")
+  }, exdent = hang)
   .say(paste(
     "* The .80 and .90 bands are stated without derivation or a test, and",
     "the book does not keep to them: its Example 11 calls .7968 acceptable."
-  ), exdent = 2L)
+  ), exdent = hang)
   invisible(NULL)
 }

@@ -12,17 +12,26 @@ sort_power(N, true_p, p0 = 0.5, alpha = 0.05)
 \item{true_p}{Assumed true probability that a judge assigns the item to its
 intended construct. May be scalar or vector.}
 
-\item{p0}{Null target-assignment probability. Default \code{0.5}.}
+\item{p0}{Null target-assignment probability for the exact binomial test.
+Default \code{0.5}, following Howard and Melloy (2016). It is not the rate
+expected from random assignment, which is 1 divided by the number of
+constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+suggest a higher value such as .6 or .75, chosen before data collection,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts.}
 
 \item{alpha}{Significance level. Default \code{0.05}.}
 }
 \value{
 An object of class \code{contentvalid_sort_power} containing an exact
-planning table.
+planning table. When a panel is too small for any count to reach \code{alpha}
+(four or fewer judges at the defaults), \code{critical_n_target} and
+\code{minimum_observed_psa} are \code{NA} and \code{power} is 0: no item can be retained
+at that size.
 }
 \description{
-Computes the exact probability that an item will meet the Howard-Melloy
-target-count criterion for a planned judge sample size and an assumed true
+Computes the exact probability that an item will meet the target-count
+criterion of Howard and Melloy (2016) for a planned judge sample size and an assumed true
 target-assignment probability. This is a binomial calculation, not a
 simulation.
 }

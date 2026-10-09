@@ -46,7 +46,8 @@ supplied, \code{retention} is ignored.}
 
 \item{n_iter}{Number of random data sets for parallel analysis.}
 
-\item{seed}{Optional seed that makes parallel analysis reproducible.}
+\item{seed}{Optional seed that makes parallel analysis reproducible. The
+random-number stream of the session is left as it was.}
 }
 \value{
 A list with components:
@@ -69,15 +70,31 @@ analysis was not run,
 }
 \description{
 Builds an item-by-item Q-correlation matrix from rating data and runs a
-factor extraction (PCA by default), following the content-adequacy approach
-of Schriesheim et al. (1993): judges rate every item against every construct
-definition, and items that measure the same construct correlate across those
-ratings. Schriesheim et al. (1999) compared this approach empirically with
-other content-adequacy methods and found substantial similarity along with
-some differences. This comparator is retained for compatibility and
-exploratory use; it is not part of the recommended sort, rating, or
-expert-panel workflows.
+factor extraction (PCA by default), adapted from the content-adequacy
+approach of Schriesheim et al. (1993): judges rate every item against every
+construct definition, and items that measure the same construct correlate
+across those ratings. Schriesheim et al. (1999) compared this approach
+empirically with other content-adequacy methods and found substantial
+similarity along with some differences. This comparator is retained for
+compatibility and exploratory use; it is not part of the recommended sort,
+rating, or expert-panel workflows.
 }
+\section{How this differs from the published approach}{
+
+As Hinkin and Tracey (1999) describe it, the approach extracts as many
+factors as there are construct definitions and asks whether each item
+loads .40 or more on its intended factor with no major cross-loading. Two
+things here are this package's choices:
+\itemize{
+\item The loadings are returned \strong{unrotated}. With more than one factor,
+unrotated loadings do not show which construct an item belongs to: the
+first factor is general. Rotate them before reading them that way, for
+example with \code{stats::varimax(qf$loadings)}.
+\item The number of factors defaults to parallel analysis. Set \code{k_factors} to
+the number of construct definitions for the published choice.
+}
+}
+
 \section{Number of factors}{
 
 Unless \code{k_factors} is supplied, \code{retention} sets the number of factors:
@@ -105,8 +122,9 @@ is the rule Zwick and Velicer (1986) evaluated and the one contentvalidR
 distribution, following Glorfeld (1995). Glorfeld noted that Horn's
 procedure, while relatively accurate, still tends to indicate the retention
 of one or two more factors than is warranted, and proposed comparing
-against a chosen upper percentile instead. It is the stricter rule and
-retains no more factors than the mean criterion on the same simulation.
+against a chosen upper percentile instead. With an upper percentile, such
+as the default 95, it is the stricter rule and retains no more factors
+than the mean criterion on the same simulation.
 }
 
 Both rules use the eigenvalues of the full Q-correlation matrix, with 1s on
@@ -134,6 +152,10 @@ Glorfeld, L. W. (1995). An improvement on Horn's parallel analysis
 methodology for selecting the correct number of factors to retain.
 \emph{Educational and Psychological Measurement, 55}(3), 377–393.
 \doi{10.1177/0013164495055003002}
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. \emph{Organizational Research Methods, 2}(2), 175–186.
+\doi{10.1177/109442819922004}
 
 Horn, J. L. (1965). A rationale and test for the number of factors in factor
 analysis. \emph{Psychometrika, 30}(2), 179–185. \doi{10.1007/BF02289447}

@@ -22,9 +22,9 @@ content_handoff(
 \item{round}{Pretest round this analysis represents. One fit is one round, so
 this defaults to \code{1} and matters only when stacking rounds by hand. It
 cannot be set for a Delphi fit, which dates each item by the round it
-settled in.}
+was last rated in.}
 
-\item{reverse_keyed}{Names of the reverse-worded items, \code{character(0)} if
+\item{reverse_keyed}{Names of the reverse-keyed items, \code{character(0)} if
 none is, or \code{NULL} (the default) to leave keying unrecorded. See
 "Instrument metadata".}
 
@@ -124,9 +124,9 @@ package itself compares counts of experts. Read \code{carried}, which holds what
 each release decided.
 
 Keying is read the same way, from the field and not from a default:
-\code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+\code{keying} is \code{1} for a forward-keyed item, \code{-1} for a reverse-keyed one,
 and \code{NA} when nobody said, as described under "Instrument metadata". Treat
-\code{NA} as unknown, never as forward-worded.
+\code{NA} as unknown, never as forward-keyed.
 }
 
 \section{What version 1 freezes}{
@@ -203,7 +203,13 @@ Added in contentvalidR 0.7.0 to \code{item_statistics} and \code{panel_statistic
 It says why a value or interval is absent or degenerate, in the producing
 function's own words, so a reader need not re-derive method-specific
 semantics. For example, a Delphi stability row may carry "Kappa is
-undefined: every rating fell in the same category in both rounds."
+undefined: every rating fell in the same category in both rounds." It also
+says when a statistic that meets its criterion is not what decided: the
+construct-rating \code{p_value} is the omnibus \emph{p}, and for an item held back by
+a planned contrast its note says so, with the largest contrast \emph{p} or, when
+a contrast has none, the constructs that tied. On a Delphi stability
+criterion it says which way the criterion reads and whether the fit read
+the item as stable, as described under "A Delphi handoff".
 
 Its contract, agreed with the \code{nomologR} maintainers:
 \itemize{
@@ -230,16 +236,26 @@ confidence level, for example \code{0.95}.
 \itemize{
 \item Aiken's V: the Penfield-Giacobbi score interval.
 \item I-CVI and Psa: the method chosen with \code{proportion_ci}, the Wilson score
-interval by default.
+interval by default. A Delphi handoff takes it from each item's last
+round.
 \item Panel agreement: the item-resampling percentile bootstrap of
 \code{\link[=panel_agreement]{panel_agreement()}}.
+\item Delphi weighted kappa: the expert-resampling percentile bootstrap of
+\code{\link[=delphi_validity]{delphi_validity()}}, at \code{1 - alpha}, when it was run with \code{B} above 0.
 }
 
 The four columns are \code{NA} together when a statistic has no interval. That
 happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-count, modified kappa, IOC, and p-values), when intervals were switched off
-with \code{proportion_ci = "none"}, or when the statistic itself could not be
-computed. \code{NA} there never stands for missing data.
+count, modified kappa, IOC and the mean ratings beside it, proportion
+unchanged, lambda, the chi-squares, net percent change, and p values), when
+intervals were switched off with \code{proportion_ci = "none"} or \code{B = 0}, or
+when the statistic itself could not be computed. \code{NA} there never stands
+for missing data.
+
+A bootstrap interval can have zero width (\code{lower} equal to \code{upper}), when
+every resample gave the same value: a panel whose experts all kept their
+ratings, say. The bounds are kept as computed, and the row's \code{note} says
+that the width reflects how alike the ratings were, not precision.
 
 The handoff reports intervals only. It does not turn them into priors or
 weights for a later analysis; that is a question for the consuming package.
@@ -262,21 +278,44 @@ threshold rather than on the 0.74 rule that \code{\link[=expert_validity]{expert
 Two more statistics record whether the panel had stopped moving:
 \verb{proportion unchanged}, and the stability statistic that ran, named for its
 method, such as \verb{weighted kappa (quadratic)} or \verb{Goodman-Kruskal lambda}.
-The chi-square methods add \verb{stability p_value} against \code{alpha}. Stability
-travels as evidence beside the decision; it never decides what is carried,
-exactly as it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+The chi-square methods add \verb{stability p_value} against \code{alpha}, and net
+percent change carries its own criterion, .15. Stability travels as
+evidence beside the decision; it never decides what is carried, exactly as
+it never sets an item's status in \code{\link[=delphi_validity]{delphi_validity()}}.
+
+\strong{The stability criteria do not all read the same way.} The individual
+chi-square reads \emph{p} below \code{alpha} as stable, because Chaffin and Talley
+(1980) take dependence between the rounds' ratings as stability; the group
+chi-square reads \emph{p} at or above \code{alpha} as stable, because Dajani et al.
+(1979) take no detectable difference between the rounds' distributions as
+stability; and net percent change reads a value below .15 as stable
+(Scheibe et al., 1975/2002). The same \code{criterion} therefore cannot be read
+without the method. The row that carries the criterion (\verb{stability p_value}, or \verb{net percent change}) says in its \code{note} which way it reads
+and whether the fit read the item as stable ("Read as stable." or "Not
+read as stable."), the call \code{\link[=delphi_validity]{delphi_validity()}} records in \code{stable}. Kappa
+and lambda have no criterion and make no such call.
+
+The stability rows come from the item's last pair of consecutive rounds.
+For an item rated again after a gap (rounds 1, 2 and 4) that pair is
+earlier than the round the rows are dated by, and their \code{note} says which
+rounds they compare. Stability uses only the experts who rated the item in
+both rounds of the pair; when they are fewer than \code{n_judges}, the experts
+in the item's last round, the \code{note} gives their number.
 }
 
 \section{When a stability statistic is NA}{
 
 A stability row is always present for a carried item, so an \code{NA} there is a
-statement about the data rather than a missing record. There are two cases,
-and they can be told apart from the object alone:
+statement about the data rather than a missing record. There are two kinds
+of case, and they can be told apart from the object alone:
 
 \describe{
-\item{\verb{proportion unchanged} is also \code{NA}}{The item has no pair of
-consecutive rounds: it was rated in one round only, so there was nothing
-to compare.}
+\item{\verb{proportion unchanged} is also \code{NA}}{No pair of ratings was
+compared, for one of three reasons: the item was rated in one round
+only; it was rated in rounds that are not consecutive (1 and 3), and
+only consecutive rounds are compared; or it was rated in two
+consecutive rounds, but no expert rated it in both, as when the panel
+was replaced between them. The \code{note} says which.}
 \item{\verb{proportion unchanged} has a value}{A pair exists, but the
 statistic is undefined for that data.}
 }
@@ -301,9 +340,9 @@ of \code{item_statistics}, described under "The note column".
 Added in contentvalidR 0.7.0, at the request of the \code{nomologR} maintainers,
 because two empirical computations cannot be done correctly without them.
 \itemize{
-\item \code{keying} is \code{1} for a forward-worded item, \code{-1} for a reverse-worded one,
+\item \code{keying} is \code{1} for a forward-keyed item, \code{-1} for a reverse-keyed one,
 and \code{NA} when nobody said. An even-odd consistency index must recode
-reverse-worded items before splitting the scale, or a perfectly consistent
+reverse-keyed items before splitting the scale, or a perfectly consistent
 respondent looks careless. And a negative corrected item-total correlation
 means opposite things in the two cases: on an item that was never recoded
 it is a coding error, and on a correctly coded item it is evidence against
@@ -321,15 +360,15 @@ not the scale respondents will answer the items on. Copying a fit's \code{lo} an
 \code{hi} into \code{response_min} and \code{response_max} would give a downstream reader
 the wrong limits, and it would then reject every legitimate top-category
 answer. So both default to \code{NA}, which means \emph{unknown}, and a reader should
-treat \code{NA} that way rather than assume a forward-worded item or an observed
+treat \code{NA} that way rather than assume a forward-keyed item or an observed
 range.
 
 Supplying \code{reverse_keyed} is a statement about every item: the ones named
-are reverse-worded and the rest are not. Pass \code{character(0)} to record that
+are reverse-keyed and the rest are not. Pass \code{character(0)} to record that
 you checked and none is. So \code{keying} is either \code{NA} for every item or for
 none of them, and the same holds for the response scale.
 
-Naming a reverse-worded item without \code{response_scale} gives a warning,
+Naming a reverse-keyed item without \code{response_scale} gives a warning,
 because such an item cannot be recoded without the scale's limits. A reader
 that recodes would otherwise have to refuse later, where the problem is
 harder to fix.
@@ -356,16 +395,32 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
 handoff <- content_handoff(fit)
 handoff
 handoff$items
-handoff$item_evidence
-handoff$item_statistics
+handoff$item_evidence[, c("item", "status", "recommendation", "n_judges")]
+writeLines(strwrap(handoff$item_evidence$rule[1]))
+handoff$item_statistics[, c("item", "statistic", "value", "criterion")]
 
 # Carry items flagged for review as well, when the study protocol says so.
 content_handoff(fit, keep = c("Supported", "Review"))$items
 }
 \references{
+Chaffin, W. W., & Talley, W. K. (1980). Individual stability in Delphi
+studies. \emph{Technological Forecasting and Social Change, 16}(1), 67–73.
+\doi{10.1016/0040-1625(80)90074-8}
+
+Dajani, J. S., Sincoff, M. Z., & Talley, W. K. (1979). Stability and
+agreement criteria for the termination of Delphi studies. \emph{Technological
+Forecasting and Social Change, 13}(1), 83–90.
+\doi{10.1016/0040-1625(79)90007-6}
+
 Lynn, M. R. (1986). Determination and quantification of content validity.
 \emph{Nursing Research, 35}(6), 382–385.
 \doi{10.1097/00006199-198611000-00017}
+
+Scheibe, M., Skutsch, M., & Schofer, J. (2002). Experiments in Delphi
+methodology. In H. A. Linstone & M. Turoff (Eds.), \emph{The Delphi method:
+Techniques and applications} (pp. 257–281).
+\url{https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf}
+(Original work published 1975)
 }
 \seealso{
 \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}} for the full results table,

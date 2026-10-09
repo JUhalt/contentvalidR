@@ -6,8 +6,8 @@
 \usage{
 aikens_v(
   ratings,
-  lo = 1,
-  hi = 5,
+  lo,
+  hi,
   ci = c("score", "none", "bootstrap"),
   B = 500,
   alpha = 0.05,
@@ -16,9 +16,14 @@ aikens_v(
 )
 }
 \arguments{
-\item{ratings}{Matrix/data.frame with judges in rows and items in columns.}
+\item{ratings}{Matrix/data.frame with judges in rows and items in columns.
+Every column is an item; a column whose name looks like a rater ID (such
+as \code{expert} or \code{rater_id}) stops the function, so remove it, or rename an
+item that has such a name.}
 
-\item{lo, hi}{Numeric lower and upper bounds of the rating scale.}
+\item{lo, hi}{Lowest and highest points of the rating scale. Both are
+required: V rescales the mean rating by the range of the scale, so the
+same ratings give a different V on a 1-4 scale than on a 1-5 scale.}
 
 \item{ci}{Confidence-interval method: \code{"score"} (default), \code{"bootstrap"},
 or \code{"none"}.}
@@ -27,7 +32,8 @@ or \code{"none"}.}
 
 \item{alpha}{Two-sided CI alpha level; \code{.05} gives a 95\% interval.}
 
-\item{seed}{Optional integer seed for bootstrap reproducibility.}
+\item{seed}{Optional integer seed for bootstrap reproducibility. The
+random-number stream of the session is left as it was.}
 
 \item{na.rm}{Logical. If \code{FALSE} (default), missing ratings are an error.
 If \code{TRUE}, item-specific effective judge counts are used.}
@@ -39,9 +45,9 @@ It prints as a formatted table in APA style; the values themselves are
 unrounded, and \code{as.data.frame()} returns the plain data frame.
 }
 \description{
-Computes Aiken's V per item for bounded ordinal expert ratings. By default,
-confidence intervals use the score method described by Penfield and
-Giacobbi (2004). Percentile bootstrap intervals remain available for
+Computes Aiken's (1980) V per item for bounded ordinal expert ratings. By
+default, confidence intervals use the score method described by Penfield
+and Giacobbi (2004). Percentile bootstrap intervals remain available for
 compatibility and sensitivity analysis.
 }
 \examples{

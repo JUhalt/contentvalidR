@@ -10,7 +10,8 @@
 #
 # Stages, in order:
 #   1. build  - document, README, spelling, URLs, build the tarball, inspect it
-#   2. smoke  - install the tarball into an empty library, run it there
+#   2. smoke  - install the tarball into a library that holds nothing else but
+#               the packages it declares it needs, and run it there
 #   3. check  - R CMD check --as-cran on the tarball, with CRAN's incoming checks
 #
 # Output directory defaults to a short path, because Windows' 260-character
@@ -25,9 +26,25 @@ out <- file.path(Sys.getenv("TEMP", tempdir()), paste0("cvr-gate-", version))
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 
 rscript <- file.path(R.home("bin"), if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
-stages <- c("build", "smoke", "check")
+# devtools asks pak for the package's dependencies, and pak gives its helper
+# process five seconds to start. On a busy machine that is not enough, and
+# the build stage stops with "Subprocess is busy or cannot start" at
+# build_readme(), after document() and before any of its checks has run.
+# The stages inherit this longer wait (in milliseconds); a value already set
+# is left alone.
+if (!nzchar(Sys.getenv("PKG_SUBPROCESS_TIMEOUT"))) {
+  Sys.setenv(PKG_SUBPROCESS_TIMEOUT = "120000")
+}
+
+known <- c("build", "smoke", "check")
 args <- commandArgs(trailingOnly = TRUE)
-if (length(args)) stages <- intersect(stages, args)
+# A mistyped stage name must not run nothing and then report success.
+unknown <- setdiff(args, known)
+if (length(unknown)) {
+  stop("Unknown stage: ", paste(unknown, collapse = ", "), ". The stages are ",
+       paste(known, collapse = ", "), ".", call. = FALSE)
+}
+stages <- if (length(args)) intersect(known, args) else known
 
 cat("contentvalidR release gate\n")
 cat("version: ", version, "\n", sep = "")
@@ -56,10 +73,18 @@ for (stage in names(status)) {
   } else if (status[[stage]] == 0) "PASS" else "FAIL"
   cat(sprintf("%-6s %s\n", stage, label))
 }
+# A run of some stages is not the gate, whether or not those stages passed.
+not_run <- setdiff(known, names(status))
+for (stage in not_run) cat(sprintf("%-6s %s\n", stage, "not run"))
 if (any(is.na(status) | status != 0)) {
   cat("\nA stage failed. The gate is the last check before a release, so fix\n",
       "the cause rather than working around it by hand.\n", sep = "")
   quit(status = 1)
 }
-cat("\nAll stages passed. The tarball is at:\n  ",
-    file.path(out, paste0("contentvalidR_", version, ".tar.gz")), "\n", sep = "")
+if (length(not_run)) {
+  cat("\nThe stages that ran passed, but this was not the whole gate: ",
+      paste(not_run, collapse = ", "), " did not run.\n", sep = "")
+} else {
+  cat("\nAll stages passed. The tarball is at:\n  ",
+      file.path(out, paste0("contentvalidR_", version, ".tar.gz")), "\n", sep = "")
+}

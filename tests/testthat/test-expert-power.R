@@ -114,7 +114,7 @@ test_that("malformed planning inputs are rejected", {
   expect_error(expert_power(alpha = 1), "strictly between 0 and 1")
   expect_error(expert_power(response_rate = 0), "greater than 0")
   expect_error(expert_power(response_rate = 1.2), "greater than 0")
-  expect_error(expert_power(criterion = "nope"), "should be one of")
+  expect_error(expert_power(criterion = "nope"), "must be one of")
   expect_error(print(expert_power(n_experts = 5, prob = 0.9), digits = -1),
                "nonnegative integer")
 })

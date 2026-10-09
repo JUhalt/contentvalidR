@@ -28,15 +28,23 @@ as.data.frame.contentvalid_component <- function(x, ...) {
 
 # Prints a titled table with notes beneath it. When a user has dropped the
 # columns a display needs (by subsetting), the plain data frame prints instead.
-.print_component <- function(x, needed, build, title, notes = NULL) {
+# `keep` names the statistic the component exists to show, which a narrow
+# console never drops.
+.print_component <- function(x, needed, build, title, notes = NULL,
+                             keep = NULL) {
   if (!all(needed %in% names(x))) {
     print(.untag_component(x))
     return(invisible(x))
   }
-  .say(title)
+  # The header names the class; a second title line, such as the one naming
+  # the sources, follows it.
+  .print_header(x, title[1])
+  for (line in title[-1]) .say(line)
   cat("\n")
-  .print_table(build())
+  .print_table(build(), keep = c(.table_keep, keep))
   notes <- notes[!is.na(notes) & nzchar(notes)]
+  on.exit(.closing(pointer = "See as.data.frame(x) for the unrounded values."),
+          add = TRUE)
   if (length(notes)) {
     cat("\n")
     for (n in notes) .say(n)
@@ -44,7 +52,7 @@ as.data.frame.contentvalid_component <- function(x, ...) {
   invisible(x)
 }
 
-.yes_no <- function(x) ifelse(is.na(x), "NA", ifelse(x, "yes", "no"))
+.yes_no <- function(x) ifelse(is.na(x), .missing_mark, ifelse(x, "yes", "no"))
 
 .alpha_attr <- function(x) {
   a <- attr(x, "alpha")
@@ -59,7 +67,8 @@ print.contentvalid_psa <- function(x, digits = 2, ...) {
   has_ci <- all(c("psa_low", "psa_high") %in% names(x)) && any(!is.na(x$psa_low))
   .print_component(
     x, c("item", "target", "n", "n_target", "psa"),
-    title = "Proportion of substantive agreement (Psa; Anderson & Gerbing, 1991)",
+    title = c("Proportion of substantive agreement (Psa)",
+              "Anderson and Gerbing (1991)."),
     build = function() {
       tab <- data.frame(item = x$item, target = x$target,
                         judges = paste0(x$n_target, "/", x$n),
@@ -68,13 +77,14 @@ print.contentvalid_psa <- function(x, digits = 2, ...) {
       tab
     },
     notes = c(
-      "judges: assignments to the target construct, out of the judges who sorted the item.",
+      "Judges: assignments to the target construct, out of the judges who sorted the item.",
       if (has_ci && is.character(method)) .proportion_ci_note(method, alpha),
       if ("n_missing" %in% names(x) && any(x$n_missing > 0, na.rm = TRUE)) {
         paste("Missing assignments:", sum(x$n_missing, na.rm = TRUE),
               "in all; each item uses the judges who sorted it.")
       }
-    )
+    ),
+    keep = "Psa"
   )
 }
 
@@ -83,7 +93,8 @@ print.contentvalid_csv <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "target", "n", "n_target", "competitor", "n_other_max", "csv"),
-    title = "Coefficient of substantive validity (Csv; Anderson & Gerbing, 1991)",
+    title = c("Coefficient of substantive validity (Csv)",
+              "Anderson and Gerbing (1991)."),
     build = function() {
       data.frame(item = x$item, target = x$target,
                  judges = paste0(x$n_target, "/", x$n),
@@ -93,7 +104,8 @@ print.contentvalid_csv <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = paste("Csv is the target count minus the count for the most-chosen",
-                  "other construct, divided by the number of judges.")
+                  "other construct, divided by the number of judges."),
+    keep = "Csv"
   )
 }
 
@@ -102,7 +114,7 @@ print.contentvalid_htc <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "target", "n_target", "target_mean", "htc"),
-    title = "Hinkin-Tracey correspondence (HTC; Colquitt et al., 2019)",
+    title = c("Hinkin-Tracey correspondence (HTC)", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(item = x$item, target = x$target, judges = x$n_target,
                  `target mean` = .fmt(x$target_mean, digits, bounded = FALSE),
@@ -112,7 +124,8 @@ print.contentvalid_htc <- function(x, digits = 2, ...) {
     notes = if ("anchors" %in% names(x) && length(unique(x$anchors)) == 1L) {
       sprintf("HTC expresses the mean target rating as a share of the %d-point scale.",
               as.integer(x$anchors[1]))
-    }
+    },
+    keep = "HTC"
   )
 }
 
@@ -122,7 +135,7 @@ print.contentvalid_htd <- function(x, digits = 2, ...) {
   .print_component(
     x, c("item", "target", "n_complete", "target_mean_complete",
          "strongest_competitor", "competitor_mean", "htd"),
-    title = "Hinkin-Tracey distinctiveness (HTD; Colquitt et al., 2019)",
+    title = c("Hinkin-Tracey distinctiveness (HTD)", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
                  `target mean` = .fmt(x$target_mean_complete, digits, bounded = FALSE),
@@ -131,8 +144,9 @@ print.contentvalid_htd <- function(x, digits = 2, ...) {
                  HTD = .fmt(x$htd, digits),
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
-    notes = paste("competitor: the other construct with the highest mean rating.",
-                  "HTD itself averages the gap over every other construct.")
+    notes = paste("Competitor: the other construct with the highest mean rating.",
+                  "HTD itself averages the gap over every other construct."),
+    keep = "HTD"
   )
 }
 
@@ -142,17 +156,18 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
   needed <- c("item", "target", "n_complete", "F", "df1", "df2", "p_screen",
               "partial_eta2", "strongest_competitor", "max_contrast_p",
               "contrast_pass")
+  st <- attr(x, "settings")
+  # Contrasts exist only where an item has a target.
+  has_contrasts <- any(!is.na(x$target))
   .print_component(
     x, needed,
-    title = "Content-validity ANOVA (Hinkin & Tracey, 1999)",
+    title = c("Content-validity ANOVA",
+              "Adapted from Hinkin and Tracey (1999) and MacKenzie et al. (2011)."),
     build = function() {
       gg <- !is.na(x$df1_gg)
       d1 <- ifelse(gg, x$df1_gg, x$df1)
       d2 <- ifelse(gg, x$df2_gg, x$df2)
-      test <- ifelse(is.na(x$F), "NA",
-                     sprintf("F(%s, %s) = %s", .fmt(d1, digits, bounded = FALSE),
-                             .fmt(d2, digits, bounded = FALSE),
-                             .fmt(x$F, digits, bounded = FALSE)))
+      test <- ifelse(is.na(x$F), "--", .fmt_f_test(x$F, d1, d2, digits))
       # Narrow enough for an 80-column console; the strongest competitor
       # stays in the `strongest_competitor` column.
       data.frame(item = x$item, target = x$target, judges = x$n_complete,
@@ -163,13 +178,40 @@ print.contentvalid_anova <- function(x, digits = 2, ...) {
                  stringsAsFactors = FALSE, check.names = FALSE)
     },
     notes = c(
-      if (any(!is.na(x$df1_gg))) {
-        "Within-judge omnibus tests are Greenhouse-Geisser corrected, so their degrees of freedom are fractional."
+      # Only a correction that changed the degrees of freedom is mentioned:
+      # with two constructs there is nothing to correct.
+      if (any(!is.na(x$df1_gg) & abs(x$df1_gg - x$df1) > 1e-8)) {
+        paste("Within-judge omnibus tests are Greenhouse-Geisser corrected,",
+              "which reduces their degrees of freedom.")
       },
-      paste("contrast p: the largest p among the planned target-versus-other",
-            "contrasts; met: whether every one of them met the screening",
-            "criterion. attr(x, \"contrasts\") holds each contrast, and",
-            "`strongest_competitor` the construct rated closest to the target.")
+      if (any(is.na(x$F))) {
+        paste("F test --: the ratings left no variance to test, so there is no",
+              "F and no p.")
+      },
+      if (any(is.infinite(x$F))) {
+        paste("F = Inf: the judges' rating profiles were exactly parallel,",
+              "leaving no error variance, so the constructs differ for every",
+              "judge alike and no sphericity correction applies.")
+      },
+      # The level and the adjustment the `met` column was decided at, said
+      # only when there are contrasts to describe.
+      if (has_contrasts) {
+        paste0(
+          "Contrast p: the largest p among the planned contrasts, each ",
+          "one-sided (the intended construct rated above one of the others)",
+          if (is.list(st) && is.numeric(st$alpha)) {
+            paste0(", at alpha = ", .fmt_alpha(st$alpha),
+                   if (identical(st$adjust, "holm")) {
+                     ", Holm-adjusted for their number"
+                   } else {
+                     " with no adjustment for their number"
+                   })
+          },
+          ". It is -- when a contrast has no p because every judge rated the ",
+          "two constructs the same. Met: whether every contrast passed. ",
+          "attr(x, \"contrasts\") holds each one."
+        )
+      }
     )
   )
 }
@@ -180,19 +222,27 @@ print.contentvalid_aiken <- function(x, digits = 2, ...) {
   alpha <- .alpha_attr(x)
   has_ci <- all(c("ci_low", "ci_high") %in% names(x)) && any(!is.na(x$ci_low))
   methods <- if ("ci_method" %in% names(x)) unique(stats::na.omit(x$ci_method)) else character(0)
+  scale <- attr(x, "scale")
   .print_component(
     x, c("item", "N", "V"),
-    title = "Aiken's V (Aiken, 1980)",
+    title = c("Aiken's V", "Aiken (1980)."),
     build = function() {
       tab <- data.frame(item = x$item, experts = x$N, V = .fmt(x$V, digits),
                         stringsAsFactors = FALSE)
       if (has_ci) tab[[.ci_label(alpha)]] <- .fmt_ci(x$ci_low, x$ci_high, digits)
       tab
     },
-    notes = if (has_ci && length(methods) == 1L) {
-      paste0("Interval: ", methods,
-             if (identical(methods, "Penfield-Giacobbi score")) " (Penfield & Giacobbi, 2004)", ".")
-    }
+    notes = c(
+      # V depends on the scale, so the scale it was computed on is stated.
+      if (is.numeric(scale) && length(scale) == 2L) {
+        sprintf("Scale: %s to %s.", .fmt_scale(scale)[1], .fmt_scale(scale)[2])
+      },
+      if (has_ci && length(methods) == 1L) {
+        paste0("Interval: ", methods,
+               if (identical(methods, "Penfield-Giacobbi score")) " (Penfield & Giacobbi, 2004)", ".")
+      }
+    ),
+    keep = "V"
   )
 }
 
@@ -202,16 +252,31 @@ print.contentvalid_cvr <- function(x, digits = 2, ...) {
   alpha <- .alpha_attr(x)
   .print_component(
     x, c("item", "ne", "N", "cvr", "p_value", "critical_ne", "pass"),
-    title = "Content validity ratio (CVR; Lawshe, 1975)",
+    title = c("Content validity ratio (CVR)", "Lawshe (1975)."),
     build = function() {
+      unreachable <- is.na(x$critical_ne) & x$N >= 1L
       data.frame(item = x$item, essential = paste0(x$ne, "/", x$N),
                  CVR = .fmt(x$cvr, digits), p = .fmt_p(x$p_value),
-                 needed = x$critical_ne, meets = .yes_no(x$pass),
+                 needed = ifelse(unreachable, "none",
+                                 ifelse(is.na(x$critical_ne), "--",
+                                        as.character(x$critical_ne))),
+                 # No critical count means no decision, whether the panel is
+                 # too small or nobody rated the item.
+                 meets = ifelse(is.na(x$critical_ne), "--", .yes_no(x$pass)),
                  stringsAsFactors = FALSE)
     },
-    notes = sprintf(paste("needed: essential ratings the exact one-tailed binomial",
-                          "test requires at alpha = %s (Ayre & Scally, 2014)."),
-                    .fmt(alpha))
+    notes = c(
+      sprintf(paste("Needed: essential ratings the exact one-sided binomial",
+                    "test requires at alpha = %s (Ayre & Scally, 2014)."),
+              .fmt_alpha(alpha)),
+      if (any(is.na(x$critical_ne) & x$N >= 1L)) {
+        sprintf(paste("With %s, no count of essential ratings reaches alpha =",
+                      "%s, so the test cannot be met at that panel size."),
+                .or_fewer(max(x$N[is.na(x$critical_ne) & x$N >= 1L]), "expert"),
+                .fmt_alpha(alpha))
+      }
+    ),
+    keep = "CVR"
   )
 }
 
@@ -220,11 +285,31 @@ print.contentvalid_ioc <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("item", "objective", "n_judges", "ioc"),
-    title = "Item-objective congruence (IOC; Rovinelli & Hambleton, 1977)",
+    title = c("Index of item-objective congruence (IOC)",
+              "Rovinelli and Hambleton (1977)."),
     build = function() {
-      data.frame(item = x$item, objective = x$objective, judges = x$n_judges,
-                 IOC = .fmt(x$ioc, digits), stringsAsFactors = FALSE)
-    }
+      # The raters are experts, as in the congruence workflow's printout.
+      tab <- data.frame(item = x$item, objective = x$objective,
+                        experts = x$n_judges, stringsAsFactors = FALSE)
+      # Objects saved before 1.0 have no separate mean.
+      if ("mean_rating" %in% names(x)) tab$mean <- .fmt(x$mean_rating, digits)
+      tab$IOC <- .fmt(x$ioc, digits)
+      tab
+    },
+    notes = c(
+      if ("mean_rating" %in% names(x)) {
+        paste("Mean: the experts' mean rating on the objective (-1 to 1).",
+              "IOC: half the gap between that mean and their mean on the",
+              "item's other objectives; 1 only when every expert rates +1 on",
+              "the objective and -1 on every other. Rovinelli and Hambleton",
+              "applied a criterion of .70.")
+      },
+      if (any(is.na(x$ioc) & !is.na(x$mean_rating) & x$n_objectives == 1L)) {
+        paste("IOC is -- for an item rated against one objective: the index",
+              "compares objectives.")
+      }
+    ),
+    keep = "IOC"
   )
 }
 
@@ -238,7 +323,7 @@ print.contentvalid_colquitt <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("statistic", "value", "interpretation", "benchmark_label"),
-    title = "Benchmark bands (Colquitt et al., 2019)",
+    title = c("Benchmark bands", "Colquitt et al. (2019)."),
     build = function() {
       data.frame(statistic = .stat_heading(x$statistic),
                  value = .fmt(x$value, digits),
@@ -255,8 +340,9 @@ print.contentvalid_colquitt_norms <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   .print_component(
     x, c("statistic", "benchmark_label", "interpretation", "percentile", "minimum"),
-    title = sprintf("Benchmarks for %s (Colquitt et al., 2019): %s",
-                    .stat_heading(x$statistic[1]), x$benchmark_label[1]),
+    title = c(sprintf("Benchmarks for %s", .stat_heading(x$statistic[1])),
+              sprintf("Colquitt et al. (2019). Benchmark set: %s.",
+                      x$benchmark_label[1])),
     build = function() {
       data.frame(band = x$interpretation, percentile = x$percentile,
                  minimum = ifelse(is.finite(x$minimum), .fmt(x$minimum, digits), "none"),
@@ -271,43 +357,71 @@ print.contentvalid_colquitt_norms <- function(x, digits = 2, ...) {
 #' @export
 print.contentvalid_binom <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  .say("Howard-Melloy exact test (one-tailed)")
+  .print_header(x, "Howard-Melloy exact test (one-sided)")
   cat("\n")
   p_txt <- .p_phrase(x$p.value)
   has_counts <- all(c("n_target", "N", "p0", "alpha") %in% names(x))
-  if (has_counts) {
-    .say(sprintf(paste("%d of %d judges assigned the item to its target construct",
-                       "(Psa = %s). If judges chose the target at the rate p0 = %s,",
-                       "a count this high has probability %s."),
-                 as.integer(x$n_target), as.integer(x$N), .fmt(x$estimate, digits),
-                 .fmt(x$p0, digits), p_txt))
-    .say(sprintf("At alpha = %s an item needs at least %d of %d. Decision: %s.",
-                 .fmt(x$alpha), as.integer(x$critical_n_target), as.integer(x$N),
-                 x$decision))
+  # The verdict comes first, in the words the item-sort workflow uses.
+  .say(if (isTRUE(x$passes_chance)) {
+    "The item meets the exact target-assignment criterion."
   } else {
-    .say(sprintf("Psa = %s, %s. Decision: %s.", .fmt(x$estimate, digits),
-                 p_txt, x$decision))
+    "The item does not meet the exact target-assignment criterion."
+  })
+  if (has_counts) {
+    .say(sprintf(paste("%d of %s assigned the item to its target construct",
+                       "(Psa = %s). If each judge chose the target with",
+                       "probability p0 = %s, a count this high has probability %s."),
+                 as.integer(x$n_target), .n_noun(as.integer(x$N), "judge"),
+                 .fmt(x$estimate, digits), .fmt(x$p0, digits), p_txt))
+    if (is.na(x$critical_n_target)) {
+      .say(sprintf(paste("With %s, no count can reach alpha = %s, so no item",
+                         "can meet the criterion at this panel size."),
+                   .n_noun(as.integer(x$N), "judge"), .fmt_alpha(x$alpha)))
+    } else {
+      .say(sprintf("At alpha = %s an item needs at least %d of %d.",
+                   .fmt_alpha(x$alpha), as.integer(x$critical_n_target),
+                   as.integer(x$N)))
+    }
+  } else {
+    .say(sprintf("Psa = %s, %s.", .fmt(x$estimate, digits), p_txt))
   }
   if (length(x$conf.int) == 2L) {
-    .say(sprintf("One-sided %s%% interval for the target rate: %s.",
+    .say(sprintf("One-sided %s%% CI for the target rate: %s.",
                  format(100 * attr(x$conf.int, "conf.level")),
                  .fmt_ci(x$conf.int[1], x$conf.int[2], digits)))
   }
+  .closing(pointer = "See as.data.frame(x) for the test as one row.")
   invisible(x)
 }
 
 .print_two_by_two <- function(tab, title, x, digits, extra = NULL) {
-  .say(title)
+  .print_header(x, title)
   cat("\n")
-  print(tab)
+  .print_table(.table_frame(tab))
   cat("\n")
+  # APA reports a chi-square test of association with its degrees of freedom
+  # and the sample size. Objects saved before `n` existed take it from the
+  # table.
+  n <- if (is.null(x$n)) sum(tab) else x$n
+  chisq_txt <- sprintf("chi-square(1, N = %d) = %s", as.integer(n),
+                       .fmt(x$chisq, digits, bounded = FALSE))
+  exact <- identical(x$p_method, "Fisher's exact test")
   stats <- c(extra,
              paste0("phi = ", .fmt(x$phi, digits)),
              if (!is.na(x$chisq)) {
-               sprintf("chi-square(1) = %s, %s",
-                       .fmt(x$chisq, digits, bounded = FALSE), .p_phrase(x$p))
+               if (exact) {
+                 paste0("Fisher's exact ", .p_phrase(x$p))
+               } else {
+                 paste0(chisq_txt, ", ", .p_phrase(x$p))
+               }
              })
   .say(paste0(paste(stats, collapse = ", "), "."))
+  if (exact && !is.na(x$chisq)) {
+    .say(paste0("An expected count is below 5, so the exact test is reported ",
+                "in place of the chi-square approximation (", chisq_txt, ", ",
+                .p_phrase(x$p_chisq), ")."))
+  }
+  .closing(pointer = "See as.data.frame(x) for the counts and the test as one row.")
   invisible(x)
 }
 
@@ -336,11 +450,25 @@ print.contentvalid_similarity <- function(x, digits = 2, ...) {
   pairs <- attr(m, "n_pairs")
   attr(m, "n_pairs") <- NULL
   shown <- matrix(.fmt(m, digits), nrow(m), dimnames = dimnames(m))
-  diag(shown) <- "-"
-  .say("Item similarity: the share of judges who sorted both items and put",
-       "them in the same construct")
+  # An item's similarity with itself is not a result, so it is left blank.
+  diag(shown) <- ""
+  .print_header(x, "Item similarity")
+  .say("The share of judges who sorted both items and put them in the same",
+       "construct.")
   cat("\n")
-  print(noquote(shown), right = TRUE)
+  tab <- data.frame(item = rownames(m), shown, stringsAsFactors = FALSE,
+                    check.names = FALSE)
+  # A wide matrix prints in blocks of columns, each under the item labels,
+  # rather than losing columns to the console width.
+  stub <- max(nchar(c("Item", rownames(m)), type = "width"))
+  cell <- max(nchar(c(colnames(m), shown), type = "width"))
+  per_block <- max(1L, (getOption("width", 80L) - 2L - stub) %/% (cell + 2L))
+  blocks <- split(seq_len(ncol(m)), ceiling(seq_len(ncol(m)) / per_block))
+  for (b in seq_along(blocks)) {
+    if (b > 1L) cat("\n")
+    .print_table(tab[, c(1L, blocks[[b]] + 1L), drop = FALSE],
+                 keep = names(tab), as_is = colnames(m))
+  }
   if (is.matrix(pairs)) {
     off <- pairs[upper.tri(pairs)]
     cat("\n")
@@ -351,5 +479,6 @@ print.contentvalid_similarity <- function(x, digits = 2, ...) {
               as.integer(min(off)), as.integer(max(off)))
     })
   }
+  .closing(pointer = "See content_structure(x) to scale and cluster these similarities.")
   invisible(x)
 }

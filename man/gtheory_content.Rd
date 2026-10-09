@@ -8,12 +8,15 @@ gtheory_content(
   ratings,
   na.rm = FALSE,
   targets = c(0.7, 0.8, 0.9),
-  max_judges = 30
+  max_judges = 30,
+  phi_cut = 0.8
 )
 }
 \arguments{
 \item{ratings}{A judges-by-items numeric matrix or data frame: one row per
-judge, one column per item.}
+judge, one column per item. A column whose name looks like a rater ID
+(such as \code{expert} or \code{rater_id}) stops the function, so remove it, or
+rename an item that has such a name.}
 
 \item{na.rm}{If \code{TRUE}, judges with any missing rating are dropped so that a
 complete crossed design remains, and the number dropped is reported. If
@@ -23,6 +26,11 @@ complete crossed design remains, and the number dropped is reported. If
 strictly between 0 and 1.}
 
 \item{max_judges}{Largest panel size shown in the decision-study projection.}
+
+\item{phi_cut}{Dependability coefficient at or above which the status is
+\code{"Supported"}. Default .80. Neither Brennan (2001) nor Crocker et al.
+(1988) sets a required value, so this is a contentvalidR convention,
+printed beside the status so a reader can apply another.}
 }
 \value{
 An object of class \code{contentvalid_gtheory}, a list containing:
@@ -37,7 +45,15 @@ for relative and absolute decisions. \code{NA} means the target is not
 reachable with any realistic panel, which happens when items are barely
 distinguished from one another.}
 \item{settings, design}{Analysis settings and realized design metadata.}
+\item{status}{\code{"Supported"} when the dependability coefficient is at or
+above \code{phi_cut} and \code{"Review"} when it is below; \code{"Descriptive only"} when the items show no variance to generalize; and
+\code{"Insufficient data"} with fewer than two judges or two items.}
+\item{interpretation}{The status in a sentence or two.}
 }
+
+The projection and \code{judges_needed} are estimates from the variance
+components of one panel, with no interval. From a small panel they are
+rough, so read them as planning figures, not as exact answers.
 }
 \description{
 Decomposes judge ratings of items into item, judge, and residual variance
@@ -45,7 +61,7 @@ components, then reports how dependably the panel's ratings generalize over
 judges.
 
 This follows the generalizability-theory treatment of content-validity
-ratings in Crocker, Llabre, and Miller (1988). Items are the objects of
+ratings in Crocker et al. (1988). Items are the objects of
 measurement and judges are the facet of generalization, so the question the
 analysis answers is: \emph{if a different panel of judges of the same size had
 rated these items, how similar would the conclusions be?}

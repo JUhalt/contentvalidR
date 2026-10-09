@@ -48,7 +48,9 @@ domain_fixture <- function() {
   )
 }
 
-printed <- function(x) paste(utils::capture.output(print(x)), collapse = " ")
+printed <- function(x) {
+  gsub("[[:space:]]+", " ", paste(utils::capture.output(print(x)), collapse = " "))
+}
 
 test_that("the glossary covers every workflow and defines the shared statuses", {
   g <- contentvalid_glossary()
@@ -122,7 +124,7 @@ test_that("printed output explains the decision words it shows, and no others", 
   old <- options(contentvalidR.show_key = FALSE)
   on.exit(options(old), add = TRUE)
   expect_match(printed(sort_fixture()),
-               "'Review' is not an automatic deletion decision")
+               "A flag for review is not an automatic deletion decision")
 })
 
 test_that("every flagship workflow says Review is not a deletion decision", {
@@ -143,7 +145,10 @@ test_that("benchmark labels are marked as norms and as non-comparable across ind
   out <- printed(sort_fixture())
   expect_match(out, "percentile norms")
   expect_match(out, "not universal cutoffs")
-  expect_match(out, "not comparable with each other")
+  # The values sit on different scales; the percentile positions can be
+  # compared.
+  expect_match(out, "values cannot be compared with each other")
+  expect_false(grepl("labels are not comparable", out, fixed = TRUE))
 
   # The HTC/HTD case is the one users misread, so it is called out explicitly.
   out_r <- printed(rating_fixture())
@@ -191,6 +196,7 @@ test_that("new v0.2 workflows meet the same interpretive standard as existing on
 test_that("glossary print output warns against cross-index comparison", {
   out <- printed(contentvalid_glossary())
   expect_match(out, "percentile positions")
-  expect_match(out, "not\\s+comparable across different indices")
-  expect_match(out, "status labels")
+  # Labels can be compared across indices; their numbers cannot.
+  expect_match(out, "Compare\\s+two\\s+indices\\s+by\\s+their\\s+labels,\\s+never\\s+by\\s+their\\s+numbers")
+  expect_match(out, "Status labels")
 })

@@ -34,6 +34,13 @@ scale-level averages and from naive judges representative of substantive
 study populations. They should therefore be treated as contextual norms,
 not pass/fail rules.
 
+Colquitt et al. (2019) built these norms from tasks in which naive judges
+saw three definitions, the focal construct and two orbiting constructs, and
+either sorted each item into one of them (Psa, Csv) or rated it against each
+on a 7-point scale (HTC, HTD). They did not examine tasks offering more or
+fewer definitions. \code{\link[=sort_validity]{sort_validity()}} and \code{\link[=rating_validity]{rating_validity()}} therefore add a
+caution, this package's own, when a study offers a different number.
+
 When \code{judge_type = "expert"}, the Colquitt classification is deliberately
 not applied because the authors caution against using their norms for expert
 judges.
@@ -44,6 +51,7 @@ interpret_colquitt(.70, "csv", orbiting_r = .40)
 }
 \references{
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
-\emph{Journal of Applied Psychology, 104}(10), 1243–1265.
-\doi{10.1037/apl0000406}
+Content validation guidelines: Evaluation criteria for definitional
+correspondence and definitional distinctiveness. \emph{Journal of Applied
+Psychology, 104}(10), 1243–1265. \doi{10.1037/apl0000406}
 }

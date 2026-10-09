@@ -3,17 +3,19 @@
 # summarized by Horn's (1965) mean or Glorfeld's (1995) upper percentile.
 .parallel_eigen <- function(mat, n_iter, seed = NULL, criterion = "mean",
                             percentile = 95) {
-  if (!is.null(seed)) set.seed(seed)
   missing <- is.na(mat)
-  sims <- matrix(NA_real_, nrow = n_iter, ncol = ncol(mat))
-  for (i in seq_len(n_iter)) {
-    Z <- matrix(stats::rnorm(length(mat)), nrow = nrow(mat))
-    Z[missing] <- NA
-    C <- suppressWarnings(stats::cor(Z, use = "pairwise.complete.obs"))
-    if (all(is.finite(C))) {
-      sims[i, ] <- eigen(C, symmetric = TRUE, only.values = TRUE)$values
+  sims <- .with_seed(seed, {
+    draws <- matrix(NA_real_, nrow = n_iter, ncol = ncol(mat))
+    for (i in seq_len(n_iter)) {
+      Z <- matrix(stats::rnorm(length(mat)), nrow = nrow(mat))
+      Z[missing] <- NA
+      C <- suppressWarnings(stats::cor(Z, use = "pairwise.complete.obs"))
+      if (all(is.finite(C))) {
+        draws[i, ] <- eigen(C, symmetric = TRUE, only.values = TRUE)$values
+      }
     }
-  }
+    draws
+  })
   usable <- stats::complete.cases(sims)
   if (!any(usable)) {
     stop("Parallel analysis could not simulate usable correlation matrices; ",
@@ -38,14 +40,27 @@
 #'
 #' @description
 #' Builds an item-by-item Q-correlation matrix from rating data and runs a
-#' factor extraction (PCA by default), following the content-adequacy approach
-#' of Schriesheim et al. (1993): judges rate every item against every construct
-#' definition, and items that measure the same construct correlate across those
-#' ratings. Schriesheim et al. (1999) compared this approach empirically with
-#' other content-adequacy methods and found substantial similarity along with
-#' some differences. This comparator is retained for compatibility and
-#' exploratory use; it is not part of the recommended sort, rating, or
-#' expert-panel workflows.
+#' factor extraction (PCA by default), adapted from the content-adequacy
+#' approach of Schriesheim et al. (1993): judges rate every item against every
+#' construct definition, and items that measure the same construct correlate
+#' across those ratings. Schriesheim et al. (1999) compared this approach
+#' empirically with other content-adequacy methods and found substantial
+#' similarity along with some differences. This comparator is retained for
+#' compatibility and exploratory use; it is not part of the recommended sort,
+#' rating, or expert-panel workflows.
+#'
+#' @section How this differs from the published approach:
+#' As Hinkin and Tracey (1999) describe it, the approach extracts as many
+#' factors as there are construct definitions and asks whether each item
+#' loads .40 or more on its intended factor with no major cross-loading. Two
+#' things here are this package's choices:
+#'
+#' * The loadings are returned **unrotated**. With more than one factor,
+#'   unrotated loadings do not show which construct an item belongs to: the
+#'   first factor is general. Rotate them before reading them that way, for
+#'   example with `stats::varimax(qf$loadings)`.
+#' * The number of factors defaults to parallel analysis. Set `k_factors` to
+#'   the number of construct definitions for the published choice.
 #'
 #' @section Number of factors:
 #' Unless `k_factors` is supplied, `retention` sets the number of factors:
@@ -72,8 +87,9 @@
 #'   distribution, following Glorfeld (1995). Glorfeld noted that Horn's
 #'   procedure, while relatively accurate, still tends to indicate the retention
 #'   of one or two more factors than is warranted, and proposed comparing
-#'   against a chosen upper percentile instead. It is the stricter rule and
-#'   retains no more factors than the mean criterion on the same simulation.
+#'   against a chosen upper percentile instead. With an upper percentile, such
+#'   as the default 95, it is the stricter rule and retains no more factors
+#'   than the mean criterion on the same simulation.
 #'
 #' Both rules use the eigenvalues of the full Q-correlation matrix, with 1s on
 #' the diagonal, whichever extraction `method` is used. At least one factor is
@@ -94,7 +110,8 @@
 #' @param percentile Upper percentile used when
 #'   `parallel_criterion = "percentile"`. Default 95, as in Glorfeld (1995).
 #' @param n_iter Number of random data sets for parallel analysis.
-#' @param seed Optional seed that makes parallel analysis reproducible.
+#' @param seed Optional seed that makes parallel analysis reproducible. The
+#'   random-number stream of the session is left as it was.
 #'
 #' @return A list with components:
 #'   - `cor_Q`: item-by-item correlation matrix,
@@ -117,6 +134,10 @@
 #' methodology for selecting the correct number of factors to retain.
 #' *Educational and Psychological Measurement, 55*(3), 377–393.
 #' \doi{10.1177/0013164495055003002}
+#'
+#' Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+#' content validation. *Organizational Research Methods, 2*(2), 175–186.
+#' \doi{10.1177/109442819922004}
 #'
 #' Horn, J. L. (1965). A rationale and test for the number of factors in factor
 #' analysis. *Psychometrika, 30*(2), 179–185. \doi{10.1007/BF02289447}
@@ -164,9 +185,9 @@ qfactor_content <- function(ratings,
                             percentile = 95,
                             n_iter = 100,
                             seed = NULL) {
-  method <- match.arg(method)
-  retention <- match.arg(retention)
-  parallel_criterion <- match.arg(parallel_criterion)
+  method <- .choose(method)
+  retention <- .choose(retention)
+  parallel_criterion <- .choose(parallel_criterion)
   .validate_column_names(item_col, rater_col, construct_col, rating_col)
   if (!is.numeric(n_iter) || length(n_iter) != 1L || !is.finite(n_iter) ||
       n_iter < 1 || n_iter != floor(n_iter)) {
@@ -177,8 +198,10 @@ qfactor_content <- function(ratings,
     stop("`percentile` must be one number between 0 and 100, exclusive.",
          call. = FALSE)
   }
-  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed))) {
-    stop("`seed` must be NULL or one number.", call. = FALSE)
+  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L ||
+                         !is.finite(seed) || abs(seed) > .Machine$integer.max)) {
+    stop("`seed` must be NULL or one number, no larger in size than ",
+         .Machine$integer.max, ".", call. = FALSE)
   }
   if (!is.data.frame(ratings) || nrow(ratings) < 1L) {
     stop("`ratings` must be a non-empty data.frame.", call. = FALSE)
@@ -239,7 +262,7 @@ qfactor_content <- function(ratings,
       above <- eg > parallel_eigen
       k_suggested <- if (all(above)) length(eg) else which.min(above) - 1L
     } else {
-      message(.kaiser_critique())
+      message(paste(strwrap(.kaiser_critique(), width = 76), collapse = "\n"))
       k_suggested <- sum(eg > 1)
     }
     k <- max(1L, k_suggested)

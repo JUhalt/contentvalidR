@@ -9,6 +9,10 @@
   n <- length(a)
   if (n < 2L) return(NA_real_)
 
+  # One group on either side leaves nothing to compare: the index would be 0
+  # whatever the other partition is, which reads as "no better than chance".
+  if (length(unique(a)) < 2L || length(unique(b)) < 2L) return(NA_real_)
+
   tab <- table(a, b)
   sum_ij <- sum(.choose2(as.vector(tab)))
   sum_a <- sum(.choose2(rowSums(tab)))
@@ -22,21 +26,17 @@
   (sum_ij - expected) / (maximum - expected)
 }
 
-.stress1 <- function(d_orig, d_fit) {
+# How far the map's distances depart from the dissimilarities, as a share of
+# the dissimilarities. This is not Kruskal's (1964) stress-1: his compares the
+# map distances with disparities from a monotone regression, over the squared
+# map distances, for a configuration fitted to minimize it. Classical scaling
+# does none of that, so his verbal benchmarks do not apply here and no label
+# is attached.
+.raw_stress <- function(d_orig, d_fit) {
   num <- sum((d_orig - d_fit)^2)
   den <- sum(d_orig^2)
   if (!is.finite(den) || den <= 0) return(NA_real_)
   sqrt(num / den)
-}
-
-.stress_label <- function(s) {
-  # Kruskal's conventional descriptors. These are long-standing conventions for
-  # describing fit, not decision rules.
-  ifelse(is.na(s), NA_character_,
-         ifelse(s < 0.025, "excellent",
-                ifelse(s < 0.05, "good",
-                       ifelse(s < 0.10, "fair",
-                              ifelse(s < 0.20, "poor", "very poor")))))
 }
 
 .as_item_distance <- function(similarity, is_distance) {
@@ -66,6 +66,10 @@
     stop("Converted distances are negative; check `similarity_is_distance`.",
          call. = FALSE)
   }
+  if (all(D == 0)) {
+    stop("Every pair of items is equally similar, so there is no structure ",
+         "to scale or cluster. Check `similarity`.", call. = FALSE)
+  }
   D
 }
 
@@ -73,53 +77,99 @@
 #'
 #' @description
 #' Analyzes whether subject-matter experts perceive items as grouping the way a
-#' test blueprint says they should, using the multidimensional scaling and
-#' cluster analysis procedure of Sireci and Geisinger (1992, 1995).
+#' test blueprint says they should, with multidimensional scaling followed by
+#' a cluster analysis of the item coordinates, adapted from Sireci and
+#' Geisinger (1992, 1995).
 #'
 #' Experts rate how similar each pair of items is. Those similarities are scaled
-#' into a low-dimensional content map and clustered. If the blueprint describes
-#' the domain as experts actually see it, the recovered clusters should
-#' correspond to the blueprint's cells. Agreement is quantified with the
-#' adjusted Rand index, which is corrected for chance so that a value near 0
-#' means no better than random correspondence.
+#' into a low-dimensional content map, and the items' coordinates on that map
+#' are clustered. If the blueprint describes the domain as experts actually see
+#' it, the recovered clusters should correspond to the blueprint's cells.
+#' Agreement is quantified with the adjusted Rand index (Hubert & Arabie,
+#' 1985), which is corrected for chance so that a value near 0 means no better
+#' than random correspondence.
 #'
 #' This is evidence about perceived content *structure*. It is not evidence that
 #' the items cover the domain: see [domain_validity()] for coverage.
+#'
+#' @section What is published and what is this package's choice:
+#' Sireci and Geisinger scaled the experts' similarity ratings and then ran a
+#' hierarchical cluster analysis on the items' scaling coordinates.
+#' `content_structure()` does the same, so the clusters depend on the number
+#' of dimensions retained. Four things differ from their procedure or are not
+#' stated in it, and are this package's choices:
+#'
+#' * In their 1995 study they scaled each expert's matrix with an
+#'   individual-differences model (INDSCAL). This function applies classical
+#'   scaling to one similarity matrix, usually the experts' mean ratings.
+#' * The clusters are formed with average linkage.
+#' * They read the correspondence with the blueprint from the cluster table
+#'   and from regressions of relevance ratings on the coordinates. The
+#'   adjusted Rand index is added here to put a number on that
+#'   correspondence.
+#' * The status rests on `ari_cut`. No published standard says how large an
+#'   adjusted Rand index must be, so the default, .60, is a contentvalidR
+#'   convention. It is printed beside the status so a reader can apply
+#'   another.
+#'
+#' Versions before 1.0 clustered the original dissimilarities, not the
+#' coordinates, so the number of dimensions had no effect on the clusters.
 #'
 #' @param similarity A square, symmetric item-by-item matrix of expert
 #'   similarity ratings, or a distance matrix when `similarity_is_distance` is
 #'   `TRUE`. Similarities are converted to distances as `max(similarity) -
 #'   similarity`.
 #' @param membership Optional blueprint cell for each item, as a vector in the
-#'   same order as the rows of `similarity`, or named by item. When supplied,
-#'   the recovered clustering is compared against it.
+#'   same order as the rows of `similarity`, or named by item. When it has
+#'   names, they must be the item names: a vector whose names do not match
+#'   the items is an error, never read by position. When supplied, the
+#'   recovered clustering is compared against it.
 #' @param k Number of clusters to extract. Defaults to the number of distinct
-#'   blueprint cells, or 2 when no blueprint is supplied.
-#' @param dims Number of multidimensional scaling dimensions to retain.
+#'   blueprint cells, or 2 when no blueprint is supplied or it names fewer
+#'   than two cells.
+#' @param dims Number of multidimensional scaling dimensions to retain. The
+#'   clusters are formed from the coordinates on these dimensions.
 #' @param max_dims Largest dimensionality reported in the fit table.
 #' @param similarity_is_distance Set `TRUE` when `similarity` already holds
 #'   distances rather than similarities.
+#' @param ari_cut Adjusted Rand index at or above which the status is
+#'   `"Supported"`. Default .60, a contentvalidR convention.
 #'
 #' @return An object of class `contentvalid_structure`, a list containing the
 #'   MDS `coordinates`, `clusters`, the `fit` table across dimensionalities, the
 #'   `stress` and `gof` of the retained solution, the `adjusted_rand` index and
 #'   `cross_tab` against the blueprint, `settings`, `design`, `status`, and an
-#'   `interpretation`.
+#'   `interpretation`. `status` is `"Supported"` or `"Review"` by `ari_cut`,
+#'   `"Descriptive only"` without a blueprint, and `"Insufficient data"` when
+#'   the blueprint or the clustering has a single group, which leaves nothing
+#'   to compare.
 #'
 #' @section Dimensionality:
-#' The retained dimensionality is reported rather than chosen silently. The
-#' `fit` table gives Kruskal stress-1 for every dimensionality up to `max_dims`,
-#' with the conventional descriptive labels. Those labels are long-standing
-#' conventions for describing fit, not thresholds that decide how many
-#' dimensions a content domain has. Substantive interpretability of the
-#' dimensions should drive that choice.
+#' The retained dimensionality is reported rather than chosen silently. For
+#' every dimensionality up to `max_dims`, the `fit` table gives two measures
+#' of how well the map reproduces the similarities. `gof` is the goodness of
+#' fit of classical scaling: the share of the sum of the absolute eigenvalues
+#' that the retained dimensions account for. `stress`, printed as
+#' "distortion", is the root of the squared differences between the
+#' dissimilarities and the map distances, over the squared dissimilarities;
+#' 0 is an exact map. It need not fall as dimensions are added, because
+#' classical scaling does not minimize it.
+#'
+#' That `stress` is not Kruskal's (1964) stress-1, which compares the map
+#' distances with monotonically transformed dissimilarities in a nonmetric
+#' solution fitted to minimize it. His verbal benchmarks ("good", "fair",
+#' "poor") were given for that quantity and are not applied here. Versions
+#' before 1.0 printed this statistic as "Kruskal stress-1" with those labels.
+#' Substantive interpretability of the dimensions should drive the choice of
+#' dimensionality.
 #'
 #' @references
 #' Hubert, L., & Arabie, P. (1985). Comparing partitions. *Journal of
 #' Classification, 2*(1), 193–218. \doi{10.1007/BF01908075}
 #'
-#' Sireci, S. G. (1998). The construct of content validity. *Social Indicators
-#' Research, 45*(1–3), 83–117. \doi{10.1023/A:1006985528729}
+#' Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of
+#' fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27.
+#' \doi{10.1007/BF02289565}
 #'
 #' Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 #' cluster analysis and multidimensional scaling. *Applied Psychological
@@ -134,12 +184,21 @@
 #'   workflow.
 #'
 #' @examples
-#' items <- paste0("I", 1:6)
-#' blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-#' sim <- matrix(1, 6, 6, dimnames = list(items, items))
-#' sim[1:3, 1:3] <- 5
-#' sim[4:6, 4:6] <- 5
-#' diag(sim) <- 5
+#' # Mean similarity ratings (1 = unlike, 5 = alike) for nine items written
+#' # for three blueprint cells.
+#' items <- paste0("I", 1:9)
+#' blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+#' sim <- matrix(c(
+#'   5, 4, 3, 2, 2, 1, 1, 2, 1,
+#'   4, 5, 4, 3, 1, 2, 2, 1, 1,
+#'   3, 4, 5, 1, 2, 2, 1, 1, 3,
+#'   2, 3, 1, 5, 4, 3, 2, 2, 1,
+#'   2, 1, 2, 4, 5, 4, 1, 3, 2,
+#'   1, 2, 2, 3, 4, 5, 2, 1, 2,
+#'   1, 2, 1, 2, 1, 2, 5, 3, 4,
+#'   2, 1, 1, 2, 3, 1, 3, 5, 4,
+#'   1, 1, 3, 1, 2, 2, 4, 4, 5
+#' ), 9, 9, dimnames = list(items, items))
 #' content_structure(sim, membership = blueprint)
 #' @export
 content_structure <- function(similarity,
@@ -147,8 +206,13 @@ content_structure <- function(similarity,
                               k = NULL,
                               dims = 2,
                               max_dims = 5,
-                              similarity_is_distance = FALSE) {
+                              similarity_is_distance = FALSE,
+                              ari_cut = 0.60) {
   .validate_flag(similarity_is_distance, "similarity_is_distance")
+  if (!is.numeric(ari_cut) || length(ari_cut) != 1L || !is.finite(ari_cut) ||
+      ari_cut <= 0 || ari_cut > 1) {
+    stop("`ari_cut` must be one number above 0 and at most 1.", call. = FALSE)
+  }
 
   D <- .as_item_distance(similarity, similarity_is_distance)
   items <- rownames(D)
@@ -177,7 +241,24 @@ content_structure <- function(similarity,
   dims <- min(dims_requested, n_available)
 
   if (!is.null(membership)) {
-    if (!is.null(names(membership)) && all(items %in% names(membership))) {
+    if (is.factor(membership)) {
+      membership <- stats::setNames(as.character(membership), names(membership))
+    }
+    if (!is.null(names(membership))) {
+      # Names are a claim about which item each entry belongs to. If they do
+      # not cover the items, reading the vector by position would silently
+      # reorder the blueprint.
+      missing_items <- setdiff(items, names(membership))
+      if (length(missing_items)) {
+        stop("`membership` is named, but its names do not include item(s): ",
+             paste(missing_items[seq_len(min(5L, length(missing_items)))],
+                   collapse = ", "),
+             if (length(missing_items) > 5L) {
+               paste0(" and ", length(missing_items) - 5L, " more")
+             },
+             ". Name it by the items in `similarity`, or remove the names to ",
+             "match by position.", call. = FALSE)
+      }
       membership <- membership[items]
     }
     if (length(membership) != n_items) {
@@ -206,13 +287,12 @@ content_structure <- function(similarity,
     }
     pts <- sol$points
     if (is.null(dim(pts))) pts <- matrix(pts, ncol = 1L)
-    s <- .stress1(as.vector(dobj), as.vector(stats::dist(pts)))
+    s <- .raw_stress(as.vector(dobj), as.vector(stats::dist(pts)))
     data.frame(dims = kd, stress = s,
                gof = if (length(sol$GOF)) sol$GOF[1] else NA_real_,
                stringsAsFactors = FALSE)
   })
   fit <- do.call(rbind, fit_rows)
-  fit$fit_label <- .stress_label(fit$stress)
   rownames(fit) <- NULL
 
   sol <- suppressWarnings(stats::cmdscale(dobj, k = dims, eig = TRUE))
@@ -224,7 +304,11 @@ content_structure <- function(similarity,
   retained_stress <- fit$stress[fit$dims == dims]
   retained_gof <- fit$gof[fit$dims == dims]
 
-  hc <- stats::hclust(dobj, method = "average")
+  # The items' coordinates on the retained dimensions are what is clustered,
+  # as in Sireci and Geisinger (1992, 1995); average linkage is this
+  # package's choice. So the clusters belong to the map that is reported and
+  # plotted.
+  hc <- stats::hclust(stats::dist(pts), method = "average")
   cluster <- stats::cutree(hc, k = k)
 
   clusters <- data.frame(
@@ -247,7 +331,7 @@ content_structure <- function(similarity,
     "Descriptive only"
   } else if (is.na(ari)) {
     "Insufficient data"
-  } else if (ari >= 0.60) {
+  } else if (ari >= ari_cut) {
     "Supported"
   } else {
     "Review"
@@ -265,22 +349,23 @@ content_structure <- function(similarity,
       "when every item falls in one blueprint cell or one cluster, leaving",
       "nothing to compare."
     )
-  } else if (ari >= 0.60) {
+  } else if (ari >= ari_cut) {
     sprintf(paste(
-      "Expert-perceived item groupings correspond closely to the blueprint",
-      "(adjusted Rand index %s, where 0 is chance agreement and 1 is exact).",
-      "This supports the claim that the blueprint describes the domain as",
-      "subject-matter experts see it."
-    ), .fmt(ari))
+      "Expert-perceived item groupings correspond to the blueprint (adjusted",
+      "Rand index %s, where 0 is chance agreement and 1 is exact; at or above",
+      "the %s set for this analysis). This supports the claim that the",
+      "blueprint describes the domain as subject-matter experts see it."
+    ), .fmt_beside_cut(ari, ari_cut), .fmt(ari_cut))
   } else {
     sprintf(paste(
-      "Expert-perceived item groupings correspond only weakly to the blueprint",
-      "(adjusted Rand index %s, where 0 is chance agreement and 1 is exact).",
+      "Expert-perceived item groupings fall short of the blueprint (adjusted",
+      "Rand index %s, where 0 is chance agreement and 1 is exact; below the",
+      "%s set for this analysis).",
       "Inspect the cross-tabulation to see which cells experts merged or split.",
       "This is a reason to re-examine the blueprint or the item wording, not by",
       "itself a reason to delete items: experts may be responding to surface",
       "features such as shared vocabulary rather than the intended facets."
-    ), .fmt(ari))
+    ), .fmt_beside_cut(ari, ari_cut), .fmt(ari_cut))
   }
 
   out <- list(
@@ -293,12 +378,15 @@ content_structure <- function(similarity,
     cross_tab = cross_tab,
     hclust = hc,
     settings = list(
-      method = "Sireci-Geisinger MDS with hierarchical cluster analysis",
+      method = paste("Classical MDS with average-linkage clustering of the",
+                     "item coordinates (adapted from Sireci & Geisinger, 1992,",
+                     "1995)"),
       dims = as.integer(dims),
       dims_requested = dims_requested,
       k = k,
       max_dims = max_dims,
-      cluster_method = "average linkage",
+      cluster_method = "average linkage on the MDS coordinates",
+      ari_cut = ari_cut,
       similarity_is_distance = isTRUE(similarity_is_distance)
     ),
     design = list(
@@ -317,8 +405,7 @@ content_structure <- function(similarity,
 #' @export
 print.contentvalid_structure <- function(x, digits = 2, ...) {
   .validate_digits(digits)
-  cat("contentvalidR content structure (expert item similarity)\n")
-  cat(strrep("-", 56), "\n", sep = "")
+  .print_header(x, "Content structure from expert similarity")
   cat("Items: ", x$design$n_items, " | Dimensions retained: ", x$settings$dims,
       " | Clusters: ", x$settings$k, "\n", sep = "")
   if (x$settings$dims < x$settings$dims_requested) {
@@ -327,29 +414,46 @@ print.contentvalid_structure <- function(x, digits = 2, ...) {
       "similarities support only ", x$design$n_dimensions_available,
       ". The solution uses ", x$settings$dims, "."))
   }
-  cat("Stress (Kruskal-1): ", .fmt(x$stress, digits), " (",
-      x$fit$fit_label[x$fit$dims == x$settings$dims], ")\n", sep = "")
-  cat("Status: ", x$status, "\n", sep = "")
+  ari_cut <- x$settings$ari_cut
+  if (is.null(ari_cut)) ari_cut <- 0.60
+  .say(paste0(
+    "Status: ", x$status,
+    if (x$status %in% c("Supported", "Review")) {
+      paste0(" (criterion: adjusted Rand index >= ", .fmt(ari_cut, digits),
+             if (ari_cut == 0.60) ", a contentvalidR convention" else
+               ", set for this analysis", ")")
+    }), exdent = 2L)
   .say(x$interpretation)
 
-  cat("\nFit by dimensionality\n")
+  .section("Fit by dimensionality")
   f <- x$fit
-  .print_table(data.frame(dimensions = f$dims, stress = .fmt(f$stress, digits),
-                          GOF = .fmt(f$gof, digits), fit = f$fit_label,
-                          stringsAsFactors = FALSE))
+  .print_table(data.frame(dimensions = f$dims,
+                          GOF = .fmt(f$gof, digits),
+                          distortion = .fmt(f$stress, digits),
+                          stringsAsFactors = FALSE, check.names = FALSE),
+               more = "x$fit")
   cat("\n")
-  .say("GOF: goodness of fit from classical scaling, the share of the",
-       "eigenvalue total that the retained dimensions account for.")
+  .say("GOF: goodness of fit from classical scaling, the share of the sum",
+       "of the absolute eigenvalues that the retained dimensions account for.",
+       "Distortion: how far the map's distances depart from the",
+       "dissimilarities (0 is an exact map); it need not fall as dimensions",
+       "are added. It is not Kruskal's stress-1, so his benchmarks do not",
+       "apply.")
 
   if (!is.null(x$cross_tab)) {
-    cat("\nBlueprint cell by recovered cluster (counts of items)\n")
-    print(x$cross_tab)
-    cat("\nAdjusted Rand index: ", .fmt(x$adjusted_rand, digits), "\n", sep = "")
+    .section("Blueprint cell by recovered cluster (counts of items)")
+    .print_table(.table_frame(x$cross_tab))
+    cat("\n")
+    .say("Adjusted Rand index:",
+         if (is.na(x$adjusted_rand)) "not defined" else
+           .fmt(x$adjusted_rand, digits))
   }
 
-  cat("\n")
-  .say("Stress labels are descriptive conventions, not rules for deciding how",
-       "many dimensions a content domain has.")
+  .closing(c("The clusters come from the item coordinates on the",
+             .n_noun(x$settings$dims, "retained dimension"),
+             "(average linkage), so they change with the number of dimensions.",
+             "Choose that number for how interpretable the dimensions are."),
+           "See plot(x) for the content map.")
   invisible(x)
 }
 
@@ -412,15 +516,17 @@ similarity_from_sort <- function(assignments,
   names(d) <- c("item", "rater", "assigned")
   .validate_labels(d$item, "item")
   .validate_labels(d$rater, "rater")
-  d$item <- as.character(d$item)
-  d$rater <- as.character(d$rater)
-  d$assigned <- as.character(d$assigned)
+  # Labels are compared as trimmed text, and items keep the order of the data,
+  # as in the item-sort workflow.
+  d$item <- .as_label(d$item)
+  d$rater <- .as_label(d$rater)
+  d$assigned <- .as_label(d$assigned)
 
   if (anyDuplicated(d[c("item", "rater")])) {
     stop("Each item-rater pair must appear only once.", call. = FALSE)
   }
 
-  items <- sort(unique(d$item))
+  items <- unique(d$item)
   raters <- unique(d$rater)
   n_items <- length(items)
   if (n_items < 3L) {

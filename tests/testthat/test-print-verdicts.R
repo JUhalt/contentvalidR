@@ -35,7 +35,7 @@ test_that("items rated by too few experts are named, not left out", {
 test_that("the essentiality and congruence prints state their verdicts", {
   ess <- expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
   out <- printed(ess)
-  expect_match(out, "1 of 3 items meet the exact essentiality criterion.",
+  expect_match(out, "1 of 3 items meets the exact essentiality criterion.",
                fixed = TRUE)
   expect_match(out, "Flagged for review: Item2, Item3", fixed = TRUE)
 
@@ -43,7 +43,7 @@ test_that("the essentiality and congruence prints state their verdicts", {
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   expect_match(printed(expert_validity(d, mode = "congruence")),
-               "2 of 2 items are linked most strongly to their target objective.",
+               "2 of 2 items meet the congruence criterion for the target objective.",
                fixed = TRUE)
 })
 
@@ -60,7 +60,8 @@ test_that("the key does not claim modified kappa stays between 0 and 1", {
   expect_lt(fit$results$kappa_mod[fit$results$item == "I4"], 0)
   expect_equal(round(fit$results$kappa_mod[fit$results$item == "I4"], 2), -0.07)
   out <- printed(fit)
-  expect_match(out, "below 0 when agreement is below chance", fixed = TRUE)
+  expect_match(out, "below 0 only when no expert, or one of three, rated it relevant",
+               fixed = TRUE)
   expect_false(grepl("overstate consensus. (0 to 1", out, fixed = TRUE))
 })
 

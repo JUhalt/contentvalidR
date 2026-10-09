@@ -12,8 +12,11 @@
 #' @param assignments A data.frame containing item-sort responses.
 #' @param item_col,rater_col,assigned_col,target_col Column names for the item,
 #'   rater, assigned construct, and intended target construct.
-#' @param ci Interval method for Psa: `"wilson"` (default), `"agresti_coull"`,
-#'   `"exact"`, or `"none"`. The methods and the evidence for each are described
+#' @param ci Interval method for Psa: `"wilson"` (default), the score interval
+#'   of Wilson (1927); `"agresti_coull"`, the adjusted Wald interval of Agresti
+#'   and Coull (1998); `"exact"`, the Clopper and Pearson (1934) interval; or
+#'   `"none"`. Newcombe (1998) compared seven methods and recommends score
+#'   intervals over the Wald interval; the evidence for each is described
 #'   under `ci` in [cvi()].
 #' @param alpha Two-sided alpha level for the interval; `0.05` gives a 95%
 #'   interval.
@@ -65,12 +68,12 @@ compute_psa <- function(assignments,
                         target_col = "target_construct",
                         ci = c("wilson", "agresti_coull", "exact", "none"),
                         alpha = 0.05) {
-  ci <- match.arg(ci)
+  ci <- .choose(ci)
   d <- .prepare_sort_assignments(
     assignments, item_col, rater_col, assigned_col, target_col
   )
 
-  by_item <- split(d, d$item, drop = TRUE)
+  by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     valid <- !is.na(df$assigned)
     n_total <- nrow(df)

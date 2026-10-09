@@ -73,21 +73,15 @@ test_that("both deprecation examples the policy cites are in the state it claims
   rd <- rd_text("anova_content.Rd")
   expect_match(rd, "removed in 0.8.0", fixed = TRUE)
 
-  # The policy records that the last deprecation before 1.0 is complete.
+  # The policy records the deprecation it completed at 1.0.
   expect_match(gsub("[[:space:]]+", " ", policy_text()),
-               "The last deprecation before 1.0 is complete", fixed = TRUE)
+               "was deprecated in 0.9.0 and is removed in 1.0.0", fixed = TRUE)
 })
 
-test_that("agreement_summary() is gone for 1.0, as the policy says", {
-  # Deprecated in 0.9.0, removed in the 0.99.0 release candidate, so nothing
-  # deprecated is carried past 1.0.
-  expect_match(gsub("[[:space:]]+", " ", policy_text()),
-               "deprecated in 0.9.0 and removed for 1.0.0", fixed = TRUE)
+test_that("agreement_summary() is gone, as the policy says", {
   expect_false("agreement_summary" %in% getNamespaceExports("contentvalidR"))
   expect_false(exists("agreement_summary", envir = asNamespace("contentvalidR"),
                       inherits = FALSE))
-  # Its replacement is exported.
-  expect_true("panel_agreement" %in% getNamespaceExports("contentvalidR"))
 })
 
 test_that("the status vocabulary the policy promises is what workflows use", {

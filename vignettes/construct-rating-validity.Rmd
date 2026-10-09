@@ -60,7 +60,7 @@ where \(a\) is the number of response anchors when ratings use a 1-to-\(a\) scal
 htc(rating_dat, scale_min = 1, scale_max = 5)
 ```
 
-Higher HTC means stronger correspondence with the intended definition.
+Higher HTC means stronger correspondence with the intended definition. Because the lowest rating still counts as one point, HTC cannot reach 0: it runs from \(1/a\) to 1, so from .20 to 1 on a five-point scale.
 
 ## HTD: definitional distinctiveness
 
@@ -70,7 +70,7 @@ HTD compares intended-definition ratings with orbiting-definition ratings:
 HTD = \frac{\text{average}(x_{target} - x_{orbiting})}{a - 1}.
 \]
 
-It ranges from -1 to 1. Positive values favor the intended definition; negative values indicate that orbiting definitions are rated more highly on average.
+The average runs over every judge and every orbiting definition, so HTD is the intended definition's average lead over **all** the orbiting definitions, not its lead over the closest one. It ranges from -1 to 1. Positive values favor the intended definition; negative values indicate that orbiting definitions are rated more highly on average.
 
 ```{r htd}
 htd(rating_dat, scale_min = 1, scale_max = 5)
@@ -80,17 +80,30 @@ The item-level table also identifies the strongest orbiting competitor. That is 
 
 ## Repeated-measures item screening
 
-The same judges provide multiple construct ratings, so those observations are not independent. `anova_content()` uses a one-way repeated-measures ANOVA for the standard fully crossed design and follows it with planned paired comparisons of the intended definition against every orbiting definition.
+Hinkin and Tracey (1999) analyzed these ratings with a one-way ANOVA and Duncan's multiple range test, treating the definitions as independent groups. The same judges provide multiple construct ratings, though, so those observations are not independent. MacKenzie et al. (2011) recommend a one-way repeated-measures ANOVA for this task, followed, when its *F* is significant, by a planned contrast of the intended definition against the others. `anova_content()` uses that repeated-measures form for the standard fully crossed design and follows it with planned paired comparisons of the intended definition against every orbiting definition.
+
+An item is retained when the omnibus test and then its contrasts pass, which follows their sequence. Some details are this package's choices, not taken from either source: the Greenhouse-Geisser (1959) corrected *p* is the screening *p* of the omnibus test; there is one one-sided contrast for each orbiting definition, and every one must pass, where MacKenzie et al. describe a single contrast; the contrasts are not adjusted for their number unless you ask (`adjust = "holm"`); and the tests need at least two judges who rated the item against every definition.
 
 ```{r anova}
 aov_out <- anova_content(rating_dat, design = "within")
 aov_out
-attr(aov_out, "contrasts")
 ```
 
-The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean?
+The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean? `attr(aov_out, "contrasts")` holds each contrast at full precision. Rounded for reading, with *p* values written the APA way:
 
-With more than two construct definitions, the conventional repeated-measures F test assumes sphericity. `contentvalidR` reports that historical omnibus test but does not hide the assumption. The planned target-versus-orbiting comparisons are therefore important diagnostic evidence rather than decorative post-hoc tests.
+```{r contrasts}
+contrasts <- attr(aov_out, "contrasts")
+shown <- contrasts[c("item", "target", "competitor", "mean_diff", "t", "df",
+                     "p", "dz", "pass")]
+shown[c("mean_diff", "t", "dz")] <- round(shown[c("mean_diff", "t", "dz")], 2)
+shown$p <- ifelse(shown$p < .001, "< .001",
+                  sub("^0", "", sprintf("%.3f", shown$p)))
+shown
+```
+
+`mean_diff` is the target mean less the competitor mean, `t` and `df` the paired *t* test, and `dz` the mean difference divided by the standard deviation of the differences. `p` is one-sided, and `pass` says whether the contrast met alpha, after an adjustment for their number when one was asked for (`p_adj`).
+
+With more than two construct definitions, the conventional repeated-measures F test assumes sphericity. `contentvalidR` prints the Greenhouse-Geisser corrected test, whose degrees of freedom are fractional; `as.data.frame(aov_out)$p` holds the uncorrected *p* value. The planned target-versus-orbiting comparisons are important diagnostic evidence rather than decorative post-hoc tests.
 
 ## Recommended workflow
 
@@ -106,9 +119,9 @@ summary(fit)
 
 The item-level recommendation has deliberately limited meaning:
 
-- **Retain:** the item cleared the package's inferential screening rule in this pretest.
+- **Retain:** the item cleared the package's inferential screening rule in this pretest: its omnibus *p* and every contrast *p* are at or below alpha.
 - **Review:** the full screening rule was not met; inspect wording, construct overlap, and judge feedback.
-- **Insufficient data:** too few complete judge profiles are available for the repeated-measures comparison.
+- **Insufficient data:** fewer than two judges rated the item against every definition, so the repeated-measures comparison cannot be made. Its HTD, which rests on those judges, is left out of the scale's mean HTD. Its HTC stays in the scale's mean HTC when at least two judges rated the item against its intended definition.
 
 `Review` is not an instruction to delete an item. Content coverage can be harmed by mechanical item deletion.
 
@@ -117,7 +130,12 @@ The item-level recommendation has deliberately limited meaning:
 Colquitt et al. (2019) created empirical norms from **scale-level averages** of HTC and HTD across 112 published scales. `rating_validity()` therefore averages item HTC/HTD within each target scale before assigning those descriptive normative labels.
 
 ```{r scale}
-fit$scale_summary
+scale_means <- fit$scale_summary[, c("target", "n_items", "mean_htc",
+                                     "htc_strength", "mean_htd",
+                                     "htd_strength")]
+scale_means[c("mean_htc", "mean_htd")] <-
+  round(scale_means[c("mean_htc", "mean_htd")], 2)
+scale_means
 colquitt_benchmarks("htc")
 colquitt_benchmarks("htd")
 ```
@@ -125,10 +143,12 @@ colquitt_benchmarks("htd")
 The overall bands are empirical percentile standing, not universal validity cutoffs. If the average correlation between a focal scale and its orbiting scales is known, correlation-conditional norms can be requested:
 
 ```{r conditional}
-rating_validity(
+conditional <- rating_validity(
   rating_dat,
   orbiting_r = c(A = .42, B = .55)
-)$scale_summary
+)
+conditional$scale_summary[, c("target", "orbiting_r", "htc_strength",
+                              "htd_strength", "benchmark_set")]
 ```
 
 A given level of distinctiveness can be more impressive when the focal and orbiting constructs are known to correlate strongly.
@@ -138,10 +158,14 @@ A given level of distinctiveness can be more impressive when the focal and orbit
 Colquitt et al.'s normative distributions were developed using naive judges representative of substantive target populations. Their paper cautions against applying those norms to expert panels. The package therefore separates calculation from norm applicability:
 
 ```{r expert}
-rating_validity(rating_dat, judge_type = "expert")$scale_summary
+expert_scale <- rating_validity(rating_dat, judge_type = "expert")$scale_summary[
+  , c("target", "mean_htc", "htc_strength", "mean_htd", "htd_strength")]
+expert_scale[c("mean_htc", "mean_htd")] <-
+  round(expert_scale[c("mean_htc", "mean_htd")], 2)
+expert_scale
 ```
 
-HTC/HTD are still computed, but the Colquitt labels are suppressed.
+HTC/HTD are still computed, but the Colquitt labels are suppressed. `print()` and `summary()` leave out the columns that would hold them; the stored table, shown here with its means rounded, keeps them as `NA`.
 
 ## Missing ratings
 
@@ -162,7 +186,7 @@ A correspondence-distinctiveness evidence map displays HTC and HTD together:
 plot(fit, type = "map")
 ```
 
-Target-scale averages are shown as diamonds and items needing review are labeled
+Target-scale averages are shown as triangles and items needing review are labeled
 by default. As with the item-sort map, Colquitt norm regions are not drawn across
 individual items because those benchmarks were constructed from scale averages.
 
@@ -174,11 +198,14 @@ plot(fit, type = "profile")
 ```
 
 Filled points are intended-definition means, open points are the strongest
-orbiting-definition means, and the connecting segment is the observed content
-distinctiveness gap. A reversed segment immediately identifies an item whose
-strongest competitor outrates its intended definition. This is a graphical
-extension of the mean-rating tables used in the original procedure, not a new
-statistical cutoff.
+orbiting-definition means, and the connecting segment is the gap between
+them. Both means come from the judges who rated the item against every
+definition, so the two ends of a segment describe the same judges. A reversed
+segment immediately identifies an item whose strongest competitor outrates its
+intended definition. An item with too few complete judges for a decision is
+marked with a cross and has no segment. This is a graphical extension of the
+mean-rating tables used in the original procedure, not a new statistical
+cutoff.
 
 ## Reporting
 
@@ -198,4 +225,8 @@ The quantitative analysis is evidence about definitional correspondence and dist
 
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content validation guidelines: Evaluation criteria for definitional correspondence and definitional distinctiveness. *Journal of Applied Psychology, 104*(10), 1243–1265. https://doi.org/10.1037/apl0000406
 
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of profile data. *Psychometrika, 24*(2), 95–112. https://doi.org/10.1007/BF02289823
+
 Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to content validation. *Organizational Research Methods, 2*(2), 175–186. https://doi.org/10.1177/109442819922004
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct measurement and validation procedures in MIS and behavioral research: Integrating new and existing techniques. *MIS Quarterly, 35*(2), 293–334. https://doi.org/10.2307/23044045

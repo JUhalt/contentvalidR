@@ -27,7 +27,8 @@ test_that("sort_validity adds target-scale Colquitt summaries", {
   expect_equal(fit$scale_summary$mean_csv, mean(c(.80, .70, .60)))
   expect_equal(fit$scale_summary$psa_strength, "Strong")
   expect_equal(fit$scale_summary$csv_strength, "Strong")
-  expect_equal(fit$scale_summary$overall_strength, "Strong")
+  expect_false("overall_strength" %in% names(fit$scale_summary))
+  expect_match(fit$scale_summary$evidence, "band of published scales")
 })
 
 test_that("sort_validity supports target-specific orbiting correlations", {

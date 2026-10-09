@@ -34,6 +34,12 @@
 #' recommends a panel size. It reports the consequences of the sizes you ask
 #' about, so the choice stays yours and stays documented.
 #'
+#' This is a contentvalidR planning tool, not a published method: the
+#' probability is binomial, assuming that experts endorse the item
+#' independently and with the same probability. The criteria it applies are
+#' published (Lynn, 1986; Ayre & Scally, 2014), except Lynn's beyond ten
+#' experts, which is this package's extension (see `criterion`).
+#'
 #' @param n_experts Panel sizes to evaluate.
 #' @param prob Probability that one expert endorses the item, as relevant
 #'   (`criterion = "cvi"`) or essential (`criterion = "cvr"`). Values well below
@@ -42,7 +48,10 @@
 #'   I-CVI: every expert must agree with three to five, one may disagree from
 #'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 #'   experts, where Lynn's table stops, the package holds her lowest proportion,
-#'   7 of 9. `"cvr"` uses the exact Lawshe critical count at level `alpha`.
+#'   7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
+#'   Beck (2006, p. 491) restate her rule as no lower than .78 for six or more
+#'   experts, though their own recommendation covers 6 to 10 experts (p. 496).
+#'   `"cvr"` uses the exact Lawshe critical count at level `alpha`.
 #' @param alpha Significance level for the CVR criterion. Ignored for CVI.
 #' @param response_rate Expected proportion of invited experts who return usable
 #'   ratings. When below 1, `n_experts` is treated as the number invited and the
@@ -63,15 +72,17 @@
 #'
 #' @references
 #' Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-#' validity ratio. *Measurement and Evaluation in Counseling and Development,
-#' 47*(1), 79–86. \doi{10.1177/0748175613513808}
+#' validity ratio: Revisiting the original methods of calculation.
+#' *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86.
+#' \doi{10.1177/0748175613513808}
 #'
 #' Lynn, M. R. (1986). Determination and quantification of content validity.
 #' *Nursing Research, 35*(6), 382–385.
+#' \doi{10.1097/00006199-198611000-00017}
 #'
-#' Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-#' indicator of content validity? *Research in Nursing & Health, 30*(4),
-#' 459–467. \doi{10.1002/nur.20199}
+#' Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+#' sure you know what's being reported? Critique and recommendations.
+#' *Research in Nursing & Health, 29*(5), 489–497. \doi{10.1002/nur.20147}
 #'
 #' @seealso [sort_power()] for item-sort planning, and [gtheory_content()] whose
 #'   decision study plans panel size against a generalizability target.
@@ -85,7 +96,7 @@ expert_power <- function(n_experts = 3:12,
                          criterion = c("cvi", "cvr"),
                          alpha = 0.05,
                          response_rate = 1) {
-  criterion <- match.arg(criterion)
+  criterion <- .choose(criterion)
 
   if (!is.numeric(n_experts) || !length(n_experts) || anyNA(n_experts) ||
       any(!is.finite(n_experts)) || any(n_experts < 1) ||
@@ -173,10 +184,9 @@ expert_power <- function(n_experts = 3:12,
 print.contentvalid_expert_power <- function(x, digits = 2, ...) {
   .validate_digits(digits)
   st <- x$settings
-  cat("contentvalidR expert-panel planning\n")
-  cat(strrep("-", 35), "\n", sep = "")
+  .print_header(x, "Expert-panel planning")
   .say("Criterion:", st$method)
-  if (st$criterion == "cvr") cat("Alpha: ", .fmt(st$alpha), "\n", sep = "")
+  if (st$criterion == "cvr") cat("Alpha: ", .fmt_alpha(st$alpha), "\n", sep = "")
   if (st$response_rate < 1) {
     .say(paste0(
       "Response rate: ", .fmt(st$response_rate), ". Panel sizes are experts ",
@@ -199,17 +209,17 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
     tab[[paste("prob =", .fmt(p, digits))]] <-
       .fmt(sel$power[match(sizes, sel$n_experts)], digits)
   }
-  cat("\nProbability that an item clears the criterion\n")
+  .section("Probability that an item clears the criterion")
   .print_table(tab)
   cat("\n")
   .say(paste0(
     if (st$response_rate >= 1) {
-      paste0("required: endorsements the criterion needs from the panel",
+      paste0("Required: endorsements the criterion needs from the panel",
              if (any(tab$required == "none")) {
                " (none: no count reaches the criterion at this size)"
              }, ". ")
     },
-    "prob: the probability you assume that one expert endorses the item."
+    "Prob: the probability you assume that one expert endorses the item."
   ))
 
   if (st$criterion == "cvi" && st$response_rate >= 1 && any(sizes %in% 3:5)) {
@@ -220,18 +230,45 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
          "unanimity harder. That is a property of the guideline, not of the",
          "items.")
   }
+  if (st$criterion == "cvi" && any(sizes > 10)) {
+    cat("\n")
+    .say("Beyond ten experts the criterion holds the lowest proportion in",
+         "Lynn's (1986) table, 7 of 9, which her table does not cover: a",
+         "contentvalidR extension.")
+  }
 
-  cat("\n")
-  .say("This table reports the consequences of the panel sizes you asked",
-       "about. It does not recommend one. `prob` is an assumption you supply,",
-       "so treat the result as conditional on it and report the value you",
-       "assumed.")
+  # The calculation is the package's own, which a report should say.
+  .closing(c("This is a contentvalidR planning tool, not a published power",
+             "method: it treats the experts as endorsing the item",
+             "independently, each with probability `prob`, while the criterion",
+             "it applies is",
+             if (st$criterion == "cvi" && any(sizes > 10)) {
+               "Lynn's (1986), extended past ten experts as stated above."
+             } else if (st$criterion == "cvi") {
+               "Lynn's (1986)."
+             } else {
+               "the exact test of Ayre and Scally (2014)."
+             },
+             "This table reports the consequences of the panel sizes you asked",
+             "about. It does not recommend one. `prob` is an assumption you supply,",
+             "so treat the result as conditional on it and report the value you",
+             "assumed."),
+           "See plot(x) for the probabilities by panel size.")
   invisible(x)
 }
 
 #' Plot an expert-panel planning curve
 #'
+#' @description
+#' Draws the probability that an item clears the criterion against the number
+#' of experts on the panel, as a step function because the criterion itself
+#' changes with panel size. Each assumed endorsement probability is a solid
+#' line told apart by its marker. The key sits above the curves, and the
+#' panel-size axis is ticked at whole numbers of experts.
+#'
 #' @param x A `contentvalid_expert_power` object.
+#' @param type `"probability"`, the only view, accepted so that every plot
+#'   method takes `type`.
 #' @param show_legend Draw the key identifying each assumed endorsement
 #'   probability.
 #' @param ... Passed to [graphics::plot()].
@@ -239,16 +276,27 @@ print.contentvalid_expert_power <- function(x, digits = 2, ...) {
 #' @examples
 #' plot(expert_power(n_experts = 3:12, prob = c(0.7, 0.85)))
 #' @export
-plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
+plot.contentvalid_expert_power <- function(x, show_legend = TRUE,
+                                           type = "probability", ...) {
   .validate_flag(show_legend, "show_legend")
+  type <- .choose(type, "probability")
   op <- .plot_margins(list(...))
   on.exit(graphics::par(op), add = TRUE)
   r <- x$results
   probs <- sort(unique(r$prob))
+  # Every curve is a solid line told apart by its marker, since a dashed
+  # line marks a reference value in the other figures.
+  marks <- (seq_along(probs) - 1L) %% 25L + 1L
+  key <- if (isTRUE(show_legend)) {
+    .legend_fit(paste("prob =", .fmt(probs)), marks, 1)
+  }
 
-  graphics::plot(range(r$n_experts), c(0, 1), type = "n", yaxt = "n",
-                 xlab = "Experts on the panel",
-                 ylab = "Probability of clearing the criterion", ...)
+  # Headroom above 1 holds the key, clear of the curves.
+  .plot_with(list(x = range(r$n_experts), y = c(0, 1), type = "n", xaxt = "n",
+                  yaxt = "n", ylim = c(0, .legend_room(0, 1, 1, key)),
+                  xlab = "Experts on the panel",
+                  ylab = "Probability of clearing the criterion"), list(...))
+  .axis_counts(1)
   .axis_bounded(2, at = seq(0, 1, 0.25))
   for (i in seq_along(probs)) {
     sub <- r[r$prob == probs[i], , drop = FALSE]
@@ -256,15 +304,9 @@ plot.contentvalid_expert_power <- function(x, show_legend = TRUE, ...) {
     # Drawn as a step function: the criterion itself changes with panel size,
     # so joining the points with straight lines would imply smooth behavior
     # the decision rule does not have.
-    graphics::lines(sub$n_experts, sub$power, type = "s",
-                    lty = (i - 1L) %% 5L + 1L)
-    graphics::points(sub$n_experts, sub$power, pch = (i - 1L) %% 25L + 1L)
+    graphics::lines(sub$n_experts, sub$power, type = "s")
+    graphics::points(sub$n_experts, sub$power, pch = marks[i])
   }
-  if (isTRUE(show_legend)) {
-    graphics::legend("bottomright", legend = paste("prob =", .fmt(probs)),
-                     lty = (seq_along(probs) - 1L) %% 5L + 1L,
-                     pch = (seq_along(probs) - 1L) %% 25L + 1L,
-                     bty = "n", cex = 0.7)
-  }
+  .legend_draw(key)
   invisible(x)
 }

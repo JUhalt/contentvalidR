@@ -49,7 +49,9 @@ row per item**. `judge_validity()` returns **one row per judge**.
 Every `results` table carries a `status` column drawn from a shared vocabulary:
 
 ```{r}
-attr(contentvalid_glossary(), "statuses")
+statuses <- attr(contentvalid_glossary(), "statuses")
+writeLines(strwrap(paste0(statuses$status, ": ", statuses$meaning),
+                   exdent = 2))
 ```
 
 `Review` is the one people misread. It does not mean "delete this." It means
@@ -66,12 +68,15 @@ fit_sort <- sort_validity(sorts)
 fit_sort
 ```
 
-The printout opens with a one-line verdict (how many items met the criterion,
-and which were flagged), then one row per item. Working across the item table:
+The printout opens with a header line naming the object's class and what it
+holds (`<contentvalid_sort> Item-sort analysis`), then the facts of the design:
+how many items and judges, and the test applied. Then comes the verdict (how
+many items met the criterion, and which were flagged), and then one row per
+item. Working across the item table:
 
-- **decision** — the workflow's verdict for the item, stated first so the
+- **Decision** — the workflow's verdict for the item, stated first so the
   numbers after it read as the reasons.
-- **judges** — how many judges put the item where you intended, out of how many
+- **Judges** — how many judges put the item where you intended, out of how many
   judged it (`n_target` and `n` in `results`). Always read this before the
   coefficients: an impressive Psa computed from four judges is not impressive.
 - **Psa** — the proportion of judges who assigned the item to its intended
@@ -82,17 +87,39 @@ and which were flagged), then one row per item. Working across the item table:
   construct keeps attracting it. That pattern means your two construct
   definitions overlap, which is a definitional problem rather than a wording
   problem.
-- **competitor** — the construct judges picked most often *instead*. This is
+- **Competitor** — the construct judges picked most often *instead*. This is
   the single most useful diagnostic column in the table, because it tells you
   *where* a weak item drifted, which points at the fix.
-- **p** — the Howard-Melloy exact test against chance assignment (`p_value` in
-  `results`).
+- **p** — the Howard-Melloy exact test against the benchmark rate `p0`, .50 by
+  default (`p_value` in `results`). That benchmark is not the rate random
+  sorting would give, which is 1 divided by the number of constructs.
 
-Numbers follow the APA style rules (seventh edition, Section 6.36). A statistic
+Numbers follow the APA style rules (American Psychological Association, 2020,
+Section 6.36). A statistic
 that cannot exceed 1, such as a proportion or a *p* value, is printed without a
 leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
-.001 is printed as < .001. The `results` table keeps every value at full
-precision.
+.001 is printed as < .001, and one that would round to 1 as > .999. Exact ties
+round half up, so 5 of 8 judges (.625) prints as .63. A value that could not be
+computed prints as `--`, and the printout says why. The `results` table keeps
+every value at full precision.
+
+In a narrow console, columns that do not fit are left out from the right,
+never the item, its decision or the statistic the decision rests on, and a
+line beneath the table names them and the call that shows them. A table with
+nothing it may leave out prints wider than the console.
+
+The status words read across this package and nomologR as follows (the same
+table is in `?contentvalidR`):
+
+| contentvalidR | nomologR |
+|---|---|
+| Supported | no flag |
+| Review | review |
+| (no counterpart) | concern |
+| Insufficient data | not computed |
+| Descriptive only | note |
+
+"Review" always means look again, never delete.
 
 The scale-level table adds Colquitt strength labels. These are **percentile
 positions relative to scales published in the literature**, not absolute
@@ -121,9 +148,10 @@ The two indices are not on the same scale and their numbers are not comparable:
 - **HTC is an average rating** expressed as a proportion of the scale. Across
   published scales the Moderate band starts at .84 and Very Strong at .91, so
   .83 genuinely sits low *against that distribution*.
-- **HTD is a difference** between the target rating and the best competitor's,
-  so it is much smaller by construction. Its Moderate band starts at .18 and
-  Very Strong at .35, so .44 genuinely sits high.
+- **HTD is a difference** between the target rating and the other constructs'
+  ratings, averaged over all of them, so it is much smaller by construction.
+  Its Moderate band starts at .18 and Very Strong at .35, so .44 genuinely
+  sits high.
 
 Compare each index against its own benchmark. Never compare an HTC number with
 an HTD number, and never treat a benchmark label as a cutoff for retention.
@@ -154,7 +182,9 @@ that `I_CVI` rates identically.
 
 Note that the I-CVI criterion depends on panel size. It follows Lynn (1986):
 with three to five experts all must agree, from six one may disagree, and from
-nine two may. `cvi_criterion` shows the proportion that applies to each item's
+nine two may. Her table stops at ten experts; beyond it the package holds her
+lowest tabled proportion, 7 of 9, which is this package's extension of her
+rule. `cvi_criterion` shows the proportion that applies to each item's
 panel, so 7 of 9 appears as .778. An item can therefore change status simply
 because a judge was added or dropped.
 
@@ -210,18 +240,31 @@ judge_ratings <- rbind(
 dimnames(judge_ratings) <- list(paste0("Judge", 1:8), paste0("Item", 1:6))
 fit_judge <- judge_validity(judge_ratings, lo = 1, hi = 4)
 fit_judge$results[, c("judge", "mean_rating", "severity_raw",
-                      "differentiation", "n_items_flipped", "recommendation")]
+                      "differentiation", "recommendation")]
 ```
 
 `severity_raw` is signed so that **positive means harsher**: the judge rates
 lower than the panel. `differentiation` near 1 means the judge used the scale
-about as widely as everyone else. `n_items_flipped` is the influence
-diagnostic: how many items would change review status if this judge were
-removed.
+about as widely as everyone else. The cuts that turn these into a flag are
+conventions of this package; `print(fit_judge)` states them, and each one is
+an argument, so you can apply your own.
 
 A judge flagged here is not a judge to delete. A dissenting expert may be the
-one reading the construct definition correctly. The flag tells you a conclusion
-rests on one person's ratings, which is worth knowing before you write it up.
+one reading the construct definition correctly. The flag marks ratings worth
+a second look before you write the study up.
+
+Whether a conclusion rests on a single judge is reported for the items, not
+the judges:
+
+```{r}
+fit_judge$details$influence_items
+```
+
+`fragile` is `TRUE` for an item whose review status would change if one judge
+were removed, which happens when the item is one judge away from the other
+side of the CVI criterion for its panel size: at the criterion, or one short
+of it. Every judge on one side of such an item changes it alike, so it is a
+fact about the item and no judge is flagged for it.
 
 The panel-level dependability coefficient answers a planning question:
 
@@ -231,7 +274,8 @@ summary(fit_judge)$gtheory$judges_needed
 
 That table reports how many judges a target coefficient would need. Where it
 returns `NA`, no realistic panel reaches that target, which usually means the
-judges barely distinguished the items.
+judges barely distinguished the items. The numbers are estimates from one
+panel's ratings, with no interval, so read them as planning figures.
 
 ## Reading domain coverage
 
@@ -266,8 +310,10 @@ flagged item optimizes a statistic at the cost of the content domain, which is
 the opposite of content validity.
 
 **"Strong means good."** Benchmark labels are percentile positions against
-published scales. `Strong` means typical of published work, not that the item
-is fit for your purpose.
+published scales, and they describe a scale's mean, not an item. `Strong` says
+that the scale's mean falls between the 60th and 79th percentiles of the
+scales Colquitt et al. (2019) collected. It does not say that the scale, or any
+item in it, is fit for your purpose.
 
 **"One index is enough."** No single coefficient establishes content validity.
 These are components of an argument that also rests on construct definitions,
@@ -283,7 +329,8 @@ you give it the full blueprint.
 
 **"More judges always helps."** More judges narrows intervals, but it can also
 change a criterion: the I-CVI guideline shifts at six experts. Check
-`judges_needed` rather than assuming.
+`expert_power()` for that step rather than assuming. (`judges_needed`, above,
+answers a different question: how many judges a dependability target needs.)
 
 ## Writing it up
 
@@ -291,11 +338,18 @@ A defensible sentence reports the estimate, its precision, the decision rule you
 applied, and what you concluded, without implying the statistic made the
 decision:
 
-> Six items were sorted by 20 naive judges. Four items met the Howard-Melloy
-> exact target-assignment criterion (*p* < .05). Items B2 and C2 did not
-> (*Psa* = .65 and .70), and in both cases the competing construct was the
-> adjacent scale. Rather than removing them, we revised their wording to
-> sharpen the distinction from that scale and re-sorted.
+> Six items were sorted by 20 naive judges into three constructs. We applied
+> the exact target-assignment test of Howard and Melloy (2016), with a null
+> target rate of .50 and an alpha of .05, under which an item needs 15 of 20
+> target assignments. Four items met the criterion: A1 and C1 (*Psa* = .90,
+> 95% CI [.70, .97], *p* < .001), B1 (*Psa* = .85, 95% CI [.64, .95],
+> *p* = .001), and A2 (*Psa* = .75, 95% CI [.53, .89], *p* = .021). Items B2
+> (*Psa* = .65, 95% CI [.43, .82], *p* = .132) and C2 (*Psa* = .70, 95% CI
+> [.48, .85], *p* = .058) did not, and judges who missed the target chose a
+> single competing construct most often: A for B2 and B for C2. Rather than
+> removing them, we revised their wording to sharpen the distinction from that
+> construct and re-sorted. Intervals are Wilson score intervals (Newcombe,
+> 1998).
 
 Report what you cannot establish as well:
 
@@ -329,6 +383,16 @@ contentvalid_glossary("expert-panel")
 American Psychological Association. (2020). *Publication manual of the
 American Psychological Association* (7th ed.).
 https://doi.org/10.1037/0000165-000
+
+Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019). Content
+validation guidelines: Evaluation criteria for definitional correspondence and
+definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
+1243–1265. https://doi.org/10.1037/apl0000406
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
+presentation of a new statistical significance formula and methodological best
+practices. *Journal of Business and Psychology, 31*(1), 173–186.
+https://doi.org/10.1007/s10869-015-9404-y
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 *Nursing Research, 35*(6), 382–385.

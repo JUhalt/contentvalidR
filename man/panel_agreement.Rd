@@ -15,7 +15,9 @@ panel_agreement(
 }
 \arguments{
 \item{ratings}{A numeric matrix or data frame with raters in rows and items
-in columns. Missing ratings are allowed.}
+in columns. Missing ratings are allowed. A column whose name looks like a
+rater ID (such as \code{expert} or \code{rater_id}) stops the function, so remove
+it, or rename an item that has such a name.}
 
 \item{method}{\code{"krippendorff"} (default) or \code{"ac1"}.}
 
@@ -27,14 +29,16 @@ in columns. Missing ratings are allowed.}
 \item{alpha}{Two-sided error rate for the bootstrap interval; \code{0.05} gives a
 95\% interval. This is not Krippendorff's alpha.}
 
-\item{seed}{Optional seed for a reproducible interval.}
+\item{seed}{Optional seed for a reproducible interval. The random-number
+stream of the session is left as it was.}
 }
 \value{
 An object of class \code{contentvalid_agreement}: a list with \code{method},
 \code{level}, \code{estimate}, \code{ci_low}, \code{ci_high}, \code{alpha}, \code{B}, \code{n_boot_usable},
 \code{n_items} (items rated by at least two raters), \code{n_raters},
 \code{percent_agreement} (share of within-item rating pairs that are identical),
-\code{interpretation}, and \code{critique}.
+\code{interpretation}, \code{critique}, and \code{n_pairs} (the number of within-item
+rating pairs, the base of \code{percent_agreement}).
 }
 \description{
 Summarizes how consistently a panel rated the whole item set, as one
@@ -50,19 +54,27 @@ number of raters and with missing ratings. Zapf et al. (2016) recommend it
 specifically when data are ordinal or ratings are missing, which is typical
 of expert panels. It is a general reliability coefficient (Hayes &
 Krippendorff, 2007); no publication applying it specifically to
-content-validity panels was found.
+content-validity panels was found. Its value agrees with \code{kripp.alpha()}
+of the irr package (Gamer et al., 2026) to numerical precision, which
+the package's tests check.
 \item \code{"ac1"}: Gwet's (2008) AC1, designed for high-agreement data where
-kappa-type coefficients fall. It is never the default: Vach and Gerke
+kappa-type coefficients fall; Wongpakaran et al. (2013) found it less
+affected than Cohen's kappa by how often each category is used. It is
+never the default: Vach and Gerke
 (2023) show that it rises as ratings concentrate in one category even at a
 fixed level of agreement, and that it can be non-zero when raters are
 independent. Its printed output always repeats that critique. AC1 treats
-the supplied values as unordered categories.
+the supplied values as unordered categories. It depends on how many
+categories there are: they are the values observed in \code{ratings}, as in
+Gwet's own software by default, and the bootstrap holds them fixed, so a
+resample that happens to miss a category is scored on the same scale.
 }
 }
 \section{Why a close-agreeing panel can have a low alpha}{
 
 Alpha compares observed disagreement with the disagreement expected if the
-same ratings were assigned to items at random. When ratings cluster on a few
+same ratings were assigned to items at random. Feinstein and Cicchetti
+(1990) described the same paradox for kappa. When ratings cluster on a few
 values, as they do when nearly every item is rated relevant, very little
 disagreement is expected by chance, so even a few disagreements pull alpha
 down. The output reports the share of identical rating pairs alongside the
@@ -92,6 +104,10 @@ Feinstein, A. R., & Cicchetti, D. V. (1990). High agreement but low kappa:
 I. The problems of two paradoxes. \emph{Journal of Clinical Epidemiology,
 43}(6), 543–549. \doi{10.1016/0895-4356(90)90158-L}
 
+Gamer, M., Lemon, J., Fellows, I., & Singh, P. (2026). \emph{irr: Various
+coefficients of interrater reliability and agreement} (R package version
+0.85) [Computer software]. \doi{10.32614/CRAN.package.irr}
+
 Gwet, K. L. (2008). Computing inter-rater reliability and its variance in
 the presence of high agreement. \emph{British Journal of Mathematical and
 Statistical Psychology, 61}(1), 29–48. \doi{10.1348/000711006X126600}
@@ -105,18 +121,18 @@ Annenberg School for Communication, University of Pennsylvania.
 \url{https://www.asc.upenn.edu/sites/default/files/2021-03/Computing\%20Krippendorff\%27s\%20Alpha-Reliability.pdf}
 
 Vach, W., & Gerke, O. (2023). Gwet's AC1 is not a substitute for Cohen's
-kappa: A comparison of basic properties. \emph{MethodsX, 10}, 102212.
+kappa: A comparison of basic properties. \emph{MethodsX, 10}, Article 102212.
 \doi{10.1016/j.mex.2023.102212}
 
 Wongpakaran, N., Wongpakaran, T., Wedding, D., & Gwet, K. L. (2013). A
 comparison of Cohen's kappa and Gwet's AC1 when calculating inter-rater
 reliability coefficients: A study conducted with personality disorder
-samples. \emph{BMC Medical Research Methodology, 13}, 61.
+samples. \emph{BMC Medical Research Methodology, 13}, Article 61.
 \doi{10.1186/1471-2288-13-61}
 
 Zapf, A., Castell, S., Morawietz, L., & Karch, A. (2016). Measuring
 inter-rater reliability for nominal data: Which coefficients and confidence
-intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, 93.
+intervals are appropriate? \emph{BMC Medical Research Methodology, 16}, Article 93.
 \doi{10.1186/s12874-016-0200-9}
 }
 \seealso{

@@ -1,5 +1,34 @@
 #' @keywords internal
 #'
+#' @section Reading the output:
+#' The printouts follow a style shared with nomologR, so the two packages
+#' read alike. Every printout opens with a header naming the object's class
+#' and what it holds, such as `<contentvalid_sort> Item-sort analysis`, then
+#' its facts, then its verdict. `print()` shows the full evidence with a key
+#' to its columns; `summary()` shows what needs attention, the flagged units
+#' with a sentence each. A workflow's printout ends with what the evidence
+#' does not decide, and every printout ends with a line pointing to what else
+#' the object holds. Markdown output from [content_report()] is the one
+#' exception: it prints only the lines to paste. Numbers follow APA 7: no
+#' leading zero where a value cannot exceed 1, two decimals and three for
+#' *p*, `--` for a value that could not be computed, and `> .999` for a *p*
+#' that would round to 1.
+#'
+#' The statuses read across the two packages as follows:
+#'
+#' | contentvalidR | nomologR |
+#' |---|---|
+#' | Supported | no flag |
+#' | Review | review |
+#' | (no counterpart) | concern |
+#' | Insufficient data | not computed |
+#' | Descriptive only | note |
+#'
+#' "Review" always means look again, never delete. In the `results` and
+#' the handoff of this package, `recommendation` is the decision word (such as
+#' `"Retain"` or `"Strong support"`); `status` is the shared vocabulary
+#' above.
+#'
 #' @section What you can rely on:
 #' Code written against contentvalidR should keep working. This section says
 #' exactly what "keep working" covers, so that a study analyzed today can be
@@ -10,8 +39,11 @@
 #'
 #' \strong{Tier 1, the recommended workflows.} [sort_validity()],
 #' [rating_validity()], [expert_validity()], [delphi_validity()],
-#' [judge_validity()], and [domain_validity()]; their `print()`, `summary()`,
-#' and `plot()` methods; the object contract they share (`results`,
+#' [judge_validity()], and [domain_validity()]; their `print()` and
+#' `summary()` methods, and the `plot()` methods of the first four (when
+#' similarity data were supplied, a domain fit's content map is drawn with
+#' `plot(fit$details$structure)`); the object
+#' contract they share (`results`,
 #' `scale_summary`, `settings`, `design`, `details`); the shared status
 #' vocabulary (`Supported`, `Review`, `Insufficient data`, `Descriptive
 #' only`); and [content_handoff()], [content_evidence()], [content_report()],
@@ -33,9 +65,8 @@
 #' break working code goes through the deprecation cycle.
 #'
 #' \strong{Tier 3, auxiliary and compatibility helpers.}
-#' [qfactor_content()], [reproducibility_phi()],
-#' [signal_detection()], [simulate_anova_power()], and
-#' [simulate_csv_power()].
+#' [qfactor_content()], [reproducibility_phi()], [signal_detection()],
+#' [simulate_anova_power()], and [simulate_csv_power()].
 #'
 #' These are kept for continuity with older analyses and for sensitivity
 #' checks. They are not recommended workflows, and they may be deprecated and
@@ -65,11 +96,24 @@
 #' deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
 #' `NEWS.md`.
 #'
-#' The last deprecation before 1.0 is complete. `agreement_summary()`, a Tier 3
-#' helper, was deprecated in 0.9.0 and removed for 1.0.0, first in the 0.99.0
-#' release candidate: it was the only function that took items in rows rather
+#' `agreement_summary()`, a Tier 3 helper, was deprecated in 0.9.0 and is
+#' removed in 1.0.0: it was the only function that took items in rows rather
 #' than raters, and [panel_agreement()] does its job. Nothing deprecated is
 #' carried past 1.0.
+#'
+#' Five returned fields were removed at 1.0.0 without that notice, because
+#' the audit before 1.0 found them wrong or unreachable, and a release that
+#' kept them would have kept wrong values in use: `overall_strength` in the
+#' `scale_summary` of [sort_validity()] and [rating_validity()] (a
+#' combination of the two Colquitt et al. levels that they do not publish),
+#' `n_support` in that of [expert_validity()] (a count of a decision that
+#' could not occur), `competitor_ioc` in its congruence `results` (a mean
+#' labeled as the index), `n_influential` in the `scale_summary` of
+#' [judge_validity()] (a flag that was withdrawn), and `fit_label` in the
+#' `fit` table of [content_structure()] (Kruskal's labels, which belong to a
+#' different statistic). With the congruence index corrected, its handoff
+#' statistics `competitor IOC` and `IOC margin` gave way to `target IOC` and
+#' the two mean ratings. `NEWS.md` gives the reason for each.
 #'
 #' @section Changing a default:
 #' A changed default can silently change published numbers, so it is treated

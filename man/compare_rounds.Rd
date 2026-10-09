@@ -8,23 +8,46 @@ compare_rounds(..., labels = NULL)
 }
 \arguments{
 \item{...}{Two or more fitted workflow objects, in round order. All must come
-from the same workflow, since status labels from different workflows rest
-on different criteria and are not comparable.}
+from the same workflow, and from the same mode of \code{\link[=expert_validity]{expert_validity()}},
+since status labels from different workflows rest on different criteria
+and are not comparable. Name them to label the rounds:
+\code{compare_rounds(pilot = f1, revised = f2)}.}
 
-\item{labels}{Optional round labels. Defaults to \verb{Round 1}, \verb{Round 2}, and so
-on, or to the names supplied in \code{...}.}
+\item{labels}{Optional round labels. Defaults to the names supplied in
+\code{...} when every round is named, and otherwise to \verb{Round 1}, \verb{Round 2},
+and so on, with a warning when only some rounds were named. A label
+cannot be the name of the unit column (\code{item}, \code{judge} or \code{cell}) or
+\code{change}.}
 }
 \value{
 An object of class \code{contentvalid_rounds}, a list containing:
 \describe{
-\item{transitions}{One row per unit, with its status in each round and
-the direction of any change.}
-\item{summary}{Counts of stable, improved, weakened, added, and removed
-units for each consecutive pair of rounds.}
+\item{transitions}{One row per unit, with its status in each round and,
+in \code{change}, how its status in the last round compares with the
+first: \code{Unchanged}, \code{Strengthened}, \code{Weakened}, \code{Changed} (to or
+from \verb{Descriptive only}, which is neither stronger nor weaker),
+\code{Added}, \code{Removed}, or \verb{Not in first or last} for a unit present
+only in the rounds between. A unit that changed and changed back
+reads \code{Unchanged}; the round columns show the path.}
+\item{summary}{For each consecutive pair of rounds, the units compared
+(present in both) and how they split: unchanged, strengthened,
+weakened, and otherwise changed (\code{n_changed}, to or from
+\verb{Descriptive only}), which add up to \code{n_compared}; and the units
+added and removed.}
 \item{settings_changes}{Analysis settings that differ between consecutive
-rounds, which is the audit trail for whether a status change can be
-read as an evidence change at all.}
-\item{comparable}{\code{FALSE} when any consecutive pair differs in settings.}
+rounds, and a changed panel size, which is the audit trail for whether
+a status change can be read as an evidence change at all. The values
+are text; a proportion (\code{alpha}, \code{consensus_threshold}, \code{ioc_cut},
+\code{p0}) is written as APA writes it, \code{.05} or \code{.75}.}
+\item{comparable}{\code{FALSE} when any consecutive pair differs in settings
+or, where the criterion depends on it, in panel size. The seed and
+the number of bootstrap resamples are ignored, because they cannot
+change a status.}
+\item{panel_compared}{Whether the panel size was part of the
+comparison: \code{TRUE} for the item sort and for expert relevance and
+essentiality.}
+\item{mode}{The mode of \code{\link[=expert_validity]{expert_validity()}} fits, \code{NA} for other
+workflows.}
 }
 }
 \description{
@@ -36,8 +59,13 @@ Scale development is iterative: items get revised and re-tested. The risk in
 reporting that process is attributing a status change to improved items when
 it actually came from a changed decision rule, a different panel size, or a
 different criterion. This function makes that distinction visible by
-comparing the \code{settings} of each round alongside its results, and flagging
-rounds whose analysis settings differ.
+comparing the \code{settings} of each round alongside its results and flagging
+rounds that differ. For the item sort and for expert relevance and
+essentiality it compares the panel size too, because the exact tests and
+Lynn's criterion depend on the number of judges: 5 of 6 does not meet the
+item-sort criterion, while the same share, 10 of 12, does. Where the rule
+is a fixed share or cut, as in a Delphi fit, the panel size is not
+compared: the criterion did not move.
 }
 \section{Reading a comparison}{
 
@@ -48,8 +76,14 @@ the boundary. Read the transitions together with the underlying index values
 in each round's own results.
 
 When \code{comparable} is \code{FALSE}, the rounds were analyzed under different rules,
-and a status change may reflect only that. Re-analyze the earlier round under
-the current settings before reporting a change as progress.
+and a status change may reflect only that. Where a setting differs,
+re-analyze the earlier round under the current settings before reporting a
+change as progress. Where the panel size differs, compare the index values
+themselves, since the criterion moved with the panel.
+
+The fits in \code{delphi_validity()$details$round_fits} are relevance fits, so
+comparing them reads each round against Lynn's I-CVI criterion, not against
+the consensus threshold of the Delphi.
 }
 
 \examples{

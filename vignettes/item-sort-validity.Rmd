@@ -105,7 +105,11 @@ fit_normed <- sort_validity(
   sort_dat,
   orbiting_r = c(A = .42, B = .28)
 )
-fit_normed$scale_summary
+fit_normed$scale_summary[, c("target", "orbiting_r", "psa_strength",
+                             "csv_strength")]
+# The benchmark set behind each target's labels
+writeLines(paste0(fit_normed$scale_summary$target, ": ",
+                  fit_normed$scale_summary$benchmark_set))
 ```
 
 The conditional panels are:
@@ -125,11 +129,26 @@ Their criteria should not simply be transferred to expert panels.
 
 ```{r}
 expert_fit <- sort_validity(sort_dat, judge_type = "expert")
-expert_fit$scale_summary
+summary(expert_fit)
 ```
 
 The Psa/Csv statistics and item-level screening remain available, but Colquitt
-normative labels are suppressed.
+normative labels are not applied: the scale-level table has no level columns,
+and the summary says why. In `expert_fit$scale_summary` the label columns are
+kept, as `NA`.
+
+Judge type also bears on the exact test. Its default null target rate,
+`p0 = .50`, follows Howard and Melloy (2016), who describe .50 as arbitrary
+and lenient. They suggest a higher value, such as .60 or .75, when the
+alternative constructs are clearly different from the target or the judges are
+subject-matter experts. Choose `p0` before the data are collected, and report
+it:
+
+```{r}
+csv_binom_test(n_c = 15, N = 20, p0 = .60)
+```
+
+With a null rate of .60, 15 of 20 judges no longer meets the criterion.
 
 ## Planning judge sample size
 
@@ -162,7 +181,7 @@ plot(fit, type = "map")
 ```
 
 Psa and Csv are shown jointly, review items are labeled by default, and target-
-scale averages are added as diamonds. This makes it easier to distinguish a
+scale averages are added as triangles. This makes it easier to distinguish a
 correspondence problem (low Psa) from a construct-overlap problem (low or
 negative Csv). The map does not draw Colquitt cutoff regions across individual
 items because those empirical norms were constructed from scale-level averages.
@@ -207,11 +226,11 @@ Look at C2. Fourteen of 20 judges chose its target, one short of the 15 the
 exact test needs, so the decision is Review. Anderson and Gerbing's rule
 passes it: their critical Csv of .50 assumes the six judges who missed the
 target all chose one rival, but here they split, so Csv reaches .50 anyway.
-That is the miscalibration in miniature. Yao, Wu and Yang's (2008) .30 cutoffs
+That is the miscalibration in miniature. Yao et al.'s (2008) .30 cutoffs
 pass every item, because they were set for four domains, where chance is .25;
 with three constructs, chance is already above .30.
 
-The column marked `extension*` is not a published rule. It is this package's
+The column marked `Extension*` is not a published rule. It is this package's
 extension of Yao et al.'s reasoning to any number of constructs, chance plus
 .05, which gives their .30 for four constructs and .38 for these three, and
 the printout labels it that way. Chance depends on how many constructs judges

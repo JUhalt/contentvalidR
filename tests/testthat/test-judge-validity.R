@@ -93,17 +93,21 @@ test_that("leave-one-judge-out influence identifies items resting on one judge",
   dimnames(X) <- list(paste0("J", 1:6), c("Fragile", "Solid1", "Solid2"))
 
   fit <- judge_validity(X, lo = 1, hi = 4)
-  expect_gt(fit$scale_summary$n_influential, 0L)
-  expect_gt(fit$scale_summary$n_fragile_items, 0L)
+  expect_identical(fit$scale_summary$n_fragile_items, 1L)
 
   fragile <- fit$details$influence_items
-  expect_true("Fragile" %in% fragile$item[fragile$fragile %in% TRUE])
+  expect_identical(fragile$item[fragile$fragile %in% TRUE], "Fragile")
+  expect_identical(fragile$changes_without[fragile$item == "Fragile"],
+                   "J1, J2, J3, J4, J5")
 
-  influential <- fit$results[fit$results$n_items_flipped > 0, ]
-  expect_true(all(influential$status == "Review"))
-  expect_match(influential$interpretation[1], "rests on this one judge")
-  # The output must warn that removing a judge also shrinks the panel.
-  expect_match(influential$interpretation[1], "reduces the panel size")
+  # The item sits at the criterion; that is a fact about the item. The five
+  # judges whose removal changes it are not flagged for it, and the dissenter
+  # is not singled out as the only typical judge.
+  expect_identical(fit$results$n_items_flipped, c(1L, 1L, 1L, 1L, 1L, 0L))
+  expect_true(all(fit$results$status == "Supported"))
+  expect_true(all(fit$results$recommendation == "Typical"))
+  expect_false(any(grepl("rests on this one judge", fit$results$interpretation,
+                         fixed = TRUE)))
 })
 
 test_that("a unanimous panel reports no single-judge dependence", {
@@ -112,7 +116,8 @@ test_that("a unanimous panel reports no single-judge dependence", {
   fit <- judge_validity(X, lo = 1, hi = 4)
 
   expect_equal(fit$scale_summary$n_fragile_items, 0L)
-  expect_equal(fit$scale_summary$n_influential, 0L)
+  expect_equal(fit$scale_summary$n_items_unchecked, 0L)
+  expect_false("n_influential" %in% names(fit$scale_summary))
   expect_false(fit$scale_summary$severity_estimable)
   expect_match(fit$details$severity_note, "agrees almost completely")
 })
@@ -168,7 +173,7 @@ test_that("very small panels degrade without error", {
 
 test_that("output states that a flagged judge is not a judge to delete", {
   fit <- judge_validity(panel_ratings(), lo = 1, hi = 4)
-  printed <- paste(capture.output(print(fit)), collapse = " ")
+  printed <- gsub("[[:space:]]+", " ", paste(capture.output(print(fit)), collapse = " "))
   expect_match(printed, "not a judge to remove")
   expect_match(printed, "how far the judge rates below\\s+the panel")
 

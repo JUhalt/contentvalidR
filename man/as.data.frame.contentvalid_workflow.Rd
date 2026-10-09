@@ -52,5 +52,6 @@ sorts <- read.csv(
 )
 fit <- sort_validity(sorts)
 head(as.data.frame(fit, include_interpretation = FALSE))
-as.data.frame(fit, component = "scale_summary")
+as.data.frame(fit, component = "scale_summary")[, c("target", "mean_psa",
+                                                  "psa_strength")]
 }

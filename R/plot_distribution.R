@@ -1,6 +1,6 @@
 # The full distribution of a panel's ratings, as diverging stacked bars
 # (Heiberger & Robbins, 2014), shared by plot(<expert fit>, type =
-# "distribution") and plot(<Delphi fit>, which = "distribution").
+# "distribution") and plot(<Delphi fit>, type = "distribution").
 #
 # Each bar splits at the cut the decision rule uses: ratings below it extend
 # left of zero and ratings at or above it extend right, so the right-hand
@@ -8,12 +8,27 @@
 # agreeing). The number printed beside the bar is that share, and the symbol
 # is the decision the fit made, taken from the fit rather than recomputed.
 
+# The share of ratings in each scale category. A rating between two scale
+# points is drawn with the point below it, and never across the cut from where
+# the rule counts it, so the categories at or above the cut sum to exactly
+# mean(x >= cut), the share the fit used.
+.rating_shares <- function(x, cats, cut) {
+  k <- length(cats)
+  bin <- pmin(pmax(as.integer(floor(x - cats[1] + 1e-9)) + 1L, 1L), k)
+  crossed <- x >= cut & cats[bin] < cut
+  bin[crossed] <- min(which(cats >= cut))
+  # And the mirror: a rating a hair under the cut stays on the lower side.
+  under <- x < cut & cats[bin] >= cut
+  bin[under] <- max(which(cats < cut))
+  tabulate(bin, k) / length(x)
+}
+
 # `rounds`: a named list of rating matrices (raters in rows, items in
 # columns), one per round, drawn as adjacent bars for each item.
 # `status`: a list parallel to `rounds` of named character vectors, item to
 # shared status, for the symbol beside each bar.
 .plot_rating_distribution <- function(rounds, items, lo, hi, cut, criterion,
-                                      status, value_label, xlab, labels, apa,
+                                      status, value_label, axis_label, labels, apa,
                                       show_legend, ...) {
   k <- as.integer(hi - lo + 1)
   cats <- seq(lo, hi)
@@ -34,16 +49,26 @@
   top <- n * step + 0.2
   round_names <- names(rounds)
 
+  # The round labels and the right margin are reserved before the item
+  # labels are sized, so long names never crowd out the plot.
+  round_lines <- if (nr > 1L) 0.55 * max(nchar(round_names)) + 0.6 else 0
+  lab <- .item_labels(items, reserve_in = (round_lines + 4.2) *
+                        graphics::par("csi"))
+  dots <- list(...)
+  main <- dots$main
   mar <- graphics::par("mar")
-  mar[2] <- 1.2 + 0.62 * max(nchar(items)) +
-    if (nr > 1L) 0.55 * max(nchar(round_names)) + 0.6 else 0
-  mar[3] <- if (isTRUE(show_legend)) 3.4 else 1.1
+  mar[2] <- lab$lines + round_lines
+  mar[3] <- (if (isTRUE(show_legend)) 3.4 else 1.1) + if (length(main)) 1.6 else 0
   mar[4] <- 4.2
   op <- graphics::par(mar = mar)
   on.exit(graphics::par(op), add = TRUE)
 
-  graphics::plot(NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
-                 yaxt = "n", xlab = xlab, ylab = "", bty = "n", ...)
+  # A title sits above the legend, and the item labels take the place of a
+  # y-axis label.
+  .plot_with(list(x = NA, xlim = c(-1, 1), ylim = c(0.4, top + 0.6), xaxt = "n",
+                  yaxt = "n", xlab = axis_label, ylab = "", bty = "n"), dots,
+             protect = c("type", "xaxt", "yaxt", "axes", "main", "ylab"))
+  if (length(main)) graphics::title(main = main, line = mar[3] - 1.2)
   at <- seq(-1, 1, 0.25)
   graphics::axis(1, at = at, labels = .tick_labels(abs(at)))
   graphics::segments(0, 0.4, 0, top, col = "grey30")
@@ -65,7 +90,7 @@
                        col = "grey40", font = 3)
         next
       }
-      p <- tabulate(as.integer(round(x - lo)) + 1L, k) / length(x)
+      p <- .rating_shares(x, cats, cut)
       # Nearest the cut first, so the extremes sit at the outer ends.
       left <- 0
       for (j in rev(which(cats < cut))) {
@@ -87,7 +112,7 @@
       graphics::text(1.11, yc, .fmt(right), adj = 0, cex = 0.75, xpd = NA)
     }
     mid <- mean(c(ypos(i, 1), ypos(i, nr)))
-    graphics::axis(2, at = mid, labels = items[i], las = 1, tick = FALSE,
+    graphics::axis(2, at = mid, labels = lab$labels[i], las = 1, tick = FALSE,
                    line = if (nr > 1L) 0.55 * max(nchar(round_names)) - 0.2 else -0.4)
   }
   # Drawn over the bars, so a bar that stops short of it can be seen to.

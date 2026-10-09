@@ -1,6 +1,9 @@
 #' Legacy simulation of item-sort target-count power
 #'
-#' @description Auxiliary compatibility helper. For supported exact planning, prefer [sort_power()], which does not require Monte Carlo simulation.
+#' @description Auxiliary compatibility helper. It estimates by simulation the
+#' power of the exact target-count test of Howard and Melloy (2016). For
+#' supported exact planning, prefer [sort_power()], which does not require
+#' Monte Carlo simulation.
 #' @param N Number of judges per item.
 #' @param true_p True assignment probability to the target construct.
 #' @param reps Number of simulation replications.

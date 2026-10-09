@@ -32,12 +32,30 @@ and for seeing the expected input shape before analyzing a new study.
 
 ## Item-sort study
 
+The tables below are columns of the fitted objects, rounded for display by a
+small helper; the objects themselves keep full precision, and
+`content_report()` gives the formatted APA table.
+
 ```{r sort-fit}
+# Round the numeric columns of a data frame for display only. A p value is
+# written as APA writes it, so one below .001 reads "< .001", never 0.
+rounded <- function(d, digits = 3) {
+  is_p <- grepl("(^p_|_p$)", names(d))
+  d[] <- Map(function(v, p) {
+    if (!is.numeric(v)) return(v)
+    if (p) return(ifelse(v < .001, "< .001", sub("^0", "", sprintf("%.3f", v))))
+    round(v, digits)
+  }, d, is_p)
+  d
+}
 sort_dat <- read_example("sort_example.csv")
 sort_fit <- sort_validity(sort_dat)
 sort_sum <- summary(sort_fit)
-sort_fit$results
-sort_fit$scale_summary
+rounded(sort_fit$results[, c("item", "target", "psa", "csv", "p_value",
+                             "recommendation")])
+rounded(sort_fit$scale_summary[, c("target", "n_items", "mean_psa",
+                                   "psa_strength", "mean_csv",
+                                   "csv_strength")])
 ```
 
 ### Methods scaffold
@@ -63,13 +81,22 @@ For this bundled example, `r sort_fit$design$n_raters` judges evaluated
 screening criterion, `r sort_sum$n_review` were flagged for review, and
 `r sort_sum$n_insufficient` had insufficient usable assignments.
 
-A manuscript table can usually be built directly from:
+`content_report()` gives the manuscript table: the columns a reader needs,
+with numbers in APA form. `format = "markdown"` gives the same table to paste
+into a manuscript, and `format = "data.frame"` the rounded numbers. The
+unrounded values stay in `sort_fit$results`.
 
 ```{r sort-table}
-sort_fit$results[c(
-  "item", "target", "n", "n_target", "competitor",
-  "psa", "csv", "p_value", "status", "recommendation"
-)]
+content_report(sort_fit)
+```
+
+In an R Markdown or Quarto document, print the Markdown form from a chunk with
+the option `results = "asis"`, so the lines reach the document as Markdown and
+render as a table with its note. Without that option they print as code
+output. This chunk uses it:
+
+```{r sort-markdown, results = "asis"}
+content_report(sort_fit, format = "markdown")
 ```
 
 Do not report `Review` as synonymous with deletion. A review flag identifies an
@@ -82,20 +109,25 @@ reasonable decision when that rationale is documented.
 rating_dat <- read_example("rating_example.csv")
 rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
 rating_sum <- summary(rating_fit)
-rating_fit$results
-rating_fit$scale_summary
+rounded(rating_fit$results[, c("item", "target", "htc", "htd", "p_value",
+                               "max_contrast_p", "recommendation")])
+rounded(rating_fit$scale_summary[, c("target", "n_items", "mean_htc",
+                                     "htc_strength", "mean_htd",
+                                     "htd_strength")])
 ```
 
 ### Methods scaffold
 
 > Judges rated every candidate item against each focal and orbiting construct
 > definition using the same response scale. We summarized correspondence with
-> HTC and distinctiveness with HTD. Because the same judges rated the competing
-> definitions, item-level inference used a repeated-measures design. Planned
-> paired contrasts compared each item's intended definition with every orbiting
-> definition; omnibus Greenhouse-Geisser-corrected inference was used when
-> applicable. Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated
-> as empirical benchmarks rather than universal item cutoffs.
+> HTC and distinctiveness with HTD (Hinkin & Tracey, 1999; Colquitt et al.,
+> 2019). Because the same judges rated the competing definitions, item-level
+> inference used a one-way repeated-measures ANOVA followed by planned
+> contrasts (MacKenzie et al., 2011). The omnibus test was Greenhouse-Geisser
+> corrected (Greenhouse & Geisser, 1959), and one-sided paired contrasts
+> compared each item's intended definition with every orbiting definition.
+> Scale-level HTC/HTD norms from Colquitt et al. (2019) were treated as
+> empirical benchmarks rather than universal item cutoffs.
 
 ### Results scaffold
 
@@ -106,13 +138,11 @@ The example contains `r rating_fit$design$n_items` items rated by
 and `r rating_sum$n_review` were flagged for review.
 
 ```{r rating-table}
-rating_fit$results[c(
-  "item", "target", "n_complete", "strongest_competitor",
-  "htc", "htd", "p_value", "max_contrast_p", "status", "recommendation"
-)]
+content_report(rating_fit)
 ```
 
-For review items, report the strongest orbiting competitor. That information
+For review items, report the strongest orbiting competitor, which
+`rating_fit$results` holds as `strongest_competitor`. That information
 turns a generic statement about weak distinctiveness into a specific diagnostic
 about where construct overlap may be occurring.
 
@@ -130,13 +160,15 @@ expert_fit <- expert_validity(
   hi = 4
 )
 expert_sum <- summary(expert_fit)
-expert_fit$results
-expert_fit$scale_summary
+rounded(expert_fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod",
+                               "recommendation")])
+rounded(expert_fit$scale_summary[, c("n_items", "mean_Aiken_V", "S_CVI_Ave",
+                                     "S_CVI_UA", "agreement")])
 ```
 
 > Experts rated the relevance of each candidate item on a bounded ordinal
 > scale. We summarized relevance using Aiken's V with Penfield-Giacobbi score
-> confidence intervals and calculated I-CVI with Polit-Beck-Owen modified kappa.
+> confidence intervals and calculated I-CVI with the modified kappa of Polit et al. (2007).
 > S-CVI/Ave and S-CVI/UA were reported at the scale level. Panel-size CVI
 > guidelines were used as review aids and were considered alongside written
 > expert feedback and construct coverage.
@@ -152,7 +184,8 @@ items under its quantitative rules.
 expert_ess <- read_example("expert_essentiality_example.csv")
 expert_ess_matrix <- as.matrix(expert_ess[setdiff(names(expert_ess), "expert")])
 ess_fit <- expert_validity(expert_ess_matrix, mode = "essentiality")
-ess_fit$results
+rounded(ess_fit$results[, c("item", "ne", "N", "cvr", "p_value",
+                            "critical_ne", "recommendation")])
 ```
 
 For an essentiality task, state that CVR is tied to a different expert judgment
@@ -164,12 +197,16 @@ count for each item rather than borrowing a relevance/CVI threshold.
 ```{r expert-congruence}
 expert_ioc <- read_example("expert_congruence_example.csv")
 ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
-ioc_fit$results
+rounded(ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
+                            "strongest_competitor", "margin",
+                            "recommendation")])
 ```
 
-For IOC, report the intended objective, target IOC, strongest competing
-objective, and target-minus-competitor margin. The margin is diagnostic evidence
-about alignment; it is not a newly invented significance test.
+For congruence, report each item's intended objective, its index of
+item-objective congruence against the criterion (`ioc_cut`, by default the .70
+Rovinelli and Hambleton applied), and the decision. The experts' mean ratings
+on the intended objective and on the other objective with the highest mean rating, and the margin
+between them, describe the index; they are not part of its criterion.
 
 ## Figures across review stages
 
@@ -262,6 +299,13 @@ validation guidelines: Evaluation criteria for definitional correspondence and
 definitional distinctiveness. *Journal of Applied Psychology, 104*(10),
 1243–1265. https://doi.org/10.1037/apl0000406
 
+Greenhouse, S. W., & Geisser, S. (1959). On methods in the analysis of profile
+data. *Psychometrika, 24*(2), 95–112. https://doi.org/10.1007/BF02289823
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach to
+content validation. *Organizational Research Methods, 2*(2), 175–186.
+https://doi.org/10.1177/109442819922004
+
 Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods: The
 presentation of a new statistical significance formula and methodological best
 practices. *Journal of Business and Psychology, 31*(1), 173–186.
@@ -270,6 +314,11 @@ https://doi.org/10.1007/s10869-015-9404-y
 Lynn, M. R. (1986). Determination and quantification of content validity.
 *Nursing Research, 35*(6), 382–385.
 https://doi.org/10.1097/00006199-198611000-00017
+
+MacKenzie, S. B., Podsakoff, P. M., & Podsakoff, N. P. (2011). Construct
+measurement and validation procedures in MIS and behavioral research:
+Integrating new and existing techniques. *MIS Quarterly, 35*(2), 293–334.
+https://doi.org/10.2307/23044045
 
 Page, M. J., McKenzie, J. E., Bossuyt, P. M., Boutron, I., Hoffmann, T. C.,
 Mulrow, C. D., Shamseer, L., Tetzlaff, J. M., Akl, E. A., Brennan, S. E., Chou,

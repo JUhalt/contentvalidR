@@ -4,7 +4,9 @@
 #' Auxiliary compatibility diagnostic. Compares a logical vector of pretest
 #' retention decisions with a logical ground-truth criterion (for example, later CFA retention). Reports a correctly
 #' oriented confusion matrix, accuracy, sensitivity, specificity, signed phi,
-#' and Pearson's chi-square test without Yates correction.
+#' and a test of association: Pearson's chi-square test without Yates
+#' correction, or Fisher's exact test when an expected count is below 5,
+#' where the chi-square approximation is unreliable.
 #'
 #' The comparison follows the validation design of Anderson and Gerbing (1991),
 #' who checked pretest assessments of items' substantive validity against how
@@ -13,7 +15,12 @@
 #' @param predicted Logical vector of predicted retention decisions.
 #' @param actual Logical vector of criterion retention decisions.
 #'
-#' @return A list containing the confusion matrix and diagnostic statistics.
+#' @return A list containing the confusion matrix and diagnostic statistics:
+#'   `accuracy`, `sensitivity`, `specificity`, signed `phi`, the chi-square
+#'   statistic (`chisq`), the number of items (`n`), and `p` with the test it
+#'   comes from in `p_method`: `"chi-square"`, or `"Fisher's exact test"`
+#'   when an expected count is below 5. `p_chisq` always holds the chi-square
+#'   *p* value.
 #'   It prints as a short report in APA style; the elements themselves are
 #'   unrounded.
 #'
@@ -53,10 +60,7 @@ signal_detection <- function(predicted, actual) {
     )
   )
 
-  chisq <- tryCatch(
-    suppressWarnings(stats::chisq.test(m, correct = FALSE)),
-    error = function(e) NULL
-  )
+  test <- .two_by_two_test(m)
   phi <- .signed_phi(tp = tp, tn = tn, fp = fp, fn = fn)
 
   out <- list(
@@ -65,8 +69,11 @@ signal_detection <- function(predicted, actual) {
     sensitivity = if ((tp + fn) > 0) tp / (tp + fn) else NA_real_,
     specificity = if ((tn + fp) > 0) tn / (tn + fp) else NA_real_,
     phi = phi,
-    chisq = if (is.null(chisq) || !is.finite(chisq$statistic)) NA_real_ else unname(chisq$statistic),
-    p = if (is.null(chisq) || !is.finite(chisq$p.value)) NA_real_ else chisq$p.value
+    chisq = test$chisq,
+    p = test$p,
+    p_method = test$p_method,
+    p_chisq = test$p_chisq,
+    n = test$n
   )
   .tag_component(out, "contentvalid_signal")
 }

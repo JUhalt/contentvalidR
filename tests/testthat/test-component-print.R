@@ -27,7 +27,7 @@ test_that("component tables print in APA style and keep full precision", {
   expect_match(shown(cvr(essential = c(8, 10), N = 12)),
                "Item2 10/12 .67 .019 10 yes", fixed = TRUE)
   expect_match(shown(aikens_v(matrix(c(4, 4, 3, 4, 3, 4), 3), lo = 1, hi = 4)),
-               "Aiken's V (Aiken, 1980)", fixed = TRUE)
+               "<contentvalid_aiken> Aiken's V", fixed = TRUE)
 })
 
 test_that("p values print as APA requires", {
@@ -108,7 +108,7 @@ test_that("the construct-rating components print as APA tables", {
 
   out_htd <- shown(htd(d, scale_min = 1, scale_max = 5))
   expect_match(out_htd, "Hinkin-Tracey distinctiveness (HTD", fixed = TRUE)
-  expect_match(out_htd, "competitor mean", fixed = TRUE)
+  expect_match(out_htd, "Competitor mean", fixed = TRUE)
   expect_match(out_htd, "averages the gap over every other construct", fixed = TRUE)
 
   within <- shown(anova_content(d))
@@ -152,15 +152,16 @@ test_that("the item-sort and expert components print their notes", {
                "Interval: percentile bootstrap.", fixed = TRUE)
 
   d <- expand.grid(item = c("I1", "I2"), judge = 1:4, objective = c("A", "B"))
-  d$score <- ifelse((d$item == "I1") == (d$objective == "A"), 1, -1)
+  d$score <- ifelse((d$item == "I1") == (d$objective == "A"), 1, 0)
   out_ioc <- shown(ioc(d))
-  expect_match(out_ioc, "Item-objective congruence (IOC", fixed = TRUE)
-  expect_match(out_ioc, "I1 A 4 1.00", fixed = TRUE)
+  expect_match(out_ioc, "Index of item-objective congruence (IOC", fixed = TRUE)
+  # The mean rating, then the index: +1 on A and 0 on B gives .50.
+  expect_match(out_ioc, "I1 A 4 1.00 .50", fixed = TRUE)
 })
 
 test_that("the Colquitt functions print their bands", {
   bands <- shown(interpret_colquitt(c(.70, .40), "csv"))
-  expect_match(bands, "Benchmark bands (Colquitt et al., 2019)", fixed = TRUE)
+  expect_match(bands, "<contentvalid_colquitt> Benchmark bands", fixed = TRUE)
   expect_match(bands, "Csv .70 Strong", fixed = TRUE)
   expect_match(bands, "not a universal cutoff", fixed = TRUE)
   # Expert judges get no band.
@@ -168,7 +169,7 @@ test_that("the Colquitt functions print their bands", {
                "not applied", fixed = TRUE)
 
   norms <- shown(colquitt_benchmarks("htd"))
-  expect_match(norms, "Benchmarks for HTD (Colquitt et al., 2019)", fixed = TRUE)
+  expect_match(norms, "<contentvalid_colquitt_norms> Benchmarks for HTD", fixed = TRUE)
   expect_match(norms, "Lack of 0th-19th none", fixed = TRUE)
 })
 
@@ -179,7 +180,9 @@ test_that("the two-by-two helpers print their statistics", {
   expect_match(sig, "Retention decisions compared with the actual outcome",
                fixed = TRUE)
   expect_match(sig, "accuracy = ", fixed = TRUE)
-  expect_match(sig, "chi-square(1) = ", fixed = TRUE)
+  # Six items: the exact test is reported, with the chi-square beside it.
+  expect_match(sig, "Fisher's exact p > .999.", fixed = TRUE)
+  expect_match(sig, "chi-square(1, N = 6) = ", fixed = TRUE)
   rep_out <- shown(reproducibility_phi(pred, act))
   expect_match(rep_out, "Retention decisions in two pretests", fixed = TRUE)
   expect_match(rep_out, "phi = ", fixed = TRUE)
@@ -192,8 +195,21 @@ test_that("a csv_binom_test result saved before 0.9.0 still prints", {
   b <- unclass(csv_binom_test(15, 20))
   b[c("n_target", "N", "p0", "alpha")] <- NULL
   class(b) <- c("contentvalid_binom", "contentvalid_component")
-  expect_match(shown(b), "Psa = .75, p = .021. Decision: significant.",
+  out <- shown(b)
+  expect_match(out, "The item meets the exact target-assignment criterion.",
                fixed = TRUE)
+  expect_match(out, "Psa = .75, p = .021.", fixed = TRUE)
+})
+
+test_that("csv_binom_test prints its verdict first, in the workflow's words", {
+  pass <- capture.output(print(csv_binom_test(15, 20)))
+  expect_identical(pass[3], "The item meets the exact target-assignment criterion.")
+  fail <- shown(csv_binom_test(14, 20))
+  expect_match(fail, "The item does not meet the exact target-assignment criterion.",
+               fixed = TRUE)
+  # No doubled period, and no significance jargon in the printout.
+  expect_false(grepl("..", fail, fixed = TRUE))
+  expect_false(grepl("n.s.", fail, fixed = TRUE))
 })
 
 test_that("each component print falls back to a plain print after subsetting", {

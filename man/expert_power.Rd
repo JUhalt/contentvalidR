@@ -23,7 +23,10 @@ expert_power(
 I-CVI: every expert must agree with three to five, one may disagree from
 six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten
 experts, where Lynn's table stops, the package holds her lowest proportion,
-7 of 9. \code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
+7 of 9: a contentvalidR extension of her rule, not part of it. Polit and
+Beck (2006, p. 491) restate her rule as no lower than .78 for six or more
+experts, though their own recommendation covers 6 to 10 experts (p. 496).
+\code{"cvr"} uses the exact Lawshe critical count at level \code{alpha}.}
 
 \item{alpha}{Significance level for the CVR criterion. Ignored for CVI.}
 
@@ -47,6 +50,12 @@ an answer: \emph{if an expert endorses this item with probability \code{prob}, h
 often will a panel of this size actually clear the criterion?} Nothing here
 recommends a panel size. It reports the consequences of the sizes you ask
 about, so the choice stays yours and stays documented.
+
+This is a contentvalidR planning tool, not a published method: the
+probability is binomial, assuming that experts endorse the item
+independently and with the same probability. The criteria it applies are
+published (Lynn, 1986; Ayre & Scally, 2014), except Lynn's beyond ten
+experts, which is this package's extension (see \code{criterion}).
 }
 \section{Why the curve is not always smooth}{
 
@@ -64,15 +73,17 @@ expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
 }
 \references{
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. \emph{Measurement and Evaluation in Counseling and Development,
-47}(1), 79–86. \doi{10.1177/0748175613513808}
+validity ratio: Revisiting the original methods of calculation.
+\emph{Measurement and Evaluation in Counseling and Development, 47}(1), 79–86.
+\doi{10.1177/0748175613513808}
 
 Lynn, M. R. (1986). Determination and quantification of content validity.
 \emph{Nursing Research, 35}(6), 382–385.
+\doi{10.1097/00006199-198611000-00017}
 
-Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
-indicator of content validity? \emph{Research in Nursing & Health, 30}(4),
-459–467. \doi{10.1002/nur.20199}
+Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
+sure you know what's being reported? Critique and recommendations.
+\emph{Research in Nursing & Health, 29}(5), 489–497. \doi{10.1002/nur.20147}
 }
 \seealso{
 \code{\link[=sort_power]{sort_power()}} for item-sort planning, and \code{\link[=gtheory_content]{gtheory_content()}} whose

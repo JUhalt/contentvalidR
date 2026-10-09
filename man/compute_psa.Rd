@@ -20,8 +20,11 @@ compute_psa(
 \item{item_col, rater_col, assigned_col, target_col}{Column names for the item,
 rater, assigned construct, and intended target construct.}
 
-\item{ci}{Interval method for Psa: \code{"wilson"} (default), \code{"agresti_coull"},
-\code{"exact"}, or \code{"none"}. The methods and the evidence for each are described
+\item{ci}{Interval method for Psa: \code{"wilson"} (default), the score interval
+of Wilson (1927); \code{"agresti_coull"}, the adjusted Wald interval of Agresti
+and Coull (1998); \code{"exact"}, the Clopper and Pearson (1934) interval; or
+\code{"none"}. Newcombe (1998) compared seven methods and recommends score
+intervals over the Wald interval; the evidence for each is described
 under \code{ci} in \code{\link[=cvi]{cvi()}}.}
 
 \item{alpha}{Two-sided alpha level for the interval; \code{0.05} gives a 95\%

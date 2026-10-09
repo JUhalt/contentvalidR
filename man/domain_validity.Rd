@@ -31,18 +31,30 @@ specifications.}
 
 \item{domain}{Optional character vector of every cell the blueprint intends
 to cover. Supplying it is what makes \strong{empty} cells detectable; without it
-only the cells that already contain items can be reported.}
+only the cells that already contain items, or that \code{targets} names, can
+be reported.}
 
 \item{min_items}{Fewest items a cell may hold before it is flagged as thinly
-covered.}
+covered. With \code{targets}, a cell is compared with the smaller of
+\code{min_items} and its own target, so a cell the blueprint gives one item is
+not thin with one.}
 
 \item{over_factor}{A cell holding more than this multiple of its expected
-share is flagged as over-represented. This is an attention-drawing
-heuristic, not a standard.}
+share is flagged as over-represented. With \code{targets}, a cell holding less
+than its expected share divided by \code{over_factor} is flagged as
+under-represented. This is an attention-drawing heuristic, not a
+standard. With few cells no share can exceed the multiple (two equal
+cells at the default of 2), and the printout says so.}
 
 \item{targets}{Optional named numeric vector giving the intended number of
 items per cell. When supplied, expected shares come from it rather than
-from an assumption of equal cells.}
+from an assumption of equal cells, and cells far below their intended
+share are flagged. Without it under-representation is not judged,
+because an equal share is an assumption, not a blueprint. A cell named
+in \code{targets} is part of the blueprint, so it is reported (as not
+covered) even when no item is assigned to it. With \code{domain}, every cell
+\code{targets} names must be in \code{domain}. A fractional target is rounded up
+where it sets the thin-coverage floor.}
 
 \item{similarity}{Optional square item-by-item expert similarity matrix. When
 supplied, the content-structure analysis is run and reported alongside
@@ -53,7 +65,27 @@ coverage.}
 \value{
 An object of class \code{contentvalid_domain} and \code{contentvalid_workflow}.
 \code{results} has \strong{one row per blueprint cell}. \code{details$structure} holds the
-content-structure analysis when similarity data was supplied.
+content-structure analysis when similarity data was supplied. \code{print()}
+and \code{summary()} are described in \link{contentvalid-methods}.
+
+\strong{Results columns.}
+\describe{
+\item{\code{cell}}{The blueprint cell; with \code{facet_col}, the two labels
+joined by \code{" / "}.}
+\item{\code{n_items}}{Items assigned to the cell.}
+\item{\code{share}}{\code{n_items} as a share of all the items.}
+\item{\code{target_items}}{The cell's entry in \code{targets}; \code{NA} without
+\code{targets}.}
+\item{\code{expected_share}}{The cell's share of \code{targets}, or one over the
+number of cells without them.}
+\item{\code{recommendation}}{\code{"Covered"}, \code{"Not covered"} (no item),
+\code{"Thinly covered"} (below the floor \code{min_items} sets),
+\code{"Over-represented"},
+or \code{"Under-represented"} (judged only against \code{targets}).}
+\item{\code{status}}{The shared status: \code{"Supported"} for \code{"Covered"}, and
+\code{"Review"} otherwise.}
+\item{\code{interpretation}}{The decision explained in a sentence.}
+}
 }
 \description{
 Answers two questions that item-level relevance indices cannot: whether the
@@ -65,9 +97,10 @@ cells of the domain the instrument is meant to represent. Cells with no
 items, or too few, are content gaps that no amount of item-level relevance
 evidence will reveal, because an item can only be rated if it exists.
 
-Structure is assessed with the multidimensional scaling and cluster analysis
-procedure of Sireci and Geisinger (1992), and is run when expert similarity
-data is supplied. See \code{\link[=content_structure]{content_structure()}}.
+Structure is assessed with a multidimensional scaling and cluster analysis
+adapted from Sireci and Geisinger (1992, 1995), run when expert similarity
+data is supplied. See \code{\link[=content_structure]{content_structure()}} for what differs from their
+procedure.
 }
 \section{What coverage evidence can and cannot establish}{
 
@@ -77,6 +110,12 @@ the right description of the domain, or that the cells are equally important.
 Coverage is evidence about the item set's reach, and is properly read
 alongside item-level relevance evidence and expert judgment about the
 blueprint itself.
+
+The coverage tally itself (\code{min_items}, \code{over_factor}, \code{targets}) is this
+package's blueprint check, not a published index: it counts items per
+cell and draws attention to cells that are empty, thin, or out of
+proportion. Sireci (1998) discusses why domain representation belongs in
+a content-validity argument alongside item relevance.
 }
 
 \examples{
@@ -92,16 +131,16 @@ domain_validity(
 )
 }
 \references{
-Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
-specialists in the assessment of criterion-referenced test item validity.
-\emph{Dutch Journal of Educational Research, 2}, 49–60.
-
 Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
 Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
 
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological
 Measurement, 16}(1), 17–31. \doi{10.1177/014662169201600102}
+
+Sireci, S. G., & Geisinger, K. F. (1995). Using subject-matter experts to
+assess content representation: An MDS analysis. \emph{Applied Psychological
+Measurement, 19}(3), 241–255. \doi{10.1177/014662169501900303}
 }
 \seealso{
 \code{\link[=content_structure]{content_structure()}}, \code{\link[=similarity_from_sort]{similarity_from_sort()}}, \code{\link[=ioc]{ioc()}}.

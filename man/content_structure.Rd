@@ -10,7 +10,8 @@ content_structure(
   k = NULL,
   dims = 2,
   max_dims = 5,
-  similarity_is_distance = FALSE
+  similarity_is_distance = FALSE,
+  ari_cut = 0.6
 )
 }
 \arguments{
@@ -19,66 +20,125 @@ similarity ratings, or a distance matrix when \code{similarity_is_distance} is
 \code{TRUE}. Similarities are converted to distances as \code{max(similarity) - similarity}.}
 
 \item{membership}{Optional blueprint cell for each item, as a vector in the
-same order as the rows of \code{similarity}, or named by item. When supplied,
-the recovered clustering is compared against it.}
+same order as the rows of \code{similarity}, or named by item. When it has
+names, they must be the item names: a vector whose names do not match
+the items is an error, never read by position. When supplied, the
+recovered clustering is compared against it.}
 
 \item{k}{Number of clusters to extract. Defaults to the number of distinct
-blueprint cells, or 2 when no blueprint is supplied.}
+blueprint cells, or 2 when no blueprint is supplied or it names fewer
+than two cells.}
 
-\item{dims}{Number of multidimensional scaling dimensions to retain.}
+\item{dims}{Number of multidimensional scaling dimensions to retain. The
+clusters are formed from the coordinates on these dimensions.}
 
 \item{max_dims}{Largest dimensionality reported in the fit table.}
 
 \item{similarity_is_distance}{Set \code{TRUE} when \code{similarity} already holds
 distances rather than similarities.}
+
+\item{ari_cut}{Adjusted Rand index at or above which the status is
+\code{"Supported"}. Default .60, a contentvalidR convention.}
 }
 \value{
 An object of class \code{contentvalid_structure}, a list containing the
 MDS \code{coordinates}, \code{clusters}, the \code{fit} table across dimensionalities, the
 \code{stress} and \code{gof} of the retained solution, the \code{adjusted_rand} index and
 \code{cross_tab} against the blueprint, \code{settings}, \code{design}, \code{status}, and an
-\code{interpretation}.
+\code{interpretation}. \code{status} is \code{"Supported"} or \code{"Review"} by \code{ari_cut},
+\code{"Descriptive only"} without a blueprint, and \code{"Insufficient data"} when
+the blueprint or the clustering has a single group, which leaves nothing
+to compare.
 }
 \description{
 Analyzes whether subject-matter experts perceive items as grouping the way a
-test blueprint says they should, using the multidimensional scaling and
-cluster analysis procedure of Sireci and Geisinger (1992, 1995).
+test blueprint says they should, with multidimensional scaling followed by
+a cluster analysis of the item coordinates, adapted from Sireci and
+Geisinger (1992, 1995).
 
 Experts rate how similar each pair of items is. Those similarities are scaled
-into a low-dimensional content map and clustered. If the blueprint describes
-the domain as experts actually see it, the recovered clusters should
-correspond to the blueprint's cells. Agreement is quantified with the
-adjusted Rand index, which is corrected for chance so that a value near 0
-means no better than random correspondence.
+into a low-dimensional content map, and the items' coordinates on that map
+are clustered. If the blueprint describes the domain as experts actually see
+it, the recovered clusters should correspond to the blueprint's cells.
+Agreement is quantified with the adjusted Rand index (Hubert & Arabie,
+1985), which is corrected for chance so that a value near 0 means no better
+than random correspondence.
 
 This is evidence about perceived content \emph{structure}. It is not evidence that
 the items cover the domain: see \code{\link[=domain_validity]{domain_validity()}} for coverage.
 }
+\section{What is published and what is this package's choice}{
+
+Sireci and Geisinger scaled the experts' similarity ratings and then ran a
+hierarchical cluster analysis on the items' scaling coordinates.
+\code{content_structure()} does the same, so the clusters depend on the number
+of dimensions retained. Four things differ from their procedure or are not
+stated in it, and are this package's choices:
+\itemize{
+\item In their 1995 study they scaled each expert's matrix with an
+individual-differences model (INDSCAL). This function applies classical
+scaling to one similarity matrix, usually the experts' mean ratings.
+\item The clusters are formed with average linkage.
+\item They read the correspondence with the blueprint from the cluster table
+and from regressions of relevance ratings on the coordinates. The
+adjusted Rand index is added here to put a number on that
+correspondence.
+\item The status rests on \code{ari_cut}. No published standard says how large an
+adjusted Rand index must be, so the default, .60, is a contentvalidR
+convention. It is printed beside the status so a reader can apply
+another.
+}
+
+Versions before 1.0 clustered the original dissimilarities, not the
+coordinates, so the number of dimensions had no effect on the clusters.
+}
+
 \section{Dimensionality}{
 
-The retained dimensionality is reported rather than chosen silently. The
-\code{fit} table gives Kruskal stress-1 for every dimensionality up to \code{max_dims},
-with the conventional descriptive labels. Those labels are long-standing
-conventions for describing fit, not thresholds that decide how many
-dimensions a content domain has. Substantive interpretability of the
-dimensions should drive that choice.
+The retained dimensionality is reported rather than chosen silently. For
+every dimensionality up to \code{max_dims}, the \code{fit} table gives two measures
+of how well the map reproduces the similarities. \code{gof} is the goodness of
+fit of classical scaling: the share of the sum of the absolute eigenvalues
+that the retained dimensions account for. \code{stress}, printed as
+"distortion", is the root of the squared differences between the
+dissimilarities and the map distances, over the squared dissimilarities;
+0 is an exact map. It need not fall as dimensions are added, because
+classical scaling does not minimize it.
+
+That \code{stress} is not Kruskal's (1964) stress-1, which compares the map
+distances with monotonically transformed dissimilarities in a nonmetric
+solution fitted to minimize it. His verbal benchmarks ("good", "fair",
+"poor") were given for that quantity and are not applied here. Versions
+before 1.0 printed this statistic as "Kruskal stress-1" with those labels.
+Substantive interpretability of the dimensions should drive the choice of
+dimensionality.
 }
 
 \examples{
-items <- paste0("I", 1:6)
-blueprint <- c(rep("Autonomy", 3), rep("Competence", 3))
-sim <- matrix(1, 6, 6, dimnames = list(items, items))
-sim[1:3, 1:3] <- 5
-sim[4:6, 4:6] <- 5
-diag(sim) <- 5
+# Mean similarity ratings (1 = unlike, 5 = alike) for nine items written
+# for three blueprint cells.
+items <- paste0("I", 1:9)
+blueprint <- rep(c("Autonomy", "Competence", "Relatedness"), each = 3)
+sim <- matrix(c(
+  5, 4, 3, 2, 2, 1, 1, 2, 1,
+  4, 5, 4, 3, 1, 2, 2, 1, 1,
+  3, 4, 5, 1, 2, 2, 1, 1, 3,
+  2, 3, 1, 5, 4, 3, 2, 2, 1,
+  2, 1, 2, 4, 5, 4, 1, 3, 2,
+  1, 2, 2, 3, 4, 5, 2, 1, 2,
+  1, 2, 1, 2, 1, 2, 5, 3, 4,
+  2, 1, 1, 2, 3, 1, 3, 5, 4,
+  1, 1, 3, 1, 2, 2, 4, 4, 5
+), 9, 9, dimnames = list(items, items))
 content_structure(sim, membership = blueprint)
 }
 \references{
 Hubert, L., & Arabie, P. (1985). Comparing partitions. \emph{Journal of
 Classification, 2}(1), 193–218. \doi{10.1007/BF01908075}
 
-Sireci, S. G. (1998). The construct of content validity. \emph{Social Indicators
-Research, 45}(1–3), 83–117. \doi{10.1023/A:1006985528729}
+Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of
+fit to a nonmetric hypothesis. \emph{Psychometrika, 29}(1), 1–27.
+\doi{10.1007/BF02289565}
 
 Sireci, S. G., & Geisinger, K. F. (1992). Analyzing test content using
 cluster analysis and multidimensional scaling. \emph{Applied Psychological

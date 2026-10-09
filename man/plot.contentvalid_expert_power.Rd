@@ -4,7 +4,7 @@
 \alias{plot.contentvalid_expert_power}
 \title{Plot an expert-panel planning curve}
 \usage{
-\method{plot}{contentvalid_expert_power}(x, show_legend = TRUE, ...)
+\method{plot}{contentvalid_expert_power}(x, show_legend = TRUE, type = "probability", ...)
 }
 \arguments{
 \item{x}{A \code{contentvalid_expert_power} object.}
@@ -12,13 +12,20 @@
 \item{show_legend}{Draw the key identifying each assumed endorsement
 probability.}
 
+\item{type}{\code{"probability"}, the only view, accepted so that every plot
+method takes \code{type}.}
+
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
 \value{
 \code{x}, invisibly. Called for the plot.
 }
 \description{
-Plot an expert-panel planning curve
+Draws the probability that an item clears the criterion against the number
+of experts on the panel, as a step function because the criterion itself
+changes with panel size. Each assumed endorsement probability is a solid
+line told apart by its marker. The key sits above the curves, and the
+panel-size axis is ticked at whole numbers of experts.
 }
 \examples{
 plot(expert_power(n_experts = 3:12, prob = c(0.7, 0.85)))

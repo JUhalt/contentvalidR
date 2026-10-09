@@ -50,7 +50,7 @@ test_that("the scale summary is reachable through the same generic", {
   s <- as.data.frame(fit, component = "scale_summary")
   expect_equal(nrow(s), nrow(fit$scale_summary))
   expect_true("workflow" %in% names(s))
-  expect_error(as.data.frame(fit, component = "nope"), "should be one of")
+  expect_error(as.data.frame(fit, component = "nope"), "must be one of")
 })
 
 test_that("tables from different workflows stack without losing identity", {
@@ -87,7 +87,9 @@ test_that("content_report selects reporting columns and keeps status", {
 
 test_that("content_report rounds to the requested digits", {
   tab <- content_report(sort_fit(), digits = 1, format = "data.frame")
-  expect_equal(tab$psa, round(sort_fit()$results$psa, 1))
+  # Half up, as the APA table rounds: .85 is .9, where round() gives .8.
+  expect_equal(tab$psa, .half_up(sort_fit()$results$psa, 1))
+  expect_identical(tab$psa[sort_fit()$results$item == "B1"], 0.9)
   # p values keep three decimals whatever `digits` is.
   expect_equal(tab$p_value, round(sort_fit()$results$p_value, 3))
   expect_error(content_report(sort_fit(), digits = -1), "nonnegative integer")
@@ -106,14 +108,19 @@ test_that("markdown output is a valid table carrying its settings", {
   md <- content_report(sort_fit(), format = "markdown")
   expect_type(md, "character")
 
-  # Header, separator rule, then one line per item.
-  expect_match(md[1], "^\\| item \\|")
-  expect_match(md[2], "^\\| --- \\|")
-  expect_equal(length(md), 2L + 6L)
-  expect_true(all(grepl("^\\|", md)))
+  # Header, separator rule, one line per item, then a blank line and the
+  # APA note.
+  expect_match(md[1], "^\\| Item \\|")
+  # The item column is text, so the rule aligns it left.
+  expect_match(md[2], "^\\| :--- \\|")
+  expect_gte(length(md), 2L + 6L + 2L)
+  table_md <- md[1:8]
+  expect_true(all(grepl("^\\|", table_md)))
+  expect_identical(md[9], "")
+  expect_match(md[10], "^[*]Note[.][*] ")
 
   # Every row has the same number of cells as the header.
-  cells <- vapply(md, function(l) lengths(regmatches(l, gregexpr("|", l, fixed = TRUE))),
+  cells <- vapply(table_md, function(l) lengths(regmatches(l, gregexpr("|", l, fixed = TRUE))),
                   integer(1))
   expect_equal(length(unique(cells)), 1L)
 
@@ -126,7 +133,7 @@ test_that("a markdown caption is placed above the table", {
   md <- content_report(sort_fit(), format = "markdown", caption = "**Table 1.** Evidence.")
   expect_equal(md[1], "**Table 1.** Evidence.")
   expect_equal(md[2], "")
-  expect_match(md[3], "^\\| item \\|")
+  expect_match(md[3], "^\\| Item \\|")
   expect_error(content_report(sort_fit(), format = "markdown", caption = 5),
                "one character string")
 })
@@ -188,18 +195,22 @@ test_that("content_report rejects non-workflow input", {
 
 test_that("the default report is an APA table", {
   tab <- content_report(sort_fit())
+  # The names on the object are the ones code relies on; sentence case is
+  # applied only where the table is shown.
   expect_identical(names(tab), c("item", "target", "judges", "competitor",
-                                 "Psa", "95% CI", "Csv", "p", "decision"))
+                                 "Psa", "Psa 95% CI", "Csv", "p", "decision"))
   r <- sort_fit()$results
   i <- which(r$item == "A1")
   expect_identical(tab$judges[i], paste0(r$n_target[i], "/", r$n[i]))
   expect_false(any(grepl("^0[.]", tab$Psa)))
-  expect_match(tab$`95% CI`[i], "^[[][.][0-9]{2}, (1[.]00|[.][0-9]{2})[]]$")
-  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|1[.]000)$", tab$p)))
+  expect_match(tab$`Psa 95% CI`[i], "^[[][.][0-9]{2}, (1[.]00|[.][0-9]{2})[]]$")
+  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|> [.]999)$", tab$p)))
 
   # It prints without row names, and as.data.frame() gives a plain data frame.
   out <- utils::capture.output(print(tab))
-  expect_match(out[1], "^ *item")
+  expect_identical(out[1], "<contentvalid_report> Results table in APA style")
+  expect_match(out[3], "^  Item  Target  Judges")
+  expect_match(paste(out, collapse = " "), 'format = "markdown"', fixed = TRUE)
   expect_identical(class(as.data.frame(tab)), "data.frame")
 })
 
@@ -219,9 +230,8 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   rd$rating <- ifelse(rd$construct == rd$target_construct,
                       sample(4:5, nrow(rd), TRUE), sample(1:3, nrow(rd), TRUE))
   rating <- content_report(rating_validity(rd))
-  expect_identical(names(rating), c("item", "target", "judges", "competitor",
-                                    "HTC", "HTD", "omnibus p", "contrast p",
-                                    "decision"))
+  expect_identical(names(rating), c("item", "target", "judges", "HTC", "HTD",
+                                    "F test", "p", "contrast p", "decision"))
 
   ess <- content_report(expert_validity(c(10, 8), mode = "essentiality", N = 12))
   expect_identical(names(ess), c("item", "essential", "CVR", "p", "decision"))
@@ -231,8 +241,9 @@ test_that("every workflow and expert mode has an APA report with a decision", {
   d$target_objective <- ifelse(d$item == "I1", "A", "B")
   d$score <- ifelse(d$objective == d$target_objective, 1, -1)
   con <- content_report(expert_validity(d, mode = "congruence"))
-  expect_identical(names(con), c("item", "target", "target IOC", "competitor",
-                                 "competitor IOC", "margin", "decision"))
+  expect_identical(names(con), c("item", "target", "experts", "IOC", "mean",
+                                 "competitor", "competitor mean", "margin",
+                                 "decision"))
   expect_identical(con$margin, c("2.00", "2.00"))
 
   long <- function(m, round) {
@@ -261,5 +272,6 @@ test_that("an APA report with no rows prints a note rather than an empty table",
     stringsAsFactors = FALSE
   ))
   out <- utils::capture.output(print(content_report(clean, include = "flagged")))
-  expect_identical(out, "No units matched the requested selection.")
+  expect_identical(out[1:3], c("<contentvalid_report> Results table in APA style",
+                               "", "No units matched the requested selection."))
 })

@@ -34,7 +34,7 @@
 
 test_that("logical missing-data flags are validated explicitly", {
   x <- matrix(c(4, 4, 3, 4), nrow = 2)
-  expect_error(aikens_v(x, na.rm = 1), "TRUE or FALSE")
+  expect_error(aikens_v(x, lo = 1, hi = 4, na.rm = 1), "TRUE or FALSE")
   expect_error(cvi(matrix(c(1, 0), nrow = 1), na.rm = NA), "TRUE or FALSE")
   expect_error(cvr(c(3, 4), N = 5, na.rm = "yes"), "TRUE or FALSE")
   expect_error(ioc(data.frame(item="I1", judge=1, objective="A", score=1), na.rm = 0), "TRUE or FALSE")
@@ -191,6 +191,7 @@ test_that("Q-factor PCA retains a stable auxiliary return contract", {
   expect_equal(out$k, 1L)
   expect_equal(out$method, "pca")
 })
+
 
 test_that("v0.0.6 workflow contracts preserve v0.0.5 compatibility aliases", {
   core <- c("workflow", "results", "scale_summary", "settings", "design", "details")
