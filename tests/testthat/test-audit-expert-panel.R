@@ -280,17 +280,35 @@ test_that("a seeded call leaves the session's random stream as it found it", {
   # The result itself is still reproducible.
   expect_identical(panel_agreement(R, B = 50, seed = 7)$ci_low,
                    panel_agreement(R, B = 50, seed = 7)$ci_low)
+})
 
-  # With no stream yet, none is left behind.
-  local({
-    old <- if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
-      get(".Random.seed", envir = globalenv())
-    }
-    on.exit(if (!is.null(old)) assign(".Random.seed", old, envir = globalenv()))
-    if (!is.null(old)) rm(".Random.seed", envir = globalenv())
-    invisible(panel_agreement(R, B = 20, seed = 1))
-    expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
-  })
+test_that("a seed gives the draws set.seed() gives", {
+  # withr seeds and restores the stream; the draws under a seed are those of
+  # a plain set.seed(), as they were before the package used withr.
+  with_seed <- contentvalidR:::.with_seed
+  set.seed(11); plain <- c(stats::runif(3), sample(20))
+  expect_identical(with_seed(11, c(stats::runif(3), sample(20))), plain)
+  expect_identical(with_seed(11.0, c(stats::runif(3), sample(20))), plain)
+
+  # No seed: the code runs on the session's stream and moves it.
+  set.seed(5); expected <- stats::runif(2)
+  set.seed(5)
+  expect_identical(c(with_seed(NULL, stats::runif(1)), stats::runif(1)), expected)
+})
+
+test_that("no function of the package names the global environment", {
+  # CRAN: a package may not write to the user's workspace. Restoring the
+  # random stream by hand needs assign() or rm() there, so that is left to
+  # withr.
+  ns <- asNamespace("contentvalidR")
+  fns <- Filter(function(n) is.function(get(n, envir = ns)),
+                ls(ns, all.names = TRUE))
+  expect_gt(length(fns), 300L)
+  names_global <- vapply(fns, function(n) {
+    any(c("globalenv", ".GlobalEnv", "<<-", ".Random.seed", "set.seed") %in%
+          all.names(body(get(n, envir = ns))))
+  }, NA)
+  expect_identical(fns[names_global], character(0))
 })
 
 test_that("the AC1 bootstrap scores every resample on the same categories", {

@@ -1022,6 +1022,15 @@ review of the close-out itself found.
   `tools/cran-release-date` and ignores a malformed one.
 * `?contentvalid-methods` has a Value section, which CRAN asks of every help
   page that documents a function or a method.
+* The package now imports withr, its first dependency beyond `stats`. withr
+  is written in R alone and needs no other package, so installing still
+  takes no compiler. A function given `seed` (`aikens_v()`,
+  `panel_agreement()`, `expert_validity()`, `delphi_validity()`,
+  `qfactor_content()`) seeds its resampling through `withr::with_seed()`,
+  where the package used to restore the session's random stream by writing
+  to the global environment, which CRAN does not allow. Nothing changes for
+  the user: the same seed gives the same result, and the session's stream is
+  left as it was.
 
 ## Other changes
 

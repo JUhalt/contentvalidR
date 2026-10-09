@@ -109,21 +109,11 @@
 # Runs `code` with the random-number generator seeded, then puts the caller's
 # generator back as it was. A seeded call is then reproducible without
 # resetting the session's random stream, which would make every later draw in
-# a simulation loop repeat.
+# a simulation loop repeat. withr does the saving and restoring, so the
+# package itself never writes to the global environment.
 .with_seed <- function(seed, code) {
   if (is.null(seed)) return(code)
-  env <- globalenv()
-  had <- exists(".Random.seed", envir = env, inherits = FALSE)
-  old <- if (had) get(".Random.seed", envir = env, inherits = FALSE)
-  on.exit({
-    if (had) {
-      assign(".Random.seed", old, envir = env)
-    } else if (exists(".Random.seed", envir = env, inherits = FALSE)) {
-      rm(".Random.seed", envir = env)
-    }
-  }, add = TRUE)
-  set.seed(as.integer(seed))
-  code
+  withr::with_seed(as.integer(seed), code)
 }
 
 # Judge and item names key every table built from a judges-by-items matrix,

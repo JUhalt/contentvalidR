@@ -39,7 +39,8 @@ Language: en-US
 Roxygen: list(markdown = TRUE)
 Depends: R (>= 4.0.0)
 Imports:
-    stats
+    stats,
+    withr (>= 2.5.0)
 Suggests:
     irr,
     knitr,
