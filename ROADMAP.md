@@ -869,15 +869,33 @@ reads no handoffs and takes no part in the joint 1.0.
   - [ ] both packages are on CRAN. contentvalidR 0.4.0 was accepted and
         published on 2026-09-28
         ([#14](https://github.com/JUhalt/contentvalidR/issues/14), closed).
-        Waiting on CRAN's review of nomologR 0.3.0, submitted on 2026-09-26.
+        CRAN returned nomologR 0.3.0 on 2026-10-08 with two requests (no
+        default paths for written files, no changes to the global
+        environment); its resubmission is pending. The maintainer decided on
+        2026-10-09 that 1.0.0 does not wait for this: the joint 1.0.0 goes
+        out as GitHub releases, which R-universe builds, and the CRAN
+        submissions follow it (see the timeline).
   - [x] both public APIs are stable, under a written deprecation policy, as far
         as this package goes (0.7.0). `anova_content()`'s `posthoc_pass`
         column was removed in 0.8.0. `agreement_summary()`, the one function
-        taking items in rows, is deprecated in 0.9.0 and is removed in 1.0.0,
-        so nothing deprecated is carried past 1.0.
+        taking items in rows, was deprecated in 0.9.0 and removed in the
+        0.99.0 release candidate, so nothing deprecated is carried past 1.0.
   - [x] there is a joint walkthrough from content review to empirical
         validation (0.7.0).
   - [ ] the two releases go out on the same day, each linking the other.
+- The audit before 1.0. Between 2026-09-30 and 2026-10-09 every function,
+  help page, printout, and figure was checked against its sources and its
+  own claims. The 223 findings were closed in
+  [#92](https://github.com/JUhalt/contentvalidR/pull/92) through
+  [#101](https://github.com/JUhalt/contentvalidR/pull/101), and
+  [#102](https://github.com/JUhalt/contentvalidR/pull/102) met the two points
+  CRAN raised in its review of nomologR. Some fixes change
+  values, which `NEWS.md` lists under "values that change"; the printed
+  output took the style shared with nomologR
+  ([nomologR#144](https://github.com/JUhalt/nomologR/issues/144)); and the
+  package gained its first import beyond `stats`, withr, so that a seeded
+  call can leave the session's random stream alone without writing to the
+  global environment. The handoff kept schema version 1 and its columns.
 - The timeline, as the maintainer set it on 2026-09-28 and settled with
   nomologR on 2026-09-29:
   - **Release candidates.** Both packages use one scheme: `DESCRIPTION` says
@@ -891,9 +909,11 @@ reads no handoffs and takes no part in the joint 1.0.
     users.
   - **2026-10-17, release-candidate day,** for both packages, in this order,
     agreed with nomologR so that its tests pass before either package tags:
-    1. contentvalidR removes `agreement_summary()` with its export, tests,
-       policy text, and `_pkgdown.yml` entry, sets the version to 0.99.0, and
-       merges that change. Merges to `master` then pause until the tag. The
+    1. contentvalidR sets the version to 0.99.0 and merges that change. (The
+       removal of `agreement_summary()`, once part of this step, reached
+       `master` with the audit, in
+       [#100](https://github.com/JUhalt/contentvalidR/pull/100).) Merges to
+       `master` then pause until the tag. The
        commit as it sits on `origin/master` must have green CI, including
        the `--as-cran` and pkgdown jobs, and must pass `tools/release-gate.R`
        in a detached worktree. It is never a PR head, because a squash merge
@@ -926,16 +946,23 @@ reads no handoffs and takes no part in the joint 1.0.
     must be empty. It merges untagged, the 1.0.0 fixtures come from it,
     nomologR's suite passes, both packages tag `v1.0.0`, and the GitHub
     releases come last, the same day, each linking the other.
-  - **CRAN submission, after that.** CRAN asks for updates to an established
-    package no more often than every one to two months. So the joint 1.0 goes
-    to CRAN no sooner than about a month after the later of the two
-    acceptances (contentvalidR's was 2026-09-28; nomologR's is pending), and
-    only on the maintainer's go-ahead. Both are released the same day.
+  - **CRAN submission, after that.** The maintainer decided on 2026-10-09
+    that 1.0.0 goes out on GitHub and R-universe first, and that anything
+    found there is fixed before an update goes to CRAN. CRAN asks for updates
+    to an established package no more often than every one to two months, so
+    contentvalidR's update goes no sooner than 2026-10-28, a month after
+    0.4.0 was accepted, and only on the maintainer's go-ahead. nomologR's
+    first CRAN release follows its own review.
 - The release-candidate checklist, proposed by nomologR and approved by the
   maintainer on 2026-09-27. It adds to #53's criteria rather than replacing
   them:
   - [ ] a final fixture set from each release candidate, with a manifest of
         md5 sums, that nomologR's tests pass before either package tags.
+        From 0.99.0 the set holds eight fits, agreed with nomologR on
+        2026-10-09: the five tested through 0.10.1, and three congruence
+        fits (with a target mapping; without one, keeping the described
+        items; and without one under the default `keep`, which carries no
+        item). The script that writes them lives in nomologR.
   - [ ] the compatibility table in both READMEs: contentvalidR 1.x writes
         handoff schema 1, and nomologR 1.x reads it. The maintainer chose on
         2026-09-29 to use this "1.x" wording from the release candidate on,

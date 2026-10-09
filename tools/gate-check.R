@@ -25,14 +25,19 @@ print(res)
 #
 # The incoming note is expected only when every line of it is one of these:
 # the maintainer, "New submission" (before the package was on CRAN), "Version
-# contains large components" (a development version), or "Days since last
-# update" (once it is on CRAN, since 0.4.0 on 2026-09-28). Any other line in
-# it, such as a misspelling or a URL problem, is a finding.
+# contains large components" (a development version), "Days since last
+# update" (once it is on CRAN, since 0.4.0 on 2026-09-28), or "Version jumps
+# in minor" for a 1.0.0 release candidate only. CRAN prints that last one when
+# the minor version leaps far past CRAN's (0.99.0 against 0.4.0 did; 0.10.1
+# did not), and every 0.99.N candidate does it by design. For any other
+# version it is still a finding. Any other line in the note, such as a
+# misspelling or a URL problem, is a finding too.
 incoming_expected <- function(note) {
   lines <- trimws(strsplit(note, "\n", fixed = TRUE)[[1]][-1])
   lines <- lines[nzchar(lines)]
   known <- c("^Maintainer: ", "^New submission$",
-             "^Version contains large components ", "^Days since last update: [0-9]+$")
+             "^Version contains large components ", "^Days since last update: [0-9]+$",
+             "^Version jumps in minor \\(submitted: 0\\.99\\.[0-9]+, existing: [0-9.]+\\)$")
   all(vapply(lines, function(l) any(vapply(known, grepl, logical(1), l)),
              logical(1)))
 }

@@ -95,8 +95,11 @@ The two notes `check` tolerates are CRAN's incoming-feasibility note and math
 rendering skipped where V8 is unavailable. The incoming note is tolerated only
 when every line of it is expected: the maintainer, "New submission" (before
 the package was on CRAN), "Version contains large components" (a development
-version), or "Days since last update" (since 0.4.0 reached CRAN on
-2026-09-28). Any other line in it fails the stage, and so does any other note:
+version), "Days since last update" (since 0.4.0 reached CRAN on
+2026-09-28), or "Version jumps in minor" when, and only when, the submitted
+version is a 1.0.0 release candidate (0.99.N): a candidate's minor version
+leaps far past CRAN's by design. Any other line in it fails the stage, and so
+does any other note:
 a gate that prints findings for a human to eyeball is not a gate. When the
 last update was under 60 days ago, the stage also prints a reminder that CRAN
 asks for updates no more often than every one to two months. The date of the
