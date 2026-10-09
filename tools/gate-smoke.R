@@ -57,7 +57,8 @@ while (length(todo)) {
   from <- tryCatch(find.package(pkg), error = function(e) NA_character_)
   if (is.na(from)) {
     cat("FAIL: the package declares ", pkg, ", directly or through a",
-        " dependency, and it is not installed on this machine.\n", sep = "")
+        " dependency, and it was not found on this stage's library path (",
+        paste(.libPaths(), collapse = ", "), ").\n", sep = "")
     quit(status = 1)
   }
   needs[pkg] <- from

@@ -73,12 +73,14 @@ for (stage in names(status)) {
   } else if (status[[stage]] == 0) "PASS" else "FAIL"
   cat(sprintf("%-6s %s\n", stage, label))
 }
+# A run of some stages is not the gate, whether or not those stages passed.
+not_run <- setdiff(known, names(status))
+for (stage in not_run) cat(sprintf("%-6s %s\n", stage, "not run"))
 if (any(is.na(status) | status != 0)) {
   cat("\nA stage failed. The gate is the last check before a release, so fix\n",
       "the cause rather than working around it by hand.\n", sep = "")
   quit(status = 1)
 }
-not_run <- setdiff(known, names(status))
 if (length(not_run)) {
   cat("\nThe stages that ran passed, but this was not the whole gate: ",
       paste(not_run, collapse = ", "), " did not run.\n", sep = "")

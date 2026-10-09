@@ -1039,10 +1039,9 @@ review of the close-out itself found.
   seed no longer resets the random stream of the session" under "Expert
   panel: values that change"): restoring it by hand would mean writing to
   the global environment, which CRAN does not allow. Results for a given
-  seed are unchanged. Under the two generator settings R itself warns about,
-  `RNGkind("Marsaglia-Multicarry")` and
-  `normal.kind = "Buggy Kinderman-Ramage"`, R repeats its warning each time
-  the stream is put back.
+  seed are unchanged. Under `RNGkind("Marsaglia-Multicarry")` and
+  `normal.kind = "Buggy Kinderman-Ramage"`, two settings R itself warns
+  about, R repeats its warning each time the stream is put back.
 * A `seed` too large to be an integer (beyond 2147483647 in size) is refused
   by name. It was passed on and failed inside `set.seed()`.
 

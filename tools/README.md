@@ -19,12 +19,13 @@ Rscript tools/release-gate.R smoke check
 ```
 
 A stage name the gate does not know stops it. A run of fewer than three
-stages says which did not run; only a run of all three is the gate.
+stages lists the others as "not run" in its summary; only a run of all three
+is the gate.
 
 | Stage | What it does | Fails when |
 |---|---|---|
 | `build` | `document()`, `build_readme()`, spelling, URLs, builds the tarball and inspects it | a misspelling, an unreachable URL, a hidden or build-ignored file in the tarball, or a version mismatch between the tarball and the source |
-| `smoke` | installs the tarball into a library that holds nothing else but the packages it declares it needs, and uses it there | a declared package is not installed on the machine, the install is skipped, any help topic's examples fail, a published value fails to reproduce, the handoff's columns drift, or a vignette is missing |
+| `smoke` | installs the tarball into a library that holds nothing else but the packages it declares it needs, and uses it there | a declared package is not on the stage's library path, the install is skipped, any help topic's examples fail, a published value fails to reproduce, the handoff's columns drift, or a vignette is missing |
 | `check` | `R CMD check --as-cran` with CRAN's incoming checks | any error, any warning, or any note other than the two expected ones |
 
 ## Why each stage runs in its own process

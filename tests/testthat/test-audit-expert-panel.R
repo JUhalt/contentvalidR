@@ -330,6 +330,9 @@ test_that("a seed too large for an integer is refused by name", {
                      construct = rep(rep(LETTERS[1:3], each = 10), times = 6),
                      rating = rep(c(1, 3, 2, 5, 4, 2, 3, 1, 5, 4), times = 18))
   expect_error(qfactor_content(long, seed = 2^31), "`seed` must be")
+  # The seed is checked before the ratings are.
+  expect_error(delphi_validity(data.frame(), lo = 1, hi = 4, seed = 2^31),
+               "`seed` must be")
   # The largest integer is a seed like any other.
   top <- .Machine$integer.max
   expect_identical(panel_agreement(R, B = 20, seed = top)$ci_low,
@@ -341,14 +344,14 @@ test_that("no function of the package reaches for the global environment", {
   # random stream by hand needs assign() or rm() there, so that is left to
   # withr. Each function is read whole, as text: its arguments' defaults, any
   # function defined inside it, and names given as strings. `<<-`,
-  # as.environment() and assign(pos = ) are refused outright, whether or not
-  # a given use would reach the workspace, because the package needs none.
+  # as.environment() and assign() are refused outright, whether or not a
+  # given use would reach the workspace, because the package needs none.
   ns <- asNamespace("contentvalidR")
   fns <- Filter(function(n) is.function(get(n, envir = ns)),
                 ls(ns, all.names = TRUE))
   expect_gt(length(fns), 300L)
   pattern <- paste0("globalenv|\\.GlobalEnv|<<-|\\.Random\\.seed|set\\.seed|",
-                    "as\\.environment|assign\\([^)]*pos *=")
+                    "as\\.environment|(^|[^[:alnum:]._])assign\\(")
   reaches <- vapply(fns, function(n) {
     grepl(pattern, paste(deparse(get(n, envir = ns)), collapse = "\n"))
   }, NA)
@@ -361,8 +364,10 @@ test_that("no function of the package reaches for the global environment", {
   expect_true(caught(function(x) lapply(x, function(i, e = .GlobalEnv) i)))
   expect_true(caught(function(x) get(".Random.seed", envir = baseenv())))
   expect_true(caught(function(x) assign("a", x, pos = 1)))
+  expect_true(caught(function(x, i) assign(paste0("a", i), x, 1)))
   expect_true(caught(function(x) do.call("set.seed", list(x))))
   expect_false(caught(function(x) withr::with_seed(1L, x)))
+  expect_false(caught(function(x) graphics::text(1, 1, x, pos = 3)))
 })
 
 test_that("the AC1 bootstrap scores every resample on the same categories", {
