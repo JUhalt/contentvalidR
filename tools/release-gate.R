@@ -25,6 +25,15 @@ out <- file.path(Sys.getenv("TEMP", tempdir()), paste0("cvr-gate-", version))
 dir.create(out, recursive = TRUE, showWarnings = FALSE)
 
 rscript <- file.path(R.home("bin"), if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
+# devtools asks pak for the package's dependencies, and pak gives its helper
+# process five seconds to start. On a busy machine that is not enough, and
+# the build stage stops with "Subprocess is busy or cannot start" before it
+# has looked at the package. The stages inherit this longer wait (in
+# milliseconds); a value already set is left alone.
+if (!nzchar(Sys.getenv("PKG_SUBPROCESS_TIMEOUT"))) {
+  Sys.setenv(PKG_SUBPROCESS_TIMEOUT = "120000")
+}
+
 stages <- c("build", "smoke", "check")
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args)) stages <- intersect(stages, args)
