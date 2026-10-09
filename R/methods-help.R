@@ -88,6 +88,16 @@
 #' and [content_evidence()] its long table of evidence, one row per item and
 #' stage. The other results are covered in [contentvalid-data-frames].
 #'
+#' @return
+#' * `print()` returns its argument, invisibly.
+#' * `summary()` returns a list of class `summary.` plus the fit's class
+#'   (`summary.contentvalid_rounds` for a comparison of rounds), holding the
+#'   elements named under "summary()" above.
+#' * `as.data.frame()` returns a data frame.
+#' * `plot()` of a judge-heterogeneity fit, a coverage analysis, or a
+#'   comparison of rounds returns nothing: it stops with an error whose
+#'   message says where to look instead.
+#'
 #' @examples
 #' sort_dat <- data.frame(
 #'   item = rep(c("A1", "A2", "A3"), each = 20),

@@ -1020,6 +1020,8 @@ review of the close-out itself found.
   Krippendorff's alpha and Fleiss' kappa; irr stays in Suggests.
 * The release gate reads the date of the last CRAN release from
   `tools/cran-release-date` and ignores a malformed one.
+* `?contentvalid-methods` has a Value section, which CRAN asks of every help
+  page that documents a function or a method.
 
 ## Other changes
 
