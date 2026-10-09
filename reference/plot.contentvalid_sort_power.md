@@ -5,8 +5,10 @@ judge sample sizes or the minimum observed Psa implied by the exact
 critical target count. The critical view is drawn as a step function
 over every integer judge count in the displayed range, reflecting the
 discrete exact-binomial rule. Multiple assumed true target-assignment
-probabilities are distinguished by line type and plotting symbol rather
-than color.
+probabilities are solid lines told apart by their plotting symbols
+rather than by color, and a dashed line marks the reference power when
+one is given. The key sits above the curves, and the judge axis is
+ticked at whole numbers of judges.
 
 ## Usage
 
@@ -33,8 +35,9 @@ plot(
 
 - reference_power:
 
-  Optional horizontal reference value for `type = "power"`. No
-  conventional target is imposed by default.
+  Optional horizontal reference value for `type = "power"`, one
+  probability between 0 and 1. No conventional target is imposed by
+  default.
 
 - show_legend:
 

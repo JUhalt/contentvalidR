@@ -24,7 +24,13 @@ sort_power(N, true_p, p0 = 0.5, alpha = 0.05)
 
 - p0:
 
-  Null target-assignment probability. Default `0.5`.
+  Null target-assignment probability for the exact binomial test.
+  Default `0.5`, following Howard and Melloy (2016). It is not the rate
+  expected from random assignment, which is 1 divided by the number of
+  constructs. Howard and Melloy describe .5 as arbitrary and lenient,
+  and suggest a higher value such as .6 or .75, chosen before data
+  collection, when the alternative constructs are clearly different from
+  the target or the judges are subject-matter experts.
 
 - alpha:
 

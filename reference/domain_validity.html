@@ -176,8 +176,41 @@ coverage.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>contentvalid_domain</code> and <code>contentvalid_workflow</code>.
 <code>results</code> has <strong>one row per blueprint cell</strong>. <code>details$structure</code> holds the
-content-structure analysis when similarity data was supplied.</p>
-    </div>
+content-structure analysis when similarity data was supplied. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>
+and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> are described in <a href="contentvalid-methods.html">contentvalid-methods</a>.</p>
+<p><strong>Results columns.</strong></p><dl><dt><code>cell</code></dt>
+<dd><p>The blueprint cell; with <code>facet_col</code>, the two labels
+joined by <code>" / "</code>.</p></dd>
+
+<dt><code>n_items</code></dt>
+<dd><p>Items assigned to the cell.</p></dd>
+
+<dt><code>share</code></dt>
+<dd><p><code>n_items</code> as a share of all the items.</p></dd>
+
+<dt><code>target_items</code></dt>
+<dd><p>The cell's entry in <code>targets</code>; <code>NA</code> without
+<code>targets</code>.</p></dd>
+
+<dt><code>expected_share</code></dt>
+<dd><p>The cell's share of <code>targets</code>, or one over the
+number of cells without them.</p></dd>
+
+<dt><code>recommendation</code></dt>
+<dd><p><code>"Covered"</code>, <code>"Not covered"</code> (no item),
+<code>"Thinly covered"</code> (below the floor <code>min_items</code> sets),
+<code>"Over-represented"</code>,
+or <code>"Under-represented"</code> (judged only against <code>targets</code>).</p></dd>
+
+<dt><code>status</code></dt>
+<dd><p>The shared status: <code>"Supported"</code> for <code>"Covered"</code>, and
+<code>"Review"</code> otherwise.</p></dd>
+
+<dt><code>interpretation</code></dt>
+<dd><p>The decision explained in a sentence.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="what-coverage-evidence-can-and-cannot-establish">What coverage evidence can and cannot establish<a class="anchor" aria-label="anchor" href="#what-coverage-evidence-can-and-cannot-establish"></a></h2>
 

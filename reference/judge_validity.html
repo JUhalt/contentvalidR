@@ -209,8 +209,76 @@ the full panel, whether that status changes when one judge is removed
 (<code>fragile</code>; <code>NA</code> when it could not be checked), and the judges whose
 removal changes it. In <code>results</code>, <code>n_items_flipped</code> and <code>flipped_items</code>
 give the same information by judge; they describe the items and are not
-a flag.</p>
-    </div>
+a flag. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> are described in
+<a href="contentvalid-methods.html">contentvalid-methods</a>.</p>
+<p><strong>Results columns.</strong> <code>results</code> has one row per judge:</p><dl><dt><code>judge</code></dt>
+<dd><p>The judge: the row name in <code>ratings</code>, or <code>Judge1</code>,
+<code>Judge2</code>, and so on when <code>ratings</code> has none.</p></dd>
+
+<dt><code>n_ratings</code></dt>
+<dd><p>Items the judge rated.</p></dd>
+
+<dt><code>mean_rating</code></dt>
+<dd><p>The judge's mean rating.</p></dd>
+
+<dt><code>sd_rating</code></dt>
+<dd><p>The standard deviation of the judge's ratings.</p></dd>
+
+<dt><code>severity_raw</code></dt>
+<dd><p>Severity in rating points: the panel's mean
+rating on the items the judge rated, less the judge's. Positive
+means harsher than the panel.</p></dd>
+
+<dt><code>severity</code></dt>
+<dd><p>Severity in logits from the many-facet Rasch model,
+positive for harsher; <code>NA</code> when it is not estimable.</p></dd>
+
+<dt><code>se</code></dt>
+<dd><p>The standard error of <code>severity</code>.</p></dd>
+
+<dt><code>infit</code>, <code>outfit</code></dt>
+<dd><p>The judge's infit and outfit mean squares.</p></dd>
+
+<dt><code>n_scored</code></dt>
+<dd><p>Relevance decisions of the judge that the model
+scored.</p></dd>
+
+<dt><code>severity_estimable</code></dt>
+<dd><p>Whether the model could estimate the
+judge's severity.</p></dd>
+
+<dt><code>differentiation</code></dt>
+<dd><p>Scale use: the standard deviation of the
+judge's ratings over the median judge's, on the items the judge
+rated.</p></dd>
+
+<dt><code>central_prop</code></dt>
+<dd><p>The share of the judge's ratings strictly between
+<code>lo</code> and <code>hi</code>.</p></dd>
+
+<dt><code>extreme_prop</code></dt>
+<dd><p>The share at <code>lo</code> or <code>hi</code>.</p></dd>
+
+<dt><code>n_items_flipped</code></dt>
+<dd><p>Items whose review status changes when this
+judge is removed; <code>NA</code> when none could be checked.</p></dd>
+
+<dt><code>flipped_items</code></dt>
+<dd><p>Those items, comma-separated.</p></dd>
+
+<dt><code>recommendation</code></dt>
+<dd><p><code>"Typical"</code>, <code>"Severe"</code>, <code>"Lenient"</code>,
+<code>"Erratic"</code>, <code>"Low differentiation"</code>, or <code>"Insufficient data"</code>.</p></dd>
+
+<dt><code>status</code></dt>
+<dd><p>The shared status: <code>"Supported"</code> for <code>"Typical"</code>,
+<code>"Review"</code> for a flag, or <code>"Insufficient data"</code>.</p></dd>
+
+<dt><code>interpretation</code></dt>
+<dd><p>The decision explained in a sentence.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="what-is-published-and-what-is-this-package-s-choice">What is published and what is this package's choice<a class="anchor" aria-label="anchor" href="#what-is-published-and-what-is-this-package-s-choice"></a></h2>
 
@@ -221,7 +289,9 @@ above. These parts are contentvalidR conventions, with no published
 standard behind the numbers:</p><ul><li><p>The cuts that flag a judge: <code>severity_cut</code> (1 logit),
 <code>severity_raw_cut</code> (a quarter of the scale range) and
 <code>differentiation_cut</code> (0.5). The scale-use ratio itself is this
-package's index of the differentiation Engelhard (1994) describes.</p></li>
+package's index of the differentiation Engelhard (1994) describes. A
+cut, or a <code>fit_min_ratings</code>, given other than its default is printed as
+set for this analysis.</p></li>
 <li><p>Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
 guide to how productive data are for measurement: below 0.5 is "less
 productive for measurement, but not degrading", 1.5 to 2.0 is

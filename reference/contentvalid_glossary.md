@@ -33,11 +33,12 @@ definitions as the `"statuses"` attribute.
 Strength labels such as `Strong` or `Weak` from
 [`interpret_colquitt()`](https://juhalt.github.io/contentvalidR/reference/interpret_colquitt.md)
 are percentile positions relative to scales published in the measurement
-literature. They are not absolute judgments, and they are not comparable
-across indices: HTC and HTD sit on different scales with different
+literature. They are not absolute judgments. Each index is read against
+its own benchmark: HTC and HTD sit on different scales with different
 typical values, so an HTC of .83 can be labeled `Weak` in the same
-analysis where an HTD of .44 is labeled `Very Strong`. Compare each
-index against its own benchmark, never against another index's number.
+analysis where an HTD of .44 is labeled `Very Strong`. Two indices'
+labels can be compared, because each is a percentile position; their
+numbers cannot.
 
 ## See also
 
@@ -97,7 +98,7 @@ contentvalid_glossary()
 #>         the intended construct was rated above every other (every planned
 #>         contrast).
 #>     Review -- did not meet every criterion; the competitor column shows the
-#>         closest rival.
+#>         other construct with the highest mean rating.
 #>     Insufficient data -- fewer than two judges rated it against every
 #>         construct.
 #> 
@@ -162,7 +163,8 @@ contentvalid_glossary()
 #>   Decisions (congruence)
 #>     Congruent -- its index of item-objective congruence met the criterion.
 #>     Review -- its index fell below the criterion; the margin shows how its
-#>         intended objective compares with the closest other.
+#>         intended objective compares with the other objective with the highest
+#>         mean rating.
 #>     Target described -- only its intended objective was rated, so there is
 #>         nothing to compare.
 #>     Insufficient data -- no usable ratings for its intended objective.
@@ -285,8 +287,8 @@ contentvalid_glossary()
 #>   `status` column of `results`.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions relative to
-#> published scales, not absolute judgments, and are not comparable across
-#> different indices.
+#> published scales, not absolute judgments. Compare two indices by their labels,
+#> never by their numbers, which sit on different scales.
 #> 
 #> See as.data.frame(x) for the definitions as a table.
 contentvalid_glossary("item-sort")
@@ -333,8 +335,8 @@ contentvalid_glossary("item-sort")
 #>   `status` column of `results`.
 #> 
 #> Strength labels such as Strong or Weak are percentile positions relative to
-#> published scales, not absolute judgments, and are not comparable across
-#> different indices.
+#> published scales, not absolute judgments. Compare two indices by their labels,
+#> never by their numbers, which sit on different scales.
 #> 
 #> See as.data.frame(x) for the definitions as a table.
 ```

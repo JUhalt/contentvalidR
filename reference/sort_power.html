@@ -86,7 +86,13 @@ intended construct. May be scalar or vector.</p></dd>
 
 
 <dt id="arg-p-">p0<a class="anchor" aria-label="anchor" href="#arg-p-"></a></dt>
-<dd><p>Null target-assignment probability. Default <code>0.5</code>.</p></dd>
+<dd><p>Null target-assignment probability for the exact binomial test.
+Default <code>0.5</code>, following Howard and Melloy (2016). It is not the rate
+expected from random assignment, which is 1 divided by the number of
+constructs. Howard and Melloy describe .5 as arbitrary and lenient, and
+suggest a higher value such as .6 or .75, chosen before data collection,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>

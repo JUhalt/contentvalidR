@@ -162,31 +162,39 @@ aov_out
 #> attr(x, "contrasts") holds each one.
 #> 
 #> See as.data.frame(x) for the unrounded values.
-attr(aov_out, "contrasts")
-#>   item design target competitor  n mean_target mean_competitor mean_diff
-#> 1   A1 within      A          B 24    4.375000        2.375000  2.000000
-#> 2   A1 within      A          C 24    4.375000        1.916667  2.458333
-#> 3   A2 within      A          B 24    4.458333        2.000000  2.458333
-#> 4   A2 within      A          C 24    4.458333        1.875000  2.583333
-#> 5   A3 within      A          B 24    4.416667        2.208333  2.208333
-#> 6   A3 within      A          C 24    4.416667        2.250000  2.166667
-#> 7   B1 within      B          A 24    4.583333        2.083333  2.500000
-#> 8   B1 within      B          C 24    4.583333        2.166667  2.416667
-#>           t df            p        p_adj       dz pass
-#> 1  9.591663 23 8.344091e-10 8.344091e-10 1.957890 TRUE
-#> 2 11.336315 23 3.409941e-11 3.409941e-11 2.314016 TRUE
-#> 3 10.552406 23 1.372752e-10 1.372752e-10 2.154001 TRUE
-#> 4 17.643975 23 3.644893e-15 3.644893e-15 3.601561 TRUE
-#> 5 11.072214 23 5.409806e-11 5.409806e-11 2.260106 TRUE
-#> 6 11.021286 23 5.918580e-11 5.918580e-11 2.249711 TRUE
-#> 7 13.133926 23 1.786074e-12 1.786074e-12 2.680951 TRUE
-#> 8 14.269216 23 3.241706e-13 3.241706e-13 2.912692 TRUE
 ```
 
 The omnibus F test asks whether the item’s mean ratings differ somewhere
 across definitions. The planned contrasts ask the more direct
 content-validity question: is the target mean higher than each orbiting
-mean?
+mean? `attr(aov_out, "contrasts")` holds each contrast at full
+precision. Rounded for reading, with *p* values written the APA way:
+
+``` r
+
+contrasts <- attr(aov_out, "contrasts")
+shown <- contrasts[c("item", "target", "competitor", "mean_diff", "t", "df",
+                     "p", "dz", "pass")]
+shown[c("mean_diff", "t", "dz")] <- round(shown[c("mean_diff", "t", "dz")], 2)
+shown$p <- ifelse(shown$p < .001, "< .001",
+                  sub("^0", "", sprintf("%.3f", shown$p)))
+shown
+#>   item target competitor mean_diff     t df      p   dz pass
+#> 1   A1      A          B      2.00  9.59 23 < .001 1.96 TRUE
+#> 2   A1      A          C      2.46 11.34 23 < .001 2.31 TRUE
+#> 3   A2      A          B      2.46 10.55 23 < .001 2.15 TRUE
+#> 4   A2      A          C      2.58 17.64 23 < .001 3.60 TRUE
+#> 5   A3      A          B      2.21 11.07 23 < .001 2.26 TRUE
+#> 6   A3      A          C      2.17 11.02 23 < .001 2.25 TRUE
+#> 7   B1      B          A      2.50 13.13 23 < .001 2.68 TRUE
+#> 8   B1      B          C      2.42 14.27 23 < .001 2.91 TRUE
+```
+
+`mean_diff` is the target mean less the competitor mean, `t` and `df`
+the paired *t* test, and `dz` the mean difference divided by the
+standard deviation of the differences. `p` is one-sided, and `pass` says
+whether the contrast met alpha, after an adjustment for their number
+when one was asked for (`p_adj`).
 
 With more than two construct definitions, the conventional
 repeated-measures F test assumes sphericity. `contentvalidR` prints the
@@ -220,14 +228,14 @@ fit
 #> 4 of 4 items meet the full item-level screening criterion.
 #> 
 #> Item-level evidence
-#>   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor
-#>   A1    A       Retain    24  .88  .56     < .001      < .001  B
-#>   A2    A       Retain    24  .89  .63     < .001      < .001  B
-#>   A3    A       Retain    24  .88  .55     < .001      < .001  C
-#>   B1    B       Retain    24  .92  .61     < .001      < .001  C
+#>   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor
+#>   A1    A       Retain        24  .88  .56     < .001      < .001  B
+#>   A2    A       Retain        24  .89  .63     < .001      < .001  B
+#>   A3    A       Retain        24  .88  .55     < .001      < .001  C
+#>   B1    B       Retain        24  .92  .61     < .001      < .001  C
 #> 
-#>   n: judges who rated the item against every construct. Omnibus p: do the
-#>   item's ratings differ across constructs (Greenhouse-Geisser corrected).
+#>   Judges: the number who rated the item against every construct. Omnibus p: do
+#>   the item's ratings differ across constructs (Greenhouse-Geisser corrected).
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 
@@ -313,11 +321,15 @@ assigning those descriptive normative labels.
 
 ``` r
 
-fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
-                      "mean_htd", "htd_strength")]
-#>   target n_items  mean_htc htc_strength  mean_htd htd_strength
-#> 1      A       3 0.8833333       Strong 0.5781250  Very Strong
-#> 2      B       1 0.9166667  Very Strong 0.6145833  Very Strong
+scale_means <- fit$scale_summary[, c("target", "n_items", "mean_htc",
+                                     "htc_strength", "mean_htd",
+                                     "htd_strength")]
+scale_means[c("mean_htc", "mean_htd")] <-
+  round(scale_means[c("mean_htc", "mean_htd")], 2)
+scale_means
+#>   target n_items mean_htc htc_strength mean_htd htd_strength
+#> 1      A       3     0.88       Strong     0.58  Very Strong
+#> 2      B       1     0.92  Very Strong     0.61  Very Strong
 colquitt_benchmarks("htc")
 #> <contentvalid_colquitt_norms> Benchmarks for HTC
 #> Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).
@@ -380,17 +392,21 @@ therefore separates calculation from norm applicability:
 
 ``` r
 
-rating_validity(rating_dat, judge_type = "expert")$scale_summary[
+expert_scale <- rating_validity(rating_dat, judge_type = "expert")$scale_summary[
   , c("target", "mean_htc", "htc_strength", "mean_htd", "htd_strength")]
-#>   target  mean_htc htc_strength  mean_htd htd_strength
-#> 1      A 0.8833333         <NA> 0.5781250         <NA>
-#> 2      B 0.9166667         <NA> 0.6145833         <NA>
+expert_scale[c("mean_htc", "mean_htd")] <-
+  round(expert_scale[c("mean_htc", "mean_htd")], 2)
+expert_scale
+#>   target mean_htc htc_strength mean_htd htd_strength
+#> 1      A     0.88         <NA>     0.58         <NA>
+#> 2      B     0.92         <NA>     0.61         <NA>
 ```
 
 HTC/HTD are still computed, but the Colquitt labels are suppressed.
 [`print()`](https://rdrr.io/r/base/print.html) and
 [`summary()`](https://rdrr.io/r/base/summary.html) leave out the columns
-that would hold them; the stored table, shown here, keeps them as `NA`.
+that would hold them; the stored table, shown here with its means
+rounded, keeps them as `NA`.
 
 ## Missing ratings
 

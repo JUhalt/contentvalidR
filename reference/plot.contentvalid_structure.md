@@ -2,9 +2,16 @@
 
 Plots the multidimensional scaling content map from
 [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md),
-with each item positioned by expert-perceived similarity and labeled by
-its blueprint cell. Items that sit away from others sharing their cell
-are the ones experts did not group as the blueprint expects.
+with each item positioned by expert-perceived similarity, labeled by its
+name, and drawn with its blueprint cell's symbol (its recovered
+cluster's, when no blueprint was supplied), which the key names. Items
+that sit away from others sharing their cell are the ones experts did
+not group as the blueprint expects.
+
+A map with one usable dimension is drawn as a strip, each name to the
+right of its point. Items whose names would run into each other, such as
+items at the same position, are stacked one above another; on a strip
+the height carries no meaning.
 
 ## Usage
 

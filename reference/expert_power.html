@@ -161,10 +161,12 @@ smoothly with panel size would be hiding this, so it is reported as it is.</p>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Ayre, C., &amp; Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. <em>Measurement and Evaluation in Counseling and Development,
-47</em>(1), 79–86. <a href="https://doi.org/10.1177/0748175613513808" class="external-link">doi:10.1177/0748175613513808</a></p>
+validity ratio: Revisiting the original methods of calculation.
+<em>Measurement and Evaluation in Counseling and Development, 47</em>(1), 79–86.
+<a href="https://doi.org/10.1177/0748175613513808" class="external-link">doi:10.1177/0748175613513808</a></p>
 <p>Lynn, M. R. (1986). Determination and quantification of content validity.
-<em>Nursing Research, 35</em>(6), 382–385.</p>
+<em>Nursing Research, 35</em>(6), 382–385.
+<a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link">doi:10.1097/00006199-198611000-00017</a></p>
 <p>Polit, D. F., &amp; Beck, C. T. (2006). The content validity index: Are you
 sure you know what's being reported? Critique and recommendations.
 <em>Research in Nursing &amp; Health, 29</em>(5), 489–497. <a href="https://doi.org/10.1002/nur.20147" class="external-link">doi:10.1002/nur.20147</a></p>
@@ -200,9 +202,12 @@ decision study plans panel size against a generalizability target.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   relaxes the criterion while a fourth or fifth makes unanimity harder. That</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   is a property of the guideline, not of the items.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> This table reports the consequences of the panel sizes you asked about. It</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> does not recommend one. `prob` is an assumption you supply, so treat the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> result as conditional on it and report the value you assumed.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a contentvalidR planning tool, not a published power method: it treats</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the experts as endorsing the item independently, each with probability `prob`,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> while the criterion it applies is Lynn's (1986). This table reports the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> consequences of the panel sizes you asked about. It does not recommend one.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> `prob` is an assumption you supply, so treat the result as conditional on it</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> and report the value you assumed.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See plot(x) for the probabilities by panel size.</span>
 <span class="r-in"><span><span class="fu">expert_power</span><span class="op">(</span>n_experts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">15</span><span class="op">)</span>, prob <span class="op">=</span> <span class="fl">0.75</span>, criterion <span class="op">=</span> <span class="st">"cvr"</span><span class="op">)</span></span></span>
@@ -219,6 +224,9 @@ decision study plans panel size against a generalizability target.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Required: endorsements the criterion needs from the panel. Prob: the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   probability you assume that one expert endorses the item.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This is a contentvalidR planning tool, not a published power method: it treats</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> the experts as endorsing the item independently, each with probability `prob`,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> while the criterion it applies is the exact test of Ayre and Scally (2014).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> This table reports the consequences of the panel sizes you asked about. It</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> does not recommend one. `prob` is an assumption you supply, so treat the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> result as conditional on it and report the value you assumed.</span>

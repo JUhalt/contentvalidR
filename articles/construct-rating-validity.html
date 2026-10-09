@@ -235,30 +235,36 @@ who rated the item against every definition.</p>
 <span><span class="co">#&gt; judge rated the two constructs the same. Met: whether every contrast passed.</span></span>
 <span><span class="co">#&gt; attr(x, "contrasts") holds each one.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">aov_out</span>, <span class="st">"contrasts"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   item design target competitor  n mean_target mean_competitor mean_diff</span></span>
-<span><span class="co">#&gt; 1   A1 within      A          B 24    4.375000        2.375000  2.000000</span></span>
-<span><span class="co">#&gt; 2   A1 within      A          C 24    4.375000        1.916667  2.458333</span></span>
-<span><span class="co">#&gt; 3   A2 within      A          B 24    4.458333        2.000000  2.458333</span></span>
-<span><span class="co">#&gt; 4   A2 within      A          C 24    4.458333        1.875000  2.583333</span></span>
-<span><span class="co">#&gt; 5   A3 within      A          B 24    4.416667        2.208333  2.208333</span></span>
-<span><span class="co">#&gt; 6   A3 within      A          C 24    4.416667        2.250000  2.166667</span></span>
-<span><span class="co">#&gt; 7   B1 within      B          A 24    4.583333        2.083333  2.500000</span></span>
-<span><span class="co">#&gt; 8   B1 within      B          C 24    4.583333        2.166667  2.416667</span></span>
-<span><span class="co">#&gt;           t df            p        p_adj       dz pass</span></span>
-<span><span class="co">#&gt; 1  9.591663 23 8.344091e-10 8.344091e-10 1.957890 TRUE</span></span>
-<span><span class="co">#&gt; 2 11.336315 23 3.409941e-11 3.409941e-11 2.314016 TRUE</span></span>
-<span><span class="co">#&gt; 3 10.552406 23 1.372752e-10 1.372752e-10 2.154001 TRUE</span></span>
-<span><span class="co">#&gt; 4 17.643975 23 3.644893e-15 3.644893e-15 3.601561 TRUE</span></span>
-<span><span class="co">#&gt; 5 11.072214 23 5.409806e-11 5.409806e-11 2.260106 TRUE</span></span>
-<span><span class="co">#&gt; 6 11.021286 23 5.918580e-11 5.918580e-11 2.249711 TRUE</span></span>
-<span><span class="co">#&gt; 7 13.133926 23 1.786074e-12 1.786074e-12 2.680951 TRUE</span></span>
-<span><span class="co">#&gt; 8 14.269216 23 3.241706e-13 3.241706e-13 2.912692 TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
 <p>The omnibus F test asks whether the item’s mean ratings differ
 somewhere across definitions. The planned contrasts ask the more direct
 content-validity question: is the target mean higher than each orbiting
-mean?</p>
+mean? <code>attr(aov_out, "contrasts")</code> holds each contrast at
+full precision. Rounded for reading, with <em>p</em> values written the
+APA way:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">contrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">aov_out</span>, <span class="st">"contrasts"</span><span class="op">)</span></span>
+<span><span class="va">shown</span> <span class="op">&lt;-</span> <span class="va">contrasts</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"competitor"</span>, <span class="st">"mean_diff"</span>, <span class="st">"t"</span>, <span class="st">"df"</span>,</span>
+<span>                     <span class="st">"p"</span>, <span class="st">"dz"</span>, <span class="st">"pass"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">shown</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_diff"</span>, <span class="st">"t"</span>, <span class="st">"dz"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">shown</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_diff"</span>, <span class="st">"t"</span>, <span class="st">"dz"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">shown</span><span class="op">$</span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">shown</span><span class="op">$</span><span class="va">p</span> <span class="op">&lt;</span> <span class="fl">.001</span>, <span class="st">"&lt; .001"</span>,</span>
+<span>                  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^0"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.3f"</span>, <span class="va">shown</span><span class="op">$</span><span class="va">p</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">shown</span></span>
+<span><span class="co">#&gt;   item target competitor mean_diff     t df      p   dz pass</span></span>
+<span><span class="co">#&gt; 1   A1      A          B      2.00  9.59 23 &lt; .001 1.96 TRUE</span></span>
+<span><span class="co">#&gt; 2   A1      A          C      2.46 11.34 23 &lt; .001 2.31 TRUE</span></span>
+<span><span class="co">#&gt; 3   A2      A          B      2.46 10.55 23 &lt; .001 2.15 TRUE</span></span>
+<span><span class="co">#&gt; 4   A2      A          C      2.58 17.64 23 &lt; .001 3.60 TRUE</span></span>
+<span><span class="co">#&gt; 5   A3      A          B      2.21 11.07 23 &lt; .001 2.26 TRUE</span></span>
+<span><span class="co">#&gt; 6   A3      A          C      2.17 11.02 23 &lt; .001 2.25 TRUE</span></span>
+<span><span class="co">#&gt; 7   B1      B          A      2.50 13.13 23 &lt; .001 2.68 TRUE</span></span>
+<span><span class="co">#&gt; 8   B1      B          C      2.42 14.27 23 &lt; .001 2.91 TRUE</span></span></code></pre></div>
+<p><code>mean_diff</code> is the target mean less the competitor mean,
+<code>t</code> and <code>df</code> the paired <em>t</em> test, and
+<code>dz</code> the mean difference divided by the standard deviation of
+the differences. <code>p</code> is one-sided, and <code>pass</code> says
+whether the contrast met alpha, after an adjustment for their number
+when one was asked for (<code>p_adj</code>).</p>
 <p>With more than two construct definitions, the conventional
 repeated-measures F test assumes sphericity. <code>contentvalidR</code>
 prints the Greenhouse-Geisser corrected test, whose degrees of freedom
@@ -270,7 +276,7 @@ post-hoc tests.</p>
 <div class="section level2">
 <h2 id="recommended-workflow">Recommended workflow<a class="anchor" aria-label="anchor" href="#recommended-workflow"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span></span>
 <span>  <span class="va">rating_dat</span>,</span>
 <span>  scale_min <span class="op">=</span> <span class="fl">1</span>,</span>
@@ -292,14 +298,14 @@ post-hoc tests.</p>
 <span><span class="co">#&gt; 4 of 4 items meet the full item-level screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
-<span><span class="co">#&gt;   A1    A       Retain    24  .88  .56     &lt; .001      &lt; .001  B</span></span>
-<span><span class="co">#&gt;   A2    A       Retain    24  .89  .63     &lt; .001      &lt; .001  B</span></span>
-<span><span class="co">#&gt;   A3    A       Retain    24  .88  .55     &lt; .001      &lt; .001  C</span></span>
-<span><span class="co">#&gt;   B1    B       Retain    24  .92  .61     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
+<span><span class="co">#&gt;   A1    A       Retain        24  .88  .56     &lt; .001      &lt; .001  B</span></span>
+<span><span class="co">#&gt;   A2    A       Retain        24  .89  .63     &lt; .001      &lt; .001  B</span></span>
+<span><span class="co">#&gt;   A3    A       Retain        24  .88  .55     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   B1    B       Retain        24  .92  .61     &lt; .001      &lt; .001  C</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   n: judges who rated the item against every construct. Omnibus p: do the</span></span>
-<span><span class="co">#&gt;   item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
+<span><span class="co">#&gt;   Judges: the number who rated the item against every construct. Omnibus p: do</span></span>
+<span><span class="co">#&gt;   the item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
 <span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
 <span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -384,12 +390,16 @@ coverage can be harmed by mechanical item deletion.</p>
 published scales. <code><a href="../reference/rating_validity.html">rating_validity()</a></code> therefore averages item
 HTC/HTD within each target scale before assigning those descriptive
 normative labels.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_htc"</span>, <span class="st">"htc_strength"</span>,</span>
-<span>                      <span class="st">"mean_htd"</span>, <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   target n_items  mean_htc htc_strength  mean_htd htd_strength</span></span>
-<span><span class="co">#&gt; 1      A       3 0.8833333       Strong 0.5781250  Very Strong</span></span>
-<span><span class="co">#&gt; 2      B       1 0.9166667  Very Strong 0.6145833  Very Strong</span></span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scale_means</span> <span class="op">&lt;-</span> <span class="va">fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_htc"</span>,</span>
+<span>                                     <span class="st">"htc_strength"</span>, <span class="st">"mean_htd"</span>,</span>
+<span>                                     <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">scale_means</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_htc"</span>, <span class="st">"mean_htd"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">scale_means</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_htc"</span>, <span class="st">"mean_htd"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">scale_means</span></span>
+<span><span class="co">#&gt;   target n_items mean_htc htc_strength mean_htd htd_strength</span></span>
+<span><span class="co">#&gt; 1      A       3     0.88       Strong     0.58  Very Strong</span></span>
+<span><span class="co">#&gt; 2      B       1     0.92  Very Strong     0.61  Very Strong</span></span>
 <span><span class="fu"><a href="../reference/colquitt_benchmarks.html">colquitt_benchmarks</a></span><span class="op">(</span><span class="st">"htc"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_colquitt_norms&gt; Benchmarks for HTC</span></span>
 <span><span class="co">#&gt; Colquitt et al. (2019). Benchmark set: Overall (not correlation-normed).</span></span>
@@ -424,7 +434,7 @@ normative labels.</p>
 validity cutoffs. If the average correlation between a focal scale and
 its orbiting scales is known, correlation-conditional norms can be
 requested:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">conditional</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span></span>
 <span>  <span class="va">rating_dat</span>,</span>
 <span>  orbiting_r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>A <span class="op">=</span> <span class="fl">.42</span>, B <span class="op">=</span> <span class="fl">.55</span><span class="op">)</span></span>
@@ -444,16 +454,19 @@ focal and orbiting constructs are known to correlate strongly.</p>
 judges representative of substantive target populations. Their paper
 cautions against applying those norms to expert panels. The package
 therefore separates calculation from norm applicability:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, judge_type <span class="op">=</span> <span class="st">"expert"</span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">expert_scale</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, judge_type <span class="op">=</span> <span class="st">"expert"</span><span class="op">)</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span></span>
 <span>  , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"mean_htc"</span>, <span class="st">"htc_strength"</span>, <span class="st">"mean_htd"</span>, <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   target  mean_htc htc_strength  mean_htd htd_strength</span></span>
-<span><span class="co">#&gt; 1      A 0.8833333         &lt;NA&gt; 0.5781250         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2      B 0.9166667         &lt;NA&gt; 0.6145833         &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="va">expert_scale</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_htc"</span>, <span class="st">"mean_htd"</span><span class="op">)</span><span class="op">]</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">expert_scale</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean_htc"</span>, <span class="st">"mean_htd"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">expert_scale</span></span>
+<span><span class="co">#&gt;   target mean_htc htc_strength mean_htd htd_strength</span></span>
+<span><span class="co">#&gt; 1      A     0.88         &lt;NA&gt;     0.58         &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; 2      B     0.92         &lt;NA&gt;     0.61         &lt;NA&gt;</span></span></code></pre></div>
 <p>HTC/HTD are still computed, but the Colquitt labels are suppressed.
 <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> leave out the columns
-that would hold them; the stored table, shown here, keeps them as
-<code>NA</code>.</p>
+that would hold them; the stored table, shown here with its means
+rounded, keeps them as <code>NA</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="missing-ratings">Missing ratings<a class="anchor" aria-label="anchor" href="#missing-ratings"></a>
@@ -468,15 +481,15 @@ incomplete repeated observations as independent data.</p>
 <h2 id="plotting">Plotting<a class="anchor" aria-label="anchor" href="#plotting"></a>
 </h2>
 <p>The original one-index views remain available:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, metric <span class="op">=</span> <span class="st">"htc"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="construct-rating-validity_files/figure-html/plot-1.png" class="r-plt" alt="HTC for each item on a 0 to 1 scale; filled points are retained items and open points are items to review." width="672"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, metric <span class="op">=</span> <span class="st">"htd"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="construct-rating-validity_files/figure-html/plot-2.png" class="r-plt" alt="HTD for each item on a -1 to 1 scale, with a dotted line at zero; filled points are retained items and open points are items to review." width="672"></p>
 <p>A correspondence-distinctiveness evidence map displays HTC and HTD
 together:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"map"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="construct-rating-validity_files/figure-html/rating-map-1.png" class="r-plt" alt="Construct-rating evidence map: each item's HTC on the horizontal axis against its HTD on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean." width="672"></p>
 <p>Target-scale averages are shown as triangles and items needing review
@@ -485,7 +498,7 @@ are not drawn across individual items because those benchmarks were
 constructed from scale averages.</p>
 <p>The <strong>target-versus-competitor gap plot</strong> makes the
 Hinkin-Tracey mean-rating logic more directly visible:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"profile"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="construct-rating-validity_files/figure-html/rating-profile-1.png" class="r-plt" alt="Construct-rating profile: for each item, its mean rating against the intended definition (filled) and against the strongest competing definition (open), joined by a line that is dashed for items to review." width="672"></p>
 <p>Filled points are intended-definition means, open points are the

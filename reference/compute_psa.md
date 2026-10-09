@@ -112,7 +112,7 @@ compute_psa(df)
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#> people rated it.
 #> 
 #> See as.data.frame(x) for the unrounded values.
 compute_psa(df, ci = "exact")
@@ -128,7 +128,7 @@ compute_psa(df, ci = "exact")
 #> 95% intervals for proportions: Clopper-Pearson exact. This is conservative:
 #> Agresti and Coull (1998) show its coverage runs above the nominal level, so
 #> intervals are wider than they need to be. An interval reflects how few ratings
-#> an item received, not whether the right judges were chosen.
+#> an item received, not whether the right people rated it.
 #> 
 #> See as.data.frame(x) for the unrounded values.
 ```

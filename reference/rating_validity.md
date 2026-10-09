@@ -41,8 +41,10 @@ package's choice.
 
 Colquitt et al. (2019) norms are applied only to **target-scale
 averages** of HTC and HTD, matching the level at which those empirical
-benchmarks were constructed. The labels are suppressed for expert
-judges.
+benchmarks were constructed. The labels are not applied to expert
+judges. Each index is read against its own band; the advice in
+`scale_summary$evidence`, keyed to the lower of the two bands, is
+labeled as this package's suggestion, not Colquitt et al.'s.
 
 ## Usage
 
@@ -122,6 +124,122 @@ its degrees of freedom, where a correction applies (see
 `max_contrast_p` is the largest *p* among the planned contrasts, `NA`
 when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd`
 count the items in each mean.
+[`print()`](https://rdrr.io/r/base/print.html),
+[`summary()`](https://rdrr.io/r/base/summary.html), and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) are described
+in
+[contentvalid-methods](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md).
+
+**Results columns.** `results` has one row per item:
+
+- `item`:
+
+  The item.
+
+- `target`:
+
+  The construct the item was written for.
+
+- `n_raters`:
+
+  Judges who rated the item.
+
+- `n_complete`:
+
+  Judges who rated it against every construct, on whom HTD and the tests
+  rest.
+
+- `n_incomplete`:
+
+  `n_raters - n_complete`.
+
+- `n_target`:
+
+  Judges who rated it against its intended construct, on whom HTC rests.
+
+- `n_constructs`:
+
+  Construct definitions the item was rated against.
+
+- `target_mean`:
+
+  The mean rating on the intended construct, from the `n_target` judges,
+  on the scale as given.
+
+- `target_mean_complete`:
+
+  The same mean from the `n_complete` judges.
+
+- `strongest_competitor`:
+
+  The other construct with the highest mean rating among the
+  `n_complete` judges, ties joined by `" / "`.
+
+- `competitor_mean`:
+
+  That construct's mean rating.
+
+- `htc`:
+
+  HTC, the intended construct's mean rating as a share of the scale.
+
+- `htd`:
+
+  HTD, the intended construct's average lead over every other construct,
+  -1 to 1.
+
+- `F`, `df1`, `df2`, `p_omnibus`:
+
+  The uncorrected repeated-measures *F* test.
+
+- `epsilon_gg`:
+
+  The Greenhouse-Geisser epsilon.
+
+- `df1_gg`, `df2_gg`:
+
+  The corrected degrees of freedom.
+
+- `p_value`:
+
+  The omnibus *p* the decision reads: corrected where a correction
+  applies.
+
+- `partial_eta2`:
+
+  Partial eta-squared of the omnibus test.
+
+- `min_mean_diff`:
+
+  The smallest lead of the intended construct's mean over another
+  construct's, among the planned contrasts.
+
+- `max_contrast_p`:
+
+  The largest planned-contrast *p*.
+
+- `contrast_pass`:
+
+  Whether every planned contrast met `alpha`.
+
+- `recommendation`:
+
+  `"Retain"`, `"Review"`, or `"Insufficient data"` (fewer than two
+  complete judges).
+
+- `issue`:
+
+  The reason in a few words, such as
+  `"Orbiting construct rated higher"`.
+
+- `interpretation`:
+
+  The decision explained in a sentence.
+
+- `status`:
+
+  The shared status: `"Supported"` for `"Retain"`, `"Review"`, or
+  `"Insufficient data"`.
 
 ## References
 
@@ -167,13 +285,13 @@ fit
 #> 3 of 3 items meet the full item-level screening criterion.
 #> 
 #> Item-level evidence
-#>   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor
-#>   A1    A       Retain    20  .89  .65     < .001      < .001  B
-#>   A2    A       Retain    20  .88  .60     < .001      < .001  B
-#>   B1    B       Retain    20  .93  .69     < .001      < .001  C
+#>   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor
+#>   A1    A       Retain        20  .89  .65     < .001      < .001  B
+#>   A2    A       Retain        20  .88  .60     < .001      < .001  B
+#>   B1    B       Retain        20  .93  .69     < .001      < .001  C
 #> 
-#>   n: judges who rated the item against every construct. Omnibus p: do the
-#>   item's ratings differ across constructs (Greenhouse-Geisser corrected).
+#>   Judges: the number who rated the item against every construct. Omnibus p: do
+#>   the item's ratings differ across constructs (Greenhouse-Geisser corrected).
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 

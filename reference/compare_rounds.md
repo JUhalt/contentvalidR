@@ -30,13 +30,15 @@ compare_rounds(..., labels = NULL)
   from the same workflow, and from the same mode of
   [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
   since status labels from different workflows rest on different
-  criteria and are not comparable.
+  criteria and are not comparable. Name them to label the rounds:
+  `compare_rounds(pilot = f1, revised = f2)`.
 
 - labels:
 
-  Optional round labels. Defaults to `Round 1`, `Round 2`, and so on, or
-  to the names supplied in `...`. A label cannot be the name of the unit
-  column (`item`, `judge` or `cell`) or `change`.
+  Optional round labels. Defaults to the names supplied in `...` when
+  every round is named, and otherwise to `Round 1`, `Round 2`, and so
+  on, with a warning when only some rounds were named. A label cannot be
+  the name of the unit column (`item`, `judge` or `cell`) or `change`.
 
 ## Value
 
@@ -44,19 +46,28 @@ An object of class `contentvalid_rounds`, a list containing:
 
 - transitions:
 
-  One row per unit, with its status in each round and the direction of
-  any change.
+  One row per unit, with its status in each round and, in `change`, how
+  its status in the last round compares with the first: `Unchanged`,
+  `Strengthened`, `Weakened`, `Changed` (to or from `Descriptive only`,
+  which is neither stronger nor weaker), `Added`, `Removed`, or
+  `Not in first or last` for a unit present only in the rounds between.
+  A unit that changed and changed back reads `Unchanged`; the round
+  columns show the path.
 
 - summary:
 
-  Counts of stable, improved, weakened, added, and removed units for
-  each consecutive pair of rounds.
+  For each consecutive pair of rounds, the units compared (present in
+  both) and how they split: unchanged, strengthened, weakened, and
+  otherwise changed (`n_changed`, to or from `Descriptive only`), which
+  add up to `n_compared`; and the units added and removed.
 
 - settings_changes:
 
   Analysis settings that differ between consecutive rounds, and a
   changed panel size, which is the audit trail for whether a status
-  change can be read as an evidence change at all.
+  change can be read as an evidence change at all. The values are text;
+  a proportion (`alpha`, `consensus_threshold`, `ioc_cut`, `p0`) is
+  written as APA writes it, `.05` or `.75`.
 
 - comparable:
 
@@ -122,7 +133,7 @@ compare_rounds(sort_validity(round1), sort_validity(round2))
 #> delete.
 #> 
 #> Status by round
-#>   Item  Round 1  Round 2    Change
+#>   Item  Round 1  Round 2    First to last
 #>   I1    Review   Supported  Strengthened
 #>   I2    Review   Review     Unchanged
 #> 

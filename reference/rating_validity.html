@@ -29,7 +29,10 @@ mean HTD, and the printout says how many items are behind each mean when
 some are left out. The two-judge minimum is this package's choice.
 Colquitt et al. (2019) norms are applied only to target-scale averages of
 HTC and HTD, matching the level at which those empirical benchmarks were
-constructed. The labels are suppressed for expert judges."><meta property="og:description" content="Provides the recommended user-facing workflow for a fully crossed
+constructed. The labels are not applied to expert judges. Each index is
+read against its own band; the advice in scale_summary$evidence, keyed to
+the lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s."><meta property="og:description" content="Provides the recommended user-facing workflow for a fully crossed
 construct-rating study. Judges rate each item against its intended construct
 definition and one or more orbiting definitions. rating_validity() combines:
 Hinkin-Tracey correspondence (HTC),
@@ -59,7 +62,10 @@ mean HTD, and the printout says how many items are behind each mean when
 some are left out. The two-judge minimum is this package's choice.
 Colquitt et al. (2019) norms are applied only to target-scale averages of
 HTC and HTD, matching the level at which those empirical benchmarks were
-constructed. The labels are suppressed for expert judges."></head><body>
+constructed. The labels are not applied to expert judges. Each index is
+read against its own band; the advice in scale_summary$evidence, keyed to
+the lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -142,7 +148,10 @@ mean HTD, and the printout says how many items are behind each mean when
 some are left out. The two-judge minimum is this package's choice.</p>
 <p>Colquitt et al. (2019) norms are applied only to <strong>target-scale averages</strong> of
 HTC and HTD, matching the level at which those empirical benchmarks were
-constructed. The labels are suppressed for expert judges.</p>
+constructed. The labels are not applied to expert judges. Each index is
+read against its own band; the advice in <code>scale_summary$evidence</code>, keyed to
+the lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s.</p>
     </div>
 
     <div class="section level2">
@@ -223,8 +232,98 @@ degrees of freedom, where a correction applies (see <code><a href="anova_content
 <code>p_omnibus</code>, <code>df1</code> and <code>df2</code> are the uncorrected test; and
 <code>max_contrast_p</code> is the largest <em>p</em> among the planned contrasts, <code>NA</code>
 when a contrast has no <em>p</em>. In <code>scale_summary</code>, <code>n_htc</code> and <code>n_htd</code> count
-the items in each mean.</p>
-    </div>
+the items in each mean. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> are
+described in <a href="contentvalid-methods.html">contentvalid-methods</a>.</p>
+<p><strong>Results columns.</strong> <code>results</code> has one row per item:</p><dl><dt><code>item</code></dt>
+<dd><p>The item.</p></dd>
+
+<dt><code>target</code></dt>
+<dd><p>The construct the item was written for.</p></dd>
+
+<dt><code>n_raters</code></dt>
+<dd><p>Judges who rated the item.</p></dd>
+
+<dt><code>n_complete</code></dt>
+<dd><p>Judges who rated it against every construct, on
+whom HTD and the tests rest.</p></dd>
+
+<dt><code>n_incomplete</code></dt>
+<dd><p><code>n_raters - n_complete</code>.</p></dd>
+
+<dt><code>n_target</code></dt>
+<dd><p>Judges who rated it against its intended construct,
+on whom HTC rests.</p></dd>
+
+<dt><code>n_constructs</code></dt>
+<dd><p>Construct definitions the item was rated
+against.</p></dd>
+
+<dt><code>target_mean</code></dt>
+<dd><p>The mean rating on the intended construct, from
+the <code>n_target</code> judges, on the scale as given.</p></dd>
+
+<dt><code>target_mean_complete</code></dt>
+<dd><p>The same mean from the <code>n_complete</code>
+judges.</p></dd>
+
+<dt><code>strongest_competitor</code></dt>
+<dd><p>The other construct with the highest
+mean rating among the <code>n_complete</code> judges, ties joined by <code>" / "</code>.</p></dd>
+
+<dt><code>competitor_mean</code></dt>
+<dd><p>That construct's mean rating.</p></dd>
+
+<dt><code>htc</code></dt>
+<dd><p>HTC, the intended construct's mean rating as a share of
+the scale.</p></dd>
+
+<dt><code>htd</code></dt>
+<dd><p>HTD, the intended construct's average lead over every
+other construct, -1 to 1.</p></dd>
+
+<dt><code>F</code>, <code>df1</code>, <code>df2</code>, <code>p_omnibus</code></dt>
+<dd><p>The uncorrected repeated-measures
+<em>F</em> test.</p></dd>
+
+<dt><code>epsilon_gg</code></dt>
+<dd><p>The Greenhouse-Geisser epsilon.</p></dd>
+
+<dt><code>df1_gg</code>, <code>df2_gg</code></dt>
+<dd><p>The corrected degrees of freedom.</p></dd>
+
+<dt><code>p_value</code></dt>
+<dd><p>The omnibus <em>p</em> the decision reads: corrected where a
+correction applies.</p></dd>
+
+<dt><code>partial_eta2</code></dt>
+<dd><p>Partial eta-squared of the omnibus test.</p></dd>
+
+<dt><code>min_mean_diff</code></dt>
+<dd><p>The smallest lead of the intended construct's
+mean over another construct's, among the planned contrasts.</p></dd>
+
+<dt><code>max_contrast_p</code></dt>
+<dd><p>The largest planned-contrast <em>p</em>.</p></dd>
+
+<dt><code>contrast_pass</code></dt>
+<dd><p>Whether every planned contrast met <code>alpha</code>.</p></dd>
+
+<dt><code>recommendation</code></dt>
+<dd><p><code>"Retain"</code>, <code>"Review"</code>, or
+<code>"Insufficient data"</code> (fewer than two complete judges).</p></dd>
+
+<dt><code>issue</code></dt>
+<dd><p>The reason in a few words, such as <code>"Orbiting construct rated higher"</code>.</p></dd>
+
+<dt><code>interpretation</code></dt>
+<dd><p>The decision explained in a sentence.</p></dd>
+
+<dt><code>status</code></dt>
+<dd><p>The shared status: <code>"Supported"</code> for <code>"Retain"</code>,
+<code>"Review"</code>, or <code>"Insufficient data"</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T. (2019).
@@ -266,13 +365,13 @@ Integrating new and existing techniques. <em>MIS Quarterly, 35</em>(2), 293–33
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 of 3 items meet the full item-level screening criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A1    A       Retain    20  .89  .65     &lt; .001      &lt; .001  B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   A2    A       Retain    20  .88  .60     &lt; .001      &lt; .001  B</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   B1    B       Retain    20  .93  .69     &lt; .001      &lt; .001  C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A1    A       Retain        20  .89  .65     &lt; .001      &lt; .001  B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   A2    A       Retain        20  .88  .60     &lt; .001      &lt; .001  B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   B1    B       Retain        20  .93  .69     &lt; .001      &lt; .001  C</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   n: judges who rated the item against every construct. Omnibus p: do the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   item's ratings differ across constructs (Greenhouse-Geisser corrected).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Judges: the number who rated the item against every construct. Omnibus p: do</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   the item's ratings differ across constructs (Greenhouse-Geisser corrected).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Contrast p: the largest p among the planned target-versus-orbiting</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   contrasts, so every contrast is at or below it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

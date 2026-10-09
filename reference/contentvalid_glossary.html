@@ -100,11 +100,11 @@ definitions as the <code>"statuses"</code> attribute.</p>
 
 <p>Strength labels such as <code>Strong</code> or <code>Weak</code> from <code><a href="interpret_colquitt.html">interpret_colquitt()</a></code> are
 percentile positions relative to scales published in the measurement
-literature. They are not absolute judgments, and they are not comparable
-across indices: HTC and HTD sit on different scales with different typical
+literature. They are not absolute judgments. Each index is read against its
+own benchmark: HTC and HTD sit on different scales with different typical
 values, so an HTC of .83 can be labeled <code>Weak</code> in the same analysis where
-an HTD of .44 is labeled <code>Very Strong</code>. Compare each index against its own
-benchmark, never against another index's number.</p>
+an HTD of .44 is labeled <code>Very Strong</code>. Two indices' labels can be compared,
+because each is a percentile position; their numbers cannot.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -163,7 +163,7 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         the intended construct was rated above every other (every planned</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         contrast).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- did not meet every criterion; the competitor column shows the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         closest rival.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         other construct with the highest mean rating.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- fewer than two judges rated it against every</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         construct.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -228,7 +228,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Decisions (congruence)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Congruent -- its index of item-objective congruence met the criterion.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Review -- its index fell below the criterion; the margin shows how its</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         intended objective compares with the closest other.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         intended objective compares with the other objective with the highest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mean rating.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Target described -- only its intended objective was rated, so there is</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         nothing to compare.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     Insufficient data -- no usable ratings for its intended objective.</span>
@@ -351,8 +352,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   `status` column of `results`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Strength labels such as Strong or Weak are percentile positions relative to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments, and are not comparable across</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> different indices.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments. Compare two indices by their labels,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> never by their numbers, which sit on different scales.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See as.data.frame(x) for the definitions as a table.</span>
 <span class="r-in"><span><span class="fu">contentvalid_glossary</span><span class="op">(</span><span class="st">"item-sort"</span><span class="op">)</span></span></span>
@@ -399,8 +400,8 @@ benchmark, never against another index's number.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   `status` column of `results`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Strength labels such as Strong or Weak are percentile positions relative to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments, and are not comparable across</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> different indices.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> published scales, not absolute judgments. Compare two indices by their labels,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> never by their numbers, which sit on different scales.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> See as.data.frame(x) for the definitions as a table.</span>
 </code></pre></div>

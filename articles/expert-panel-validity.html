@@ -127,14 +127,13 @@ of the content-validity argument.</p>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
-<span><span class="co">#&gt; Items: 4 | Experts/item: 6</span></span>
+<span><span class="co">#&gt; Items: 4 | Experts per item: 6</span></span>
 <span><span class="co">#&gt; Scale: 1 to 4 | Relevant: a rating of 3 or higher</span></span>
-<span><span class="co">#&gt; Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75</span></span>
+<span><span class="co">#&gt; Mean Aiken's V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 63%.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa</span></span>
-<span><span class="co">#&gt; above .74).</span></span>
+<span><span class="co">#&gt; 4 of 4 items meet the I-CVI criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa</span></span>
 <span><span class="co">#&gt;   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00</span></span>
@@ -144,13 +143,12 @@ of the content-validity argument.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span></span>
 <span><span class="co">#&gt; interval, and I-CVI the proportion interval named below.</span></span>
-<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa</span></span>
-<span><span class="co">#&gt; is modified kappa, with values above .74 read as excellent (Polit et al.,</span></span>
-<span><span class="co">#&gt; 2007).</span></span>
+<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986). Kappa</span></span>
+<span><span class="co">#&gt; is modified kappa, read as excellent above .74 (Polit et al., 2007).</span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
 <span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt; people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas modified kappa</span></span>
 <span><span class="co">#&gt; (the kappa column) describes each item. Alpha can be low when nearly every</span></span>
@@ -194,7 +192,9 @@ of the content-validity argument.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert summary&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
+<span><span class="co">#&gt; Scale: 1 to 4 | Relevant: a rating of 3 or higher</span></span>
 <span><span class="co">#&gt; Strong support: 4 of 4 | Review: 0 of 4</span></span>
+<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986).</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 63%.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -364,7 +364,7 @@ experts:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">8</span>, <span class="fl">6</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: essentiality</span></span>
-<span><span class="co">#&gt; Items: 3 | Experts/item: 12</span></span>
+<span><span class="co">#&gt; Items: 3 | Experts per item: 12</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 1 of 3 items meets the exact essentiality criterion.</span></span>
@@ -408,7 +408,7 @@ follows the exact-probability logic revisited by Ayre and Scally
 <span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">E</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: essentiality</span></span>
-<span><span class="co">#&gt; Items: 2 | Experts/item: 8</span></span>
+<span><span class="co">#&gt; Items: 2 | Experts per item: 8</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 1 of 2 items meets the exact essentiality criterion.</span></span>
@@ -457,7 +457,7 @@ beside the exact decision, without changing it:</p>
 <span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">9</span>, <span class="fl">8</span>, <span class="fl">7</span><span class="op">)</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span>, N <span class="op">=</span> <span class="fl">9</span>, legacy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: essentiality</span></span>
-<span><span class="co">#&gt; Items: 3 | Experts/item: 9</span></span>
+<span><span class="co">#&gt; Items: 3 | Experts per item: 9</span></span>
 <span><span class="co">#&gt; Method: Lawshe CVR with exact binomial critical values</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 2 of 3 items meet the exact essentiality criterion.</span></span>
@@ -539,7 +539,7 @@ each item was written for:</p>
 <span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: congruence</span></span>
-<span><span class="co">#&gt; Items: 2 | Experts/cell: 4 | Objectives: 2</span></span>
+<span><span class="co">#&gt; Items: 2 | Experts per cell: 4 | Objectives: 2</span></span>
 <span><span class="co">#&gt; Method: Index of item-objective congruence (Rovinelli &amp; Hambleton, 1977)</span></span>
 <span><span class="co">#&gt; Criterion: IOC at or above .70, the criterion Rovinelli and Hambleton applied.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -549,10 +549,10 @@ each item was written for:</p>
 <span><span class="co">#&gt;   I1   A      Congruent       4 1.00 1.00 B                    -1.00   2.00</span></span>
 <span><span class="co">#&gt;   I2   B      Congruent       4 1.00 1.00 A                    -1.00   2.00</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; IOC: the index for the target objective. Mean: the experts' mean rating on it</span></span>
-<span><span class="co">#&gt; (-1 to 1). Competitor mean: the highest mean on another objective. Margin:</span></span>
-<span><span class="co">#&gt; mean less competitor mean, a description beside the index, not part of its</span></span>
-<span><span class="co">#&gt; criterion.</span></span>
+<span><span class="co">#&gt; IOC: the index for the target objective. Mean: the experts' mean rating on the</span></span>
+<span><span class="co">#&gt; target objective (-1 to 1). Competitor mean: the highest mean on another</span></span>
+<span><span class="co">#&gt; objective. Margin: mean less competitor mean, a description beside the index,</span></span>
+<span><span class="co">#&gt; not part of its criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; I1, I2: The index of item-objective congruence for the intended objective is</span></span>
 <span><span class="co">#&gt;   at or above .70: the experts matched the item to it and not to the other</span></span>
@@ -576,13 +576,13 @@ each item was written for:</p>
 <p>An item is <code>"Congruent"</code> when its index for the target
 objective reaches <code>ioc_cut</code>, by default the .70 Rovinelli and
 Hambleton applied. The printout also shows the experts’ mean rating on
-the target and on the closest other objective, and the margin between
-those means. Applied work often reports the mean rating on the target as
-“the IOC”; it is an ingredient of the index, not the index, because it
-reaches 1 whatever the experts say about the other objectives. The
-margin is a description beside the index, not part of its criterion.
-Without a target mapping, each item’s index on every objective is
-described, with no decision.</p>
+the target and on the other objective with the highest mean rating, and
+the margin between those means. Applied work often reports the mean
+rating on the target as “the IOC”; it is an ingredient of the index, not
+the index, because it reaches 1 whatever the experts say about the other
+objectives. The margin is a description beside the index, not part of
+its criterion. Without a target mapping, each item’s index on every
+objective is described, with no decision.</p>
 </div>
 <div class="section level2">
 <h2 id="missing-ratings">Missing ratings<a class="anchor" aria-label="anchor" href="#missing-ratings"></a>
@@ -605,7 +605,7 @@ unlike indices into one generic chart.</p>
 <p><img src="expert-panel-validity_files/figure-html/expert-plots-2.png" class="r-plt" alt="Essentiality plot: each item's observed CVR (filled) joined to the CVR the exact test needs (open), with a dotted line at zero." width="672"></p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">d</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="Congruence plot: each item's index of item-objective congruence for its intended objective (filled), with the experts' mean rating on the intended objective (triangle) and on the closest other objective (open circle) in gray, a dotted line at zero, and a dashed line at the .70 criterion." width="672"></p>
+<p><img src="expert-panel-validity_files/figure-html/expert-plots-3.png" class="r-plt" alt="Congruence plot: each item's index of item-objective congruence for its intended objective, filled when it meets the .70 criterion and open below it, with the experts' mean rating on the intended objective (a triangle pointing up) and on the other objective with the highest mean (a triangle pointing down) in gray, a dotted line at zero, and a dashed line at the .70 criterion." width="672"></p>
 <p>Relevance mode displays Aiken’s V with its score interval and
 overlays I-CVI as a separate marker. Essentiality mode displays observed
 CVR against the exact panel-specific critical CVR, and marks with a

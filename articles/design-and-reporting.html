@@ -231,9 +231,9 @@ individual-item cutoffs.</p>
 <span><span class="co">#&gt;   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.</span></span>
-<span><span class="co">#&gt; Judges = judges who rated the item against every construct. F</span></span>
-<span><span class="co">#&gt; test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of</span></span>
-<span><span class="co">#&gt; freedom where the correction applied. Contrast p = the largest one-sided p</span></span>
+<span><span class="co">#&gt; Judges = judges who rated the item against every construct.</span></span>
+<span><span class="co">#&gt; F test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees</span></span>
+<span><span class="co">#&gt; of freedom where the correction applied. Contrast p = the largest one-sided p</span></span>
 <span><span class="co">#&gt; among the planned contrasts of the intended construct with each other</span></span>
 <span><span class="co">#&gt; construct. Retain = omnibus p and every one-sided contrast p at or below</span></span>
 <span><span class="co">#&gt; alpha = .05 (MacKenzie et al., 2011).</span></span>
@@ -372,9 +372,12 @@ and an assumed probability that one expert endorses it:</p>
 <span><span class="co">#&gt;   relaxes the criterion while a fourth or fifth makes unanimity harder. That</span></span>
 <span><span class="co">#&gt;   is a property of the guideline, not of the items.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; This table reports the consequences of the panel sizes you asked about. It</span></span>
-<span><span class="co">#&gt; does not recommend one. `prob` is an assumption you supply, so treat the</span></span>
-<span><span class="co">#&gt; result as conditional on it and report the value you assumed.</span></span>
+<span><span class="co">#&gt; This is a contentvalidR planning tool, not a published power method: it treats</span></span>
+<span><span class="co">#&gt; the experts as endorsing the item independently, each with probability `prob`,</span></span>
+<span><span class="co">#&gt; while the criterion it applies is Lynn's (1986). This table reports the</span></span>
+<span><span class="co">#&gt; consequences of the panel sizes you asked about. It does not recommend one.</span></span>
+<span><span class="co">#&gt; `prob` is an assumption you supply, so treat the result as conditional on it</span></span>
+<span><span class="co">#&gt; and report the value you assumed.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See plot(x) for the probabilities by panel size.</span></span></code></pre></div>
 <p>Note the step. Lynn’s (1986) criterion requires every expert to agree
@@ -403,8 +406,8 @@ design would need to reach a given dependability:</p>
 <span><span class="co">#&gt;   Dependability coefficient (absolute, fixed standard):   .94</span></span>
 <span><span class="co">#&gt;   Status: Supported (criterion: Phi &gt;= .80, a contentvalidR convention)</span></span>
 <span><span class="co">#&gt;   With 8 judges, absolute decisions about these items would generalize to</span></span>
-<span><span class="co">#&gt;   another panel of the same size at Phi = .94, at or above the .80 set for</span></span>
-<span><span class="co">#&gt;   this analysis. Judge differences account for 15.6% of total variance.</span></span>
+<span><span class="co">#&gt;   another panel of the same size at Phi = .94, at or above the .80 criterion.</span></span>
+<span><span class="co">#&gt;   Judge differences account for 15.6% of total variance.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variance components</span></span>
 <span><span class="co">#&gt;   Source    df    MS  Estimate  Used  % of total</span></span>
@@ -432,11 +435,12 @@ design would need to reach a given dependability:</p>
 the ratings and is lowered by differences in judge severity, which is
 usually what a content-validity decision rests on. The status beside it
 compares Phi with <code>phi_cut</code> (.80 by default), a convention of
-this package, not a published standard. A target no realistic panel
-reaches prints as “unreachable” (<code>NA</code> in the data): the
-judges barely distinguished the items. The projected panel sizes come
-from one panel’s variance components and carry no interval, so read them
-as planning figures.</p>
+this package, not a published standard. Here every target is reached
+with five judges or fewer, because the items account for most of the
+variance. Had the judges barely distinguished the items, a target no
+realistic panel reaches would print as “unreachable” (<code>NA</code> in
+the data). The projected panel sizes come from one panel’s variance
+components and carry no interval, so read them as planning figures.</p>
 <p>Across pretest rounds, <code><a href="../reference/compare_rounds.html">compare_rounds()</a></code> sets each item’s
 status side by side and checks whether the analysis settings changed
 between rounds, so a relaxed criterion cannot read as an improved

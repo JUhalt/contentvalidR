@@ -84,7 +84,18 @@ anova_content(
 A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and *p* value
 for within-judge designs, partial eta-squared, and planned-contrast
-diagnostics. The full planned-contrast table is stored in
+diagnostics. `target_mean` and `competitor_mean`, and
+`strongest_competitor` (the other construct with the highest mean
+rating), use every available rating of the item. In a within-judge
+design `F`, the contrasts and HTD use only the judges who rated the item
+against every construct (`n_complete`), so with missing ratings the two
+sets of means can differ, even in which construct leads. The intended
+construct's mean over those judges is `target_mean_complete` in
+[`htd()`](https://juhalt.github.io/contentvalidR/reference/htd.md) and
+in
+[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md)'s
+`results`, and the contrast table below holds each contrast's means over
+them. The full planned-contrast table is stored in
 `attr(result, "contrasts")`: for each contrast the two means, their
 difference, `t`, `df`, the one-sided `p`, the adjusted `p_adj`, and
 `pass`. Its `dz` column is a standardized mean difference: the mean

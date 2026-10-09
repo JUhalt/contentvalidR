@@ -84,81 +84,232 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JUhalt/contentvalidR" class="external-link">contentvalidR</a></span><span class="op">)</span></span></code></pre></div>
-<p><strong>Overview</strong></p>
-<p>This vignette introduces the package’s three recommended
-content-pretesting workflows—<strong>item sorting</strong>,
-<strong>construct ratings</strong>, and <strong>expert panels</strong>.
-<code><a href="../reference/sort_validity.html">sort_validity()</a></code>, <code><a href="../reference/rating_validity.html">rating_validity()</a></code>, and
-<code><a href="../reference/expert_validity.html">expert_validity()</a></code> organize quantitative evidence while
-keeping substantive decisions separate from statistical flags.</p>
-<p><strong>A common workflow contract</strong></p>
-<p>All three fitted workflow objects expose <code>results</code>,
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p>contentvalidR analyzes the evidence that judges and experts provide
+about a scale’s content before anyone answers it. Each kind of study has
+its own workflow function, and each workflow has a guide:</p>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr class="header">
+<th>The study</th>
+<th>Workflow</th>
+<th>Guide</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Judges sort each item into the construct it best represents</td>
+<td><code><a href="../reference/sort_validity.html">sort_validity()</a></code></td>
+<td><code><a href="../articles/item-sort-validity.html">vignette("item-sort-validity")</a></code></td>
+</tr>
+<tr class="even">
+<td>Judges rate each item against every construct definition</td>
+<td><code><a href="../reference/rating_validity.html">rating_validity()</a></code></td>
+<td><code><a href="../articles/construct-rating-validity.html">vignette("construct-rating-validity")</a></code></td>
+</tr>
+<tr class="odd">
+<td>Experts rate each item’s relevance, essentiality, or congruence with
+an objective</td>
+<td><code><a href="../reference/expert_validity.html">expert_validity()</a></code></td>
+<td><code><a href="../articles/expert-panel-validity.html">vignette("expert-panel-validity")</a></code></td>
+</tr>
+<tr class="even">
+<td>A panel rates the items over several Delphi rounds</td>
+<td><code><a href="../reference/delphi_validity.html">delphi_validity()</a></code></td>
+<td><code><a href="../articles/delphi-rounds.html">vignette("delphi-rounds")</a></code></td>
+</tr>
+<tr class="odd">
+<td>Do the conclusions depend on the particular judges?</td>
+<td><code><a href="../reference/judge_validity.html">judge_validity()</a></code></td>
+<td>“Reading judge heterogeneity” in
+<code><a href="../articles/reading-output.html">vignette("reading-output")</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Do the items cover every cell of the blueprint?</td>
+<td><code><a href="../reference/domain_validity.html">domain_validity()</a></code></td>
+<td>“Reading domain coverage” in
+<code><a href="../articles/reading-output.html">vignette("reading-output")</a></code>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Two functions work across the workflows.
+<code><a href="../reference/content_evidence.html">content_evidence()</a></code> sets several review stages side by side,
+item by item, and draws them as figures
+(<code><a href="../articles/reporting-examples.html">vignette("reporting-examples")</a></code>).
+<code><a href="../reference/content_handoff.html">content_handoff()</a></code> carries the items a review kept, with the
+evidence behind each decision, into the analysis of response data
+(<code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code>, and
+<code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> for one item set
+followed through both stages).</p>
+<p>This vignette runs the first three workflows on small examples and
+points to the rest. <code><a href="../articles/reading-output.html">vignette("reading-output")</a></code> explains
+every part of a printout, and
+<code><a href="../articles/design-and-reporting.html">vignette("design-and-reporting")</a></code> covers how many judges to
+recruit and what to report.</p>
+</div>
+<div class="section level2">
+<h2 id="a-common-workflow-contract">A common workflow contract<a class="anchor" aria-label="anchor" href="#a-common-workflow-contract"></a>
+</h2>
+<p>All six workflow objects expose <code>results</code>,
 <code>scale_summary</code>, <code>settings</code>, <code>design</code>,
-and <code>details</code>. Their result tables also contain a common
-<code>status</code> field: <code>Supported</code>, <code>Review</code>,
-<code>Insufficient data</code>, or <code>Descriptive only</code>.
-Method-specific recommendation wording is preserved alongside that
-common status. This makes it possible to write reusable code across
-workflows without pretending that a Howard-Melloy retention decision,
-Hinkin-Tracey screening result, and expert-panel judgment are
-substantively identical.</p>
-<p><strong>Sort-based (Psa, Csv, binomial)</strong></p>
+and <code>details</code>. Their <code>results</code> tables also contain
+a common <code>status</code> field: <code>Supported</code>,
+<code>Review</code>, <code>Insufficient data</code>, or
+<code>Descriptive only</code>. The method’s own decision word, such as
+<code>Retain</code> in an item sort, is kept beside it as
+<code>recommendation</code>. This makes it possible to write reusable
+code across workflows without pretending that a Howard-Melloy retention
+decision, a construct-rating screening result, and an expert-panel
+judgment are substantively identical.</p>
+</div>
+<div class="section level2">
+<h2 id="item-sort-psa-csv-and-the-exact-test">Item sort: Psa, Csv, and the exact test<a class="anchor" aria-label="anchor" href="#item-sort-psa-csv-and-the-exact-test"></a>
+</h2>
+<p>Twelve judges sorted four items into three constructs, A, B, and C.
+Items I1 and I2 were written for A, and I3 and I4 for B:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">toy_sort</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  rater <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">4</span><span class="op">)</span>,</span>
-<span>  target_construct   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
+<span>  target_construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  assigned_construct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.80</span>,<span class="fl">.20</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.65</span>,<span class="fl">.35</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.70</span>,<span class="fl">.30</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"B"</span><span class="op">)</span>, <span class="fl">12</span>, <span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.45</span>,<span class="fl">.55</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">11</span><span class="op">)</span>, <span class="st">"C"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">10</span><span class="op">)</span>, <span class="st">"B"</span>, <span class="st">"C"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">7</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"C"</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"B"</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="fl">6</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"C"</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">psa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_psa.html">compute_psa</a></span><span class="op">(</span><span class="va">toy_sort</span><span class="op">)</span></span>
-<span><span class="va">csv</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compute_csv.html">compute_csv</a></span><span class="op">(</span><span class="va">toy_sort</span><span class="op">)</span></span>
-<span><span class="va">csv</span><span class="op">$</span><span class="va">decision</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">csv</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">n_target</span><span class="op">[</span><span class="va">i</span><span class="op">]</span>, <span class="va">csv</span><span class="op">$</span><span class="va">n</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">decision</span></span>
-<span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">psa</span>; <span class="va">csv</span></span>
-<span><span class="co">#&gt; &lt;contentvalid_psa&gt; Proportion of substantive agreement (Psa)</span></span>
-<span><span class="co">#&gt; Anderson and Gerbing (1991).</span></span>
+<span><span class="va">sort_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">toy_sort</span><span class="op">)</span></span>
+<span><span class="va">sort_fit</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort&gt; Item-sort analysis</span></span>
+<span><span class="co">#&gt; Items: 4 | Judges: 12 | Target constructs: 2</span></span>
+<span><span class="co">#&gt; Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)</span></span>
+<span><span class="co">#&gt; Judges: naive, meaning drawn from the kind of people who will answer the</span></span>
+<span><span class="co">#&gt; items.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Item  Target  Judges  Psa      95% CI</span></span>
-<span><span class="co">#&gt;   I1    A         9/12  .75  [.47, .91]</span></span>
-<span><span class="co">#&gt;   I2    A         5/12  .42  [.19, .68]</span></span>
-<span><span class="co">#&gt;   I3    B         2/12  .17  [.05, .45]</span></span>
-<span><span class="co">#&gt;   I4    B         5/12  .42  [.19, .68]</span></span>
+<span><span class="co">#&gt; 2 of 4 items meet the exact target-assignment criterion.</span></span>
+<span><span class="co">#&gt; Flagged for review: I3, I4</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Judges: assignments to the target construct, out of the judges who sorted the</span></span>
-<span><span class="co">#&gt; item.</span></span>
-<span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
-<span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
-<span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt; Item-level evidence</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  Psa      95% CI   Csv  Competitor     p</span></span>
+<span><span class="co">#&gt;   I1    A       Retain     11/12  .92  [.65, .99]   .83  C           .003</span></span>
+<span><span class="co">#&gt;   I2    A       Retain     10/12  .83  [.55, .95]   .75  B; C        .019</span></span>
+<span><span class="co">#&gt;   I3    B       Review      7/12  .58  [.32, .81]   .25  A           .387</span></span>
+<span><span class="co">#&gt;   I4    B       Review      4/12  .33  [.14, .61]  -.17  A           .927</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="co">#&gt;   Judges: assignments to the target construct, out of the judges who sorted</span></span>
+<span><span class="co">#&gt;   the item.</span></span>
+<span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
+<span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
+<span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
+<span><span class="co">#&gt;   the right people rated it.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
+<span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
+<span><span class="co">#&gt;   A           2       .88  Strong          .79  Strong</span></span>
+<span><span class="co">#&gt;   B           2       .46  Weak            .04  Lack of</span></span>
+<span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
+<span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
+<span><span class="co">#&gt;   place a scale against published scales. Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their values cannot be compared with each other; their labels can,</span></span>
+<span><span class="co">#&gt;   because each is a percentile position among published scales.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What these columns mean</span></span>
+<span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
+<span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
+<span><span class="co">#&gt;   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the</span></span>
+<span><span class="co">#&gt;       method is named above.</span></span>
+<span><span class="co">#&gt;   Csv -- Coefficient of Substantive Validity. How much more often judges chose</span></span>
+<span><span class="co">#&gt;       the intended construct than its closest rival (-1 to 1; 0 is a tie).</span></span>
+<span><span class="co">#&gt;   Competitor -- Strongest competing construct. The construct other than the</span></span>
+<span><span class="co">#&gt;       intended one that judges chose most often.</span></span>
+<span><span class="co">#&gt;   p -- Howard-Melloy exact test. Probability of at least this many target</span></span>
+<span><span class="co">#&gt;       assignments if each judge picked the target at rate p0; compare with</span></span>
+<span><span class="co">#&gt;       alpha.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; What the decisions mean</span></span>
+<span><span class="co">#&gt;   Retain -- met the exact target-assignment criterion.</span></span>
+<span><span class="co">#&gt;   Review -- did not meet the exact target-assignment criterion; the competitor</span></span>
+<span><span class="co">#&gt;       column shows where judges put it instead.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
+<span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A flag for review is not an automatic deletion decision. Use theory,</span></span>
+<span><span class="co">#&gt; construct-domain coverage, item wording, and qualitative judge feedback</span></span>
+<span><span class="co">#&gt; alongside these statistics.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x) for the flagged items and content_report(x) for an APA table.</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
+</h3>
+<ul>
+<li>
+<strong>Psa</strong>, the proportion of substantive agreement, is
+the share of judges who assign the item to its intended construct:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Psa</mtext><mo>=</mo><msub><mi>n</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">\text{Psa} = n_{target} / N</annotation></semantics></math>.</li>
+<li>
+<strong>Csv</strong>, the substantive-validity coefficient, is the
+intended construct’s margin over its strongest competitor:
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Csv</mtext><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>n</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><mo>−</mo><msub><mi>n</mi><mrow><mi>c</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>e</mi><mi>t</mi><mi>i</mi><mi>t</mi><mi>o</mi><mi>r</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mi>/</mi><mi>N</mi></mrow><annotation encoding="application/x-tex">\text{Csv} = (n_{target} - n_{competitor}) / N</annotation></semantics></math>.
+Here
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>t</mi><mi>a</mi><mi>r</mi><mi>g</mi><mi>e</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">n_{target}</annotation></semantics></math>
+counts the assignments to the intended construct,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>c</mi><mi>o</mi><mi>m</mi><mi>p</mi><mi>e</mi><mi>t</mi><mi>i</mi><mi>t</mi><mi>o</mi><mi>r</mi></mrow></msub><annotation encoding="application/x-tex">n_{competitor}</annotation></semantics></math>
+those to the most-chosen other construct, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
+the judges who sorted the item (Anderson &amp; Gerbing, 1991). A
+negative Csv, as for I4, means a competing construct drew more judges
+than the intended one.</li>
+<li>The exact binomial test of Howard and Melloy (2016) asks whether the
+target count is too large for a target rate of .50 or less. With twelve
+judges an item needs ten target assignments, so I1 and I2 are retained
+and I3 and I4 are flagged for review. The .50 is a benchmark rate, not
+the rate random sorting would give, which is 1 divided by the number of
+constructs.</li>
+</ul>
+<p>The components are also available on their own:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/compute_csv.html">compute_csv</a></span><span class="op">(</span><span class="va">toy_sort</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_csv&gt; Coefficient of substantive validity (Csv)</span></span>
 <span><span class="co">#&gt; Anderson and Gerbing (1991).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item  Target  Judges  Competitor  Competitor judges   Csv</span></span>
-<span><span class="co">#&gt;   I1    A         9/12  B                        3/12   .50</span></span>
-<span><span class="co">#&gt;   I2    A         5/12  B                        7/12  -.17</span></span>
-<span><span class="co">#&gt;   I3    B         2/12  A                       10/12  -.67</span></span>
-<span><span class="co">#&gt;   I4    B         5/12  A                        7/12  -.17</span></span>
+<span><span class="co">#&gt;   I1    A        11/12  C                        1/12   .83</span></span>
+<span><span class="co">#&gt;   I2    A        10/12  B; C                     1/12   .75</span></span>
+<span><span class="co">#&gt;   I3    B         7/12  A                        4/12   .25</span></span>
+<span><span class="co">#&gt;   I4    B         4/12  A                        6/12  -.17</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Csv is the target count minus the count for the most-chosen other construct,</span></span>
 <span><span class="co">#&gt; divided by the number of judges.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
-<p><strong>Interpretation</strong> - <strong>Psa</strong> = share
-assigning the intended construct. - <strong>Csv</strong> = margin of
-wins: $ $. - The exact binomial test (null hypothesis: a target rate of
-.5 or less) flags items whose target count meets the criterion. The .5
-is a benchmark rate, not the rate random sorting would give.</p>
-<p><strong>Construct-rating workflow (HTC, HTD, repeated-measures
-ANOVA)</strong></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span>
+<span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">10</span>, N <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_binom&gt; Howard-Melloy exact test (one-sided)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The item meets the exact target-assignment criterion.</span></span>
+<span><span class="co">#&gt; 10 of 12 judges assigned the item to its target construct (Psa = .83). If each</span></span>
+<span><span class="co">#&gt; judge chose the target with probability p0 = .50, a count this high has</span></span>
+<span><span class="co">#&gt; probability p = .019.</span></span>
+<span><span class="co">#&gt; At alpha = .05 an item needs at least 10 of 12.</span></span>
+<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.56, 1.00].</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the test as one row.</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="construct-ratings-htc-htd-and-the-repeated-measures-test">Construct ratings: HTC, HTD, and the repeated-measures test<a class="anchor" aria-label="anchor" href="#construct-ratings-htc-htd-and-the-repeated-measures-test"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">toy_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
 <span>  item <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I1"</span>, <span class="st">"I2"</span>, <span class="st">"I3"</span><span class="op">)</span>,</span>
@@ -189,13 +340,13 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; 3 of 3 items meet the full item-level screening criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level evidence</span></span>
-<span><span class="co">#&gt;   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
-<span><span class="co">#&gt;   I1    A       Retain    16  .83  .49     &lt; .001      &lt; .001  C</span></span>
-<span><span class="co">#&gt;   I2    A       Retain    16  .89  .51     &lt; .001      &lt; .001  C</span></span>
-<span><span class="co">#&gt;   I3    B       Retain    16  .88  .54     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor</span></span>
+<span><span class="co">#&gt;   I1    A       Retain        16  .83  .49     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   I2    A       Retain        16  .89  .51     &lt; .001      &lt; .001  C</span></span>
+<span><span class="co">#&gt;   I3    B       Retain        16  .88  .54     &lt; .001      &lt; .001  C</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   n: judges who rated the item against every construct. Omnibus p: do the</span></span>
-<span><span class="co">#&gt;   item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
+<span><span class="co">#&gt;   Judges: the number who rated the item against every construct. Omnibus p: do</span></span>
+<span><span class="co">#&gt;   the item's ratings differ across constructs (Greenhouse-Geisser corrected).</span></span>
 <span><span class="co">#&gt;   Contrast p: the largest p among the planned target-versus-orbiting</span></span>
 <span><span class="co">#&gt;   contrasts, so every contrast is at or below it.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -242,8 +393,9 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt;   HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness</span></span>
 <span><span class="co">#&gt;   (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt;   A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band</span></span>
-<span><span class="co">#&gt;     of published scales (Colquitt et al., 2019); inspect the weaker items and</span></span>
-<span><span class="co">#&gt;     construct overlap before finalizing the scale.</span></span>
+<span><span class="co">#&gt;     of published scales (Colquitt et al., 2019). A contentvalidR suggestion</span></span>
+<span><span class="co">#&gt;     for the lower band, Moderate: inspect the weaker items and construct</span></span>
+<span><span class="co">#&gt;     overlap before finalizing the scale.</span></span>
 <span><span class="co">#&gt;   B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of</span></span>
 <span><span class="co">#&gt;     published scales (Colquitt et al., 2019).</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -254,17 +406,32 @@ ANOVA)</strong></p>
 <span><span class="co">#&gt; full content-validity argument.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
-<p><strong>Interpretation</strong> - <strong>HTC</strong> summarizes
-definitional correspondence with the intended construct. -
-<strong>HTD</strong> summarizes distinctiveness from orbiting
-constructs. - The repeated-measures ANOVA tests whether
-construct-definition ratings differ for an item. - Planned paired
-contrasts ask the direct screening question: is the target rating
-significantly higher than every orbiting rating? - Scale-level HTC/HTD
-averages can be interpreted using Colquitt et al. (2019) empirical norms
-when the judge population matches their intended use.</p>
-<p><strong>Expert-panel workflow</strong></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="section level3">
+<h3 id="interpretation-1">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation-1"></a>
+</h3>
+<ul>
+<li>
+<strong>HTC</strong> summarizes definitional correspondence: how
+highly judges rated the item against its intended construct (Hinkin
+&amp; Tracey, 1999; Colquitt et al., 2019).</li>
+<li>
+<strong>HTD</strong> summarizes definitional distinctiveness: how
+far the intended construct’s ratings lead the orbiting constructs’
+ratings, on average.</li>
+<li>The repeated-measures ANOVA tests whether the construct-definition
+ratings differ for an item.</li>
+<li>Planned paired contrasts ask the direct screening question: is the
+target rating significantly higher than every orbiting rating?</li>
+<li>Scale-level HTC and HTD averages can be read against the empirical
+norms of Colquitt et al. (2019) when the judges are like the naive
+judges those norms came from.</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="expert-panels-relevance-essentiality-and-congruence">Expert panels: relevance, essentiality, and congruence<a class="anchor" aria-label="anchor" href="#expert-panels-relevance-essentiality-and-congruence"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expert_ratings</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,</span>
 <span>    <span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">4</span>,<span class="fl">3</span>,<span class="fl">4</span>,<span class="fl">4</span>,</span>
@@ -276,14 +443,13 @@ when the judge population matches their intended use.</p>
 <span><span class="va">expert_fit</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
-<span><span class="co">#&gt; Items: 3 | Experts/item: 6</span></span>
+<span><span class="co">#&gt; Items: 3 | Experts per item: 6</span></span>
 <span><span class="co">#&gt; Scale: 1 to 4 | Relevant: a rating of 3 or higher</span></span>
-<span><span class="co">#&gt; Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
+<span><span class="co">#&gt; Mean Aiken's V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71%.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion, all with strong support (modified kappa</span></span>
-<span><span class="co">#&gt; above .74).</span></span>
+<span><span class="co">#&gt; 3 of 3 items meet the I-CVI criterion.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa</span></span>
 <span><span class="co">#&gt;   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00</span></span>
@@ -292,13 +458,12 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score</span></span>
 <span><span class="co">#&gt; interval, and I-CVI the proportion interval named below.</span></span>
-<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa</span></span>
-<span><span class="co">#&gt; is modified kappa, with values above .74 read as excellent (Polit et al.,</span></span>
-<span><span class="co">#&gt; 2007).</span></span>
+<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986). Kappa</span></span>
+<span><span class="co">#&gt; is modified kappa, read as excellent above .74 (Polit et al., 2007).</span></span>
 <span><span class="co">#&gt; 95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt; compared seven methods and recommends score intervals over the Wald interval.</span></span>
 <span><span class="co">#&gt; An interval reflects how few ratings an item received, not whether the right</span></span>
-<span><span class="co">#&gt; judges were chosen.</span></span>
+<span><span class="co">#&gt; people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Panel agreement is one coefficient for the whole panel, whereas modified kappa</span></span>
 <span><span class="co">#&gt; (the kappa column) describes each item. Alpha can be low when nearly every</span></span>
@@ -342,7 +507,9 @@ when the judge population matches their intended use.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_expert summary&gt; Expert-panel analysis</span></span>
 <span><span class="co">#&gt; Mode: relevance</span></span>
+<span><span class="co">#&gt; Scale: 1 to 4 | Relevant: a rating of 3 or higher</span></span>
 <span><span class="co">#&gt; Strong support: 3 of 3 | Review: 0 of 3</span></span>
+<span><span class="co">#&gt; I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986).</span></span>
 <span><span class="co">#&gt; Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].</span></span>
 <span><span class="co">#&gt;   Identical rating pairs: 71%.</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -352,15 +519,64 @@ when the judge population matches their intended use.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>Relevance, essentiality, and congruence are intentionally separate
-expert tasks. Use <code>mode = "relevance"</code> for Aiken V +
-CVI/modified kappa, <code>mode = "essentiality"</code> for Lawshe CVR,
-and <code>mode = "congruence"</code> for IOC.</p>
-<p><strong>Bundled reproducible examples</strong></p>
+expert tasks. Use <code>mode = "relevance"</code> for Aiken’s V with the
+I-CVI and modified kappa, <code>mode = "essentiality"</code> for
+Lawshe’s CVR, and <code>mode = "congruence"</code> for the index of
+item-objective congruence (IOC).
+<code><a href="../articles/expert-panel-validity.html">vignette("expert-panel-validity")</a></code> walks through all
+three.</p>
+</div>
+<div class="section level2">
+<h2 id="delphi-rounds">Delphi rounds<a class="anchor" aria-label="anchor" href="#delphi-rounds"></a>
+</h2>
+<p>When the same panel rates the items over several rounds, with
+anonymous feedback in between, <code><a href="../reference/delphi_validity.html">delphi_validity()</a></code> answers
+two questions side by side: whether enough experts agree about an item
+now (consensus, against a threshold you fix before the study), and
+whether experts are still changing their ratings (stability). It never
+folds one into the other. See
+<code><a href="../articles/delphi-rounds.html">vignette("delphi-rounds")</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="judges-and-domain-coverage">Judges and domain coverage<a class="anchor" aria-label="anchor" href="#judges-and-domain-coverage"></a>
+</h2>
+<p>Two workflows ask questions that no item-level index can reach.
+<code><a href="../reference/judge_validity.html">judge_validity()</a></code> returns one row per judge and asks whether
+the conclusions depend on the particular judges who served.
+<code><a href="../reference/domain_validity.html">domain_validity()</a></code> returns one row per cell of the content
+blueprint and asks whether the items cover every cell, including a cell
+no item was written for. Both are read in
+<code><a href="../articles/reading-output.html">vignette("reading-output")</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="from-review-to-response-data">From review to response data<a class="anchor" aria-label="anchor" href="#from-review-to-response-data"></a>
+</h2>
+<p><code><a href="../reference/content_evidence.html">content_evidence()</a></code> brings several review stages
+together, such as a relevance panel followed by an item sort, and draws
+a flow diagram and an evidence profile for a paper or poster
+(<code><a href="../articles/reporting-examples.html">vignette("reporting-examples")</a></code>).
+<code><a href="../reference/content_handoff.html">content_handoff()</a></code> packages a review’s decision for the
+empirical stage: the items carried forward, the items held back and why,
+and two facts only you know, the reverse-worded items and the response
+scale:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">handoff</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="va">sort_fit</span>, reverse_keyed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>                           response_scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">handoff</span><span class="op">$</span><span class="va">items</span></span>
+<span><span class="co">#&gt; [1] "I1" "I2"</span></span></code></pre></div>
+<p><code><a href="../articles/handoff-to-empirical-validation.html">vignette("handoff-to-empirical-validation")</a></code> describes
+what the handoff holds, and
+<code><a href="../articles/one-item-set-both-stages.html">vignette("one-item-set-both-stages")</a></code> follows one item set
+through content review and the analysis of responses.</p>
+</div>
+<div class="section level2">
+<h2 id="bundled-reproducible-examples">Bundled reproducible examples<a class="anchor" aria-label="anchor" href="#bundled-reproducible-examples"></a>
+</h2>
 <p>The package also installs deterministic CSV examples for the three
 workflow families and all expert-panel modes. They are synthetic,
 contain no participant data, and are regenerated from
 <code>data-raw/build-example-data.R</code> in the source repository.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">example_files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"sort_example.csv"</span>,</span>
 <span>  <span class="st">"rating_example.csv"</span>,</span>
@@ -377,8 +593,11 @@ contain no participant data, and are regenerated from
 <code><a href="../articles/reporting-examples.html">vignette("reporting-examples", package = "contentvalidR")</a></code>
 for manuscript-ready reporting scaffolds built from those same
 files.</p>
-<p><strong>Classic indices</strong></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+</div>
+<div class="section level2">
+<h2 id="classic-indices">Classic indices<a class="anchor" aria-label="anchor" href="#classic-indices"></a>
+</h2>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">R</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">*</span><span class="fl">6</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/aikens_v.html">aikens_v</a></span><span class="op">(</span><span class="va">R</span>, lo <span class="op">=</span> <span class="fl">1</span>, hi <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_aiken&gt; Aiken's V</span></span>
@@ -414,10 +633,10 @@ files.</p>
 <span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">*</span><span class="fl">5</span>, replace <span class="op">=</span> <span class="cn">TRUE</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.3</span>,<span class="fl">.7</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/cvi.html">cvi</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_cvi&gt; Content validity index (CVI)</span></span>
-<span><span class="co">#&gt; Items: 5 | Judges per item: 6</span></span>
+<span><span class="co">#&gt; Items: 5 | Experts per item: 6</span></span>
 <span><span class="co">#&gt; S-CVI/Ave: .67 | S-CVI/UA: .20</span></span>
 <span><span class="co">#&gt; I-CVI = item-level content validity index; S-CVI/Ave = scale-level CVI, the</span></span>
-<span><span class="co">#&gt; mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every judge rated</span></span>
+<span><span class="co">#&gt; mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every expert rated</span></span>
 <span><span class="co">#&gt; relevant (Polit &amp; Beck, 2006).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Item-level results</span></span>
@@ -428,14 +647,14 @@ files.</p>
 <span><span class="co">#&gt;   Item4    6/6   1.00  [.61, 1.00]  .016   1.00</span></span>
 <span><span class="co">#&gt;   Item5    4/6    .67   [.30, .90]  .234    .56</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Agree: judges rating the item relevant, out of those who rated it. Pc: the</span></span>
-<span><span class="co">#&gt;   probability that this many judges would agree by chance. Kappa: the modified</span></span>
-<span><span class="co">#&gt;   kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.</span></span>
+<span><span class="co">#&gt;   Agree: experts rating the item relevant, out of those who rated it. Pc: the</span></span>
+<span><span class="co">#&gt;   probability that this many experts would agree by chance. Kappa: the</span></span>
+<span><span class="co">#&gt;   modified kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
 <span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
-<span><span class="co">#&gt;   the right judges were chosen.</span></span>
+<span><span class="co">#&gt;   the right people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.</span></span>
 <span><span class="co">#&gt; Interpretation should consider panel size, item purpose, and qualitative</span></span>
@@ -454,47 +673,71 @@ files.</p>
 <span><span class="co">#&gt; &lt;contentvalid_ioc&gt; Index of item-objective congruence (IOC)</span></span>
 <span><span class="co">#&gt; Rovinelli and Hambleton (1977).</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Item  Objective  Judges  Mean   IOC</span></span>
-<span><span class="co">#&gt;   I1    A               3   .00   .08</span></span>
-<span><span class="co">#&gt;   I1    B               3   .33   .33</span></span>
-<span><span class="co">#&gt;   I1    C               3  -.67  -.42</span></span>
-<span><span class="co">#&gt;   I2    A               3   .00   .00</span></span>
-<span><span class="co">#&gt;   I2    B               3   .00   .00</span></span>
-<span><span class="co">#&gt;   I2    C               3   .00   .00</span></span>
+<span><span class="co">#&gt;   Item  Objective  Experts  Mean   IOC</span></span>
+<span><span class="co">#&gt;   I1    A                3   .00   .08</span></span>
+<span><span class="co">#&gt;   I1    B                3   .33   .33</span></span>
+<span><span class="co">#&gt;   I1    C                3  -.67  -.42</span></span>
+<span><span class="co">#&gt;   I2    A                3   .00   .00</span></span>
+<span><span class="co">#&gt;   I2    B                3   .00   .00</span></span>
+<span><span class="co">#&gt;   I2    C                3   .00   .00</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap</span></span>
+<span><span class="co">#&gt; Mean: the experts' mean rating on the objective (-1 to 1). IOC: half the gap</span></span>
 <span><span class="co">#&gt; between that mean and their mean on the item's other objectives; 1 only when</span></span>
-<span><span class="co">#&gt; every judge rates +1 on the objective and -1 on every other. Rovinelli and</span></span>
+<span><span class="co">#&gt; every expert rates +1 on the objective and -1 on every other. Rovinelli and</span></span>
 <span><span class="co">#&gt; Hambleton applied a criterion of .70.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the unrounded values.</span></span></code></pre></div>
-<p><strong>Diagnostics &amp; reproducibility</strong></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">truth</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>  <span class="co"># pretend "kept" after CFA</span></span>
-<span><span class="fu"><a href="../reference/signal_detection.html">signal_detection</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">decision</span> <span class="op">==</span> <span class="st">"significant"</span>, <span class="va">truth</span><span class="op">)</span></span>
+</div>
+<div class="section level2">
+<h2 id="diagnostics-and-reproducibility">Diagnostics and reproducibility<a class="anchor" aria-label="anchor" href="#diagnostics-and-reproducibility"></a>
+</h2>
+<p>Two auxiliary helpers compare the sort’s decisions with a later
+outcome. Here the later outcome is invented: suppose a confirmatory
+factor analysis kept I1, I2, and I3, and a second, independent sort
+supported I1, I2, and I4.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pretest_supported</span> <span class="op">&lt;-</span> <span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">$</span><span class="va">status</span> <span class="op">==</span> <span class="st">"Supported"</span></span>
+<span><span class="va">later_retained</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/signal_detection.html">signal_detection</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">later_retained</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_signal&gt; Retention decisions compared with the actual outcome</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Predicted     Actual: Retain  Actual: Not retained</span></span>
-<span><span class="co">#&gt;   Retain                     0                     0</span></span>
-<span><span class="co">#&gt;   Not retained               3                     1</span></span>
+<span><span class="co">#&gt;   Retain                     2                     0</span></span>
+<span><span class="co">#&gt;   Not retained               1                     1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; accuracy = .25, sensitivity = .00, specificity = 1.00, phi = --.</span></span>
+<span><span class="co">#&gt; accuracy = .75, sensitivity = .67, specificity = 1.00, phi = .58, Fisher's</span></span>
+<span><span class="co">#&gt; exact p &gt; .999.</span></span>
+<span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
+<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 4) = 1.33, p = .248).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span>
 <span></span>
-<span><span class="va">csv2_sig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">csv</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">csv</span><span class="op">$</span><span class="va">decision</span> <span class="op">==</span> <span class="st">"significant"</span>, <span class="va">csv2_sig</span><span class="op">)</span></span>
+<span><span class="va">replication_supported</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/reproducibility_phi.html">reproducibility_phi</a></span><span class="op">(</span><span class="va">pretest_supported</span>, <span class="va">replication_supported</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_reproducibility&gt; Retention decisions in two pretests</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Pretest1      Pretest2: Retain  Pretest2: Not retained</span></span>
-<span><span class="co">#&gt;   Retain                       0                       0</span></span>
-<span><span class="co">#&gt;   Not retained                 1                       3</span></span>
+<span><span class="co">#&gt;   Retain                       2                       0</span></span>
+<span><span class="co">#&gt;   Not retained                 1                       1</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; phi = --.</span></span>
+<span><span class="co">#&gt; phi = .58, Fisher's exact p &gt; .999.</span></span>
+<span><span class="co">#&gt; An expected count is below 5, so the exact test is reported in place of the</span></span>
+<span><span class="co">#&gt; chi-square approximation (chi-square(1, N = 4) = 1.33, p = .248).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See as.data.frame(x) for the counts and the test as one row.</span></span></code></pre></div>
-<p><strong>Power quick-checks</strong></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p>Four items are far too few for either coefficient to mean much; the
+example shows the calls. With so few items every expected count is below
+5, so both helpers report Fisher’s exact <em>p</em>.</p>
+</div>
+<div class="section level2">
+<h2 id="power-quick-checks">Power quick-checks<a class="anchor" aria-label="anchor" href="#power-quick-checks"></a>
+</h2>
+<p><code><a href="../reference/sort_power.html">sort_power()</a></code> gives the exact probability that an item
+reaches the retention count, for each number of judges and each rate at
+which you expect judges to choose the target.
+<code><a href="../reference/expert_power.html">expert_power()</a></code> does the same for the I-CVI criterion of an
+expert panel; see <code><a href="../articles/design-and-reporting.html">vignette("design-and-reporting")</a></code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.65</span>, <span class="fl">.75</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_sort_power&gt; Item-sort planning</span></span>
 <span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
@@ -509,15 +752,28 @@ files.</p>
 <span><span class="co">#&gt; assigns the item to its target with that probability.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See plot(x) for the power curve.</span></span></code></pre></div>
+</div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
+<p>Anderson, J. C., &amp; Gerbing, D. W. (1991). Predicting the
+performance of measures in a confirmatory factor analysis with a pretest
+assessment of their substantive validities. <em>Journal of Applied
+Psychology, 76</em>(5), 732–740. <a href="https://doi.org/10.1037/0021-9010.76.5.732" class="external-link uri">https://doi.org/10.1037/0021-9010.76.5.732</a></p>
 <p>Colquitt, J. A., Sabey, T. B., Rodell, J. B., &amp; Hill, E. T.
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
 <em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Hinkin, T. R., &amp; Tracey, J. B. (1999). An analysis of variance
+approach to content validation. <em>Organizational Research Methods,
+2</em>(2), 175–186. <a href="https://doi.org/10.1177/109442819922004" class="external-link uri">https://doi.org/10.1177/109442819922004</a></p>
+<p>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. <em>Journal of Business and Psychology,
+31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
 </div>
-  </main>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

@@ -5,89 +5,187 @@
 library(contentvalidR)
 ```
 
-**Overview**
+## Overview
 
-This vignette introduces the package’s three recommended
-content-pretesting workflows—**item sorting**, **construct ratings**,
-and **expert panels**.
-[`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
-[`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+contentvalidR analyzes the evidence that judges and experts provide
+about a scale’s content before anyone answers it. Each kind of study has
+its own workflow function, and each workflow has a guide:
+
+| The study | Workflow | Guide |
+|----|----|----|
+| Judges sort each item into the construct it best represents | [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md) | [`vignette("item-sort-validity")`](https://juhalt.github.io/contentvalidR/articles/item-sort-validity.md) |
+| Judges rate each item against every construct definition | [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md) | [`vignette("construct-rating-validity")`](https://juhalt.github.io/contentvalidR/articles/construct-rating-validity.md) |
+| Experts rate each item’s relevance, essentiality, or congruence with an objective | [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | [`vignette("expert-panel-validity")`](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.md) |
+| A panel rates the items over several Delphi rounds | [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md) | [`vignette("delphi-rounds")`](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.md) |
+| Do the conclusions depend on the particular judges? | [`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md) | “Reading judge heterogeneity” in [`vignette("reading-output")`](https://juhalt.github.io/contentvalidR/articles/reading-output.md) |
+| Do the items cover every cell of the blueprint? | [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md) | “Reading domain coverage” in [`vignette("reading-output")`](https://juhalt.github.io/contentvalidR/articles/reading-output.md) |
+
+Two functions work across the workflows.
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+sets several review stages side by side, item by item, and draws them as
+figures
+([`vignette("reporting-examples")`](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md)).
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+carries the items a review kept, with the evidence behind each decision,
+into the analysis of response data
+([`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md),
 and
-[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
-organize quantitative evidence while keeping substantive decisions
-separate from statistical flags.
+[`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md)
+for one item set followed through both stages).
 
-**A common workflow contract**
+This vignette runs the first three workflows on small examples and
+points to the rest.
+[`vignette("reading-output")`](https://juhalt.github.io/contentvalidR/articles/reading-output.md)
+explains every part of a printout, and
+[`vignette("design-and-reporting")`](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md)
+covers how many judges to recruit and what to report.
 
-All three fitted workflow objects expose `results`, `scale_summary`,
-`settings`, `design`, and `details`. Their result tables also contain a
-common `status` field: `Supported`, `Review`, `Insufficient data`, or
-`Descriptive only`. Method-specific recommendation wording is preserved
-alongside that common status. This makes it possible to write reusable
-code across workflows without pretending that a Howard-Melloy retention
-decision, Hinkin-Tracey screening result, and expert-panel judgment are
-substantively identical.
+## A common workflow contract
 
-**Sort-based (Psa, Csv, binomial)**
+All six workflow objects expose `results`, `scale_summary`, `settings`,
+`design`, and `details`. Their `results` tables also contain a common
+`status` field: `Supported`, `Review`, `Insufficient data`, or
+`Descriptive only`. The method’s own decision word, such as `Retain` in
+an item sort, is kept beside it as `recommendation`. This makes it
+possible to write reusable code across workflows without pretending that
+a Howard-Melloy retention decision, a construct-rating screening result,
+and an expert-panel judgment are substantively identical.
+
+## Item sort: Psa, Csv, and the exact test
+
+Twelve judges sorted four items into three constructs, A, B, and C.
+Items I1 and I2 were written for A, and I3 and I4 for B:
 
 ``` r
 
 toy_sort <- data.frame(
   item = rep(paste0("I", 1:4), each = 12),
   rater = rep(1:12, 4),
-  target_construct   = rep(c("A","A","B","B"), each = 12),
+  target_construct = rep(c("A", "A", "B", "B"), each = 12),
   assigned_construct = c(
-    sample(c("A","B"), 12, TRUE, c(.80,.20)),
-    sample(c("A","B"), 12, TRUE, c(.65,.35)),
-    sample(c("A","B"), 12, TRUE, c(.70,.30)),
-    sample(c("A","B"), 12, TRUE, c(.45,.55))
+    rep("A", 11), "C",
+    rep("A", 10), "B", "C",
+    rep("B", 7), rep("A", 4), "C",
+    rep("B", 4), rep("A", 6), rep("C", 2)
   )
 )
-psa <- compute_psa(toy_sort)
-csv <- compute_csv(toy_sort)
-csv$decision <- vapply(seq_len(nrow(csv)), function(i) {
-  csv_binom_test(csv$n_target[i], csv$n[i])$decision
-}, character(1))
-psa; csv
-#> <contentvalid_psa> Proportion of substantive agreement (Psa)
-#> Anderson and Gerbing (1991).
+sort_fit <- sort_validity(toy_sort)
+sort_fit
+#> <contentvalid_sort> Item-sort analysis
+#> Items: 4 | Judges: 12 | Target constructs: 2
+#> Test: Howard-Melloy exact target-count test (p0 = .50, alpha = .05)
+#> Judges: naive, meaning drawn from the kind of people who will answer the
+#> items.
 #> 
-#>   Item  Target  Judges  Psa      95% CI
-#>   I1    A         9/12  .75  [.47, .91]
-#>   I2    A         5/12  .42  [.19, .68]
-#>   I3    B         2/12  .17  [.05, .45]
-#>   I4    B         5/12  .42  [.19, .68]
+#> 2 of 4 items meet the exact target-assignment criterion.
+#> Flagged for review: I3, I4
 #> 
-#> Judges: assignments to the target construct, out of the judges who sorted the
-#> item.
-#> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
-#> compared seven methods and recommends score intervals over the Wald interval.
-#> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#> Item-level evidence
+#>   Item  Target  Decision  Judges  Psa      95% CI   Csv  Competitor     p
+#>   I1    A       Retain     11/12  .92  [.65, .99]   .83  C           .003
+#>   I2    A       Retain     10/12  .83  [.55, .95]   .75  B; C        .019
+#>   I3    B       Review      7/12  .58  [.32, .81]   .25  A           .387
+#>   I4    B       Review      4/12  .33  [.14, .61]  -.17  A           .927
 #> 
-#> See as.data.frame(x) for the unrounded values.
+#>   Judges: assignments to the target construct, out of the judges who sorted
+#>   the item.
+#>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
+#>   compared seven methods and recommends score intervals over the Wald
+#>   interval. An interval reflects how few ratings an item received, not whether
+#>   the right people rated it.
+#> 
+#> Scale-level Colquitt benchmarks
+#>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
+#>   A           2       .88  Strong          .79  Strong
+#>   B           2       .46  Weak            .04  Lack of
+#>   Benchmark set: Overall (not correlation-normed)
+#> 
+#>   Colquitt labels are empirical percentile norms derived from scale-level
+#>   averages, not universal cutoffs or automatic scale-retention rules. They
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
+#> 
+#> What these columns mean
+#>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
+#>       in the construct it was written for (0 to 1; higher is stronger).
+#>   95% CI -- Interval for Psa. Wider when fewer judges sorted the item; the
+#>       method is named above.
+#>   Csv -- Coefficient of Substantive Validity. How much more often judges chose
+#>       the intended construct than its closest rival (-1 to 1; 0 is a tie).
+#>   Competitor -- Strongest competing construct. The construct other than the
+#>       intended one that judges chose most often.
+#>   p -- Howard-Melloy exact test. Probability of at least this many target
+#>       assignments if each judge picked the target at rate p0; compare with
+#>       alpha.
+#> 
+#> What the decisions mean
+#>   Retain -- met the exact target-assignment criterion.
+#>   Review -- did not meet the exact target-assignment criterion; the competitor
+#>       column shows where judges put it instead.
+#> 
+#>   Full definitions: contentvalid_glossary(). To hide this key:
+#>   options(contentvalidR.show_key = FALSE).
+#> 
+#> A flag for review is not an automatic deletion decision. Use theory,
+#> construct-domain coverage, item wording, and qualitative judge feedback
+#> alongside these statistics.
+#> 
+#> See summary(x) for the flagged items and content_report(x) for an APA table.
+```
+
+### Interpretation
+
+- **Psa**, the proportion of substantive agreement, is the share of
+  judges who assign the item to its intended construct:
+  $`\text{Psa} = n_{target} / N`$.
+- **Csv**, the substantive-validity coefficient, is the intended
+  construct’s margin over its strongest competitor:
+  $`\text{Csv} = (n_{target} - n_{competitor}) / N`$. Here
+  $`n_{target}`$ counts the assignments to the intended construct,
+  $`n_{competitor}`$ those to the most-chosen other construct, and $`N`$
+  the judges who sorted the item (Anderson & Gerbing, 1991). A negative
+  Csv, as for I4, means a competing construct drew more judges than the
+  intended one.
+- The exact binomial test of Howard and Melloy (2016) asks whether the
+  target count is too large for a target rate of .50 or less. With
+  twelve judges an item needs ten target assignments, so I1 and I2 are
+  retained and I3 and I4 are flagged for review. The .50 is a benchmark
+  rate, not the rate random sorting would give, which is 1 divided by
+  the number of constructs.
+
+The components are also available on their own:
+
+``` r
+
+compute_csv(toy_sort)
 #> <contentvalid_csv> Coefficient of substantive validity (Csv)
 #> Anderson and Gerbing (1991).
 #> 
 #>   Item  Target  Judges  Competitor  Competitor judges   Csv
-#>   I1    A         9/12  B                        3/12   .50
-#>   I2    A         5/12  B                        7/12  -.17
-#>   I3    B         2/12  A                       10/12  -.67
-#>   I4    B         5/12  A                        7/12  -.17
+#>   I1    A        11/12  C                        1/12   .83
+#>   I2    A        10/12  B; C                     1/12   .75
+#>   I3    B         7/12  A                        4/12   .25
+#>   I4    B         4/12  A                        6/12  -.17
 #> 
 #> Csv is the target count minus the count for the most-chosen other construct,
 #> divided by the number of judges.
 #> 
 #> See as.data.frame(x) for the unrounded values.
+csv_binom_test(n_c = 10, N = 12)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
+#> 
+#> The item meets the exact target-assignment criterion.
+#> 10 of 12 judges assigned the item to its target construct (Psa = .83). If each
+#> judge chose the target with probability p0 = .50, a count this high has
+#> probability p = .019.
+#> At alpha = .05 an item needs at least 10 of 12.
+#> One-sided 95% CI for the target rate: [.56, 1.00].
+#> 
+#> See as.data.frame(x) for the test as one row.
 ```
 
-**Interpretation** - **Psa** = share assigning the intended construct. -
-**Csv** = margin of wins: \$ \$. - The exact binomial test (null
-hypothesis: a target rate of .5 or less) flags items whose target count
-meets the criterion. The .5 is a benchmark rate, not the rate random
-sorting would give.
-
-**Construct-rating workflow (HTC, HTD, repeated-measures ANOVA)**
+## Construct ratings: HTC, HTD, and the repeated-measures test
 
 ``` r
 
@@ -121,13 +219,13 @@ rating_fit
 #> 3 of 3 items meet the full item-level screening criterion.
 #> 
 #> Item-level evidence
-#>   Item  Target  Decision   n  HTC  HTD  Omnibus p  Contrast p  Competitor
-#>   I1    A       Retain    16  .83  .49     < .001      < .001  C
-#>   I2    A       Retain    16  .89  .51     < .001      < .001  C
-#>   I3    B       Retain    16  .88  .54     < .001      < .001  C
+#>   Item  Target  Decision  Judges  HTC  HTD  Omnibus p  Contrast p  Competitor
+#>   I1    A       Retain        16  .83  .49     < .001      < .001  C
+#>   I2    A       Retain        16  .89  .51     < .001      < .001  C
+#>   I3    B       Retain        16  .88  .54     < .001      < .001  C
 #> 
-#>   n: judges who rated the item against every construct. Omnibus p: do the
-#>   item's ratings differ across constructs (Greenhouse-Geisser corrected).
+#>   Judges: the number who rated the item against every construct. Omnibus p: do
+#>   the item's ratings differ across constructs (Greenhouse-Geisser corrected).
 #>   Contrast p: the largest p among the planned target-versus-orbiting
 #>   contrasts, so every contrast is at or below it.
 #> 
@@ -174,8 +272,9 @@ summary(rating_fit)
 #>   HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness
 #>   (Colquitt et al., 2019).
 #>   A: Mean HTC falls in the Moderate band and mean HTD in the Very Strong band
-#>     of published scales (Colquitt et al., 2019); inspect the weaker items and
-#>     construct overlap before finalizing the scale.
+#>     of published scales (Colquitt et al., 2019). A contentvalidR suggestion
+#>     for the lower band, Moderate: inspect the weaker items and construct
+#>     overlap before finalizing the scale.
 #>   B: Mean HTC falls in the Strong band and mean HTD in the Very Strong band of
 #>     published scales (Colquitt et al., 2019).
 #> 
@@ -188,16 +287,22 @@ summary(rating_fit)
 #> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
-**Interpretation** - **HTC** summarizes definitional correspondence with
-the intended construct. - **HTD** summarizes distinctiveness from
-orbiting constructs. - The repeated-measures ANOVA tests whether
-construct-definition ratings differ for an item. - Planned paired
-contrasts ask the direct screening question: is the target rating
-significantly higher than every orbiting rating? - Scale-level HTC/HTD
-averages can be interpreted using Colquitt et al. (2019) empirical norms
-when the judge population matches their intended use.
+### Interpretation
 
-**Expert-panel workflow**
+- **HTC** summarizes definitional correspondence: how highly judges
+  rated the item against its intended construct (Hinkin & Tracey, 1999;
+  Colquitt et al., 2019).
+- **HTD** summarizes definitional distinctiveness: how far the intended
+  construct’s ratings lead the orbiting constructs’ ratings, on average.
+- The repeated-measures ANOVA tests whether the construct-definition
+  ratings differ for an item.
+- Planned paired contrasts ask the direct screening question: is the
+  target rating significantly higher than every orbiting rating?
+- Scale-level HTC and HTD averages can be read against the empirical
+  norms of Colquitt et al. (2019) when the judges are like the naive
+  judges those norms came from.
+
+## Expert panels: relevance, essentiality, and congruence
 
 ``` r
 
@@ -212,14 +317,13 @@ expert_fit <- expert_validity(expert_ratings, mode = "relevance", lo = 1, hi = 4
 expert_fit
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: relevance
-#> Items: 3 | Experts/item: 6
+#> Items: 3 | Experts per item: 6
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
-#> Mean Aiken V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
+#> Mean Aiken's V: .94 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
 #> Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].
 #>   Identical rating pairs: 71%.
 #> 
-#> 3 of 3 items meet the I-CVI criterion, all with strong support (modified kappa
-#> above .74).
+#> 3 of 3 items meet the I-CVI criterion.
 #> 
 #>   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa
 #>   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00
@@ -228,13 +332,12 @@ expert_fit
 #> 
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
-#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa
-#> is modified kappa, with values above .74 read as excellent (Polit et al.,
-#> 2007).
+#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986). Kappa
+#> is modified kappa, read as excellent above .74 (Polit et al., 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#> people rated it.
 #> 
 #> Panel agreement is one coefficient for the whole panel, whereas modified kappa
 #> (the kappa column) describes each item. Alpha can be low when nearly every
@@ -278,7 +381,9 @@ expert_fit
 summary(expert_fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
+#> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Strong support: 3 of 3 | Review: 0 of 3
+#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986).
 #> Panel agreement, Krippendorff's alpha (ordinal): .02, 95% CI [-.13, .15].
 #>   Identical rating pairs: 71%.
 #> 
@@ -290,11 +395,62 @@ summary(expert_fit)
 ```
 
 Relevance, essentiality, and congruence are intentionally separate
-expert tasks. Use `mode = "relevance"` for Aiken V + CVI/modified kappa,
-`mode = "essentiality"` for Lawshe CVR, and `mode = "congruence"` for
-IOC.
+expert tasks. Use `mode = "relevance"` for Aiken’s V with the I-CVI and
+modified kappa, `mode = "essentiality"` for Lawshe’s CVR, and
+`mode = "congruence"` for the index of item-objective congruence (IOC).
+[`vignette("expert-panel-validity")`](https://juhalt.github.io/contentvalidR/articles/expert-panel-validity.md)
+walks through all three.
 
-**Bundled reproducible examples**
+## Delphi rounds
+
+When the same panel rates the items over several rounds, with anonymous
+feedback in between,
+[`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+answers two questions side by side: whether enough experts agree about
+an item now (consensus, against a threshold you fix before the study),
+and whether experts are still changing their ratings (stability). It
+never folds one into the other. See
+[`vignette("delphi-rounds")`](https://juhalt.github.io/contentvalidR/articles/delphi-rounds.md).
+
+## Judges and domain coverage
+
+Two workflows ask questions that no item-level index can reach.
+[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+returns one row per judge and asks whether the conclusions depend on the
+particular judges who served.
+[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+returns one row per cell of the content blueprint and asks whether the
+items cover every cell, including a cell no item was written for. Both
+are read in
+[`vignette("reading-output")`](https://juhalt.github.io/contentvalidR/articles/reading-output.md).
+
+## From review to response data
+
+[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+brings several review stages together, such as a relevance panel
+followed by an item sort, and draws a flow diagram and an evidence
+profile for a paper or poster
+([`vignette("reporting-examples")`](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md)).
+[`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+packages a review’s decision for the empirical stage: the items carried
+forward, the items held back and why, and two facts only you know, the
+reverse-worded items and the response scale:
+
+``` r
+
+handoff <- content_handoff(sort_fit, reverse_keyed = character(0),
+                           response_scale = c(1, 5))
+handoff$items
+#> [1] "I1" "I2"
+```
+
+[`vignette("handoff-to-empirical-validation")`](https://juhalt.github.io/contentvalidR/articles/handoff-to-empirical-validation.md)
+describes what the handoff holds, and
+[`vignette("one-item-set-both-stages")`](https://juhalt.github.io/contentvalidR/articles/one-item-set-both-stages.md)
+follows one item set through content review and the analysis of
+responses.
+
+## Bundled reproducible examples
 
 The package also installs deterministic CSV examples for the three
 workflow families and all expert-panel modes. They are synthetic,
@@ -321,7 +477,7 @@ See
 [`vignette("reporting-examples", package = "contentvalidR")`](https://juhalt.github.io/contentvalidR/articles/reporting-examples.md)
 for manuscript-ready reporting scaffolds built from those same files.
 
-**Classic indices**
+## Classic indices
 
 ``` r
 
@@ -360,10 +516,10 @@ cvr(essential = c(8,10,5), N = 12)
 M <- matrix(sample(0:1, 6*5, replace = TRUE, prob = c(.3,.7)), nrow = 6)
 cvi(M)
 #> <contentvalid_cvi> Content validity index (CVI)
-#> Items: 5 | Judges per item: 6
+#> Items: 5 | Experts per item: 6
 #> S-CVI/Ave: .67 | S-CVI/UA: .20
 #> I-CVI = item-level content validity index; S-CVI/Ave = scale-level CVI, the
-#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every judge rated
+#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every expert rated
 #> relevant (Polit & Beck, 2006).
 #> 
 #> Item-level results
@@ -374,14 +530,14 @@ cvi(M)
 #>   Item4    6/6   1.00  [.61, 1.00]  .016   1.00
 #>   Item5    4/6    .67   [.30, .90]  .234    .56
 #> 
-#>   Agree: judges rating the item relevant, out of those who rated it. Pc: the
-#>   probability that this many judges would agree by chance. Kappa: the modified
-#>   kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
+#>   Agree: experts rating the item relevant, out of those who rated it. Pc: the
+#>   probability that this many experts would agree by chance. Kappa: the
+#>   modified kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
 #> 
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.
 #> Interpretation should consider panel size, item purpose, and qualitative
@@ -400,52 +556,75 @@ ioc(ioc_df)
 #> <contentvalid_ioc> Index of item-objective congruence (IOC)
 #> Rovinelli and Hambleton (1977).
 #> 
-#>   Item  Objective  Judges  Mean   IOC
-#>   I1    A               3   .00   .08
-#>   I1    B               3   .33   .33
-#>   I1    C               3  -.67  -.42
-#>   I2    A               3   .00   .00
-#>   I2    B               3   .00   .00
-#>   I2    C               3   .00   .00
+#>   Item  Objective  Experts  Mean   IOC
+#>   I1    A                3   .00   .08
+#>   I1    B                3   .33   .33
+#>   I1    C                3  -.67  -.42
+#>   I2    A                3   .00   .00
+#>   I2    B                3   .00   .00
+#>   I2    C                3   .00   .00
 #> 
-#> Mean: the judges' mean rating on the objective (-1 to 1). IOC: half the gap
+#> Mean: the experts' mean rating on the objective (-1 to 1). IOC: half the gap
 #> between that mean and their mean on the item's other objectives; 1 only when
-#> every judge rates +1 on the objective and -1 on every other. Rovinelli and
+#> every expert rates +1 on the objective and -1 on every other. Rovinelli and
 #> Hambleton applied a criterion of .70.
 #> 
 #> See as.data.frame(x) for the unrounded values.
 ```
 
-**Diagnostics & reproducibility**
+## Diagnostics and reproducibility
+
+Two auxiliary helpers compare the sort’s decisions with a later outcome.
+Here the later outcome is invented: suppose a confirmatory factor
+analysis kept I1, I2, and I3, and a second, independent sort supported
+I1, I2, and I4.
 
 ``` r
 
-truth <- c(TRUE, TRUE, TRUE, FALSE)  # pretend "kept" after CFA
-signal_detection(csv$decision == "significant", truth)
+pretest_supported <- sort_fit$results$status == "Supported"
+later_retained <- c(TRUE, TRUE, TRUE, FALSE)
+signal_detection(pretest_supported, later_retained)
 #> <contentvalid_signal> Retention decisions compared with the actual outcome
 #> 
 #>   Predicted     Actual: Retain  Actual: Not retained
-#>   Retain                     0                     0
-#>   Not retained               3                     1
+#>   Retain                     2                     0
+#>   Not retained               1                     1
 #> 
-#> accuracy = .25, sensitivity = .00, specificity = 1.00, phi = --.
+#> accuracy = .75, sensitivity = .67, specificity = 1.00, phi = .58, Fisher's
+#> exact p > .999.
+#> An expected count is below 5, so the exact test is reported in place of the
+#> chi-square approximation (chi-square(1, N = 4) = 1.33, p = .248).
 #> 
 #> See as.data.frame(x) for the counts and the test as one row.
 
-csv2_sig <- sample(c(TRUE, FALSE), nrow(csv), replace = TRUE)
-reproducibility_phi(csv$decision == "significant", csv2_sig)
+replication_supported <- c(TRUE, TRUE, FALSE, TRUE)
+reproducibility_phi(pretest_supported, replication_supported)
 #> <contentvalid_reproducibility> Retention decisions in two pretests
 #> 
 #>   Pretest1      Pretest2: Retain  Pretest2: Not retained
-#>   Retain                       0                       0
-#>   Not retained                 1                       3
+#>   Retain                       2                       0
+#>   Not retained                 1                       1
 #> 
-#> phi = --.
+#> phi = .58, Fisher's exact p > .999.
+#> An expected count is below 5, so the exact test is reported in place of the
+#> chi-square approximation (chi-square(1, N = 4) = 1.33, p = .248).
 #> 
 #> See as.data.frame(x) for the counts and the test as one row.
 ```
 
-**Power quick-checks**
+Four items are far too few for either coefficient to mean much; the
+example shows the calls. With so few items every expected count is below
+5, so both helpers report Fisher’s exact *p*.
+
+## Power quick-checks
+
+[`sort_power()`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+gives the exact probability that an item reaches the retention count,
+for each number of judges and each rate at which you expect judges to
+choose the target.
+[`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+does the same for the I-CVI criterion of an expert panel; see
+[`vignette("design-and-reporting")`](https://juhalt.github.io/contentvalidR/articles/design-and-reporting.md).
 
 ``` r
 
@@ -467,7 +646,21 @@ sort_power(N = c(20, 30), true_p = c(.65, .75))
 
 ## References
 
+Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of
+measures in a confirmatory factor analysis with a pretest assessment of
+their substantive validities. *Journal of Applied Psychology, 76*(5),
+732–740. <https://doi.org/10.1037/0021-9010.76.5.732>
+
 Colquitt, J. A., Sabey, T. B., Rodell, J. B., & Hill, E. T. (2019).
 Content validation guidelines: Evaluation criteria for definitional
 correspondence and definitional distinctiveness. *Journal of Applied
 Psychology, 104*(10), 1243–1265. <https://doi.org/10.1037/apl0000406>
+
+Hinkin, T. R., & Tracey, J. B. (1999). An analysis of variance approach
+to content validation. *Organizational Research Methods, 2*(2), 175–186.
+<https://doi.org/10.1177/109442819922004>
+
+Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. *Journal of Business and Psychology,
+31*(1), 173–186. <https://doi.org/10.1007/s10869-015-9404-y>

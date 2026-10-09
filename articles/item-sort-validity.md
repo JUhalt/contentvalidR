@@ -63,12 +63,12 @@ fit
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
 #>   A           3       .78  Moderate        .57  Moderate
-#>   B           3       .82  Moderate        .63  Strong
+#>   B           3      .817  Moderate        .63  Strong
 #>   Benchmark set: Overall (not correlation-normed)
 #>   These bands come from tasks with three definitions (one focal, two
 #>   orbiting); judges here used 2 (set `n_constructs` if more were offered), so
@@ -77,8 +77,9 @@ fit
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
@@ -122,22 +123,24 @@ summary(fit)
 #> Scale-level evidence
 #>   Target  Items  Retain  Review  Mean Psa  Psa level  Mean Csv  Csv level
 #>   A           3       2       1       .78  Moderate        .57  Moderate
-#>   B           3       2       1       .82  Moderate        .63  Strong
+#>   B           3       2       1      .817  Moderate        .63  Strong
 #> 
 #>   Psa = proportion of substantive agreement; Csv = coefficient of substantive
 #>   validity (Anderson & Gerbing, 1991).
 #>   A: Mean Psa and mean Csv both fall in the Moderate band of published scales
-#>     (Colquitt et al., 2019); review the weaker items before finalizing. These
+#>     (Colquitt et al., 2019). A contentvalidR suggestion for that band: review
+#>     the weaker items before finalizing. These bands come from tasks with three
+#>     definitions (one focal, two orbiting); judges here used 2 (set
+#>     `n_constructs` if more were offered), so the comparison is approximate.
+#>     This is a contentvalidR caution: Colquitt et al. do not discuss other
+#>     numbers.
+#>   B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of
+#>     published scales (Colquitt et al., 2019). A contentvalidR suggestion for
+#>     the lower band, Moderate: review the weaker items before finalizing. These
 #>     bands come from tasks with three definitions (one focal, two orbiting);
 #>     judges here used 2 (set `n_constructs` if more were offered), so the
 #>     comparison is approximate. This is a contentvalidR caution: Colquitt et
 #>     al. do not discuss other numbers.
-#>   B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of
-#>     published scales (Colquitt et al., 2019); review the weaker items before
-#>     finalizing. These bands come from tasks with three definitions (one focal,
-#>     two orbiting); judges here used 2 (set `n_constructs` if more were
-#>     offered), so the comparison is approximate. This is a contentvalidR
-#>     caution: Colquitt et al. do not discuss other numbers.
 #> 
 #> Flagged
 #>   Item  Target  Decision  Psa  Csv  Competitor     p
@@ -291,15 +294,68 @@ expert panels.
 ``` r
 
 expert_fit <- sort_validity(sort_dat, judge_type = "expert")
-expert_fit$scale_summary[, c("target", "mean_psa", "psa_strength",
-                             "mean_csv", "csv_strength")]
-#>   target  mean_psa psa_strength  mean_csv csv_strength
-#> 1      A 0.7833333         <NA> 0.5666667         <NA>
-#> 2      B 0.8166667         <NA> 0.6333333         <NA>
+summary(expert_fit)
+#> <contentvalid_sort summary> Item-sort analysis
+#> Retain: 4 of 6 | Review: 2 of 6
+#> 
+#> Scale-level evidence
+#>   Target  Items  Retain  Review  Mean Psa  Mean Csv
+#>   A           3       2       1       .78       .57
+#>   B           3       2       1       .82       .63
+#> 
+#>   Psa = proportion of substantive agreement; Csv = coefficient of substantive
+#>   validity (Anderson & Gerbing, 1991).
+#>   A, B: Colquitt benchmark labels are not applied because the analysis was
+#>     marked as using expert judges.
+#> 
+#> Flagged
+#>   Item  Target  Decision  Psa  Csv  Competitor     p
+#>   A3    A       Review    .65  .30  B           .132
+#>   B3    B       Review    .70  .40  A           .058
+#> 
+#>   p = Howard-Melloy exact test of the target assignments.
+#>   - A3 (Review): The target was at least as common as any competitor but did
+#>     not meet the exact retention criterion (strongest competitor: B); review
+#>     before deciding whether to revise or remove the item.
+#>   - B3 (Review): The target was at least as common as any competitor but did
+#>     not meet the exact retention criterion (strongest competitor: A); review
+#>     before deciding whether to revise or remove the item.
+#> 
+#> Interpret scale norms and item flags alongside theory, domain coverage, and
+#> qualitative feedback. This analysis does not by itself establish
+#> comprehensiveness or the full content-validity argument.
+#> 
+#> See summary(x)$reviewed_items for the flagged items as a data frame.
 ```
 
 The Psa/Csv statistics and item-level screening remain available, but
-Colquitt normative labels are suppressed.
+Colquitt normative labels are not applied: the scale-level table has no
+level columns, and the summary says why. In `expert_fit$scale_summary`
+the label columns are kept, as `NA`.
+
+Judge type also bears on the exact test. Its default null target rate,
+`p0 = .50`, follows Howard and Melloy (2016), who describe .50 as
+arbitrary and lenient. They suggest a higher value, such as .60 or .75,
+when the alternative constructs are clearly different from the target or
+the judges are subject-matter experts. Choose `p0` before the data are
+collected, and report it:
+
+``` r
+
+csv_binom_test(n_c = 15, N = 20, p0 = .60)
+#> <contentvalid_binom> Howard-Melloy exact test (one-sided)
+#> 
+#> The item does not meet the exact target-assignment criterion.
+#> 15 of 20 judges assigned the item to its target construct (Psa = .75). If each
+#> judge chose the target with probability p0 = .60, a count this high has
+#> probability p = .126.
+#> At alpha = .05 an item needs at least 17 of 20.
+#> One-sided 95% CI for the target rate: [.54, 1.00].
+#> 
+#> See as.data.frame(x) for the test as one row.
+```
+
+With a null rate of .60, 15 of 20 judges no longer meets the criterion.
 
 ## Planning judge sample size
 
@@ -450,7 +506,7 @@ sort_validity(three, legacy = TRUE)
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -461,8 +517,9 @@ sort_validity(three, legacy = TRUE)
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> Earlier methods, for comparison (not used for the decision)
 #>   Item  Decision  Psa  Csv  A&G (1991)  Yao et al. (2008)  Extension*

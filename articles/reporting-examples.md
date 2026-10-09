@@ -16,22 +16,39 @@ study.
 
 ## Item-sort study
 
+The tables below are columns of the fitted objects, rounded for display
+by a small helper; the objects themselves keep full precision, and
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+gives the formatted APA table.
+
 ``` r
 
+# Round the numeric columns of a data frame for display only. A p value is
+# written as APA writes it, so one below .001 reads "< .001", never 0.
+rounded <- function(d, digits = 3) {
+  is_p <- grepl("(^p_|_p$)", names(d))
+  d[] <- Map(function(v, p) {
+    if (!is.numeric(v)) return(v)
+    if (p) return(ifelse(v < .001, "< .001", sub("^0", "", sprintf("%.3f", v))))
+    round(v, digits)
+  }, d, is_p)
+  d
+}
 sort_dat <- read_example("sort_example.csv")
 sort_fit <- sort_validity(sort_dat)
 sort_sum <- summary(sort_fit)
-sort_fit$results[, c("item", "target", "psa", "csv", "p_value",
-                    "recommendation")]
-#>   item target  psa  csv      p_value recommendation
-#> 1   A1      A 0.90 0.85 0.0002012253         Retain
-#> 2   A2      A 0.75 0.60 0.0206947327         Retain
-#> 3   B1      B 0.85 0.75 0.0012884140         Retain
-#> 4   B2      B 0.65 0.40 0.1315879822         Review
-#> 5   C1      C 0.90 0.85 0.0002012253         Retain
-#> 6   C2      C 0.70 0.50 0.0576591492         Review
-sort_fit$scale_summary[, c("target", "n_items", "mean_psa", "psa_strength",
-                           "mean_csv", "csv_strength")]
+rounded(sort_fit$results[, c("item", "target", "psa", "csv", "p_value",
+                             "recommendation")])
+#>   item target  psa  csv p_value recommendation
+#> 1   A1      A 0.90 0.85  < .001         Retain
+#> 2   A2      A 0.75 0.60    .021         Retain
+#> 3   B1      B 0.85 0.75    .001         Retain
+#> 4   B2      B 0.65 0.40    .132         Review
+#> 5   C1      C 0.90 0.85  < .001         Retain
+#> 6   C2      C 0.70 0.50    .058         Review
+rounded(sort_fit$scale_summary[, c("target", "n_items", "mean_psa",
+                                   "psa_strength", "mean_csv",
+                                   "csv_strength")])
 #>   target n_items mean_psa psa_strength mean_csv csv_strength
 #> 1      A       2    0.825       Strong    0.725       Strong
 #> 2      B       2    0.750     Moderate    0.575     Moderate
@@ -90,6 +107,32 @@ content_report(sort_fit)
 #> for a manuscript.
 ```
 
+In an R Markdown or Quarto document, print the Markdown form from a
+chunk with the option `results = "asis"`, so the lines reach the
+document as Markdown and render as a table with its note. Without that
+option they print as code output. This chunk uses it:
+
+``` r
+
+content_report(sort_fit, format = "markdown")
+```
+
+| Item | Target | Judges | Competitor | Psa |       95% CI | Csv |     *p* | Decision |
+|:-----|:-------|-------:|:-----------|----:|-------------:|----:|--------:|:---------|
+| A1   | A      |  18/20 | B; C       | .90 | \[.70, .97\] | .85 | \< .001 | Retain   |
+| A2   | A      |  15/20 | B          | .75 | \[.53, .89\] | .60 |    .021 | Retain   |
+| B1   | B      |  17/20 | A          | .85 | \[.64, .95\] | .75 |    .001 | Retain   |
+| B2   | B      |  13/20 | A          | .65 | \[.43, .82\] | .40 |    .132 | Review   |
+| C1   | C      |  18/20 | A; B       | .90 | \[.70, .97\] | .85 | \< .001 | Retain   |
+| C2   | C      |  14/20 | B          | .70 | \[.48, .85\] | .50 |    .058 | Review   |
+
+*Note.* Psa = proportion of substantive agreement; CI = confidence
+interval; Csv = coefficient of substantive validity. Judges = target
+assignments, out of the judges who sorted the item. 95% CI = Wilson
+score confidence interval. Retain = at least the number of target
+assignments the exact one-sided binomial test needs at alpha = .05 with
+p0 = .50 (Howard & Melloy, 2016).
+
 Do not report `Review` as synonymous with deletion. A review flag
 identifies an item for substantive inspection; retaining an item for
 domain coverage can be a reasonable decision when that rationale is
@@ -102,21 +145,22 @@ documented.
 rating_dat <- read_example("rating_example.csv")
 rating_fit <- rating_validity(rating_dat, scale_min = 1, scale_max = 5)
 rating_sum <- summary(rating_fit)
-rating_fit$results[, c("item", "target", "htc", "htd", "p_value",
-                      "max_contrast_p", "recommendation")]
-#>   item target       htc       htd      p_value max_contrast_p recommendation
-#> 1   A1      A 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
-#> 2   A2      A 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
-#> 3   B1      B 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
-#> 4   B2      B 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
-#> 5   C1      C 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain
-#> 6   C2      C 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review
-rating_fit$scale_summary[, c("target", "n_items", "mean_htc", "htc_strength",
-                             "mean_htd", "htd_strength")]
-#>   target n_items  mean_htc htc_strength mean_htd htd_strength
-#> 1      A       2 0.8333333         Weak   0.4375  Very Strong
-#> 2      B       2 0.8333333         Weak   0.4375  Very Strong
-#> 3      C       2 0.8333333         Weak   0.4375  Very Strong
+rounded(rating_fit$results[, c("item", "target", "htc", "htd", "p_value",
+                               "max_contrast_p", "recommendation")])
+#>   item target   htc   htd p_value max_contrast_p recommendation
+#> 1   A1      A 0.933 0.667  < .001         < .001         Retain
+#> 2   A2      A 0.733 0.208  < .001           .052         Review
+#> 3   B1      B 0.933 0.667  < .001         < .001         Retain
+#> 4   B2      B 0.733 0.208  < .001           .052         Review
+#> 5   C1      C 0.933 0.667  < .001         < .001         Retain
+#> 6   C2      C 0.733 0.208  < .001           .052         Review
+rounded(rating_fit$scale_summary[, c("target", "n_items", "mean_htc",
+                                     "htc_strength", "mean_htd",
+                                     "htd_strength")])
+#>   target n_items mean_htc htc_strength mean_htd htd_strength
+#> 1      A       2    0.833         Weak    0.438  Very Strong
+#> 2      B       2    0.833         Weak    0.438  Very Strong
+#> 3      C       2    0.833         Weak    0.438  Very Strong
 ```
 
 ### Methods scaffold
@@ -153,9 +197,9 @@ content_report(rating_fit)
 #>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
 #> 
 #> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
-#> Judges = judges who rated the item against every construct. F
-#> test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of
-#> freedom where the correction applied. Contrast p = the largest one-sided p
+#> Judges = judges who rated the item against every construct.
+#> F test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees
+#> of freedom where the correction applied. Contrast p = the largest one-sided p
 #> among the planned contrasts of the intended construct with each other
 #> construct. Retain = omnibus p and every one-sided contrast p at or below
 #> alpha = .05 (MacKenzie et al., 2011).
@@ -184,18 +228,18 @@ expert_fit <- expert_validity(
   hi = 4
 )
 expert_sum <- summary(expert_fit)
-expert_fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod",
-                      "recommendation")]
-#>    item N         V I_CVI kappa_mod recommendation
-#> 1 Item1 8 1.0000000  1.00 1.0000000 Strong support
-#> 2 Item2 8 0.9166667  1.00 1.0000000 Strong support
-#> 3 Item3 8 0.8333333  1.00 1.0000000 Strong support
-#> 4 Item4 8 0.5833333  0.75 0.7192982         Review
-#> 5 Item5 8 0.4166667  0.25 0.1578947         Review
-expert_fit$scale_summary[, c("n_items", "mean_Aiken_V", "S_CVI_Ave",
-                             "S_CVI_UA", "agreement")]
+rounded(expert_fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod",
+                               "recommendation")])
+#>    item N     V I_CVI kappa_mod recommendation
+#> 1 Item1 8 1.000  1.00     1.000 Strong support
+#> 2 Item2 8 0.917  1.00     1.000 Strong support
+#> 3 Item3 8 0.833  1.00     1.000 Strong support
+#> 4 Item4 8 0.583  0.75     0.719         Review
+#> 5 Item5 8 0.417  0.25     0.158         Review
+rounded(expert_fit$scale_summary[, c("n_items", "mean_Aiken_V", "S_CVI_Ave",
+                                     "S_CVI_UA", "agreement")])
 #>   n_items mean_Aiken_V S_CVI_Ave S_CVI_UA agreement
-#> 1       5         0.75       0.8      0.6 0.6934253
+#> 1       5         0.75       0.8      0.6     0.693
 ```
 
 > Experts rated the relevance of each candidate item on a bounded
@@ -216,13 +260,13 @@ supported items and 2 review items under its quantitative rules.
 expert_ess <- read_example("expert_essentiality_example.csv")
 expert_ess_matrix <- as.matrix(expert_ess[setdiff(names(expert_ess), "expert")])
 ess_fit <- expert_validity(expert_ess_matrix, mode = "essentiality")
-ess_fit$results[, c("item", "ne", "N", "cvr", "p_value", "critical_ne",
-                   "recommendation")]
-#>    item ne  N       cvr     p_value critical_ne recommendation
-#> 1 Item1 11 12 0.8333333 0.003173828          10      Supported
-#> 2 Item2 10 12 0.6666667 0.019287109          10      Supported
-#> 3 Item3  8 12 0.3333333 0.193847656          10         Review
-#> 4 Item4  6 12 0.0000000 0.612792969          10         Review
+rounded(ess_fit$results[, c("item", "ne", "N", "cvr", "p_value",
+                            "critical_ne", "recommendation")])
+#>    item ne  N   cvr p_value critical_ne recommendation
+#> 1 Item1 11 12 0.833    .003          10      Supported
+#> 2 Item2 10 12 0.667    .019          10      Supported
+#> 3 Item3  8 12 0.333    .194          10         Review
+#> 4 Item4  6 12 0.000    .613          10         Review
 ```
 
 For an essentiality task, state that CVR is tied to a different expert
@@ -236,24 +280,21 @@ relevance/CVI threshold.
 
 expert_ioc <- read_example("expert_congruence_example.csv")
 ioc_fit <- expert_validity(expert_ioc, mode = "congruence")
-ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
-                   "strongest_competitor", "margin", "recommendation")]
-#>   item target target_ioc target_mean strongest_competitor    margin
-#> 1   I1      A  0.9166667   1.0000000                    B 1.6666667
-#> 2   I2      B  0.8750000   1.0000000                    A 1.6666667
-#> 3   I3      C  0.4583333   0.8333333                    B 0.3333333
-#>   recommendation
-#> 1      Congruent
-#> 2      Congruent
-#> 3         Review
+rounded(ioc_fit$results[, c("item", "target", "target_ioc", "target_mean",
+                            "strongest_competitor", "margin",
+                            "recommendation")])
+#>   item target target_ioc target_mean strongest_competitor margin recommendation
+#> 1   I1      A      0.917       1.000                    B  1.667      Congruent
+#> 2   I2      B      0.875       1.000                    A  1.667      Congruent
+#> 3   I3      C      0.458       0.833                    B  0.333         Review
 ```
 
 For congruence, report each item’s intended objective, its index of
 item-objective congruence against the criterion (`ioc_cut`, by default
 the .70 Rovinelli and Hambleton applied), and the decision. The experts’
-mean ratings on the intended objective and on the closest other
-objective, and the margin between them, describe the index; they are not
-part of its criterion.
+mean ratings on the intended objective and on the other objective with
+the highest mean rating, and the margin between them, describe the
+index; they are not part of its criterion.
 
 ## Figures across review stages
 
@@ -291,13 +332,13 @@ evidence
 #>   EF2   1.00 Strong support  .90 Retain  Carried
 #>   EF3   1.00 Strong support  .90 Retain  Carried
 #>   EF4   1.00 Strong support  .90 Retain  Carried
-#>   EF5   .50 Review           --          Held back: Relevance panel
+#>   EF5   .50 Review           --          Held back: 1
 #>   EF6   .88 Strong support   .75 Retain  Carried
 #>   TF1   1.00 Strong support  .95 Retain  Carried
 #>   TF2   1.00 Strong support  .85 Retain  Carried
 #>   TF3   1.00 Strong support  .90 Retain  Carried
 #>   TF4   1.00 Strong support  .80 Retain  Carried
-#>   TF5   1.00 Strong support  .30 Review  Held back: Item sort
+#>   TF5   1.00 Strong support  .30 Review  Held back: 2
 #>   TF6   1.00 Strong support  .90 Retain  Carried
 #> 
 #> What these columns mean
@@ -307,8 +348,8 @@ evidence
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
 #>       in the construct it was written for (0 to 1; higher is stronger).
 #>   Result -- Carried when every stage that reviewed the item carried it;
-#>       otherwise the stages that held it back. -- marks a stage that did not
-#>       review the item.
+#>       otherwise the numbers of the stages that held it back, as listed above.
+#>       A "--" marks a stage that did not review the item.
 #> 
 #>   Full definitions: contentvalid_glossary(). To hide this key:
 #>   options(contentvalidR.show_key = FALSE).

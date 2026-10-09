@@ -153,13 +153,13 @@ other:</p>
 <span><span class="co">#&gt; 12  TF6                             behaves differently in the two cohorts</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="stage-one-the-expert-panel">Stage one: the expert panel<a class="anchor" aria-label="anchor" href="#stage-one-the-expert-panel"></a>
+<h2 id="stage-one-the-item-sort">Stage one: the item sort<a class="anchor" aria-label="anchor" href="#stage-one-the-item-sort"></a>
 </h2>
-<p>Twenty judges sorted each item into <code>EF</code>, <code>TF</code>,
-or <code>TA</code>. <code><a href="../reference/sort_validity.html">sort_validity()</a></code> applies the exact
-target-count test of Howard and Melloy (2016): with twenty judges and
-the default null probability of .50, an item needs fifteen assignments
-to its target to meet the criterion.</p>
+<p>A panel of twenty judges sorted each item into <code>EF</code>,
+<code>TF</code>, or <code>TA</code>. <code><a href="../reference/sort_validity.html">sort_validity()</a></code>
+applies the exact target-count test of Howard and Melloy (2016): with
+twenty judges and the default null probability of .50, an item needs
+fifteen assignments to its target to meet the criterion.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sorted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="fu">path</span><span class="op">(</span><span class="st">"walkthrough_sort.csv"</span><span class="op">)</span>, stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sorted</span><span class="op">)</span></span>
@@ -402,10 +402,12 @@ something else.</p>
 <p>The content argument then decides it. <code>EF3</code> is the only
 item in the set about completing required work; every other
 effort-regulation item is about how the work <em>feels</em> — boring,
-dull, unappealing. Drop <code>EF3</code> for its correlation and the
-scale still has five items, but it no longer covers a part of the domain
-the panel defined. That is a content-validity loss that no empirical
-index reports, because no empirical index knows what the domain was.</p>
+dull, unappealing. Drop <code>EF3</code> for its correlation, on top of
+<code>EF4</code>, and the effort-regulation scale still has three items,
+<code>EF1</code>, <code>EF2</code>, and <code>EF6</code>, but it no
+longer covers a part of the domain the panel defined. That is a
+content-validity loss that no empirical index reports, because no
+empirical index knows what the domain was.</p>
 <p>Neither stage overrules the other. <code>EF4</code> is the case for
 not trusting a panel on its own; <code>EF3</code> is the case for not
 trusting a screen on its own.</p>

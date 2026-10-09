@@ -4,7 +4,9 @@ item level, sort_validity() combines Anderson and Gerbing's (1991) Psa and
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 &quot;Retain&quot;; items that do not meet it are labeled &quot;Review&quot;, not
-automatically &quot;Delete&quot;. An item sorted by so few judges that no count
+automatically &quot;Delete&quot;. An item meets the criterion when its exact p
+is at or below alpha, so a p equal to alpha counts as meeting it;
+see csv_binom_test(). An item sorted by so few judges that no count
 could meet the criterion (four or fewer at the defaults) is labeled
 &quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;.
 Construct and item labels are compared as text after leading and trailing
@@ -14,12 +16,17 @@ the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
-descriptive benchmarks rather than pass/fail rules."><meta property="og:description" content="Provides the recommended user-facing workflow for item-sort studies. At the
+descriptive benchmarks rather than pass/fail rules. Each index is read
+against its own band; the advice in scale_summary$evidence, keyed to the
+lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s."><meta property="og:description" content="Provides the recommended user-facing workflow for item-sort studies. At the
 item level, sort_validity() combines Anderson and Gerbing's (1991) Psa and
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 &quot;Retain&quot;; items that do not meet it are labeled &quot;Review&quot;, not
-automatically &quot;Delete&quot;. An item sorted by so few judges that no count
+automatically &quot;Delete&quot;. An item meets the criterion when its exact p
+is at or below alpha, so a p equal to alpha counts as meeting it;
+see csv_binom_test(). An item sorted by so few judges that no count
 could meet the criterion (four or fewer at the defaults) is labeled
 &quot;Insufficient panel&quot;, with status &quot;Insufficient data&quot;.
 Construct and item labels are compared as text after leading and trailing
@@ -29,7 +36,10 @@ the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
-descriptive benchmarks rather than pass/fail rules."></head><body>
+descriptive benchmarks rather than pass/fail rules. Each index is read
+against its own band; the advice in scale_summary$evidence, keyed to the
+lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -90,7 +100,9 @@ item level, <code>sort_validity()</code> combines Anderson and Gerbing's (1991) 
 Csv statistics with the exact target-count significance test recommended by
 Howard and Melloy (2016). Items meeting the exact criterion are labeled
 <code>"Retain"</code>; items that do not meet it are labeled <code>"Review"</code>, not
-automatically <code>"Delete"</code>. An item sorted by so few judges that no count
+automatically <code>"Delete"</code>. An item meets the criterion when its exact <em>p</em>
+is at or below <code>alpha</code>, so a <em>p</em> equal to <code>alpha</code> counts as meeting it;
+see <code><a href="csv_binom_test.html">csv_binom_test()</a></code>. An item sorted by so few judges that no count
 could meet the criterion (four or fewer at the defaults) is labeled
 <code>"Insufficient panel"</code>, with status <code>"Insufficient data"</code>.</p>
 <p>Construct and item labels are compared as text after leading and trailing
@@ -100,7 +112,10 @@ the order of the levels when the item column is a factor.</p>
 <p>At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al. (2019).
 This mirrors how those norms were constructed. The Colquitt categories are
-descriptive benchmarks rather than pass/fail rules.</p>
+descriptive benchmarks rather than pass/fail rules. Each index is read
+against its own band; the advice in <code>scale_summary$evidence</code>, keyed to the
+lower of the two bands, is labeled as this package's suggestion, not
+Colquitt et al.'s.</p>
     </div>
 
     <div class="section level2">
@@ -145,7 +160,8 @@ the judges are subject-matter experts.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Significance level. Default <code>0.05</code>.</p></dd>
+<dd><p>Significance level. Default <code>0.05</code>. A <em>p</em> equal to <code>alpha</code>
+meets the criterion.</p></dd>
 
 
 <dt id="arg-orbiting-r">orbiting_r<a class="anchor" aria-label="anchor" href="#arg-orbiting-r"></a></dt>
@@ -165,8 +181,9 @@ If omitted, the overall Colquitt et al. norms are used.</p></dd>
 <code>"agresti_coull"</code>, <code>"exact"</code>, or <code>"none"</code>. The interval is two-sided at
 level <code>1 - alpha</code>, while the exact test is one-sided, so the interval of
 an item that just meets the criterion can still include <code>p0</code>. The
-decision comes from the test, not from the interval. See <code>ci</code> in <code><a href="cvi.html">cvi()</a></code>
-for the methods and the evidence for each.</p></dd>
+decision comes from the test, not from the interval, and the printout
+says so when a retained item's interval includes <code>p0</code>. See <code>ci</code> in
+<code><a href="cvi.html">cvi()</a></code> for the methods and the evidence for each.</p></dd>
 
 
 <dt id="arg-legacy">legacy<a class="anchor" aria-label="anchor" href="#arg-legacy"></a></dt>
@@ -190,8 +207,72 @@ All flagship workflow objects expose the common components <code>results</code>,
 <code>scale_summary</code>, <code>settings</code>, <code>design</code>, and <code>details</code>. Item-level <code>results</code>
 include a standardized <code>status</code> field while retaining the method-specific
 <code>recommendation</code> field. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>, and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> provide
-user-facing interpretation.</p>
-    </div>
+user-facing interpretation; see <a href="contentvalid-methods.html">contentvalid-methods</a>.</p>
+<p><strong>Results columns.</strong> <code>results</code> has one row per item:</p><dl><dt><code>item</code></dt>
+<dd><p>The item.</p></dd>
+
+<dt><code>target</code></dt>
+<dd><p>The construct the item was written for.</p></dd>
+
+<dt><code>n_total</code></dt>
+<dd><p>Rows for the item, missing assignments included.</p></dd>
+
+<dt><code>n</code></dt>
+<dd><p>Judges who sorted the item: its assignments that are not
+missing.</p></dd>
+
+<dt><code>n_missing</code></dt>
+<dd><p>Missing assignments, <code>n_total - n</code>.</p></dd>
+
+<dt><code>n_target</code></dt>
+<dd><p>Assignments to the target construct.</p></dd>
+
+<dt><code>competitor</code></dt>
+<dd><p>The other construct judges chose most often, with
+ties joined by <code>"; "</code>; <code>NA</code> when no judge chose another construct.</p></dd>
+
+<dt><code>n_other_max</code></dt>
+<dd><p>Assignments to the competitor.</p></dd>
+
+<dt><code>psa</code></dt>
+<dd><p>Psa, <code>n_target / n</code>.</p></dd>
+
+<dt><code>psa_low</code>, <code>psa_high</code></dt>
+<dd><p>The interval for Psa at level
+<code>1 - alpha</code>, by the method in <code>proportion_ci</code>; <code>NA</code> with <code>"none"</code>.</p></dd>
+
+<dt><code>csv</code></dt>
+<dd><p>Csv, <code>(n_target - n_other_max) / n</code>.</p></dd>
+
+<dt><code>p_value</code></dt>
+<dd><p>The one-sided exact binomial <em>p</em> of the target count
+against <code>p0</code>.</p></dd>
+
+<dt><code>critical_n_target</code></dt>
+<dd><p>The fewest target assignments that meet the
+criterion with <code>n</code> judges; <code>NA</code> when no count can.</p></dd>
+
+<dt><code>passes_chance</code></dt>
+<dd><p>Whether <code>n_target</code> reaches
+<code>critical_n_target</code>.</p></dd>
+
+<dt><code>recommendation</code></dt>
+<dd><p><code>"Retain"</code>, <code>"Review"</code>, <code>"Insufficient panel"</code>
+(no count could meet the test), or <code>"Insufficient data"</code> (no judge
+sorted the item).</p></dd>
+
+<dt><code>issue</code></dt>
+<dd><p>The reason in a few words, such as <code>"Competing construct favored"</code>.</p></dd>
+
+<dt><code>interpretation</code></dt>
+<dd><p>The decision explained in a sentence.</p></dd>
+
+<dt><code>status</code></dt>
+<dd><p>The shared status: <code>"Supported"</code> for <code>"Retain"</code>,
+<code>"Review"</code>, or <code>"Insufficient data"</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="earlier-methods-for-comparison">Earlier methods, for comparison<a class="anchor" aria-label="anchor" href="#earlier-methods-for-comparison"></a></h2>
 
@@ -275,7 +356,7 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   compared seven methods and recommends score intervals over the Wald</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   interval. An interval reflects how few ratings an item received, not whether</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   the right judges were chosen.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   the right people rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale-level Colquitt benchmarks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span>
@@ -288,8 +369,9 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Colquitt labels are empirical percentile norms derived from scale-level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   averages, not universal cutoffs or automatic scale-retention rules. They</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   place a scale against published scales; Psa and Csv sit on different scales,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   so their labels are not comparable with each other.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   place a scale against published scales. Psa and Csv sit on different scales,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   so their values cannot be compared with each other; their labels can,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   because each is a percentile position among published scales.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What these columns mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span>
@@ -328,11 +410,12 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Psa = proportion of substantive agreement; Csv = coefficient of substantive</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   validity (Anderson &amp; Gerbing, 1991).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   A: Mean Psa and mean Csv both fall in the Moderate band of published scales</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     (Colquitt et al., 2019); review the weaker items before finalizing. These</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     bands come from tasks with three definitions (one focal, two orbiting);</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     judges here used 2 (set `n_constructs` if more were offered), so the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     comparison is approximate. This is a contentvalidR caution: Colquitt et</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     al. do not discuss other numbers.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     (Colquitt et al., 2019). A contentvalidR suggestion for that band: review</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     the weaker items before finalizing. These bands come from tasks with three</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     definitions (one focal, two orbiting); judges here used 2 (set</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     `n_constructs` if more were offered), so the comparison is approximate.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     This is a contentvalidR caution: Colquitt et al. do not discuss other</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     numbers.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Flagged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Target  Decision  Psa  Csv  Competitor     p</span>
@@ -371,7 +454,7 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   compared seven methods and recommends score intervals over the Wald</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   interval. An interval reflects how few ratings an item received, not whether</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   the right judges were chosen.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   the right people rated it.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Scale-level Colquitt benchmarks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span>
@@ -384,8 +467,9 @@ the WHOQOL-BREF from respondents' perspective by quantitative methods.
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Colquitt labels are empirical percentile norms derived from scale-level</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   averages, not universal cutoffs or automatic scale-retention rules. They</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   place a scale against published scales; Psa and Csv sit on different scales,</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   so their labels are not comparable with each other.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   place a scale against published scales. Psa and Csv sit on different scales,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   so their values cannot be compared with each other; their labels can,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   because each is a percentile position among published scales.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Earlier methods, for comparison (not used for the decision)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision  Psa  Csv  A&amp;G (1991)  Yao et al. (2008)  Extension*</span>

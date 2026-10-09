@@ -110,29 +110,42 @@ compared: the criterion did not move.</p>
 <dd><p>Two or more fitted workflow objects, in round order. All must come
 from the same workflow, and from the same mode of <code><a href="expert_validity.html">expert_validity()</a></code>,
 since status labels from different workflows rest on different criteria
-and are not comparable.</p></dd>
+and are not comparable. Name them to label the rounds:
+<code>compare_rounds(pilot = f1, revised = f2)</code>.</p></dd>
 
 
 <dt id="arg-labels">labels<a class="anchor" aria-label="anchor" href="#arg-labels"></a></dt>
-<dd><p>Optional round labels. Defaults to <code>Round 1</code>, <code>Round 2</code>, and so
-on, or to the names supplied in <code>...</code>. A label cannot be the name of the
-unit column (<code>item</code>, <code>judge</code> or <code>cell</code>) or <code>change</code>.</p></dd>
+<dd><p>Optional round labels. Defaults to the names supplied in
+<code>...</code> when every round is named, and otherwise to <code>Round 1</code>, <code>Round 2</code>,
+and so on, with a warning when only some rounds were named. A label
+cannot be the name of the unit column (<code>item</code>, <code>judge</code> or <code>cell</code>) or
+<code>change</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>contentvalid_rounds</code>, a list containing:</p><dl><dt>transitions</dt>
-<dd><p>One row per unit, with its status in each round and
-the direction of any change.</p></dd>
+<dd><p>One row per unit, with its status in each round and,
+in <code>change</code>, how its status in the last round compares with the
+first: <code>Unchanged</code>, <code>Strengthened</code>, <code>Weakened</code>, <code>Changed</code> (to or
+from <code>Descriptive only</code>, which is neither stronger nor weaker),
+<code>Added</code>, <code>Removed</code>, or <code>Not in first or last</code> for a unit present
+only in the rounds between. A unit that changed and changed back
+reads <code>Unchanged</code>; the round columns show the path.</p></dd>
 
 <dt>summary</dt>
-<dd><p>Counts of stable, improved, weakened, added, and removed
-units for each consecutive pair of rounds.</p></dd>
+<dd><p>For each consecutive pair of rounds, the units compared
+(present in both) and how they split: unchanged, strengthened,
+weakened, and otherwise changed (<code>n_changed</code>, to or from
+<code>Descriptive only</code>), which add up to <code>n_compared</code>; and the units
+added and removed.</p></dd>
 
 <dt>settings_changes</dt>
 <dd><p>Analysis settings that differ between consecutive
 rounds, and a changed panel size, which is the audit trail for whether
-a status change can be read as an evidence change at all.</p></dd>
+a status change can be read as an evidence change at all. The values
+are text; a proportion (<code>alpha</code>, <code>consensus_threshold</code>, <code>ioc_cut</code>,
+<code>p0</code>) is written as APA writes it, <code>.05</code> or <code>.75</code>.</p></dd>
 
 <dt>comparable</dt>
 <dd><p><code>FALSE</code> when any consecutive pair differs in settings
@@ -197,7 +210,7 @@ samples analyzed under identical settings.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> delete.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Status by round</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Round 1  Round 2    Change</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Round 1  Round 2    First to last</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I1    Review   Supported  Strengthened</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   I2    Review   Review     Unchanged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

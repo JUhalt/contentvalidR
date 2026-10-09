@@ -177,6 +177,15 @@ multiple range test, not planned contrasts.</p></dd>
     <p>A data.frame with one row per item, including the omnibus F, raw p,
 Greenhouse-Geisser epsilon/corrected degrees of freedom and <em>p</em> value for
 within-judge designs, partial eta-squared, and planned-contrast diagnostics.
+<code>target_mean</code> and <code>competitor_mean</code>, and <code>strongest_competitor</code> (the
+other construct with the highest mean rating), use every available
+rating of the item. In a within-judge design <code>F</code>, the contrasts and HTD
+use only the judges who rated the item against every construct
+(<code>n_complete</code>), so with missing ratings the two sets of means can differ,
+even in which construct leads. The intended construct's mean over those
+judges is <code>target_mean_complete</code> in <code><a href="htd.html">htd()</a></code> and in <code><a href="rating_validity.html">rating_validity()</a></code>'s
+<code>results</code>, and the contrast table below holds each contrast's means over
+them.
 The full planned-contrast table is stored in <code>attr(result, "contrasts")</code>:
 for each contrast the two means, their difference, <code>t</code>, <code>df</code>, the
 one-sided <code>p</code>, the adjusted <code>p_adj</code>, and <code>pass</code>. Its <code>dz</code> column is a

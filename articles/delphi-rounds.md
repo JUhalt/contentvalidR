@@ -113,15 +113,16 @@ fit
 #> 
 #> 3 of 6 items reached consensus in their last round.
 #> No consensus: S3, S4, S6
+#> Agreed in the other direction (75% or more rated it below 3): S3
 #> 
 #> Item-level evidence (last round, and the last pair of rounds)
-#>   Item  Decision      Last round   n  Agree  Unchanged  Kappa         95% CI
-#>   S1    Consensus              2  10   1.00        .80    .71    [.20, 1.00]
-#>   S2    Consensus              3   9   1.00        .89    .00             --
-#>   S3    No consensus           3   9    .00       1.00   1.00   [1.00, 1.00]
-#>   S4    No consensus           3   9    .56        .89    .96    [.84, 1.00]
-#>   S5    Consensus              3   9   1.00        .78    .53    [.00, 1.00]
-#>   S6    No consensus           3   9    .56        .00   -.99  [-1.00, -.30]
+#>   Item Decision     Last round Experts Agree Unchanged Kappa        95% CI
+#>   S1   Consensus             2      10  1.00       .80   .71   [.20, 1.00]
+#>   S2   Consensus             3       9  1.00       .89   .00            --
+#>   S3   No consensus          3       9   .00      1.00  1.00  [1.00, 1.00]
+#>   S4   No consensus          3       9   .56       .89   .96   [.84, 1.00]
+#>   S5   Consensus             3       9  1.00       .78   .53   [.00, 1.00]
+#>   S6   No consensus          3       9   .56       .00  -.99 [-1.00, -.30]
 #> 
 #>   Agree: share of experts agreeing in the item's last round. Unchanged: share
 #>   who kept their rating between the item's last pair of consecutive rounds.
@@ -148,6 +149,9 @@ fit
 #>   S2 (2->3): Every expert gave the same rating in one of the two rounds, so
 #>     kappa is 0 however many kept their rating. Read the share who kept their
 #>     rating instead.
+#>   S3 (2->3): The 95% CI has no width because every expert kept their rating,
+#>     so every resample of the experts gave the same kappa; it does not mean
+#>     kappa is known exactly.
 #> 
 #>   In some resamples kappa was undefined because every resampled rating fell in
 #>   one category. Those intervals use the remaining resamples (n_boot_usable in
@@ -174,11 +178,14 @@ fit
 #>   Stability is weighted kappa between each expert's ratings in consecutive
 #>   rounds (Holey et al., 2007), with quadratic weights. A change of two scale
 #>   points counts four times a change of one. With these weights kappa equals
-#>   the intraclass correlation of the two rounds' ratings, so a shift of the
-#>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
-#>   such as 'substantial' are shown, because kappa can be low when ratings
-#>   concentrate in one category, which is where a Delphi aims to end. Feinstein
-#>   and Cicchetti (1990) showed it for kappa on two categories, and the same
+#>   the intraclass correlation of the two rounds' ratings in its sums-of-squares
+#>   form, so a shift of the whole panel counts as instability (Fleiss & Cohen,
+#>   1973). The intraclass correlation computed from mean squares, the more
+#>   common form, differs from it by a term that shrinks as the panel grows, so
+#>   in a panel of Delphi size the two can differ. No verbal labels such as
+#>   'substantial' are shown, because kappa can be low when ratings concentrate
+#>   in one category, which is where a Delphi aims to end. Feinstein and
+#>   Cicchetti (1990) showed it for kappa on two categories, and the same
 #>   arithmetic applies to weighted kappa. In Holey et al. (2007), the statement
 #>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2
 #>   (.31).
@@ -257,8 +264,11 @@ is the plainest measure: the share of experts who gave exactly the same
 rating again. Then read the kappa trend beside it. Kappa is weighted
 kappa between each expert’s ratings in two consecutive rounds (Holey et
 al., 2007). With the default quadratic weights, it equals the intraclass
-correlation of the two rounds’ ratings (Fleiss & Cohen, 1973). A shift
-of the whole panel after feedback therefore counts as instability.
+correlation of the two rounds’ ratings computed from sums of squares
+(Fleiss & Cohen, 1973). The intraclass correlation usually computed from
+mean squares differs from it by a term that shrinks as the panel grows;
+with ten experts the two can differ in the second decimal. Either way, a
+shift of the whole panel after feedback counts as instability.
 
 The six statements show the main patterns:
 
@@ -326,12 +336,12 @@ a table of round pairs:
 plot(fit)
 ```
 
-![Share of experts agreeing with each statement, by round, with a dotted
+![Share of experts agreeing with each statement, by round, with a dashed
 line at the 75% consensus
 threshold.](delphi-rounds_files/figure-html/plot-consensus-1.png)
 
 S1’s line stops at round 2, because that is where it settled and was set
-aside. The dotted line is the threshold you fixed in advance; with no
+aside. The dashed line is the threshold you fixed in advance; with no
 threshold set, no line is drawn, because the analysis applies none.
 
 ``` r
@@ -439,7 +449,7 @@ do.call(compare_rounds, unname(fit$details$round_fits))
 #>   Round 2  Round 3  panel size        10        9
 #> 
 #> Status by round
-#>   Item  Round 1    Round 2    Round 3    Change
+#>   Item  Round 1    Round 2    Round 3    First to last
 #>   S1    Supported  Supported  --         Removed
 #>   S2    Supported  Supported  Supported  Unchanged
 #>   S3    Review     Review     Review     Unchanged
@@ -489,6 +499,8 @@ content_report(fit)
 #> higher in its last round. Unchanged = share of experts who kept their rating
 #> between the item's last two consecutive rounds. Kappa = quadratic-weighted
 #> kappa between those rounds. 95% CI = percentile bootstrap confidence interval.
+#> An interval with equal limits (S3) has no width because every resample of the
+#> experts gave the same value; it does not mean the value is known exactly.
 #> Consensus = at least 75% of experts agreeing in the last round. -- = not
 #> computed.
 #> 

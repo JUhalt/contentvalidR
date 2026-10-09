@@ -75,9 +75,9 @@ subset(items, !startsWith(role, "ordinary"))[c("item", "role")]
 #> 12  TF6                             behaves differently in the two cohorts
 ```
 
-## Stage one: the expert panel
+## Stage one: the item sort
 
-Twenty judges sorted each item into `EF`, `TF`, or `TA`.
+A panel of twenty judges sorted each item into `EF`, `TF`, or `TA`.
 [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
 applies the exact target-count test of Howard and Melloy (2016): with
 twenty judges and the default null probability of .50, an item needs
@@ -377,10 +377,11 @@ excuse, and is telling you the item is about something else.
 The content argument then decides it. `EF3` is the only item in the set
 about completing required work; every other effort-regulation item is
 about how the work *feels* — boring, dull, unappealing. Drop `EF3` for
-its correlation and the scale still has five items, but it no longer
-covers a part of the domain the panel defined. That is a
-content-validity loss that no empirical index reports, because no
-empirical index knows what the domain was.
+its correlation, on top of `EF4`, and the effort-regulation scale still
+has three items, `EF1`, `EF2`, and `EF6`, but it no longer covers a part
+of the domain the panel defined. That is a content-validity loss that no
+empirical index reports, because no empirical index knows what the
+domain was.
 
 Neither stage overrules the other. `EF4` is the case for not trusting a
 panel on its own; `EF3` is the case for not trusting a screen on its

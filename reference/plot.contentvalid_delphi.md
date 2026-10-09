@@ -35,12 +35,14 @@ plot(
 
 - apa:
 
-  Used by `type = "distribution"`. `TRUE` (default) draws in gray, with
-  darker meaning a higher rating, as an APA figure is printed. `FALSE`
-  draws ratings below the agreement cut in brown and ratings at or above
-  it in teal, a colorblind-safe scheme for slides and posters. The
-  consensus and stability views color each item's line so the lines can
-  be told apart.
+  `TRUE` (default) draws in black, white and gray, as an APA figure is
+  printed: in the distribution view darker means a higher rating, and in
+  the consensus and stability views each item's line is a shade of gray
+  from black to mid gray, named by the label at its end. `FALSE` draws
+  for slides and posters: the distribution view shows ratings below the
+  agreement cut in brown and ratings at or above it in teal, a
+  colorblind-safe scheme, and the consensus and stability views give
+  each item's line its own color.
 
 - labels:
 
@@ -78,6 +80,12 @@ arbitrary, and kappa can be low when ratings concentrate in one
 category, so a shaded "good" region would mislead exactly when a Delphi
 is succeeding. See
 [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
+
+In both line views each item's line is labeled at its last point. Items
+with the same values throughout share one line: their labels are set
+apart, but the lines lie on top of each other, so only the stacked
+labels show that more than one item is there. `type = "distribution"`
+draws every item on its own.
 
 `type = "distribution"` draws every rating in every round as a diverging
 stacked bar (Heiberger & Robbins, 2014), one bar per round for each

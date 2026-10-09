@@ -148,12 +148,12 @@ comprehensively covers the construct domain.</p>
 <span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
 <span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
-<span><span class="co">#&gt;   the right judges were chosen.</span></span>
+<span><span class="co">#&gt;   the right people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
 <span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
 <span><span class="co">#&gt;   A           3       .78  Moderate        .57  Moderate</span></span>
-<span><span class="co">#&gt;   B           3       .82  Moderate        .63  Strong</span></span>
+<span><span class="co">#&gt;   B           3      .817  Moderate        .63  Strong</span></span>
 <span><span class="co">#&gt;   Benchmark set: Overall (not correlation-normed)</span></span>
 <span><span class="co">#&gt;   These bands come from tasks with three definitions (one focal, two</span></span>
 <span><span class="co">#&gt;   orbiting); judges here used 2 (set `n_constructs` if more were offered), so</span></span>
@@ -162,8 +162,9 @@ comprehensively covers the construct domain.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
 <span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   place a scale against published scales. Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their values cannot be compared with each other; their labels can,</span></span>
+<span><span class="co">#&gt;   because each is a percentile position among published scales.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
@@ -204,22 +205,24 @@ overlap.</p>
 <span><span class="co">#&gt; Scale-level evidence</span></span>
 <span><span class="co">#&gt;   Target  Items  Retain  Review  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
 <span><span class="co">#&gt;   A           3       2       1       .78  Moderate        .57  Moderate</span></span>
-<span><span class="co">#&gt;   B           3       2       1       .82  Moderate        .63  Strong</span></span>
+<span><span class="co">#&gt;   B           3       2       1      .817  Moderate        .63  Strong</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Psa = proportion of substantive agreement; Csv = coefficient of substantive</span></span>
 <span><span class="co">#&gt;   validity (Anderson &amp; Gerbing, 1991).</span></span>
 <span><span class="co">#&gt;   A: Mean Psa and mean Csv both fall in the Moderate band of published scales</span></span>
-<span><span class="co">#&gt;     (Colquitt et al., 2019); review the weaker items before finalizing. These</span></span>
+<span><span class="co">#&gt;     (Colquitt et al., 2019). A contentvalidR suggestion for that band: review</span></span>
+<span><span class="co">#&gt;     the weaker items before finalizing. These bands come from tasks with three</span></span>
+<span><span class="co">#&gt;     definitions (one focal, two orbiting); judges here used 2 (set</span></span>
+<span><span class="co">#&gt;     `n_constructs` if more were offered), so the comparison is approximate.</span></span>
+<span><span class="co">#&gt;     This is a contentvalidR caution: Colquitt et al. do not discuss other</span></span>
+<span><span class="co">#&gt;     numbers.</span></span>
+<span><span class="co">#&gt;   B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of</span></span>
+<span><span class="co">#&gt;     published scales (Colquitt et al., 2019). A contentvalidR suggestion for</span></span>
+<span><span class="co">#&gt;     the lower band, Moderate: review the weaker items before finalizing. These</span></span>
 <span><span class="co">#&gt;     bands come from tasks with three definitions (one focal, two orbiting);</span></span>
 <span><span class="co">#&gt;     judges here used 2 (set `n_constructs` if more were offered), so the</span></span>
 <span><span class="co">#&gt;     comparison is approximate. This is a contentvalidR caution: Colquitt et</span></span>
 <span><span class="co">#&gt;     al. do not discuss other numbers.</span></span>
-<span><span class="co">#&gt;   B: Mean Psa falls in the Moderate band and mean Csv in the Strong band of</span></span>
-<span><span class="co">#&gt;     published scales (Colquitt et al., 2019); review the weaker items before</span></span>
-<span><span class="co">#&gt;     finalizing. These bands come from tasks with three definitions (one focal,</span></span>
-<span><span class="co">#&gt;     two orbiting); judges here used 2 (set `n_constructs` if more were</span></span>
-<span><span class="co">#&gt;     offered), so the comparison is approximate. This is a contentvalidR</span></span>
-<span><span class="co">#&gt;     caution: Colquitt et al. do not discuss other numbers.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Flagged</span></span>
 <span><span class="co">#&gt;   Item  Target  Decision  Psa  Csv  Competitor     p</span></span>
@@ -365,13 +368,63 @@ that kind of judge. Their criteria should not simply be transferred to
 expert panels.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expert_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sort_dat</span>, judge_type <span class="op">=</span> <span class="st">"expert"</span><span class="op">)</span></span>
-<span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"mean_psa"</span>, <span class="st">"psa_strength"</span>,</span>
-<span>                             <span class="st">"mean_csv"</span>, <span class="st">"csv_strength"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   target  mean_psa psa_strength  mean_csv csv_strength</span></span>
-<span><span class="co">#&gt; 1      A 0.7833333         &lt;NA&gt; 0.5666667         &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2      B 0.8166667         &lt;NA&gt; 0.6333333         &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_sort summary&gt; Item-sort analysis</span></span>
+<span><span class="co">#&gt; Retain: 4 of 6 | Review: 2 of 6</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Scale-level evidence</span></span>
+<span><span class="co">#&gt;   Target  Items  Retain  Review  Mean Psa  Mean Csv</span></span>
+<span><span class="co">#&gt;   A           3       2       1       .78       .57</span></span>
+<span><span class="co">#&gt;   B           3       2       1       .82       .63</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Psa = proportion of substantive agreement; Csv = coefficient of substantive</span></span>
+<span><span class="co">#&gt;   validity (Anderson &amp; Gerbing, 1991).</span></span>
+<span><span class="co">#&gt;   A, B: Colquitt benchmark labels are not applied because the analysis was</span></span>
+<span><span class="co">#&gt;     marked as using expert judges.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Flagged</span></span>
+<span><span class="co">#&gt;   Item  Target  Decision  Psa  Csv  Competitor     p</span></span>
+<span><span class="co">#&gt;   A3    A       Review    .65  .30  B           .132</span></span>
+<span><span class="co">#&gt;   B3    B       Review    .70  .40  A           .058</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   p = Howard-Melloy exact test of the target assignments.</span></span>
+<span><span class="co">#&gt;   - A3 (Review): The target was at least as common as any competitor but did</span></span>
+<span><span class="co">#&gt;     not meet the exact retention criterion (strongest competitor: B); review</span></span>
+<span><span class="co">#&gt;     before deciding whether to revise or remove the item.</span></span>
+<span><span class="co">#&gt;   - B3 (Review): The target was at least as common as any competitor but did</span></span>
+<span><span class="co">#&gt;     not meet the exact retention criterion (strongest competitor: A); review</span></span>
+<span><span class="co">#&gt;     before deciding whether to revise or remove the item.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Interpret scale norms and item flags alongside theory, domain coverage, and</span></span>
+<span><span class="co">#&gt; qualitative feedback. This analysis does not by itself establish</span></span>
+<span><span class="co">#&gt; comprehensiveness or the full content-validity argument.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See summary(x)$reviewed_items for the flagged items as a data frame.</span></span></code></pre></div>
 <p>The Psa/Csv statistics and item-level screening remain available, but
-Colquitt normative labels are suppressed.</p>
+Colquitt normative labels are not applied: the scale-level table has no
+level columns, and the summary says why. In
+<code>expert_fit$scale_summary</code> the label columns are kept, as
+<code>NA</code>.</p>
+<p>Judge type also bears on the exact test. Its default null target
+rate, <code>p0 = .50</code>, follows Howard and Melloy (2016), who
+describe .50 as arbitrary and lenient. They suggest a higher value, such
+as .60 or .75, when the alternative constructs are clearly different
+from the target or the judges are subject-matter experts. Choose
+<code>p0</code> before the data are collected, and report it:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/csv_binom_test.html">csv_binom_test</a></span><span class="op">(</span>n_c <span class="op">=</span> <span class="fl">15</span>, N <span class="op">=</span> <span class="fl">20</span>, p0 <span class="op">=</span> <span class="fl">.60</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;contentvalid_binom&gt; Howard-Melloy exact test (one-sided)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; The item does not meet the exact target-assignment criterion.</span></span>
+<span><span class="co">#&gt; 15 of 20 judges assigned the item to its target construct (Psa = .75). If each</span></span>
+<span><span class="co">#&gt; judge chose the target with probability p0 = .60, a count this high has</span></span>
+<span><span class="co">#&gt; probability p = .126.</span></span>
+<span><span class="co">#&gt; At alpha = .05 an item needs at least 17 of 20.</span></span>
+<span><span class="co">#&gt; One-sided 95% CI for the target rate: [.54, 1.00].</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; See as.data.frame(x) for the test as one row.</span></span></code></pre></div>
+<p>With a null rate of .60, 15 of 20 judges no longer meets the
+criterion.</p>
 </div>
 <div class="section level2">
 <h2 id="planning-judge-sample-size">Planning judge sample size<a class="anchor" aria-label="anchor" href="#planning-judge-sample-size"></a>
@@ -379,7 +432,7 @@ Colquitt normative labels are suppressed.</p>
 <p>Use <code><a href="../reference/sort_power.html">sort_power()</a></code> to calculate the exact probability that
 an item will reach the required target-assignment count under a
 plausible true target-assignment probability.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">30</span>, <span class="fl">40</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_sort_power&gt; Item-sort planning</span></span>
 <span><span class="co">#&gt; Retention rule: Howard-Melloy exact test (p0 = .50, alpha = .05)</span></span>
@@ -404,15 +457,15 @@ alpha.</p>
 <h2 id="plotting-item-evidence">Plotting item evidence<a class="anchor" aria-label="anchor" href="#plotting-item-evidence"></a>
 </h2>
 <p>The one-index views remain available:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, metric <span class="op">=</span> <span class="st">"psa"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-item-plots-1.png" class="r-plt" alt="Psa for each item with its 95% interval and a dashed mark at the share of judges the exact test needs; filled points are retained items and open points are items to review." width="672"></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, metric <span class="op">=</span> <span class="st">"csv"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-item-plots-2.png" class="r-plt" alt="Csv for each item, with a dotted line at zero; filled points are retained items and open points are items to review." width="672"></p>
 <p>For diagnosis, the package also introduces a
 <strong>correspondence-distinctiveness evidence map</strong>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span>, type <span class="op">=</span> <span class="st">"map"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-map-1.png" class="r-plt" alt="Item-sort evidence map: each item's Psa, the share of judges choosing its target, on the horizontal axis against its Csv, the lead of the target over its top rival, on the vertical axis. Filled points are retained items, open points are items to review, and triangles mark each target scale's mean." width="672"></p>
 <p>Psa and Csv are shown jointly, review items are labeled by default,
@@ -422,11 +475,11 @@ construct-overlap problem (low or negative Csv). The map does not draw
 Colquitt cutoff regions across individual items because those empirical
 norms were constructed from scale-level averages.</p>
 <p>The exact planning object is also plottable:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plan</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_power.html">sort_power</a></span><span class="op">(</span>N <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">50</span>, by <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, true_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.60</span>, <span class="fl">.70</span>, <span class="fl">.80</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">plan</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-power-plots-1.png" class="r-plt" alt="Exact retention power of the item-sort test against the number of judges, one line for each assumed rate at which judges choose the target: .60, .70, and .80." width="672"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">plan</span>, type <span class="op">=</span> <span class="st">"critical"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="item-sort-validity_files/figure-html/sort-power-plots-2.png" class="r-plt" alt="Minimum Psa an item needs to be retained under the exact test, a step function of the number of judges, with points at the panel sizes requested." width="672"></p>
 <p>No conventional target-power line is imposed unless the analyst
@@ -448,7 +501,7 @@ prints them beside the decision, without changing it. In the
 two-construct sort above, every judge who misses the target picks the
 one other construct, and the two rules agree on every item. The
 package’s shipped example has three constructs:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">three</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"sort_example.csv"</span>, package <span class="op">=</span> <span class="st">"contentvalidR"</span><span class="op">)</span>,</span>
 <span>  stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -478,7 +531,7 @@ package’s shipped example has three constructs:</p>
 <span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
 <span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
-<span><span class="co">#&gt;   the right judges were chosen.</span></span>
+<span><span class="co">#&gt;   the right people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
 <span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
@@ -489,8 +542,9 @@ package’s shipped example has three constructs:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
 <span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   place a scale against published scales. Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their values cannot be compared with each other; their labels can,</span></span>
+<span><span class="co">#&gt;   because each is a percentile position among published scales.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Earlier methods, for comparison (not used for the decision)</span></span>
 <span><span class="co">#&gt;   Item  Decision  Psa  Csv  A&amp;G (1991)  Yao et al. (2008)  Extension*</span></span>

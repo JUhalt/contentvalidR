@@ -42,14 +42,13 @@ fit <- expert_validity(R, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: relevance
-#> Items: 4 | Experts/item: 6
+#> Items: 4 | Experts per item: 6
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
-#> Mean Aiken V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75
+#> Mean Aiken's V: .88 | S-CVI/Ave: .96 | S-CVI/UA: .75
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
 #>   Identical rating pairs: 63%.
 #> 
-#> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa
-#> above .74).
+#> 4 of 4 items meet the I-CVI criterion.
 #> 
 #>   Item   Decision        Experts     V       95% CI  I-CVI       95% CI  Kappa
 #>   Item1  Strong support        6  1.00  [.82, 1.00]   1.00  [.61, 1.00]   1.00
@@ -59,13 +58,12 @@ fit
 #> 
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
-#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986); kappa
-#> is modified kappa, with values above .74 read as excellent (Polit et al.,
-#> 2007).
+#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986). Kappa
+#> is modified kappa, read as excellent above .74 (Polit et al., 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#> people rated it.
 #> 
 #> Panel agreement is one coefficient for the whole panel, whereas modified kappa
 #> (the kappa column) describes each item. Alpha can be low when nearly every
@@ -109,7 +107,9 @@ fit
 summary(fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
+#> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Strong support: 4 of 4 | Review: 0 of 4
+#> I-CVI criterion for 6 experts: 5 agreeing (.83), following Lynn (1986).
 #> Panel agreement, Krippendorff's alpha (ordinal): .37, 95% CI [-.12, .63].
 #>   Identical rating pairs: 63%.
 #> 
@@ -291,7 +291,7 @@ experts:
 expert_validity(c(10, 8, 6), mode = "essentiality", N = 12)
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
-#> Items: 3 | Experts/item: 12
+#> Items: 3 | Experts per item: 12
 #> Method: Lawshe CVR with exact binomial critical values
 #> 
 #> 1 of 3 items meets the exact essentiality criterion.
@@ -340,7 +340,7 @@ E <- cbind(
 expert_validity(E, mode = "essentiality")
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
-#> Items: 2 | Experts/item: 8
+#> Items: 2 | Experts per item: 8
 #> Method: Lawshe CVR with exact binomial critical values
 #> 
 #> 1 of 2 items meets the exact essentiality criterion.
@@ -393,7 +393,7 @@ old <- options(contentvalidR.show_key = FALSE)
 expert_validity(c(9, 8, 7), mode = "essentiality", N = 9, legacy = TRUE)
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
-#> Items: 3 | Experts/item: 9
+#> Items: 3 | Experts per item: 9
 #> Method: Lawshe CVR with exact binomial critical values
 #> 
 #> 2 of 3 items meet the exact essentiality criterion.
@@ -478,7 +478,7 @@ d$score <- ifelse(d$objective == d$target_objective, 1, -1)
 expert_validity(d, mode = "congruence")
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: congruence
-#> Items: 2 | Experts/cell: 4 | Objectives: 2
+#> Items: 2 | Experts per cell: 4 | Objectives: 2
 #> Method: Index of item-objective congruence (Rovinelli & Hambleton, 1977)
 #> Criterion: IOC at or above .70, the criterion Rovinelli and Hambleton applied.
 #> 
@@ -488,10 +488,10 @@ expert_validity(d, mode = "congruence")
 #>   I1   A      Congruent       4 1.00 1.00 B                    -1.00   2.00
 #>   I2   B      Congruent       4 1.00 1.00 A                    -1.00   2.00
 #> 
-#> IOC: the index for the target objective. Mean: the experts' mean rating on it
-#> (-1 to 1). Competitor mean: the highest mean on another objective. Margin:
-#> mean less competitor mean, a description beside the index, not part of its
-#> criterion.
+#> IOC: the index for the target objective. Mean: the experts' mean rating on the
+#> target objective (-1 to 1). Competitor mean: the highest mean on another
+#> objective. Margin: mean less competitor mean, a description beside the index,
+#> not part of its criterion.
 #> 
 #> I1, I2: The index of item-objective congruence for the intended objective is
 #>   at or above .70: the experts matched the item to it and not to the other
@@ -517,12 +517,13 @@ expert_validity(d, mode = "congruence")
 An item is `"Congruent"` when its index for the target objective reaches
 `ioc_cut`, by default the .70 Rovinelli and Hambleton applied. The
 printout also shows the experts’ mean rating on the target and on the
-closest other objective, and the margin between those means. Applied
-work often reports the mean rating on the target as “the IOC”; it is an
-ingredient of the index, not the index, because it reaches 1 whatever
-the experts say about the other objectives. The margin is a description
-beside the index, not part of its criterion. Without a target mapping,
-each item’s index on every objective is described, with no decision.
+other objective with the highest mean rating, and the margin between
+those means. Applied work often reports the mean rating on the target as
+“the IOC”; it is an ingredient of the index, not the index, because it
+reaches 1 whatever the experts say about the other objectives. The
+margin is a description beside the index, not part of its criterion.
+Without a target mapping, each item’s index on every objective is
+described, with no decision.
 
 ## Missing ratings
 
@@ -561,9 +562,11 @@ plot(expert_validity(d, mode = "congruence"))
 ```
 
 ![Congruence plot: each item's index of item-objective congruence for
-its intended objective (filled), with the experts' mean rating on the
-intended objective (triangle) and on the closest other objective (open
-circle) in gray, a dotted line at zero, and a dashed line at the .70
+its intended objective, filled when it meets the .70 criterion and open
+below it, with the experts' mean rating on the intended objective (a
+triangle pointing up) and on the other objective with the highest mean
+(a triangle pointing down) in gray, a dotted line at zero, and a dashed
+line at the .70
 criterion.](expert-panel-validity_files/figure-html/expert-plots-3.png)
 
 Relevance mode displays Aiken’s V with its score interval and overlays

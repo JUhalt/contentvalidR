@@ -8,8 +8,10 @@ is divided by `a - 1`, where `a` is the number of rating anchors. HTD
 ranges from -1 to 1.
 
 HTD is therefore the intended construct's average lead over **all** the
-orbiting constructs, not its lead over the closest one. The closest one
-is reported beside it as `strongest_competitor`.
+orbiting constructs, not its lead over any one of them. The other
+construct with the highest mean rating is reported beside it as
+`strongest_competitor`, with that mean as `competitor_mean`; both use
+the judges HTD uses, those who rated the item against every construct.
 
 ## Usage
 

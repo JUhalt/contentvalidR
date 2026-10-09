@@ -287,7 +287,9 @@ undefined: every rating fell in the same category in both rounds." It also
 says when a statistic that meets its criterion is not what decided: the
 construct-rating <code>p_value</code> is the omnibus <em>p</em>, and for an item held back by
 a planned contrast its note says so, with the largest contrast <em>p</em> or, when
-a contrast has none, the constructs that tied.</p>
+a contrast has none, the constructs that tied. On a Delphi stability
+criterion it says which way the criterion reads and whether the fit read
+the item as stable, as described under "A Delphi handoff".</p>
 <p>Its contract, agreed with the <code>nomologR</code> maintainers:</p><ul><li><p>It is <strong>display text only</strong>. Never match on it, branch on it, or parse
 it. Its wording may change in any minor release without a schema change.</p></li>
 <li><p>It is always a character vector with <strong>no <code>NA</code></strong>. <code>""</code> means there is
@@ -309,14 +311,23 @@ four-judge panel from a unanimous twenty-judge one. <code>lower</code> and <code
 the bounds, <code>interval_method</code> names the method, and <code>interval_level</code> is the
 confidence level, for example <code>0.95</code>.</p><ul><li><p>Aiken's V: the Penfield-Giacobbi score interval.</p></li>
 <li><p>I-CVI and Psa: the method chosen with <code>proportion_ci</code>, the Wilson score
-interval by default.</p></li>
+interval by default. A Delphi handoff takes it from each item's last
+round.</p></li>
 <li><p>Panel agreement: the item-resampling percentile bootstrap of
 <code><a href="panel_agreement.html">panel_agreement()</a></code>.</p></li>
+<li><p>Delphi weighted kappa: the expert-resampling percentile bootstrap of
+<code><a href="delphi_validity.html">delphi_validity()</a></code>, at <code>1 - alpha</code>, when it was run with <code>B</code> above 0.</p></li>
 </ul><p>The four columns are <code>NA</code> together when a statistic has no interval. That
 happens when the method defines none (Csv, HTC, HTD, CVR, the essential
-count, modified kappa, IOC, and p values), when intervals were switched off
-with <code>proportion_ci = "none"</code>, or when the statistic itself could not be
-computed. <code>NA</code> there never stands for missing data.</p>
+count, modified kappa, IOC and the mean ratings beside it, proportion
+unchanged, lambda, the chi-squares, net percent change, and p values), when
+intervals were switched off with <code>proportion_ci = "none"</code> or <code>B = 0</code>, or
+when the statistic itself could not be computed. <code>NA</code> there never stands
+for missing data.</p>
+<p>A bootstrap interval can have zero width (<code>lower</code> equal to <code>upper</code>), when
+every resample gave the same value: a panel whose experts all kept their
+ratings, say. The bounds are kept as computed, and the row's <code>note</code> says
+that the width reflects how alike the ratings were, not precision.</p>
 <p>The handoff reports intervals only. It does not turn them into priors or
 weights for a later analysis; that is a question for the consuming package.</p>
     </div>
@@ -337,25 +348,42 @@ threshold rather than on the 0.74 rule that <code><a href="expert_validity.html"
 <p>Two more statistics record whether the panel had stopped moving:
 <code>proportion unchanged</code>, and the stability statistic that ran, named for its
 method, such as <code>weighted kappa (quadratic)</code> or <code>Goodman-Kruskal lambda</code>.
-The chi-square methods add <code>stability p_value</code> against <code>alpha</code>. Stability
-travels as evidence beside the decision; it never decides what is carried,
-exactly as it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+The chi-square methods add <code>stability p_value</code> against <code>alpha</code>, and net
+percent change carries its own criterion, .15. Stability travels as
+evidence beside the decision; it never decides what is carried, exactly as
+it never sets an item's status in <code><a href="delphi_validity.html">delphi_validity()</a></code>.</p>
+<p><strong>The stability criteria do not all read the same way.</strong> The individual
+chi-square reads <em>p</em> below <code>alpha</code> as stable, because Chaffin and Talley
+(1980) take dependence between the rounds' ratings as stability; the group
+chi-square reads <em>p</em> at or above <code>alpha</code> as stable, because Dajani et al.
+(1979) take no detectable difference between the rounds' distributions as
+stability; and net percent change reads a value below .15 as stable
+(Scheibe et al., 1975/2002). The same <code>criterion</code> therefore cannot be read
+without the method. The row that carries the criterion (<code>stability p_value</code>, or <code>net percent change</code>) says in its <code>note</code> which way it reads
+and whether the fit read the item as stable ("Read as stable." or "Not
+read as stable."), the call <code><a href="delphi_validity.html">delphi_validity()</a></code> records in <code>stable</code>. Kappa
+and lambda have no criterion and make no such call.</p>
 <p>The stability rows come from the item's last pair of consecutive rounds.
 For an item rated again after a gap (rounds 1, 2 and 4) that pair is
 earlier than the round the rows are dated by, and their <code>note</code> says which
-rounds they compare.</p>
+rounds they compare. Stability uses only the experts who rated the item in
+both rounds of the pair; when they are fewer than <code>n_judges</code>, the experts
+in the item's last round, the <code>note</code> gives their number.</p>
     </div>
     <div class="section level2">
     <h2 id="when-a-stability-statistic-is-na">When a stability statistic is NA<a class="anchor" aria-label="anchor" href="#when-a-stability-statistic-is-na"></a></h2>
 
 
 <p>A stability row is always present for a carried item, so an <code>NA</code> there is a
-statement about the data rather than a missing record. There are two cases,
-and they can be told apart from the object alone:</p>
+statement about the data rather than a missing record. There are two kinds
+of case, and they can be told apart from the object alone:</p>
 <dl><dt><code>proportion unchanged</code> is also <code>NA</code></dt>
-<dd><p>The item has no pair of
-consecutive rounds: it was rated in one round only, so there was nothing
-to compare.</p></dd>
+<dd><p>No pair of ratings was
+compared, for one of three reasons: the item was rated in one round
+only; it was rated in rounds that are not consecutive (1 and 3), and
+only consecutive rounds are compared; or it was rated in two
+consecutive rounds, but no expert rated it in both, as when the panel
+was replaced between them. The <code>note</code> says which.</p></dd>
 
 <dt><code>proportion unchanged</code> has a value</dt>
 <dd><p>A pair exists, but the
@@ -422,9 +450,21 @@ evidence rather than as a bare list of names.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Lynn, M. R. (1986). Determination and quantification of content validity.
+    <p>Chaffin, W. W., &amp; Talley, W. K. (1980). Individual stability in Delphi
+studies. <em>Technological Forecasting and Social Change, 16</em>(1), 67–73.
+<a href="https://doi.org/10.1016/0040-1625%2880%2990074-8" class="external-link">doi:10.1016/0040-1625(80)90074-8</a></p>
+<p>Dajani, J. S., Sincoff, M. Z., &amp; Talley, W. K. (1979). Stability and
+agreement criteria for the termination of Delphi studies. <em>Technological
+Forecasting and Social Change, 13</em>(1), 83–90.
+<a href="https://doi.org/10.1016/0040-1625%2879%2990007-6" class="external-link">doi:10.1016/0040-1625(79)90007-6</a></p>
+<p>Lynn, M. R. (1986). Determination and quantification of content validity.
 <em>Nursing Research, 35</em>(6), 382–385.
 <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link">doi:10.1097/00006199-198611000-00017</a></p>
+<p>Scheibe, M., Skutsch, M., &amp; Schofer, J. (2002). Experiments in Delphi
+methodology. In H. A. Linstone &amp; M. Turoff (Eds.), <em>The Delphi method:
+Techniques and applications</em> (pp. 257–281).
+<a href="https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf" class="external-link">https://www.foresight.pl/assets/downloads/publications/Turoff_Linstone.pdf</a>
+(Original work published 1975)</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -448,6 +488,7 @@ and <code><a href="content_report.html">content_report()</a></code> for manuscri
 <span class="r-out co"><span class="r-pr">#&gt;</span> Items carried forward: 3 of 4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Carried when status is: Supported</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Constructs: none in this design; the panel rated one item set.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Keying: not stated; response scale not stated</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   score, 95%)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

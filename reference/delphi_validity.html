@@ -151,25 +151,89 @@ between 0 and 1. Fix it before the study (Diamond et al., 2014). <code>NULL</cod
 
 
 <dt id="arg-seed">seed<a class="anchor" aria-label="anchor" href="#arg-seed"></a></dt>
-<dd><p>Optional seed for the bootstrap. The random-number stream of
-the session is left as it was.</p></dd>
+<dd><p>Optional seed for the bootstrap. Every item and pair of rounds
+is resampled from this same seed, so pairs with the same number of
+paired experts draw the same resample indices, and their intervals are
+not independent of one another. The random-number stream of the session
+is left as it was.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An object of class <code>contentvalid_delphi</code> and
-<code>contentvalid_workflow</code>. <code>results</code> has one row per item: its last round,
-<code>n_experts</code> there, <code>prop_agree</code>, <code>consensus</code>, and, for the last pair of
-consecutive rounds, <code>prop_unchanged</code>, <code>stability</code> with <code>stability_low</code>
-and <code>stability_high</code> where an interval exists, <code>stability_df</code> and
-<code>stability_p</code> for the chi-square methods, and <code>stable</code> for the methods
-that make a decision.
-<code>details</code> holds <code>consensus</code> (every item and round), <code>stability</code> (every
-item and pair of rounds, including <code>n_paired</code>, <code>min_expected</code> for the
-chi-square methods, <code>n_boot_usable</code> for the kappa interval, and a
-<code>note</code> where a statistic is undefined or unreliable), <code>panel</code> (experts
-per round), and <code>round_fits</code>, the <code><a href="expert_validity.html">expert_validity()</a></code> fit for each round.</p>
-    </div>
+<code>contentvalid_workflow</code>. <code>details</code> holds <code>consensus</code> (every item and
+round), <code>stability</code> (every item and pair of rounds, including
+<code>n_paired</code>, <code>min_expected</code> for the chi-square methods, <code>n_boot_usable</code>
+for the kappa interval, and a <code>note</code> where a statistic is undefined or
+unreliable), <code>panel</code> (experts per round), and <code>round_fits</code>, the
+<code><a href="expert_validity.html">expert_validity()</a></code> fit for each round.</p>
+<p><strong>Results columns.</strong> <code>results</code> has one row per item. Consensus is read
+in the item's last round, and stability in its last pair of consecutive
+rounds:</p><dl><dt><code>item</code></dt>
+<dd><p>The item.</p></dd>
+
+<dt><code>n_rounds</code></dt>
+<dd><p>Rounds in which the item was rated.</p></dd>
+
+<dt><code>last_round</code></dt>
+<dd><p>The last of them.</p></dd>
+
+<dt><code>n_experts</code></dt>
+<dd><p>Experts who rated the item in its last round.</p></dd>
+
+<dt><code>prop_agree</code></dt>
+<dd><p>The share of them rating it <code>agree_cut</code> or
+higher.</p></dd>
+
+<dt><code>consensus</code></dt>
+<dd><p>Whether <code>prop_agree</code> meets <code>consensus_threshold</code>;
+<code>NA</code> when no threshold was set.</p></dd>
+
+<dt><code>prop_unchanged</code></dt>
+<dd><p>The share of experts who kept their rating
+between the two rounds of the last pair, among those who rated the
+item in both (<code>n_paired</code> in <code>details$stability</code>); <code>NA</code> when no
+expert's ratings could be paired.</p></dd>
+
+<dt><code>stability</code></dt>
+<dd><p>The statistic chosen in <code>stability</code> for that pair:
+weighted kappa, lambda, a chi-square, or the net change.</p></dd>
+
+<dt><code>stability_low</code>, <code>stability_high</code></dt>
+<dd><p>The bootstrap interval for
+kappa at level <code>1 - alpha</code>; <code>NA</code> for the other methods, with
+<code>B = 0</code>, and where kappa has no interval.</p></dd>
+
+<dt><code>stability_df</code>, <code>stability_p</code></dt>
+<dd><p>The degrees of freedom and <em>p</em> of
+a chi-square; <code>NA</code> for the other methods.</p></dd>
+
+<dt><code>stable</code></dt>
+<dd><p>The stability rule's decision for the chi-square and
+net-change methods (see Details); <code>NA</code> for kappa and lambda, which
+apply no rule, where the item has no pair, and where the individual
+chi-square cannot be computed.</p></dd>
+
+<dt><code>recommendation</code></dt>
+<dd><p><code>"Consensus"</code>, <code>"No consensus"</code>,
+<code>"Descriptive only"</code> (no <code>consensus_threshold</code> was set), or
+<code>"Insufficient panel"</code> (fewer than three experts rated the item in
+its last round, whether or not a threshold was set). Stability never
+changes it.</p></dd>
+
+<dt><code>interpretation</code></dt>
+<dd><p>The decision explained in a sentence. Shares
+and the threshold are percentages to at most one decimal (66.7%), as
+in the handoff; <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> give a share just under the
+threshold, and the threshold, the decimals that tell them apart.</p></dd>
+
+<dt><code>status</code></dt>
+<dd><p>The shared status: <code>"Supported"</code> for <code>"Consensus"</code>,
+<code>"Review"</code> for <code>"No consensus"</code>, <code>"Descriptive only"</code>, or
+<code>"Insufficient data"</code> for <code>"Insufficient panel"</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><strong>Consensus.</strong> An expert agrees with an item when their rating is at least
@@ -188,10 +252,13 @@ share who kept their rating, is always reported. The <code>stability</code> argu
 chooses the statistic reported beside it:</p><ul><li><p><code>"kappa"</code> (default): weighted kappa between each expert's ratings in the
 two rounds (Holey et al., 2007), read as a trend with no cutoff.
 Quadratic weights (the default) make kappa the intraclass correlation of
-the two rounds' ratings (Fleiss &amp; Cohen, 1973); linear weights count a
-two-point change twice a one-point change (Cohen, 1968). The interval is
-a percentile bootstrap over the experts; see <em>Reading the kappa interval</em>
-below.</p></li>
+the two rounds' ratings in its sums-of-squares form (Fleiss &amp; Cohen,
+1973). The intraclass correlation computed from mean squares, the form
+most software reports, differs from it by a term that shrinks as the
+panel grows, so with a Delphi-sized panel the two do not match exactly.
+Linear weights count a two-point change twice a one-point change (Cohen,
+1968). The interval is a percentile bootstrap over the experts; see
+<em>Reading the kappa interval</em> below.</p></li>
 <li><p><code>"lambda"</code>: Chaffin and Talley's (1980) index of predictive association.</p></li>
 <li><p><code>"chisq_individual"</code>: Chaffin and Talley's (1980) chi-square test on
 each expert's pair of ratings; a significant result is read as stable.</p></li>
@@ -224,11 +291,15 @@ rounds in the order used.</p>
 
 
 <p>A stability statistic can be <code>NA</code> for different reasons, and
-<code>prop_unchanged</code> tells them apart. When <code>prop_unchanged</code> is also <code>NA</code>, the
-item has no pair of consecutive rounds: it was rated in one round only, or
-in rounds that are not consecutive. When <code>prop_unchanged</code> has a value, a
-pair exists but the statistic is undefined for that data, and
-<code>details$stability$note</code> says why.</p>
+<code>prop_unchanged</code> tells them apart. When <code>prop_unchanged</code> is also <code>NA</code>, no
+expert's ratings could be paired, for one of three reasons: the item was
+rated in one round only; it was rated in rounds that are not consecutive;
+or it was rated in consecutive rounds, but by different experts, so no
+expert rated it in both (two disjoint panels, for example). Only the last
+case has a row in <code>details$stability</code>, with <code>n_paired</code> 0 and a <code>note</code>
+saying so. When <code>prop_unchanged</code> has a value, a pair exists but the
+statistic is undefined for that data, and <code>details$stability$note</code> says
+why.</p>
 <p>The common case is the one that reads worst if reported bare. Kappa is
 chance-corrected, so when every paired rating in both rounds falls in one
 category the disagreement expected by chance is zero and kappa is 0/0. There
@@ -354,13 +425,14 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 of 4 items reached consensus in their last round.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No consensus: S2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Agreed in the other direction (75% or more rated it below 3): S2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence (last round, and the last pair of rounds)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  n  Agree  Unchanged  Kappa       95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3  8   1.00        .88    .60  [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3  8    .00        .88    .67  [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3  8   1.00        .88    .67  [.00, 1.00]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3  8   1.00        .88    .75  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  Experts  Agree  Unchanged  Kappa       95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3        8   1.00        .88    .60  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3        8    .00        .88    .67  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3        8   1.00        .88    .67  [.00, 1.00]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3        8   1.00        .88    .75  [.00, 1.00]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Agree: share of experts agreeing in the item's last round. Unchanged: share</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   who kept their rating between the item's last pair of consecutive rounds.</span>
@@ -400,11 +472,14 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Stability is weighted kappa between each expert's ratings in consecutive</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   rounds (Holey et al., 2007), with quadratic weights. A change of two scale</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   points counts four times a change of one. With these weights kappa equals</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   the intraclass correlation of the two rounds' ratings, so a shift of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   whole panel counts as instability (Fleiss &amp; Cohen, 1973). No verbal labels</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   such as 'substantial' are shown, because kappa can be low when ratings</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   concentrate in one category, which is where a Delphi aims to end. Feinstein</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   and Cicchetti (1990) showed it for kappa on two categories, and the same</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   the intraclass correlation of the two rounds' ratings in its sums-of-squares</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   form, so a shift of the whole panel counts as instability (Fleiss &amp; Cohen,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1973). The intraclass correlation computed from mean squares, the more</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   common form, differs from it by a term that shrinks as the panel grows, so</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   in a panel of Delphi size the two can differ. No verbal labels such as</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   'substantial' are shown, because kappa can be low when ratings concentrate</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   in one category, which is where a Delphi aims to end. Feinstein and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Cicchetti (1990) showed it for kappa on two categories, and the same</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   arithmetic applies to weighted kappa. In Holey et al. (2007), the statement</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (.31).</span>
@@ -469,18 +544,19 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 3 of 4 items reached consensus in their last round.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> No consensus: S2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Agreed in the other direction (75% or more rated it below 3): S2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Item-level evidence (last round, and the last pair of rounds)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  n  Agree  Unchanged  Change  Stable</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3  8   1.00        .88     .13  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3  8    .00        .88     .13  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3  8   1.00        .88     .13  yes</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3  8   1.00        .88     .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Item  Decision      Last round  Experts  Agree  Unchanged  Net change  Stable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S1    Consensus              3        8   1.00        .88         .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S2    No consensus           3        8    .00        .88         .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S3    Consensus              3        8   1.00        .88         .13  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   S4    Consensus              3        8   1.00        .88         .13  yes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Agree: share of experts agreeing in the item's last round. Unchanged: share</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   who kept their rating between the item's last pair of consecutive rounds.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Stability trend (change) by pair of rounds</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stability trend (net change) by pair of rounds</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Item  1-&gt;2  2-&gt;3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   S1     .13   .13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   S2     .25   .13</span>
@@ -511,9 +587,9 @@ which accepts the fits in <code>details$round_fits</code>.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       threshold.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Unchanged -- Share of experts keeping their rating. Share of experts giving</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       the same rating in two consecutive rounds (1 means nobody changed).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Change -- Net change in the rating distribution. How far the distribution</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       moved between rounds, as a share of the experts (stable below .15 by its</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       authors' rule).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Net change -- Net change in the rating distribution. How far the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       distribution moved between rounds, as a share of the experts (stable</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       below .15 by its authors' rule).</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> What the decisions mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Consensus -- reached the consensus threshold in its last round.</span>

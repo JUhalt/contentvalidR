@@ -50,9 +50,10 @@ handoff
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
+#> Keying: not stated; response scale not stated
 #> Intervals carried: Aiken's V (Penfield-Giacobbi score, 95%); I-CVI (Wilson
 #>   score, 95%)
-#> Panel: Krippendorff's alpha (ordinal) = .69, 95% interval [-.27, .77]
+#> Panel: Krippendorff's alpha (ordinal) = .69, 95% CI [-.27, .77]
 #>   (item-resampling percentile bootstrap)
 #> 
 #> Status uses the words shared with nomologR: Supported is this analysis's

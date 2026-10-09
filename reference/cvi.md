@@ -131,10 +131,10 @@ M <- matrix(
 )
 cvi(M)
 #> <contentvalid_cvi> Content validity index (CVI)
-#> Items: 3 | Judges per item: 4
+#> Items: 3 | Experts per item: 4
 #> S-CVI/Ave: .75 | S-CVI/UA: .33
 #> I-CVI = item-level content validity index; S-CVI/Ave = scale-level CVI, the
-#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every judge rated
+#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every expert rated
 #> relevant (Polit & Beck, 2006).
 #> 
 #> Item-level results
@@ -143,14 +143,14 @@ cvi(M)
 #>   Item2    3/4    .75   [.30, .95]  .250    .67
 #>   Item3    2/4    .50   [.15, .85]  .375    .20
 #> 
-#>   Agree: judges rating the item relevant, out of those who rated it. Pc: the
-#>   probability that this many judges would agree by chance. Kappa: the modified
-#>   kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
+#>   Agree: experts rating the item relevant, out of those who rated it. Pc: the
+#>   probability that this many experts would agree by chance. Kappa: the
+#>   modified kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
 #> 
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.
 #> Interpretation should consider panel size, item purpose, and qualitative
@@ -160,10 +160,10 @@ cvi(M)
 #> See as.data.frame(x) for the item-level values.
 cvi(M, ci = "exact")
 #> <contentvalid_cvi> Content validity index (CVI)
-#> Items: 3 | Judges per item: 4
+#> Items: 3 | Experts per item: 4
 #> S-CVI/Ave: .75 | S-CVI/UA: .33
 #> I-CVI = item-level content validity index; S-CVI/Ave = scale-level CVI, the
-#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every judge rated
+#> mean I-CVI; S-CVI/UA = scale-level CVI, the share of items every expert rated
 #> relevant (Polit & Beck, 2006).
 #> 
 #> Item-level results
@@ -172,14 +172,14 @@ cvi(M, ci = "exact")
 #>   Item2    3/4    .75   [.19, .99]  .250    .67
 #>   Item3    2/4    .50   [.07, .93]  .375    .20
 #> 
-#>   Agree: judges rating the item relevant, out of those who rated it. Pc: the
-#>   probability that this many judges would agree by chance. Kappa: the modified
-#>   kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
+#>   Agree: experts rating the item relevant, out of those who rated it. Pc: the
+#>   probability that this many experts would agree by chance. Kappa: the
+#>   modified kappa of Polit et al. (2007), the I-CVI chance-corrected by Pc.
 #> 
 #>   95% intervals for proportions: Clopper-Pearson exact. This is conservative:
 #>   Agresti and Coull (1998) show its coverage runs above the nominal level, so
 #>   intervals are wider than they need to be. An interval reflects how few
-#>   ratings an item received, not whether the right judges were chosen.
+#>   ratings an item received, not whether the right people rated it.
 #> 
 #> Polit and Beck (2006) recommend reporting both S-CVI/Ave and S-CVI/UA.
 #> Interpretation should consider panel size, item purpose, and qualitative

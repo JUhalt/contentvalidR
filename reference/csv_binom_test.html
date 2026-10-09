@@ -105,7 +105,8 @@ Howard and Melloy (2016); see Details.</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>Significance level. Default <code>0.05</code>.</p></dd>
+<dd><p>Significance level. Default <code>0.05</code>. A <em>p</em> equal to <code>alpha</code>
+meets the criterion; see Details.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -128,6 +129,12 @@ describe .5 as arbitrary and lenient, kept because earlier work used it,
 and suggest a higher value such as .6 or .75, chosen before data
 collection, when the alternative constructs are clearly different from the
 target or the judges are subject-matter experts.</p>
+<p>The criterion is met when the exact <em>p</em> is at or below <code>alpha</code>, so a <em>p</em>
+equal to <code>alpha</code> counts as meeting it, and <code>critical_n_target</code> is the
+fewest target assignments whose <em>p</em> is at or below <code>alpha</code>. A strict "below
+<code>alpha</code>" gives the same decision unless a tail probability equals <code>alpha</code>
+exactly, which cannot happen at <code>p0 = 0.5</code> and <code>alpha = 0.05</code>: every tail
+probability is then a multiple of 1 / 2^N.</p>
 <p>With very few judges no count can reach <code>alpha</code>: at <code>p0 = 0.5</code> and
 <code>alpha = 0.05</code>, four judges who all choose the target give <em>p</em> = .0625.
 <code>critical_n_target</code> is then <code>NA</code>, and the printout says so.</p>

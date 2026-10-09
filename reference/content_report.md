@@ -38,7 +38,9 @@ content_report(
   `"apa"` (default), a table of formatted text in APA style;
   `"markdown"`, the same table as Markdown lines; or `"data.frame"`, the
   selected columns as rounded numbers under their names in `results`,
-  for further computation.
+  for further computation. In the data frame, *p* values are rounded to
+  three decimals, so one below .0005 becomes 0: report it as `< .001`,
+  as the APA table does, or take the exact value from `x$results`.
 
 - include:
 
@@ -56,9 +58,20 @@ names; [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
 drops its print class. An interval column is named after its estimate
 (`V 95% CI`, `I-CVI 95% CI`) and printed under the shared heading
 `95% CI`. For `"data.frame"`, a plain data frame with `recommendation`
-and `status` columns. For `"markdown"`, a character vector of Markdown
-lines that prints as the table, carrying the analysis provenance as its
-`"settings"` attribute.
+and `status` columns; for an essentiality fit it keeps the essential
+count `ne` and `critical_ne`, the count the exact test needed. For
+`"markdown"`, a character vector of Markdown lines that prints as the
+table, carrying the analysis provenance as its `"settings"` attribute.
+
+## Markdown in a Quarto or R Markdown document
+
+The Markdown lines become a table only when the document receives them
+as Markdown, so print them in a code chunk with the option
+`results = "asis"` (in Quarto, `#| output: asis`). In a chunk with the
+default option, they show as console output, pipes and all. The rule row
+aligns the first column, which names the units, and the other text
+columns left and numeric columns right, and the `*Note.*` paragraph
+follows the table after a blank line.
 
 ## Changed in 0.9.0
 
@@ -116,9 +129,11 @@ content_report(fit)
 #> 
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
+# In a Quarto or R Markdown chunk with `results = "asis"`, these lines
+# render as a table:
 content_report(fit, format = "markdown", include = "flagged")
 #> | Item | Target | Judges | Competitor | Psa | 95% CI | Csv | *p* | Decision |
-#> | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+#> | :--- | :--- | ---: | :--- | ---: | ---: | ---: | ---: | :--- |
 #> | B2 | B | 13/20 | A | .65 | [.43, .82] | .40 | .132 | Review |
 #> | C2 | C | 14/20 | B | .70 | [.48, .85] | .50 | .058 | Review |
 #> 

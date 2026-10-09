@@ -121,7 +121,90 @@ the full panel, whether that status changes when one judge is removed
 (`fragile`; `NA` when it could not be checked), and the judges whose
 removal changes it. In `results`, `n_items_flipped` and `flipped_items`
 give the same information by judge; they describe the items and are not
-a flag.
+a flag. [`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) are described in
+[contentvalid-methods](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md).
+
+**Results columns.** `results` has one row per judge:
+
+- `judge`:
+
+  The judge: the row name in `ratings`, or `Judge1`, `Judge2`, and so on
+  when `ratings` has none.
+
+- `n_ratings`:
+
+  Items the judge rated.
+
+- `mean_rating`:
+
+  The judge's mean rating.
+
+- `sd_rating`:
+
+  The standard deviation of the judge's ratings.
+
+- `severity_raw`:
+
+  Severity in rating points: the panel's mean rating on the items the
+  judge rated, less the judge's. Positive means harsher than the panel.
+
+- `severity`:
+
+  Severity in logits from the many-facet Rasch model, positive for
+  harsher; `NA` when it is not estimable.
+
+- `se`:
+
+  The standard error of `severity`.
+
+- `infit`, `outfit`:
+
+  The judge's infit and outfit mean squares.
+
+- `n_scored`:
+
+  Relevance decisions of the judge that the model scored.
+
+- `severity_estimable`:
+
+  Whether the model could estimate the judge's severity.
+
+- `differentiation`:
+
+  Scale use: the standard deviation of the judge's ratings over the
+  median judge's, on the items the judge rated.
+
+- `central_prop`:
+
+  The share of the judge's ratings strictly between `lo` and `hi`.
+
+- `extreme_prop`:
+
+  The share at `lo` or `hi`.
+
+- `n_items_flipped`:
+
+  Items whose review status changes when this judge is removed; `NA`
+  when none could be checked.
+
+- `flipped_items`:
+
+  Those items, comma-separated.
+
+- `recommendation`:
+
+  `"Typical"`, `"Severe"`, `"Lenient"`, `"Erratic"`,
+  `"Low differentiation"`, or `"Insufficient data"`.
+
+- `status`:
+
+  The shared status: `"Supported"` for `"Typical"`, `"Review"` for a
+  flag, or `"Insufficient data"`.
+
+- `interpretation`:
+
+  The decision explained in a sentence.
 
 ## What is published and what is this package's choice
 
@@ -133,7 +216,9 @@ standard behind the numbers:
 - The cuts that flag a judge: `severity_cut` (1 logit),
   `severity_raw_cut` (a quarter of the scale range) and
   `differentiation_cut` (0.5). The scale-use ratio itself is this
-  package's index of the differentiation Engelhard (1994) describes.
+  package's index of the differentiation Engelhard (1994) describes. A
+  cut, or a `fit_min_ratings`, given other than its default is printed
+  as set for this analysis.
 
 - Using Linacre's (2002) 0.5 to 1.5 range as a flag. He offers it as a
   guide to how productive data are for measurement: below 0.5 is "less

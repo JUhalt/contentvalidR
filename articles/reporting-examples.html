@@ -100,21 +100,36 @@ analyzing a new study.</p>
 <div class="section level2">
 <h2 id="item-sort-study">Item-sort study<a class="anchor" aria-label="anchor" href="#item-sort-study"></a>
 </h2>
+<p>The tables below are columns of the fitted objects, rounded for
+display by a small helper; the objects themselves keep full precision,
+and <code><a href="../reference/content_report.html">content_report()</a></code> gives the formatted APA table.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sort_dat</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"sort_example.csv"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Round the numeric columns of a data frame for display only. A p value is</span></span>
+<span><span class="co"># written as APA writes it, so one below .001 reads "&lt; .001", never 0.</span></span>
+<span><span class="va">rounded</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">d</span>, <span class="va">digits</span> <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">is_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"(^p_|_p$)"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">d</span><span class="op">[</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/funprog.html" class="external-link">Map</a></span><span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">v</span>, <span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">is.numeric</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">v</span> <span class="op">&lt;</span> <span class="fl">.001</span>, <span class="st">"&lt; .001"</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">sub</a></span><span class="op">(</span><span class="st">"^0"</span>, <span class="st">""</span>, <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"%.3f"</span>, <span class="va">v</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">v</span>, <span class="va">digits</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, <span class="va">d</span>, <span class="va">is_p</span><span class="op">)</span></span>
+<span>  <span class="va">d</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">sort_dat</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"sort_example.csv"</span><span class="op">)</span></span>
 <span><span class="va">sort_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sort_validity.html">sort_validity</a></span><span class="op">(</span><span class="va">sort_dat</span><span class="op">)</span></span>
 <span><span class="va">sort_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">sort_fit</span><span class="op">)</span></span>
-<span><span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"psa"</span>, <span class="st">"csv"</span>, <span class="st">"p_value"</span>,</span>
-<span>                    <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target  psa  csv      p_value recommendation</span></span>
-<span><span class="co">#&gt; 1   A1      A 0.90 0.85 0.0002012253         Retain</span></span>
-<span><span class="co">#&gt; 2   A2      A 0.75 0.60 0.0206947327         Retain</span></span>
-<span><span class="co">#&gt; 3   B1      B 0.85 0.75 0.0012884140         Retain</span></span>
-<span><span class="co">#&gt; 4   B2      B 0.65 0.40 0.1315879822         Review</span></span>
-<span><span class="co">#&gt; 5   C1      C 0.90 0.85 0.0002012253         Retain</span></span>
-<span><span class="co">#&gt; 6   C2      C 0.70 0.50 0.0576591492         Review</span></span>
-<span><span class="va">sort_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_psa"</span>, <span class="st">"psa_strength"</span>,</span>
-<span>                           <span class="st">"mean_csv"</span>, <span class="st">"csv_strength"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">sort_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"psa"</span>, <span class="st">"csv"</span>, <span class="st">"p_value"</span>,</span>
+<span>                             <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   item target  psa  csv p_value recommendation</span></span>
+<span><span class="co">#&gt; 1   A1      A 0.90 0.85  &lt; .001         Retain</span></span>
+<span><span class="co">#&gt; 2   A2      A 0.75 0.60    .021         Retain</span></span>
+<span><span class="co">#&gt; 3   B1      B 0.85 0.75    .001         Retain</span></span>
+<span><span class="co">#&gt; 4   B2      B 0.65 0.40    .132         Review</span></span>
+<span><span class="co">#&gt; 5   C1      C 0.90 0.85  &lt; .001         Retain</span></span>
+<span><span class="co">#&gt; 6   C2      C 0.70 0.50    .058         Review</span></span>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">sort_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_psa"</span>,</span>
+<span>                                   <span class="st">"psa_strength"</span>, <span class="st">"mean_csv"</span>,</span>
+<span>                                   <span class="st">"csv_strength"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   target n_items mean_psa psa_strength mean_csv csv_strength</span></span>
 <span><span class="co">#&gt; 1      A       2    0.825       Strong    0.725       Strong</span></span>
 <span><span class="co">#&gt; 2      B       2    0.750     Moderate    0.575     Moderate</span></span>
@@ -170,6 +185,110 @@ The unrounded values stay in <code>sort_fit$results</code>.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; See content_report(fit, format = "markdown") for the table as Markdown, ready</span></span>
 <span><span class="co">#&gt; for a manuscript.</span></span></code></pre></div>
+<p>In an R Markdown or Quarto document, print the Markdown form from a
+chunk with the option <code>results = "asis"</code>, so the lines reach
+the document as Markdown and render as a table with its note. Without
+that option they print as code output. This chunk uses it:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">sort_fit</span>, format <span class="op">=</span> <span class="st">"markdown"</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+<col width="11%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Item</th>
+<th align="left">Target</th>
+<th align="right">Judges</th>
+<th align="left">Competitor</th>
+<th align="right">Psa</th>
+<th align="right">95% CI</th>
+<th align="right">Csv</th>
+<th align="right"><em>p</em></th>
+<th align="left">Decision</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">A1</td>
+<td align="left">A</td>
+<td align="right">18/20</td>
+<td align="left">B; C</td>
+<td align="right">.90</td>
+<td align="right">[.70, .97]</td>
+<td align="right">.85</td>
+<td align="right">&lt; .001</td>
+<td align="left">Retain</td>
+</tr>
+<tr class="even">
+<td align="left">A2</td>
+<td align="left">A</td>
+<td align="right">15/20</td>
+<td align="left">B</td>
+<td align="right">.75</td>
+<td align="right">[.53, .89]</td>
+<td align="right">.60</td>
+<td align="right">.021</td>
+<td align="left">Retain</td>
+</tr>
+<tr class="odd">
+<td align="left">B1</td>
+<td align="left">B</td>
+<td align="right">17/20</td>
+<td align="left">A</td>
+<td align="right">.85</td>
+<td align="right">[.64, .95]</td>
+<td align="right">.75</td>
+<td align="right">.001</td>
+<td align="left">Retain</td>
+</tr>
+<tr class="even">
+<td align="left">B2</td>
+<td align="left">B</td>
+<td align="right">13/20</td>
+<td align="left">A</td>
+<td align="right">.65</td>
+<td align="right">[.43, .82]</td>
+<td align="right">.40</td>
+<td align="right">.132</td>
+<td align="left">Review</td>
+</tr>
+<tr class="odd">
+<td align="left">C1</td>
+<td align="left">C</td>
+<td align="right">18/20</td>
+<td align="left">A; B</td>
+<td align="right">.90</td>
+<td align="right">[.70, .97]</td>
+<td align="right">.85</td>
+<td align="right">&lt; .001</td>
+<td align="left">Retain</td>
+</tr>
+<tr class="even">
+<td align="left">C2</td>
+<td align="left">C</td>
+<td align="right">14/20</td>
+<td align="left">B</td>
+<td align="right">.70</td>
+<td align="right">[.48, .85]</td>
+<td align="right">.50</td>
+<td align="right">.058</td>
+<td align="left">Review</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note.</em> Psa = proportion of substantive agreement; CI =
+confidence interval; Csv = coefficient of substantive validity. Judges =
+target assignments, out of the judges who sorted the item. 95% CI =
+Wilson score confidence interval. Retain = at least the number of target
+assignments the exact one-sided binomial test needs at alpha = .05 with
+p0 = .50 (Howard &amp; Melloy, 2016).</p>
 <p>Do not report <code>Review</code> as synonymous with deletion. A
 review flag identifies an item for substantive inspection; retaining an
 item for domain coverage can be a reasonable decision when that
@@ -179,25 +298,26 @@ rationale is documented.</p>
 <div class="section level2">
 <h2 id="construct-rating-study">Construct-rating study<a class="anchor" aria-label="anchor" href="#construct-rating-study"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rating_dat</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"rating_example.csv"</span><span class="op">)</span></span>
 <span><span class="va">rating_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rating_validity.html">rating_validity</a></span><span class="op">(</span><span class="va">rating_dat</span>, scale_min <span class="op">=</span> <span class="fl">1</span>, scale_max <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">rating_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
-<span><span class="va">rating_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"htc"</span>, <span class="st">"htd"</span>, <span class="st">"p_value"</span>,</span>
-<span>                      <span class="st">"max_contrast_p"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target       htc       htd      p_value max_contrast_p recommendation</span></span>
-<span><span class="co">#&gt; 1   A1      A 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain</span></span>
-<span><span class="co">#&gt; 2   A2      A 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review</span></span>
-<span><span class="co">#&gt; 3   B1      B 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain</span></span>
-<span><span class="co">#&gt; 4   B2      B 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review</span></span>
-<span><span class="co">#&gt; 5   C1      C 0.9333333 0.6666667 1.274299e-19   1.122784e-13         Retain</span></span>
-<span><span class="co">#&gt; 6   C2      C 0.7333333 0.2083333 7.375102e-08   5.173102e-02         Review</span></span>
-<span><span class="va">rating_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_htc"</span>, <span class="st">"htc_strength"</span>,</span>
-<span>                             <span class="st">"mean_htd"</span>, <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   target n_items  mean_htc htc_strength mean_htd htd_strength</span></span>
-<span><span class="co">#&gt; 1      A       2 0.8333333         Weak   0.4375  Very Strong</span></span>
-<span><span class="co">#&gt; 2      B       2 0.8333333         Weak   0.4375  Very Strong</span></span>
-<span><span class="co">#&gt; 3      C       2 0.8333333         Weak   0.4375  Very Strong</span></span></code></pre></div>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">rating_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"htc"</span>, <span class="st">"htd"</span>, <span class="st">"p_value"</span>,</span>
+<span>                               <span class="st">"max_contrast_p"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   item target   htc   htd p_value max_contrast_p recommendation</span></span>
+<span><span class="co">#&gt; 1   A1      A 0.933 0.667  &lt; .001         &lt; .001         Retain</span></span>
+<span><span class="co">#&gt; 2   A2      A 0.733 0.208  &lt; .001           .052         Review</span></span>
+<span><span class="co">#&gt; 3   B1      B 0.933 0.667  &lt; .001         &lt; .001         Retain</span></span>
+<span><span class="co">#&gt; 4   B2      B 0.733 0.208  &lt; .001           .052         Review</span></span>
+<span><span class="co">#&gt; 5   C1      C 0.933 0.667  &lt; .001         &lt; .001         Retain</span></span>
+<span><span class="co">#&gt; 6   C2      C 0.733 0.208  &lt; .001           .052         Review</span></span>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">rating_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"target"</span>, <span class="st">"n_items"</span>, <span class="st">"mean_htc"</span>,</span>
+<span>                                     <span class="st">"htc_strength"</span>, <span class="st">"mean_htd"</span>,</span>
+<span>                                     <span class="st">"htd_strength"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   target n_items mean_htc htc_strength mean_htd htd_strength</span></span>
+<span><span class="co">#&gt; 1      A       2    0.833         Weak    0.438  Very Strong</span></span>
+<span><span class="co">#&gt; 2      B       2    0.833         Weak    0.438  Very Strong</span></span>
+<span><span class="co">#&gt; 3      C       2    0.833         Weak    0.438  Very Strong</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="methods-scaffold-1">Methods scaffold<a class="anchor" aria-label="anchor" href="#methods-scaffold-1"></a>
 </h3>
@@ -221,7 +341,7 @@ benchmarks rather than universal item cutoffs.</p>
 <p>The example contains 6 items rated by 24 judges against 3 construct
 definitions. 3 items were supported by the complete screening rule and 3
 were flagged for review.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/content_report.html">content_report</a></span><span class="op">(</span><span class="va">rating_fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;contentvalid_report&gt; Results table in APA style</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -234,9 +354,9 @@ were flagged for review.</p>
 <span><span class="co">#&gt;   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  &lt; .001       .052 Review</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.</span></span>
-<span><span class="co">#&gt; Judges = judges who rated the item against every construct. F</span></span>
-<span><span class="co">#&gt; test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of</span></span>
-<span><span class="co">#&gt; freedom where the correction applied. Contrast p = the largest one-sided p</span></span>
+<span><span class="co">#&gt; Judges = judges who rated the item against every construct.</span></span>
+<span><span class="co">#&gt; F test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees</span></span>
+<span><span class="co">#&gt; of freedom where the correction applied. Contrast p = the largest one-sided p</span></span>
 <span><span class="co">#&gt; among the planned contrasts of the intended construct with each other</span></span>
 <span><span class="co">#&gt; construct. Retain = omnibus p and every one-sided contrast p at or below</span></span>
 <span><span class="co">#&gt; alpha = .05 (MacKenzie et al., 2011).</span></span>
@@ -256,7 +376,7 @@ where construct overlap may be occurring.</p>
 <div class="section level3">
 <h3 id="relevance">Relevance<a class="anchor" aria-label="anchor" href="#relevance"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expert_rel</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"expert_relevance_example.csv"</span><span class="op">)</span></span>
 <span><span class="va">expert_rel_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">expert_rel</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">expert_rel</span><span class="op">)</span>, <span class="st">"expert"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">expert_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span></span>
@@ -266,18 +386,18 @@ where construct overlap may be occurring.</p>
 <span>  hi <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">expert_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">expert_fit</span><span class="op">)</span></span>
-<span><span class="va">expert_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"N"</span>, <span class="st">"V"</span>, <span class="st">"I_CVI"</span>, <span class="st">"kappa_mod"</span>,</span>
-<span>                      <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    item N         V I_CVI kappa_mod recommendation</span></span>
-<span><span class="co">#&gt; 1 Item1 8 1.0000000  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 2 Item2 8 0.9166667  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 3 Item3 8 0.8333333  1.00 1.0000000 Strong support</span></span>
-<span><span class="co">#&gt; 4 Item4 8 0.5833333  0.75 0.7192982         Review</span></span>
-<span><span class="co">#&gt; 5 Item5 8 0.4166667  0.25 0.1578947         Review</span></span>
-<span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_items"</span>, <span class="st">"mean_Aiken_V"</span>, <span class="st">"S_CVI_Ave"</span>,</span>
-<span>                             <span class="st">"S_CVI_UA"</span>, <span class="st">"agreement"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">expert_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"N"</span>, <span class="st">"V"</span>, <span class="st">"I_CVI"</span>, <span class="st">"kappa_mod"</span>,</span>
+<span>                               <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    item N     V I_CVI kappa_mod recommendation</span></span>
+<span><span class="co">#&gt; 1 Item1 8 1.000  1.00     1.000 Strong support</span></span>
+<span><span class="co">#&gt; 2 Item2 8 0.917  1.00     1.000 Strong support</span></span>
+<span><span class="co">#&gt; 3 Item3 8 0.833  1.00     1.000 Strong support</span></span>
+<span><span class="co">#&gt; 4 Item4 8 0.583  0.75     0.719         Review</span></span>
+<span><span class="co">#&gt; 5 Item5 8 0.417  0.25     0.158         Review</span></span>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">expert_fit</span><span class="op">$</span><span class="va">scale_summary</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n_items"</span>, <span class="st">"mean_Aiken_V"</span>, <span class="st">"S_CVI_Ave"</span>,</span>
+<span>                                     <span class="st">"S_CVI_UA"</span>, <span class="st">"agreement"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   n_items mean_Aiken_V S_CVI_Ave S_CVI_UA agreement</span></span>
-<span><span class="co">#&gt; 1       5         0.75       0.8      0.6 0.6934253</span></span></code></pre></div>
+<span><span class="co">#&gt; 1       5         0.75       0.8      0.6     0.693</span></span></code></pre></div>
 <blockquote>
 <p>Experts rated the relevance of each candidate item on a bounded
 ordinal scale. We summarized relevance using Aiken’s V with
@@ -293,17 +413,17 @@ construct coverage.</p>
 <div class="section level3">
 <h3 id="essentiality">Essentiality<a class="anchor" aria-label="anchor" href="#essentiality"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expert_ess</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"expert_essentiality_example.csv"</span><span class="op">)</span></span>
 <span><span class="va">expert_ess_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">expert_ess</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">expert_ess</span><span class="op">)</span>, <span class="st">"expert"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">ess_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">expert_ess_matrix</span>, mode <span class="op">=</span> <span class="st">"essentiality"</span><span class="op">)</span></span>
-<span><span class="va">ess_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"ne"</span>, <span class="st">"N"</span>, <span class="st">"cvr"</span>, <span class="st">"p_value"</span>, <span class="st">"critical_ne"</span>,</span>
-<span>                   <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;    item ne  N       cvr     p_value critical_ne recommendation</span></span>
-<span><span class="co">#&gt; 1 Item1 11 12 0.8333333 0.003173828          10      Supported</span></span>
-<span><span class="co">#&gt; 2 Item2 10 12 0.6666667 0.019287109          10      Supported</span></span>
-<span><span class="co">#&gt; 3 Item3  8 12 0.3333333 0.193847656          10         Review</span></span>
-<span><span class="co">#&gt; 4 Item4  6 12 0.0000000 0.612792969          10         Review</span></span></code></pre></div>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">ess_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"ne"</span>, <span class="st">"N"</span>, <span class="st">"cvr"</span>, <span class="st">"p_value"</span>,</span>
+<span>                            <span class="st">"critical_ne"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    item ne  N   cvr p_value critical_ne recommendation</span></span>
+<span><span class="co">#&gt; 1 Item1 11 12 0.833    .003          10      Supported</span></span>
+<span><span class="co">#&gt; 2 Item2 10 12 0.667    .019          10      Supported</span></span>
+<span><span class="co">#&gt; 3 Item3  8 12 0.333    .194          10         Review</span></span>
+<span><span class="co">#&gt; 4 Item4  6 12 0.000    .613          10         Review</span></span></code></pre></div>
 <p>For an essentiality task, state that CVR is tied to a different
 expert judgment than relevance. Report the effective panel size and
 exact critical essential count for each item rather than borrowing a
@@ -312,25 +432,22 @@ relevance/CVI threshold.</p>
 <div class="section level3">
 <h3 id="congruence">Congruence<a class="anchor" aria-label="anchor" href="#congruence"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">expert_ioc</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"expert_congruence_example.csv"</span><span class="op">)</span></span>
 <span><span class="va">ioc_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span><span class="va">expert_ioc</span>, mode <span class="op">=</span> <span class="st">"congruence"</span><span class="op">)</span></span>
-<span><span class="va">ioc_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"target_ioc"</span>, <span class="st">"target_mean"</span>,</span>
-<span>                   <span class="st">"strongest_competitor"</span>, <span class="st">"margin"</span>, <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt;   item target target_ioc target_mean strongest_competitor    margin</span></span>
-<span><span class="co">#&gt; 1   I1      A  0.9166667   1.0000000                    B 1.6666667</span></span>
-<span><span class="co">#&gt; 2   I2      B  0.8750000   1.0000000                    A 1.6666667</span></span>
-<span><span class="co">#&gt; 3   I3      C  0.4583333   0.8333333                    B 0.3333333</span></span>
-<span><span class="co">#&gt;   recommendation</span></span>
-<span><span class="co">#&gt; 1      Congruent</span></span>
-<span><span class="co">#&gt; 2      Congruent</span></span>
-<span><span class="co">#&gt; 3         Review</span></span></code></pre></div>
+<span><span class="fu">rounded</span><span class="op">(</span><span class="va">ioc_fit</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"item"</span>, <span class="st">"target"</span>, <span class="st">"target_ioc"</span>, <span class="st">"target_mean"</span>,</span>
+<span>                            <span class="st">"strongest_competitor"</span>, <span class="st">"margin"</span>,</span>
+<span>                            <span class="st">"recommendation"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   item target target_ioc target_mean strongest_competitor margin recommendation</span></span>
+<span><span class="co">#&gt; 1   I1      A      0.917       1.000                    B  1.667      Congruent</span></span>
+<span><span class="co">#&gt; 2   I2      B      0.875       1.000                    A  1.667      Congruent</span></span>
+<span><span class="co">#&gt; 3   I3      C      0.458       0.833                    B  0.333         Review</span></span></code></pre></div>
 <p>For congruence, report each item’s intended objective, its index of
 item-objective congruence against the criterion (<code>ioc_cut</code>,
 by default the .70 Rovinelli and Hambleton applied), and the decision.
-The experts’ mean ratings on the intended objective and on the closest
-other objective, and the margin between them, describe the index; they
-are not part of its criterion.</p>
+The experts’ mean ratings on the intended objective and on the other
+objective with the highest mean rating, and the margin between them,
+describe the index; they are not part of its criterion.</p>
 </div>
 </div>
 <div class="section level2">
@@ -344,7 +461,7 @@ rated for relevance by eight experts, and the items the panel carries go
 on to the item sort. The relevance ratings are constructed for this
 example; <code>data-raw/build-walkthrough-panel.R</code> says what each
 item’s ratings are built to show.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">relevance</span> <span class="op">&lt;-</span> <span class="fu">read_example</span><span class="op">(</span><span class="st">"walkthrough_relevance.csv"</span><span class="op">)</span></span>
 <span><span class="va">panel</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/content_handoff.html">content_handoff</a></span><span class="op">(</span><span class="fu"><a href="../reference/expert_validity.html">expert_validity</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">relevance</span><span class="op">)</span>, <span class="st">"expert"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>,</span>
@@ -367,13 +484,13 @@ item’s ratings are built to show.</p>
 <span><span class="co">#&gt;   EF2   1.00 Strong support  .90 Retain  Carried</span></span>
 <span><span class="co">#&gt;   EF3   1.00 Strong support  .90 Retain  Carried</span></span>
 <span><span class="co">#&gt;   EF4   1.00 Strong support  .90 Retain  Carried</span></span>
-<span><span class="co">#&gt;   EF5   .50 Review           --          Held back: Relevance panel</span></span>
+<span><span class="co">#&gt;   EF5   .50 Review           --          Held back: 1</span></span>
 <span><span class="co">#&gt;   EF6   .88 Strong support   .75 Retain  Carried</span></span>
 <span><span class="co">#&gt;   TF1   1.00 Strong support  .95 Retain  Carried</span></span>
 <span><span class="co">#&gt;   TF2   1.00 Strong support  .85 Retain  Carried</span></span>
 <span><span class="co">#&gt;   TF3   1.00 Strong support  .90 Retain  Carried</span></span>
 <span><span class="co">#&gt;   TF4   1.00 Strong support  .80 Retain  Carried</span></span>
-<span><span class="co">#&gt;   TF5   1.00 Strong support  .30 Review  Held back: Item sort</span></span>
+<span><span class="co">#&gt;   TF5   1.00 Strong support  .30 Review  Held back: 2</span></span>
 <span><span class="co">#&gt;   TF6   1.00 Strong support  .90 Retain  Carried</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
@@ -383,8 +500,8 @@ item’s ratings are built to show.</p>
 <span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
 <span><span class="co">#&gt;       in the construct it was written for (0 to 1; higher is stronger).</span></span>
 <span><span class="co">#&gt;   Result -- Carried when every stage that reviewed the item carried it;</span></span>
-<span><span class="co">#&gt;       otherwise the stages that held it back. -- marks a stage that did not</span></span>
-<span><span class="co">#&gt;       review the item.</span></span>
+<span><span class="co">#&gt;       otherwise the numbers of the stages that held it back, as listed above.</span></span>
+<span><span class="co">#&gt;       A "--" marks a stage that did not review the item.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Full definitions: contentvalid_glossary(). To hide this key:</span></span>
 <span><span class="co">#&gt;   options(contentvalidR.show_key = FALSE).</span></span>
@@ -396,14 +513,14 @@ on the PRISMA 2020 flow diagram for systematic reviews (Page et al.,
 2021), with items in place of studies, and it is the figure a Method
 section needs: what each stage reviewed, what it held back and why, and
 what went forward.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span>, type <span class="op">=</span> <span class="st">"flow"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reporting-examples_files/figure-html/evidence-flow-1.png" class="r-plt" alt="Item flow diagram. Stage 1, the relevance panel, reviewed 12 items with 8 experts and held back EF5, with an I-CVI of .50 against a criterion of .88. Stage 2, the item sort, reviewed the remaining 11 items with 20 judges and held back TF5, with a Psa of .30 against a criterion of .75. Ten items were carried forward, five in each facet." width="720"></p>
 <p>The evidence profile sets the stages side by side, item by item. Each
 panel shows the statistic that stage’s decision read, its 95% interval,
 and its criterion as a dashed line; a filled symbol met the criterion
 and an open one was flagged for review.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reporting-examples_files/figure-html/evidence-profile-1.png" class="r-plt" alt="Item evidence profile with one panel per stage. Left, the I-CVI for twelve items with 95% intervals and a dashed criterion at .88; every item meets it except EF5, at .50. Right, Psa for the eleven items the panel carried, with a dashed criterion at .75; every item meets it except TF5, at .30, and EF6 sits exactly on the line. A last column marks EF5 as held back by the relevance panel and TF5 by the item sort." width="720"></p>
 <p>Read across a row and the sources can disagree. Every expert rated
@@ -416,7 +533,7 @@ slides or a poster, <code>apa = FALSE</code> draws them in color, teal
 for evidence that met its criterion and brown for evidence under review.
 The symbols carry the same decisions, so no reading depends on
 color.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">evidence</span>, apa <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reporting-examples_files/figure-html/evidence-color-1.png" class="r-plt" alt="The same item evidence profile in color: items that met each criterion in teal, and EF5 in the relevance panel and TF5 in the item sort in brown, with open symbols." width="720"></p>
 <p>A caption for the profile might read: <em>Content evidence for twelve
@@ -433,7 +550,7 @@ met the criterion; open symbols were flagged for review.</em></p>
 <p>At minimum, a manuscript or supplement should identify the package
 version and record the analysis settings that determine the results. For
 a fitted workflow:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/packageDescription.html" class="external-link">packageVersion</a></span><span class="op">(</span><span class="st">"contentvalidR"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] '0.10.1.9000'</span></span>
 <span><span class="va">sort_fit</span><span class="op">$</span><span class="va">settings</span></span>

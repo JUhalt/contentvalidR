@@ -15,10 +15,10 @@ website](https://juhalt.github.io/contentvalidR/) ·
 experts provide before a scale reaches respondents: whether each item
 represents the construct it was written for, whether a panel agrees on
 it, whether the conclusions depend on who sat on the panel, and whether
-the items cover the domain at all. Every analysis prints its verdict
-first, reports its numbers in APA style, and explains each index it
-shows, so the output can be read without first consulting the source
-papers.
+the items cover the domain at all. Every analysis prints a header naming
+what it holds, then the facts of the design, then its verdict; it
+reports its numbers in APA style and explains each index it shows, so
+the output can be read without first consulting the source papers.
 
 > Quantitative content-validity statistics are one part of a broader
 > validity argument. They complement, rather than replace, construct
@@ -101,7 +101,7 @@ fit
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -114,8 +114,9 @@ fit
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
@@ -160,7 +161,7 @@ For a manuscript,
 [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
 gives the same evidence as an APA table, with a general note that
 defines its abbreviations and columns and states the criterion behind
-each decision; `format = "markdown"` writes it for Quarto or R Markdown:
+each decision:
 
 ``` r
 
@@ -181,6 +182,10 @@ content_report(fit)
 #> See content_report(fit, format = "markdown") for the table as Markdown, ready
 #> for a manuscript.
 ```
+
+`format = "markdown"` writes the same table for Quarto or R Markdown;
+print it from a chunk with the option `results = "asis"`, so that it
+renders as a table.
 
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) draws each
 item’s share of judges with its interval, against the share the exact
@@ -663,9 +668,64 @@ plans.
 
 ## Reading and reporting results
 
-Definitions of every index and status label, plus extraction into
+What print(), summary(), plot(), and as.data.frame() do for each result;
+definitions of every index and status label, plus extraction into
 reports and downstream workflows.
 
+- [`contentvalid-methods`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_sort`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_rating`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_expert`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_delphi`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_judge`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_domain`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_sort`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_rating`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_expert`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_delphi`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_judge`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_domain`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.summary.contentvalid_rounds`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_sort`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_rating`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_expert`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_delphi`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_judge`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_domain`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`summary.contentvalid_rounds`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_psa`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_csv`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_htc`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_htd`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_anova`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_aiken`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_cvr`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_ioc`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_cvi`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_agreement`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_binom`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_colquitt`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_colquitt_norms`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_similarity`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_sort_power`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_expert_power`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_gtheory`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_structure`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_signal`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_reproducibility`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_report`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_markdown`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_evidence`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_handoff`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_rounds`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`print.contentvalid_glossary`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`plot.contentvalid_judge`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`plot.contentvalid_domain`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`plot.contentvalid_rounds`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`as.data.frame.contentvalid_component`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`as.data.frame.contentvalid_report`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  [`as.data.frame.contentvalid_evidence`](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md)
+  : Printing, summarizing, and plotting contentvalidR results
 - [`contentvalid_glossary()`](https://juhalt.github.io/contentvalidR/reference/contentvalid_glossary.md)
   : Glossary of contentvalidR indices and status terms
 - [`as.data.frame(`*`<contentvalid_workflow>`*`)`](https://juhalt.github.io/contentvalidR/reference/as.data.frame.contentvalid_workflow.md)

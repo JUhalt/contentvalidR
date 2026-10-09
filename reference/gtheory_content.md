@@ -155,8 +155,8 @@ gtheory_content(ratings)
 #>   Dependability coefficient (absolute, fixed standard):   .96
 #>   Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
 #>   With 8 judges, absolute decisions about these items would generalize to
-#>   another panel of the same size at Phi = .96, at or above the .80 set for
-#>   this analysis. Judge differences account for 5.8% of total variance.
+#>   another panel of the same size at Phi = .96, at or above the .80 criterion.
+#>   Judge differences account for 5.8% of total variance.
 #> 
 #> Variance components
 #>   Source    df    MS  Estimate  Used  % of total

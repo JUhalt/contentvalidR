@@ -86,17 +86,15 @@ delphi_validity(
 
 - seed:
 
-  Optional seed for the bootstrap. The random-number stream of the
-  session is left as it was.
+  Optional seed for the bootstrap. Every item and pair of rounds is
+  resampled from this same seed, so pairs with the same number of paired
+  experts draw the same resample indices, and their intervals are not
+  independent of one another. The random-number stream of the session is
+  left as it was.
 
 ## Value
 
 An object of class `contentvalid_delphi` and `contentvalid_workflow`.
-`results` has one row per item: its last round, `n_experts` there,
-`prop_agree`, `consensus`, and, for the last pair of consecutive rounds,
-`prop_unchanged`, `stability` with `stability_low` and `stability_high`
-where an interval exists, `stability_df` and `stability_p` for the
-chi-square methods, and `stable` for the methods that make a decision.
 `details` holds `consensus` (every item and round), `stability` (every
 item and pair of rounds, including `n_paired`, `min_expected` for the
 chi-square methods, `n_boot_usable` for the kappa interval, and a `note`
@@ -104,6 +102,85 @@ where a statistic is undefined or unreliable), `panel` (experts per
 round), and `round_fits`, the
 [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
 fit for each round.
+
+**Results columns.** `results` has one row per item. Consensus is read
+in the item's last round, and stability in its last pair of consecutive
+rounds:
+
+- `item`:
+
+  The item.
+
+- `n_rounds`:
+
+  Rounds in which the item was rated.
+
+- `last_round`:
+
+  The last of them.
+
+- `n_experts`:
+
+  Experts who rated the item in its last round.
+
+- `prop_agree`:
+
+  The share of them rating it `agree_cut` or higher.
+
+- `consensus`:
+
+  Whether `prop_agree` meets `consensus_threshold`; `NA` when no
+  threshold was set.
+
+- `prop_unchanged`:
+
+  The share of experts who kept their rating between the two rounds of
+  the last pair, among those who rated the item in both (`n_paired` in
+  `details$stability`); `NA` when no expert's ratings could be paired.
+
+- `stability`:
+
+  The statistic chosen in `stability` for that pair: weighted kappa,
+  lambda, a chi-square, or the net change.
+
+- `stability_low`, `stability_high`:
+
+  The bootstrap interval for kappa at level `1 - alpha`; `NA` for the
+  other methods, with `B = 0`, and where kappa has no interval.
+
+- `stability_df`, `stability_p`:
+
+  The degrees of freedom and *p* of a chi-square; `NA` for the other
+  methods.
+
+- `stable`:
+
+  The stability rule's decision for the chi-square and net-change
+  methods (see Details); `NA` for kappa and lambda, which apply no rule,
+  where the item has no pair, and where the individual chi-square cannot
+  be computed.
+
+- `recommendation`:
+
+  `"Consensus"`, `"No consensus"`, `"Descriptive only"` (no
+  `consensus_threshold` was set), or `"Insufficient panel"` (fewer than
+  three experts rated the item in its last round, whether or not a
+  threshold was set). Stability never changes it.
+
+- `interpretation`:
+
+  The decision explained in a sentence. Shares and the threshold are
+  percentages to at most one decimal (66.7%), as in the handoff;
+  [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) give a share just
+  under the threshold, and the threshold, the decimals that tell them
+  apart.
+
+- `status`:
+
+  The shared status: `"Supported"` for `"Consensus"`, `"Review"` for
+  `"No consensus"`, `"Descriptive only"`, or `"Insufficient data"` for
+  `"Insufficient panel"`.
 
 ## Details
 
@@ -127,10 +204,13 @@ argument chooses the statistic reported beside it:
 - `"kappa"` (default): weighted kappa between each expert's ratings in
   the two rounds (Holey et al., 2007), read as a trend with no cutoff.
   Quadratic weights (the default) make kappa the intraclass correlation
-  of the two rounds' ratings (Fleiss & Cohen, 1973); linear weights
-  count a two-point change twice a one-point change (Cohen, 1968). The
-  interval is a percentile bootstrap over the experts; see *Reading the
-  kappa interval* below.
+  of the two rounds' ratings in its sums-of-squares form (Fleiss &
+  Cohen, 1973). The intraclass correlation computed from mean squares,
+  the form most software reports, differs from it by a term that shrinks
+  as the panel grows, so with a Delphi-sized panel the two do not match
+  exactly. Linear weights count a two-point change twice a one-point
+  change (Cohen, 1968). The interval is a percentile bootstrap over the
+  experts; see *Reading the kappa interval* below.
 
 - `"lambda"`: Chaffin and Talley's (1980) index of predictive
   association.
@@ -170,9 +250,13 @@ printout lists the rounds in the order used.
 
 A stability statistic can be `NA` for different reasons, and
 `prop_unchanged` tells them apart. When `prop_unchanged` is also `NA`,
-the item has no pair of consecutive rounds: it was rated in one round
-only, or in rounds that are not consecutive. When `prop_unchanged` has a
-value, a pair exists but the statistic is undefined for that data, and
+no expert's ratings could be paired, for one of three reasons: the item
+was rated in one round only; it was rated in rounds that are not
+consecutive; or it was rated in consecutive rounds, but by different
+experts, so no expert rated it in both (two disjoint panels, for
+example). Only the last case has a row in `details$stability`, with
+`n_paired` 0 and a `note` saying so. When `prop_unchanged` has a value,
+a pair exists but the statistic is undefined for that data, and
 `details$stability$note` says why.
 
 The common case is the one that reads worst if reported bare. Kappa is
@@ -316,13 +400,14 @@ fit
 #> 
 #> 3 of 4 items reached consensus in their last round.
 #> No consensus: S2
+#> Agreed in the other direction (75% or more rated it below 3): S2
 #> 
 #> Item-level evidence (last round, and the last pair of rounds)
-#>   Item  Decision      Last round  n  Agree  Unchanged  Kappa       95% CI
-#>   S1    Consensus              3  8   1.00        .88    .60  [.00, 1.00]
-#>   S2    No consensus           3  8    .00        .88    .67  [.00, 1.00]
-#>   S3    Consensus              3  8   1.00        .88    .67  [.00, 1.00]
-#>   S4    Consensus              3  8   1.00        .88    .75  [.00, 1.00]
+#>   Item  Decision      Last round  Experts  Agree  Unchanged  Kappa       95% CI
+#>   S1    Consensus              3        8   1.00        .88    .60  [.00, 1.00]
+#>   S2    No consensus           3        8    .00        .88    .67  [.00, 1.00]
+#>   S3    Consensus              3        8   1.00        .88    .67  [.00, 1.00]
+#>   S4    Consensus              3        8   1.00        .88    .75  [.00, 1.00]
 #> 
 #>   Agree: share of experts agreeing in the item's last round. Unchanged: share
 #>   who kept their rating between the item's last pair of consecutive rounds.
@@ -362,11 +447,14 @@ fit
 #>   Stability is weighted kappa between each expert's ratings in consecutive
 #>   rounds (Holey et al., 2007), with quadratic weights. A change of two scale
 #>   points counts four times a change of one. With these weights kappa equals
-#>   the intraclass correlation of the two rounds' ratings, so a shift of the
-#>   whole panel counts as instability (Fleiss & Cohen, 1973). No verbal labels
-#>   such as 'substantial' are shown, because kappa can be low when ratings
-#>   concentrate in one category, which is where a Delphi aims to end. Feinstein
-#>   and Cicchetti (1990) showed it for kappa on two categories, and the same
+#>   the intraclass correlation of the two rounds' ratings in its sums-of-squares
+#>   form, so a shift of the whole panel counts as instability (Fleiss & Cohen,
+#>   1973). The intraclass correlation computed from mean squares, the more
+#>   common form, differs from it by a term that shrinks as the panel grows, so
+#>   in a panel of Delphi size the two can differ. No verbal labels such as
+#>   'substantial' are shown, because kappa can be low when ratings concentrate
+#>   in one category, which is where a Delphi aims to end. Feinstein and
+#>   Cicchetti (1990) showed it for kappa on two categories, and the same
 #>   arithmetic applies to weighted kappa. In Holey et al. (2007), the statement
 #>   nearly every expert agreed with had the lowest kappa between rounds 1 and 2
 #>   (.31).
@@ -431,18 +519,19 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #> 
 #> 3 of 4 items reached consensus in their last round.
 #> No consensus: S2
+#> Agreed in the other direction (75% or more rated it below 3): S2
 #> 
 #> Item-level evidence (last round, and the last pair of rounds)
-#>   Item  Decision      Last round  n  Agree  Unchanged  Change  Stable
-#>   S1    Consensus              3  8   1.00        .88     .13  yes
-#>   S2    No consensus           3  8    .00        .88     .13  yes
-#>   S3    Consensus              3  8   1.00        .88     .13  yes
-#>   S4    Consensus              3  8   1.00        .88     .13  yes
+#>   Item  Decision      Last round  Experts  Agree  Unchanged  Net change  Stable
+#>   S1    Consensus              3        8   1.00        .88         .13  yes
+#>   S2    No consensus           3        8    .00        .88         .13  yes
+#>   S3    Consensus              3        8   1.00        .88         .13  yes
+#>   S4    Consensus              3        8   1.00        .88         .13  yes
 #> 
 #>   Agree: share of experts agreeing in the item's last round. Unchanged: share
 #>   who kept their rating between the item's last pair of consecutive rounds.
 #> 
-#> Stability trend (change) by pair of rounds
+#> Stability trend (net change) by pair of rounds
 #>   Item  1->2  2->3
 #>   S1     .13   .13
 #>   S2     .25   .13
@@ -473,9 +562,9 @@ delphi_validity(ratings, lo = 1, hi = 4, consensus_threshold = 0.75,
 #>       threshold.
 #>   Unchanged -- Share of experts keeping their rating. Share of experts giving
 #>       the same rating in two consecutive rounds (1 means nobody changed).
-#>   Change -- Net change in the rating distribution. How far the distribution
-#>       moved between rounds, as a share of the experts (stable below .15 by its
-#>       authors' rule).
+#>   Net change -- Net change in the rating distribution. How far the
+#>       distribution moved between rounds, as a share of the experts (stable
+#>       below .15 by its authors' rule).
 #> 
 #> What the decisions mean
 #>   Consensus -- reached the consensus threshold in its last round.

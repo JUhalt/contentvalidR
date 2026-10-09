@@ -194,7 +194,7 @@ are the one who looks.</p>
 <span><span class="co">#&gt;   95% intervals for proportions: Wilson score (the default). Newcombe (1998)</span></span>
 <span><span class="co">#&gt;   compared seven methods and recommends score intervals over the Wald</span></span>
 <span><span class="co">#&gt;   interval. An interval reflects how few ratings an item received, not whether</span></span>
-<span><span class="co">#&gt;   the right judges were chosen.</span></span>
+<span><span class="co">#&gt;   the right people rated it.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Scale-level Colquitt benchmarks</span></span>
 <span><span class="co">#&gt;   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level</span></span>
@@ -205,8 +205,9 @@ are the one who looks.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Colquitt labels are empirical percentile norms derived from scale-level</span></span>
 <span><span class="co">#&gt;   averages, not universal cutoffs or automatic scale-retention rules. They</span></span>
-<span><span class="co">#&gt;   place a scale against published scales; Psa and Csv sit on different scales,</span></span>
-<span><span class="co">#&gt;   so their labels are not comparable with each other.</span></span>
+<span><span class="co">#&gt;   place a scale against published scales. Psa and Csv sit on different scales,</span></span>
+<span><span class="co">#&gt;   so their values cannot be compared with each other; their labels can,</span></span>
+<span><span class="co">#&gt;   because each is a percentile position among published scales.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; What these columns mean</span></span>
 <span><span class="co">#&gt;   Psa -- Proportion of Substantive Agreement. Share of judges who put the item</span></span>
@@ -593,9 +594,11 @@ implying complete coverage.</p>
 closer. Deleting every flagged item optimizes a statistic at the cost of
 the content domain, which is the opposite of content validity.</p>
 <p><strong>“Strong means good.”</strong> Benchmark labels are percentile
-positions against published scales. <code>Strong</code> places a scale’s
-mean between the 60th and 79th percentiles of the scales Colquitt et
-al. (2019) collected, not that the item is fit for your purpose.</p>
+positions against published scales, and they describe a scale’s mean,
+not an item. <code>Strong</code> says that the scale’s mean falls
+between the 60th and 79th percentiles of the scales Colquitt et
+al. (2019) collected. It does not say that the scale, or any item in it,
+is fit for your purpose.</p>
 <p><strong>“One index is enough.”</strong> No single coefficient
 establishes content validity. These are components of an argument that
 also rests on construct definitions, domain coverage, cognitive
@@ -620,12 +623,19 @@ different question: how many judges a dependability target needs.)</p>
 decision rule you applied, and what you concluded, without implying the
 statistic made the decision:</p>
 <blockquote>
-<p>Six items were sorted by 20 naive judges. Four items met the
-Howard-Melloy exact target-assignment criterion (<em>p</em> &lt; .05).
-Items B2 and C2 did not (<em>Psa</em> = .65 and .70), and in both cases
-the competing construct was the adjacent scale. Rather than removing
-them, we revised their wording to sharpen the distinction from that
-scale and re-sorted.</p>
+<p>Six items were sorted by 20 naive judges into three constructs. We
+applied the exact target-assignment test of Howard and Melloy (2016),
+with a null target rate of .50 and an alpha of .05, under which an item
+needs 15 of 20 target assignments. Four items met the criterion: A1 and
+C1 (<em>Psa</em> = .90, 95% CI [.70, .97], <em>p</em> &lt; .001), B1
+(<em>Psa</em> = .85, 95% CI [.64, .95], <em>p</em> = .001), and A2
+(<em>Psa</em> = .75, 95% CI [.53, .89], <em>p</em> = .021). Items B2
+(<em>Psa</em> = .65, 95% CI [.43, .82], <em>p</em> = .132) and C2
+(<em>Psa</em> = .70, 95% CI [.48, .85], <em>p</em> = .058) did not, and
+judges who missed the target chose a single competing construct most
+often: A for B2 and B for C2. Rather than removing them, we revised
+their wording to sharpen the distinction from that construct and
+re-sorted. Intervals are Wilson score intervals (Newcombe, 1998).</p>
 </blockquote>
 <p>Report what you cannot establish as well:</p>
 <blockquote>
@@ -668,6 +678,10 @@ the American Psychological Association</em> (7th ed.). <a href="https://doi.org/
 (2019). Content validation guidelines: Evaluation criteria for
 definitional correspondence and definitional distinctiveness.
 <em>Journal of Applied Psychology, 104</em>(10), 1243–1265. <a href="https://doi.org/10.1037/apl0000406" class="external-link uri">https://doi.org/10.1037/apl0000406</a></p>
+<p>Howard, M. C., &amp; Melloy, R. C. (2016). Evaluating item-sort task
+methods: The presentation of a new statistical significance formula and
+methodological best practices. <em>Journal of Business and Psychology,
+31</em>(1), 173–186. <a href="https://doi.org/10.1007/s10869-015-9404-y" class="external-link uri">https://doi.org/10.1007/s10869-015-9404-y</a></p>
 <p>Lynn, M. R. (1986). Determination and quantification of content
 validity. <em>Nursing Research, 35</em>(6), 382–385. <a href="https://doi.org/10.1097/00006199-198611000-00017" class="external-link uri">https://doi.org/10.1097/00006199-198611000-00017</a></p>
 <p>Newcombe, R. G. (1998). Two-sided confidence intervals for the single

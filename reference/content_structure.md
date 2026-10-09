@@ -52,7 +52,8 @@ content_structure(
 - k:
 
   Number of clusters to extract. Defaults to the number of distinct
-  blueprint cells, or 2 when no blueprint is supplied.
+  blueprint cells, or 2 when no blueprint is supplied or it names fewer
+  than two cells.
 
 - dims:
 

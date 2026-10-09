@@ -105,6 +105,48 @@ domain_validity(
 An object of class `contentvalid_domain` and `contentvalid_workflow`.
 `results` has **one row per blueprint cell**. `details$structure` holds
 the content-structure analysis when similarity data was supplied.
+[`print()`](https://rdrr.io/r/base/print.html) and
+[`summary()`](https://rdrr.io/r/base/summary.html) are described in
+[contentvalid-methods](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md).
+
+**Results columns.**
+
+- `cell`:
+
+  The blueprint cell; with `facet_col`, the two labels joined by
+  `" / "`.
+
+- `n_items`:
+
+  Items assigned to the cell.
+
+- `share`:
+
+  `n_items` as a share of all the items.
+
+- `target_items`:
+
+  The cell's entry in `targets`; `NA` without `targets`.
+
+- `expected_share`:
+
+  The cell's share of `targets`, or one over the number of cells without
+  them.
+
+- `recommendation`:
+
+  `"Covered"`, `"Not covered"` (no item), `"Thinly covered"` (below the
+  floor `min_items` sets), `"Over-represented"`, or
+  `"Under-represented"` (judged only against `targets`).
+
+- `status`:
+
+  The shared status: `"Supported"` for `"Covered"`, and `"Review"`
+  otherwise.
+
+- `interpretation`:
+
+  The decision explained in a sentence.
 
 ## What coverage evidence can and cannot establish
 

@@ -5,10 +5,13 @@ the item level, `sort_validity()` combines Anderson and Gerbing's (1991)
 Psa and Csv statistics with the exact target-count significance test
 recommended by Howard and Melloy (2016). Items meeting the exact
 criterion are labeled `"Retain"`; items that do not meet it are labeled
-`"Review"`, not automatically `"Delete"`. An item sorted by so few
-judges that no count could meet the criterion (four or fewer at the
-defaults) is labeled `"Insufficient panel"`, with status
-`"Insufficient data"`.
+`"Review"`, not automatically `"Delete"`. An item meets the criterion
+when its exact *p* is at or below `alpha`, so a *p* equal to `alpha`
+counts as meeting it; see
+[`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md).
+An item sorted by so few judges that no count could meet the criterion
+(four or fewer at the defaults) is labeled `"Insufficient panel"`, with
+status `"Insufficient data"`.
 
 Construct and item labels are compared as text after leading and
 trailing spaces are removed, so constructs may be coded as numbers, text
@@ -18,7 +21,10 @@ data, or in the order of the levels when the item column is a factor.
 At the target-scale level, Psa and Csv are averaged across items and
 interpreted using the empirical percentile norms from Colquitt et al.
 (2019). This mirrors how those norms were constructed. The Colquitt
-categories are descriptive benchmarks rather than pass/fail rules.
+categories are descriptive benchmarks rather than pass/fail rules. Each
+index is read against its own band; the advice in
+`scale_summary$evidence`, keyed to the lower of the two bands, is
+labeled as this package's suggestion, not Colquitt et al.'s.
 
 ## Usage
 
@@ -62,7 +68,8 @@ sort_validity(
 
 - alpha:
 
-  Significance level. Default `0.05`.
+  Significance level. Default `0.05`. A *p* equal to `alpha` meets the
+  criterion.
 
 - orbiting_r:
 
@@ -82,7 +89,8 @@ sort_validity(
   `"exact"`, or `"none"`. The interval is two-sided at level
   `1 - alpha`, while the exact test is one-sided, so the interval of an
   item that just meets the criterion can still include `p0`. The
-  decision comes from the test, not from the interval. See `ci` in
+  decision comes from the test, not from the interval, and the printout
+  says so when a retained item's interval includes `p0`. See `ci` in
   [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) for
   the methods and the evidence for each.
 
@@ -111,7 +119,87 @@ method-specific `recommendation` field.
 [`print()`](https://rdrr.io/r/base/print.html),
 [`summary()`](https://rdrr.io/r/base/summary.html), and
 [`plot()`](https://rdrr.io/r/graphics/plot.default.html) provide
-user-facing interpretation.
+user-facing interpretation; see
+[contentvalid-methods](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md).
+
+**Results columns.** `results` has one row per item:
+
+- `item`:
+
+  The item.
+
+- `target`:
+
+  The construct the item was written for.
+
+- `n_total`:
+
+  Rows for the item, missing assignments included.
+
+- `n`:
+
+  Judges who sorted the item: its assignments that are not missing.
+
+- `n_missing`:
+
+  Missing assignments, `n_total - n`.
+
+- `n_target`:
+
+  Assignments to the target construct.
+
+- `competitor`:
+
+  The other construct judges chose most often, with ties joined by
+  `"; "`; `NA` when no judge chose another construct.
+
+- `n_other_max`:
+
+  Assignments to the competitor.
+
+- `psa`:
+
+  Psa, `n_target / n`.
+
+- `psa_low`, `psa_high`:
+
+  The interval for Psa at level `1 - alpha`, by the method in
+  `proportion_ci`; `NA` with `"none"`.
+
+- `csv`:
+
+  Csv, `(n_target - n_other_max) / n`.
+
+- `p_value`:
+
+  The one-sided exact binomial *p* of the target count against `p0`.
+
+- `critical_n_target`:
+
+  The fewest target assignments that meet the criterion with `n` judges;
+  `NA` when no count can.
+
+- `passes_chance`:
+
+  Whether `n_target` reaches `critical_n_target`.
+
+- `recommendation`:
+
+  `"Retain"`, `"Review"`, `"Insufficient panel"` (no count could meet
+  the test), or `"Insufficient data"` (no judge sorted the item).
+
+- `issue`:
+
+  The reason in a few words, such as `"Competing construct favored"`.
+
+- `interpretation`:
+
+  The decision explained in a sentence.
+
+- `status`:
+
+  The shared status: `"Supported"` for `"Retain"`, `"Review"`, or
+  `"Insufficient data"`.
 
 ## Earlier methods, for comparison
 
@@ -206,7 +294,7 @@ fit
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -219,8 +307,9 @@ fit
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> What these columns mean
 #>   Psa -- Proportion of Substantive Agreement. Share of judges who put the item
@@ -259,11 +348,12 @@ summary(fit)
 #>   Psa = proportion of substantive agreement; Csv = coefficient of substantive
 #>   validity (Anderson & Gerbing, 1991).
 #>   A: Mean Psa and mean Csv both fall in the Moderate band of published scales
-#>     (Colquitt et al., 2019); review the weaker items before finalizing. These
-#>     bands come from tasks with three definitions (one focal, two orbiting);
-#>     judges here used 2 (set `n_constructs` if more were offered), so the
-#>     comparison is approximate. This is a contentvalidR caution: Colquitt et
-#>     al. do not discuss other numbers.
+#>     (Colquitt et al., 2019). A contentvalidR suggestion for that band: review
+#>     the weaker items before finalizing. These bands come from tasks with three
+#>     definitions (one focal, two orbiting); judges here used 2 (set
+#>     `n_constructs` if more were offered), so the comparison is approximate.
+#>     This is a contentvalidR caution: Colquitt et al. do not discuss other
+#>     numbers.
 #> 
 #> Flagged
 #>   Item  Target  Decision  Psa  Csv  Competitor     p
@@ -302,7 +392,7 @@ print(fit, legacy = TRUE)
 #>   95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #>   compared seven methods and recommends score intervals over the Wald
 #>   interval. An interval reflects how few ratings an item received, not whether
-#>   the right judges were chosen.
+#>   the right people rated it.
 #> 
 #> Scale-level Colquitt benchmarks
 #>   Target  Items  Mean Psa  Psa level  Mean Csv  Csv level
@@ -315,8 +405,9 @@ print(fit, legacy = TRUE)
 #> 
 #>   Colquitt labels are empirical percentile norms derived from scale-level
 #>   averages, not universal cutoffs or automatic scale-retention rules. They
-#>   place a scale against published scales; Psa and Csv sit on different scales,
-#>   so their labels are not comparable with each other.
+#>   place a scale against published scales. Psa and Csv sit on different scales,
+#>   so their values cannot be compared with each other; their labels can,
+#>   because each is a percentile position among published scales.
 #> 
 #> Earlier methods, for comparison (not used for the decision)
 #>   Item  Decision  Psa  Csv  A&G (1991)  Yao et al. (2008)  Extension*

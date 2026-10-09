@@ -316,6 +316,8 @@ any analysis that matches the cases below.
   the header, the figure, the handoff and each item’s interpretation,
   whatever the session’s `digits` option. An interpretation could read
   “67% agreed, against a threshold of 67%” for an item just short of it.
+  (The printout and the report add the decimals that tell a share just
+  under the threshold apart from it; see the close-out below.)
 - In the distribution views, a rating between two scale points is drawn
   on the side of the cut where the rule counts it. A 2.5 was rounded up
   into the relevant side, so the bar read 1.00 beside an I-CVI of .83.
@@ -984,6 +986,260 @@ Stored text that changes so that it matches the printout:
   [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
   wraps at 79 columns, so it spans several elements of the returned
   vector.
+
+### Close-out of the audit: values that change
+
+A final check of every audit finding against the release branch found 85
+still open and 16 new ones. These are closed here, together with what a
+review of the close-out itself found.
+
+- **Modified kappa below .40 is labeled “Poor”.** The `kappa_quality`
+  column of the relevance `results` read “Low” below .40, a word the
+  cited scheme does not use. The bands are those of Cicchetti and
+  Sparrow (1981) and Fleiss (1981), which Polit et al. (2007) apply to
+  modified kappa: Excellent above .74, Good from .60 to .74, Fair from
+  .40 to .59, and Poor below .40.
+  [`?expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  documents them. Code that tests for “Low” should test for “Poor”.
+- **A stage holds back only the items it decided on.** In
+  [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md),
+  an item whose status in a stage is “Descriptive only” is no longer
+  held back by that stage, even when the stage decided on other items: a
+  Delphi study without a threshold still holds back an item with too few
+  experts, but not the items it described. An item that no stage applied
+  a decision rule to is neither carried nor held back: its Result reads
+  “No decision” in the printout, the evidence profile and the flow
+  diagram, which lists such items beside “Carried forward”, and
+  `carried` leaves it out. `carried` holds the items some stage decided
+  on and every such stage carried. Each stage’s handoff is unchanged;
+  the printout says that a stage’s own handoff carries none of the items
+  it only described, and that `keep = "Descriptive only"` in
+  [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+  carries them.
+- **[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)
+  names every unit’s change and counts every transition.** A unit
+  present only between the first and last rounds had `change` `NA`; it
+  now reads “Not in first or last” and
+  [`summary()`](https://rdrr.io/r/base/summary.html) lists it. `summary`
+  gains `n_changed`, for moves to or from “Descriptive only”, so
+  `n_compared` is the sum of unchanged, strengthened, weakened and
+  changed. A proportion in `settings_changes` (`alpha`,
+  `consensus_threshold`, `ioc_cut`, `p0`) reads as APA writes it, `.05`
+  and `.75`, where it read `0.05` and `0.75`; two values that would read
+  alike get the digits that tell them apart (`.6667` and `.667`).
+- **The advice beside the Colquitt bands is labeled as this package’s.**
+  In the item-sort and construct-rating `scale_summary$evidence`, the
+  sentence naming each index’s band (Colquitt et al., 2019) ends there,
+  and the advice keyed to the lower band follows as “A contentvalidR
+  suggestion for the lower band …”. Expert judges get one sentence in
+  both workflows: “Colquitt benchmark labels are not applied because the
+  analysis was marked as using expert judges.” The stored text changes.
+- **The relevance `interpretation` of a Strong support item** says that
+  meeting the criterion also puts its modified kappa above .74, where it
+  said the item “shows excellent chance-corrected agreement”, which read
+  as separate evidence.
+- **[`gtheory_content()`](https://juhalt.github.io/contentvalidR/reference/gtheory_content.md)
+  interpretation.** With the default `phi_cut`, the stored
+  `interpretation` reads “at or above the .80 criterion” (or “below the
+  .80 criterion”), as the printed Status line already calls .80 a
+  contentvalidR convention; “set for this analysis” is kept for a cut
+  the analyst changed.
+- **[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md).**
+  A Delphi table for the chi-square and percent-change methods has a
+  Stable column and keeps Agree and the chi-square or net change beside
+  it at any console width; a share just under the consensus threshold,
+  and the threshold in the note, get the decimals that tell them apart
+  (6 of 9 against .667 reads .6667 against 66.70%); and the note says
+  when Unchanged and the stability statistic rest on fewer experts than
+  the Experts column shows. The essentiality `format = "data.frame"`
+  table keeps `ne` and `critical_ne`. The Markdown rule row always
+  aligns the item column left, other text left and numbers right. Notes
+  say when an interval has equal limits because every resample gave the
+  same value; name which judge cuts were set for the analysis and which
+  are contentvalidR conventions; say when a retained item’s two-sided
+  interval includes p0; and call a congruence competitor the other
+  objective with the highest mean.
+- **Handoff notes.** Each Delphi stability row’s `note` says which way
+  its criterion reads (the individual chi-square takes *p* below alpha
+  as stable, the group chi-square *p* at or above alpha, net percent
+  change a value below .15) and whether the fit read the item as stable.
+  A zero-width interval and a pair with fewer experts than the item’s
+  last round are noted, and a panel interval with no width is described
+  in words in `panel_statistics$note`. No column changes.
+
+### Close-out of the audit: other fixes
+
+- **Delphi printout.** A zero-width kappa interval prints its bounds, as
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  does, with a note that every resample gave the same value, which does
+  not mean kappa is known exactly. The item table heads its count
+  “Experts” and percent change “Net change”, as the report does; keeps
+  Agree and the stability statistic, with its degrees of freedom, *p*
+  and Stable, at any width, letting the interval and Unchanged go first;
+  shows a Paired column, last so that a narrow console drops it first,
+  when stability rests on fewer experts than rated the item last; and
+  defines only the columns shown. The caution about fewer experts prints
+  whatever the panel size. A share below the consensus threshold is
+  never printed as equal to it in
+  [`print()`](https://rdrr.io/r/base/print.html),
+  [`summary()`](https://rdrr.io/r/base/summary.html) or
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  (6 of 9 against .667 reads 66.67% against 66.70%); the stored
+  `interpretation` keeps one decimal, as the handoff rule and the figure
+  legend do. The verdict names items with too few experts and those the
+  panel agreed in the other direction, and a summary without a threshold
+  no longer prints “Consensus: 0 of 1”. Quadratic-weighted kappa is said
+  to equal the intraclass correlation in its sums-of-squares form
+  (Fleiss & Cohen, 1973). The consensus and stability views draw in
+  grays under `apa = TRUE`, and `plot(type = "stability")` on a fit with
+  no pair of consecutive rounds stops before opening a device.
+  [`?delphi_validity`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md)
+  lists its `results` columns, names the third reason a stability
+  statistic can be `NA`, and says each item and pair is resampled from
+  the same seed.
+- **[`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)**
+  heads its change column “First to last”, and a call that names only
+  some rounds warns that the names were not used.
+- **Handoff printout.** It says no decision rule was applied when every
+  item is “Descriptive only”, and how to carry such items, instead of
+  telling the reader to carry an empty set. A “Keying:” line gives the
+  reverse-keyed items and the response scale; the “Constructs:” line
+  wraps and reads “none carried” when nothing is carried; the panel
+  interval reads “95% CI”.
+  [`?content_handoff`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+  covers the Delphi kappa interval, the statistics without one, and all
+  three reasons a stability statistic can be `NA`, and lists Chaffin and
+  Talley (1980), Dajani et al. (1979) and Scheibe et al. (1975/2002)
+  among its references.
+- **[`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md).**
+  A congruence handoff made before 1.0, whose “target IOC” held a mean
+  rating, is refused, as such fits already were. Stage labels “item” and
+  “result” are refused. The Result column gives stage numbers, and when
+  the stages’ names would push their columns off the console the columns
+  are headed by the same numbers, so two or three stages fit an
+  80-column console; the key explains the numbers and only the columns
+  shown, and “Highest IOC” has its own definition, without a criterion.
+  Short stage names are kept when numbering them would not make the
+  table fit. The profile keys a cross as an item not judged against a
+  criterion (described only, or too few raters), labels only the ends of
+  a crowded axis, and shortens panel titles with “…” on a small device.
+  The flow diagram says “still in play, not reviewed here” for items no
+  earlier stage held back. The evidence profile draws at full size, fits
+  its key to the width inside the item labels, names every item in type
+  sized to the rows, sets numbered verdicts that would still wrap on one
+  line at 8 points, draws the promised cross, and keys a
+  construct-rating panel by its decision rule. The flow diagram keeps
+  its text at 8 points or more wherever the device is tall enough, and
+  [`?plot.contentvalid_evidence`](https://juhalt.github.io/contentvalidR/reference/plot.contentvalid_evidence.md)
+  says which sizes hold it.
+- **Expert panel.** The relevance printout keeps the `I-CVI needed`
+  column on an 80-column console and explains only the columns shown.
+  Essentiality states alpha, the exact one-sided test and Ayre and
+  Scally (2014) whatever the panel sizes.
+  [`summary()`](https://rdrr.io/r/base/summary.html) states the scale,
+  the cut and the criterion; a congruence summary states its criterion
+  only when some item was held to it, and counts an item rated on its
+  target alone as “Target described”. The verdict no longer repeats
+  “with strong support (modified kappa above .74)” in every analysis.
+  Printouts call the raters experts (“Experts per item”, “Mean Aiken’s
+  V”).
+  [`expert_power()`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  says it is a contentvalidR planning tool. With
+  `proportion_ci = "none"` no sentence mentions an interval that was not
+  computed. A congruence report without targets explains “Descriptive
+  only” instead of stating a criterion no item was held to, and the
+  Review decision legend names the other objective with the highest mean
+  rating, not “the closest other”.
+  [`?expert_validity`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+  describes `cvi_criterion` and `kappa_quality` once, and it and
+  [`?expert_power`](https://juhalt.github.io/contentvalidR/reference/expert_power.md)
+  give complete references.
+- **Item sort and construct ratings.** The item-sort print explains a
+  retained item whose two-sided interval includes p0, gives the judges
+  per item when panels differ, and cautions when a scale’s bands rest on
+  a panel too small to decide any item. The labels of Psa and Csv can be
+  compared, as percentile positions; their values cannot, and the prints
+  and the glossary now say so. A scale mean never prints as a band
+  minimum it falls below (“.868 Moderate” where Strong starts at .87). A
+  key that explains a column the table left out for width says where to
+  find it. The construct-rating print heads its judge count “Judges”.
+  [`?csv_binom_test`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
+  and
+  [`?sort_validity`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
+  say that *p* equal to alpha meets the criterion,
+  [`?sort_power`](https://juhalt.github.io/contentvalidR/reference/sort_power.md)
+  carries the caveat of Howard and Melloy about `p0 = .50`,
+  [`?htd`](https://juhalt.github.io/contentvalidR/reference/htd.md) and
+  the construct-rating legend describe the competitor as the other
+  construct with the highest mean rating, and
+  [`?anova_content`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+  says which judges its means use.
+- **Judges.** A cut the analyst set prints as “set for this analysis” in
+  the printout and in the report note, which names each cut that was set
+  and each that is a convention, and a severity cut of 2 reads “2
+  logits”.
+  [`?content_structure`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+  gives the default `k` the code uses.
+- **Figures.** Keys too wide for one row take as many rows as they need,
+  down to a single column, before their type shrinks, never below 8
+  points, and sit in headroom above the data and the reference lines;
+  the construct-rating profile lays out its key the same way, and so do
+  the planning plots, whose axes tick whole numbers of experts or judges
+  and whose curves are solid and told apart by markers. The tick labels
+  of a bounded vertical axis are set horizontally, so a short figure
+  under a tall key drops none. The expert-panel, item-sort and
+  construct-rating item plots and the construct-rating profile widen
+  their label margins for long item names, shortening a name in the
+  middle only when it would take more than about 40% of the figure. A
+  long vertical axis title gives way to the index’s name (“HTD”). The
+  congruence plot fills an index that met the criterion and leaves one
+  below it open. A one-dimensional content map stacks the labels of
+  items at the same position.
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) checks
+  `metric` and `reference_power` whatever the `type`: an unknown
+  `metric` with `type = "map"` or `"profile"`, or an invalid
+  `reference_power` with `type = "critical"`, used to be ignored and is
+  now an error, raised before a graphics device opens.
+- **Text.** A table that still does not fit once nothing is left to
+  drop, such as a Delphi table of long statements beside the columns its
+  decisions rest on, shortens the long item names in the middle, keeping
+  their start and end, and says so; the object keeps them in full. A
+  console report whose table left out columns for width says that its
+  note describes the full table. `content_report(include = "flagged")`
+  of a domain fit with nothing flagged prints “No units matched the
+  requested selection.” where it stopped with an error. “F test”,
+  “contrast p” and “omnibus p” are never split across lines. A column
+  left out for width that shares its heading with another is named after
+  the estimate it follows (“Not shown for width: 95% CI for V, 95% CI
+  for I-CVI”). An interval note says it reflects how few ratings an item
+  received, not whether the right people rated it.
+- **Documentation.** Every print, summary and plot method has a help
+  page, `?contentvalid-methods`, which also names the three helpers with
+  no [`print()`](https://rdrr.io/r/base/print.html) method
+  ([`qfactor_content()`](https://juhalt.github.io/contentvalidR/reference/qfactor_content.md),
+  [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md),
+  [`simulate_anova_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_anova_power.md))
+  and says what `summary(compare_rounds())$changed` holds. The help of
+  each workflow lists its `results` columns.
+  [`?content_report`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+  says the Markdown lines render as a table only with `results = "asis"`
+  (`#| output: asis` in Quarto) and that a *p* below .0005 becomes 0 in
+  `format = "data.frame"`.
+- **Vignettes.** Getting started uses headings and real lists, restores
+  the Csv formula, retains two items in its toy sort, and points to
+  every workflow. The reading-output write-up reports intervals and
+  exact *p* values and cites Howard and Melloy (2016). The walkthrough
+  counts its items correctly and calls its first stage the item sort.
+  The Delphi vignette calls the threshold line dashed and qualifies
+  kappa and the intraclass correlation. The design guide’s sentence
+  about unreachable targets is conditional. Tables in the
+  construct-rating, item-sort and reporting vignettes print rounded,
+  with *p* values below .001 written “\< .001”, and the reporting
+  vignette shows the Markdown report rendered. The congruence figure’s
+  alt text describes the symbols it draws. The README says a printout
+  opens with a header, then the facts, then the verdict. The Scheibe et
+  al. (1975/2002) chapter keeps no publisher, because APA 7 omits one
+  that repeats the editors, as the 2002 web edition’s issuers do.
 
 ### Release housekeeping
 

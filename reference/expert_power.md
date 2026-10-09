@@ -81,12 +81,14 @@ hiding this, so it is reported as it is.
 ## References
 
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
-validity ratio. *Measurement and Evaluation in Counseling and
-Development, 47*(1), 79–86.
+validity ratio: Revisiting the original methods of calculation.
+*Measurement and Evaluation in Counseling and Development, 47*(1),
+79–86.
 [doi:10.1177/0748175613513808](https://doi.org/10.1177/0748175613513808)
 
 Lynn, M. R. (1986). Determination and quantification of content
 validity. *Nursing Research, 35*(6), 382–385.
+[doi:10.1097/00006199-198611000-00017](https://doi.org/10.1097/00006199-198611000-00017)
 
 Polit, D. F., & Beck, C. T. (2006). The content validity index: Are you
 sure you know what's being reported? Critique and recommendations.
@@ -126,9 +128,12 @@ expert_power(n_experts = 3:10, prob = c(0.8, 0.9))
 #>   relaxes the criterion while a fourth or fifth makes unanimity harder. That
 #>   is a property of the guideline, not of the items.
 #> 
-#> This table reports the consequences of the panel sizes you asked about. It
-#> does not recommend one. `prob` is an assumption you supply, so treat the
-#> result as conditional on it and report the value you assumed.
+#> This is a contentvalidR planning tool, not a published power method: it treats
+#> the experts as endorsing the item independently, each with probability `prob`,
+#> while the criterion it applies is Lynn's (1986). This table reports the
+#> consequences of the panel sizes you asked about. It does not recommend one.
+#> `prob` is an assumption you supply, so treat the result as conditional on it
+#> and report the value you assumed.
 #> 
 #> See plot(x) for the probabilities by panel size.
 expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
@@ -145,6 +150,9 @@ expert_power(n_experts = c(5, 10, 15), prob = 0.75, criterion = "cvr")
 #>   Required: endorsements the criterion needs from the panel. Prob: the
 #>   probability you assume that one expert endorses the item.
 #> 
+#> This is a contentvalidR planning tool, not a published power method: it treats
+#> the experts as endorsing the item independently, each with probability `prob`,
+#> while the criterion it applies is the exact test of Ayre and Scally (2014).
 #> This table reports the consequences of the panel sizes you asked about. It
 #> does not recommend one. `prob` is an assumption you supply, so treat the
 #> result as conditional on it and report the value you assumed.

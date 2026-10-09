@@ -147,9 +147,9 @@ content_report(rating_fit)
 #>   C2   C          24 .73 .21 F(1.39, 32.00) = 37.38  < .001       .052 Review
 #> 
 #> Note. HTC = Hinkin-Tracey correspondence; HTD = Hinkin-Tracey distinctiveness.
-#> Judges = judges who rated the item against every construct. F
-#> test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees of
-#> freedom where the correction applied. Contrast p = the largest one-sided p
+#> Judges = judges who rated the item against every construct.
+#> F test = within-judge omnibus test, with Greenhouse-Geisser corrected degrees
+#> of freedom where the correction applied. Contrast p = the largest one-sided p
 #> among the planned contrasts of the intended construct with each other
 #> construct. Retain = omnibus p and every one-sided contrast p at or below
 #> alpha = .05 (MacKenzie et al., 2011).
@@ -306,9 +306,12 @@ expert_power(n_experts = 3:8, prob = 0.9)
 #>   relaxes the criterion while a fourth or fifth makes unanimity harder. That
 #>   is a property of the guideline, not of the items.
 #> 
-#> This table reports the consequences of the panel sizes you asked about. It
-#> does not recommend one. `prob` is an assumption you supply, so treat the
-#> result as conditional on it and report the value you assumed.
+#> This is a contentvalidR planning tool, not a published power method: it treats
+#> the experts as endorsing the item independently, each with probability `prob`,
+#> while the criterion it applies is Lynn's (1986). This table reports the
+#> consequences of the panel sizes you asked about. It does not recommend one.
+#> `prob` is an assumption you supply, so treat the result as conditional on it
+#> and report the value you assumed.
 #> 
 #> See plot(x) for the probabilities by panel size.
 ```
@@ -341,8 +344,8 @@ gtheory_content(judge_ratings)
 #>   Dependability coefficient (absolute, fixed standard):   .94
 #>   Status: Supported (criterion: Phi >= .80, a contentvalidR convention)
 #>   With 8 judges, absolute decisions about these items would generalize to
-#>   another panel of the same size at Phi = .94, at or above the .80 set for
-#>   this analysis. Judge differences account for 15.6% of total variance.
+#>   another panel of the same size at Phi = .94, at or above the .80 criterion.
+#>   Judge differences account for 15.6% of total variance.
 #> 
 #> Variance components
 #>   Source    df    MS  Estimate  Used  % of total
@@ -372,11 +375,12 @@ The dependability coefficient (Phi) concerns the absolute level of the
 ratings and is lowered by differences in judge severity, which is
 usually what a content-validity decision rests on. The status beside it
 compares Phi with `phi_cut` (.80 by default), a convention of this
-package, not a published standard. A target no realistic panel reaches
-prints as “unreachable” (`NA` in the data): the judges barely
-distinguished the items. The projected panel sizes come from one panel’s
-variance components and carry no interval, so read them as planning
-figures.
+package, not a published standard. Here every target is reached with
+five judges or fewer, because the items account for most of the
+variance. Had the judges barely distinguished the items, a target no
+realistic panel reaches would print as “unreachable” (`NA` in the data).
+The projected panel sizes come from one panel’s variance components and
+carry no interval, so read them as planning figures.
 
 Across pretest rounds,
 [`compare_rounds()`](https://juhalt.github.io/contentvalidR/reference/compare_rounds.md)

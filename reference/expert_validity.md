@@ -3,8 +3,8 @@
 Provides a user-facing workflow for three common expert-panel tasks:
 
 - `mode = "relevance"`: bounded ordinal relevance ratings, combining
-  Aiken's V (with the score intervals of Penfield and Giacobbi, 2004),
-  the CVI with the modified kappa of Polit et al. (2007), and a
+  Aiken's (1980) V (with the score intervals of Penfield and Giacobbi,
+  2004), the CVI with the modified kappa of Polit et al. (2007), and a
   panel-level agreement coefficient.
 
 - `mode = "essentiality"`: Lawshe CVR with exact binomial critical
@@ -161,7 +161,176 @@ retaining mode-specific `recommendation` wording. In relevance mode,
 `scale_summary` also holds `agreement`, `agreement_low`, and
 `agreement_high`, and `details$agreement` holds the full
 [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
-result.
+result. [`print()`](https://rdrr.io/r/base/print.html),
+[`summary()`](https://rdrr.io/r/base/summary.html), and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) are described
+in
+[contentvalid-methods](https://juhalt.github.io/contentvalidR/reference/contentvalid-methods.md).
+
+**Results columns.** `results` has one row per item, and its columns
+depend on `mode`. Every mode ends with `recommendation`, the decision in
+the mode's own words; `interpretation`, the decision explained in a
+sentence; and `status`, the shared status.
+
+In relevance mode:
+
+- `item`:
+
+  The item.
+
+- `N`:
+
+  Experts who rated the item.
+
+- `n_missing`:
+
+  Experts who did not.
+
+- `V`:
+
+  Aiken's V.
+
+- `ci_low`, `ci_high`:
+
+  The interval for V at level `1 - alpha`.
+
+- `ci_method`:
+
+  The method of that interval, the score interval of Penfield and
+  Giacobbi (2004).
+
+- `A`:
+
+  Experts who rated the item relevant, at or above `relevance_cut`.
+
+- `I_CVI`:
+
+  The I-CVI, `A / N`.
+
+- `I_CVI_low`, `I_CVI_high`:
+
+  The interval for the I-CVI, by the method in `proportion_ci`; `NA`
+  with `"none"`.
+
+- `Pc`:
+
+  The probability of chance agreement that modified kappa corrects for
+  (Polit et al., 2007).
+
+- `kappa_mod`:
+
+  Modified kappa.
+
+- `cvi_criterion`:
+
+  The I-CVI that Lynn's (1986) criterion requires for the item's panel
+  size, as a proportion; `NA` below three experts. It is shown for
+  reading: the decision compares counts.
+
+- `kappa_quality`:
+
+  The band of `kappa_mod` in the guidelines of Cicchetti and
+  Sparrow (1981) and Fleiss (1981), as cited in Polit et al. (2007), who
+  apply them to modified kappa: `"Excellent"` above .74, `"Good"` from
+  .60 to .74, `"Fair"` from .40 to .59, and `"Poor"` below .40. The band
+  describes the item and decides nothing; every item that meets the
+  I-CVI criterion is `"Excellent"`.
+
+- `ci_width`:
+
+  The width of the interval for V, `ci_high - ci_low`.
+
+- `recommendation`:
+
+  `"Strong support"` (the item meets the I-CVI criterion), `"Review"`,
+  or `"Insufficient panel"` (fewer than three experts).
+
+In essentiality mode:
+
+- `item`:
+
+  The item.
+
+- `ne`:
+
+  Experts who rated the item essential.
+
+- `N`:
+
+  Experts who rated the item.
+
+- `cvr`:
+
+  Lawshe's CVR, `(ne - N / 2) / (N / 2)`.
+
+- `p_value`:
+
+  The one-sided exact binomial *p* of `ne` at a rate of .5.
+
+- `critical_ne`:
+
+  The fewest essential ratings that meet the criterion at `alpha`; `NA`
+  when no count can.
+
+- `critical_cvr`:
+
+  The CVR of `critical_ne`.
+
+- `pass`:
+
+  Whether `ne` reaches `critical_ne`.
+
+- `recommendation`:
+
+  `"Supported"`, `"Review"`, `"Insufficient panel"` (no count could meet
+  the test), or `"Insufficient data"` (no expert rated the item).
+
+In congruence mode, with a target objective for each item:
+
+- `item`:
+
+  The item.
+
+- `target`:
+
+  The objective the item was written for.
+
+- `n_judges`:
+
+  Experts who rated the item on its target.
+
+- `target_ioc`:
+
+  The index of item-objective congruence for the target.
+
+- `target_mean`:
+
+  The experts' mean rating on the target, -1 to 1.
+
+- `strongest_competitor`:
+
+  The other objective with the highest mean rating, ties joined by
+  `", "`.
+
+- `competitor_mean`:
+
+  The mean rating on that objective.
+
+- `margin`:
+
+  `target_mean - competitor_mean`, a description beside the index, not
+  part of its criterion.
+
+- `recommendation`:
+
+  `"Congruent"` (`target_ioc` at or above `ioc_cut`), `"Review"`,
+  `"Target described"` (the item was rated on its target alone, so there
+  is no index), or `"Insufficient data"`.
+
+Without a target objective, congruence `results` hold `item`,
+`n_objectives` (objectives the item was rated on), `best_objective` and
+`best_ioc` (the objective with the highest index, and that index), and
+`recommendation`, which is `"Descriptive only"`.
 
 ## Earlier methods, for comparison
 
@@ -227,6 +396,11 @@ changes a decision:
 
 ## References
 
+Aiken, L. R. (1980). Content validity and reliability of single items or
+questionnaires. *Educational and Psychological Measurement, 40*(4),
+955–959.
+[doi:10.1177/001316448004000419](https://doi.org/10.1177/001316448004000419)
+
 Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content
 validity ratio: Revisiting the original methods of calculation.
 *Measurement and Evaluation in Counseling and Development, 47*(1),
@@ -265,8 +439,8 @@ sure you know what's being reported? Critique and recommendations.
 [doi:10.1002/nur.20147](https://doi.org/10.1002/nur.20147)
 
 Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an
-acceptable indicator of content validity? *Research in Nursing & Health,
-30*(4), 459–467.
+acceptable indicator of content validity? Appraisal and recommendations.
+*Research in Nursing & Health, 30*(4), 459–467.
 [doi:10.1002/nur.20199](https://doi.org/10.1002/nur.20199)
 
 Rovinelli, R. J., & Hambleton, R. K. (1977). On the use of content
@@ -301,15 +475,14 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4, seed = 1)
 fit
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: relevance
-#> Items: 4 | Experts/item: 4
+#> Items: 4 | Experts per item: 4
 #> Scale: 1 to 4 | Relevant: a rating of 3 or higher
-#> Mean Aiken V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
+#> Mean Aiken's V: .92 | S-CVI/Ave: 1.00 | S-CVI/UA: 1.00
 #> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because
 #>   every resample of the items gave the same value. Identical rating pairs:
 #>   50%.
 #> 
-#> 4 of 4 items meet the I-CVI criterion, all with strong support (modified kappa
-#> above .74).
+#> 4 of 4 items meet the I-CVI criterion.
 #> 
 #>   Item   Decision        Experts    V      95% CI  I-CVI       95% CI  Kappa
 #>   Item1  Strong support        4  .92  [.65, .99]   1.00  [.51, 1.00]   1.00
@@ -319,13 +492,12 @@ fit
 #> 
 #> Each 95% CI follows its estimate: Aiken's V has a Penfield-Giacobbi score
 #> interval, and I-CVI the proportion interval named below.
-#> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986); kappa
-#> is modified kappa, with values above .74 read as excellent (Polit et al.,
-#> 2007).
+#> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986). Kappa
+#> is modified kappa, read as excellent above .74 (Polit et al., 2007).
 #> 95% intervals for proportions: Wilson score (the default). Newcombe (1998)
 #> compared seven methods and recommends score intervals over the Wald interval.
 #> An interval reflects how few ratings an item received, not whether the right
-#> judges were chosen.
+#> people rated it.
 #> 
 #> Panel agreement is one coefficient for the whole panel, whereas modified kappa
 #> (the kappa column) describes each item. Alpha can be low when nearly every
@@ -369,7 +541,9 @@ fit
 summary(fit)
 #> <contentvalid_expert summary> Expert-panel analysis
 #> Mode: relevance
+#> Scale: 1 to 4 | Relevant: a rating of 3 or higher
 #> Strong support: 4 of 4 | Review: 0 of 4
+#> I-CVI criterion for 4 experts: 4 agreeing (1.00), following Lynn (1986).
 #> Panel agreement, Krippendorff's alpha (ordinal): -.25; no 95% CI, because
 #>   every resample of the items gave the same value. Identical rating pairs:
 #>   50%.
@@ -385,7 +559,7 @@ expert_validity(c(12, 10, 8, 6), mode = "essentiality", N = 12,
                 legacy = TRUE)
 #> <contentvalid_expert> Expert-panel analysis
 #> Mode: essentiality
-#> Items: 4 | Experts/item: 12
+#> Items: 4 | Experts per item: 12
 #> Method: Lawshe CVR with exact binomial critical values
 #> 
 #> 2 of 4 items meet the exact essentiality criterion.

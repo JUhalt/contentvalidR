@@ -11,6 +11,13 @@ Colquitt benchmark bands are deliberately not drawn across item points
 because those norms were developed for scale-level averages rather than
 individual items.
 
+The key sits above the data, in as many rows as the figure's width
+needs. Where a vertical axis title would not fit the figure's height,
+the axis shows the index's name alone (Psa or Csv) and the key's heading
+gives the full definition. The item plot widens its bottom margin for
+long item names, shortening a name in the middle with "..." when it
+would take more than about 40% of the figure's height.
+
 ## Usage
 
 ``` r
