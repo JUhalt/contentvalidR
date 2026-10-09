@@ -198,8 +198,10 @@ qfactor_content <- function(ratings,
     stop("`percentile` must be one number between 0 and 100, exclusive.",
          call. = FALSE)
   }
-  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L || !is.finite(seed))) {
-    stop("`seed` must be NULL or one number.", call. = FALSE)
+  if (!is.null(seed) && (!is.numeric(seed) || length(seed) != 1L ||
+                         !is.finite(seed) || abs(seed) > .Machine$integer.max)) {
+    stop("`seed` must be NULL or one number, no larger in size than ",
+         .Machine$integer.max, ".", call. = FALSE)
   }
   if (!is.data.frame(ratings) || nrow(ratings) < 1L) {
     stop("`ratings` must be a non-empty data.frame.", call. = FALSE)

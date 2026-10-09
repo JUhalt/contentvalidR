@@ -280,17 +280,94 @@ test_that("a seeded call leaves the session's random stream as it found it", {
   # The result itself is still reproducible.
   expect_identical(panel_agreement(R, B = 50, seed = 7)$ci_low,
                    panel_agreement(R, B = 50, seed = 7)$ci_low)
+})
 
-  # With no stream yet, none is left behind.
-  local({
-    old <- if (exists(".Random.seed", envir = globalenv(), inherits = FALSE)) {
-      get(".Random.seed", envir = globalenv())
-    }
-    on.exit(if (!is.null(old)) assign(".Random.seed", old, envir = globalenv()))
-    if (!is.null(old)) rm(".Random.seed", envir = globalenv())
-    invisible(panel_agreement(R, B = 20, seed = 1))
-    expect_false(exists(".Random.seed", envir = globalenv(), inherits = FALSE))
-  })
+test_that("a seed gives the draws set.seed() gives", {
+  # withr seeds and restores the stream; the draws under a seed are those of
+  # a plain set.seed(), as they were before the package used withr.
+  with_seed <- contentvalidR:::.with_seed
+  set.seed(11); plain <- c(stats::runif(3), sample(20))
+  # An integer seed and a whole double give the same draws.
+  expect_identical(with_seed(11L, c(stats::runif(3), sample(20))), plain)
+  expect_identical(with_seed(11, c(stats::runif(3), sample(20))), plain)
+
+  # No seed: the code runs on the session's stream and moves it.
+  set.seed(5); expected <- stats::runif(2)
+  set.seed(5)
+  expect_identical(c(with_seed(NULL, stats::runif(1)), stats::runif(1)), expected)
+})
+
+test_that("a seed gives the draws set.seed() gives under another generator", {
+  # withr from 2.5.0 seeds within the caller's kind of generator; 2.4.2 and
+  # 2.4.3 switched to the default kind, which changes seeded results. That is
+  # why DESCRIPTION asks for 2.5.0.
+  with_seed <- contentvalidR:::.with_seed
+  before <- RNGkind()
+  # The session's generator and stream are put back when the block ends.
+  withr::with_preserve_seed(local({
+    kinds <- RNGkind("Wichmann-Hill", "Box-Muller")
+    on.exit(RNGkind(kinds[1], kinds[2]), add = TRUE)
+    set.seed(11); plain <- c(stats::runif(3), stats::rnorm(2))
+    expect_identical(with_seed(11L, c(stats::runif(3), stats::rnorm(2))), plain)
+    expect_identical(RNGkind()[1:2], c("Wichmann-Hill", "Box-Muller"))
+  }))
+  expect_identical(RNGkind(), before)
+})
+
+test_that("a seed too large for an integer is refused by name", {
+  R <- rbind(c(4, 4, 3, 2, 4), c(4, 3, 3, 2, 4), c(3, 4, 4, 1, 4),
+             c(4, 4, 3, 2, 3))
+  colnames(R) <- paste0("I", 1:5)
+  for (big in c(2^31, -2^31)) {
+    expect_error(panel_agreement(R, B = 20, seed = big), "`seed` must be")
+    expect_error(expert_validity(R, lo = 1, hi = 4, agreement_B = 20, seed = big),
+                 "`seed` must be")
+    expect_error(aikens_v(R, lo = 1, hi = 4, ci = "bootstrap", B = 20, seed = big),
+                 "`seed` must be")
+  }
+  long <- data.frame(item = rep(paste0("I", 1:6), each = 30),
+                     rater = rep(1:10, times = 18),
+                     construct = rep(rep(LETTERS[1:3], each = 10), times = 6),
+                     rating = rep(c(1, 3, 2, 5, 4, 2, 3, 1, 5, 4), times = 18))
+  expect_error(qfactor_content(long, seed = 2^31), "`seed` must be")
+  # The seed is checked before the ratings are.
+  expect_error(delphi_validity(data.frame(), lo = 1, hi = 4, seed = 2^31),
+               "`seed` must be")
+  # The largest integer is a seed like any other.
+  top <- .Machine$integer.max
+  expect_identical(panel_agreement(R, B = 20, seed = top)$ci_low,
+                   panel_agreement(R, B = 20, seed = top)$ci_low)
+})
+
+test_that("no function of the package reaches for the global environment", {
+  # CRAN: a package may not write to the user's workspace. Restoring the
+  # random stream by hand needs assign() or rm() there, so that is left to
+  # withr. Each function is read whole, as text: its arguments' defaults, any
+  # function defined inside it, and names given as strings. `<<-`,
+  # as.environment() and assign() are refused outright, whether or not a
+  # given use would reach the workspace, because the package needs none.
+  ns <- asNamespace("contentvalidR")
+  fns <- Filter(function(n) is.function(get(n, envir = ns)),
+                ls(ns, all.names = TRUE))
+  expect_gt(length(fns), 300L)
+  pattern <- paste0("globalenv|\\.GlobalEnv|<<-|\\.Random\\.seed|set\\.seed|",
+                    "as\\.environment|(^|[^[:alnum:]._])assign\\(")
+  reaches <- vapply(fns, function(n) {
+    grepl(pattern, paste(deparse(get(n, envir = ns)), collapse = "\n"))
+  }, NA)
+  expect_identical(fns[reaches], character(0))
+
+  # The scan sees what it must: a default argument, a nested function, a
+  # name given as a string, and a position.
+  caught <- function(f) grepl(pattern, paste(deparse(f), collapse = "\n"))
+  expect_true(caught(function(x, envir = globalenv()) x))
+  expect_true(caught(function(x) lapply(x, function(i, e = .GlobalEnv) i)))
+  expect_true(caught(function(x) get(".Random.seed", envir = baseenv())))
+  expect_true(caught(function(x) assign("a", x, pos = 1)))
+  expect_true(caught(function(x, i) assign(paste0("a", i), x, 1)))
+  expect_true(caught(function(x) do.call("set.seed", list(x))))
+  expect_false(caught(function(x) withr::with_seed(1L, x)))
+  expect_false(caught(function(x) graphics::text(1, 1, x, pos = 3)))
 })
 
 test_that("the AC1 bootstrap scores every resample on the same categories", {

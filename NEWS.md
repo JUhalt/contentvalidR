@@ -1020,6 +1020,30 @@ review of the close-out itself found.
   Krippendorff's alpha and Fleiss' kappa; irr stays in Suggests.
 * The release gate reads the date of the last CRAN release from
   `tools/cran-release-date` and ignores a malformed one.
+* The release gate waits two minutes for the helper process that looks up
+  the package's dependencies, where the default five seconds stopped the
+  build stage on a busy machine. Its smoke test, which runs the installed
+  package beside nothing but the packages that ship with R, now adds the
+  packages the install declares it needs and no others, so a package from
+  outside R's own library that is used without being declared still fails
+  it. A stage name the gate does not know stops it, where it ran nothing and
+  reported that all stages had passed.
+* `?contentvalid-methods` has a Value section, which CRAN asks of every help
+  page that documents a function or a method.
+* The package now imports withr, its first dependency beyond `stats`. withr
+  is written in R alone and needs nothing beyond base R, so installing still
+  takes no compiler. A function given `seed` (`aikens_v()`,
+  `panel_agreement()`, `expert_validity()`, `delphi_validity()`,
+  `qfactor_content()`) seeds its resampling inside `withr::with_seed()`.
+  That is how the session's random stream is put back afterwards (see "A
+  seed no longer resets the random stream of the session" under "Expert
+  panel: values that change"): restoring it by hand would mean writing to
+  the global environment, which CRAN does not allow. Results for a given
+  seed are unchanged. Under `RNGkind("Marsaglia-Multicarry")` and
+  `normal.kind = "Buggy Kinderman-Ramage"`, two settings R itself warns
+  about, R repeats its warning each time the stream is put back.
+* A `seed` too large to be an integer (beyond 2147483647 in size) is refused
+  by name. It was passed on and failed inside `set.seed()`.
 
 ## Other changes
 

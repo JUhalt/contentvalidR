@@ -55,6 +55,18 @@
 \alias{as.data.frame.contentvalid_report}
 \alias{as.data.frame.contentvalid_evidence}
 \title{Printing, summarizing, and plotting contentvalidR results}
+\value{
+\itemize{
+\item \code{print()} returns its argument, invisibly.
+\item \code{summary()} returns a list of class \code{summary.} plus the fit's class
+(\code{summary.contentvalid_rounds} for a comparison of rounds), holding the
+elements named under "summary()" above.
+\item \code{as.data.frame()} returns a data frame.
+\item \code{plot()} of a judge-heterogeneity fit, a coverage analysis, or a
+comparison of rounds returns nothing: it stops with an error whose
+message says where to look instead.
+}
+}
 \description{
 Every contentvalidR result has a \code{print()} method, except those of three
 auxiliary helpers: \code{\link[=qfactor_content]{qfactor_content()}} returns a plain list, and
@@ -119,9 +131,10 @@ holding, among others, \code{n_items}, \code{n_supported}, \code{n_review},
 \code{n_insufficient}, \code{n_descriptive}, \code{scale_summary}, \code{reviewed_items} (the
 units whose status is \code{Review} or \verb{Insufficient data}), \code{settings}, and
 \code{design}. The Delphi summary adds \code{panel} and \code{stability_method}; the
-expert-panel summary \code{mode} and \code{agreement}; the judge summary \code{gtheory},
-\code{influence_items}, and \code{reviewed_judges}; and the coverage summary \code{gaps},
-the cells under review.
+expert-panel summary \code{mode} and, when an agreement coefficient was
+computed, \code{agreement}; the judge summary \code{gtheory}, \code{influence_items}, and
+\code{reviewed_judges}; and the coverage summary \code{gaps}, the cells under
+review.
 
 \code{summary()} of a \code{\link[=compare_rounds]{compare_rounds()}} result returns a
 \code{summary.contentvalid_rounds} list whose \code{changed} holds the units that

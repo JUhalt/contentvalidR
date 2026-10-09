@@ -59,9 +59,10 @@
 #' `n_insufficient`, `n_descriptive`, `scale_summary`, `reviewed_items` (the
 #' units whose status is `Review` or `Insufficient data`), `settings`, and
 #' `design`. The Delphi summary adds `panel` and `stability_method`; the
-#' expert-panel summary `mode` and `agreement`; the judge summary `gtheory`,
-#' `influence_items`, and `reviewed_judges`; and the coverage summary `gaps`,
-#' the cells under review.
+#' expert-panel summary `mode` and, when an agreement coefficient was
+#' computed, `agreement`; the judge summary `gtheory`, `influence_items`, and
+#' `reviewed_judges`; and the coverage summary `gaps`, the cells under
+#' review.
 #'
 #' `summary()` of a [compare_rounds()] result returns a
 #' `summary.contentvalid_rounds` list whose `changed` holds the units that
@@ -87,6 +88,16 @@
 #' without its print class. [content_report()] returns its table of text,
 #' and [content_evidence()] its long table of evidence, one row per item and
 #' stage. The other results are covered in [contentvalid-data-frames].
+#'
+#' @return
+#' * `print()` returns its argument, invisibly.
+#' * `summary()` returns a list of class `summary.` plus the fit's class
+#'   (`summary.contentvalid_rounds` for a comparison of rounds), holding the
+#'   elements named under "summary()" above.
+#' * `as.data.frame()` returns a data frame.
+#' * `plot()` of a judge-heterogeneity fit, a coverage analysis, or a
+#'   comparison of rounds returns nothing: it stops with an error whose
+#'   message says where to look instead.
 #'
 #' @examples
 #' sort_dat <- data.frame(

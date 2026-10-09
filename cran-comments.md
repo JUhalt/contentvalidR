@@ -27,6 +27,10 @@ This is an update of contentvalidR from 0.4.0, on CRAN since 2026-09-28, to
 * The printed output of every function changed to a style shared with the
   companion package nomologR. Printed output is outside the package's
   stability policy (`?contentvalidR`).
+* The package now imports withr. A function given `seed` runs its bootstrap
+  or parallel analysis inside `withr::with_seed()`, which leaves the
+  session's random stream as it was; the package does not write to the
+  global environment.
 
 ## Test environments
 
@@ -63,5 +67,5 @@ contentvalidR's handoff object; it is maintained by the same author.
   "generalizability" is the standard term of generalizability theory; and
   "et al." is the standard citation abbreviation. To be confirmed against
   the raw win-builder log at submission.
-* The package imports only `stats` and contains no compiled code.
+* The package imports only `stats` and `withr` and contains no compiled code.
 * The Description field gives DOIs for the principal methods.

@@ -94,6 +94,16 @@ test_that("every registered S3 method has exactly one help page", {
                     "plot.contentvalid_rounds") %in% shared))
 })
 
+test_that("every help page says what is returned", {
+  # CRAN asks for a \value section on every page that documents a function or
+  # a method. Only the package's own page documents neither.
+  pages <- help_pages()
+  expect_gt(length(pages), 40L)
+  has_value <- vapply(pages, function(rd) "\\value" %in% rd_tags(rd), NA)
+  without <- sub("[.]Rd$", "", names(pages)[!has_value])
+  expect_identical(without, "contentvalidR-package")
+})
+
 test_that("each workflow's help lists every column of its results", {
   pages <- help_pages()
   documented <- function(topic) {
