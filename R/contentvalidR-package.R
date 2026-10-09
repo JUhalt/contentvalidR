@@ -65,9 +65,8 @@
 #' break working code goes through the deprecation cycle.
 #'
 #' \strong{Tier 3, auxiliary and compatibility helpers.}
-#' [agreement_summary()], [qfactor_content()], [reproducibility_phi()],
-#' [signal_detection()], [simulate_anova_power()], and
-#' [simulate_csv_power()].
+#' [qfactor_content()], [reproducibility_phi()], [signal_detection()],
+#' [simulate_anova_power()], and [simulate_csv_power()].
 #'
 #' These are kept for continuity with older analyses and for sensitivity
 #' checks. They are not recommended workflows, and they may be deprecated and
@@ -97,11 +96,24 @@
 #' deprecated in 0.7.0 and removed in 0.8.0. Both ends of each are recorded in
 #' `NEWS.md`.
 #'
-#' One deprecation is in progress. [agreement_summary()], a Tier 3 helper, is
-#' deprecated in 0.9.0 and will be removed in 1.0.0: it is the only function
-#' that takes items in rows rather than raters, and [panel_agreement()] does
-#' its job. It warns when called. Removing it at 1.0.0 means nothing
-#' deprecated is carried past 1.0.
+#' `agreement_summary()`, a Tier 3 helper, was deprecated in 0.9.0 and is
+#' removed in 1.0.0: it was the only function that took items in rows rather
+#' than raters, and [panel_agreement()] does its job. Nothing deprecated is
+#' carried past 1.0.
+#'
+#' Five returned fields were removed at 1.0.0 without that notice, because
+#' the audit before 1.0 found them wrong or unreachable, and a release that
+#' kept them would have kept wrong values in use: `overall_strength` in the
+#' `scale_summary` of [sort_validity()] and [rating_validity()] (a
+#' combination of the two Colquitt et al. levels that they do not publish),
+#' `n_support` in that of [expert_validity()] (a count of a decision that
+#' could not occur), `competitor_ioc` in its congruence `results` (a mean
+#' labeled as the index), `n_influential` in the `scale_summary` of
+#' [judge_validity()] (a flag that was withdrawn), and `fit_label` in the
+#' `fit` table of [content_structure()] (Kruskal's labels, which belong to a
+#' different statistic). With the congruence index corrected, its handoff
+#' statistics `competitor IOC` and `IOC margin` gave way to `target IOC` and
+#' the two mean ratings. `NEWS.md` gives the reason for each.
 #'
 #' @section Changing a default:
 #' A changed default can silently change published numbers, so it is treated

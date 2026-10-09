@@ -733,7 +733,7 @@ print.contentvalid_judge <- function(x, digits = 2, ...) {
     .print_key_footer()
   }
 
-  .closing(c("A 'Review' judge is not a judge to remove. Disagreement can be",
+  .closing(c("A flagged judge is not a judge to remove. Disagreement can be",
              "substantive expertise; the flag marks ratings worth a closer look."),
            "See summary(x) for the flagged judges and the judges needed.")
   invisible(x)
@@ -806,6 +806,14 @@ print.summary.contentvalid_judge <- function(x, digits = 2, ...) {
   .closing(c("This analysis describes how much conclusions depend on these judges.",
              "It does not establish that the items cover the intended content",
              "domain."),
-           "See x$reviewed_judges for the flagged judges as a data frame.")
+           "See summary(x)$reviewed_judges for the flagged judges as a data frame.")
   invisible(x)
+}
+
+# A judge analysis has no figure; say so rather than let graphics::plot()
+# fail on a list.
+#' @export
+plot.contentvalid_judge <- function(x, ...) {
+  stop("A judge-heterogeneity analysis has no figure. print(x) shows the ",
+       "judges and summary(x) the ones flagged for review.", call. = FALSE)
 }

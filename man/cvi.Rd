@@ -61,11 +61,11 @@ experts are added, so Polit and Beck recommend reporting both.
 For each item, modified kappa adjusts I-CVI for chance agreement using the
 probability of observing exactly \code{A} agreements among \code{N} judges:
 
-\deqn{P_c = {N \choose A}(0.5)^N}
+\deqn{P_c = {N \choose A}(0.5)^N}{Pc = choose(N, A) * 0.5^N}
 
 and
 
-\deqn{k^* = (I_CVI - P_c) / (1 - P_c).}
+\deqn{k^* = \frac{\textrm{I-CVI} - P_c}{1 - P_c}.}{k* = (I-CVI - Pc) / (1 - Pc).}
 
 I-CVI is a proportion of what is usually a small panel, so an interval is
 reported alongside it. The interval method is selectable; see \code{ci}.

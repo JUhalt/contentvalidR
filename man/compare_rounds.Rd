@@ -33,6 +33,8 @@ change a status.}
 \item{panel_compared}{Whether the panel size was part of the
 comparison: \code{TRUE} for the item sort and for expert relevance and
 essentiality.}
+\item{mode}{The mode of \code{\link[=expert_validity]{expert_validity()}} fits, \code{NA} for other
+workflows.}
 }
 }
 \description{

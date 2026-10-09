@@ -101,7 +101,7 @@ test_that("the relevance report keeps its two intervals apart", {
   expect_false(grepl("V 95% CI", printed, fixed = TRUE))
   md <- content_report(expert_validity(relevance(), lo = 1, hi = 4,
                                        agreement = "none"), format = "markdown")
-  expect_match(md[1], "| V | 95% CI | I-CVI | 95% CI |", fixed = TRUE)
+  expect_match(md[1], "| *V* | 95% CI | I-CVI | 95% CI |", fixed = TRUE)
 })
 
 # ---- Plot arguments and long item names --------------------------------------

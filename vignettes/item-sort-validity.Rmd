@@ -105,7 +105,11 @@ fit_normed <- sort_validity(
   sort_dat,
   orbiting_r = c(A = .42, B = .28)
 )
-fit_normed$scale_summary
+fit_normed$scale_summary[, c("target", "orbiting_r", "psa_strength",
+                             "csv_strength")]
+# The benchmark set behind each target's labels
+writeLines(paste0(fit_normed$scale_summary$target, ": ",
+                  fit_normed$scale_summary$benchmark_set))
 ```
 
 The conditional panels are:
@@ -125,7 +129,8 @@ Their criteria should not simply be transferred to expert panels.
 
 ```{r}
 expert_fit <- sort_validity(sort_dat, judge_type = "expert")
-expert_fit$scale_summary
+expert_fit$scale_summary[, c("target", "mean_psa", "psa_strength",
+                             "mean_csv", "csv_strength")]
 ```
 
 The Psa/Csv statistics and item-level screening remain available, but Colquitt

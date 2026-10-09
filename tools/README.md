@@ -83,4 +83,6 @@ version), or "Days since last update" (since 0.4.0 reached CRAN on
 2026-09-28). Any other line in it fails the stage, and so does any other note:
 a gate that prints findings for a human to eyeball is not a gate. When the
 last update was under 60 days ago, the stage also prints a reminder that CRAN
-asks for updates no more often than every one to two months.
+asks for updates no more often than every one to two months. The date of the
+last CRAN release is kept in `tools/cran-release-date`, one line in
+YYYY-MM-DD form; set it on the day CRAN accepts a version.

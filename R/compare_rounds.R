@@ -120,6 +120,8 @@
 #'     \item{panel_compared}{Whether the panel size was part of the
 #'       comparison: `TRUE` for the item sort and for expert relevance and
 #'       essentiality.}
+#'     \item{mode}{The mode of [expert_validity()] fits, `NA` for other
+#'       workflows.}
 #'   }
 #'
 #' @section Reading a comparison:
@@ -310,7 +312,8 @@ compare_rounds <- function(..., labels = NULL) {
     labels = labels,
     id_col = id_col,
     workflow = .workflow_name(rounds[[1]]),
-    n_rounds = length(rounds)
+    n_rounds = length(rounds),
+    mode = unname(modes[1])
   )
   class(out) <- "contentvalid_rounds"
   out
@@ -327,8 +330,9 @@ print.contentvalid_rounds <- function(x, ...) {
   moved <- sum(change %in% c("Strengthened", "Weakened", "Changed"))
   both <- sum(change %in% c("Strengthened", "Weakened", "Changed", "Unchanged"))
   cat("\n")
-  .say(sprintf("%d of %s in both the first and last round changed status%s.",
-               moved, .n_noun(both, "unit"),
+  .say(sprintf(paste("Of the %s present in the first and last rounds, %d",
+                     "changed status%s."),
+               .n_noun(both, "unit"), moved,
                if (moved > 0L) {
                  sprintf(" (%d stronger, %d weaker%s)",
                          sum(change %in% "Strengthened"),
@@ -341,6 +345,7 @@ print.contentvalid_rounds <- function(x, ...) {
                } else {
                  ""
                }))
+  .say(.status_meaning(NULL, NULL, workflow = x$workflow, mode = x$mode))
 
   if (!x$comparable) {
     size <- x$settings_changes$setting == "panel size"
@@ -365,7 +370,7 @@ print.contentvalid_rounds <- function(x, ...) {
   }
 
   .section("Status by round")
-  .print_table(x$transitions, more = "x$transitions")
+  .print_table(x$transitions, more = "x$transitions", as_is = x$labels)
 
   .section("Round-to-round summary")
   s <- x$summary
@@ -402,6 +407,7 @@ summary.contentvalid_rounds <- function(object, ...) {
   out <- list(
     workflow = object$workflow,
     n_rounds = object$n_rounds,
+    mode = object$mode,
     labels = object$labels,
     n_units = nrow(t),
     comparable = object$comparable,
@@ -421,6 +427,8 @@ print.summary.contentvalid_rounds <- function(x, ...) {
   cat("Comparable across rounds: ", if (x$comparable) "yes" else "no", "\n",
       sep = "")
 
+  .say(.status_meaning(NULL, NULL, workflow = x$workflow, mode = x$mode))
+
   if (!x$comparable) {
     .section("What differs between rounds")
     .print_table(x$settings_changes, more = "x$settings_changes")
@@ -428,16 +436,24 @@ print.summary.contentvalid_rounds <- function(x, ...) {
 
   if (nrow(x$changed)) {
     .section("Units whose status changed")
-    .print_table(x$changed, more = "x$changed")
+    .print_table(x$changed, more = "summary(x)$changed", as_is = x$labels)
   } else {
     .end_section()
     cat("\n")
     .say("No unit changed status between the first and last round.")
   }
   .closing(pointer = if (nrow(x$changed)) {
-    "See x$changed for those units as a data frame."
+    "See summary(x)$changed for those units as a data frame."
   } else {
     "See x$summary for the round-to-round counts."
   })
   invisible(x)
+}
+
+# A comparison of rounds has no figure; each round's own fit plots.
+#' @export
+plot.contentvalid_rounds <- function(x, ...) {
+  stop("A comparison of rounds has no figure. print(x) shows each unit's ",
+       "status by round; plot each round's own fit to see its evidence.",
+       call. = FALSE)
 }

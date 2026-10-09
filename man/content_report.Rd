@@ -55,6 +55,14 @@ table by default, with \emph{p} values rounded to \code{digits}; use
 decimals.
 }
 
+\section{Changed in 1.0.0}{
+
+Numbers in \code{format = "data.frame"} round half up, as the APA table does,
+so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
+own rounding gave 0.62. The APA table prints under a header and carries
+its general note as the \code{"note"} attribute.
+}
+
 \section{Reporting the decision rules}{
 
 A results table alone is not a reproducible report. The thresholds that

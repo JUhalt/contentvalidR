@@ -972,9 +972,9 @@ print.contentvalid_delphi <- function(x, digits = 2, ...) {
   if (is.null(s$consensus_threshold)) {
     cat("No consensus threshold was set; agreement is reported descriptively.\n")
   } else {
-    .say(paste0(n_c, " of ", nrow(r), " items reached consensus in their last ",
-                "round", if (n_i) paste0("; ", n_i, " had too few experts"),
-                "."))
+    .say(paste0(n_c, " of ", .n_noun(nrow(r), "item"), " reached consensus ",
+                "in ", if (nrow(r) == 1L) "its" else "their", " last round",
+                if (n_i) paste0("; ", n_i, " had too few experts"), "."))
     if (n_n) .say("No consensus:", paste(r$item[r$recommendation == "No consensus"],
                                          collapse = ", "))
   }
@@ -1442,6 +1442,6 @@ print.summary.contentvalid_delphi <- function(x, digits = 2, ...) {
   }
   .closing(c("Consensus is not correctness, and 'No consensus' is not an instruction",
              "to drop an item. Read these results with the experts' comments."),
-           "See x$reviewed_items for the items without consensus as a data frame.")
+           "See summary(x)$reviewed_items for the items without consensus as a data frame.")
   invisible(x)
 }

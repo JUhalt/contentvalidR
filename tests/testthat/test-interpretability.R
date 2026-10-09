@@ -124,7 +124,7 @@ test_that("printed output explains the decision words it shows, and no others", 
   old <- options(contentvalidR.show_key = FALSE)
   on.exit(options(old), add = TRUE)
   expect_match(printed(sort_fixture()),
-               "'Review' is not an automatic deletion decision")
+               "A flag for review is not an automatic deletion decision")
 })
 
 test_that("every flagship workflow says Review is not a deletion decision", {

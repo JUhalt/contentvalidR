@@ -27,7 +27,7 @@ test_that("component tables print in APA style and keep full precision", {
   expect_match(shown(cvr(essential = c(8, 10), N = 12)),
                "Item2 10/12 .67 .019 10 yes", fixed = TRUE)
   expect_match(shown(aikens_v(matrix(c(4, 4, 3, 4, 3, 4), 3), lo = 1, hi = 4)),
-               "Aiken's V (Aiken, 1980)", fixed = TRUE)
+               "<contentvalid_aiken> Aiken's V", fixed = TRUE)
 })
 
 test_that("p values print as APA requires", {
@@ -161,7 +161,7 @@ test_that("the item-sort and expert components print their notes", {
 
 test_that("the Colquitt functions print their bands", {
   bands <- shown(interpret_colquitt(c(.70, .40), "csv"))
-  expect_match(bands, "Benchmark bands (Colquitt et al., 2019)", fixed = TRUE)
+  expect_match(bands, "<contentvalid_colquitt> Benchmark bands", fixed = TRUE)
   expect_match(bands, "Csv .70 Strong", fixed = TRUE)
   expect_match(bands, "not a universal cutoff", fixed = TRUE)
   # Expert judges get no band.
@@ -169,7 +169,7 @@ test_that("the Colquitt functions print their bands", {
                "not applied", fixed = TRUE)
 
   norms <- shown(colquitt_benchmarks("htd"))
-  expect_match(norms, "Benchmarks for HTD (Colquitt et al., 2019)", fixed = TRUE)
+  expect_match(norms, "<contentvalid_colquitt_norms> Benchmarks for HTD", fixed = TRUE)
   expect_match(norms, "Lack of 0th-19th none", fixed = TRUE)
 })
 

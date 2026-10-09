@@ -1003,8 +1003,9 @@
 #' handoff <- content_handoff(fit)
 #' handoff
 #' handoff$items
-#' handoff$item_evidence
-#' handoff$item_statistics
+#' handoff$item_evidence[, c("item", "status", "recommendation", "n_judges")]
+#' writeLines(strwrap(handoff$item_evidence$rule[1]))
+#' handoff$item_statistics[, c("item", "statistic", "value", "criterion")]
 #'
 #' # Carry items flagged for review as well, when the study protocol says so.
 #' content_handoff(fit, keep = c("Supported", "Review"))$items
@@ -1164,6 +1165,10 @@ print.contentvalid_handoff <- function(x, ...) {
       .say(line, exdent = 2L)
     }
   }
+
+  # The status words, in this workflow's own terms, after the facts.
+  cat("\n")
+  .say(.status_meaning(x$item_evidence$recommendation, x$item_evidence$status))
 
   held <- x$item_evidence[!x$item_evidence$carried, , drop = FALSE]
   if (nrow(held)) {

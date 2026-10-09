@@ -292,15 +292,15 @@ print.contentvalid_evidence <- function(x, ...) {
   .print_header(x, title)
   verdict <- .evidence_verdicts(x)
   held <- x$items[verdict != "carried"]
-  first_holder <- vapply(held, function(it) {
+  holders <- vapply(held, function(it) {
     rows <- x$evidence[x$evidence$item == it & !x$evidence$carried, ]
-    rows$stage[1]
+    paste(rows$stage, collapse = "; ")
   }, character(1))
   .say(sprintf("%d of %s carried by every stage that reviewed %s.",
                length(x$carried), .n_noun(length(x$items), "item"),
                if (length(x$items) == 1L) "it" else "them"),
        if (length(held)) {
-         paste0("Held back: ", paste(sprintf("%s (%s)", held, first_holder),
+         paste0("Held back: ", paste(sprintf("%s (%s)", held, holders),
                                      collapse = ", "), ".")
        })
 
