@@ -2,15 +2,11 @@
 # which items a toy sort retains, the numbers a model write-up reports, how
 # many items a scale keeps, which judge panels reach a target. A vignette
 # cannot assert any of that, so these tests do, by running the vignette's own
-# chunks where they can. Most read the source tree and skip when it is not
-# there (as under R CMD check); the help-page checks fall back to the
-# installed documentation.
-
-src_lines <- function(...) {
-  path <- testthat::test_path("..", "..", ...)
-  if (!file.exists(path)) skip("package sources are not available")
-  readLines(path, warn = FALSE, encoding = "UTF-8")
-}
+# chunks where they can. They read the source tree when it is there, and
+# otherwise (as under R CMD check) the vignette sources and help pages an
+# installed package carries: src_lines() and vignette_sources() are in
+# helper-sources.R. Only the checks of README.Rmd and of the R/ sources, which
+# are not installed, skip without the source tree.
 
 # The code of one labeled chunk of an R Markdown file.
 chunk_code <- function(lines, label) {
@@ -362,10 +358,7 @@ test_that("the Scheibe et al. chapter names no publisher that repeats its editor
 })
 
 test_that("Markdown lists in the vignettes and README start a new block", {
-  files <- c(file.path("vignettes",
-                       list.files(testthat::test_path("..", "..", "vignettes"),
-                                  pattern = "[.]Rmd$")),
-             "README.Rmd")
+  files <- c(file.path("vignettes", vignette_sources()), "README.Rmd")
   if (length(files) < 2L) skip("package sources are not available")
   for (f in files) {
     lines <- do.call(src_lines, as.list(strsplit(f, "/", fixed = TRUE)[[1]]))

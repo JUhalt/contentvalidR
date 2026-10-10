@@ -404,10 +404,8 @@ test_that("every place the Ccv appears states its shortcomings", {
   expect_match(out, "stated without derivation", fixed = TRUE)
   expect_match(out, "does not decide anything", fixed = TRUE)
 
-  rd_path <- testthat::test_path("..", "..", "man", "expert_validity.Rd")
-  skip_if_not(file.exists(rd_path), "package documentation is not available")
-  rd <- gsub("[[:space:]]+", " ", paste(readLines(rd_path, warn = FALSE),
-                                        collapse = " "))
+  rd <- gsub("[[:space:]]+", " ",
+             paste(rd_lines("expert_validity"), collapse = " "))
   expect_match(rd, "cannot reflect agreement", fixed = TRUE)
   expect_match(rd, "depends on neither the ratings nor the number of scale",
                fixed = TRUE)
