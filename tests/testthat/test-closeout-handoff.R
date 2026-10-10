@@ -531,11 +531,8 @@ test_that("the profile's key lists only what was drawn", {
 })
 
 test_that("?content_evidence no longer says every panel shows a criterion", {
-  path <- testthat::test_path("..", "..", "man",
-                              "plot.contentvalid_evidence.Rd")
-  skip_if_not(file.exists(path), "package documentation is not available")
-  rd <- gsub("[[:space:]]+", " ", paste(readLines(path, warn = FALSE),
-                                        collapse = " "))
+  rd <- gsub("[[:space:]]+", " ",
+             paste(rd_lines("plot.contentvalid_evidence"), collapse = " "))
   expect_match(rd, "where the stage's rule has one", fixed = TRUE)
   expect_false(grepl("A filled symbol met the criterion", rd, fixed = TRUE))
 })

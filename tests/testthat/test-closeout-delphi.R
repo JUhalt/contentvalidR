@@ -20,11 +20,10 @@ closeout_header <- function(lines, first) {
   grep(paste0("^\\s+", first, "\\s"), lines, value = TRUE)[1]
 }
 
-# The Rd source of a help page, when the source tree is at hand.
+# The Rd source of a help page as one line. rd_lines(), in helper-sources.R,
+# reads the source tree, or the installed help when there is none.
 closeout_rd <- function(name) {
-  path <- testthat::test_path("..", "..", "man", paste0(name, ".Rd"))
-  skip_if_not(file.exists(path), "package documentation is not available")
-  gsub("\\s+", " ", paste(readLines(path, warn = FALSE), collapse = " "))
+  gsub("\\s+", " ", paste(rd_lines(name), collapse = " "))
 }
 
 # A, rated alike in both rounds by every expert, has a kappa of 1 in every
