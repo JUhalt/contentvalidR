@@ -23,6 +23,18 @@ handoffs <- function() {
   }
   r1 <- cbind(S1 = c(4, 4, 3, 4, 3, 4), S2 = c(3, 4, 3, 2, 4, 3))
   r2 <- cbind(S1 = c(4, 4, 4, 4, 3, 4), S2 = c(4, 4, 4, 4, 4, 3))
+  # The package's own example data, for the construct-rating and the
+  # item-objective congruence designs.
+  ext <- function(f) {
+    utils::read.csv(system.file("extdata", f, package = "contentvalidR"),
+                    stringsAsFactors = FALSE)
+  }
+  congruence <- ext("expert_congruence_example.csv")
+  # Without a target objective no decision rule is applied, so every item is
+  # "Descriptive only".
+  untargeted <- expert_validity(
+    congruence[setdiff(names(congruence), "target_objective")],
+    mode = "congruence")
 
   keep_all <- c("Supported", "Review", "Insufficient data", "Descriptive only")
   list(
@@ -38,7 +50,17 @@ handoffs <- function() {
     `item sort` = content_handoff(sort_validity(sort_dat), keep = keep_all),
     delphi = content_handoff(
       delphi_validity(rbind(long(r1, 1), long(r2, 2)), lo = 1, hi = 4,
-                      consensus_threshold = 0.75, B = 0), keep = keep_all)
+                      consensus_threshold = 0.75, B = 0), keep = keep_all),
+    `construct rating` = content_handoff(
+      rating_validity(ext("rating_example.csv"), scale_min = 1, scale_max = 5),
+      keep = keep_all),
+    `expert congruence` = content_handoff(
+      expert_validity(congruence, mode = "congruence"), keep = keep_all),
+    `expert congruence without targets` = content_handoff(
+      untargeted, keep = c("Supported", "Descriptive only")),
+    # The default `keep` carries no "Descriptive only" item, so this handoff
+    # carries no item at all.
+    `expert congruence carrying no item` = content_handoff(untargeted)
   )
 }
 
@@ -61,6 +83,21 @@ test_that("every handoff matches the frozen version 1 contract", {
     expect_identical(names(h$provenance), names(schema$provenance), info = nm)
     expect_identical(types_of(h$provenance), schema$provenance, info = nm)
   }
+})
+
+test_that("the handoffs checked include one that carries no item", {
+  hs <- handoffs()
+  described <- hs[["expert congruence without targets"]]
+  expect_true(all(described$item_evidence$status == "Descriptive only"))
+  expect_identical(described$items, described$item_evidence$item)
+
+  none <- hs[["expert congruence carrying no item"]]
+  expect_identical(none$items, character(0))
+  expect_false(any(none$item_evidence$carried))
+  # The item set is empty, and the evidence on every reviewed item still
+  # travels.
+  expect_identical(none$item_evidence$item, described$item_evidence$item)
+  expect_gt(nrow(none$item_statistics), 0L)
 })
 
 test_that("every handoff carries every column, whatever the workflow held", {
