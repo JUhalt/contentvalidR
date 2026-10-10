@@ -74,6 +74,60 @@ tables returns the one named by \code{component}; a single test returns one row.
 Fitted workflows have their own method,
 \code{\link[=as.data.frame.contentvalid_workflow]{as.data.frame.contentvalid_workflow()}}.
 }
+\section{Interval columns}{
+
+Where a result carries an interval, its lower and upper bound are two
+numeric columns. Their names depend on the result, for historical reasons:
+each was chosen when its function was written. The names are stable, and
+none will be renamed to match another.\tabular{lll}{
+   Result \tab Where \tab Lower, upper \cr
+   \code{\link[=sort_validity]{sort_validity()}} \tab \code{results} \tab \code{psa_low}, \code{psa_high} \cr
+   \code{\link[=compute_psa]{compute_psa()}} \tab its data frame \tab \code{psa_low}, \code{psa_high} \cr
+   \code{\link[=expert_validity]{expert_validity()}} \tab \code{results} (Aiken's V) \tab \code{ci_low}, \code{ci_high} \cr
+   \code{\link[=aikens_v]{aikens_v()}} \tab its data frame \tab \code{ci_low}, \code{ci_high} \cr
+   \code{\link[=panel_agreement]{panel_agreement()}} \tab \code{as.data.frame(x)} \tab \code{ci_low}, \code{ci_high} \cr
+   \code{\link[=csv_binom_test]{csv_binom_test()}} \tab \code{as.data.frame(x)} \tab \code{ci_low}, \code{ci_high} \cr
+   \code{\link[=expert_validity]{expert_validity()}} \tab \code{results} (I-CVI) \tab \code{I_CVI_low}, \code{I_CVI_high} \cr
+   \code{\link[=cvi]{cvi()}} \tab \code{item_level} \tab \code{I_CVI_low}, \code{I_CVI_high} \cr
+   \code{\link[=expert_validity]{expert_validity()}} \tab \code{scale_summary} \tab \code{agreement_low}, \code{agreement_high} \cr
+   \code{\link[=delphi_validity]{delphi_validity()}} \tab \code{results} \tab \code{stability_low}, \code{stability_high} \cr
+   \code{\link[=delphi_validity]{delphi_validity()}} \tab \code{details$stability} \tab \code{lower}, \code{upper} \cr
+   \code{\link[=content_handoff]{content_handoff()}} \tab \code{item_statistics} \tab \code{lower}, \code{upper} \cr
+   \code{\link[=content_handoff]{content_handoff()}} \tab \code{panel_statistics} \tab \code{lower}, \code{upper} \cr
+   \code{\link[=content_evidence]{content_evidence()}} \tab \code{evidence} \tab \code{lower}, \code{upper} \cr
+}
+
+
+The \code{\link[=expert_validity]{expert_validity()}} rows are those of relevance mode, the one mode
+with intervals. The list that \code{\link[=panel_agreement]{panel_agreement()}} returns holds \code{ci_low}
+and \code{ci_high} under the same names, and the list that \code{\link[=csv_binom_test]{csv_binom_test()}}
+returns holds both bounds in \code{conf.int}.
+
+The confidence level and the interval method are recorded with each
+result, though not in the same place:
+\itemize{
+\item A workflow keeps them in \code{settings}. The level of every interval in the
+fit is \code{1 - settings$alpha}. The method is \code{settings$proportion_ci} for
+Psa and the I-CVI, and the \code{ci_method} column of \code{results} for Aiken's
+V. Panel agreement and the Delphi weighted kappa have percentile
+bootstrap intervals, from \code{settings$agreement_B} and \code{settings$B}
+resamples.
+\item \code{\link[=compute_psa]{compute_psa()}}, \code{\link[=aikens_v]{aikens_v()}}, \code{\link[=cvi]{cvi()}}, and \code{\link[=panel_agreement]{panel_agreement()}} use the
+\code{alpha} they were called with, so the level is one minus that \code{alpha}.
+\code{\link[=cvi]{cvi()}} and \code{\link[=panel_agreement]{panel_agreement()}} also return it as \code{alpha}, which is
+\code{ci_alpha} in the data frame of \code{\link[=panel_agreement]{panel_agreement()}}. The method is the
+\code{ci} of the call: \code{\link[=aikens_v]{aikens_v()}} names it in its \code{ci_method} column and
+\code{\link[=cvi]{cvi()}} returns it as \code{ci}. \code{\link[=panel_agreement]{panel_agreement()}} has one method, a
+percentile bootstrap.
+\item The data frame of \code{\link[=csv_binom_test]{csv_binom_test()}} gives the level as \code{ci_level}, and
+its \code{ci_sides} says that the interval is one-sided.
+\item A handoff states both in every row of its two statistics tables, as
+\code{interval_level} and \code{interval_method}. \code{\link[=content_evidence]{content_evidence()}} copies the
+level into \code{level}, and leaves the method in each stage's handoff, in
+\code{stages}.
+}
+}
+
 \examples{
 R <- matrix(c(4, 3, 4, 4, 3, 4, 2, 3, 4, 4, 3, 2), 6,
             dimnames = list(NULL, c("I1", "I2")))

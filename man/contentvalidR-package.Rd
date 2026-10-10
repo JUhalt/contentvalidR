@@ -79,8 +79,9 @@ break working code goes through the deprecation cycle.
 \code{\link[=simulate_anova_power]{simulate_anova_power()}}, and \code{\link[=simulate_csv_power]{simulate_csv_power()}}.
 
 These are kept for continuity with older analyses and for sensitivity
-checks. They are not recommended workflows, and they may be deprecated and
-removed with one minor release of warning.
+checks. They are not recommended workflows, and they are the one exception
+in the deprecation cycle below: after its warning, a Tier 3 helper may be
+removed in a minor release (step 3).
 
 Anything else is internal: functions whose names begin with a dot, anything
 reached with \code{:::}, and the exact wording of printed output. Internals can
@@ -96,8 +97,11 @@ use instead. An argument warns when it is passed; a returned field cannot
 warn when it is read, so its documentation carries the notice instead.
 \item The notice stands for \strong{at least one minor release}, so code has a
 version in which it both runs and tells you what to change.
-\item Removal follows: in a minor release before 1.0, and only in a major
-release from 1.0 onward.
+\item Removal follows. Before 1.0 it came in a minor release. From 1.0
+onward a Tier 1 or Tier 2 function, argument, or returned field is
+removed only in a major release. A Tier 3 helper is the exception: it
+may be removed in a minor release, after its one minor release of
+warning.
 \item \code{NEWS.md} records both the deprecation and the removal, with the
 replacement.
 }

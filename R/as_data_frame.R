@@ -30,6 +30,57 @@
 #'   since `alpha` would read as Krippendorff's; for [csv_binom_test()] the
 #'   one-sided interval is marked by `ci_sides` and `ci_level`.
 #'
+#' @section Interval columns:
+#' Where a result carries an interval, its lower and upper bound are two
+#' numeric columns. Their names depend on the result, for historical reasons:
+#' each was chosen when its function was written. The names are stable, and
+#' none will be renamed to match another.
+#'
+#' | Result | Where | Lower, upper |
+#' |---|---|---|
+#' | [sort_validity()] | `results` | `psa_low`, `psa_high` |
+#' | [compute_psa()] | its data frame | `psa_low`, `psa_high` |
+#' | [expert_validity()] | `results` (Aiken's V) | `ci_low`, `ci_high` |
+#' | [aikens_v()] | its data frame | `ci_low`, `ci_high` |
+#' | [panel_agreement()] | `as.data.frame(x)` | `ci_low`, `ci_high` |
+#' | [csv_binom_test()] | `as.data.frame(x)` | `ci_low`, `ci_high` |
+#' | [expert_validity()] | `results` (I-CVI) | `I_CVI_low`, `I_CVI_high` |
+#' | [cvi()] | `item_level` | `I_CVI_low`, `I_CVI_high` |
+#' | [expert_validity()] | `scale_summary` | `agreement_low`, `agreement_high` |
+#' | [delphi_validity()] | `results` | `stability_low`, `stability_high` |
+#' | [delphi_validity()] | `details$stability` | `lower`, `upper` |
+#' | [content_handoff()] | `item_statistics` | `lower`, `upper` |
+#' | [content_handoff()] | `panel_statistics` | `lower`, `upper` |
+#' | [content_evidence()] | `evidence` | `lower`, `upper` |
+#'
+#' The [expert_validity()] rows are those of relevance mode, the one mode
+#' with intervals. The list that [panel_agreement()] returns holds `ci_low`
+#' and `ci_high` under the same names, and the list that [csv_binom_test()]
+#' returns holds both bounds in `conf.int`.
+#'
+#' The confidence level and the interval method are recorded with each
+#' result, though not in the same place:
+#'
+#' * A workflow keeps them in `settings`. The level of every interval in the
+#'   fit is `1 - settings$alpha`. The method is `settings$proportion_ci` for
+#'   Psa and the I-CVI, and the `ci_method` column of `results` for Aiken's
+#'   V. Panel agreement and the Delphi weighted kappa have percentile
+#'   bootstrap intervals, from `settings$agreement_B` and `settings$B`
+#'   resamples.
+#' * [compute_psa()], [aikens_v()], [cvi()], and [panel_agreement()] use the
+#'   `alpha` they were called with, so the level is one minus that `alpha`.
+#'   [cvi()] and [panel_agreement()] also return it as `alpha`, which is
+#'   `ci_alpha` in the data frame of [panel_agreement()]. The method is the
+#'   `ci` of the call: [aikens_v()] names it in its `ci_method` column and
+#'   [cvi()] returns it as `ci`. [panel_agreement()] has one method, a
+#'   percentile bootstrap.
+#' * The data frame of [csv_binom_test()] gives the level as `ci_level`, and
+#'   its `ci_sides` says that the interval is one-sided.
+#' * A handoff states both in every row of its two statistics tables, as
+#'   `interval_level` and `interval_method`. [content_evidence()] copies the
+#'   level into `level`, and leaves the method in each stage's handoff, in
+#'   `stages`.
+#'
 #' @examples
 #' R <- matrix(c(4, 3, 4, 4, 3, 4, 2, 3, 4, 4, 3, 2), 6,
 #'             dimnames = list(NULL, c("I1", "I2")))
