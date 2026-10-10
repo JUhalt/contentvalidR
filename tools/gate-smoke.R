@@ -1,4 +1,4 @@
-# Stage 2: install the built tarball into an empty library and use it there.
+# Stage 3: install the built tarball into an empty library and use it there.
 #
 # Nothing in this process may load contentvalidR before the install: on Windows
 # an R session holding the package cannot overwrite it, and install.packages()

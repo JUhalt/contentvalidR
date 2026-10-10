@@ -1,4 +1,4 @@
-# Stage 2, inner: exercise the installed package in a session whose library
+# Stage 3, inner: exercise the installed package in a session whose library
 # path holds only the packages that ship with R, the fresh install, and the
 # packages it declares it needs. Version-agnostic, so it does not have to be
 # edited for each release.

@@ -1,10 +1,11 @@
 # A stamp of the source tree a tarball was built from.
 #
-# Every stage after build tests the tarball build left behind, and every
-# branch's tarball has the same name. Without a stamp, a later stage cannot tell
-# a fresh tarball from a stale one. That happened: a build that failed at its
-# spelling check never replaced the previous branch's tarball, and smoke and
-# check then passed that one -- reporting PASS for a tree they never tested.
+# Every stage after build tests the tarball build left behind, or (the tests
+# stage) the source it was built from, and every branch's tarball has the same
+# name. Without a stamp, a later stage cannot tell a fresh tarball from a
+# stale one. That happened: a build that failed at its spelling check never
+# replaced the previous branch's tarball, and smoke and check then passed
+# that one -- reporting PASS for a tree they never tested.
 #
 # The stamp is the commit plus a hash of every uncommitted change, so switching
 # branches, committing, or editing a tracked file between stages all change it.
@@ -34,7 +35,7 @@ gate_source_stamp <- function(root) {
 
 gate_stamp_path <- function(tarball) paste0(tarball, ".source")
 
-# Called by the stages that consume the tarball. Returns TRUE when it matches
+# Called by every stage after build. Returns TRUE when the tarball matches
 # the tree here; otherwise explains and returns FALSE. Without git it cannot
 # tell, and says so rather than guessing.
 gate_tarball_matches_source <- function(tarball, root) {
