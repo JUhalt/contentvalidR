@@ -12,6 +12,7 @@ pf_page <- function(topic) {
   path <- testthat::test_path("..", "..", "man", file)
   if (file.exists(path)) return(tools::parse_Rd(path, encoding = "UTF-8"))
   db <- tryCatch(tools::Rd_db("contentvalidR"), error = function(e) NULL)
+  if (!length(db)) skip("package documentation is not available")
   at <- match(file, basename(names(db)))
   if (is.na(at)) skip("package documentation is not available")
   db[[at]]
@@ -150,7 +151,8 @@ test_that("the policy states when a function is removed, once", {
   expect_match(removal, paste("From 1.0 onward a Tier 1 or Tier 2 function,",
                               "argument, or returned field is removed only",
                               "in a major release."), fixed = TRUE)
-  expect_match(removal, paste("A Tier 3 helper is the exception: it may be",
+  expect_match(removal, paste("A Tier 3 helper, or an argument or returned",
+                              "field of one, is the exception: it may be",
                               "removed in a minor release, after its one",
                               "minor release of warning."), fixed = TRUE)
 

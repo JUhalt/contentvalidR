@@ -99,9 +99,9 @@ warn when it is read, so its documentation carries the notice instead.
 version in which it both runs and tells you what to change.
 \item Removal follows. Before 1.0 it came in a minor release. From 1.0
 onward a Tier 1 or Tier 2 function, argument, or returned field is
-removed only in a major release. A Tier 3 helper is the exception: it
-may be removed in a minor release, after its one minor release of
-warning.
+removed only in a major release. A Tier 3 helper, or an argument or
+returned field of one, is the exception: it may be removed in a minor
+release, after its one minor release of warning.
 \item \code{NEWS.md} records both the deprecation and the removal, with the
 replacement.
 }

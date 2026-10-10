@@ -29,7 +29,7 @@ The stages run in this order:
 | Stage | What it does | Fails when |
 |---|---|---|
 | `build` | `document()`, `build_readme()`, spelling, URLs, builds the tarball and inspects it | a misspelling, an unreachable URL, a hidden or build-ignored file in the tarball, or a version mismatch between the tarball and the source |
-| `tests` | runs the whole test suite from the source tree the tarball was built from | a test fails, a test stops with an error, a test skips because it could not find the package's sources or documentation, or the tree changes during the run |
+| `tests` | runs the whole test suite from the source tree the tarball was built from | a test fails, a test stops with an error, a test skips because it could not find the package's sources or documentation, or a tracked file changes or a new file appears during the run |
 | `smoke` | installs the tarball into a library that holds nothing else but the packages it declares it needs, and uses it there | a declared package is not on the stage's library path, the install is skipped, any help topic's examples fail, a published value fails to reproduce, the handoff's columns drift, or a vignette is missing |
 | `check` | `R CMD check --as-cran` with CRAN's incoming checks | any error, any warning, or any note other than the two expected ones |
 
@@ -55,13 +55,15 @@ the process that ran the tests has ended before `smoke` starts.
 `check` runs the test suite as R CMD check always does, against the
 installed package, and so does CI. The tests then run from a copy of `tests/`
 with no source tree above it: no `README.Rmd`, no `vignettes/`, no `R/` and
-no `man/`. The tests that read those files skip there. In October 2026, at
-0.10.1.9000, that was 19 tests: 11 that say "package sources are not
-available" and 8 that say "package documentation is not available". Among
-them are the tests that hold the numbers stated in the vignettes to what the
-package computes, the test that the README and `REFERENCES.bib` list the same
-works, and the test that the R code is ASCII. Before the `tests` stage they
-ran only when someone remembered to run `devtools::test()` by hand. The last
+no `man/`. A test of a help page or a vignette then reads the copy the
+installed package carries (the lookups are in
+`tests/testthat/helper-sources.R`), so it checks what was installed, not the
+source in front of you. A test that needs `README.Rmd` or the `R/` sources
+has no installed copy to read, and skips with "package sources are not
+available": 5 tests in October 2026, at 0.10.1.9000, among them the test that
+the README and `REFERENCES.bib` list the same works and the test that the R
+code is ASCII. Before the `tests` stage, the source copies met these tests
+only when someone remembered to run `devtools::test()` by hand. The last
 check before a release should not depend on that.
 
 `tests` runs `devtools::test()` on the source tree and applies three rules:
@@ -75,9 +77,11 @@ check before a release should not depend on that.
   listed and does not fail the stage.
 
 It prints one line of counts (failed, errors, skipped, passed) and then every
-skip with its file, its reason and its test. The counts are of expectations,
-as in testthat's own summary line. `devtools::test()` also sets `NOT_CRAN`,
-so the one test marked `skip_on_cran()` runs in this stage; `check` skips it.
+skip with its file, its reason and its test, including a skip made at the top
+of a file, outside any test, which ends that file. The counts are of
+expectations, as in testthat's own summary line. `devtools::test()` also sets
+`NOT_CRAN` unless it is already set, so the one test marked `skip_on_cran()`
+runs in this stage; `check` skips it.
 
 For a quick look while fixing a test, `devtools::test()` is enough. The
 stage is for the release: it needs a build of the same tree first, so that
@@ -113,9 +117,10 @@ in front of it:
 - `tests`, `smoke` and `check` compare that stamp with the tree they are run
   from, and fail if a branch switch, a commit, or an edit has come between.
   So `tests` needs a build of the same tree first, as the other two do;
-- `tests` takes the stamp again when it finishes, and fails if the tree
-  changed while the tests ran, whether by an edit or by a test that wrote
-  into it;
+- `tests` takes the stamp again when it finishes, and fails if a tracked
+  file changed or a new file appeared while the tests ran, whether by an
+  edit or by a test that wrote into the tree (paths that git ignores are
+  not watched);
 - the gate stops at the first failed stage and reports the rest as `SKIP`
   rather than running them.
 

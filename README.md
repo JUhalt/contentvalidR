@@ -278,10 +278,10 @@ The six workflows, the object contract they share, and the handoff to
 empirical validation are stable: breaking changes wait for a major
 version and never arrive without a deprecation cycle. Component indices
 and planning helpers are supported to the same standard and may gain
-arguments. Auxiliary and compatibility helpers may be deprecated with
-one minor release of warning. A changed default is treated as a breaking
-change, because it can silently change published numbers. See
-`?contentvalidR` for the full policy.
+arguments. Auxiliary and compatibility helpers are the exception: one
+may be removed in a minor release, after one minor release of warning. A
+changed default is treated as a breaking change, because it can silently
+change published numbers. See `?contentvalidR` for the full policy.
 
 ## Examples, reporting, and citation
 

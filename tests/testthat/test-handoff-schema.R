@@ -65,8 +65,9 @@ handoffs <- function() {
 }
 
 test_that("every handoff matches the frozen version 1 contract", {
-  for (nm in names(handoffs())) {
-    h <- handoffs()[[nm]]
+  hs <- handoffs()
+  for (nm in names(hs)) {
+    h <- hs[[nm]]
     expect_identical(names(h), schema$top_level, info = nm)
     expect_identical(h$provenance$schema_version, schema$version, info = nm)
 

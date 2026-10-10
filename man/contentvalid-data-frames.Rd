@@ -77,9 +77,8 @@ Fitted workflows have their own method,
 \section{Interval columns}{
 
 Where a result carries an interval, its lower and upper bound are two
-numeric columns. Their names depend on the result, for historical reasons:
-each was chosen when its function was written. The names are stable, and
-none will be renamed to match another.\tabular{lll}{
+numeric columns. Their names depend on the result, for historical reasons.
+The names are stable, and none will be renamed to match another.\tabular{lll}{
    Result \tab Where \tab Lower, upper \cr
    \code{\link[=sort_validity]{sort_validity()}} \tab \code{results} \tab \code{psa_low}, \code{psa_high} \cr
    \code{\link[=compute_psa]{compute_psa()}} \tab its data frame \tab \code{psa_low}, \code{psa_high} \cr
@@ -101,7 +100,9 @@ none will be renamed to match another.\tabular{lll}{
 The \code{\link[=expert_validity]{expert_validity()}} rows are those of relevance mode, the one mode
 with intervals. The list that \code{\link[=panel_agreement]{panel_agreement()}} returns holds \code{ci_low}
 and \code{ci_high} under the same names, and the list that \code{\link[=csv_binom_test]{csv_binom_test()}}
-returns holds both bounds in \code{conf.int}.
+returns holds both bounds in \code{conf.int}. \code{\link[=content_report]{content_report()}} is formatted
+for a manuscript, so it writes each interval as one column of text; take
+the numbers from the fit.
 
 The confidence level and the interval method are recorded with each
 result, though not in the same place:
@@ -121,10 +122,10 @@ resamples.
 percentile bootstrap.
 \item The data frame of \code{\link[=csv_binom_test]{csv_binom_test()}} gives the level as \code{ci_level}, and
 its \code{ci_sides} says that the interval is one-sided.
-\item A handoff states both in every row of its two statistics tables, as
-\code{interval_level} and \code{interval_method}. \code{\link[=content_evidence]{content_evidence()}} copies the
-level into \code{level}, and leaves the method in each stage's handoff, in
-\code{stages}.
+\item A handoff states both beside each interval, in the \code{interval_level} and
+\code{interval_method} columns of its two statistics tables; a row with no
+interval has \code{NA} in both. \code{\link[=content_evidence]{content_evidence()}} copies the level into
+\code{level}, and leaves the method in each stage's handoff, in \code{stages}.
 }
 }
 

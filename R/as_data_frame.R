@@ -32,9 +32,8 @@
 #'
 #' @section Interval columns:
 #' Where a result carries an interval, its lower and upper bound are two
-#' numeric columns. Their names depend on the result, for historical reasons:
-#' each was chosen when its function was written. The names are stable, and
-#' none will be renamed to match another.
+#' numeric columns. Their names depend on the result, for historical reasons.
+#' The names are stable, and none will be renamed to match another.
 #'
 #' | Result | Where | Lower, upper |
 #' |---|---|---|
@@ -56,7 +55,9 @@
 #' The [expert_validity()] rows are those of relevance mode, the one mode
 #' with intervals. The list that [panel_agreement()] returns holds `ci_low`
 #' and `ci_high` under the same names, and the list that [csv_binom_test()]
-#' returns holds both bounds in `conf.int`.
+#' returns holds both bounds in `conf.int`. [content_report()] is formatted
+#' for a manuscript, so it writes each interval as one column of text; take
+#' the numbers from the fit.
 #'
 #' The confidence level and the interval method are recorded with each
 #' result, though not in the same place:
@@ -76,10 +77,10 @@
 #'   percentile bootstrap.
 #' * The data frame of [csv_binom_test()] gives the level as `ci_level`, and
 #'   its `ci_sides` says that the interval is one-sided.
-#' * A handoff states both in every row of its two statistics tables, as
-#'   `interval_level` and `interval_method`. [content_evidence()] copies the
-#'   level into `level`, and leaves the method in each stage's handoff, in
-#'   `stages`.
+#' * A handoff states both beside each interval, in the `interval_level` and
+#'   `interval_method` columns of its two statistics tables; a row with no
+#'   interval has `NA` in both. [content_evidence()] copies the level into
+#'   `level`, and leaves the method in each stage's handoff, in `stages`.
 #'
 #' @examples
 #' R <- matrix(c(4, 3, 4, 4, 3, 4, 2, 3, 4, 4, 3, 2), 6,

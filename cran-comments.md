@@ -20,6 +20,10 @@ This is an update of contentvalidR from 0.4.0, on CRAN since 2026-09-28, to
   `?contentvalidR` says so beside the deprecation policy.
 * `content_report()` returns an APA table by default since 0.9.0;
   `format = "data.frame"` gives the numeric table.
+* `aikens_v()` no longer assumes a 1 to 5 scale: `lo` and `hi` must be
+  given, and a call without them stops with a message naming both. Code
+  that ran under 0.4.0 with the defaults stops here; NEWS.md gives the
+  reason under "Expert panel: values that change".
 * Several results change because methods were corrected after an audit of the
   package against its sources. NEWS.md lists each change under "values that
   change", with the reason, and lists the stored sentences that now follow

@@ -307,8 +307,8 @@ the output says so rather than implying complete coverage.
 
 Every interval a printout shows is also stored at full precision, as two
 numeric columns: a lower and an upper bound. Their names depend on the result,
-for historical reasons: each was chosen when its function was written. The
-names are stable, so code that reads them keeps working.
+for historical reasons. The names are stable, so code that reads them keeps
+working.
 
 | Result | Where | Lower, upper |
 |---|---|---|
@@ -329,9 +329,9 @@ names are stable, so code that reads them keeps working.
 
 A workflow's intervals are all at the level `1 - settings$alpha`, and
 `settings$proportion_ci` names the method for Psa and the I-CVI. A handoff
-states the level and the method in every row, as `interval_level` and
-`interval_method`. `?"contentvalid-data-frames"` says where each of the other
-results records them.
+states the level and the method in each row that has an interval, as
+`interval_level` and `interval_method`. `?"contentvalid-data-frames"` says
+where each of the other results records them.
 
 ## Common misreadings
 
