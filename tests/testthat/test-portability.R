@@ -6,8 +6,11 @@
 test_that("R code outside comments is ASCII", {
   dir <- testthat::test_path("..", "..", "R")
   skip_if_not(dir.exists(dir), "package sources are not available")
+  # An installed package has an R directory too, holding no source file.
+  files <- list.files(dir, pattern = "[.][Rr]$", full.names = TRUE)
+  skip_if_not(length(files) > 0L, "package sources are not available")
   offending <- character(0)
-  for (f in list.files(dir, pattern = "[.][Rr]$", full.names = TRUE)) {
+  for (f in files) {
     lines <- readLines(f, warn = FALSE, encoding = "UTF-8")
     code <- sub("^\\s*#.*$", "", lines)
     bad <- which(grepl("[^\\x01-\\x7F]", code, perl = TRUE))

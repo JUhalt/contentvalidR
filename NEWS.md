@@ -1045,6 +1045,44 @@ review of the close-out itself found.
 * A `seed` too large to be an integer (beyond 2147483647 in size) is refused
   by name. It was passed on and failed inside `set.seed()`.
 
+## Settled before the release candidate
+
+The release candidate freezes the code, the help pages, and the tests until
+1.0.0, so these went in first. None changes a computed value or a returned
+field.
+
+* **The stability policy gives one answer on removal.** `?contentvalidR`
+  said an auxiliary (Tier 3) helper could be removed after one minor release
+  of warning, and also that from 1.0 onward nothing is removed except in a
+  major release. It now says once: from 1.0 onward a Tier 1 or Tier 2
+  function, argument, or returned field is removed only in a major release,
+  and a Tier 3 helper, or an argument or returned field of one, may be
+  removed in a minor release after its one minor release of warning. The
+  README says the same.
+* **The workflow and mode values of a handoff are frozen and listed.**
+  `?content_handoff` told a reader to match on the workflow without saying
+  what the values are. It now lists them: `provenance$workflow` is
+  `"item-sort"`, `"construct-rating"`, `"expert-panel"`, or `"delphi"`, and
+  `provenance$mode` is `"relevance"`, `"essentiality"`, `"congruence"`, or
+  `NA`. Schema version 1 freezes them: a new workflow or mode would add a
+  value, and none is renamed. The values themselves are unchanged.
+* **One table of where each interval's bounds are.**
+  `?"contentvalid-data-frames"` and `vignette("reading-output")` list the
+  columns that hold the lower and upper bound in each result (`psa_low` and
+  `psa_high`, `ci_low` and `ci_high`, `I_CVI_low` and `I_CVI_high`,
+  `agreement_low` and `agreement_high`, `stability_low` and
+  `stability_high`, `lower` and `upper`), and say where each result records
+  the confidence level and the method. The names are stable; none is
+  renamed.
+* The tests hold construct-rating and congruence handoffs to the frozen
+  schema, including a handoff that carries no item. Fourteen tests of the
+  help pages and vignettes that ran only from the source tree now also run
+  against the installed package, and so under R CMD check.
+* The release gate has a fourth stage, `tests`, which runs second. It runs
+  the test suite from the source tree and fails on a failure, an error, or a
+  test that skips for want of the sources or the documentation, which
+  cannot be true there.
+
 ## Other changes
 
 * The reader in nomologR is now tested against handoffs from contentvalidR

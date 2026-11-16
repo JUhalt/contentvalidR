@@ -155,14 +155,27 @@ returns a zero-row \code{panel_statistics} with the full set of columns. A reade
 can therefore bind handoffs from different workflows without reconciling
 their columns.
 
+The values of two \code{provenance} fields are frozen as well, because they are
+how a reader tells which workflow a handoff came from:
+\itemize{
+\item \code{workflow} is \code{"item-sort"} from \code{\link[=sort_validity]{sort_validity()}}, \code{"construct-rating"}
+from \code{\link[=rating_validity]{rating_validity()}}, \code{"expert-panel"} from \code{\link[=expert_validity]{expert_validity()}}, or
+\code{"delphi"} from \code{\link[=delphi_validity]{delphi_validity()}}.
+\item \code{mode} is \code{"relevance"}, \code{"essentiality"}, or \code{"congruence"}, the \code{mode}
+an expert panel was analyzed in, and \code{NA} from the other three workflows.
+}
+
+A new workflow or mode would add a value to these. None of the values
+listed is renamed within version 1.
+
 These are deliberately \strong{not} frozen, and a reader should not depend on
 them:
 \itemize{
 \item The set of rows. Which items, which statistics, and how many of each
 depend on the workflow and on the data.
 \item The values in the \code{statistic} column. They are labels for display, and may
-be reworded in a minor release; match on the workflow in \code{provenance}
-instead.
+be reworded in a minor release; match on \code{workflow} and \code{mode} in
+\code{provenance} instead, whose values are listed above.
 \item The text in \code{note}, \code{rule}, \code{recommendation}, and \code{citation}, which is
 prose for a human reader.
 \item The contents of \code{settings} and \code{design}, which mirror the fitted object

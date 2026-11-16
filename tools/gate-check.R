@@ -1,4 +1,4 @@
-# Stage 3: R CMD check --as-cran on the built tarball, with CRAN's incoming
+# Stage 4: R CMD check --as-cran on the built tarball, with CRAN's incoming
 # checks enabled so URL and DOI problems surface here rather than from CRAN.
 
 args <- commandArgs(trailingOnly = TRUE)

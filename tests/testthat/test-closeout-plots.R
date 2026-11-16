@@ -271,12 +271,7 @@ test_that("coincident items on a one-dimensional map are stacked", {
 })
 
 test_that("the help pages describe the figures as drawn", {
-  man <- testthat::test_path("..", "..", "man")
-  skip_if_not(dir.exists(man), "package documentation is not available")
-  rd <- function(topic) {
-    paste(readLines(file.path(man, paste0(topic, ".Rd")), warn = FALSE),
-          collapse = " ")
-  }
+  rd <- function(topic) paste(rd_lines(topic), collapse = " ")
   structure_rd <- rd("plot.contentvalid_structure")
   expect_false(grepl("labeled by its blueprint cell", structure_rd, fixed = TRUE))
   expect_match(structure_rd, "are stacked one above another", fixed = TRUE)
