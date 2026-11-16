@@ -99,6 +99,85 @@ Krippendorff's; for
 [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
 the one-sided interval is marked by `ci_sides` and `ci_level`.
 
+## Interval columns
+
+Where a result carries an interval, its lower and upper bound are two
+numeric columns. Their names depend on the result, for historical
+reasons. The names are stable, and none will be renamed to match
+another.
+
+|  |  |  |
+|----|----|----|
+| Result | Where | Lower, upper |
+| [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md) | `results` | `psa_low`, `psa_high` |
+| [`compute_psa()`](https://juhalt.github.io/contentvalidR/reference/compute_psa.md) | its data frame | `psa_low`, `psa_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `results` (Aiken's V) | `ci_low`, `ci_high` |
+| [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md) | its data frame | `ci_low`, `ci_high` |
+| [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md) | `as.data.frame(x)` | `ci_low`, `ci_high` |
+| [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md) | `as.data.frame(x)` | `ci_low`, `ci_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `results` (I-CVI) | `I_CVI_low`, `I_CVI_high` |
+| [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) | `item_level` | `I_CVI_low`, `I_CVI_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `scale_summary` | `agreement_low`, `agreement_high` |
+| [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md) | `results` | `stability_low`, `stability_high` |
+| [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md) | `details$stability` | `lower`, `upper` |
+| [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md) | `item_statistics` | `lower`, `upper` |
+| [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md) | `panel_statistics` | `lower`, `upper` |
+| [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md) | `evidence` | `lower`, `upper` |
+
+The
+[`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md)
+rows are those of relevance mode, the one mode with intervals. The list
+that
+[`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+returns holds `ci_low` and `ci_high` under the same names, and the list
+that
+[`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
+returns holds both bounds in `conf.int`.
+[`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md)
+is formatted for a manuscript, so it writes each interval as one column
+of text; take the numbers from the fit.
+
+The confidence level and the interval method are recorded with each
+result, though not in the same place:
+
+- A workflow keeps them in `settings`. The level of every interval in
+  the fit is `1 - settings$alpha`. The method is
+  `settings$proportion_ci` for Psa and the I-CVI, and the `ci_method`
+  column of `results` for Aiken's V. Panel agreement and the Delphi
+  weighted kappa have percentile bootstrap intervals, from
+  `settings$agreement_B` and `settings$B` resamples.
+
+- [`compute_psa()`](https://juhalt.github.io/contentvalidR/reference/compute_psa.md),
+  [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md),
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md),
+  and
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  use the `alpha` they were called with, so the level is one minus that
+  `alpha`.
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) and
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  also return it as `alpha`, which is `ci_alpha` in the data frame of
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md).
+  The method is the `ci` of the call:
+  [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md)
+  names it in its `ci_method` column and
+  [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md)
+  returns it as `ci`.
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  has one method, a percentile bootstrap.
+
+- The data frame of
+  [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md)
+  gives the level as `ci_level`, and its `ci_sides` says that the
+  interval is one-sided.
+
+- A handoff states both beside each interval, in the `interval_level`
+  and `interval_method` columns of its two statistics tables; a row with
+  no interval has `NA` in both.
+  [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+  copies the level into `level`, and leaves the method in each stage's
+  handoff, in `stages`.
+
 ## Examples
 
 ``` r

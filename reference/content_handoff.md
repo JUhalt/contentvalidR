@@ -193,6 +193,25 @@ coefficient returns a zero-row `panel_statistics` with the full set of
 columns. A reader can therefore bind handoffs from different workflows
 without reconciling their columns.
 
+The values of two `provenance` fields are frozen as well, because they
+are how a reader tells which workflow a handoff came from:
+
+- `workflow` is `"item-sort"` from
+  [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md),
+  `"construct-rating"` from
+  [`rating_validity()`](https://juhalt.github.io/contentvalidR/reference/rating_validity.md),
+  `"expert-panel"` from
+  [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md),
+  or `"delphi"` from
+  [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md).
+
+- `mode` is `"relevance"`, `"essentiality"`, or `"congruence"`, the
+  `mode` an expert panel was analyzed in, and `NA` from the other three
+  workflows.
+
+A new workflow or mode would add a value to these. None of the values
+listed is renamed within version 1.
+
 These are deliberately **not** frozen, and a reader should not depend on
 them:
 
@@ -200,8 +219,8 @@ them:
   depend on the workflow and on the data.
 
 - The values in the `statistic` column. They are labels for display, and
-  may be reworded in a minor release; match on the workflow in
-  `provenance` instead.
+  may be reworded in a minor release; match on `workflow` and `mode` in
+  `provenance` instead, whose values are listed above.
 
 - The text in `note`, `rule`, `recommendation`, and `citation`, which is
   prose for a human reader.
@@ -480,7 +499,7 @@ fit <- expert_validity(relevance, mode = "relevance", lo = 1, hi = 4,
 handoff <- content_handoff(fit)
 handoff
 #> <contentvalid_handoff> Handoff to empirical validation (schema version 1)
-#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-10-09
+#> Workflow: expert-panel (relevance) | contentvalidR 0.10.1.9000 | 2026-11-16
 #> Items carried forward: 3 of 4
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.

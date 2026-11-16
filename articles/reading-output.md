@@ -493,6 +493,37 @@ This only works because the full cell list was supplied through
 already contain items, and the output says so rather than implying
 complete coverage.
 
+## Finding the interval bounds
+
+Every interval a printout shows is also stored at full precision, as two
+numeric columns: a lower and an upper bound. Their names depend on the
+result, for historical reasons. The names are stable, so code that reads
+them keeps working.
+
+| Result | Where | Lower, upper |
+|----|----|----|
+| [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md) | `results` | `psa_low`, `psa_high` |
+| [`compute_psa()`](https://juhalt.github.io/contentvalidR/reference/compute_psa.md) | its data frame | `psa_low`, `psa_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `results` (Aiken’s V) | `ci_low`, `ci_high` |
+| [`aikens_v()`](https://juhalt.github.io/contentvalidR/reference/aikens_v.md) | its data frame | `ci_low`, `ci_high` |
+| [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md) | `as.data.frame(x)` | `ci_low`, `ci_high` |
+| [`csv_binom_test()`](https://juhalt.github.io/contentvalidR/reference/csv_binom_test.md) | `as.data.frame(x)` | `ci_low`, `ci_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `results` (I-CVI) | `I_CVI_low`, `I_CVI_high` |
+| [`cvi()`](https://juhalt.github.io/contentvalidR/reference/cvi.md) | `item_level` | `I_CVI_low`, `I_CVI_high` |
+| [`expert_validity()`](https://juhalt.github.io/contentvalidR/reference/expert_validity.md) | `scale_summary` | `agreement_low`, `agreement_high` |
+| [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md) | `results` | `stability_low`, `stability_high` |
+| [`delphi_validity()`](https://juhalt.github.io/contentvalidR/reference/delphi_validity.md) | `details$stability` | `lower`, `upper` |
+| [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md) | `item_statistics` | `lower`, `upper` |
+| [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md) | `panel_statistics` | `lower`, `upper` |
+| [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md) | `evidence` | `lower`, `upper` |
+
+A workflow’s intervals are all at the level `1 - settings$alpha`, and
+`settings$proportion_ci` names the method for Psa and the I-CVI. A
+handoff states the level and the method in each row that has an
+interval, as `interval_level` and `interval_method`.
+[`?"contentvalid-data-frames"`](https://juhalt.github.io/contentvalidR/reference/contentvalid-data-frames.md)
+says where each of the other results records them.
+
 ## Common misreadings
 
 **“Review means delete.”** It does not. It means look closer. Deleting

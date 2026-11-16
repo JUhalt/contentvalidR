@@ -139,8 +139,9 @@ and
 [`simulate_csv_power()`](https://juhalt.github.io/contentvalidR/reference/simulate_csv_power.md).
 
 These are kept for continuity with older analyses and for sensitivity
-checks. They are not recommended workflows, and they may be deprecated
-and removed with one minor release of warning.
+checks. They are not recommended workflows, and they are the one
+exception in the deprecation cycle below: after its warning, a Tier 3
+helper may be removed in a minor release (step 3).
 
 Anything else is internal: functions whose names begin with a dot,
 anything reached with `:::`, and the exact wording of printed output.
@@ -158,8 +159,11 @@ Nothing exported disappears without warning first.
 2.  The notice stands for **at least one minor release**, so code has a
     version in which it both runs and tells you what to change.
 
-3.  Removal follows: in a minor release before 1.0, and only in a major
-    release from 1.0 onward.
+3.  Removal follows. Before 1.0 it came in a minor release. From 1.0
+    onward a Tier 1 or Tier 2 function, argument, or returned field is
+    removed only in a major release. A Tier 3 helper, or an argument or
+    returned field of one, is the exception: it may be removed in a
+    minor release, after its one minor release of warning.
 
 4.  `NEWS.md` records both the deprecation and the removal, with the
     replacement.
