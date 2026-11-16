@@ -875,14 +875,26 @@
 #' can therefore bind handoffs from different workflows without reconciling
 #' their columns.
 #'
+#' The values of two `provenance` fields are frozen as well, because they are
+#' how a reader tells which workflow a handoff came from:
+#'
+#' * `workflow` is `"item-sort"` from [sort_validity()], `"construct-rating"`
+#'   from [rating_validity()], `"expert-panel"` from [expert_validity()], or
+#'   `"delphi"` from [delphi_validity()].
+#' * `mode` is `"relevance"`, `"essentiality"`, or `"congruence"`, the `mode`
+#'   an expert panel was analyzed in, and `NA` from the other three workflows.
+#'
+#' A new workflow or mode would add a value to these. None of the values
+#' listed is renamed within version 1.
+#'
 #' These are deliberately **not** frozen, and a reader should not depend on
 #' them:
 #'
 #' * The set of rows. Which items, which statistics, and how many of each
 #'   depend on the workflow and on the data.
 #' * The values in the `statistic` column. They are labels for display, and may
-#'   be reworded in a minor release; match on the workflow in `provenance`
-#'   instead.
+#'   be reworded in a minor release; match on `workflow` and `mode` in
+#'   `provenance` instead, whose values are listed above.
 #' * The text in `note`, `rule`, `recommendation`, and `citation`, which is
 #'   prose for a human reader.
 #' * The contents of `settings` and `design`, which mirror the fitted object

@@ -177,10 +177,8 @@ test_that("the flow diagram lists the items no stage decided on apart", {
 })
 
 test_that("?content_evidence states the rule item by item", {
-  path <- testthat::test_path("..", "..", "man", "content_evidence.Rd")
-  skip_if_not(file.exists(path), "package documentation is not available")
-  rd <- gsub("[[:space:]]+", " ", paste(readLines(path, warn = FALSE),
-                                        collapse = " "))
+  rd <- gsub("[[:space:]]+", " ",
+             paste(rd_lines("content_evidence"), collapse = " "))
   expect_match(rd, "A stage holds back only the items it decided on",
                fixed = TRUE)
   expect_match(rd, "its result is \"No decision\"", fixed = TRUE)
