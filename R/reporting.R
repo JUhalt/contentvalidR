@@ -189,7 +189,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       # exceed 1, so it keeps its leading zero and is reported with its df.
       method <- x$settings$stability
       chisq <- method %in% c("chisq_individual", "chisq_group")
-      heading <- if (is.null(method)) "stability" else switch(
+      heading <- switch(
         method, kappa = "kappa", lambda = "lambda", percent_change = "net change",
         "chi-square"
       )
@@ -340,8 +340,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       } else {
         sprintf("%s = Penfield-Giacobbi score confidence interval for V.", ci)
       },
-      contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci),
-      NULL
+      contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci)
     )
     # A retained item's two-sided interval can reach p0 while the one-sided
     # test rejects it, which the printout explains and so does the note.
@@ -390,7 +389,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       # With the decimals that tell it apart from a share in the table just
       # below it, as the Agree column gives that share.
       thr <- st$consensus_threshold
-      shares <- if (is.data.frame(res)) res$prop_agree else NULL
+      shares <- res$prop_agree
       sprintf("Consensus = at least %s of experts agreeing in the last round.",
               .delphi_percent(thr, max(c(1L, .delphi_beside_digits(
                 shares, thr, 1L, .delphi_percent)))))
@@ -468,7 +467,7 @@ as.data.frame.contentvalid_workflow <- function(x,
               "the item's last two consecutive rounds.")
       },
       switch(
-        if (is.null(st$stability)) "" else st$stability,
+        st$stability,
         kappa = if (has("kappa")) {
           sprintf("Kappa = %s-weighted kappa between those rounds.",
                   st$kappa_weights)
@@ -562,9 +561,8 @@ as.data.frame.contentvalid_workflow <- function(x,
 # detectable change in the distribution (p at or above alpha).
 .report_delphi_stable <- function(st, res = NULL) {
   alpha <- .fmt_alpha(if (is.numeric(st$alpha)) st$alpha else 0.05)
-  method <- if (is.null(st$stability)) "" else st$stability
   switch(
-    method,
+    st$stability,
     percent_change = "Stable = net change below .15.",
     chisq_individual = sprintf(paste(
       "Stable = p below alpha = %s: the later ratings depend on the earlier",
@@ -578,8 +576,7 @@ as.data.frame.contentvalid_workflow <- function(x,
           all(c("stable", "stability_p") %in% names(res)) &&
           any(res$stable %in% TRUE & is.na(res$stability_p))) {
         ", or, with no p, every rating fell in one category in both rounds"
-      }, "."),
-    NULL
+      }, ".")
   )
 }
 
