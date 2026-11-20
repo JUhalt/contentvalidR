@@ -122,6 +122,10 @@
   if (abs(anchors - round(anchors)) > sqrt(.Machine$double.eps)) {
     stop("The Hinkin-Tracey indices require equally spaced integer anchors (for example, 1 to 5 or 1 to 7).", call. = FALSE)
   }
+  if (anchors > .Machine$integer.max) {
+    stop("The rating scale has more anchors than R can count; check ",
+         "`scale_min` and `scale_max`.", call. = FALSE)
+  }
   anchors <- as.integer(round(anchors))
   if (anchors < 2L) stop("At least two rating anchors are required.", call. = FALSE)
   if (!is.null(observed)) {

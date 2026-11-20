@@ -342,7 +342,9 @@ as.data.frame.contentvalid_workflow <- function(x,
       } else {
         sprintf("%s = Penfield-Giacobbi score confidence interval for V.", ci)
       },
-      contentvalid_delphi = sprintf("%s = percentile bootstrap confidence interval.", ci)
+      contentvalid_delphi = sprintf(
+        "%s = percentile bootstrap confidence interval.", ci
+      )
     )
     # A retained item's two-sided interval can reach p0 while the one-sided
     # test rejects it, which the printout explains and so does the note.

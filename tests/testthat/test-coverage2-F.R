@@ -204,3 +204,11 @@ test_that("parallel analysis stops when no simulated correlation is usable", {
     fixed = TRUE
   )
 })
+
+test_that("a scale with more anchors than R can count is refused", {
+  # 1 to 1e10 is 1e10 anchors, past the largest integer R holds. It used to
+  # be cut to NA and fail with "missing value where TRUE/FALSE needed".
+  expect_error(contentvalidR:::.validate_rating_scale(1, 1e10),
+               "more anchors than R can count", fixed = TRUE)
+  expect_identical(contentvalidR:::.validate_rating_scale(1, 7), 7L)
+})

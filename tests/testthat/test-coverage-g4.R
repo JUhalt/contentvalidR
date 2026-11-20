@@ -409,7 +409,7 @@ test_that("principal-axis extraction refuses a singular Q-correlation", {
   expect_identical(dim(pc$loadings), c(6L, 1L))
 })
 
-test_that("parallel analysis keeps factors while the observed eigenvalue wins", {
+test_that("parallel analysis keeps factors while the observed one wins", {
   q <- q_example()
   # The number of leading eigenvalues above their comparison values.
   leading <- function(fit) {
