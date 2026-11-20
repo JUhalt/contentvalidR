@@ -173,6 +173,10 @@
   note <- c(
     if (!is.finite(ag$estimate)) {
       "The coefficient is undefined for these ratings, so it has no interval."
+    } else if (!has_interval && isTRUE(ag$B == 0L)) {
+      # Skipped on request, which is not a failure of the bootstrap.
+      paste("The bootstrap was skipped (agreement_B = 0), so the coefficient",
+            "has no interval.")
     } else if (!has_interval) {
       paste("The bootstrap interval could not be computed: too few resamples",
             "produced a usable coefficient.")

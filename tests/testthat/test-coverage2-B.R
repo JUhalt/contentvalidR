@@ -41,6 +41,28 @@ flow_lines <- function(ev) {
   unique(seen$text)
 }
 
+# ---- content_handoff(): the panel note ------------------------------------
+
+test_that("a skipped agreement bootstrap is noted as skipped, not as failed", {
+  rel <- read.csv(extdata("expert_relevance_example.csv"))
+  rel$expert <- NULL
+  fit <- expert_validity(rel, mode = "relevance", lo = 1, hi = 4,
+                         agreement_B = 0)
+  ag <- fit$details$agreement
+  expect_identical(ag$B, 0L)
+  expect_true(is.finite(ag$estimate))
+  ps <- content_handoff(fit)$panel_statistics
+  expect_identical(nrow(ps), 1L)
+  expect_equal(ps$value, panel_agreement(rel, B = 0)$estimate)
+  # agreement_B = 0 skips the bootstrap on purpose; no resample failed.
+  expect_identical(ps$note, paste("The bootstrap was skipped",
+                                  "(agreement_B = 0), so the coefficient",
+                                  "has no interval."))
+  # The four interval columns are missing together, as the schema says.
+  expect_true(all(is.na(c(ps$lower, ps$upper, ps$interval_level))))
+  expect_true(is.na(ps$interval_method))
+})
+
 # ---- content_evidence() ----------------------------------------------------
 
 test_that("a handoff with nothing to show is refused in plain English", {
