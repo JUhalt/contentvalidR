@@ -26,10 +26,8 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see
-[Installation](#installation)).
-
-**Release candidate: 0.99.0**, tagged `v1.0.0-rc.1` for testing before 1.0.0. It is not published on R-universe or CRAN; to try it, run `remotes::install_github("JUhalt/contentvalidR@v1.0.0-rc.1")`.
+**Current stable release: 1.0.0.** [Installation](#installation) says how
+to get it from CRAN, R-universe, or GitHub.
 
 Development plans: [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open issues](https://github.com/JUhalt/contentvalidR/issues).
 Documentation: [Package website](https://juhalt.github.io/contentvalidR/) · [Changelog](https://juhalt.github.io/contentvalidR/news/index.html).
@@ -179,7 +177,7 @@ nomo_run(nomo_demo_walkthrough, scales = h)    # runs the empirical stage on the
 
 **Reading a handoff.** Take each item's decision from `carried` and `status`; never re-derive it by comparing a statistic with its criterion, or by branching on the version that produced it. `recommendation` states the same decision in the workflow's own words and, like `rule`, is prose. A `keying` of `NA` means nobody said, never that an item is forward-worded.
 
-**Versions.** The handoff is schema version 1, frozen since 0.7.0: its fields and columns keep their names, positions, and types, and new optional ones may only be added at the end. A change that broke this would be schema version 2, produced beside version 1 for at least a release cycle. The reader in nomologR is tested against handoffs from contentvalidR 0.6.0 through 0.99.0, and neither package depends on the other. See `?content_handoff` for the full contract, `vignette("handoff-to-empirical-validation")` for a guide, and `vignette("one-item-set-both-stages")` for the joint walkthrough.
+**Versions.** The handoff is schema version 1, frozen since 0.7.0: its fields and columns keep their names, positions, and types, and new optional ones may only be added at the end. A change that broke this would be schema version 2, produced beside version 1 for at least a release cycle. The reader in nomologR is tested against handoffs from contentvalidR 0.6.0 through 1.0.0, and neither package depends on the other. See `?content_handoff` for the full contract, `vignette("handoff-to-empirical-validation")` for a guide, and `vignette("one-item-set-both-stages")` for the joint walkthrough.
 
 | contentvalidR | Handoff it writes |
 |---|---|
