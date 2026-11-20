@@ -178,12 +178,10 @@
                 ifelse(.meets(x, .80), "satisfactory", "unacceptable")))
 }
 
-.relevance_earlier_methods <- function(B, scale, show, R = NULL,
-                                       items = NULL, lo = NULL, hi = NULL,
-                                       V = NULL) {
-  ccv <- if (!is.null(R)) .ccv(R, items, lo, hi) else NULL
-  if (!is.null(ccv)) ccv$V <- V
-  total <- if (is.null(ccv) || all(is.na(ccv$ccv_corrected))) NA_real_ else
+.relevance_earlier_methods <- function(B, scale, show, R, items, lo, hi, V) {
+  ccv <- .ccv(R, items, lo, hi)
+  ccv$V <- V
+  total <- if (all(is.na(ccv$ccv_corrected))) NA_real_ else
     mean(ccv$ccv_corrected, na.rm = TRUE)
   list(
     show = isTRUE(show),
@@ -356,7 +354,6 @@
 
 .print_essentiality_earlier <- function(em, digits) {
   it <- em$items
-  if (is.null(it) || !nrow(it)) return(invisible(NULL))
   .earlier_heading()
   tab <- data.frame(item = it$item, decision = it$decision,
                     essential = paste0(it$ne, "/", it$N),
