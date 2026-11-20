@@ -17,6 +17,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 **Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see
 [Installation](#installation)).
 
+**Release candidate: 0.99.0**, tagged `v1.0.0-rc.1` for testing before
+1.0.0. It is not published on R-universe or CRAN; to try it, run
+`remotes::install_github("JUhalt/contentvalidR@v1.0.0-rc.1")`.
+
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
 · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3)
@@ -316,20 +320,34 @@ that reads it. A handoff carries:
   none is) and the response scale respondents will answer on
   (`response_scale`).
 
+The example is the item sort from the joint walkthrough,
+`vignette("one-item-set-both-stages")`, in which items `EF2` and `TF2`
+are reverse-worded:
+
 ``` r
-h <- content_handoff(fit, reverse_keyed = character(0), response_scale = c(1, 5))
+sorted <- read.csv(system.file("extdata", "walkthrough_sort.csv", package = "contentvalidR"))
+h <- content_handoff(sort_validity(sorted),
+                     reverse_keyed = c("EF2", "TF2"), response_scale = c(1, 5))
 h$items
-#> [1] "Clear 1" "Clear 2"
+#>  [1] "EF1" "EF2" "EF3" "EF4" "EF6" "TF1" "TF2" "TF3" "TF4" "TF6"
+h$scales
+#> $EF
+#> [1] "EF1" "EF2" "EF3" "EF4" "EF6"
+#> 
+#> $TF
+#> [1] "TF1" "TF2" "TF3" "TF4" "TF6"
 ```
 
 Once responses are collected, pass the handoff itself to nomologR, not
 `h$items`, so the keying and the reasons for anything held back travel
-with the items:
+with the items. nomologR ships the responses from the walkthrough as
+`nomo_demo_walkthrough`, and its README shows the same example from its
+side:
 
 ``` r
 library(nomologR)
-nomo_screen(responses, items = h)  # screens the carried items
-nomo_run(responses, scales = h)    # runs the empirical stage on the handoff's scales
+nomo_screen(nomo_demo_walkthrough, items = h)  # screens the carried items
+nomo_run(nomo_demo_walkthrough, scales = h)    # runs the empirical stage on the handoff's scales
 ```
 
 **Reading a handoff.** Take each item’s decision from `carried` and
@@ -344,10 +362,22 @@ fields and columns keep their names, positions, and types, and new
 optional ones may only be added at the end. A change that broke this
 would be schema version 2, produced beside version 1 for at least a
 release cycle. The reader in nomologR is tested against handoffs from
-contentvalidR 0.6.0 through 0.10.1, and neither package depends on the
+contentvalidR 0.6.0 through 0.99.0, and neither package depends on the
 other. See `?content_handoff` for the full contract,
 `vignette("handoff-to-empirical-validation")` for a guide, and
 `vignette("one-item-set-both-stages")` for the joint walkthrough.
+
+| contentvalidR | Handoff it writes |
+|----|----|
+| 1.x | schema version 1 |
+| 0.7.0 to 0.99.0 | schema version 1, frozen since 0.7.0 |
+| 0.5.0 and 0.6.0 | schema version 1, without `note`, `keying`, `response_min`, and `response_max`, added in 0.7.0 |
+| 0.4.0 | schema version 1, also without the interval columns and `panel_statistics`, added in 0.5.0 |
+
+The README of nomologR gives the reading side. A congruence handoff made
+before 1.0 should be made again from a new fit: its `target IOC` held a
+mean rating, not the index of item-objective congruence, as `NEWS.md`
+explains.
 
 ## References
 
