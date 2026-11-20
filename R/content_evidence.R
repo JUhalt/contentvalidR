@@ -272,7 +272,7 @@ content_evidence <- function(..., keep = "Supported") {
                             NA_character_),
     NA_character_)
   if (is.na(pick) || !pick %in% have) {
-    stop("A ", wf, " handoff carries no statistic content_evidence() can ",
+    stop("This ", wf, " handoff carries no statistic content_evidence() can ",
          "show.", call. = FALSE)
   }
   pick
