@@ -208,7 +208,7 @@
   eps <- if (ss_error == 0) NA_real_ else .gg_epsilon(y)
   df1_gg <- if (is.na(eps)) NA_real_ else eps * df1
   df2_gg <- if (is.na(eps)) NA_real_ else eps * df2
-  p_gg <- if (is.na(Fv) || is.na(eps)) NA_real_ else if (is.infinite(Fv)) 0 else
+  p_gg <- if (is.na(Fv) || is.na(eps)) NA_real_ else
     stats::pf(Fv, df1_gg, df2_gg, lower.tail = FALSE)
   eta_p2 <- if ((ss_construct + ss_error) == 0) NA_real_ else ss_construct / (ss_construct + ss_error)
   list(n_complete = n, F = Fv, df1 = df1, df2 = df2, p = p,
