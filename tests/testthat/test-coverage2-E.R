@@ -76,3 +76,41 @@ test_that("an unnamed matrix that is not square is still refused as such", {
                "`similarity` must be a square item-by-item matrix.",
                fixed = TRUE)
 })
+
+# content_structure(): why the adjusted Rand index is undefined -----------
+
+test_that("items alone in their cells and clusters are given as the reason", {
+  # Three items, each its own blueprint cell, so k defaults to three
+  # clusters of one. No pair of items shares a group on either side.
+  sim <- e2_similarity()[1:3, 1:3]
+  fit <- content_structure(sim, membership = c("A", "B", "C"))
+  expect_true(is.na(fit$adjusted_rand))
+  expect_identical(fit$status, "Insufficient data")
+  alone <- paste("This happens when every item is alone in both its",
+                 "blueprint cell and its cluster: no two items share a",
+                 "group, so there is nothing to compare.")
+  expect_match(fit$interpretation, alone, fixed = TRUE)
+  expect_false(grepl("one blueprint cell or one cluster", fit$interpretation,
+                     fixed = TRUE))
+  expect_match(e2_printed(fit), alone, fixed = TRUE)
+
+  # Items with no blueprint cell are left out, as they are from the index:
+  # the two assigned items sit in different cells and different clusters.
+  two <- content_structure(e2_similarity()[1:4, 1:4],
+                           membership = c("A", "B", NA, NA), k = 4)
+  expect_true(is.na(two$adjusted_rand))
+  expect_match(two$interpretation, alone, fixed = TRUE)
+})
+
+test_that("a single cell or cluster is still given as its own reason", {
+  single <- paste("This happens when every item falls in one blueprint cell",
+                  "or one cluster, leaving nothing to compare.")
+  one_cell <- content_structure(e2_similarity(), membership = rep("U", 9))
+  expect_identical(one_cell$status, "Insufficient data")
+  expect_match(one_cell$interpretation, single, fixed = TRUE)
+  one_cluster <- content_structure(e2_similarity(),
+                                   membership = e2_blueprint(), k = 1)
+  expect_identical(one_cluster$status, "Insufficient data")
+  expect_match(one_cluster$interpretation, single, fixed = TRUE)
+  expect_false(grepl("alone", one_cluster$interpretation, fixed = TRUE))
+})
