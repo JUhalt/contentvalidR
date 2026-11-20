@@ -201,7 +201,9 @@ rating-unit severity in \code{severity_raw} is free of this particular issue.
 Severity is estimated from the dichotomized relevance decision, consistent
 with how the package computes CVI. Judges and items showing no variation in
 that decision carry no information about relative severity and are excluded
-from the model, which is reported rather than silent.
+from the model, which is reported rather than silent. Excluding one can
+leave another without variation, so this is repeated until every judge and
+item left varies.
 }
 
 \examples{

@@ -86,20 +86,20 @@ test_that("a judge who rated nothing is insufficient data, every effect NA", {
   expect_equal(r$central_prop[1:3], c(0.5, 0.25, 0.5))
 })
 
-test_that("a model that does not converge withholds logit severity", {
+test_that("a Guttman staircase leaves no judge to place on a logit scale", {
   # A perfect Guttman staircase: judge k accepts the first k of 21 items.
-  # No finite severities exist. Extremes are set aside for at most ten
-  # rounds, which leaves a separated core of ten judges and eleven items,
-  # and glm() stops on it without converging.
+  # No finite severities exist. Setting aside the judges and items with no
+  # variation leaves others without it, round after round, until one item
+  # and no judge is left.
   k <- 1:20
   stair <- outer(k, 1:21, function(j, i) ifelse(i <= j, 4, 1))
   dimnames(stair) <- list(paste0("Judge", k), paste0("Item", 1:21))
   fit <- judge_validity(stair, lo = 1, hi = 4)
 
-  expect_identical(
-    fit$details$severity_note,
-    "The facets model did not converge, so judge severity is not reported."
-  )
+  expect_match(fit$details$severity_note,
+               "fewer than two judges and two items remained", fixed = TRUE)
+  expect_identical(c(fit$details$facets$n_judges_dropped,
+                     fit$details$facets$n_items_dropped), c(20L, 20L))
   expect_false(fit$scale_summary$severity_estimable)
   expect_true(all(is.na(fit$results$severity)))
   expect_false(any(fit$results$severity_estimable))
@@ -113,8 +113,8 @@ test_that("a model that does not converge withholds logit severity", {
 
   out <- utils::capture.output(print(fit))
   expect_true("Logit severity not estimated" %in% out)
-  expect_match(paste(out, collapse = " "),
-               "The facets model did not converge", fixed = TRUE)
+  expect_match(gsub("\\s+", " ", paste(out, collapse = " ")),
+               "fewer than two judges and two items remained", fixed = TRUE)
 })
 
 test_that("an erratic judge's sentence names a bound the analyst set", {

@@ -4,11 +4,14 @@
 # elements carry no information about relative severity and produce infinite
 # maximum-likelihood estimates (perfect separation). This is standard practice
 # in Rasch estimation; the dropped elements are reported rather than hidden.
-.facets_trim_extremes <- function(B, max_iter = 10L) {
+# Dropping one can leave another with no variation, or with no decision at
+# all, so the rounds go on until none is left. A round that does not stop
+# drops at least one judge or item, so the loop always ends.
+.facets_trim_extremes <- function(B) {
   keep_j <- rep(TRUE, nrow(B))
   keep_i <- rep(TRUE, ncol(B))
 
-  for (iter in seq_len(max_iter)) {
+  repeat {
     sub <- B[keep_j, keep_i, drop = FALSE]
     if (!nrow(sub) || !ncol(sub)) break
 
