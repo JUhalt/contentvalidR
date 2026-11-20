@@ -26,6 +26,21 @@ item_sort <- function() {
   ))
 }
 
+# Each line the flow diagram fits into a box, as given before it is wrapped.
+flow_lines <- function(ev) {
+  real <- contentvalidR:::.evidence_fit_text
+  seen <- new.env()
+  seen$text <- character(0)
+  local_mocked_bindings(.evidence_fit_text = function(text, ...) {
+    seen$text <- c(seen$text, text)
+    real(text, ...)
+  })
+  grDevices::pdf(NULL, width = 7, height = 5)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  plot(ev, type = "flow")
+  unique(seen$text)
+}
+
 # ---- content_evidence() ----------------------------------------------------
 
 test_that("a handoff with nothing to show is refused in plain English", {
@@ -40,4 +55,15 @@ test_that("a handoff with nothing to show is refused in plain English", {
   expect_error(content_evidence(Sort = sorts),
                paste("^This item-sort handoff carries no statistic",
                      "content_evidence\\(\\) can show\\.$"))
+})
+
+test_that("the flow box of a stage without judge counts says so", {
+  h <- content_handoff(relevance_panel())
+  h$item_evidence$n_judges <- NA_integer_
+  text <- flow_lines(content_evidence(Panel = h))
+  expect_true("4 items reviewed; number of experts not recorded" %in% text)
+  expect_false(any(grepl("reviewed by experts", text, fixed = TRUE)))
+  # A stage that recorded its counts still names them.
+  text <- flow_lines(content_evidence(Panel = relevance_panel()))
+  expect_true("4 items reviewed by 4 experts" %in% text)
 })

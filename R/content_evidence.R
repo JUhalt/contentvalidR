@@ -1080,8 +1080,15 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   undecided <- .evidence_undecided(x)
   rows <- lapply(seq_along(x$flow), function(k) {
     f <- x$flow[[k]]
+    # A count that was not recorded is said apart from the items, so the line
+    # never reads "reviewed by experts not recorded".
+    reviewed <- if (all(is.na(f$n_judges))) {
+      "%s reviewed; number of %s"
+    } else {
+      "%s reviewed by %s"
+    }
     main <- c(sprintf("Stage %d: %s", k, names(x$flow)[k]),
-              sprintf("%s reviewed by %s", .n_noun(length(f$reviewed), "item"),
+              sprintf(reviewed, .n_noun(length(f$reviewed), "item"),
                       .evidence_judges(f)))
     if (length(f$already_out)) {
       main <- c(main, sprintf("including %s already held back",
