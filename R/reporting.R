@@ -292,7 +292,9 @@ as.data.frame.contentvalid_workflow <- function(x,
     x, headings, has_missing = any(vapply(tab, function(v) any(v == .missing_mark),
                                           logical(1))),
     decisions = res$recommendation,
-    flat = if (length(cols)) cols[[1]][flat] else character(0),
+    # Read only when the table has an interval column, so never when it has
+    # no columns at all.
+    flat = cols[[1]][flat],
     res = res
   )
   tab
