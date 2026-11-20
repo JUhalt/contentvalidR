@@ -14,12 +14,8 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 0.10.1** (on R-universe; CRAN has 0.4.0, see
-[Installation](#installation)).
-
-**Release candidate: 0.99.0**, tagged `v1.0.0-rc.1` for testing before
-1.0.0. It is not published on R-universe or CRAN; to try it, run
-`remotes::install_github("JUhalt/contentvalidR@v1.0.0-rc.1")`.
+**Current stable release: 1.0.0.** [Installation](#installation) says
+how to get it from CRAN, R-universe, or GitHub.
 
 Development plans:
 [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md)
@@ -362,7 +358,7 @@ fields and columns keep their names, positions, and types, and new
 optional ones may only be added at the end. A change that broke this
 would be schema version 2, produced beside version 1 for at least a
 release cycle. The reader in nomologR is tested against handoffs from
-contentvalidR 0.6.0 through 0.99.0, and neither package depends on the
+contentvalidR 0.6.0 through 1.0.0, and neither package depends on the
 other. See `?content_handoff` for the full contract,
 `vignette("handoff-to-empirical-validation")` for a guide, and
 `vignette("one-item-set-both-stages")` for the joint walkthrough.
