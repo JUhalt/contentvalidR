@@ -41,7 +41,12 @@
 .facets_severity <- function(B, bias_correct = TRUE) {
   n_j <- nrow(B)
   judge_names <- rownames(B)
-  if (is.null(judge_names)) judge_names <- paste0("Judge", seq_len(n_j))
+  # The model is built from the names, so defaults are set on the matrix too.
+  if (is.null(judge_names)) {
+    judge_names <- paste0("Judge", seq_len(n_j))
+    rownames(B) <- judge_names
+  }
+  if (is.null(colnames(B))) colnames(B) <- paste0("Item", seq_len(ncol(B)))
 
   empty <- data.frame(
     judge = judge_names,
