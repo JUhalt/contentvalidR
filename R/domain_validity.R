@@ -330,6 +330,10 @@ domain_validity <- function(assignments,
              "names to `similarity`.", call. = FALSE)
       }
       membership <- cells
+      # Paired by position, the rows are the items, so the map and its
+      # clusters carry the items' names. Only the rows are named, so a matrix
+      # that is not square is still refused as such.
+      rownames(sim_mat) <- items
     }
     structure_fit <- content_structure(sim_mat, membership = membership, ...)
   }

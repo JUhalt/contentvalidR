@@ -54,3 +54,25 @@ test_that("a zero target beside a positive one still means no items there", {
                    c("Covered", "Over-represented"))
   expect_identical(fit$results$status, c("Supported", "Review"))
 })
+
+# domain_validity(): an unnamed similarity matrix --------------------------
+
+test_that("a map from an unnamed similarity matrix names the user's items", {
+  assignments <- data.frame(item = paste0("I", 1:9), cell = e2_blueprint())
+  fit <- domain_validity(assignments, similarity = unname(e2_similarity()))
+  cs <- fit$details$structure
+  expect_identical(cs$clusters$item, assignments$item)
+  expect_identical(rownames(cs$coordinates), assignments$item)
+  expect_identical(cs$hclust$labels, assignments$item)
+  # Paired by position, the map is the one the named matrix gives.
+  ref <- content_structure(e2_similarity(), membership = e2_blueprint())
+  expect_equal(cs, ref)
+})
+
+test_that("an unnamed matrix that is not square is still refused as such", {
+  assignments <- data.frame(item = paste0("I", 1:9), cell = e2_blueprint())
+  expect_error(domain_validity(assignments,
+                               similarity = unname(e2_similarity()[, 1:8])),
+               "`similarity` must be a square item-by-item matrix.",
+               fixed = TRUE)
+})
