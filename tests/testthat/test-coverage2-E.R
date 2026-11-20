@@ -114,3 +114,44 @@ test_that("a single cell or cluster is still given as its own reason", {
   expect_match(one_cluster$interpretation, single, fixed = TRUE)
   expect_false(grepl("alone", one_cluster$interpretation, fixed = TRUE))
 })
+
+# content_structure(): distortion ----------------------------------------
+
+test_that("distances too large to square give no distortion, not a false 0", {
+  # Three items at equal distances. On one dimension the map cannot be
+  # exact, so its distortion is above 0.
+  base <- matrix(1, 3, 3, dimnames = list(c("A", "B", "C"), c("A", "B", "C")))
+  diag(base) <- 0
+  ordinary <- content_structure(base, similarity_is_distance = TRUE)
+  expect_true(ordinary$fit$stress[1] > 0)
+
+  # The same configuration at a scale whose squared distances sum past the
+  # largest double: the sum of squares is infinite, so the distortion is
+  # not defined, where the ratio would otherwise read as an exact map.
+  huge <- content_structure(base * sqrt(0.7e308),
+                            similarity_is_distance = TRUE)
+  expect_identical(huge$fit$dims, ordinary$fit$dims)
+  expect_true(all(is.na(huge$fit$stress)))
+  expect_true(is.na(huge$stress))
+  # The goodness of fit does not depend on the scale.
+  expect_equal(huge$fit$gof, ordinary$fit$gof)
+  expect_equal(huge$gof, ordinary$gof)
+})
+
+# plot.contentvalid_structure(): a degenerate map ------------------------
+
+test_that("a map whose points all coincide is framed one unit around them", {
+  # Coordinates edited by hand so every item sits at (2, 3): neither axis
+  # has a range to pad by 15%, so each is padded by one unit. (Left to
+  # itself, R would widen a zero range at 2 by 40% of 2, not by 1.)
+  fit <- content_structure(e2_similarity(), membership = e2_blueprint())
+  fit$coordinates[, 1] <- 2
+  fit$coordinates[, 2] <- 3
+  grDevices::pdf(NULL, width = 7, height = 5)
+  on.exit(grDevices::dev.off(), add = TRUE)
+  expect_identical(plot(fit, show_legend = FALSE), fit)
+  # x from 1 to 3; y from 2 to 4.6, room for the names set above the
+  # points. R widens each range by 4% at both ends.
+  expect_equal(graphics::par("usr"),
+               c(1 - 0.08, 3 + 0.08, 2 - 0.104, 4.6 + 0.104))
+})

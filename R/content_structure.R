@@ -18,7 +18,6 @@
   sum_a <- sum(.choose2(rowSums(tab)))
   sum_b <- sum(.choose2(colSums(tab)))
   total <- .choose2(n)
-  if (total <= 0) return(NA_real_)
 
   expected <- sum_a * sum_b / total
   maximum <- 0.5 * (sum_a + sum_b)
@@ -279,15 +278,12 @@ content_structure <- function(similarity,
 
   dobj <- stats::as.dist(D)
 
+  # The scaling of the same matrix on every dimension has already succeeded
+  # (eig_all), so none of these can fail. cmdscale() returns its points as
+  # a matrix, even with one column.
   fit_rows <- lapply(seq_len(max_dims), function(kd) {
-    sol <- try(suppressWarnings(stats::cmdscale(dobj, k = kd, eig = TRUE)),
-               silent = TRUE)
-    if (inherits(sol, "try-error")) {
-      return(data.frame(dims = kd, stress = NA_real_, gof = NA_real_,
-                        stringsAsFactors = FALSE))
-    }
+    sol <- suppressWarnings(stats::cmdscale(dobj, k = kd, eig = TRUE))
     pts <- sol$points
-    if (is.null(dim(pts))) pts <- matrix(pts, ncol = 1L)
     s <- .raw_stress(as.vector(dobj), as.vector(stats::dist(pts)))
     data.frame(dims = kd, stress = s,
                gof = if (length(sol$GOF)) sol$GOF[1] else NA_real_,
@@ -298,7 +294,6 @@ content_structure <- function(similarity,
 
   sol <- suppressWarnings(stats::cmdscale(dobj, k = dims, eig = TRUE))
   pts <- sol$points
-  if (is.null(dim(pts))) pts <- matrix(pts, ncol = 1L)
   rownames(pts) <- items
   colnames(pts) <- paste0("Dim", seq_len(ncol(pts)))
 
