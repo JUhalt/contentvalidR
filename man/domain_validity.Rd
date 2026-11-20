@@ -53,8 +53,9 @@ share are flagged. Without it under-representation is not judged,
 because an equal share is an assumption, not a blueprint. A cell named
 in \code{targets} is part of the blueprint, so it is reported (as not
 covered) even when no item is assigned to it. With \code{domain}, every cell
-\code{targets} names must be in \code{domain}. A fractional target is rounded up
-where it sets the thin-coverage floor.}
+\code{targets} names must be in \code{domain}. At least one target must be above
+0. A fractional target is rounded up where it sets the thin-coverage
+floor.}
 
 \item{similarity}{Optional square item-by-item expert similarity matrix. When
 supplied, the content-structure analysis is run and reported alongside

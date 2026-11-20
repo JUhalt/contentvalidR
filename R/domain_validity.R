@@ -52,8 +52,9 @@
 #'   because an equal share is an assumption, not a blueprint. A cell named
 #'   in `targets` is part of the blueprint, so it is reported (as not
 #'   covered) even when no item is assigned to it. With `domain`, every cell
-#'   `targets` names must be in `domain`. A fractional target is rounded up
-#'   where it sets the thin-coverage floor.
+#'   `targets` names must be in `domain`. At least one target must be above
+#'   0. A fractional target is rounded up where it sets the thin-coverage
+#'   floor.
 #' @param similarity Optional square item-by-item expert similarity matrix. When
 #'   supplied, the content-structure analysis is run and reported alongside
 #'   coverage.
@@ -173,6 +174,11 @@ domain_validity <- function(assignments,
         any(targets < 0) || any(!is.finite(targets))) {
       stop("`targets` must be a named, non-negative numeric vector.", call. = FALSE)
     }
+    # Targets that are all zero give no cell an expected share.
+    if (!any(targets > 0)) {
+      stop("`targets` must give at least one cell a positive number of items.",
+           call. = FALSE)
+    }
     names(targets) <- .as_label(names(targets))
     if (anyDuplicated(names(targets))) {
       stop("`targets` names a cell more than once: ",
@@ -216,7 +222,7 @@ domain_validity <- function(assignments,
            paste(missing_targets, collapse = ", "), ".", call. = FALSE)
     }
     target_n <- as.numeric(targets[all_cells])
-    expected_share <- if (sum(target_n) > 0) target_n / sum(target_n) else rep(NA_real_, n_cells)
+    expected_share <- target_n / sum(target_n)
   } else {
     target_n <- rep(NA_real_, n_cells)
     expected_share <- rep(1 / n_cells, n_cells)
