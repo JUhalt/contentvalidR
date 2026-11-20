@@ -1,6 +1,16 @@
 # Second round of the coverage work on the judge and item-sort workflows:
-# the fixes for a judge left in the facets model with no decisions, and for
-# an unnamed matrix given to the facets helper.
+# the fixes for separated relevance decisions, for a judge left in the
+# facets model with no decisions, and for an unnamed matrix given to the
+# facets helper.
+
+# Judge1 and Judge2 each rate one of Item1 and Item2 relevant and nothing
+# else; Judge3 and Judge4 rate both of those relevant, and one of Item3 and
+# Item4. No judge or item is unanimous, yet the decisions are separated.
+d2_separated_panel <- function() {
+  X <- rbind(c(4, 1, 1, 1), c(1, 4, 1, 1), c(4, 4, 4, 1), c(4, 4, 1, 4))
+  dimnames(X) <- list(paste0("Judge", 1:4), paste0("Item", 1:4))
+  X
+}
 
 # Judges A1-A3 rate Q1-Q3 in a cycle: each rates two of the three relevant.
 # Judges C1, C3, ..., C21 and items K2, K4, ..., K20 form a chain: judge
@@ -18,6 +28,94 @@ d2_chain_panel <- function() {
   }
   X
 }
+
+d2_flat <- function(x) {
+  old <- options(width = 80)
+  on.exit(options(old), add = TRUE)
+  gsub("[[:space:]]+", " ",
+       paste(utils::capture.output(print(x)), collapse = " "))
+}
+
+# Separated relevance decisions ---------------------------------------------
+
+test_that("separated relevance decisions withhold logit severity", {
+  fit <- judge_validity(d2_separated_panel(), lo = 1, hi = 4)
+  r <- fit$results
+
+  # The model has no maximum-likelihood estimates, so no judge is placed.
+  expect_false(fit$scale_summary$severity_estimable)
+  expect_false(any(r$severity_estimable))
+  expect_true(all(is.na(c(r$severity, r$se, r$infit, r$outfit))))
+  expect_identical(r$n_scored, rep(0L, 4))
+  expect_identical(fit$settings$bias_correction, NA_real_)
+  expect_identical(fit$design$n_judges_not_estimable, 4L)
+  expect_match(fit$details$severity_note,
+               paste("maximum-likelihood estimates do not exist",
+                     "(Albert & Anderson, 1984)."), fixed = TRUE)
+
+  # Flags rest on rating points instead. The panel mean is 2.5 and the
+  # judges' means 1.75, 1.75, 3.25 and 3.25, so each sits exactly at the
+  # cut of 0.75 (a quarter of the scale range) and none is beyond it.
+  expect_equal(r$severity_raw, c(0.75, 0.75, -0.75, -0.75))
+  expect_identical(r$recommendation, rep("Typical", 4))
+  expect_identical(r$status, rep("Supported", 4))
+
+  out <- d2_flat(fit)
+  expect_match(out, "Logit severity not estimated", fixed = TRUE)
+  expect_match(out, paste("The relevance decisions split the judges and",
+                          "items into two groups"), fixed = TRUE)
+  expect_match(out, paste("Severity in rating points is reported instead",
+                          "and is used for flagging."), fixed = TRUE)
+  expect_false(grepl("Logit:", out, fixed = TRUE))
+})
+
+test_that("the separation rule finds a group the model can push apart", {
+  sep <- contentvalidR:::.facets_separated
+  B <- ifelse(d2_separated_panel() >= 3, 1, 0)
+  expect_true(sep(B))
+  # The group is Judge3, Judge4, Item3 and Item4. Moving it up the logit
+  # scale by t (its judges more lenient, its items harder) fits every
+  # decision between the groups better and leaves the rest as they were, so
+  # the log-likelihood climbs with t and never reaches a maximum.
+  loglik <- function(t) {
+    eta <- outer(c(0, 0, t, t), c(0, 0, t, t), "-")
+    sum(B * stats::plogis(eta, log.p = TRUE) +
+          (1 - B) * stats::plogis(-eta, log.p = TRUE))
+  }
+  expect_true(all(diff(vapply(c(0, 1, 5, 20, 40), loglik, numeric(1))) > 0))
+
+  # A cycle, in which each judge rates two of three items relevant, has
+  # every decision on a loop. An item every judge endorsed has none.
+  cycle <- rbind(c(1, 1, 0), c(1, 0, 1), c(0, 1, 1))
+  expect_false(sep(cycle))
+  expect_true(sep(cbind(cycle, 1)))
+
+  # Missing cells: two cycles with nothing between them are not separated,
+  # only unlinked. One judge of the first endorsing an item of the second
+  # separates them; a judge of the second endorsing an item of the first
+  # closes the loop again.
+  two <- matrix(NA_real_, 6, 6)
+  two[1:3, 1:3] <- cycle
+  two[4:6, 4:6] <- cycle
+  expect_false(sep(two))
+  one_way <- two
+  one_way[1, 4] <- 1
+  expect_true(sep(one_way))
+  both_ways <- one_way
+  both_ways[4, 1] <- 1
+  expect_false(sep(both_ways))
+})
+
+test_that("separation is checked after the unanimous are set aside", {
+  # Item5, which every judge rates relevant, is set aside first; the four
+  # items left are still separated.
+  X <- cbind(d2_separated_panel(), Item5 = 4)
+  fs <- contentvalidR:::.facets_severity(ifelse(X >= 3, 1, 0))
+  expect_false(fs$estimable)
+  expect_identical(c(fs$n_judges_dropped, fs$n_items_dropped), c(0L, 1L))
+  expect_match(fs$reason, "split the judges and items into two groups",
+               fixed = TRUE)
+})
 
 # Trimming to a stable set ---------------------------------------------------
 

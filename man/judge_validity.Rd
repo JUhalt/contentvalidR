@@ -170,6 +170,9 @@ rated by three or fewer judges is not checked, because one fewer leaves
 no criterion.
 \item Applying the Wright-Douglas correction to judges (see the estimation
 note).
+\item The rule that detects separated decisions (see the estimation note).
+Albert and Anderson (1984) show that separated data have no
+maximum-likelihood estimates; the way the package finds them is its own.
 }
 }
 
@@ -204,6 +207,23 @@ that decision carry no information about relative severity and are excluded
 from the model, which is reported rather than silent. Excluding one can
 leave another without variation, so this is repeated until every judge and
 item left varies.
+
+Even then the decisions can be separated: the judges and items split into
+two groups such that the judges of the first group endorsed every item of
+the second group that they rated, and the judges of the second group
+rejected every item of the first group that they rated. The farther apart
+the model places the two groups, the better it fits those decisions, so the
+likelihood has no maximum and the maximum-likelihood estimates do not exist
+(complete or quasi-complete separation; Albert & Anderson, 1984). A fitting
+routine still stops somewhere, at large severities with enormous standard
+errors; versions before 1.0 reported those as estimates and flagged judges
+on them. The package now treats separated decisions as it treats a model
+that does not converge: logit severity is not estimable, and judges are
+flagged on severity in rating points. It finds them with this rule of its
+own, which is exact and uses no threshold. Picture each decision as an
+arrow, from a judge to an item the judge rated relevant and from an item to
+a judge who did not. The two groups exist exactly when some arrow lies on
+no closed loop of arrows.
 }
 
 \examples{
@@ -221,6 +241,10 @@ fit
 summary(fit)
 }
 \references{
+Albert, A., & Anderson, J. A. (1984). On the existence of maximum
+likelihood estimates in logistic regression models. \emph{Biometrika, 71}(1),
+1–10. \doi{10.1093/biomet/71.1.1}
+
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. \emph{Journal of Educational Measurement, 25}(4),
 287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
