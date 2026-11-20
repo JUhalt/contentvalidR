@@ -208,13 +208,15 @@
   outfit <- rep(NA_real_, k)
   n_scored <- integer(k)
   for (idx in seq_len(k)) {
+    # Trimming leaves every judge in the model with decisions of both kinds.
     sel <- long$judge == sub_judges[idx]
     n_scored[idx] <- sum(sel)
-    if (!any(sel)) next
     wi <- w[sel]
     ri <- resid[sel]
     usable <- wi > .Machine$double.eps
-    if (!any(usable)) next
+    # Needs every logit of a judge beyond about 36, which only separated
+    # decisions, set aside above, are known to give.
+    if (!any(usable)) next # nocov: no unseparated data found that reach it
     outfit[idx] <- mean((ri[usable]^2) / wi[usable])
     denom <- sum(wi)
     if (denom > .Machine$double.eps) infit[idx] <- sum(ri^2) / denom

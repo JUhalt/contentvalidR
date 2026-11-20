@@ -1,7 +1,7 @@
 # Second round of the coverage work on the judge and item-sort workflows:
 # the fixes for separated relevance decisions, for a judge left in the
 # facets model with no decisions, and for an unnamed matrix given to the
-# facets helper.
+# facets helper, and the code those fixes and the dead-branch removals touch.
 
 # Judge1 and Judge2 each rate one of Item1 and Item2 relevant and nothing
 # else; Judge3 and Judge4 rate both of those relevant, and one of Item3 and
@@ -171,4 +171,30 @@ test_that("facets severity fits an unnamed matrix under the default names", {
   fit <- judge_validity(ifelse(B == 1, 4, 1), lo = 1, hi = 4)
   expect_equal(fit$results$severity, fs$table$severity)
   expect_equal(fit$results$se, fs$table$se)
+})
+
+# Item-sort helpers ----------------------------------------------------------
+
+test_that("a scale label close to two others is placed once in their group", {
+  place <- contentvalidR:::.map_scale_label_y
+  # Each label is close to both others, so the third is found from the first
+  # and again from the second. The three are spread 0.055 apart around
+  # their mean less 0.06, in order of x.
+  expect_equal(place(c(0.50, 0.52, 0.54), c(0.30, 0.32, 0.34)),
+               0.26 + c(-0.055, 0, 0.055))
+  # The first and third are close only through the second.
+  expect_equal(place(c(0.60, 0.50, 0.55), c(0.30, 0.30, 0.30)),
+               0.24 + c(0.055, -0.055, 0))
+})
+
+test_that("the item-sort design gives the fewest and most judges per item", {
+  d <- data.frame(
+    item = rep(c("A1", "A2"), c(20, 19)),
+    rater = c(1:20, 1:19),
+    target_construct = "A",
+    assigned_construct = c(rep("A", 18), rep("B", 2),
+                           rep("A", 16), rep("B", 3))
+  )
+  design <- sort_validity(d)$design
+  expect_identical(c(design$n_judges_min, design$n_judges_max), c(19L, 20L))
 })
