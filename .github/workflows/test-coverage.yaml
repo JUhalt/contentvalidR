@@ -31,9 +31,27 @@ jobs:
           extra-packages: any::covr
           needs: coverage
 
+      # Every line of R/ must be run by a test, counted as covr 4.0.0 counts
+      # (a braceless if/else or switch branch is a line of its own). NOT_CRAN
+      # matches devtools::test() and the release gate's tests stage, so a test
+      # marked skip_on_cran() runs here too.
       - name: Calculate test coverage
+        env:
+          NOT_CRAN: true
         run: |
+          if (utils::packageVersion("covr") < "4.0.0") {
+            stop("covr ", utils::packageVersion("covr"), " is installed; ",
+                 "this check counts lines as covr 4.0.0 does.", call. = FALSE)
+          }
           cov <- covr::package_coverage(quiet = FALSE)
           print(cov)
-          cat(sprintf("Overall coverage: %.1f%%\n", covr::percent_coverage(cov)))
+          cat(sprintf("Overall line coverage: %.2f%%\n",
+                      covr::percent_coverage(cov, by = "line")))
+          lines <- covr::tally_coverage(cov, by = "line")
+          missed <- lines[lines$value == 0, c("filename", "line")]
+          if (nrow(missed)) {
+            print(missed, row.names = FALSE)
+            stop(nrow(missed), " line(s) of R/ are not run by any test.",
+                 call. = FALSE)
+          }
         shell: Rscript {0}
