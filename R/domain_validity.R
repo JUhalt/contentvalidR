@@ -180,6 +180,9 @@ domain_validity <- function(assignments,
            call. = FALSE)
     }
     names(targets) <- .as_label(names(targets))
+    if (anyNA(names(targets)) || !all(nzchar(names(targets)))) {
+      stop("Every entry of `targets` must name a cell.", call. = FALSE)
+    }
     if (anyDuplicated(names(targets))) {
       stop("`targets` names a cell more than once: ",
            paste(unique(names(targets)[duplicated(names(targets))]),

@@ -155,3 +155,21 @@ test_that("a map whose points all coincide is framed one unit around them", {
   expect_equal(graphics::par("usr"),
                c(1 - 0.08, 3 + 0.08, 2 - 0.104, 4.6 + 0.104))
 })
+
+test_that("a target entry that names no cell is refused", {
+  # An unnamed or NA-named entry used to get past the refusal of all-zero
+  # targets, and every cell holding items was marked Covered.
+  asg <- data.frame(item = paste0("I", 1:4), cell = c("A", "A", "B", "B"))
+  msg <- "Every entry of `targets` must name a cell."
+  expect_error(domain_validity(asg, targets = c(A = 0, B = 0, 3)), msg,
+               fixed = TRUE)
+  expect_error(domain_validity(asg, targets = c(A = 2, B = 2, 1)), msg,
+               fixed = TRUE)
+  expect_error(
+    domain_validity(asg, targets = stats::setNames(c(0, 0, 3), c("A", "B", NA))),
+    msg, fixed = TRUE
+  )
+  # Named targets work as before.
+  fit <- domain_validity(asg, targets = c(A = 2, B = 2))
+  expect_identical(fit$results$expected_share, c(0.5, 0.5))
+})

@@ -1040,7 +1040,6 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 
   wrap <- function(txt, f) {
     words <- strsplit(txt, " ", fixed = TRUE)[[1]]
-    if (!length(words)) return(txt)
     lines <- character(0)
     current <- ""
     for (w in words) {

@@ -798,7 +798,15 @@ expert_validity <- function(data,
     # removed, show their numeric columns as stored. (A fit saved before 1.0
     # is refused or printed as it is before this table is made.)
     num <- names(r)[vapply(r, is.numeric, logical(1))]
-    for (col in num) tab[[col]] <- .fmt(r[[col]], digits, bounded = FALSE)
+    for (col in num) {
+      whole <- all(is.na(r[[col]]) | r[[col]] == round(r[[col]]))
+      # A count of experts is shown as a count, not with two decimals.
+      tab[[col]] <- if (tolower(col) == "n_judges" && whole) {
+        as.character(r[[col]])
+      } else {
+        .fmt(r[[col]], digits, bounded = FALSE)
+      }
+    }
   }
   tab
 }
@@ -1240,7 +1248,8 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
     if (length(scale_line)) .say(scale_line)
   }
   passing <- switch(x$mode, relevance = "Strong support",
-                    essentiality = "Supported", congruence = "Congruent")
+                    essentiality = "Supported", congruence = "Congruent",
+                    "Supported")
   cat(passing, ": ", x$n_supported, " of ", x$n_items, " | Review: ",
       x$n_review, " of ", x$n_items, sep = "")
   # Two reasons for no decision, counted apart: too few experts for any count

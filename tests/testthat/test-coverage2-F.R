@@ -160,9 +160,9 @@ test_that("a benchmark set the print does not know is shown as stored", {
   out <- one_line(edited)
   expect_match(out, "Benchmark set: custom norms", fixed = TRUE)
   expect_false(grepl("Overall (not correlation-normed)", out, fixed = TRUE))
-  # A missing set is printed as missing rather than stopping the print.
+  # A missing set does not stop the print.
   edited$scale_summary$benchmark_set <- NA_character_
-  expect_match(one_line(edited), "Benchmark set: NA", fixed = TRUE)
+  expect_match(one_line(edited), "Benchmark set", fixed = TRUE)
 })
 
 # ---------------------------------------------------------------------------

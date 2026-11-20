@@ -34,8 +34,8 @@
 # judge who rejected it. If some arrow lies on no closed loop, the judges and
 # items it leads back from (those with a path to its tail) form a group whose
 # judges endorsed every other item they rated and whose items every other
-# judge rejected. Moving that group up the logit scale fits those decisions
-# better without bound. If every arrow lies on a loop, a move that fits no
+# judge rejected. Moving that group away from the rest (its judges more
+# lenient, its items lower) fits those decisions better without bound. If every arrow lies on a loop, a move that fits no
 # decision worse must move every judge and item on a loop together, so it
 # changes no fitted value and no such group exists. With .facets_unlinked(),
 # this asks that every judge and item reach every other along the arrows:
@@ -187,17 +187,15 @@
     suppressWarnings(stats::glm(y ~ item + judge, family = stats::binomial(), data = long)),
     silent = TRUE
   )
-  # Separated decisions were set aside above, and with them every case found
-  # where glm() stops short; the maximum-likelihood estimates exist here.
+  # The estimates exist here, but glm() can still stop short of them, as on
+  # a long staircase of decisions with two of them flipped.
   if (inherits(fit, "try-error") || !isTRUE(fit$converged)) {
-    # nocov start: glm() failing on data whose estimates exist
     return(list(
       table = empty, estimable = FALSE,
       n_judges_dropped = n_drop_j, n_items_dropped = n_drop_i,
       bias_correction = NA_real_,
       reason = "The facets model did not converge, so judge severity is not reported."
     ))
-    # nocov end
   }
 
   beta <- stats::coef(fit)
@@ -250,9 +248,9 @@
     wi <- w[sel]
     ri <- resid[sel]
     usable <- wi > .Machine$double.eps
-    # Needs every logit of a judge beyond about 36, which only separated
-    # decisions, set aside above, are known to give.
-    if (!any(usable)) next # nocov: no unseparated data found that reach it
+    # Every fitted probability of this judge sits where the inverse link of
+    # binomial() clamps it (a logit beyond 30), so no residual can be scaled.
+    if (!any(usable)) next
     outfit[idx] <- mean((ri[usable]^2) / wi[usable])
     denom <- sum(wi)
     if (denom > .Machine$double.eps) infit[idx] <- sum(ri^2) / denom

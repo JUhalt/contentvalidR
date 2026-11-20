@@ -1112,8 +1112,9 @@ coverage job in CI now fails if any line goes untested.
   estimable, with the reference judge's severity and standard error, and
   had shifted the standard errors of the others.
 * **`domain_validity()` refuses `targets` that give every cell zero
-  items.** Every cell holding items had been marked Covered, and the
-  printout said the cells met the coverage criteria.
+  items, or that hold an entry naming no cell.** Every cell holding items
+  had been marked Covered, and the printout said the cells met the
+  coverage criteria.
 * **`summary()` of a congruence fit saved before 1.0 stops and asks for a
   new fit**, as `content_report()`, `content_handoff()` and `plot()` do. It
   had counted the old highest-mean decisions as Congruent and labeled the

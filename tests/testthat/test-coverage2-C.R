@@ -98,14 +98,14 @@ test_that("an item table without the index columns shows the stored numbers", {
   out <- c2_flat(fit)
   expect_match(out, paste("Item Target Decision N_judges Target_mean",
                           "Competitor_mean Margin"), fixed = TRUE)
-  expect_match(out, "I1 A Congruent 4.00 1.00 -1.00 2.00", fixed = TRUE)
-  expect_match(out, "I2 B Review 4.00 1.00 0.00 1.00", fixed = TRUE)
-  expect_match(out, "I3 A Review 4.00 0.00 1.00 -1.00", fixed = TRUE)
+  expect_match(out, "I1 A Congruent 4 1.00 -1.00 2.00", fixed = TRUE)
+  expect_match(out, "I2 B Review 4 1.00 0.00 1.00", fixed = TRUE)
+  expect_match(out, "I3 A Review 4 0.00 1.00 -1.00", fixed = TRUE)
   # The fit holds target_mean, so it is not taken for one saved before 1.0.
   expect_false(grepl("made before contentvalidR 1.0", out, fixed = TRUE))
   s <- c2_flat(summary(fit))
-  expect_match(s, "I2 B Review 4.00 1.00 0.00 1.00", fixed = TRUE)
-  expect_match(s, "I3 A Review 4.00 0.00 1.00 -1.00", fixed = TRUE)
+  expect_match(s, "I2 B Review 4 1.00 0.00 1.00", fixed = TRUE)
+  expect_match(s, "I3 A Review 4 0.00 1.00 -1.00", fixed = TRUE)
   expect_false(grepl("I1 A Congruent", s, fixed = TRUE))
 })
 
@@ -166,4 +166,24 @@ test_that("with Aiken's V interval removed the note names I-CVI's alone", {
   # The method it names follows.
   expect_match(out, "95% intervals for proportions: Wilson score",
                fixed = TRUE)
+})
+
+test_that("a summary with an edited mode still names a passing decision", {
+  rel <- read.csv(system.file("extdata", "expert_relevance_example.csv",
+                              package = "contentvalidR"))
+  rel$expert <- NULL
+  s <- summary(expert_validity(rel, mode = "relevance", lo = 1, hi = 4,
+                               agreement = "none"))
+  s$mode <- "other"
+  out <- paste(utils::capture.output(print(s)), collapse = " ")
+  expect_match(out, paste0("Supported: ", s$n_supported, " of ", s$n_items),
+               fixed = TRUE)
+})
+
+test_that("an essentiality fit without its earlier-methods table still prints", {
+  e <- expert_validity(c(16, 12), mode = "essentiality", N = 16)
+  e$details$earlier_methods$items <- NULL
+  out <- paste(utils::capture.output(print(e, legacy = TRUE)), collapse = " ")
+  expect_false(grepl("Earlier", out, ignore.case = FALSE))
+  expect_match(out, "essential", ignore.case = TRUE)
 })

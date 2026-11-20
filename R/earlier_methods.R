@@ -354,6 +354,7 @@
 
 .print_essentiality_earlier <- function(em, digits) {
   it <- em$items
+  if (is.null(it) || !nrow(it)) return(invisible(NULL))
   .earlier_heading()
   tab <- data.frame(item = it$item, decision = it$decision,
                     essential = paste0(it$ne, "/", it$N),

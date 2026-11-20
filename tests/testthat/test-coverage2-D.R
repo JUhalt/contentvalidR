@@ -225,3 +225,41 @@ test_that("judges who rated no item in common get no logit severity", {
   expect_match(fit$details$severity_note, "rated no item in common",
                fixed = TRUE)
 })
+
+# A staircase of n judges and n + 1 items: judge j endorses item i when
+# i > j, with two decisions flipped so that nothing is unanimous, separated
+# or unlinked.
+d2_stair2 <- function(n) {
+  B <- outer(seq_len(n), seq_len(n + 1), function(j, i) as.integer(i > j))
+  B[n, 1] <- 1L
+  B[1, n + 1] <- 0L
+  dimnames(B) <- list(paste0("J", seq_len(n)), paste0("I", seq_len(n + 1)))
+  B
+}
+
+test_that("a facets model glm() cannot fit withholds logit severity", {
+  # The estimates exist (every judge and item is linked and nothing is
+  # separated), but glm() stops short of them on this long staircase.
+  B <- d2_stair2(32)
+  expect_false(contentvalidR:::.facets_separated(B))
+  expect_false(contentvalidR:::.facets_unlinked(B))
+  fit <- judge_validity(ifelse(B == 1, 4, 1), lo = 1, hi = 4)
+  expect_false(fit$scale_summary$severity_estimable)
+  expect_false(any(fit$results$severity_estimable))
+  expect_match(fit$details$severity_note,
+               "The facets model did not converge", fixed = TRUE)
+})
+
+test_that("a judge fitted at the clamp gets no fit statistics", {
+  # J40 rated only I2 (rejected) and I81 (endorsed). Its two logits lie
+  # beyond 30, where binomial() clamps the fitted probability, so neither
+  # residual can be scaled and its infit and outfit stay missing.
+  B <- d2_stair2(80)
+  B[40, -c(2, 81)] <- NA
+  X <- ifelse(B == 1, 4, 1)
+  fit <- judge_validity(X, lo = 1, hi = 4, na.rm = TRUE)
+  r <- fit$results[fit$results$judge == "J40", ]
+  expect_identical(r$n_scored, 2L)
+  expect_true(is.na(r$infit))
+  expect_true(is.na(r$outfit))
+})
