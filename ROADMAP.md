@@ -837,7 +837,9 @@ CRAN: not submitted, for the same reason as 0.10.0.
 ## v1.0.0 - Joint stable release with nomologR (proposed)
 
 **Status:** Proposed by the maintainer on 2026-09-19. Release candidate on
-2026-10-17, the date the maintainer chose; CRAN submission after that, as the
+2026-12-01. The maintainer first chose 2026-10-17, and moved the date on
+2026-11-16 after it passed while both packages finished their last changes.
+1.0.0 then goes out on GitHub and R-universe, and CRAN follows, as the
 timeline below explains.
 **Criteria:** agreed jointly on
 [nomologR#53](https://github.com/JUhalt/nomologR/issues/53), which is the
@@ -897,7 +899,7 @@ reads no handoffs and takes no part in the joint 1.0.
   call can leave the session's random stream alone without writing to the
   global environment. The handoff kept schema version 1 and its columns.
 - The timeline, as the maintainer set it on 2026-09-28 and settled with
-  nomologR on 2026-09-29:
+  nomologR on 2026-09-29, with the dates he moved on 2026-11-16:
   - **Release candidates.** Both packages use one scheme: `DESCRIPTION` says
     0.99.N for the git tag `v1.0.0-rc.(N+1)`, so 0.99.0 for `v1.0.0-rc.1`
     and 0.99.1 for `rc.2` if another round is needed. No two candidates share
@@ -907,8 +909,9 @@ reads no handoffs and takes no part in the joint 1.0.
     candidate is a tag only, never a GitHub release of any kind, not even a
     pre-release or a draft, because R-universe publishes GitHub releases to
     users.
-  - **2026-10-17, release-candidate day,** for both packages, in this order,
-    agreed with nomologR so that its tests pass before either package tags:
+  - **2026-12-01, release-candidate day,** for both packages (nomologR
+    freezes its interface on 2026-11-27), in this order, agreed with
+    nomologR so that its tests pass before either package tags:
     1. contentvalidR sets the version to 0.99.0 and merges that change. (The
        removal of `agreement_summary()`, once part of this step, reached
        `master` with the audit, in
