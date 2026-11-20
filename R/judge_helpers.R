@@ -37,9 +37,11 @@
 # judge rejected. Moving that group up the logit scale fits those decisions
 # better without bound. If every arrow lies on a loop, a move that fits no
 # decision worse must move every judge and item on a loop together, so it
-# changes no fitted value and no such group exists. The rule is this
-# package's own, exact for this model and free of thresholds. `B` holds 0, 1
-# or NA, with judges in rows.
+# changes no fitted value and no such group exists. With .facets_unlinked(),
+# this asks that every judge and item reach every other along the arrows:
+# the package's construction, for judges and items, of the condition
+# Fischer (1981) gives for the Rasch model's estimates to exist. It uses no
+# threshold. `B` holds 0, 1 or NA, with judges in rows.
 .facets_separated <- function(B) {
   n_j <- nrow(B)
   n <- n_j + ncol(B)
@@ -58,6 +60,26 @@
   }
   # An arrow lies on a loop when its head has a path back to its tail.
   !all(reach[cbind(to, from)])
+}
+
+# Whether the judges and items fall into groups that share no decision, as
+# missing ratings can leave them. Nothing then places the severities of one
+# group against those of another, so the model has no single scale for them
+# (Fischer, 1981), and glm() would fix one judge in each group arbitrarily.
+# `B` holds 0, 1 or NA, with judges in rows.
+.facets_unlinked <- function(B) {
+  n_j <- nrow(B)
+  n <- n_j + ncol(B)
+  cell <- which(!is.na(B), arr.ind = TRUE)
+  link <- diag(n) > 0
+  link[cbind(cell[, 1], n_j + cell[, 2])] <- TRUE
+  link[cbind(n_j + cell[, 2], cell[, 1])] <- TRUE
+  repeat {
+    longer <- (link %*% link) > 0
+    if (identical(longer, link)) break
+    link <- longer
+  }
+  !all(link[1, ])
 }
 
 # Dichotomous many-facet Rasch model fitted as a logistic regression:
@@ -117,6 +139,20 @@
         "or when the only disagreement is a judge who rejects every item the",
         "others accept. It describes the ratings rather than an estimation",
         "failure: a logit scale needs judges whose endorsements vary."
+      )
+    ))
+  }
+
+  if (.facets_unlinked(sub)) {
+    return(list(
+      table = empty, estimable = FALSE,
+      n_judges_dropped = n_drop_j, n_items_dropped = n_drop_i,
+      bias_correction = NA_real_,
+      reason = paste(
+        "Judge severity could not be estimated on the logit scale. The",
+        "judges fall into groups that rated no item in common, so nothing",
+        "places the severities of one group against those of another, and",
+        "the model has no single scale for them (Fischer, 1981)."
       )
     ))
   }

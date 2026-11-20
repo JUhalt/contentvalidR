@@ -198,3 +198,30 @@ test_that("the item-sort design gives the fewest and most judges per item", {
   design <- sort_validity(d)$design
   expect_identical(c(design$n_judges_min, design$n_judges_max), c(19L, 20L))
 })
+
+test_that("judges who rated no item in common get no logit severity", {
+  # Two panels, each a cycle in which every judge rates two of its three
+  # items relevant, with every rating between the panels missing. Each panel
+  # varies and no decision is separated, yet nothing places one panel's
+  # severities against the other's.
+  cycle <- rbind(c(4, 4, 1), c(4, 1, 4), c(1, 4, 4))
+  X <- matrix(NA_real_, 6, 6,
+              dimnames = list(paste0("J", 1:6), paste0("I", 1:6)))
+  X[1:3, 1:3] <- cycle
+  X[4:6, 4:6] <- cycle
+  unlinked <- contentvalidR:::.facets_unlinked
+  B <- ifelse(X >= 3, 1, 0)
+  expect_true(unlinked(B))
+  expect_false(contentvalidR:::.facets_separated(B))
+  expect_false(unlinked(B[1:3, 1:3]))
+  linked <- B
+  linked[1, 4] <- 1
+  linked[4, 1] <- 1
+  expect_false(unlinked(linked))
+
+  fit <- judge_validity(X, lo = 1, hi = 4, na.rm = TRUE)
+  expect_false(fit$scale_summary$severity_estimable)
+  expect_false(any(fit$results$severity_estimable))
+  expect_match(fit$details$severity_note, "rated no item in common",
+               fixed = TRUE)
+})
