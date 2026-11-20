@@ -82,3 +82,88 @@ test_that("a current congruence fit still summarizes", {
   expect_match(out, "Congruent: 1 of 3 | Review: 2 of 3", fixed = TRUE)
   expect_match(out, "I3 A Review 4 -.50 .00", fixed = TRUE)
 })
+
+# ---- print() and summary(): results edited by hand --------------------------
+
+test_that("an item table without the index columns shows the stored numbers", {
+  # A current fit whose target_ioc column was removed has neither the
+  # index layout nor the best-objective one, so its numeric columns are
+  # printed as stored, each with its leading zero.
+  fit <- expert_validity(c2_congruence(), mode = "congruence")
+  fit$results$target_ioc <- NULL
+  # Target means: I1 1 on A, I2 1 on B, I3 0 on A. Competitor means: -1,
+  # 0 and 1. Margins: 2, 1 and -1.
+  expect_identical(fit$results$target_mean, c(1, 1, 0))
+  expect_identical(fit$results$competitor_mean, c(-1, 0, 1))
+  out <- c2_flat(fit)
+  expect_match(out, paste("Item Target Decision N_judges Target_mean",
+                          "Competitor_mean Margin"), fixed = TRUE)
+  expect_match(out, "I1 A Congruent 4.00 1.00 -1.00 2.00", fixed = TRUE)
+  expect_match(out, "I2 B Review 4.00 1.00 0.00 1.00", fixed = TRUE)
+  expect_match(out, "I3 A Review 4.00 0.00 1.00 -1.00", fixed = TRUE)
+  # The fit holds target_mean, so it is not taken for one saved before 1.0.
+  expect_false(grepl("made before contentvalidR 1.0", out, fixed = TRUE))
+  s <- c2_flat(summary(fit))
+  expect_match(s, "I2 B Review 4.00 1.00 0.00 1.00", fixed = TRUE)
+  expect_match(s, "I3 A Review 4.00 0.00 1.00 -1.00", fixed = TRUE)
+  expect_false(grepl("I1 A Congruent", s, fixed = TRUE))
+})
+
+test_that("a fit without targets or details prints its item table", {
+  fit <- expert_validity(c2_congruence(target = FALSE), mode = "congruence")
+  # With its details the item-by-objective table is the result.
+  expect_match(c2_flat(fit),
+               "Mean: the experts' mean rating on the objective (-1 to 1).",
+               fixed = TRUE)
+  fit$details <- NULL
+  out <- c2_flat(fit)
+  # Without them, one row per item: I1 matched A best, (1 - (-1)) / 2 = 1;
+  # I2 and I3 matched B, (1 - 0) / 2 = .50.
+  expect_match(out, "Item Decision Objectives Best objective Best IOC",
+               fixed = TRUE)
+  expect_match(out, "I1 Descriptive only 2 A 1.00", fixed = TRUE)
+  expect_match(out, "I2 Descriptive only 2 B .50", fixed = TRUE)
+  expect_match(out, "I3 Descriptive only 2 B .50", fixed = TRUE)
+  expect_match(out, paste("Best IOC: the highest index over the item's",
+                          "objectives, described without a decision."),
+               fixed = TRUE)
+  expect_false(grepl("Mean: the experts' mean rating", out, fixed = TRUE))
+})
+
+test_that("a flagged item without a target is footnoted with the index", {
+  # Every item of a fit without targets is "Descriptive only", so nothing
+  # is flagged until a status is changed by hand.
+  fit <- expert_validity(c2_congruence(target = FALSE), mode = "congruence")
+  expect_identical(summary(fit)$n_review, 0L)
+  fit$results$status[2] <- "Review"
+  s <- summary(fit)
+  expect_identical(s$flagged$item, "I2")
+  out <- c2_flat(s)
+  expect_match(out, "Congruent: 0 of 3 | Review: 1 of 3 | Descriptive only: 2",
+               fixed = TRUE)
+  expect_match(out, "I2 Descriptive only 2 B .50", fixed = TRUE)
+  expect_match(out, "IOC = index of item-objective congruence.", fixed = TRUE)
+  expect_false(grepl("Best IOC: the highest index", out, fixed = TRUE))
+})
+
+test_that("with Aiken's V interval removed the note names I-CVI's alone", {
+  rel <- utils::read.csv(system.file("extdata",
+                                     "expert_relevance_example.csv",
+                                     package = "contentvalidR"))
+  fit <- expert_validity(as.matrix(rel[, -1]), mode = "relevance",
+                         lo = 1, hi = 4, agreement = "none")
+  expect_match(c2_flat(fit), "Each 95% CI follows its estimate", fixed = TRUE)
+  fit$results$ci_low <- NULL
+  fit$results$ci_high <- NULL
+  out <- c2_flat(fit)
+  # The one interval column left follows I-CVI.
+  expect_match(out, "Item Decision Experts V I-CVI 95% CI Kappa",
+               fixed = TRUE)
+  expect_match(out, paste("The 95% CI follows I-CVI: the proportion interval",
+                          "named below."), fixed = TRUE)
+  expect_false(grepl("follows its estimate", out, fixed = TRUE))
+  expect_false(grepl("follows Aiken's V", out, fixed = TRUE))
+  # The method it names follows.
+  expect_match(out, "95% intervals for proportions: Wilson score",
+               fixed = TRUE)
+})

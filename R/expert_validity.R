@@ -451,8 +451,8 @@ expert_validity <- function(data,
       type = "expert-panel relevance",
       n_items = nrow(item),
       n_judges = nrow(R),
-      n_judges_min = if (nrow(item)) min(item$N) else 0L,
-      n_judges_max = if (nrow(item)) max(item$N) else 0L,
+      n_judges_min = min(item$N),
+      n_judges_max = max(item$N),
       n_missing = sum(is.na(R))
     )
     out <- .new_contentvalid_workflow(
@@ -522,8 +522,8 @@ expert_validity <- function(data,
       type = "expert-panel essentiality",
       n_items = nrow(res),
       n_judges = if (matrix_input) nrow(data) else if (length(unique(res$N)) == 1L) unique(res$N) else NA_integer_,
-      n_judges_min = if (nrow(res)) min(res$N) else 0L,
-      n_judges_max = if (nrow(res)) max(res$N) else 0L,
+      n_judges_min = min(res$N),
+      n_judges_max = max(res$N),
       n_missing = if (matrix_input) sum(is.na(as.matrix(data))) else NA_integer_
     )
     out <- .new_contentvalid_workflow(
@@ -712,8 +712,8 @@ expert_validity <- function(data,
       type = "expert-panel congruence",
       n_items = length(unique(cells$item)),
       n_judges = length(unique(data$judge)),
-      n_judges_min = if (nrow(cells)) min(cells$n_judges) else 0L,
-      n_judges_max = if (nrow(cells)) max(cells$n_judges) else 0L,
+      n_judges_min = min(cells$n_judges),
+      n_judges_max = max(cells$n_judges),
       n_missing = sum(cells$n_missing),
       n_objectives = length(unique(data$objective))
     )
@@ -794,7 +794,9 @@ expert_validity <- function(data,
     tab$`best objective` <- r$best_objective
     tab$`best IOC` <- .fmt(r$best_ioc, digits)
   } else {
-    # An object saved before 1.0, whose columns held the mean ratings.
+    # Results with neither layout, such as a fit whose target_ioc column was
+    # removed, show their numeric columns as stored. (A fit saved before 1.0
+    # is refused or printed as it is before this table is made.)
     num <- names(r)[vapply(r, is.numeric, logical(1))]
     for (col in num) tab[[col]] <- .fmt(r[[col]], digits, bounded = FALSE)
   }
@@ -1238,8 +1240,7 @@ print.summary.contentvalid_expert <- function(x, digits = 2, ...) {
     if (length(scale_line)) .say(scale_line)
   }
   passing <- switch(x$mode, relevance = "Strong support",
-                    essentiality = "Supported", congruence = "Congruent",
-                    "Supported")
+                    essentiality = "Supported", congruence = "Congruent")
   cat(passing, ": ", x$n_supported, " of ", x$n_items, " | Review: ",
       x$n_review, " of ", x$n_items, sep = "")
   # Two reasons for no decision, counted apart: too few experts for any count
