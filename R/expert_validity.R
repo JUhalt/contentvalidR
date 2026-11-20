@@ -1201,6 +1201,11 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
 
 #' @export
 summary.contentvalid_expert <- function(object, ...) {
+  # A congruence fit saved before 1.0 decided on mean ratings; its summary
+  # would count those decisions as meeting the index's criterion.
+  if (.congruence_pre10(object)) {
+    stop(.congruence_pre10_message(), call. = FALSE)
+  }
   out <- .workflow_summary_core(object)
   out$mode <- object$mode
   out$agreement <- if (is.list(object$details)) object$details$agreement else NULL
