@@ -176,10 +176,11 @@
       if (seen[start]) next
       component <- integer(0)
       frontier <- start
+      # A label joins the frontier only while unseen, once, and is seen
+      # only when it leaves, so every label taken from it is unseen.
       while (length(frontier)) {
         current <- frontier[1]
         frontier <- frontier[-1]
-        if (seen[current]) next
         seen[current] <- TRUE
         component <- c(component, current)
         neighbours <- which(adj[current, ] & !seen)

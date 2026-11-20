@@ -4,11 +4,14 @@
 # elements carry no information about relative severity and produce infinite
 # maximum-likelihood estimates (perfect separation). This is standard practice
 # in Rasch estimation; the dropped elements are reported rather than hidden.
-.facets_trim_extremes <- function(B, max_iter = 10L) {
+# Dropping one can leave another with no variation, or with no decision at
+# all, so the rounds go on until none is left. A round that does not stop
+# drops at least one judge or item, so the loop always ends.
+.facets_trim_extremes <- function(B) {
   keep_j <- rep(TRUE, nrow(B))
   keep_i <- rep(TRUE, ncol(B))
 
-  for (iter in seq_len(max_iter)) {
+  repeat {
     sub <- B[keep_j, keep_i, drop = FALSE]
     if (!nrow(sub) || !ncol(sub)) break
 
@@ -23,6 +26,38 @@
   }
 
   list(keep_judges = keep_j, keep_items = keep_i)
+}
+
+# Whether the relevance decisions are separated, so that the facets model has
+# no maximum-likelihood estimates (Albert & Anderson, 1984). Each decision is
+# an arrow: from a judge to an item the judge endorsed, and from an item to a
+# judge who rejected it. If some arrow lies on no closed loop, the judges and
+# items it leads back from (those with a path to its tail) form a group whose
+# judges endorsed every other item they rated and whose items every other
+# judge rejected. Moving that group up the logit scale fits those decisions
+# better without bound. If every arrow lies on a loop, a move that fits no
+# decision worse must move every judge and item on a loop together, so it
+# changes no fitted value and no such group exists. The rule is this
+# package's own, exact for this model and free of thresholds. `B` holds 0, 1
+# or NA, with judges in rows.
+.facets_separated <- function(B) {
+  n_j <- nrow(B)
+  n <- n_j + ncol(B)
+  cell <- which(!is.na(B), arr.ind = TRUE)
+  yes <- B[cell] == 1
+  from <- ifelse(yes, cell[, 1], n_j + cell[, 2])
+  to <- ifelse(yes, n_j + cell[, 2], cell[, 1])
+  # Which judge or item has a path to which. Squaring the matrix doubles the
+  # length of path it covers, until nothing changes.
+  reach <- diag(n) > 0
+  reach[cbind(from, to)] <- TRUE
+  repeat {
+    longer <- (reach %*% reach) > 0
+    if (identical(longer, reach)) break
+    reach <- longer
+  }
+  # An arrow lies on a loop when its head has a path back to its tail.
+  !all(reach[cbind(to, from)])
 }
 
 # Dichotomous many-facet Rasch model fitted as a logistic regression:
@@ -41,7 +76,12 @@
 .facets_severity <- function(B, bias_correct = TRUE) {
   n_j <- nrow(B)
   judge_names <- rownames(B)
-  if (is.null(judge_names)) judge_names <- paste0("Judge", seq_len(n_j))
+  # The model is built from the names, so defaults are set on the matrix too.
+  if (is.null(judge_names)) {
+    judge_names <- paste0("Judge", seq_len(n_j))
+    rownames(B) <- judge_names
+  }
+  if (is.null(colnames(B))) colnames(B) <- paste0("Item", seq_len(ncol(B)))
 
   empty <- data.frame(
     judge = judge_names,
@@ -81,6 +121,23 @@
     ))
   }
 
+  if (.facets_separated(sub)) {
+    return(list(
+      table = empty, estimable = FALSE,
+      n_judges_dropped = n_drop_j, n_items_dropped = n_drop_i,
+      bias_correction = NA_real_,
+      reason = paste(
+        "Judge severity could not be estimated on the logit scale. The",
+        "relevance decisions split the judges and items into two groups: the",
+        "judges of the first endorsed every item of the second that they",
+        "rated, and the judges of the second rejected every item of the first",
+        "that they rated. The farther apart the model places the two groups,",
+        "the better it fits those decisions, so the maximum-likelihood",
+        "estimates do not exist (Albert & Anderson, 1984)."
+      )
+    ))
+  }
+
   sub_judges <- rownames(sub)
   long <- data.frame(
     y = as.vector(sub),
@@ -94,13 +151,17 @@
     suppressWarnings(stats::glm(y ~ item + judge, family = stats::binomial(), data = long)),
     silent = TRUE
   )
+  # Separated decisions were set aside above, and with them every case found
+  # where glm() stops short; the maximum-likelihood estimates exist here.
   if (inherits(fit, "try-error") || !isTRUE(fit$converged)) {
+    # nocov start: glm() failing on data whose estimates exist
     return(list(
       table = empty, estimable = FALSE,
       n_judges_dropped = n_drop_j, n_items_dropped = n_drop_i,
       bias_correction = NA_real_,
       reason = "The facets model did not converge, so judge severity is not reported."
     ))
+    # nocov end
   }
 
   beta <- stats::coef(fit)
@@ -147,13 +208,15 @@
   outfit <- rep(NA_real_, k)
   n_scored <- integer(k)
   for (idx in seq_len(k)) {
+    # Trimming leaves every judge in the model with decisions of both kinds.
     sel <- long$judge == sub_judges[idx]
     n_scored[idx] <- sum(sel)
-    if (!any(sel)) next
     wi <- w[sel]
     ri <- resid[sel]
     usable <- wi > .Machine$double.eps
-    if (!any(usable)) next
+    # Needs every logit of a judge beyond about 36, which only separated
+    # decisions, set aside above, are known to give.
+    if (!any(usable)) next # nocov: no unseparated data found that reach it
     outfit[idx] <- mean((ri[usable]^2) / wi[usable])
     denom <- sum(wi)
     if (denom > .Machine$double.eps) infit[idx] <- sum(ri^2) / denom
