@@ -125,7 +125,8 @@
          if (length(dup) == 1L) "this " else "these ", margin, " name",
          if (length(dup) == 1L) " is" else "s are", " used more than once: ",
          paste(dup[seq_len(min(5L, length(dup)))], collapse = ", "),
-         if (length(dup) > 5L) ", ..." else "", ".", call. = FALSE)
+         if (length(dup) > 5L) paste0(" and ", length(dup) - 5L, " more"),
+         ".", call. = FALSE)
   }
   invisible(NULL)
 }
