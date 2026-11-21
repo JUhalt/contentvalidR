@@ -122,6 +122,10 @@
   if (abs(anchors - round(anchors)) > sqrt(.Machine$double.eps)) {
     stop("The Hinkin-Tracey indices require equally spaced integer anchors (for example, 1 to 5 or 1 to 7).", call. = FALSE)
   }
+  if (anchors > .Machine$integer.max) {
+    stop("The rating scale has more anchors than R can count; check ",
+         "`scale_min` and `scale_max`.", call. = FALSE)
+  }
   anchors <- as.integer(round(anchors))
   if (anchors < 2L) stop("At least two rating anchors are required.", call. = FALSE)
   if (!is.null(observed)) {
@@ -208,7 +212,7 @@
   eps <- if (ss_error == 0) NA_real_ else .gg_epsilon(y)
   df1_gg <- if (is.na(eps)) NA_real_ else eps * df1
   df2_gg <- if (is.na(eps)) NA_real_ else eps * df2
-  p_gg <- if (is.na(Fv) || is.na(eps)) NA_real_ else if (is.infinite(Fv)) 0 else
+  p_gg <- if (is.na(Fv) || is.na(eps)) NA_real_ else
     stats::pf(Fv, df1_gg, df2_gg, lower.tail = FALSE)
   eta_p2 <- if ((ss_construct + ss_error) == 0) NA_real_ else ss_construct / (ss_construct + ss_error)
   list(n_complete = n, F = Fv, df1 = df1, df2 = df2, p = p,

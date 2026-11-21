@@ -451,8 +451,8 @@ expert_validity <- function(data,
       type = "expert-panel relevance",
       n_items = nrow(item),
       n_judges = nrow(R),
-      n_judges_min = if (nrow(item)) min(item$N) else 0L,
-      n_judges_max = if (nrow(item)) max(item$N) else 0L,
+      n_judges_min = min(item$N),
+      n_judges_max = max(item$N),
       n_missing = sum(is.na(R))
     )
     out <- .new_contentvalid_workflow(
@@ -522,8 +522,8 @@ expert_validity <- function(data,
       type = "expert-panel essentiality",
       n_items = nrow(res),
       n_judges = if (matrix_input) nrow(data) else if (length(unique(res$N)) == 1L) unique(res$N) else NA_integer_,
-      n_judges_min = if (nrow(res)) min(res$N) else 0L,
-      n_judges_max = if (nrow(res)) max(res$N) else 0L,
+      n_judges_min = min(res$N),
+      n_judges_max = max(res$N),
       n_missing = if (matrix_input) sum(is.na(as.matrix(data))) else NA_integer_
     )
     out <- .new_contentvalid_workflow(
@@ -712,8 +712,8 @@ expert_validity <- function(data,
       type = "expert-panel congruence",
       n_items = length(unique(cells$item)),
       n_judges = length(unique(data$judge)),
-      n_judges_min = if (nrow(cells)) min(cells$n_judges) else 0L,
-      n_judges_max = if (nrow(cells)) max(cells$n_judges) else 0L,
+      n_judges_min = min(cells$n_judges),
+      n_judges_max = max(cells$n_judges),
       n_missing = sum(cells$n_missing),
       n_objectives = length(unique(data$objective))
     )
@@ -794,9 +794,19 @@ expert_validity <- function(data,
     tab$`best objective` <- r$best_objective
     tab$`best IOC` <- .fmt(r$best_ioc, digits)
   } else {
-    # An object saved before 1.0, whose columns held the mean ratings.
+    # Results with neither layout, such as a fit whose target_ioc column was
+    # removed, show their numeric columns as stored. (A fit saved before 1.0
+    # is refused or printed as it is before this table is made.)
     num <- names(r)[vapply(r, is.numeric, logical(1))]
-    for (col in num) tab[[col]] <- .fmt(r[[col]], digits, bounded = FALSE)
+    for (col in num) {
+      whole <- all(is.na(r[[col]]) | r[[col]] == round(r[[col]]))
+      # A count of experts is shown as a count, not with two decimals.
+      tab[[col]] <- if (tolower(col) == "n_judges" && whole) {
+        as.character(r[[col]])
+      } else {
+        .fmt(r[[col]], digits, bounded = FALSE)
+      }
+    }
   }
   tab
 }
@@ -1201,6 +1211,11 @@ print.contentvalid_expert <- function(x, digits = 2, legacy = NULL, ...) {
 
 #' @export
 summary.contentvalid_expert <- function(object, ...) {
+  # A congruence fit saved before 1.0 decided on mean ratings; its summary
+  # would count those decisions as meeting the index's criterion.
+  if (.congruence_pre10(object)) {
+    stop(.congruence_pre10_message(), call. = FALSE)
+  }
   out <- .workflow_summary_core(object)
   out$mode <- object$mode
   out$agreement <- if (is.list(object$details)) object$details$agreement else NULL
