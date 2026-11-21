@@ -239,15 +239,21 @@ d2_stair2 <- function(n) {
 
 test_that("a facets model glm() cannot fit withholds logit severity", {
   # The estimates exist (every judge and item is linked and nothing is
-  # separated), but glm() stops short of them on this long staircase.
-  B <- d2_stair2(32)
+  # separated), but glm() can stop short of them. On a long staircase with
+  # two flips it does on some platforms and not on others, so the test
+  # makes it stop short by allowing it a single iteration.
+  B <- d2_stair2(12)
   expect_false(contentvalidR:::.facets_separated(B))
   expect_false(contentvalidR:::.facets_unlinked(B))
-  fit <- judge_validity(ifelse(B == 1, 4, 1), lo = 1, hi = 4)
-  expect_false(fit$scale_summary$severity_estimable)
-  expect_false(any(fit$results$severity_estimable))
-  expect_match(fit$details$severity_note,
-               "The facets model did not converge", fixed = TRUE)
+  fs <- contentvalidR:::.facets_severity(
+    B, control = stats::glm.control(maxit = 1)
+  )
+  expect_false(fs$estimable)
+  expect_true(all(is.na(fs$table$severity)))
+  expect_identical(fs$reason, paste("The facets model did not converge,",
+                                    "so judge severity is not reported."))
+  # With glm()'s default the same decisions are fitted.
+  expect_true(contentvalidR:::.facets_severity(B)$estimable)
 })
 
 test_that("a judge fitted at the clamp gets no fit statistics", {

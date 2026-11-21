@@ -95,7 +95,12 @@
 # the number of judges in the model. Applying the correction to judges is this
 # package's choice, and Wright (1988) notes that it is slightly inexact for
 # very short tests, which a small panel is.
-.facets_severity <- function(B, bias_correct = TRUE) {
+# `control` reaches glm(): judge_validity() leaves it at glm()'s default, and
+# the tests use it to make glm() stop short, which otherwise happens only on
+# some platforms (whether a long, nearly ordered set of decisions converges
+# within 25 iterations depends on the floating-point arithmetic).
+.facets_severity <- function(B, bias_correct = TRUE,
+                             control = stats::glm.control()) {
   n_j <- nrow(B)
   judge_names <- rownames(B)
   # The model is built from the names, so defaults are set on the matrix too.
@@ -184,7 +189,8 @@
   long <- long[!is.na(long$y), , drop = FALSE]
 
   fit <- try(
-    suppressWarnings(stats::glm(y ~ item + judge, family = stats::binomial(), data = long)),
+    suppressWarnings(stats::glm(y ~ item + judge, family = stats::binomial(),
+                                data = long, control = control)),
     silent = TRUE
   )
   # The estimates exist here, but glm() can still stop short of them, as on
