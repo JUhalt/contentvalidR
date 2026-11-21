@@ -448,6 +448,27 @@
 <li>The release gate has a fourth stage, <code>tests</code>, which runs second. It runs the test suite from the source tree and fails on a failure, an error, or a test that skips for want of the sources or the documentation, which cannot be true there.</li>
 </ul></div>
 <div class="section level3">
+<h3 id="found-by-testing-every-line-0-10-1-9000">Found by testing every line<a class="anchor" aria-label="anchor" href="#found-by-testing-every-line-0-10-1-9000"></a></h3>
+<p>Before the release candidate, every line of the package’s R code was put under a test, counted as version 4.0.0 of the covr package counts: it treats a branch of an <code>if</code> or a <code><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch()</a></code> written without braces as a line of its own. Writing those tests found the problems below. The coverage job in CI now fails if any line goes untested.</p>
+<ul><li>
+<strong><code><a href="../reference/judge_validity.html">judge_validity()</a></code> reports logit severity only when the decisions can place every judge.</strong> When the relevance decisions are separated, the judges and items split into two groups: the judges of one group endorsed every item of the other that they rated, and the judges of the other rejected every item of the first. The model then has no maximum-likelihood estimates (Albert &amp; Anderson, 1984). Earlier versions reported the large severities, with enormous standard errors, at which the fit happened to stop, and could flag every judge on them. The same holds when missing ratings leave groups of judges who rated no item in common: nothing places the severities of one group against those of another. In both cases logit severity is now not estimable, judges are flagged on severity in rating points, and the printout says why. <code><a href="../reference/judge_validity.html">?judge_validity</a></code> describes the rule, the package’s construction for judges and items of the condition Fischer (1981) gives for the Rasch model.</li>
+<li>
+<strong><code><a href="../reference/judge_validity.html">judge_validity()</a></code> sets aside judges and items with no variation until none is left</strong>, where it stopped after ten rounds. A judge whose last decisions were set aside in the final round had been reported as estimable, with the reference judge’s severity and standard error, and had shifted the standard errors of the others.</li>
+<li>
+<strong><code><a href="../reference/domain_validity.html">domain_validity()</a></code> refuses <code>targets</code> that give every cell zero items, or that hold an entry naming no cell.</strong> Every cell holding items had been marked Covered, and the printout said the cells met the coverage criteria.</li>
+<li>
+<strong><code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> of a congruence fit saved before 1.0 stops and asks for a new fit</strong>, as <code><a href="../reference/content_report.html">content_report()</a></code>, <code><a href="../reference/content_handoff.html">content_handoff()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> do. It had counted the old highest-mean decisions as Congruent and labeled the stored mean ratings as the index of item-objective congruence. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> still shows such a fit, beside that message.</li>
+<li>
+<strong><code><a href="../reference/anova_content.html">anova_content()</a></code> refuses an item whose ratings are so far apart that their sums of squares overflow</strong> (spreads near 1e154), naming the item, where it stopped with an internal error or returned an F of <code>NaN</code>. The construct-rating functions likewise refuse a scale with more anchors than R can count, which had failed with an internal error.</li>
+<li>
+<strong>A handoff from an expert-panel fit made with <code>agreement_B = 0</code></strong> notes in its panel row that the bootstrap was skipped, where it blamed too few resamples. Stored text only; no column changes.</li>
+<li>
+<code><a href="../reference/content_structure.html">content_structure()</a></code> gives the right reason when the adjusted Rand index is undefined because every item is alone in both its blueprint cell and its cluster, and <code><a href="../reference/content_structure.html">?content_structure</a></code> names both causes of “Insufficient data”.</li>
+<li>
+<code><a href="../reference/domain_validity.html">domain_validity()</a></code> names the points of the content map from the assignment’s items when the similarity matrix has no names.</li>
+<li>Messages: <code><a href="../reference/content_evidence.html">content_evidence()</a></code> refuses a handoff it has nothing to show for with “This expert-panel handoff …”, where it read “A expert-panel handoff”; a stage box of the flow diagram reads “4 items reviewed; number of experts not recorded”; and a list of more than five repeated names ends “… and 2 more.” instead of in four dots.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="other-changes-0-10-1-9000">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-0-10-1-9000"></a></h3>
 <ul><li>The reader in nomologR is now tested against handoffs from contentvalidR 0.6.0 through 0.10.1, and the README says so.</li>
 </ul></div>

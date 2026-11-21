@@ -379,6 +379,9 @@ Works cited in this README, the help pages, and the vignettes.
 - Aiken, L. R. (1980). Content validity and reliability of single items
   or questionnaires. *Educational and Psychological Measurement, 40*(4),
   955–959. <https://doi.org/10.1177/001316448004000419>
+- Albert, A., & Anderson, J. A. (1984). On the existence of maximum
+  likelihood estimates in logistic regression models. *Biometrika,
+  71*(1), 1–10. <https://doi.org/10.1093/biomet/71.1.1>
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance
   of measures in a confirmatory factor analysis with a pretest
   assessment of their substantive validities. *Journal of Applied
@@ -426,6 +429,9 @@ Works cited in this README, the help pages, and the vignettes.
   kappa: I. The problems of two paradoxes. *Journal of Clinical
   Epidemiology, 43*(6), 543–549.
   <https://doi.org/10.1016/0895-4356(90)90158-L>
+- Fischer, G. H. (1981). On the existence and uniqueness of
+  maximum-likelihood estimates in the Rasch model. *Psychometrika,
+  46*(1), 59–77. <https://doi.org/10.1007/BF02293919>
 - Fleiss, J. L. (1971). Measuring nominal scale agreement among many
   raters. *Psychological Bulletin, 76*(5), 378–382.
   <https://doi.org/10.1037/h0031619>

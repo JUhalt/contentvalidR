@@ -83,7 +83,8 @@ and `cross_tab` against the blueprint, `settings`, `design`, `status`,
 and an `interpretation`. `status` is `"Supported"` or `"Review"` by
 `ari_cut`, `"Descriptive only"` without a blueprint, and
 `"Insufficient data"` when the blueprint or the clustering has a single
-group, which leaves nothing to compare.
+group, or when every item is alone in both its blueprint cell and its
+cluster: either leaves nothing to compare.
 
 ## What is published and what is this package's choice
 

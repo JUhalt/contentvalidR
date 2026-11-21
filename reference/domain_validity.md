@@ -87,8 +87,9 @@ domain_validity(
   equal share is an assumption, not a blueprint. A cell named in
   `targets` is part of the blueprint, so it is reported (as not covered)
   even when no item is assigned to it. With `domain`, every cell
-  `targets` names must be in `domain`. A fractional target is rounded up
-  where it sets the thin-coverage floor.
+  `targets` names must be in `domain`. At least one target must be
+  above 0. A fractional target is rounded up where it sets the
+  thin-coverage floor.
 
 - similarity:
 

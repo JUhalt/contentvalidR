@@ -1335,6 +1335,77 @@ returned field.
   error, or a test that skips for want of the sources or the
   documentation, which cannot be true there.
 
+### Found by testing every line
+
+Before the release candidate, every line of the package’s R code was put
+under a test, counted as version 4.0.0 of the covr package counts: it
+treats a branch of an `if` or a
+[`switch()`](https://rdrr.io/r/base/switch.html) written without braces
+as a line of its own. Writing those tests found the problems below. The
+coverage job in CI now fails if any line goes untested.
+
+- **[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  reports logit severity only when the decisions can place every
+  judge.** When the relevance decisions are separated, the judges and
+  items split into two groups: the judges of one group endorsed every
+  item of the other that they rated, and the judges of the other
+  rejected every item of the first. The model then has no
+  maximum-likelihood estimates (Albert & Anderson, 1984). Earlier
+  versions reported the large severities, with enormous standard errors,
+  at which the fit happened to stop, and could flag every judge on them.
+  The same holds when missing ratings leave groups of judges who rated
+  no item in common: nothing places the severities of one group against
+  those of another. In both cases logit severity is now not estimable,
+  judges are flagged on severity in rating points, and the printout says
+  why.
+  [`?judge_validity`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  describes the rule, the package’s construction for judges and items of
+  the condition Fischer (1981) gives for the Rasch model.
+- **[`judge_validity()`](https://juhalt.github.io/contentvalidR/reference/judge_validity.md)
+  sets aside judges and items with no variation until none is left**,
+  where it stopped after ten rounds. A judge whose last decisions were
+  set aside in the final round had been reported as estimable, with the
+  reference judge’s severity and standard error, and had shifted the
+  standard errors of the others.
+- **[`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+  refuses `targets` that give every cell zero items, or that hold an
+  entry naming no cell.** Every cell holding items had been marked
+  Covered, and the printout said the cells met the coverage criteria.
+- **[`summary()`](https://rdrr.io/r/base/summary.html) of a congruence
+  fit saved before 1.0 stops and asks for a new fit**, as
+  [`content_report()`](https://juhalt.github.io/contentvalidR/reference/content_report.md),
+  [`content_handoff()`](https://juhalt.github.io/contentvalidR/reference/content_handoff.md)
+  and [`plot()`](https://rdrr.io/r/graphics/plot.default.html) do. It
+  had counted the old highest-mean decisions as Congruent and labeled
+  the stored mean ratings as the index of item-objective congruence.
+  [`print()`](https://rdrr.io/r/base/print.html) still shows such a fit,
+  beside that message.
+- **[`anova_content()`](https://juhalt.github.io/contentvalidR/reference/anova_content.md)
+  refuses an item whose ratings are so far apart that their sums of
+  squares overflow** (spreads near 1e154), naming the item, where it
+  stopped with an internal error or returned an F of `NaN`. The
+  construct-rating functions likewise refuse a scale with more anchors
+  than R can count, which had failed with an internal error.
+- **A handoff from an expert-panel fit made with `agreement_B = 0`**
+  notes in its panel row that the bootstrap was skipped, where it blamed
+  too few resamples. Stored text only; no column changes.
+- [`content_structure()`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+  gives the right reason when the adjusted Rand index is undefined
+  because every item is alone in both its blueprint cell and its
+  cluster, and
+  [`?content_structure`](https://juhalt.github.io/contentvalidR/reference/content_structure.md)
+  names both causes of “Insufficient data”.
+- [`domain_validity()`](https://juhalt.github.io/contentvalidR/reference/domain_validity.md)
+  names the points of the content map from the assignment’s items when
+  the similarity matrix has no names.
+- Messages:
+  [`content_evidence()`](https://juhalt.github.io/contentvalidR/reference/content_evidence.md)
+  refuses a handoff it has nothing to show for with “This expert-panel
+  handoff …”, where it read “A expert-panel handoff”; a stage box of the
+  flow diagram reads “4 items reviewed; number of experts not recorded”;
+  and a list of more than five repeated names ends “… and 2 more.”
+  instead of in four dots.
+
 ### Other changes
 
 - The reader in nomologR is now tested against handoffs from
