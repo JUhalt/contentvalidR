@@ -1,9 +1,19 @@
 # Changelog
 
-## contentvalidR 0.10.1.9000 (development version)
+## contentvalidR 0.99.0
 
-Fixes from the audit before 1.0. Some of them change values, so check
-any analysis that matches the cases below.
+The first release candidate for contentvalidR 1.0.0, released jointly
+with nomologR. A release candidate is a git tag only. GitHub Releases
+and R-universe keep 0.10.1, and CRAN keeps 0.4.0, until 1.0.0. Its
+purpose is to freeze the 1.0 interface so that the handoff tests in
+nomologR can run against it before either package tags. If it needs
+another round, the next candidate is 0.99.1.
+
+This candidate carries the fixes from the audit before 1.0. Some of them
+change values, so check any analysis that matches the cases below. The
+handoff keeps schema version 1, with the same fields and columns; what
+changed inside the congruence handoff is under “Congruence and method
+attribution: values that change”.
 
 ### Removed
 
@@ -13,11 +23,26 @@ any analysis that matches the cases below.
   which takes raters in rows like every other ratings function. The
   deprecation warning shipped only on GitHub and R-universe, so a user
   updating from 0.4.0 on CRAN meets the removal without it.
+
+  `agreement_summary()` returned Fleiss’ kappa from the irr package,
+  with items in rows.
+  [`panel_agreement()`](https://juhalt.github.io/contentvalidR/reference/panel_agreement.md)
+  reports Krippendorff’s alpha or Gwet’s AC1 with an interval. To move
+  to it, transpose the matrix with
+  [`t()`](https://rdrr.io/r/base/t.html), code the categories as
+  numbers, and pass `level = "nominal"` for unordered categories: the
+  default is `"ordinal"`, which gives a different coefficient. For
+  Fleiss’ kappa itself, call
+  [`irr::kappam.fleiss()`](https://rdrr.io/pkg/irr/man/kappam.fleiss.html)
+  directly. `expert_validity(legacy = TRUE)` still reports it for the
+  relevant or not-relevant decision.
+
 - Five returned fields are removed without a notice period, because the
   audit found them wrong or unreachable;
   [`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
   records the exception to the deprecation policy. Each is explained in
   the section named:
+
   - `overall_strength` in the `scale_summary` of
     [`sort_validity()`](https://juhalt.github.io/contentvalidR/reference/sort_validity.md)
     and
