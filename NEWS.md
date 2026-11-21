@@ -1168,8 +1168,8 @@ coverage job in CI now fails if any line goes untested.
 
 * The reader in nomologR is now tested against handoffs from contentvalidR
   0.6.0 through 1.0.0, and the README says so. The README also shows the
-  handoff from the joint walkthrough's item sort, as nomologR's README
-  does, and has a table of the handoff each version writes.
+  handoff from the item sort of the joint walkthrough, as the README of
+  nomologR does, and has a table of the handoff each version writes.
 
 # contentvalidR 0.10.1
 
