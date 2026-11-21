@@ -10,7 +10,9 @@ GitHub and R-universe first; the update of CRAN, which has 0.4.0, follows.
 Before either package tagged, the release candidate 0.99.0 (tag
 `v1.0.0-rc.1`) was tested against nomologR; 1.0.0 is that candidate with its
 version changed. Since 0.10.1, an audit before 1.0 checked every function,
-help page, printout, and figure against its sources and its own claims.
+help page, printout, and figure against its sources and its own claims,
+and every line of the R code is now run by a test ("Found by testing every
+line" below).
 Some of its fixes change values, so check any analysis that matches the
 cases below. The handoff keeps schema version 1, with the same fields and
 columns; what changed inside the congruence handoff is under "Congruence
