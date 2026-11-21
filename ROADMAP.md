@@ -834,15 +834,16 @@ CRAN: not submitted, for the same reason as 0.10.0.
 
 ***
 
-## v1.0.0 - Joint stable release with nomologR (proposed)
+## v1.0.0 - Joint stable release with nomologR
 
-**Status:** Proposed by the maintainer on 2026-09-19. Release candidate on
-2026-11-24, or earlier if both packages are ready, and 1.0.0 as soon after
-as both pass on it. The maintainer first chose 2026-10-17; after it passed
-while both packages finished their last changes he set 2026-12-01 on
-2026-11-16, and brought it forward on 2026-11-20.
-1.0.0 then goes out on GitHub and R-universe, and CRAN follows, as the
-timeline below explains.
+**Status:** Released (1.0.0 on 2026-11-21, on GitHub and R-universe, the same
+day as nomologR 1.0.0). Proposed by the maintainer on 2026-09-19. The
+maintainer first chose 2026-10-17; after it passed while both packages
+finished their last changes, the date moved to 2026-12-01 on 2026-11-16, and
+was brought forward on 2026-11-20. The release candidate, 0.99.0, was tagged
+`v1.0.0-rc.1` on 2026-11-21, and 1.0.0 followed it the same day. CRAN follows,
+as the timeline below explains.
+**Version:** `1.0.0`
 **Criteria:** agreed jointly on
 [nomologR#53](https://github.com/JUhalt/nomologR/issues/53), which is the
 single list. This section only mirrors it, with this package's progress.
@@ -868,7 +869,7 @@ reads no handoffs and takes no part in the joint 1.0.
         nomologR's reader
         ([nomologR#46](https://github.com/JUhalt/nomologR/issues/46), closed)
         is tested against stored producer output from contentvalidR 0.6.0
-        through 0.10.1.
+        through 1.0.0.
   - [x] schema version 1 is frozen and becomes a compatibility promise (0.7.0).
   - [ ] both packages are on CRAN. contentvalidR 0.4.0 was accepted and
         published on 2026-09-28
@@ -886,7 +887,7 @@ reads no handoffs and takes no part in the joint 1.0.
         0.99.0 release candidate, so nothing deprecated is carried past 1.0.
   - [x] there is a joint walkthrough from content review to empirical
         validation (0.7.0).
-  - [ ] the two releases go out on the same day, each linking the other.
+  - [x] the two releases go out on the same day, each linking the other.
 - The audit before 1.0. Between 2026-09-30 and 2026-10-09 every function,
   help page, printout, and figure was checked against its sources and its
   own claims. The 223 findings were closed in
@@ -945,6 +946,14 @@ reads no handoffs and takes no part in the joint 1.0.
        candidate, and there is no `.9000` bump while a candidate is open. The
        README keeps its current stable-release line and adds one line saying
        that 0.99.N is a release candidate.
+
+    Release-candidate day came early, on 2026-11-21. Because 1.0.0 followed
+    the candidate the same day, both packages agreed to fold step 4's
+    README changes into the 1.0.0 commit instead of a separate
+    documentation PR. nomologR shortened one fixture's name, to
+    `congruence-untargeted-default`, so that its path in nomologR's source
+    package stays within the 100 bytes a tarball stores portably. The file's
+    bytes did not change.
   - **1.0.0 day repeats the cycle.** The 1.0.0 commit is the last candidate's
     tree plus the version, the NEWS heading, `CITATION.cff`, and
     documentation, so
@@ -962,21 +971,21 @@ reads no handoffs and takes no part in the joint 1.0.
 - The release-candidate checklist, proposed by nomologR and approved by the
   maintainer on 2026-09-27. It adds to #53's criteria rather than replacing
   them:
-  - [ ] a final fixture set from each release candidate, with a manifest of
+  - [x] a final fixture set from each release candidate, with a manifest of
         md5 sums, that nomologR's tests pass before either package tags.
         From 0.99.0 the set holds eight fits, agreed with nomologR on
         2026-10-09: the five tested through 0.10.1, and three congruence
         fits (with a target mapping; without one, keeping the described
         items; and without one under the default `keep`, which carries no
         item). The script that writes them lives in nomologR.
-  - [ ] the compatibility table in both READMEs: contentvalidR 1.x writes
+  - [x] the compatibility table in both READMEs: contentvalidR 1.x writes
         handoff schema 1, and nomologR 1.x reads it. The maintainer chose on
         2026-09-29 to use this "1.x" wording from the release candidate on,
-        so it goes into each README in the documentation PR after the rc.1
-        tag. Each README states its own column. contentvalidR's adds that
+        and it went into each README with the 1.0.0 commit. Each README
+        states its own column. contentvalidR's adds that
         schema 1 has been written since 0.4.0 and frozen since 0.7.0, and that
         handoffs from 0.4.0 to 0.6.0 lack the optional columns.
-  - [ ] one handoff example shown in both READMEs, regenerated from
+  - [x] one handoff example shown in both READMEs, regenerated from
         contentvalidR's release candidate: the walkthrough-sort handoff `h`,
         screened with `nomo_screen(nomo_demo_walkthrough, items = h)`.
         contentvalidR's README shows the call without running it. Both print
@@ -987,7 +996,7 @@ reads no handoffs and takes no part in the joint 1.0.
         `vignette("one-item-set-both-stages")`, which links to nomologR's
         guided-workflow article for the empirical stage. nomologR has agreed
         to link its article back to it.
-  - [ ] the release notes link each other.
+  - [x] the release notes link each other.
 - Three handoff clarifications nomologR asked for before schema 1 becomes a
   1.0 promise, approved on 2026-09-27. None changes the schema:
   - [x] a fixture that records keying as checked with no item reversed
