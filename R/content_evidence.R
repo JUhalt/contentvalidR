@@ -272,7 +272,7 @@ content_evidence <- function(..., keep = "Supported") {
                             NA_character_),
     NA_character_)
   if (is.na(pick) || !pick %in% have) {
-    stop("A ", wf, " handoff carries no statistic content_evidence() can ",
+    stop("This ", wf, " handoff carries no statistic content_evidence() can ",
          "show.", call. = FALSE)
   }
   pick
@@ -1040,7 +1040,6 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
 
   wrap <- function(txt, f) {
     words <- strsplit(txt, " ", fixed = TRUE)[[1]]
-    if (!length(words)) return(txt)
     lines <- character(0)
     current <- ""
     for (w in words) {
@@ -1080,8 +1079,15 @@ plot.contentvalid_evidence <- function(x, type = c("profile", "flow"),
   undecided <- .evidence_undecided(x)
   rows <- lapply(seq_along(x$flow), function(k) {
     f <- x$flow[[k]]
+    # A count that was not recorded is said apart from the items, so the line
+    # never reads "reviewed by experts not recorded".
+    reviewed <- if (all(is.na(f$n_judges))) {
+      "%s reviewed; number of %s"
+    } else {
+      "%s reviewed by %s"
+    }
     main <- c(sprintf("Stage %d: %s", k, names(x$flow)[k]),
-              sprintf("%s reviewed by %s", .n_noun(length(f$reviewed), "item"),
+              sprintf(reviewed, .n_noun(length(f$reviewed), "item"),
                       .evidence_judges(f)))
     if (length(f$already_out)) {
       main <- c(main, sprintf("including %s already held back",

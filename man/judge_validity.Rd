@@ -170,6 +170,11 @@ rated by three or fewer judges is not checked, because one fewer leaves
 no criterion.
 \item Applying the Wright-Douglas correction to judges (see the estimation
 note).
+\item The rule that decides whether logit severity can be estimated (see the
+estimation note). Albert and Anderson (1984) show that separated data
+have no maximum-likelihood estimates, and Fischer (1981) states the
+condition for the Rasch model in terms of a directed graph; the graph
+the package builds from judges and items is its own construction.
 }
 }
 
@@ -201,7 +206,35 @@ rating-unit severity in \code{severity_raw} is free of this particular issue.
 Severity is estimated from the dichotomized relevance decision, consistent
 with how the package computes CVI. Judges and items showing no variation in
 that decision carry no information about relative severity and are excluded
-from the model, which is reported rather than silent.
+from the model, which is reported rather than silent. Excluding one can
+leave another without variation, so this is repeated until every judge and
+item left varies.
+
+Even then the decisions can be separated: the judges and items split into
+two groups such that the judges of the first group endorsed every item of
+the second group that they rated, and the judges of the second group
+rejected every item of the first group that they rated. The farther apart
+the model places the two groups, the better it fits those decisions, so the
+likelihood has no maximum and the maximum-likelihood estimates do not exist
+(complete or quasi-complete separation; Albert & Anderson, 1984). A fitting
+routine still stops somewhere, at large severities with enormous standard
+errors; versions before 1.0 reported those as estimates and flagged judges
+on them. The package now treats separated decisions as it treats a model
+that does not converge: logit severity is not estimable, and judges are
+flagged on severity in rating points. The same holds when the judges fall
+into groups that rated no item in common, as missing ratings can leave
+them: nothing then places the severities of one group against those of
+another.
+
+The package checks both before fitting, with a rule that uses no
+threshold. Picture each decision as an arrow, from a judge to an item the
+judge rated relevant and from an item to a judge who did not. Logit
+severity is reported only when every judge and item can be reached from
+every other along the arrows; the decisions are separated when some arrow
+lies on no closed loop. This is the package's construction, for judges
+and items, of the condition Fischer (1981) gives for the Rasch model: its
+maximum-likelihood estimates exist, and are unique, exactly when a
+directed graph built from the data is completely connected.
 }
 
 \examples{
@@ -219,6 +252,10 @@ fit
 summary(fit)
 }
 \references{
+Albert, A., & Anderson, J. A. (1984). On the existence of maximum
+likelihood estimates in logistic regression models. \emph{Biometrika, 71}(1),
+1–10. \doi{10.1093/biomet/71.1.1}
+
 Crocker, L., Llabre, M., & Miller, M. D. (1988). The generalizability of
 content validity ratings. \emph{Journal of Educational Measurement, 25}(4),
 287–299. \doi{10.1111/j.1745-3984.1988.tb00309.x}
@@ -230,6 +267,10 @@ A generalized linear and nonlinear approach}. Springer.
 Engelhard, G. (1994). Examining rater errors in the assessment of written
 composition with a many-faceted Rasch model. \emph{Journal of Educational
 Measurement, 31}(2), 93–112. \doi{10.1111/j.1745-3984.1994.tb00436.x}
+
+Fischer, G. H. (1981). On the existence and uniqueness of
+maximum-likelihood estimates in the Rasch model. \emph{Psychometrika, 46}(1),
+59–77. \doi{10.1007/BF02293919}
 
 Linacre, J. M. (n.d.). \emph{Estimation considerations: JMLE estimation bias}
 [Facets help]. Winsteps.com. Retrieved October 2, 2026, from

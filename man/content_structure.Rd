@@ -47,8 +47,9 @@ MDS \code{coordinates}, \code{clusters}, the \code{fit} table across dimensional
 \code{cross_tab} against the blueprint, \code{settings}, \code{design}, \code{status}, and an
 \code{interpretation}. \code{status} is \code{"Supported"} or \code{"Review"} by \code{ari_cut},
 \code{"Descriptive only"} without a blueprint, and \code{"Insufficient data"} when
-the blueprint or the clustering has a single group, which leaves nothing
-to compare.
+the blueprint or the clustering has a single group, or when every item
+is alone in both its blueprint cell and its cluster: either leaves
+nothing to compare.
 }
 \description{
 Analyzes whether subject-matter experts perceive items as grouping the way a

@@ -149,6 +149,15 @@ anova_content <- function(ratings,
            "' contains judges who rated multiple construct definitions.", call. = FALSE)
     }
     item_design <- if (design == "auto") detected_design else design
+    # Every sum of squares below is at most this one. Ratings so far apart
+    # that it overflows (spreads near 1e154, far from any rating scale) leave
+    # nothing to test, so they are refused rather than failing inside a test.
+    spread <- sum((df$rating - mean(df$rating, na.rm = TRUE))^2, na.rm = TRUE)
+    if (!is.finite(spread)) {
+      stop("The ratings of item '", item, "' are too far apart to analyze: ",
+           "their sums of squares overflow double precision. Rescale them, ",
+           "for example to the units of the rating scale.", call. = FALSE)
+    }
     constructs <- unique(df$construct)
     means <- tapply(df$rating, df$construct, mean, na.rm = TRUE)
     means[is.nan(means)] <- NA_real_
