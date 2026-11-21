@@ -1,19 +1,26 @@
 # Changelog
 
-## contentvalidR 0.99.0
+## contentvalidR 1.0.0
 
-The first release candidate for contentvalidR 1.0.0, released jointly
-with nomologR. A release candidate is a git tag only. GitHub Releases
-and R-universe keep 0.10.1, and CRAN keeps 0.4.0, until 1.0.0. Its
-purpose is to freeze the 1.0 interface so that the handoff tests in
-nomologR can run against it before either package tags. If it needs
-another round, the next candidate is 0.99.1.
+The first stable release, released on the same day as nomologR 1.0.0
+(<https://github.com/JUhalt/nomologR>), its partner for the empirical
+stage of scale development. From 1.0.0 the stability policy in
+[`?contentvalidR`](https://juhalt.github.io/contentvalidR/reference/contentvalidR-package.md)
+is a promise, and the handoff to nomologR is schema version 1, which
+contentvalidR 1.x writes and nomologR 1.x reads. 1.0.0 is published on
+GitHub and R-universe first; the update of CRAN, which has 0.4.0,
+follows.
 
-This candidate carries the fixes from the audit before 1.0. Some of them
-change values, so check any analysis that matches the cases below. The
-handoff keeps schema version 1, with the same fields and columns; what
-changed inside the congruence handoff is under “Congruence and method
-attribution: values that change”.
+Before either package tagged, the release candidate 0.99.0 (tag
+`v1.0.0-rc.1`) was tested against nomologR; 1.0.0 is that candidate with
+its version changed. Since 0.10.1, an audit before 1.0 checked every
+function, help page, printout, and figure against its sources and its
+own claims, and every line of the R code is now run by a test (“Found by
+testing every line” below). Some of its fixes change values, so check
+any analysis that matches the cases below. The handoff keeps schema
+version 1, with the same fields and columns; what changed inside the
+congruence handoff is under “Congruence and method attribution: values
+that change”.
 
 ### Removed
 
