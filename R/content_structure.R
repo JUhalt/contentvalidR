@@ -18,7 +18,6 @@
   sum_a <- sum(.choose2(rowSums(tab)))
   sum_b <- sum(.choose2(colSums(tab)))
   total <- .choose2(n)
-  if (total <= 0) return(NA_real_)
 
   expected <- sum_a * sum_b / total
   maximum <- 0.5 * (sum_a + sum_b)
@@ -141,8 +140,9 @@
 #'   `cross_tab` against the blueprint, `settings`, `design`, `status`, and an
 #'   `interpretation`. `status` is `"Supported"` or `"Review"` by `ari_cut`,
 #'   `"Descriptive only"` without a blueprint, and `"Insufficient data"` when
-#'   the blueprint or the clustering has a single group, which leaves nothing
-#'   to compare.
+#'   the blueprint or the clustering has a single group, or when every item
+#'   is alone in both its blueprint cell and its cluster: either leaves
+#'   nothing to compare.
 #'
 #' @section Dimensionality:
 #' The retained dimensionality is reported rather than chosen silently. For
@@ -278,15 +278,12 @@ content_structure <- function(similarity,
 
   dobj <- stats::as.dist(D)
 
+  # The scaling of the same matrix on every dimension has already succeeded
+  # (eig_all), so none of these can fail. cmdscale() returns its points as
+  # a matrix, even with one column.
   fit_rows <- lapply(seq_len(max_dims), function(kd) {
-    sol <- try(suppressWarnings(stats::cmdscale(dobj, k = kd, eig = TRUE)),
-               silent = TRUE)
-    if (inherits(sol, "try-error")) {
-      return(data.frame(dims = kd, stress = NA_real_, gof = NA_real_,
-                        stringsAsFactors = FALSE))
-    }
+    sol <- suppressWarnings(stats::cmdscale(dobj, k = kd, eig = TRUE))
     pts <- sol$points
-    if (is.null(dim(pts))) pts <- matrix(pts, ncol = 1L)
     s <- .raw_stress(as.vector(dobj), as.vector(stats::dist(pts)))
     data.frame(dims = kd, stress = s,
                gof = if (length(sol$GOF)) sol$GOF[1] else NA_real_,
@@ -297,7 +294,6 @@ content_structure <- function(similarity,
 
   sol <- suppressWarnings(stats::cmdscale(dobj, k = dims, eig = TRUE))
   pts <- sol$points
-  if (is.null(dim(pts))) pts <- matrix(pts, ncol = 1L)
   rownames(pts) <- items
   colnames(pts) <- paste0("Dim", seq_len(ncol(pts)))
 
@@ -344,10 +340,21 @@ content_structure <- function(similarity,
       "items the way the blueprint says they should."
     )
   } else if (is.na(ari)) {
+    # The index is 0 / 0 when either side has one group, or when no two of
+    # the items with a cell share a cell and no two share a cluster.
+    rated <- !is.na(membership)
+    alone <- sum(rated) >= 2L && !anyDuplicated(membership[rated]) &&
+      !anyDuplicated(cluster[rated])
     paste(
-      "Correspondence with the blueprint could not be quantified. This happens",
-      "when every item falls in one blueprint cell or one cluster, leaving",
-      "nothing to compare."
+      "Correspondence with the blueprint could not be quantified.",
+      if (alone) {
+        paste("This happens when every item is alone in both its blueprint",
+              "cell and its cluster: no two items share a group, so there is",
+              "nothing to compare.")
+      } else {
+        paste("This happens when every item falls in one blueprint cell or",
+              "one cluster, leaving nothing to compare.")
+      }
     )
   } else if (ari >= ari_cut) {
     sprintf(paste(

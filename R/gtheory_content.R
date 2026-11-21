@@ -46,7 +46,7 @@
 .gtheory_judges_needed <- function(target, var_item, error_var) {
   if (!is.finite(var_item) || var_item <= 0 || !is.finite(error_var)) return(NA_integer_)
   if (error_var <= 0) return(1L)
-  if (target <= 0 || target >= 1) return(NA_integer_)
+  # gtheory_content() has checked that each target is strictly between 0 and 1.
   needed <- target * error_var / (var_item * (1 - target))
   # A target can require a panel far larger than any study would field. Report
   # that as unattainable rather than printing an absurd number or overflowing.
