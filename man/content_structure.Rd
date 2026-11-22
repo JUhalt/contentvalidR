@@ -44,7 +44,8 @@ distances rather than similarities.}
 An object of class \code{contentvalid_structure}, a list containing the
 MDS \code{coordinates}, \code{clusters}, the \code{fit} table across dimensionalities, the
 \code{stress} and \code{gof} of the retained solution, the \code{adjusted_rand} index and
-\code{cross_tab} against the blueprint, \code{settings}, \code{design}, \code{status}, and an
+\code{cross_tab} against the blueprint, \code{hclust}, the \code{\link[stats:hclust]{stats::hclust()}} fit
+behind \code{clusters}, \code{settings}, \code{design}, \code{status}, and an
 \code{interpretation}. \code{status} is \code{"Supported"} or \code{"Review"} by \code{ari_cut},
 \code{"Descriptive only"} without a blueprint, and \code{"Insufficient data"} when
 the blueprint or the clustering has a single group, or when every item

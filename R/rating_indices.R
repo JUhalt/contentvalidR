@@ -52,7 +52,8 @@ htc <- function(ratings,
                 scale_max = 5) {
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
-  a <- .validate_rating_scale(scale_min, scale_max, d$rating)
+  a <- .validate_rating_scale(scale_min, scale_max, d$rating,
+                              c(missing(scale_min), missing(scale_max)))
   by_item <- .split_by_item(d)
   rows <- lapply(by_item, function(df) {
     target <- unique(df$target)[1]
@@ -122,7 +123,8 @@ htd <- function(ratings,
                 scale_max = 5) {
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
-  a <- .validate_rating_scale(scale_min, scale_max, d$rating)
+  a <- .validate_rating_scale(scale_min, scale_max, d$rating,
+                              c(missing(scale_min), missing(scale_max)))
   construct_counts <- vapply(split(d, d$item, drop = TRUE),
                              function(z) length(unique(z$construct)), integer(1))
   too_few <- names(construct_counts)[construct_counts < 2L]

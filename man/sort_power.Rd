@@ -23,11 +23,20 @@ the judges are subject-matter experts.}
 \item{alpha}{Significance level. Default \code{0.05}.}
 }
 \value{
-An object of class \code{contentvalid_sort_power} containing an exact
-planning table. When a panel is too small for any count to reach \code{alpha}
-(four or fewer judges at the defaults), \code{critical_n_target} and
-\code{minimum_observed_psa} are \code{NA} and \code{power} is 0: no item can be retained
-at that size.
+An object of class \code{contentvalid_sort_power}, a list with:
+\describe{
+\item{\code{table}}{the exact planning table, a data frame with one row per
+combination of \code{N} and \code{true_p}. Its columns are \code{N}, the judge
+sample size; \code{true_p}, the assumed probability; \code{critical_n_target},
+the fewest target assignments that meet the criterion with \code{N}
+judges; \code{minimum_observed_psa}, that count as a share of \code{N}, the
+smallest Psa that can meet it; and \code{power}, the exact probability
+that an item meets it.}
+\item{\code{settings}}{a list of \code{p0} and \code{alpha}, as given.}
+}
+When a panel is too small for any count to reach \code{alpha} (four or fewer
+judges at the defaults), \code{critical_n_target} and \code{minimum_observed_psa}
+are \code{NA} and \code{power} is 0: no item can be retained at that size.
 }
 \description{
 Computes the exact probability that an item will meet the target-count

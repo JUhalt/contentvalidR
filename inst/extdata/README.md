@@ -1,8 +1,8 @@
 # contentvalidR example data
 
 These CSV files are deliberately human-readable examples of the input shapes used
-by the three flagship workflows. They are synthetic and contain no participant
-or proprietary data.
+by the item-sort, construct-rating, and expert-panel workflows. They are
+synthetic and contain no participant or proprietary data.
 
 - `sort_example.csv`: item-sort assignments for `sort_validity()`.
 - `rating_example.csv`: fully crossed construct ratings for `rating_validity()`.
@@ -11,9 +11,10 @@ or proprietary data.
 - `expert_congruence_example.csv`: long-format -1/0/+1 item-objective ratings for IOC mode.
 
 The deterministic source that generates all five files is
-`data-raw/build-example-data.R`. The examples intentionally include both clearly
-supported and review-worthy items so printed output, summaries, and plots are
-informative.
+`data-raw/build-example-data.R` in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw).
+The examples intentionally include both clearly supported and review-worthy
+items so printed output, summaries, and plots are informative.
 
 ## The joint walkthrough data
 
@@ -29,12 +30,15 @@ Three further files carry one item set through both stages of pretesting, for
   a reader can see what keeping them would have cost.
 
 These are simulated. Two items are reverse-worded, so the raw responses must be
-recoded before anything is correlated. Five more misbehave deliberately: two
-fail content review for opposite reasons, one passes and then carries almost no
-common variance, one passes and loads on two facets, and one is flagged by an
-empirical screen for restricted variance while being worth keeping. The generating model
-is stated in full in `data-raw/build-walkthrough-data.R`, which writes all
-three files. `nomologR` ships `walkthrough_items.csv` and
+recoded before anything is correlated. Seven more each set a deliberate test
+for one stage or the other: two fail content review for opposite reasons, one
+meets the content criterion by a single judge, one passes and then carries
+almost no common variance, one passes and loads on two facets, one is flagged
+by an empirical screen for restricted variance while being worth keeping, and
+one is answered differently in the two cohorts. The generating model is stated
+in full in `data-raw/build-walkthrough-data.R`, the script in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw)
+that writes all three files. `nomologR` ships `walkthrough_items.csv` and
 `walkthrough_responses.csv` unchanged, with that same script, so the two
 packages cannot drift.
 
@@ -46,6 +50,7 @@ for `content_evidence()` and `plot(type = "distribution")`:
   mode.
 
 These ratings are constructed by hand rather than simulated, and
-`data-raw/build-walkthrough-panel.R` states what each item's ratings are built
-to show. It is a separate script so that the three mirrored files above never
-change.
+`data-raw/build-walkthrough-panel.R` in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw)
+states what each item's ratings are built to show. It is a separate script so
+that the three mirrored files above never change.

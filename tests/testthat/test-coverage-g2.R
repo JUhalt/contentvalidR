@@ -74,17 +74,17 @@ relevance_example <- function() {
 
 test_that("a judge-by-item table of text is refused", {
   m <- matrix(c("1", "0", "1", "1"), 2, dimnames = list(NULL, c("A", "B")))
-  expect_error(cvr(m), "Matrix input must contain numeric/logical 0/1 values",
+  expect_error(cvr(m), "`essential` must contain numeric or logical 0/1 values",
                fixed = TRUE)
   # A data frame with one text column becomes a text matrix too.
   df <- data.frame(A = c(1, 0), B = c("1", "1"))
-  expect_error(cvr(df), "Matrix input must contain numeric/logical 0/1 values",
+  expect_error(cvr(df), "`essential` must contain numeric or logical 0/1 values",
                fixed = TRUE)
 })
 
 test_that("a judge-by-item table with a rating other than 0 or 1 is refused", {
   m <- matrix(c(1, 0, 2, 1), 2, dimnames = list(NULL, c("A", "B")))
-  expect_error(cvr(m), "Matrix input must contain only 0/1 values.",
+  expect_error(cvr(m), "`essential` must contain only 0/1 values",
                fixed = TRUE)
 })
 
@@ -92,7 +92,7 @@ test_that("a judge-by-item table without judges or items is refused", {
   no_judges <- matrix(numeric(0), nrow = 0, ncol = 2,
                       dimnames = list(NULL, c("A", "B")))
   no_items <- matrix(numeric(0), nrow = 3, ncol = 0)
-  msg <- "Matrix input must contain at least one judge and one item."
+  msg <- "`essential` must contain at least one judge and one item."
   expect_error(cvr(no_judges), msg, fixed = TRUE)
   expect_error(cvr(no_items), msg, fixed = TRUE)
 })

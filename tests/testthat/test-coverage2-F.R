@@ -69,7 +69,7 @@ test_that("endpoints off whole numbers in opposite directions are refused", {
   # endpoint check passes it, and the run stops later, at the ratings.
   expect_error(
     rating_validity(rat, scale_min = 1 + 1e-8, scale_max = 5),
-    "Observed ratings must fall between `scale_min` and `scale_max`.",
+    "Ratings run from 1 to 5, outside `scale_min` = 1.00000001 to `scale_max` = 5.",
     fixed = TRUE
   )
   # Together the two errors leave 5 - 2e-8 anchors, which is not a whole

@@ -54,13 +54,16 @@ aikens_v <- function(ratings, lo, hi,
     stop("`lo` and `hi` are required: the lowest and highest points of the ",
          "rating scale, for example `lo = 1, hi = 4`.", call. = FALSE)
   }
-  .check_no_id_column(ratings, "ratings")
+  # Named as the user named it: `data` when expert_validity() calls this.
+  arg <- .argument("ratings")
+  .check_no_id_column(ratings, arg)
   R <- as.matrix(ratings)
 
   if (length(dim(R)) != 2L || nrow(R) < 1L || ncol(R) < 1L) {
-    stop("`ratings` must contain at least one judge and one item.", call. = FALSE)
+    stop(sprintf("`%s` must contain at least one %s and one item.", arg,
+                 .rater_noun()), call. = FALSE)
   }
-  if (!is.numeric(R)) stop("`ratings` must be numeric.", call. = FALSE)
+  if (!is.numeric(R)) .stop_not_numeric(ratings, arg, .rater_noun())
   if (!is.numeric(lo) || length(lo) != 1L || !is.finite(lo) ||
       !is.numeric(hi) || length(hi) != 1L || !is.finite(hi) || hi <= lo) {
     stop("`lo` and `hi` must be finite scalars with `hi > lo`.", call. = FALSE)

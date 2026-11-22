@@ -137,7 +137,8 @@
 #' @return An object of class `contentvalid_structure`, a list containing the
 #'   MDS `coordinates`, `clusters`, the `fit` table across dimensionalities, the
 #'   `stress` and `gof` of the retained solution, the `adjusted_rand` index and
-#'   `cross_tab` against the blueprint, `settings`, `design`, `status`, and an
+#'   `cross_tab` against the blueprint, `hclust`, the [stats::hclust()] fit
+#'   behind `clusters`, `settings`, `design`, `status`, and an
 #'   `interpretation`. `status` is `"Supported"` or `"Review"` by `ari_cut`,
 #'   `"Descriptive only"` without a blueprint, and `"Insufficient data"` when
 #'   the blueprint or the clustering has a single group, or when every item

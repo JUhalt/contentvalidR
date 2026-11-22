@@ -1,3 +1,125 @@
+# contentvalidR 1.0.1
+
+The update that goes to CRAN, which has 0.4.0; it is released on GitHub and
+R-universe first. Read it with the 1.0.0 notes below, which list every
+change since 0.10.1. 1.0.1 adds the table forms of APA style and the fixes
+from a last review before the CRAN submission. No computed value changes,
+and the handoff is unchanged.
+
+## APA table forms
+
+* The APA table from `content_report()` and its Markdown write numbers in
+  the table forms of APA style, as decided with nomologR, which follows the
+  same rules. A *p* cell reads `<.001` or `>.999`, without the space that a
+  sentence keeps ("*p* < .001"). A negative number takes the minus sign
+  (U+2212) instead of a hyphen, in the cells and in the table's note, so a
+  congruence table's lowest IOC reads −.50. The cells hold the minus in
+  every locale, so the table is the same everywhere. Printing it shows a
+  hyphen in a session whose locale is not UTF-8, and in a document knitted
+  to PDF, whose LaTeX engine stops at the minus; Markdown printed into such
+  a document as Markdown (`results = "asis"`) gets the minus of LaTeX
+  itself. The `"data.frame"` format, the printouts of the fits, and the
+  handoff are unchanged and stay ASCII.
+* The congruence table that a fit prints when its `target_ioc` column has
+  been removed writes its mean ratings, which run from -1 to 1, without a
+  leading zero, as APA asks for a value that cannot exceed 1.
+
+## Bug fixes
+
+* `expert_validity()` now checks `ioc_cut` in every mode, not only in
+  congruence mode. `ioc_cut` has been the tenth argument since 1.0.0, ahead
+  of `proportion_ci`. A call written for 0.4.0 that passed `proportion_ci`
+  by position therefore landed in `ioc_cut`, which the relevance and
+  essentiality modes ignored, and Wilson intervals were used without a
+  message. Such a call now stops and says to pass `proportion_ci` and the
+  arguments after it by name. Check any call that passes arguments by
+  position past `target_col`.
+* `sort_validity()`, `compute_psa()` and `compute_csv()` now stop when a
+  target construct never appears among the assigned constructs but matches
+  one ignoring case or as a number ("A" and "a", or 1 and "1.0"), and the
+  message names both sets of labels. Before, every target count was 0 and
+  every item was flagged for review, with no message. They also warn when
+  not one assignment in the data equals its item's target.
+* `expert_validity(mode = "congruence")` now stops when `target_col` names
+  a column the data do not have. Before, it described every item as if no
+  target had been given. Leaving `target_col` at its default, on data
+  without that column, still describes the items.
+* A lenient or severe judge's sentence in `judge_validity()` rounds the
+  severity half up, as the table beside it does.
+
+## Clearer messages
+
+* Errors from `expert_validity()` name `data`, the argument you passed, not
+  `ratings` or `essential`, the arguments of the `aikens_v()`, `cvr()` and
+  `ioc()` functions it calls. They also name the column at fault: a text
+  column (with a value that is not a number), a missing column in
+  congruence data, or essentiality ratings coded other than 0 and 1, which
+  are told to code essential as 1 and every other answer as 0.
+* When a judge-by-item table is not numeric, the error from
+  `expert_validity()`, `judge_validity()`, `panel_agreement()` and
+  `aikens_v()` names every column at fault and says the table needs one row
+  per judge and one column per item, so data with one row per rating must
+  be reshaped first.
+* A blank assigned construct in item-sort data gets an error that says to
+  code an item a judge did not sort as `NA`, for example with
+  `read.csv(file, na.strings = c("", "NA"))`.
+* `rating_validity()`, `htc()`, `htd()` and `judge_validity()` report
+  ratings outside the scale with the range observed and the bounds in
+  force, say which bounds are the defaults, and say which arguments to set.
+* `content_handoff()` and `content_report()` given a `content_evidence()`
+  result say that it combines stages and is not a fitted workflow, and
+  point to each stage's fit, to `$carried` for the carried items, and to
+  `as.data.frame()` for the evidence table.
+* `compare_rounds()` given a single list of fitted workflows says to pass
+  the fits as separate arguments or with `do.call(compare_rounds, fits)`.
+  Before, it said it needed at least two fits.
+* `content_report(include = "flagged")` with nothing flagged says "No items
+  were flagged for review." (or judges, or blueprint cells) where it said
+  "No units matched the requested selection.", and no longer points to a
+  Markdown table that does not exist.
+
+## Documentation
+
+* `?contentvalidR` gains a "Getting started" section naming
+  `vignette("getting-started")`, the workflow vignettes, and the example
+  files in `inst/extdata`.
+* `?sort_validity` and `?rating_validity` list the columns of
+  `scale_summary`. `benchmark_set` holds the benchmark's label in
+  `sort_validity()` and its code in `rating_validity()`; each page says
+  which, with the codes and labels, and points to `interpret_colquitt()`,
+  which returns both.
+* `?sort_validity` says that an item a judge did not sort is coded `NA`,
+  and that a blank label is an error. `?expert_validity` says that a
+  `target_col` given by name that the data lack is an error.
+* `?compare_rounds`, `?content_evidence`, `?sort_power` and
+  `?content_structure` name every component they return; the methods page
+  points to its summary() section below, not above; and `?expert_power`
+  writes .50 without a leading zero.
+* The glossary's `share` is a proportion from 0 to 1, printed as a
+  percentage, as `domain_validity()` stores it.
+* `vignette("reading-output")` says when an item is fragile in the panel
+  size's terms, with the page's own example; lists `delphi_validity()`
+  among the workflows with one row per item; and says where the APA table
+  of `content_report()` follows the table forms of APA style while the
+  printouts keep `< .001` and the hyphen.
+* The vignettes show every line a reader needs to rerun them: the helper
+  that reads an example file, and the seed behind the construct-rating
+  data. Sentences in the reporting scaffolds no longer open with a numeral,
+  as APA asks, and their hand-built tables write `<.001` and `>.999`.
+* `vignette("one-item-set-both-stages")` names the three items that do not
+  behave as the panel expected (`EF4`, `TF4`, and `EF3`), and the README in
+  `inst/extdata` describes all seven items that set a test.
+* The scripts that generate the example data are named as living in the
+  source repository, with a link, since the CRAN package does not carry
+  them.
+* Reference lists: the reporting-examples vignette lists Polit et al.
+  (2007), which it cites; the README and `inst/REFERENCES.bib` list the APA
+  Publication Manual, which `vignette("reading-output")` cites; the README
+  shows "[Facets help]" as text, where GitHub drew it as a formula; and
+  `vignette("reading-output")` gives the full DOI of Newcombe (1998).
+* Two headings under 0.0.4.9000 in this file are now second-level, so
+  `news()` shows the four sections they head.
+
 # contentvalidR 1.0.0
 
 The first stable release, released on the same day as nomologR 1.0.0
@@ -2560,13 +2682,13 @@ for workflow objects.
 
 # contentvalidR 0.0.4.9000
 
-### Final visualization polish
+## Final visualization polish
 
 - Deterministically stagger nearby target-scale labels on Psa/Csv and HTC/HTD evidence maps so similar scale means remain legible without manual annotation.
 - Draw the exact critical-Psa planning view as an integer-N step function, with requested design points overlaid, to reflect the discrete binomial retention rule rather than implying smooth interpolation.
 - Added regression tests for map-label separation and the full integer critical-Psa curve.
 
-### Visualization polish
+## Visualization polish
 
 - Tightened default axis labels and plot keys so diagnostic graphics remain readable in smaller RStudio plotting panes.
 - Moved profile/expert plot keys into reserved top space and moved item-sort power keys to a low-conflict location.

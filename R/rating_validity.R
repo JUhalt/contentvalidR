@@ -201,8 +201,7 @@
 #'   degrees of freedom, where a correction applies (see [anova_content()]);
 #'   `p_omnibus`, `df1` and `df2` are the uncorrected test; and
 #'   `max_contrast_p` is the largest *p* among the planned contrasts, `NA`
-#'   when a contrast has no *p*. In `scale_summary`, `n_htc` and `n_htd` count
-#'   the items in each mean. `print()`, `summary()`, and `plot()` are
+#'   when a contrast has no *p*. `print()`, `summary()`, and `plot()` are
 #'   described in [contentvalid-methods].
 #'
 #'   **Results columns.** `results` has one row per item:
@@ -246,6 +245,46 @@
 #'     \item{`interpretation`}{The decision explained in a sentence.}
 #'     \item{`status`}{The shared status: `"Supported"` for `"Retain"`,
 #'       `"Review"`, or `"Insufficient data"`.}
+#'   }
+#'
+#'   **Scale-summary columns.** `scale_summary` has one row per target
+#'   construct:
+#'   \describe{
+#'     \item{`target`}{The target construct.}
+#'     \item{`n_items`}{Items written for it.}
+#'     \item{`n_htc`, `n_htd`}{Items in mean HTC and in mean HTD: those whose
+#'       index rests on at least two judges (`n_target` for HTC, `n_complete`
+#'       for HTD).}
+#'     \item{`n_retain`, `n_review`, `n_insufficient`}{Items whose
+#'       `recommendation` is `"Retain"`, `"Review"`, or
+#'       `"Insufficient data"`.}
+#'     \item{`mean_htc`, `mean_htd`}{Mean HTC and mean HTD over those items.}
+#'     \item{`htc_strength`, `htd_strength`}{The Colquitt et al. (2019) level
+#'       of each mean: `"Very Strong"`, `"Strong"`, `"Moderate"`, `"Weak"`, or
+#'       `"Lack of"`; `NA` for expert judges or when there is no mean.}
+#'     \item{`n_definitions`}{The number of construct definitions the
+#'       target's items were rated against, the largest among its items.
+#'       Colquitt et al.'s (2019) norms come from tasks that offered three.}
+#'     \item{`orbiting_r`}{The focal-orbiting correlation that chose the
+#'       benchmark set; `NA` when `orbiting_r` was not given.}
+#'     \item{`benchmark_set`}{The Colquitt et al. (2019) benchmark set behind
+#'       the levels, stored here as its short code: `"overall"` when
+#'       `orbiting_r` was not given, and otherwise `"weaker"` (*r* of .34 or
+#'       less), `"moderate"` (above .34 to .50), or `"stronger"` (above .50).
+#'       The printout shows each code's label: `"overall"` prints as
+#'       `"Overall (not correlation-normed)"`, `"weaker"` as
+#'       `"Weaker focal-orbiting correlation (r <= .34)"`, `"moderate"` as
+#'       `"More moderate focal-orbiting correlation (.35-.50)"`, and
+#'       `"stronger"` as `"Stronger focal-orbiting correlation (r >= .51)"`.
+#'       The column of the same name from [sort_validity()] holds the label
+#'       instead, so code that reads both workflows should not compare the
+#'       two columns directly.
+#'       [colquitt_benchmarks()] and [interpret_colquitt()] return both
+#'       forms, the code as `benchmark_set` and the label as
+#'       `benchmark_label`.}
+#'     \item{`evidence`}{The scale-level reading in words: the band of each
+#'       mean, with this package's advice when the lower band is below
+#'       Strong, or why no band is given.}
 #'   }
 #'
 #' @references
@@ -292,7 +331,8 @@ rating_validity <- function(ratings,
   judge_type <- .choose(judge_type)
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
-  anchors <- .validate_rating_scale(scale_min, scale_max, d$rating)
+  anchors <- .validate_rating_scale(scale_min, scale_max, d$rating,
+                                    c(missing(scale_min), missing(scale_max)))
   construct_counts <- vapply(split(d, d$item, drop = TRUE),
                              function(z) length(unique(z$construct)), integer(1))
   too_few <- names(construct_counts)[construct_counts < 2L]

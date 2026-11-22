@@ -145,7 +145,10 @@
 #' lower of the two bands, is labeled as this package's suggestion, not
 #' Colquitt et al.'s.
 #'
-#' @param assignments A data.frame containing item-sort responses.
+#' @param assignments A data.frame containing item-sort responses. Code an
+#'   item a judge did not sort as `NA` in the assigned-construct column: a
+#'   blank label is an error. `read.csv(file, na.strings = c("", "NA"))`
+#'   reads blank cells as `NA`.
 #' @param item_col,rater_col,assigned_col,target_col Column names for the item,
 #'   rater, assigned construct, and intended target construct.
 #' @param p0 Null target-assignment probability for the exact binomial test.
@@ -217,6 +220,45 @@
 #'     \item{`interpretation`}{The decision explained in a sentence.}
 #'     \item{`status`}{The shared status: `"Supported"` for `"Retain"`,
 #'       `"Review"`, or `"Insufficient data"`.}
+#'   }
+#'
+#'   **Scale-summary columns.** `scale_summary` has one row per target
+#'   construct:
+#'   \describe{
+#'     \item{`target`}{The target construct.}
+#'     \item{`n_items`}{Items written for it.}
+#'     \item{`n_items_usable`}{Items with both a Psa and a Csv, the items
+#'       behind the two means.}
+#'     \item{`n_retain`, `n_review`}{Items whose `recommendation` is
+#'       `"Retain"` or `"Review"`.}
+#'     \item{`mean_psa`, `mean_csv`}{Mean Psa and mean Csv over the usable
+#'       items.}
+#'     \item{`psa_strength`, `csv_strength`}{The Colquitt et al. (2019) level
+#'       of each mean: `"Very Strong"`, `"Strong"`, `"Moderate"`, `"Weak"`, or
+#'       `"Lack of"`; `NA` for expert judges or when there is no mean.}
+#'     \item{`orbiting_r`}{The focal-orbiting correlation that chose the
+#'       benchmark set; `NA` when `orbiting_r` was not given.}
+#'     \item{`benchmark_set`}{The Colquitt et al. (2019) benchmark set behind
+#'       the levels, stored here as its label:
+#'       `"Overall (not correlation-normed)"` when `orbiting_r` was not given,
+#'       and otherwise `"Weaker focal-orbiting correlation (r <= .34)"`,
+#'       `"More moderate focal-orbiting correlation (.35-.50)"`, or
+#'       `"Stronger focal-orbiting correlation (r >= .51)"`. The column of the
+#'       same name from [rating_validity()] holds the short code instead
+#'       (`"overall"`, `"weaker"`, `"moderate"`, or `"stronger"`), so code
+#'       that reads both workflows should not compare the two columns
+#'       directly. [colquitt_benchmarks()] and [interpret_colquitt()] return
+#'       both forms, the code as `benchmark_set` and the label as
+#'       `benchmark_label`.}
+#'     \item{`benchmark_applicable`}{Whether the Colquitt et al. (2019) levels
+#'       apply: `FALSE` for expert judges.}
+#'     \item{`n_definitions`}{The number of construct definitions judges
+#'       could choose among: `n_constructs` when given, otherwise the number
+#'       of constructs that appear in the data. Colquitt et al.'s (2019)
+#'       norms come from tasks that offered three.}
+#'     \item{`evidence`}{The scale-level reading in words: the band of each
+#'       mean, with this package's advice when the lower band is below
+#'       Strong, or why no band is given.}
 #'   }
 #'
 #' @section Earlier methods, for comparison:
@@ -311,9 +353,15 @@ sort_validity <- function(assignments,
   }
   invisible(.critical_target_count(1L, p0 = p0, alpha = alpha))
 
-  psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
-                     ci = proportion_ci, alpha = alpha)
-  csv <- compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
+  # The call to .prepare_sort_assignments() below warns, once, when no
+  # assignment matches its target; these two would repeat it.
+  psa <- .without_target_warning(
+    compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
+                ci = proportion_ci, alpha = alpha)
+  )
+  csv <- .without_target_warning(
+    compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
+  )
   # The components print as formatted tables; the workflow's results must not.
   psa <- .untag_component(psa)
   csv <- .untag_component(csv)

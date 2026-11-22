@@ -52,8 +52,9 @@ every rating would count as relevant.}
 \item{na.rm}{Permit itemwise/cellwise missing ratings where supported.}
 
 \item{target_col}{In congruence mode, optional column identifying each
-item's intended objective. If absent, every item-objective index is
-described and no decision is made.}
+item's intended objective. If \code{data} has no column of the default name,
+every item-objective index is described and no decision is made; a name
+given explicitly that is not a column of \code{data} is an error.}
 
 \item{ioc_cut}{In congruence mode, the lowest index of item-objective
 congruence that counts as congruent. The default, .70, is the criterion

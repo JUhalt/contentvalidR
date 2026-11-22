@@ -22,7 +22,7 @@ APA requires.}
 \code{"markdown"}, the same table as Markdown lines; or \code{"data.frame"}, the
 selected columns as rounded numbers under their names in \code{results}, for
 further computation. In the data frame, \emph{p} values are rounded to three
-decimals, so one below .0005 becomes 0: report it as \verb{< .001}, as the APA
+decimals, so one below .0005 becomes 0: report it as \verb{<.001}, as the APA
 table does, or take the exact value from \code{x$results}.}
 
 \item{include}{\code{"all"} (default) or \code{"flagged"}, which keeps only units whose
@@ -45,8 +45,10 @@ table, carrying the analysis provenance as its \code{"settings"} attribute.
 Formats a fitted workflow's results as a compact table for a manuscript or a
 Quarto or R Markdown document. By default the table is written in APA style
 (7th ed.): readable column headings, two decimals, no leading zero on values
-that cannot exceed 1, \emph{p} values to three decimals or \verb{< .001}, and intervals
-as \verb{[LL, UL]} under a heading that names their level.
+that cannot exceed 1, \emph{p} values to three decimals or \verb{<.001} (\verb{>.999} for
+one that would round to 1), negative numbers with a true minus sign
+(U+2212) rather than a hyphen, and intervals as \verb{[LL, UL]} under a heading
+that names their level.
 
 Markdown output is generated directly, so no reporting package is required to
 use it. Nothing in the core analysis depends on one.
@@ -73,9 +75,23 @@ decimals.
 \section{Changed in 1.0.0}{
 
 Numbers in \code{format = "data.frame"} round half up, as the APA table does,
-so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
-own rounding gave 0.62. The APA table prints under a header and carries
+so an exact tie such as 5 of 8 judges (.625) is .63 in both, where R's
+own rounding gave .62. The APA table prints under a header and carries
 its general note as the \code{"note"} attribute.
+}
+
+\section{Changed in 1.0.1}{
+
+The APA table and its Markdown write numbers in the table forms of APA
+style: a \emph{p} cell reads \verb{<.001} or \verb{>.999}, without the space that
+sentences keep ("\emph{p} < .001"), and a negative number takes the minus sign
+(U+2212), in the cells and in the note. The cells hold the minus whatever
+the locale, so the table is the same everywhere. Printing it shows a
+hyphen instead in a session whose locale is not UTF-8 and in a document
+knitted to PDF, where LaTeX would stop at the minus; Markdown printed into
+such a document as Markdown (\code{results = "asis"}) gets the minus of LaTeX
+itself. The \code{"data.frame"} format, the fit's printouts, and the handoff
+are unchanged.
 }
 
 \section{Reporting the decision rules}{

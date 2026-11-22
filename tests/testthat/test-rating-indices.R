@@ -40,7 +40,8 @@ test_that("rating indices reject duplicate item-rater-construct rows", {
 test_that("rating indices validate scale endpoints and observed ratings", {
   d <- expand.grid(item = "I1", rater = 1:2, construct = c("A", "B"))
   d$rating <- c(5,4,2,2)
-  expect_error(htc(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 4), "between")
+  expect_error(htc(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 4),
+               "outside `scale_min` = 1 to `scale_max` = 4", fixed = TRUE)
   expect_error(htc(d, target_map = c(I1 = "A"), scale_min = 1, scale_max = 4.5), "integer anchor")
 })
 

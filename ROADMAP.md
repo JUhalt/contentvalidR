@@ -871,15 +871,17 @@ reads no handoffs and takes no part in the joint 1.0.
         is tested against stored producer output from contentvalidR 0.6.0
         through 1.0.0.
   - [x] schema version 1 is frozen and becomes a compatibility promise (0.7.0).
-  - [ ] both packages are on CRAN. contentvalidR 0.4.0 was accepted and
-        published on 2026-09-28
+  - [x] both packages are released at 1.0.0 on GitHub and R-universe. The
+        criterion first read "both packages are on CRAN"; the maintainer
+        decided on 2026-10-09 that 1.0.0 does not wait for CRAN, and
+        nomologR#53 was reworded to match. contentvalidR 0.4.0 was accepted
+        and published on 2026-09-28
         ([#14](https://github.com/JUhalt/contentvalidR/issues/14), closed).
         CRAN returned nomologR 0.3.0 on 2026-10-08 with two requests (no
         default paths for written files, no changes to the global
-        environment); its resubmission is pending. The maintainer decided on
-        2026-10-09 that 1.0.0 does not wait for this: the joint 1.0.0 goes
-        out as GitHub releases, which R-universe builds, and the CRAN
-        submissions follow it (see the timeline).
+        environment), and both packages met them before 1.0.0. The CRAN
+        submissions follow 1.0.0, starting with contentvalidR 1.0.1 (see
+        v1.0.1 below).
   - [x] both public APIs are stable, under a written deprecation policy, as far
         as this package goes (0.7.0). `anova_content()`'s `posthoc_pass`
         column was removed in 0.8.0. `agreement_summary()`, the one function
@@ -902,8 +904,8 @@ reads no handoffs and takes no part in the joint 1.0.
   call can leave the session's random stream alone without writing to the
   global environment. The handoff kept schema version 1 and its columns.
 - The timeline, as the maintainer set it on 2026-09-28 and settled with
-  nomologR on 2026-09-29, with the dates he moved on 2026-11-16 and
-  2026-11-20:
+  nomologR on 2026-09-29, with the dates the maintainer moved on 2026-11-16
+  and 2026-11-20:
   - **Release candidates.** Both packages use one scheme: `DESCRIPTION` says
     0.99.N for the git tag `v1.0.0-rc.(N+1)`, so 0.99.0 for `v1.0.0-rc.1`
     and 0.99.1 for `rc.2` if another round is needed. No two candidates share
@@ -1023,6 +1025,48 @@ reads no handoffs and takes no part in the joint 1.0.
         `plot(which = "distribution")` for Delphi studies draw every rating
         as diverging stacked bars (Heiberger & Robbins, 2014), split at the
         cut the decision rule counts.
+
+***
+
+## v1.0.1 - APA number forms and the CRAN update
+
+**Status:** In progress
+**Version:** `1.0.1`
+**Milestone:** [v1.0.1](https://github.com/JUhalt/contentvalidR/milestone/9)
+
+The release that goes to CRAN as the update from 0.4.0, on GitHub and
+R-universe first, as the maintainer decided on 2026-10-09. nomologR's first
+CRAN submission follows it.
+
+- [x] Print numbers in the forms of APA style, as the maintainer decided on
+      2026-11-22 for both packages. In October both had kept three forms for
+      1.0 (nomologR's audit items apa-7, apa-12, and apa-13), and nomologR's
+      review before CRAN reopened them. Agreed with nomologR, which follows
+      the same rules:
+  - [x] no leading zero for any statistic that cannot exceed 1 (the console
+        already followed it; one fallback table and one help page did not);
+  - [x] "<.001" and ">.999" in the cells of the APA table from
+        `content_report()`, with "p < .001" kept in sentences, notes and
+        the console;
+  - [x] a true minus sign for negative numbers in that table and its note.
+        The console printouts, the numbers, and the handoff stay ASCII; a
+        console that is not UTF-8, and a document knitted to PDF, get a
+        hyphen or LaTeX's own minus.
+- [x] Fix what a last review before CRAN finds: CRAN policy, help pages and
+      examples, vignettes and README, and use by a first-time user. Four
+      lenses found 40 points, two refuted on checking and none blocking.
+      The fixes are in `NEWS.md`: two silent wrong results (item sorts whose
+      two label columns are coded differently, and a misspelled
+      `target_col`), a positional-argument trap for code written for 0.4.0,
+      clearer error messages, and corrected help pages and vignettes.
+      Left for a later release, because each changes a documented value:
+      one form for `benchmark_set` in the two workflows (each help page now
+      says which form it holds), one separator for tied competitors, and,
+      jointly with nomologR, which columns the shared table printer drops
+      first on a narrow console.
+- [ ] Submit 1.0.1 to CRAN once its checks are clean, and update the README
+      and `tools/cran-release-date` when CRAN accepts it
+      ([#107](https://github.com/JUhalt/contentvalidR/issues/107)).
 
 ***
 

@@ -223,7 +223,7 @@ panel_agreement <- function(ratings,
   .check_no_id_column(ratings, "ratings")
   X <- as.matrix(ratings)
   if (is.logical(X)) storage.mode(X) <- "numeric"
-  if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
+  if (!is.numeric(X)) .stop_not_numeric(ratings, "ratings", "rater")
   if (any(is.infinite(X))) stop("`ratings` cannot contain infinite values.", call. = FALSE)
   if (nrow(X) < 2L || ncol(X) < 2L) {
     stop("`ratings` needs at least two raters (rows) and two items (columns).",
