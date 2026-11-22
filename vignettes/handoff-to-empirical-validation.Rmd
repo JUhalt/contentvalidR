@@ -191,7 +191,9 @@ held-back items went. `item_evidence` is the table behind that sentence, and
 
 ```{r reporting}
 ev <- handoff$item_evidence
-sprintf("%d of %d items were carried forward (%s); %d were held back.",
-        length(handoff$items), length(unique(ev$item)),
+# APA spells out a number that opens a sentence, so the sentence opens with
+# a word.
+sprintf("Of %d items, %d were carried forward (%s); %d were held back.",
+        length(unique(ev$item)), length(handoff$items),
         paste(handoff$provenance$keep, collapse = ", "), sum(!ev$carried))
 ```

@@ -9,7 +9,6 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
-set.seed(12)
 ```
 
 ```{r setup}
@@ -30,6 +29,7 @@ That design provides two complementary kinds of evidence:
 ## Example data
 
 ```{r data}
+set.seed(12)
 rating_dat <- expand.grid(
   item = c("A1", "A2", "A3", "B1"),
   rater = 1:24,
@@ -89,15 +89,16 @@ aov_out <- anova_content(rating_dat, design = "within")
 aov_out
 ```
 
-The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean? `attr(aov_out, "contrasts")` holds each contrast at full precision. Rounded for reading, with *p* values written the APA way:
+The omnibus F test asks whether the item's mean ratings differ somewhere across definitions. The planned contrasts ask the more direct content-validity question: is the target mean higher than each orbiting mean? `attr(aov_out, "contrasts")` holds each contrast at full precision. Rounded for reading, with *p* values written as an APA table writes them, `<.001` below .001 and `>.999` for one that would round to 1:
 
 ```{r contrasts}
 contrasts <- attr(aov_out, "contrasts")
 shown <- contrasts[c("item", "target", "competitor", "mean_diff", "t", "df",
                      "p", "dz", "pass")]
 shown[c("mean_diff", "t", "dz")] <- round(shown[c("mean_diff", "t", "dz")], 2)
-shown$p <- ifelse(shown$p < .001, "< .001",
-                  sub("^0", "", sprintf("%.3f", shown$p)))
+p_text <- sub("^0", "", sprintf("%.3f", shown$p))
+shown$p <- ifelse(shown$p < .001, "<.001",
+                  ifelse(p_text == "1.000", ">.999", p_text))
 shown
 ```
 

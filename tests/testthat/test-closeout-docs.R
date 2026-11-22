@@ -310,7 +310,7 @@ test_that("vignette tables print rounded, and the p0 caveat is stated", {
     stringsAsFactors = FALSE
   ), design = "within")
   run_chunks(rating, "contrasts", env)
-  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|1[.]000)$", env$shown$p)))
+  expect_true(all(grepl("^(<[.]001|[.][0-9]{3}|>[.]999)$", env$shown$p)))
   for (col in c("mean_diff", "t", "dz")) {
     v <- env$shown[[col]]
     expect_true(all(abs(v * 100 - round(v * 100)) < 1e-8), info = col)
