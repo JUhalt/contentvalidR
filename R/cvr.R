@@ -60,14 +60,27 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     stop("`alpha` must be one finite number between 0 and 1.", call. = FALSE)
   }
 
+  # Named as the user named it: `data` when expert_validity() calls this.
+  arg <- .argument("essential")
   if (is.matrix(essential) || is.data.frame(essential)) {
-    .check_no_id_column(essential, "essential")
+    .check_no_id_column(essential, arg)
     X <- as.matrix(essential)
+    recode <- "Code essential as 1 and every other answer as 0."
     if (!is.numeric(X) && !is.logical(X)) {
-      stop("Matrix input must contain numeric/logical 0/1 values.", call. = FALSE)
+      which_cols <- .text_columns_phrase(essential)
+      stop(sprintf("`%s` must contain numeric or logical 0/1 values%s. %s",
+                   arg, if (is.null(which_cols)) "" else
+                     paste0(", but ", which_cols), recode), call. = FALSE)
     }
     bad <- !is.na(X) & !(X %in% c(0, 1))
-    if (any(bad)) stop("Matrix input must contain only 0/1 values.", call. = FALSE)
+    if (any(bad)) {
+      cols <- which(colSums(bad) > 0L)
+      stop(sprintf("`%s` must contain only 0/1 values, but %s %s %s other values (%s). %s",
+                   arg, if (length(cols) > 1L) "columns" else "column",
+                   .list_some(.column_labels(X, cols)),
+                   if (length(cols) > 1L) "hold" else "holds",
+                   .list_some(sort(unique(X[bad]))), recode), call. = FALSE)
+    }
     if (!isTRUE(na.rm) && anyNA(X)) {
       stop("Missing ratings found. Use `na.rm = TRUE` for itemwise deletion.", call. = FALSE)
     }
@@ -88,12 +101,13 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     }
     essential <- as.numeric(essential)
     if (length(essential) < 1L || any(!is.finite(essential))) {
-      stop("`essential` must contain finite counts.", call. = FALSE)
+      stop(sprintf("`%s` must contain finite counts.", arg), call. = FALSE)
     }
     if (is.null(N)) stop("`N` is required for count-vector input.", call. = FALSE)
     if (length(N) == 1L) N <- rep(N, length(essential))
     if (length(N) != length(essential)) {
-      stop("`N` must be scalar or have the same length as `essential`.", call. = FALSE)
+      stop(sprintf("`N` must be scalar or have the same length as `%s`.", arg),
+           call. = FALSE)
     }
     N <- as.numeric(N)
     if (is.null(item_names)) item_names <- paste0("Item", seq_along(essential))

@@ -377,7 +377,7 @@ judge_validity <- function(ratings,
     stop("`ratings` must have at least one judge (row) and one item (column).",
          call. = FALSE)
   }
-  if (!is.numeric(X)) stop("`ratings` must be numeric.", call. = FALSE)
+  if (!is.numeric(X)) .stop_not_numeric(ratings, "ratings", "judge")
   if (any(is.infinite(X))) stop("`ratings` cannot contain infinite values.", call. = FALSE)
   if (!na.rm && anyNA(X)) {
     stop("`ratings` contains missing values; set `na.rm = TRUE` to allow them.",
@@ -385,7 +385,9 @@ judge_validity <- function(ratings,
   }
   outside <- !is.na(X) & (X < lo | X > hi)
   if (any(outside)) {
-    stop("`ratings` contains values outside the [lo, hi] scale bounds.", call. = FALSE)
+    stop(.out_of_scale_message(X, lo, hi, c("lo", "hi"),
+                               c(missing(lo), missing(hi)), who = "judges"),
+         call. = FALSE)
   }
   if (is.null(rownames(X))) rownames(X) <- paste0("Judge", seq_len(nrow(X)))
   if (is.null(colnames(X))) colnames(X) <- paste0("Item", seq_len(ncol(X)))

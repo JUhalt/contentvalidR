@@ -155,10 +155,11 @@ test_that("malformed inputs are rejected", {
 
   out_of_range <- X
   out_of_range[1, 1] <- 9
-  expect_error(judge_validity(out_of_range, lo = 1, hi = 4), "outside the \\[lo, hi\\] scale bounds")
+  expect_error(judge_validity(out_of_range, lo = 1, hi = 4), "outside `lo` = 1 to `hi` = 4",
+               fixed = TRUE)
 
   expect_error(judge_validity(matrix(letters[1:12], nrow = 3), lo = 1, hi = 4),
-               "must be numeric")
+               "must hold numeric ratings")
 })
 
 test_that("very small panels degrade without error", {

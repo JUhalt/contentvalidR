@@ -353,6 +353,18 @@ expert_validity <- function(data,
   agreement_level <- .choose(agreement_level)
   .validate_flag(na.rm, "na.rm")
   .validate_flag(legacy, "legacy")
+  # Checked in every mode, though only congruence mode uses it: `ioc_cut`
+  # entered the signature in 1.0.0 ahead of `proportion_ci`, so a call that
+  # passes `proportion_ci` by position, as 0.4.0 took it, lands here and must
+  # stop rather than be ignored.
+  if (!is.numeric(ioc_cut) || length(ioc_cut) != 1L || !is.finite(ioc_cut) ||
+      ioc_cut <= 0 || ioc_cut > 1) {
+    stop("`ioc_cut` must be one number above 0 and at most 1.",
+         if (is.character(ioc_cut)) {
+           paste0(" It is the 10th argument, after `target_col`, so pass ",
+                  "`proportion_ci` and the arguments after it by name.")
+         }, call. = FALSE)
+  }
 
   if (mode == "relevance") {
     if (!is.numeric(lo) || length(lo) != 1L || !is.finite(lo) ||
@@ -364,8 +376,13 @@ expert_validity <- function(data,
 
     .check_no_id_column(data, "data")
     R <- as.matrix(data)
-    aiken <- .untag_component(aikens_v(R, lo = lo, hi = hi, ci = "score",
-                                       alpha = alpha, na.rm = na.rm))
+    # aikens_v() is given `data` rather than R, so an error can name the
+    # column that is not numeric, which as.matrix() hides.
+    aiken <- .untag_component(.as_argument(
+      aikens_v(data, lo = lo, hi = hi, ci = "score", alpha = alpha,
+               na.rm = na.rm),
+      "data", rater = "expert"
+    ))
     B <- ifelse(is.na(R), NA_real_, as.numeric(R >= relevance_cut))
     dim(B) <- dim(R)
     dimnames(B) <- dimnames(R)
@@ -479,7 +496,9 @@ expert_validity <- function(data,
     )
   } else if (mode == "essentiality") {
     if (is.matrix(data) || is.data.frame(data)) .check_no_id_column(data, "data")
-    res <- .untag_component(cvr(data, N = N, alpha = alpha, na.rm = na.rm))
+    res <- .untag_component(.as_argument(
+      cvr(data, N = N, alpha = alpha, na.rm = na.rm), "data", rater = "expert"
+    ))
     # With very few experts no count can reach alpha (4 of 4 gives p = .0625),
     # so no decision is possible, whatever the experts said.
     too_few <- res$N >= 1L & is.na(res$critical_ne)
@@ -543,16 +562,21 @@ expert_validity <- function(data,
     if (!is.data.frame(data)) {
       stop("Congruence mode requires a long data.frame.", call. = FALSE)
     }
-    if (!is.numeric(ioc_cut) || length(ioc_cut) != 1L || !is.finite(ioc_cut) ||
-        ioc_cut <= 0 || ioc_cut > 1) {
-      stop("`ioc_cut` must be one number above 0 and at most 1.", call. = FALSE)
-    }
-    cells <- .untag_component(ioc(data, na.rm = na.rm))
+    cells <- .untag_component(.as_argument(ioc(data, na.rm = na.rm), "data"))
     if (!is.character(target_col) || length(target_col) != 1L || is.na(target_col) ||
         !nzchar(trimws(target_col))) {
       stop("`target_col` must be one non-empty column name.", call. = FALSE)
     }
     has_target <- target_col %in% names(data)
+    # Without the default column the items are described, as documented; a
+    # name the user gave and the data lack is a mistake, not a choice.
+    if (!has_target && !missing(target_col)) {
+      stop(sprintf("`target_col` = \"%s\" is not a column of `data` (columns: %s).",
+                   target_col, .list_some(names(data), 10L)),
+           " Give the column that holds each item's intended objective, or ",
+           "leave `target_col` out to describe every item-objective index.",
+           call. = FALSE)
+    }
     items <- unique(cells$item)
     by_item <- split(cells, factor(cells$item, levels = items))
 
