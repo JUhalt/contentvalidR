@@ -311,5 +311,8 @@ test_that("every pointer to a data-raw script says it is in the source repositor
     }
     expect_false(any(grepl("package sources", doc, fixed = TRUE)))
   }
-  expect_identical(n, 8L)
+  # Three pointers in the extdata README and five in the vignettes. An
+  # installed package built without its vignettes (as covr installs it)
+  # carries only the README.
+  expect_identical(n, if (length(vignette_sources())) 8L else 3L)
 })
