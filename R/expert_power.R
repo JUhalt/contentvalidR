@@ -43,7 +43,7 @@
 #' @param n_experts Panel sizes to evaluate.
 #' @param prob Probability that one expert endorses the item, as relevant
 #'   (`criterion = "cvi"`) or essential (`criterion = "cvr"`). Values well below
-#'   0.5 describe items the panel largely rejects.
+#'   .50 describe items the panel largely rejects.
 #' @param criterion `"cvi"` uses Lynn's (1986) panel-size criterion for the
 #'   I-CVI: every expert must agree with three to five, one may disagree from
 #'   six, and two from nine (7 of 9, the .78 usually quoted). Beyond ten

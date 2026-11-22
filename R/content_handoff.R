@@ -811,7 +811,7 @@
 #'     `item`, `statistic`, `value`, `criterion` (`NA` when the method sets
 #'     no explicit criterion), and `round`. Which statistics carry a criterion
 #'     depends on the workflow rather than on the statistic alone: modified
-#'     kappa carries 0.74 from [expert_validity()], and none from a Delphi
+#'     kappa carries .74 from [expert_validity()], and none from a Delphi
 #'     handoff, which decides on the consensus threshold. From contentvalidR
 #'     0.7.0 it also carries `note`, described under "The note column". From
 #'     contentvalidR 0.5.0 it also
@@ -999,7 +999,7 @@
 #' round's [expert_validity()] fit, with intervals: `I-CVI` against the
 #' consensus threshold, `Aiken's V`, and `modified kappa`. Modified kappa
 #' carries no criterion here, because a Delphi decides on the consensus
-#' threshold rather than on the 0.74 rule that [expert_validity()] applies.
+#' threshold rather than on the .74 rule that [expert_validity()] applies.
 #'
 #' Two more statistics record whether the panel had stopped moving:
 #' `proportion unchanged`, and the stability statistic that ran, named for its

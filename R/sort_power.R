@@ -18,11 +18,20 @@
 #'   the judges are subject-matter experts.
 #' @param alpha Significance level. Default `0.05`.
 #'
-#' @return An object of class `contentvalid_sort_power` containing an exact
-#'   planning table. When a panel is too small for any count to reach `alpha`
-#'   (four or fewer judges at the defaults), `critical_n_target` and
-#'   `minimum_observed_psa` are `NA` and `power` is 0: no item can be retained
-#'   at that size.
+#' @return An object of class `contentvalid_sort_power`, a list with:
+#'   \describe{
+#'     \item{`table`}{the exact planning table, a data frame with one row per
+#'       combination of `N` and `true_p`. Its columns are `N`, the judge
+#'       sample size; `true_p`, the assumed probability; `critical_n_target`,
+#'       the fewest target assignments that meet the criterion with `N`
+#'       judges; `minimum_observed_psa`, that count as a share of `N`, the
+#'       smallest Psa that can meet it; and `power`, the exact probability
+#'       that an item meets it.}
+#'     \item{`settings`}{a list of `p0` and `alpha`, as given.}
+#'   }
+#'   When a panel is too small for any count to reach `alpha` (four or fewer
+#'   judges at the defaults), `critical_n_target` and `minimum_observed_psa`
+#'   are `NA` and `power` is 0: no item can be retained at that size.
 #'
 #' @references
 #' Howard, M. C., & Melloy, R. C. (2016). Evaluating item-sort task methods:
