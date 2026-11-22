@@ -214,6 +214,19 @@
 #' @export
 compare_rounds <- function(..., labels = NULL) {
   rounds <- list(...)
+  # A list is the natural container for round fits (delphi_validity() keeps
+  # them in one), but the fits are the arguments, so a list of them is
+  # answered with how to pass it rather than taken as one fit.
+  if (length(rounds) == 1L && is.list(rounds[[1L]]) &&
+      !inherits(rounds[[1L]], "contentvalid_workflow") &&
+      length(rounds[[1L]]) >= 1L &&
+      all(vapply(rounds[[1L]], inherits, logical(1),
+                 what = "contentvalid_workflow"))) {
+    stop("`compare_rounds()` was given one list of ", length(rounds[[1L]]),
+         " fitted workflow", if (length(rounds[[1L]]) > 1L) "s", ". Pass the ",
+         "fits as separate arguments, or use do.call(compare_rounds, fits).",
+         call. = FALSE)
+  }
   if (length(rounds) < 2L) {
     stop("`compare_rounds()` needs at least two fitted workflow objects.",
          call. = FALSE)

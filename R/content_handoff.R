@@ -1166,6 +1166,9 @@ content_handoff <- function(fit, keep = "Supported", round = 1,
                             reverse_keyed = NULL, response_scale = NULL) {
   item_classes <- c("contentvalid_sort", "contentvalid_rating",
                     "contentvalid_expert", "contentvalid_delphi")
+  if (inherits(fit, "contentvalid_evidence")) {
+    stop(.evidence_not_fit("fit"), call. = FALSE)
+  }
   if (!inherits(fit, item_classes, which = FALSE)) {
     stop("`fit` must be a sort, rating, expert-panel, or Delphi workflow ",
          "object. judge_validity() and domain_validity() results describe ",
