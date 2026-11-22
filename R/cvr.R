@@ -69,8 +69,7 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
     if (!is.numeric(X) && !is.logical(X)) {
       which_cols <- .text_columns_phrase(essential)
       stop(sprintf("`%s` must contain numeric or logical 0/1 values%s. %s",
-                   arg, if (is.null(which_cols)) "" else
-                     paste0(", but ", which_cols), recode), call. = FALSE)
+                   arg, .but_columns(which_cols), recode), call. = FALSE)
     }
     bad <- !is.na(X) & !(X %in% c(0, 1))
     if (any(bad)) {

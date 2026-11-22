@@ -149,6 +149,21 @@
   structure(paste(parts, collapse = " and "), n_columns = length(bad))
 }
 
+# ", but column \"Item3\" holds text ...", or nothing when no column was
+# named, to follow "must hold numeric ratings" in an error. The callers ask
+# only about a table that is not numeric, which always names a column; the
+# empty form keeps a message whole should one ever not.
+.but_columns <- function(phrase) {
+  if (is.null(phrase)) "" else paste0(", but ", phrase)
+}
+
+# What the user is told to convert: the column or columns named, or the
+# ratings when none was.
+.convert_what <- function(phrase) {
+  if (is.null(phrase)) return("the ratings")
+  if (attr(phrase, "n_columns") > 1L) "those columns" else "that column"
+}
+
 # The error for a judge-by-item table that is not numeric. Data with one row
 # per rating, the shape delphi_validity() and congruence mode take, is the
 # usual way to arrive here, so the message states the shape the table needs.
@@ -159,10 +174,7 @@
            "one column per item, so data with one row per rating must be ",
            "reshaped first. Otherwise convert %s to numbers, coding a missing ",
            "rating as NA."),
-    arg, if (is.null(which_cols)) "" else paste0(", but ", which_cols),
-    arg, rater,
-    if (is.null(which_cols)) "the ratings" else
-      if (attr(which_cols, "n_columns") > 1L) "those columns" else "that column"
+    arg, .but_columns(which_cols), arg, rater, .convert_what(which_cols)
   ), call. = FALSE)
 }
 
