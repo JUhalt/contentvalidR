@@ -2578,13 +2578,13 @@ for workflow objects.
 
 # contentvalidR 0.0.4.9000
 
-### Final visualization polish
+## Final visualization polish
 
 - Deterministically stagger nearby target-scale labels on Psa/Csv and HTC/HTD evidence maps so similar scale means remain legible without manual annotation.
 - Draw the exact critical-Psa planning view as an integer-N step function, with requested design points overlaid, to reflect the discrete binomial retention rule rather than implying smooth interpolation.
 - Added regression tests for map-label separation and the full integer critical-Psa curve.
 
-### Visualization polish
+## Visualization polish
 
 - Tightened default axis labels and plot keys so diagnostic graphics remain readable in smaller RStudio plotting panes.
 - Moved profile/expert plot keys into reserved top space and moved item-sort power keys to a low-conflict location.
