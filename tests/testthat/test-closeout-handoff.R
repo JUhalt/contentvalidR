@@ -172,7 +172,10 @@ test_that("a handoff where nothing is carried does not say to carry it", {
   # Nothing met `keep`, with a rule applied.
   sorts <- read.csv(extdata("sort_example.csv"), stringsAsFactors = FALSE)
   sorts$assigned_construct <- "Z"
-  none <- joined(content_handoff(sort_validity(sorts)))
+  # No assignment equals its target, which also warns.
+  expect_warning(fit <- sort_validity(sorts), "Not one assignment",
+                 fixed = TRUE)
+  none <- joined(content_handoff(fit))
   expect_match(none, "No item met `keep`, so nothing is carried", fixed = TRUE)
   expect_false(grepl("Carry these items", none, fixed = TRUE))
   expect_false(grepl("No decision rule", none, fixed = TRUE))
@@ -245,7 +248,10 @@ test_that("the constructs line wraps and says when none is carried", {
                fixed = TRUE)
 
   sorts$assigned_construct <- "Z"
-  out <- printed(content_handoff(sort_validity(sorts)))
+  # No assignment equals its target, which also warns.
+  expect_warning(fit <- sort_validity(sorts), "Not one assignment",
+                 fixed = TRUE)
+  out <- printed(content_handoff(fit))
   expect_true("Constructs: none carried" %in% out)
 })
 

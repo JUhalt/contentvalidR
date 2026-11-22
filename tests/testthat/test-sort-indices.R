@@ -26,7 +26,9 @@ test_that("Csv is -1 when all judges choose the same wrong construct", {
     target_construct = rep("A", 5)
   )
 
-  out <- compute_csv(d)
+  # No assignment equals the target anywhere in the data, which also warns
+  # that the two columns may be coded differently.
+  expect_warning(out <- compute_csv(d), "Not one assignment", fixed = TRUE)
   expect_equal(out$n_target, 0L)
   expect_equal(out$n_other_max, 5L)
   expect_equal(out$csv, -1)
