@@ -99,10 +99,14 @@ test_that("reading-output counts delphi_validity() among the item-row workflows"
 test_that("reading-output says where APA's table forms apply", {
   text <- r101_prose(src_lines("vignettes", "reading-output.Rmd"))
   expect_match(text, paste("its cells write `<.001` and `>.999` without the",
-                           "space, and a negative number takes a true minus",
-                           "sign"), fixed = TRUE)
-  expect_match(text, paste("Sentences and the printouts of the fits keep",
-                           "`< .001` and the hyphen."), fixed = TRUE)
+                           "space, and a negative number, in the cells and in",
+                           "the note beneath them, takes a true minus sign"),
+               fixed = TRUE)
+  expect_match(text, paste("The printouts of the fits keep `< .001` and the",
+                           "hyphen."), fixed = TRUE)
+  # The note under the table is made of sentences and still takes the minus,
+  # so the page must not say that sentences keep the hyphen.
+  expect_false(grepl("Sentences and the printouts", text, fixed = TRUE))
   # Both halves of the claim, on the page's own example.
   fit <- sort_validity(utils::read.csv(
     system.file("extdata", "sort_example.csv", package = "contentvalidR"),
@@ -111,6 +115,19 @@ test_that("reading-output says where APA's table forms apply", {
   expect_true("<.001" %in% unlist(content_report(fit)))
   expect_true(any(grepl("< .001", utils::capture.output(print(fit)),
                         fixed = TRUE)))
+  # The note's negative numbers take the minus, and the fit's printout keeps
+  # the hyphen, on the congruence example, whose scale runs from -1 to 1.
+  minus <- intToUtf8(0x2212L)
+  cong <- expert_validity(utils::read.csv(
+    system.file("extdata", "expert_congruence_example.csv",
+                package = "contentvalidR"),
+    stringsAsFactors = FALSE
+  ), mode = "congruence")
+  note <- attr(content_report(cong), "note")
+  expect_match(note, paste0("(", minus, "1 to 1)"), fixed = TRUE)
+  expect_false(grepl("(-1 to 1)", note, fixed = TRUE))
+  expect_false(any(grepl(minus, utils::capture.output(print(cong)),
+                         fixed = TRUE)))
 })
 
 test_that("no vignette holds the minus character, which PDF builds reject", {

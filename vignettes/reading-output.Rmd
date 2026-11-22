@@ -101,12 +101,12 @@ that cannot exceed 1, such as a proportion or a *p* value, is printed without a
 leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
 .001 is printed as < .001, and one that would round to 1 as > .999. The APA
 table from `content_report()` uses the forms an APA table uses: its cells write
-`<.001` and `>.999` without the space, and a negative number takes a true
-minus sign, which is longer than a hyphen. Sentences and the printouts of the
-fits keep `< .001` and the hyphen. Exact ties round half up, so 5 of 8 judges
-(.625) prints as .63. A value that could not be computed prints as `--`, and
-the printout says why. The `results` table keeps every value at full
-precision.
+`<.001` and `>.999` without the space, and a negative number, in the cells
+and in the note beneath them, takes a true minus sign, which is longer than a
+hyphen. The printouts of the fits keep `< .001` and the hyphen. Exact ties
+round half up, so 5 of 8 judges (.625) prints as .63. A value that could not
+be computed prints as `--`, and the printout says why. The `results` table
+keeps every value at full precision.
 
 In a narrow console, columns that do not fit are left out from the right,
 never the item, its decision or the statistic the decision rests on, and a
