@@ -82,7 +82,7 @@ contentvalidR 0.7.0 it also carries \code{keying}, \code{response_min}, and
 \code{item}, \code{statistic}, \code{value}, \code{criterion} (\code{NA} when the method sets
 no explicit criterion), and \code{round}. Which statistics carry a criterion
 depends on the workflow rather than on the statistic alone: modified
-kappa carries 0.74 from \code{\link[=expert_validity]{expert_validity()}}, and none from a Delphi
+kappa carries .74 from \code{\link[=expert_validity]{expert_validity()}}, and none from a Delphi
 handoff, which decides on the consensus threshold. From contentvalidR
 0.7.0 it also carries \code{note}, described under "The note column". From
 contentvalidR 0.5.0 it also
@@ -286,7 +286,7 @@ Each item carries the relevance evidence of its last round, taken from that
 round's \code{\link[=expert_validity]{expert_validity()}} fit, with intervals: \code{I-CVI} against the
 consensus threshold, \verb{Aiken's V}, and \verb{modified kappa}. Modified kappa
 carries no criterion here, because a Delphi decides on the consensus
-threshold rather than on the 0.74 rule that \code{\link[=expert_validity]{expert_validity()}} applies.
+threshold rather than on the .74 rule that \code{\link[=expert_validity]{expert_validity()}} applies.
 
 Two more statistics record whether the panel had stopped moving:
 \verb{proportion unchanged}, and the stability statistic that ran, named for its

@@ -60,7 +60,7 @@
 \item \code{print()} returns its argument, invisibly.
 \item \code{summary()} returns a list of class \code{summary.} plus the fit's class
 (\code{summary.contentvalid_rounds} for a comparison of rounds), holding the
-elements named under "summary()" above.
+elements named under "summary()" below.
 \item \code{as.data.frame()} returns a data frame.
 \item \code{plot()} of a judge-heterogeneity fit, a coverage analysis, or a
 comparison of rounds returns nothing: it stops with an error whose

@@ -26,10 +26,16 @@ An object of class \code{contentvalid_evidence}, a list with:
 \code{statistic}, \code{value}, \code{lower}, \code{upper}, \code{level}, \code{criterion},
 \code{recommendation}, \code{status}, and \code{carried}. \code{as.data.frame()} returns
 it.}
-\item{\code{flow}}{for each stage, the items it reviewed, those an earlier
-stage had already held back, those it held back itself, those
-not held back so far that it did not review, and \code{decided}, whether
-it applied a decision rule to any of its items.}
+\item{\code{flow}}{a list with one element per stage, named by stage. Each
+is a list of \code{reviewed} (the items the stage reviewed),
+\code{already_out} (items it reviewed that an earlier stage had already
+held back), \code{added} (items no earlier stage reviewed; empty for the
+first stage), \code{not_reviewed} (items still in play that it did not
+review), \code{held} (the items it held back itself), \code{decided} (whether
+it applied a decision rule to any of its items), \code{n_judges} (the
+number of judges or experts behind each item it reviewed, \code{NA}
+where the handoff does not record it), and \code{workflow} (the workflow
+of the stage, such as \code{"expert-panel"}).}
 \item{\code{carried}}{the items that at least one stage applied a decision
 rule to and that every such stage carried. An item no stage decided
 on is left out.}

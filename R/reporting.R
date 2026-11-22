@@ -759,13 +759,16 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' its general note as the `"note"` attribute.
 #'
 #' @section Changed in 1.0.1:
-#' The APA table and its Markdown write numbers in APA's table forms: a *p*
-#' cell reads `<.001` or `>.999`, without the space that sentences keep
-#' ("*p* < .001"), and a negative number takes the minus sign (U+2212), in
-#' the cells and in the note. The cells hold the minus whatever the locale,
-#' so the table is the same everywhere; printing it in a session whose
-#' locale is not UTF-8 shows a hyphen instead. The `"data.frame"` format, the
-#' fit's printouts, and the handoff are unchanged.
+#' The APA table and its Markdown write numbers in the table forms of APA
+#' style: a *p* cell reads `<.001` or `>.999`, without the space that
+#' sentences keep ("*p* < .001"), and a negative number takes the minus sign
+#' (U+2212), in the cells and in the note. The cells hold the minus whatever
+#' the locale, so the table is the same everywhere. Printing it shows a
+#' hyphen instead in a session whose locale is not UTF-8 and in a document
+#' knitted to PDF, where LaTeX would stop at the minus; Markdown printed into
+#' such a document as Markdown (`results = "asis"`) gets the minus of LaTeX
+#' itself. The `"data.frame"` format, the fit's printouts, and the handoff
+#' are unchanged.
 #'
 #' @section Reporting the decision rules:
 #' A results table alone is not a reproducible report. The thresholds that

@@ -46,6 +46,15 @@ change a status.}
 \item{panel_compared}{Whether the panel size was part of the
 comparison: \code{TRUE} for the item sort and for expert relevance and
 essentiality.}
+\item{labels}{The round labels, in order: the names given in \code{...} or
+\code{labels}, or \verb{Round 1}, \verb{Round 2}, and so on. They head the round
+columns of \code{transitions}.}
+\item{id_col}{The unit column of \code{transitions}: \code{"item"}, \code{"judge"}
+for \code{\link[=judge_validity]{judge_validity()}} fits, or \code{"cell"} for \code{\link[=domain_validity]{domain_validity()}}
+fits.}
+\item{workflow}{The workflow the fits came from, such as
+\code{"item-sort"} or \code{"expert-panel"}.}
+\item{n_rounds}{The number of rounds compared.}
 \item{mode}{The mode of \code{\link[=expert_validity]{expert_validity()}} fits, \code{NA} for other
 workflows.}
 }

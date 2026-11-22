@@ -26,7 +26,7 @@ if (!requireNamespace("contentvalidR", quietly = TRUE)) {
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 1.0.0.** [Installation](#installation) says how
+**Current stable release: 1.0.1.** [Installation](#installation) says how
 to get it from CRAN, R-universe, or GitHub.
 
 Development plans: [Roadmap](https://github.com/JUhalt/contentvalidR/blob/master/ROADMAP.md) · [Future research](https://github.com/JUhalt/contentvalidR/milestone/3) · [Open issues](https://github.com/JUhalt/contentvalidR/issues).
@@ -195,6 +195,7 @@ Works cited in this README, the help pages, and the vignettes.
 - Agresti, A., & Coull, B. A. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. *The American Statistician, 52*(2), 119–126. https://doi.org/10.1080/00031305.1998.10480550
 - Aiken, L. R. (1980). Content validity and reliability of single items or questionnaires. *Educational and Psychological Measurement, 40*(4), 955–959. https://doi.org/10.1177/001316448004000419
 - Albert, A., & Anderson, J. A. (1984). On the existence of maximum likelihood estimates in logistic regression models. *Biometrika, 71*(1), 1–10. https://doi.org/10.1093/biomet/71.1.1
+- American Psychological Association. (2020). *Publication manual of the American Psychological Association* (7th ed.). https://doi.org/10.1037/0000165-000
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance of measures in a confirmatory factor analysis with a pretest assessment of their substantive validities. *Journal of Applied Psychology, 76*(5), 732–740. https://doi.org/10.1037/0021-9010.76.5.732
 - Ayre, C., & Scally, A. J. (2014). Critical values for Lawshe's content validity ratio: Revisiting the original methods of calculation. *Measurement and Evaluation in Counseling and Development, 47*(1), 79–86. https://doi.org/10.1177/0748175613513808
 - Brennan, R. L. (2001). *Generalizability theory*. Springer. https://doi.org/10.1007/978-1-4757-3456-0
@@ -228,7 +229,7 @@ Works cited in this README, the help pages, and the vignettes.
 - Kruskal, J. B. (1964). Multidimensional scaling by optimizing goodness of fit to a nonmetric hypothesis. *Psychometrika, 29*(1), 1–27. https://doi.org/10.1007/BF02289565
 - Landis, J. R., & Koch, G. G. (1977). The measurement of observer agreement for categorical data. *Biometrics, 33*(1), 159–174. https://doi.org/10.2307/2529310
 - Lawshe, C. H. (1975). A quantitative approach to content validity. *Personnel Psychology, 28*(4), 563–575. https://doi.org/10.1111/j.1744-6570.1975.tb01393.x
-- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias* \[Facets help\]. Winsteps.com. Retrieved October 2, 2026, from https://www.winsteps.com/facetman/estimationconsiderations.htm
+- Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation bias* [Facets help]. Winsteps.com. Retrieved October 2, 2026, from https://www.winsteps.com/facetman/estimationconsiderations.htm
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 - Linacre, J. M. (2002). What do infit and outfit, mean-square and standardized mean? *Rasch Measurement Transactions, 16*(2), 878. https://www.rasch.org/rmt/rmt162f.htm
 - Lynn, M. R. (1986). Determination and quantification of content validity. *Nursing Research, 35*(6), 382–385. https://doi.org/10.1097/00006199-198611000-00017

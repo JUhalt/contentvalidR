@@ -20,7 +20,10 @@ sort_validity(
 )
 }
 \arguments{
-\item{assignments}{A data.frame containing item-sort responses.}
+\item{assignments}{A data.frame containing item-sort responses. Code an
+item a judge did not sort as \code{NA} in the assigned-construct column: a
+blank label is an error. \code{read.csv(file, na.strings = c("", "NA"))}
+reads blank cells as \code{NA}.}
 
 \item{item_col, rater_col, assigned_col, target_col}{Column names for the item,
 rater, assigned construct, and intended target construct.}
@@ -99,6 +102,45 @@ sorted the item).}
 \item{\code{interpretation}}{The decision explained in a sentence.}
 \item{\code{status}}{The shared status: \code{"Supported"} for \code{"Retain"},
 \code{"Review"}, or \code{"Insufficient data"}.}
+}
+
+\strong{Scale-summary columns.} \code{scale_summary} has one row per target
+construct:
+\describe{
+\item{\code{target}}{The target construct.}
+\item{\code{n_items}}{Items written for it.}
+\item{\code{n_items_usable}}{Items with both a Psa and a Csv, the items
+behind the two means.}
+\item{\code{n_retain}, \code{n_review}}{Items whose \code{recommendation} is
+\code{"Retain"} or \code{"Review"}.}
+\item{\code{mean_psa}, \code{mean_csv}}{Mean Psa and mean Csv over the usable
+items.}
+\item{\code{psa_strength}, \code{csv_strength}}{The Colquitt et al. (2019) level
+of each mean: \code{"Very Strong"}, \code{"Strong"}, \code{"Moderate"}, \code{"Weak"}, or
+\code{"Lack of"}; \code{NA} for expert judges or when there is no mean.}
+\item{\code{orbiting_r}}{The focal-orbiting correlation that chose the
+benchmark set; \code{NA} when \code{orbiting_r} was not given.}
+\item{\code{benchmark_set}}{The Colquitt et al. (2019) benchmark set behind
+the levels, stored here as its label:
+\code{"Overall (not correlation-normed)"} when \code{orbiting_r} was not given,
+and otherwise \code{"Weaker focal-orbiting correlation (r <= .34)"},
+\code{"More moderate focal-orbiting correlation (.35-.50)"}, or
+\code{"Stronger focal-orbiting correlation (r >= .51)"}. The column of the
+same name from \code{\link[=rating_validity]{rating_validity()}} holds the short code instead
+(\code{"overall"}, \code{"weaker"}, \code{"moderate"}, or \code{"stronger"}), so code
+that reads both workflows should not compare the two columns
+directly. \code{\link[=colquitt_benchmarks]{colquitt_benchmarks()}} and \code{\link[=interpret_colquitt]{interpret_colquitt()}} return
+both forms, the code as \code{benchmark_set} and the label as
+\code{benchmark_label}.}
+\item{\code{benchmark_applicable}}{Whether the Colquitt et al. (2019) levels
+apply: \code{FALSE} for expert judges.}
+\item{\code{n_definitions}}{The number of construct definitions judges
+could choose among: \code{n_constructs} when given, otherwise the number
+of constructs that appear in the data. Colquitt et al.'s (2019)
+norms come from tasks that offered three.}
+\item{\code{evidence}}{The scale-level reading in words: the band of each
+mean, with this package's advice when the lower band is below
+Strong, or why no band is given.}
 }
 }
 \description{

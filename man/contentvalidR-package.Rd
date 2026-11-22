@@ -8,6 +8,41 @@
 \description{
 Provides quantitative tools for substantive and content-oriented scale pretesting. Implements item-sort indices from Anderson and Gerbing (1991) \doi{10.1037/0021-9010.76.5.732}, exact item-sort inference following Howard and Melloy (2016) \doi{10.1007/s10869-015-9404-y}, and the construct-rating procedure of Hinkin and Tracey (1999) \doi{10.1177/109442819922004}, with the Hinkin-Tracey correspondence and distinctiveness indices and empirical interpretation benchmarks of Colquitt et al. (2019) \doi{10.1037/apl0000406} and repeated-measures item screening following MacKenzie et al. (2011) \doi{10.2307/23044045}. The expert-panel workflow combines Aiken's V with score confidence intervals, Lawshe content validity ratios with exact inference, content validity indices with modified kappa and score intervals, item-objective congruence, and panel-level agreement using Krippendorff's alpha as described by Hayes and Krippendorff (2007) \doi{10.1080/19312450709336664}. Also provides judge and rater heterogeneity analysis following the generalizability-theory treatment of content-validity ratings in Crocker et al. (1988) \doi{10.1111/j.1745-3984.1988.tb00309.x}, content-domain coverage against a blueprint, expert-perceived content structure adapted from Sireci and Geisinger (1992) \doi{10.1177/014662169201600102}, consensus and stability across Delphi rounds with between-round weighted kappa following Holey et al. (2007) \doi{10.1186/1471-2288-7-52}, comparison across successive pretest rounds, and exact expert-panel planning. Where published methods compete, users choose among them through arguments with evidence-based defaults. User-facing workflows emphasize interpretable summaries and transparent review recommendations rather than isolated coefficients.
 }
+\section{Getting started}{
+
+\code{vignette("getting-started", package = "contentvalidR")} matches each kind
+of study to its workflow and shows each one at work. The item-sort,
+construct-rating, expert-panel, and Delphi workflows each have a vignette
+of their own: \code{"item-sort-validity"}, \code{"construct-rating-validity"},
+\code{"expert-panel-validity"}, and \code{"delphi-rounds"}.
+\code{browseVignettes("contentvalidR")} lists the rest, on reading output,
+reporting, and handing items on to empirical validation.
+
+Example data come with the package as CSV files in its \code{extdata} folder:
+\itemize{
+\item \code{sort_example.csv}, item-sort assignments for \code{\link[=sort_validity]{sort_validity()}}.
+\item \code{rating_example.csv}, construct ratings for \code{\link[=rating_validity]{rating_validity()}}.
+\item \code{expert_relevance_example.csv}, \code{expert_essentiality_example.csv}, and
+\code{expert_congruence_example.csv}, for the three modes of
+\code{\link[=expert_validity]{expert_validity()}}.
+\item \code{walkthrough_items.csv}, \code{walkthrough_sort.csv}, and
+\code{walkthrough_responses.csv}, one item set carried through both stages of
+pretesting, for \code{vignette("one-item-set-both-stages")}.
+\item \code{walkthrough_relevance.csv}, eight experts' relevance ratings of the same
+twelve items, for \code{\link[=content_evidence]{content_evidence()}} in
+\code{vignette("reporting-examples")}.
+}
+
+Read one by its path:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{path <- system.file("extdata", "sort_example.csv", package = "contentvalidR")
+sorts <- read.csv(path)
+fit <- sort_validity(sorts)
+}\if{html}{\out{</div>}}
+
+The \code{README.md} file in the same folder describes each file.
+}
+
 \section{Reading the output}{
 
 The printouts follow a style shared with nomologR, so the two packages
@@ -21,7 +56,9 @@ the object holds. Markdown output from \code{\link[=content_report]{content_repo
 exception: it prints only the lines to paste. Numbers follow APA 7: no
 leading zero where a value cannot exceed 1, two decimals and three for
 \emph{p}, \verb{--} for a value that could not be computed, and \verb{> .999} for a \emph{p}
-that would round to 1.
+that would round to 1. The APA table from \code{\link[=content_report]{content_report()}} also uses
+the table forms of APA style: \verb{<.001} and \verb{>.999} without the space, and
+a true minus sign for negative numbers.
 
 The statuses read across the two packages as follows:\tabular{ll}{
    contentvalidR \tab nomologR \cr

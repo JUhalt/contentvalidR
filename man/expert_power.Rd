@@ -17,7 +17,7 @@ expert_power(
 
 \item{prob}{Probability that one expert endorses the item, as relevant
 (\code{criterion = "cvi"}) or essential (\code{criterion = "cvr"}). Values well below
-0.5 describe items the panel largely rejects.}
+.50 describe items the panel largely rejects.}
 
 \item{criterion}{\code{"cvi"} uses Lynn's (1986) panel-size criterion for the
 I-CVI: every expert must agree with three to five, one may disagree from

@@ -14,7 +14,7 @@ only](https://img.shields.io/badge/License-GPL--3.0--only-blue.svg)](https://git
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 <!-- badges: end -->
 
-**Current stable release: 1.0.0.** [Installation](#installation) says
+**Current stable release: 1.0.1.** [Installation](#installation) says
 how to get it from CRAN, R-universe, or GitHub.
 
 Development plans:
@@ -175,10 +175,10 @@ and states the criterion behind each decision:
 content_report(fit)
 #> <contentvalid_report> Results table in APA style
 #> 
-#>   Item         Target Judges Competitor Psa     95% CI Csv      p Decision
-#>   Clear 1      A       18/20 B          .90 [.70, .97] .80 < .001 Retain
-#>   Clear 2      A       16/20 B          .80 [.58, .92] .60   .006 Retain
-#>   Needs review A       12/20 B          .60 [.39, .78] .20   .252 Review
+#>   Item         Target Judges Competitor Psa     95% CI Csv     p Decision
+#>   Clear 1      A       18/20 B          .90 [.70, .97] .80 <.001 Retain
+#>   Clear 2      A       16/20 B          .80 [.58, .92] .60  .006 Retain
+#>   Needs review A       12/20 B          .60 [.39, .78] .20  .252 Review
 #> 
 #> Note. Psa = proportion of substantive agreement; CI = confidence interval;
 #> Csv = coefficient of substantive validity. Judges = target assignments, out of
@@ -389,6 +389,9 @@ Works cited in this README, the help pages, and the vignettes.
 - Albert, A., & Anderson, J. A. (1984). On the existence of maximum
   likelihood estimates in logistic regression models. *Biometrika,
   71*(1), 1–10. <https://doi.org/10.1093/biomet/71.1.1>
+- American Psychological Association. (2020). *Publication manual of the
+  American Psychological Association* (7th ed.).
+  <https://doi.org/10.1037/0000165-000>
 - Anderson, J. C., & Gerbing, D. W. (1991). Predicting the performance
   of measures in a confirmatory factor analysis with a pretest
   assessment of their substantive validities. *Journal of Applied
@@ -506,7 +509,7 @@ Works cited in this README, the help pages, and the vignettes.
   *Personnel Psychology, 28*(4), 563–575.
   <https://doi.org/10.1111/j.1744-6570.1975.tb01393.x>
 - Linacre, J. M. (n.d.). *Estimation considerations: JMLE estimation
-  bias* $$Facets help$$. Winsteps.com. Retrieved October 2, 2026, from
+  bias* \[Facets help\]. Winsteps.com. Retrieved October 2, 2026, from
   <https://www.winsteps.com/facetman/estimationconsiderations.htm>
 - Linacre, J. M. (1989). *Many-facet Rasch measurement*. MESA Press.
 - Linacre, J. M. (2002). What do infit and outfit, mean-square and

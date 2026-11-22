@@ -56,8 +56,7 @@ Greenhouse-Geisser corrected omnibus \emph{p} and \code{df1_gg} and \code{df2_gg
 degrees of freedom, where a correction applies (see \code{\link[=anova_content]{anova_content()}});
 \code{p_omnibus}, \code{df1} and \code{df2} are the uncorrected test; and
 \code{max_contrast_p} is the largest \emph{p} among the planned contrasts, \code{NA}
-when a contrast has no \emph{p}. In \code{scale_summary}, \code{n_htc} and \code{n_htd} count
-the items in each mean. \code{print()}, \code{summary()}, and \code{plot()} are
+when a contrast has no \emph{p}. \code{print()}, \code{summary()}, and \code{plot()} are
 described in \link{contentvalid-methods}.
 
 \strong{Results columns.} \code{results} has one row per item:
@@ -100,6 +99,46 @@ mean over another construct's, among the planned contrasts.}
 \item{\code{interpretation}}{The decision explained in a sentence.}
 \item{\code{status}}{The shared status: \code{"Supported"} for \code{"Retain"},
 \code{"Review"}, or \code{"Insufficient data"}.}
+}
+
+\strong{Scale-summary columns.} \code{scale_summary} has one row per target
+construct:
+\describe{
+\item{\code{target}}{The target construct.}
+\item{\code{n_items}}{Items written for it.}
+\item{\code{n_htc}, \code{n_htd}}{Items in mean HTC and in mean HTD: those whose
+index rests on at least two judges (\code{n_target} for HTC, \code{n_complete}
+for HTD).}
+\item{\code{n_retain}, \code{n_review}, \code{n_insufficient}}{Items whose
+\code{recommendation} is \code{"Retain"}, \code{"Review"}, or
+\code{"Insufficient data"}.}
+\item{\code{mean_htc}, \code{mean_htd}}{Mean HTC and mean HTD over those items.}
+\item{\code{htc_strength}, \code{htd_strength}}{The Colquitt et al. (2019) level
+of each mean: \code{"Very Strong"}, \code{"Strong"}, \code{"Moderate"}, \code{"Weak"}, or
+\code{"Lack of"}; \code{NA} for expert judges or when there is no mean.}
+\item{\code{n_definitions}}{The number of construct definitions the
+target's items were rated against, the largest among its items.
+Colquitt et al.'s (2019) norms come from tasks that offered three.}
+\item{\code{orbiting_r}}{The focal-orbiting correlation that chose the
+benchmark set; \code{NA} when \code{orbiting_r} was not given.}
+\item{\code{benchmark_set}}{The Colquitt et al. (2019) benchmark set behind
+the levels, stored here as its short code: \code{"overall"} when
+\code{orbiting_r} was not given, and otherwise \code{"weaker"} (\emph{r} of .34 or
+less), \code{"moderate"} (above .34 to .50), or \code{"stronger"} (above .50).
+The printout shows each code's label: \code{"overall"} prints as
+\code{"Overall (not correlation-normed)"}, \code{"weaker"} as
+\code{"Weaker focal-orbiting correlation (r <= .34)"}, \code{"moderate"} as
+\code{"More moderate focal-orbiting correlation (.35-.50)"}, and
+\code{"stronger"} as \code{"Stronger focal-orbiting correlation (r >= .51)"}.
+The column of the same name from \code{\link[=sort_validity]{sort_validity()}} holds the label
+instead, so code that reads both workflows should not compare the
+two columns directly.
+\code{\link[=colquitt_benchmarks]{colquitt_benchmarks()}} and \code{\link[=interpret_colquitt]{interpret_colquitt()}} return both
+forms, the code as \code{benchmark_set} and the label as
+\code{benchmark_label}.}
+\item{\code{evidence}}{The scale-level reading in words: the band of each
+mean, with this package's advice when the lower band is below
+Strong, or why no band is given.}
 }
 }
 \description{
