@@ -1038,16 +1038,32 @@ The release that goes to CRAN as the update from 0.4.0, on GitHub and
 R-universe first, as the maintainer decided on 2026-10-09. nomologR's first
 CRAN submission follows it.
 
-- [ ] Print numbers in APA's forms, as the maintainer decided on 2026-11-22
-      for both packages. In October both had kept three forms for 1.0
-      (nomologR's audit items apa-7, apa-12, and apa-13), and nomologR's
-      review before CRAN reopened them:
-  - [ ] no leading zero for any statistic that cannot exceed 1;
-  - [ ] "<.001" and ">.999" in table cells, with "p < .001" kept in
-        sentences;
-  - [ ] a true minus sign for negative numbers.
-- [ ] Fix what a last review before CRAN finds: CRAN policy, help pages and
-      examples, vignettes and README, and use by a first-time user.
+- [x] Print numbers in the forms of APA style, as the maintainer decided on
+      2026-11-22 for both packages. In October both had kept three forms for
+      1.0 (nomologR's audit items apa-7, apa-12, and apa-13), and nomologR's
+      review before CRAN reopened them. Agreed with nomologR, which follows
+      the same rules:
+  - [x] no leading zero for any statistic that cannot exceed 1 (the console
+        already followed it; one fallback table and one help page did not);
+  - [x] "<.001" and ">.999" in the cells of the APA table from
+        `content_report()`, with "p < .001" kept in sentences, notes and
+        the console;
+  - [x] a true minus sign for negative numbers in that table and its note.
+        The console printouts, the numbers, and the handoff stay ASCII; a
+        console that is not UTF-8, and a document knitted to PDF, get a
+        hyphen or LaTeX's own minus.
+- [x] Fix what a last review before CRAN finds: CRAN policy, help pages and
+      examples, vignettes and README, and use by a first-time user. Four
+      lenses found 40 points, two refuted on checking and none blocking.
+      The fixes are in `NEWS.md`: two silent wrong results (item sorts whose
+      two label columns are coded differently, and a misspelled
+      `target_col`), a positional-argument trap for code written for 0.4.0,
+      clearer error messages, and corrected help pages and vignettes.
+      Left for a later release, because each changes a documented value:
+      one form for `benchmark_set` in the two workflows (each help page now
+      says which form it holds), one separator for tied competitors, and,
+      jointly with nomologR, which columns the shared table printer drops
+      first on a narrow console.
 - [ ] Submit 1.0.1 to CRAN once its checks are clean, and update the README
       and `tools/cran-release-date` when CRAN accepts it
       ([#107](https://github.com/JUhalt/contentvalidR/issues/107)).
