@@ -236,7 +236,7 @@ as.data.frame.contentvalid_workflow <- function(x,
       .delphi_fmt_share(v[[1]], entry$cut, digits),
     num = .fmt(v[[1]], digits, bounded = FALSE),
     percent = .fmt_pct(v[[1]], base = base),
-    p = .fmt_p(v[[1]]),
+    p = .fmt_p(v[[1]], table = TRUE),
     yesno = .yes_no(v[[1]]),
     # Corrected degrees of freedom where a correction applied, the plain
     # ones otherwise (an F of Inf has no error variance to correct).
@@ -266,7 +266,11 @@ as.data.frame.contentvalid_workflow <- function(x,
   for (entry in spec) {
     if (!all(entry$cols %in% names(res))) next
     if (nrow(res) && all(is.na(res[[entry$cols[1]]]))) next
-    cols[[length(cols) + 1L]] <- .report_cells(res, entry, digits, base)
+    cells <- .report_cells(res, entry, digits, base)
+    # Numbers take APA's minus sign; text, such as item names, is left as
+    # given.
+    if (!identical(entry$type, "text")) cells <- .apa_minus(cells)
+    cols[[length(cols) + 1L]] <- cells
     headings <- c(headings, entry$heading)
     is_ci <- c(is_ci, identical(entry$type, "ci"))
     if (identical(entry$type, "ci")) {
@@ -288,7 +292,7 @@ as.data.frame.contentvalid_workflow <- function(x,
   tab <- as.data.frame(cols, stringsAsFactors = FALSE)
   names(tab) <- names_out
   if (length(at)) attr(tab, "display") <- stats::setNames(headings[at], names_out[at])
-  attr(tab, "note") <- .report_note(
+  attr(tab, "note") <- .apa_minus(.report_note(
     x, headings, has_missing = any(vapply(tab, function(v) any(v == .missing_mark),
                                           logical(1))),
     decisions = res$recommendation,
@@ -296,7 +300,7 @@ as.data.frame.contentvalid_workflow <- function(x,
     # no columns at all.
     flat = cols[[1]][flat],
     res = res
-  )
+  ))
   tab
 }
 
@@ -702,8 +706,10 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' Formats a fitted workflow's results as a compact table for a manuscript or a
 #' Quarto or R Markdown document. By default the table is written in APA style
 #' (7th ed.): readable column headings, two decimals, no leading zero on values
-#' that cannot exceed 1, *p* values to three decimals or `< .001`, and intervals
-#' as `[LL, UL]` under a heading that names their level.
+#' that cannot exceed 1, *p* values to three decimals or `<.001` (`>.999` for
+#' one that would round to 1), negative numbers with a true minus sign
+#' (U+2212) rather than a hyphen, and intervals as `[LL, UL]` under a heading
+#' that names their level.
 #'
 #' Markdown output is generated directly, so no reporting package is required to
 #' use it. Nothing in the core analysis depends on one.
@@ -715,7 +721,7 @@ as.data.frame.contentvalid_workflow <- function(x,
 #'   `"markdown"`, the same table as Markdown lines; or `"data.frame"`, the
 #'   selected columns as rounded numbers under their names in `results`, for
 #'   further computation. In the data frame, *p* values are rounded to three
-#'   decimals, so one below .0005 becomes 0: report it as `< .001`, as the APA
+#'   decimals, so one below .0005 becomes 0: report it as `<.001`, as the APA
 #'   table does, or take the exact value from `x$results`.
 #' @param include `"all"` (default) or `"flagged"`, which keeps only units whose
 #'   status is not `Supported`.
@@ -751,6 +757,15 @@ as.data.frame.contentvalid_workflow <- function(x,
 #' so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
 #' own rounding gave 0.62. The APA table prints under a header and carries
 #' its general note as the `"note"` attribute.
+#'
+#' @section Changed in 1.0.1:
+#' The APA table and its Markdown write numbers in APA's table forms: a *p*
+#' cell reads `<.001` or `>.999`, without the space that sentences keep
+#' ("*p* < .001"), and a negative number takes the minus sign (U+2212), in
+#' the cells and in the note. The cells hold the minus whatever the locale,
+#' so the table is the same everywhere; printing it in a session whose
+#' locale is not UTF-8 shows a hyphen instead. The `"data.frame"` format, the
+#' fit's printouts, and the handoff are unchanged.
 #'
 #' @section Reporting the decision rules:
 #' A results table alone is not a reproducible report. The thresholds that
@@ -864,11 +879,15 @@ print.contentvalid_report <- function(x, ...) {
     # APA reports beside a chi-square. Kappa is not listed, because the
     # relevance table's modified kappa shares the heading; a Delphi kappa
     # table gives up its interval first.
-    shown <- .print_table(.report_display(x),
+    # The table keeps APA's minus sign; a console that cannot show it prints
+    # the hyphen.
+    shown_tab <- .report_display(x)
+    shown_tab[] <- lapply(shown_tab, .console_minus)
+    shown <- .print_table(shown_tab,
                           keep = c(.table_keep, "I-CVI", "IOC", "stable",
                                    "agree", "df", "chi-square", "net change",
                                    "lambda"))
-    note <- attr(x, "note")
+    note <- .console_minus(attr(x, "note"))
     if (length(note)) {
       cat("\n")
       # The note belongs with the whole table, as a manuscript prints it; on
@@ -896,6 +915,6 @@ as.data.frame.contentvalid_report <- function(x, ...) {
 
 #' @export
 print.contentvalid_markdown <- function(x, ...) {
-  cat(unclass(x), sep = "\n")
+  cat(.console_minus(as.vector(unclass(x))), sep = "\n")
   invisible(x)
 }

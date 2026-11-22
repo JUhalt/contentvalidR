@@ -204,7 +204,9 @@ test_that("the default report is an APA table", {
   expect_identical(tab$judges[i], paste0(r$n_target[i], "/", r$n[i]))
   expect_false(any(grepl("^0[.]", tab$Psa)))
   expect_match(tab$`Psa 95% CI`[i], "^[[][.][0-9]{2}, (1[.]00|[.][0-9]{2})[]]$")
-  expect_true(all(grepl("^(< [.]001|[.][0-9]{3}|> [.]999)$", tab$p)))
+  # A p cell is written as APA's tables write it, with no space after the
+  # sign.
+  expect_true(all(grepl("^(<[.]001|[.][0-9]{3}|>[.]999)$", tab$p)))
 
   # It prints without row names, and as.data.frame() gives a plain data frame.
   out <- utils::capture.output(print(tab))

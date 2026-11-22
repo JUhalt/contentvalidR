@@ -143,8 +143,10 @@ test_that("the congruence report shows the index, the means and the decision", {
   expect_identical(names(tab), c("item", "target", "experts", "IOC", "mean",
                                  "competitor", "competitor mean", "margin",
                                  "decision"))
-  expect_identical(tab$IOC, c("1.00", ".50", "-.50"))
-  expect_identical(tab$margin, c("2.00", "1.00", "-1.00"))
+  # A negative number in an APA table takes the minus sign, U+2212.
+  minus <- intToUtf8(0x2212L)
+  expect_identical(tab$IOC, c("1.00", ".50", paste0(minus, ".50")))
+  expect_identical(tab$margin, c("2.00", "1.00", paste0(minus, "1.00")))
   d <- congruence_data()
   d$target_objective <- NULL
   desc <- content_report(expert_validity(d, mode = "congruence"))

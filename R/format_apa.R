@@ -45,14 +45,45 @@
 }
 
 # A p value to three decimals, "< .001" below that, and "> .999" where three
-# decimals would print 1.000 (APA 7, Section 6.36).
-.fmt_p <- function(p) {
+# decimals would print 1.000 (APA 7, Section 6.36). In a cell of an APA table
+# (`table = TRUE`) the bound is written as APA's sample tables write it,
+# "<.001" and ">.999"; sentences, notes and the console keep the spaces.
+.fmt_p <- function(p, table = FALSE) {
   p <- as.numeric(p)
   out <- .fmt(p, digits = 3, bounded = TRUE)
-  out[!is.na(p) & p < .001] <- "< .001"
-  out[!is.na(p) & out == "1.000"] <- "> .999"
+  sp <- if (isTRUE(table)) "" else " "
+  out[!is.na(p) & p < .001] <- paste0("<", sp, ".001")
+  out[!is.na(p) & out == "1.000"] <- paste0(">", sp, ".999")
   out
 }
+
+# The minus sign of an APA table. APA sets a negative number with a true
+# minus sign (U+2212), not the hyphen. It is used only where a table is
+# written for a manuscript: the cells and the note of content_report()'s
+# APA table and its Markdown. The console printouts, the numbers in results
+# and stored text, and the handoff keep the ASCII hyphen, so nothing a
+# reader or downstream code parses depends on the locale. A hyphen becomes
+# the minus only where it starts a number: not after a letter, a digit or a
+# point ("Hinkin-Tracey", "A-1"), and not in the missing mark "--".
+.apa_minus <- function(x) {
+  if (!length(x)) return(x)
+  gsub("(?<![A-Za-z0-9_.-])-(?=[.0-9])", .minus_sign, x, perl = TRUE)
+}
+
+# U+2212, built from its code point so that the source stays ASCII.
+.minus_sign <- intToUtf8(0x2212L)
+
+# The APA minus back to the hyphen, for a console that cannot show it (a
+# session whose locale is not UTF-8). The object keeps the minus; only what
+# is printed changes.
+.console_minus <- function(x) {
+  if (!length(x) || .utf8_output()) return(x)
+  gsub(.minus_sign, "-", x, fixed = TRUE)
+}
+
+# Whether the session can print characters beyond ASCII: a UTF-8 locale.
+# A function of its own so that tests can stand in for another locale.
+.utf8_output <- function() isTRUE(l10n_info()[["UTF-8"]])
 
 # An alpha level keeps the digits it was given, with at least two: .05, .10,
 # .025, .001. Rounding to two decimals would print .001 as .00. A computed
@@ -261,12 +292,13 @@
 }
 
 # Whether a column of formatted text holds numbers, to be right-aligned:
-# estimates, intervals, counts such as "18/20", percentages, "< .001". The
-# missing marker (an em dash in Markdown) and "none" do not decide it.
+# estimates, intervals, counts such as "18/20", percentages, "< .001" and the
+# APA table's "<.001". A number may start with the hyphen or the APA minus.
+# The missing marker (an em dash in Markdown) and "none" do not decide it.
 .looks_numeric <- function(v) {
   v <- v[!(v %in% c("", .missing_mark, "\u2014", "none", "NA"))]
   if (!length(v)) return(TRUE)
-  num <- "^([<>] )?-?([0-9]+([.][0-9]+)?|[.][0-9]+)%?$"
+  num <- "^([<>] ?)?(-|\u2212)?([0-9]+([.][0-9]+)?|[.][0-9]+)%?$"
   all(grepl(num, v) | grepl("^\\[.*\\]$", v) | grepl("^[0-9]+/[0-9]+$", v) |
         v %in% c("Inf", "-Inf"))
 }

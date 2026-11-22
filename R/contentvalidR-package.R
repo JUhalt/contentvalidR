@@ -12,7 +12,9 @@
 #' exception: it prints only the lines to paste. Numbers follow APA 7: no
 #' leading zero where a value cannot exceed 1, two decimals and three for
 #' *p*, `--` for a value that could not be computed, and `> .999` for a *p*
-#' that would round to 1.
+#' that would round to 1. The APA table from [content_report()] uses APA's
+#' table forms on top of these: `<.001` and `>.999` without the space, and a
+#' true minus sign for negative numbers.
 #'
 #' The statuses read across the two packages as follows:
 #'

@@ -1,3 +1,21 @@
+# contentvalidR 1.0.1
+
+The update that goes to CRAN, which has 0.4.0; it is released on GitHub and
+R-universe first. Read it with the 1.0.0 notes below, which list every
+change since 0.10.1.
+
+## APA table forms
+
+* The APA table from `content_report()` and its Markdown write numbers in
+  APA's table forms, as decided with nomologR, which follows the same rules.
+  A *p* cell reads `<.001` or `>.999`, without the space that a sentence
+  keeps ("*p* < .001"). A negative number takes the minus sign (U+2212)
+  instead of a hyphen, in the cells and in the table's note, so a congruence
+  table's lowest IOC reads −.50. The cells hold the minus in every locale,
+  so the table is the same everywhere; printing it in a session whose locale
+  is not UTF-8 shows a hyphen. The `"data.frame"` format, the printouts of
+  the fits, and the handoff are unchanged and stay ASCII.
+
 # contentvalidR 1.0.0
 
 The first stable release, released on the same day as nomologR 1.0.0
