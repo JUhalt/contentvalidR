@@ -125,9 +125,21 @@ test_that("the glossary gives share on the scale results store it on", {
   g <- contentvalid_glossary("domain-coverage")
   row <- g[g$term == "share", ]
   expect_identical(nrow(row), 1L)
-  expect_match(row$definition, "^Proportion of all items")
-  expect_match(row$definition, "printed as a percentage", fixed = TRUE)
-  expect_identical(row$range, "0 to 1 (printed as 0% to 100%)")
+  expect_identical(row$definition,
+                   "Proportion of all items that fall in this blueprint cell.")
+  expect_identical(row$range, "0 to 1; printed as 0% to 100%")
+
+  # The printout wraps each range in parentheses, so the range must not carry
+  # its own: the printed line reads as one definition and one range.
+  # Whitespace is collapsed so the check does not depend on where it wraps.
+  printed <- gsub("\\s+", " ",
+                  paste(utils::capture.output(print(g)), collapse = " "))
+  expect_match(printed,
+               paste("share -- Share of items. Proportion of all items that",
+                     "fall in this blueprint cell. (0 to 1; printed as 0% to",
+                     "100%)"),
+               fixed = TRUE)
+  expect_false(grepl("((", printed, fixed = TRUE))
 
   # The stored column is the proportion the glossary now describes.
   fit <- domain_validity(
@@ -260,12 +272,19 @@ test_that("each page says which form of benchmark_set its workflow stores", {
                  info = code)
     expect_match(rating_doc, paste0('`"', code, '"`'), fixed = TRUE,
                  info = code)
-    # Each page names the other workflow's form as well.
+    # Each page names the other workflow's form as well, so a reader of
+    # either page alone can match every code to its label.
     expect_match(sort_doc, paste0('`"', code, '"`'), fixed = TRUE,
                  info = code)
+    expect_match(rating_doc, paste0('`"', label, '"`'), fixed = TRUE,
+                 info = code)
+    # The rating printout shows the label the page pairs with the code.
+    expect_match(
+      rv1_squish(paste(utils::capture.output(print(rating_fit)),
+                       collapse = " ")),
+      paste("Benchmark set:", label), fixed = TRUE, info = code
+    )
   }
-  expect_match(rating_doc, '`"Overall (not correlation-normed)"`',
-               fixed = TRUE)
   for (doc in list(sort_doc, rating_doc)) {
     expect_match(doc, "`colquitt_benchmarks()`", fixed = TRUE)
     expect_match(doc, "`interpret_colquitt()`", fixed = TRUE)
@@ -301,15 +320,42 @@ test_that("?contentvalidR points to the vignettes and every example file", {
                                section))[[1]]
   expect_setequal(unique(named), shipped)
 
-  # The vignettes it names exist.
+  # The relevance ratings have a bullet of their own, naming the vignette
+  # that reads them; the walkthrough vignette never does.
+  expect_match(section,
+               paste0("`walkthrough_relevance.csv`, eight experts' relevance ",
+                      "ratings of the same twelve items, for ",
+                      "`content_evidence()` in ",
+                      "`vignette(\"reporting-examples\")`"),
+               fixed = TRUE)
+  expect_match(section,
+               paste0("`walkthrough_responses.csv`, one item set carried ",
+                      "through both stages of pretesting, for ",
+                      "`vignette(\"one-item-set-both-stages\")`"),
+               fixed = TRUE)
+
+  # The vignettes it names exist, and each reads the files it is named for.
   vignettes <- testthat::test_path("..", "..", "vignettes")
   if (dir.exists(vignettes)) {
     for (v in c("getting-started", "item-sort-validity",
                 "construct-rating-validity", "expert-panel-validity",
-                "delphi-rounds", "one-item-set-both-stages")) {
+                "delphi-rounds", "one-item-set-both-stages",
+                "reporting-examples")) {
       expect_true(file.exists(file.path(vignettes, paste0(v, ".Rmd"))),
                   info = v)
     }
+    rmd <- function(v) {
+      paste(readLines(file.path(vignettes, paste0(v, ".Rmd")),
+                      warn = FALSE), collapse = "\n")
+    }
+    both_stages <- rmd("one-item-set-both-stages")
+    for (f in c("walkthrough_items.csv", "walkthrough_sort.csv",
+                "walkthrough_responses.csv")) {
+      expect_match(both_stages, f, fixed = TRUE, info = f)
+    }
+    expect_false(grepl("walkthrough_relevance.csv", both_stages, fixed = TRUE))
+    expect_match(rmd("reporting-examples"), "walkthrough_relevance.csv",
+                 fixed = TRUE)
   }
 })
 

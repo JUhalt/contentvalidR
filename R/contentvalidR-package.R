@@ -16,10 +16,12 @@
 #' * `expert_relevance_example.csv`, `expert_essentiality_example.csv`, and
 #'   `expert_congruence_example.csv`, for the three modes of
 #'   [expert_validity()].
-#' * `walkthrough_items.csv`, `walkthrough_sort.csv`,
-#'   `walkthrough_relevance.csv`, and `walkthrough_responses.csv`, one item
-#'   set carried through both stages of pretesting, for
-#'   `vignette("one-item-set-both-stages")`.
+#' * `walkthrough_items.csv`, `walkthrough_sort.csv`, and
+#'   `walkthrough_responses.csv`, one item set carried through both stages of
+#'   pretesting, for `vignette("one-item-set-both-stages")`.
+#' * `walkthrough_relevance.csv`, eight experts' relevance ratings of the same
+#'   twelve items, for [content_evidence()] in
+#'   `vignette("reporting-examples")`.
 #'
 #' Read one by its path:
 #'
