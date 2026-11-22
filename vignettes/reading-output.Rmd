@@ -42,8 +42,9 @@ Every flagship workflow returns an object with the same five parts.
 | `details` | Supporting tables and component analyses |
 
 The unit of analysis in `results` differs by workflow, and this catches people
-out. `sort_validity()`, `rating_validity()`, and `expert_validity()` return **one
-row per item**. `judge_validity()` returns **one row per judge**.
+out. `sort_validity()`, `rating_validity()`, `expert_validity()`, and
+`delphi_validity()` return **one row per item**. `judge_validity()` returns
+**one row per judge**.
 `domain_validity()` returns **one row per blueprint cell**.
 
 Every `results` table carries a `status` column drawn from a shared vocabulary:
@@ -98,10 +99,14 @@ Numbers follow the APA style rules (American Psychological Association, 2020,
 Section 6.36). A statistic
 that cannot exceed 1, such as a proportion or a *p* value, is printed without a
 leading zero (.90). One that can exceed 1 keeps it (0.57). A *p* value below
-.001 is printed as < .001, and one that would round to 1 as > .999. Exact ties
-round half up, so 5 of 8 judges (.625) prints as .63. A value that could not be
-computed prints as `--`, and the printout says why. The `results` table keeps
-every value at full precision.
+.001 is printed as < .001, and one that would round to 1 as > .999. The APA
+table from `content_report()` uses the forms an APA table uses: its cells write
+`<.001` and `>.999` without the space, and a negative number, in the cells
+and in the note beneath them, takes a true minus sign, which is longer than a
+hyphen. The printouts of the fits keep `< .001` and the hyphen. Exact ties
+round half up, so 5 of 8 judges (.625) prints as .63. A value that could not
+be computed prints as `--`, and the printout says why. The `results` table
+keeps every value at full precision.
 
 In a narrow console, columns that do not fit are left out from the right,
 never the item, its decision or the statistic the decision rests on, and a
@@ -263,8 +268,15 @@ fit_judge$details$influence_items
 `fragile` is `TRUE` for an item whose review status would change if one judge
 were removed, which happens when the item is one judge away from the other
 side of the CVI criterion for its panel size: at the criterion, or one short
-of it. Every judge on one side of such an item changes it alike, so it is a
-fact about the item and no judge is flagged for it.
+of it, depending on the panel size. Every judge on one side of such an item
+changes it alike, so it is a fact about the item and no judge is flagged for
+it.
+
+Here `Item1` to `Item4` sit exactly at the criterion, with 7 of 8 judges
+rating them relevant, but they are not fragile: without any one judge they
+still have at least 6 of 7, which meets the criterion of 6 for a panel of 7. An
+item at 5 of 6 would be fragile, because without one of those five judges it
+has 4 of 5, which misses the criterion of 5 for a panel of 5.
 
 The panel-level dependability coefficient answers a planning question:
 
@@ -431,4 +443,4 @@ https://doi.org/10.1097/00006199-198611000-00017
 Newcombe, R. G. (1998). Two-sided confidence intervals for the single
 proportion: Comparison of seven methods. *Statistics in Medicine, 17*(8),
 857–872.
-https://doi.org/10/cpchjg
+<https://doi.org/10.1002/(SICI)1097-0258(19980430)17:8%3C857::AID-SIM777%3E3.0.CO;2-E>

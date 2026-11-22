@@ -198,8 +198,8 @@ content review and the analysis of responses.
 
 The package also installs deterministic CSV examples for the three workflow
 families and all expert-panel modes. They are synthetic, contain no participant
-data, and are regenerated from `data-raw/build-example-data.R` in the source
-repository.
+data, and are regenerated from `data-raw/build-example-data.R` in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw).
 
 ```{r bundled-data}
 example_files <- c(

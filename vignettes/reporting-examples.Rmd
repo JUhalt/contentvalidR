@@ -10,6 +10,25 @@ vignette: >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(contentvalidR)
+```
+
+## Purpose
+
+This vignette provides reporting scaffolds for the item-sort, construct-rating,
+and expert-panel workflows. The examples are intentionally conservative:
+statistical screening is described as **evidence for retention or review**, not
+as proof that an item or scale is content valid. Final decisions should also
+consider construct-domain coverage, item wording, qualitative judge feedback,
+and the intended use of the measure.
+
+The bundled CSV files are synthetic, deterministic, and regenerated from
+`data-raw/build-example-data.R` in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw).
+They are useful for reproducing the examples and for seeing the expected input
+shape before analyzing a new study. The examples read them with a small helper
+that reads one installed CSV file by name:
+
+```{r read-example}
 read_example <- function(name) {
   utils::read.csv(
     system.file("extdata", name, package = "contentvalidR"),
@@ -17,18 +36,6 @@ read_example <- function(name) {
   )
 }
 ```
-
-## Purpose
-
-This vignette provides reporting scaffolds for the three flagship workflows. The
-examples are intentionally conservative: statistical screening is described as
-**evidence for retention or review**, not as proof that an item or scale is
-content valid. Final decisions should also consider construct-domain coverage,
-item wording, qualitative judge feedback, and the intended use of the measure.
-
-The bundled CSV files are synthetic, deterministic, and regenerated from
-`data-raw/build-example-data.R`. They are useful for reproducing the examples
-and for seeing the expected input shape before analyzing a new study.
 
 ## Item-sort study
 
@@ -38,12 +45,16 @@ small helper; the objects themselves keep full precision, and
 
 ```{r sort-fit}
 # Round the numeric columns of a data frame for display only. A p value is
-# written as APA writes it, so one below .001 reads "< .001", never 0.
+# written as an APA table writes it: one below .001 reads "<.001", never 0,
+# and one that would round to 1 reads ">.999".
 rounded <- function(d, digits = 3) {
   is_p <- grepl("(^p_|_p$)", names(d))
   d[] <- Map(function(v, p) {
     if (!is.numeric(v)) return(v)
-    if (p) return(ifelse(v < .001, "< .001", sub("^0", "", sprintf("%.3f", v))))
+    if (p) {
+      txt <- sub("^0", "", sprintf("%.3f", v))
+      return(ifelse(v < .001, "<.001", ifelse(txt == "1.000", ">.999", txt)))
+    }
     round(v, digits)
   }, d, is_p)
   d
@@ -77,9 +88,9 @@ concise methods statement can follow this structure:
 ### Results scaffold
 
 For this bundled example, `r sort_fit$design$n_raters` judges evaluated
-`r sort_fit$design$n_items` items. `r sort_sum$n_supported` items met the exact
-screening criterion, `r sort_sum$n_review` were flagged for review, and
-`r sort_sum$n_insufficient` had insufficient usable assignments.
+`r sort_fit$design$n_items` items. The exact screening criterion was met by
+`r sort_sum$n_supported` items; `r sort_sum$n_review` were flagged for review,
+and `r sort_sum$n_insufficient` had insufficient usable assignments.
 
 `content_report()` gives the manuscript table: the columns a reader needs,
 with numbers in APA form. `format = "markdown"` gives the same table to paste
@@ -133,8 +144,8 @@ rounded(rating_fit$scale_summary[, c("target", "n_items", "mean_htc",
 
 The example contains `r rating_fit$design$n_items` items rated by
 `r rating_fit$design$n_raters` judges against
-`r rating_fit$design$n_constructs_observed` construct definitions.
-`r rating_sum$n_supported` items were supported by the complete screening rule
+`r rating_fit$design$n_constructs_observed` construct definitions. Of these
+items, `r rating_sum$n_supported` were supported by the complete screening rule
 and `r rating_sum$n_review` were flagged for review.
 
 ```{r rating-table}
@@ -215,8 +226,9 @@ brings the stages together, in the order they ran, and draws two figures for a
 paper or poster. Here the twelve items of `vignette("one-item-set-both-stages")`
 are first rated for relevance by eight experts, and the items the panel carries
 go on to the item sort. The relevance ratings are constructed for this example;
-`data-raw/build-walkthrough-panel.R` says what each item's ratings are built to
-show.
+`data-raw/build-walkthrough-panel.R` in the
+[source repository](https://github.com/JUhalt/contentvalidR/tree/master/data-raw)
+says what each item's ratings are built to show.
 
 ```{r evidence}
 relevance <- read_example("walkthrough_relevance.csv")
@@ -326,3 +338,7 @@ R., Glanville, J., Grimshaw, J. M., Hróbjartsson, A., Lalu, M. M., Li, T.,
 Loder, E. W., Mayo-Wilson, E., McDonald, S., . . . Moher, D. (2021). The PRISMA
 2020 statement: An updated guideline for reporting systematic reviews. *BMJ,
 372*, Article n71. https://doi.org/10.1136/bmj.n71
+
+Polit, D. F., Beck, C. T., & Owen, S. V. (2007). Is the CVI an acceptable
+indicator of content validity? Appraisal and recommendations. *Research in
+Nursing & Health, 30*(4), 459–467. https://doi.org/10.1002/nur.20199
