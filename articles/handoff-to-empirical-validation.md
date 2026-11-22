@@ -46,7 +46,7 @@ fit$results[, c("item", "N", "V", "I_CVI", "kappa_mod", "status")]
 handoff <- content_handoff(fit)
 handoff
 #> <contentvalid_handoff> Handoff to empirical validation (schema version 1)
-#> Workflow: expert-panel (relevance) | contentvalidR 1.0.0 | 2026-11-21
+#> Workflow: expert-panel (relevance) | contentvalidR 1.0.0 | 2026-11-22
 #> Items carried forward: 3 of 5
 #> Carried when status is: Supported
 #> Constructs: none in this design; the panel rated one item set.
