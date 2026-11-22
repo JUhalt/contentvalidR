@@ -754,8 +754,8 @@ as.data.frame.contentvalid_workflow <- function(x,
 #'
 #' @section Changed in 1.0.0:
 #' Numbers in `format = "data.frame"` round half up, as the APA table does,
-#' so an exact tie such as 5 of 8 judges (.625) is 0.63 in both, where R's
-#' own rounding gave 0.62. The APA table prints under a header and carries
+#' so an exact tie such as 5 of 8 judges (.625) is .63 in both, where R's
+#' own rounding gave .62. The APA table prints under a header and carries
 #' its general note as the `"note"` attribute.
 #'
 #' @section Changed in 1.0.1:

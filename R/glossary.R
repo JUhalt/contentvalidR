@@ -270,8 +270,11 @@
     data.frame(
       term = "share", workflow = "domain-coverage",
       label = "Share of items",
-      definition = "Percentage of all items that fall in this blueprint cell.",
-      range = "0 to 100%",
+      definition = paste(
+        "Proportion of all items that fall in this blueprint cell; printed as",
+        "a percentage."
+      ),
+      range = "0 to 1 (printed as 0% to 100%)",
       stringsAsFactors = FALSE
     ),
     data.frame(

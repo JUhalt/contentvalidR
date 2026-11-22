@@ -176,6 +176,15 @@
 #'     \item{panel_compared}{Whether the panel size was part of the
 #'       comparison: `TRUE` for the item sort and for expert relevance and
 #'       essentiality.}
+#'     \item{labels}{The round labels, in order: the names given in `...` or
+#'       `labels`, or `Round 1`, `Round 2`, and so on. They head the round
+#'       columns of `transitions`.}
+#'     \item{id_col}{The unit column of `transitions`: `"item"`, `"judge"`
+#'       for [judge_validity()] fits, or `"cell"` for [domain_validity()]
+#'       fits.}
+#'     \item{workflow}{The workflow the fits came from, such as
+#'       `"item-sort"` or `"expert-panel"`.}
+#'     \item{n_rounds}{The number of rounds compared.}
 #'     \item{mode}{The mode of [expert_validity()] fits, `NA` for other
 #'       workflows.}
 #'   }

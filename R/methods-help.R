@@ -93,7 +93,7 @@
 #' * `print()` returns its argument, invisibly.
 #' * `summary()` returns a list of class `summary.` plus the fit's class
 #'   (`summary.contentvalid_rounds` for a comparison of rounds), holding the
-#'   elements named under "summary()" above.
+#'   elements named under "summary()" below.
 #' * `as.data.frame()` returns a data frame.
 #' * `plot()` of a judge-heterogeneity fit, a coverage analysis, or a
 #'   comparison of rounds returns nothing: it stops with an error whose

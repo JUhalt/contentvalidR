@@ -1,5 +1,36 @@
 #' @keywords internal
 #'
+#' @section Getting started:
+#' `vignette("getting-started", package = "contentvalidR")` matches each kind
+#' of study to its workflow and shows each one at work. The item-sort,
+#' construct-rating, expert-panel, and Delphi workflows each have a vignette
+#' of their own: `"item-sort-validity"`, `"construct-rating-validity"`,
+#' `"expert-panel-validity"`, and `"delphi-rounds"`.
+#' `browseVignettes("contentvalidR")` lists the rest, on reading output,
+#' reporting, and handing items on to empirical validation.
+#'
+#' Example data come with the package as CSV files in its `extdata` folder:
+#'
+#' * `sort_example.csv`, item-sort assignments for [sort_validity()].
+#' * `rating_example.csv`, construct ratings for [rating_validity()].
+#' * `expert_relevance_example.csv`, `expert_essentiality_example.csv`, and
+#'   `expert_congruence_example.csv`, for the three modes of
+#'   [expert_validity()].
+#' * `walkthrough_items.csv`, `walkthrough_sort.csv`,
+#'   `walkthrough_relevance.csv`, and `walkthrough_responses.csv`, one item
+#'   set carried through both stages of pretesting, for
+#'   `vignette("one-item-set-both-stages")`.
+#'
+#' Read one by its path:
+#'
+#' ```
+#' path <- system.file("extdata", "sort_example.csv", package = "contentvalidR")
+#' sorts <- read.csv(path)
+#' fit <- sort_validity(sorts)
+#' ```
+#'
+#' The `README.md` file in the same folder describes each file.
+#'
 #' @section Reading the output:
 #' The printouts follow a style shared with nomologR, so the two packages
 #' read alike. Every printout opens with a header naming the object's class

@@ -85,10 +85,16 @@
 #'       `statistic`, `value`, `lower`, `upper`, `level`, `criterion`,
 #'       `recommendation`, `status`, and `carried`. `as.data.frame()` returns
 #'       it.}
-#'     \item{`flow`}{for each stage, the items it reviewed, those an earlier
-#'       stage had already held back, those it held back itself, those
-#'       not held back so far that it did not review, and `decided`, whether
-#'       it applied a decision rule to any of its items.}
+#'     \item{`flow`}{a list with one element per stage, named by stage. Each
+#'       is a list of `reviewed` (the items the stage reviewed),
+#'       `already_out` (items it reviewed that an earlier stage had already
+#'       held back), `added` (items no earlier stage reviewed; empty for the
+#'       first stage), `not_reviewed` (items still in play that it did not
+#'       review), `held` (the items it held back itself), `decided` (whether
+#'       it applied a decision rule to any of its items), `n_judges` (the
+#'       number of judges or experts behind each item it reviewed, `NA`
+#'       where the handoff does not record it), and `workflow` (the workflow
+#'       of the stage, such as `"expert-panel"`).}
 #'     \item{`carried`}{the items that at least one stage applied a decision
 #'       rule to and that every such stage carried. An item no stage decided
 #'       on is left out.}
