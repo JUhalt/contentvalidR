@@ -79,8 +79,8 @@ test_that("a flagged-only report of a domain fit with nothing flagged prints", {
                                      Relatedness = 1))
   rep <- content_report(fit, include = "flagged")
   expect_identical(nrow(rep), 0L)
-  expect_true(any(grepl("No units matched", utils::capture.output(print(rep)),
-                        fixed = TRUE)))
+  expect_true(any(grepl("No blueprint cells were flagged for review.",
+                        utils::capture.output(print(rep)), fixed = TRUE)))
   md <- content_report(fit, include = "flagged", format = "markdown")
   expect_type(md, "character")
   expect_identical(contentvalidR:::.fmt_pct(numeric(0), base = 7),

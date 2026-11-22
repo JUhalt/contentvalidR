@@ -88,7 +88,8 @@ test_that("a current congruence fit still summarizes", {
 test_that("an item table without the index columns shows the stored numbers", {
   # A current fit whose target_ioc column was removed has neither the
   # index layout nor the best-objective one, so its numeric columns are
-  # printed as stored, each with its leading zero.
+  # printed as stored. The mean ratings run from -1 to 1 and print without
+  # a leading zero; a margin can reach 2 and keeps it (1.0.1).
   fit <- expert_validity(c2_congruence(), mode = "congruence")
   fit$results$target_ioc <- NULL
   # Target means: I1 1 on A, I2 1 on B, I3 0 on A. Competitor means: -1,
@@ -99,13 +100,13 @@ test_that("an item table without the index columns shows the stored numbers", {
   expect_match(out, paste("Item Target Decision N_judges Target_mean",
                           "Competitor_mean Margin"), fixed = TRUE)
   expect_match(out, "I1 A Congruent 4 1.00 -1.00 2.00", fixed = TRUE)
-  expect_match(out, "I2 B Review 4 1.00 0.00 1.00", fixed = TRUE)
-  expect_match(out, "I3 A Review 4 0.00 1.00 -1.00", fixed = TRUE)
+  expect_match(out, "I2 B Review 4 1.00 .00 1.00", fixed = TRUE)
+  expect_match(out, "I3 A Review 4 .00 1.00 -1.00", fixed = TRUE)
   # The fit holds target_mean, so it is not taken for one saved before 1.0.
   expect_false(grepl("made before contentvalidR 1.0", out, fixed = TRUE))
   s <- c2_flat(summary(fit))
-  expect_match(s, "I2 B Review 4 1.00 0.00 1.00", fixed = TRUE)
-  expect_match(s, "I3 A Review 4 0.00 1.00 -1.00", fixed = TRUE)
+  expect_match(s, "I2 B Review 4 1.00 .00 1.00", fixed = TRUE)
+  expect_match(s, "I3 A Review 4 .00 1.00 -1.00", fixed = TRUE)
   expect_false(grepl("I1 A Congruent", s, fixed = TRUE))
 })
 

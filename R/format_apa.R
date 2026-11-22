@@ -73,17 +73,44 @@
 # U+2212, built from its code point so that the source stays ASCII.
 .minus_sign <- intToUtf8(0x2212L)
 
-# The APA minus back to the hyphen, for a console that cannot show it (a
-# session whose locale is not UTF-8). The object keeps the minus; only what
-# is printed changes.
+# The APA minus back to the hyphen where it cannot be shown: a session whose
+# locale is not UTF-8, or a document being knitted to PDF through LaTeX,
+# whose default engine stops at the character ("Unicode character not set
+# up for use with LaTeX"). The object keeps the minus; only what is printed
+# changes.
 .console_minus <- function(x) {
-  if (!length(x) || .utf8_output()) return(x)
+  if (!length(x) || (.utf8_output() && !.latex_knit())) return(x)
   gsub(.minus_sign, "-", x, fixed = TRUE)
+}
+
+# The Markdown lines as printed. Knitted to PDF in a chunk whose results go
+# into the document as Markdown, the minus becomes LaTeX's own, $-$, which
+# pandoc passes to LaTeX as math; elsewhere it is printed as the console
+# shows it.
+.markdown_minus <- function(x) {
+  if (length(x) && .latex_knit() && .asis_chunk()) {
+    return(gsub(.minus_sign, "$-$", x, fixed = TRUE))
+  }
+  .console_minus(x)
 }
 
 # Whether the session can print characters beyond ASCII: a UTF-8 locale.
 # A function of its own so that tests can stand in for another locale.
 .utf8_output <- function() isTRUE(l10n_info()[["UTF-8"]])
+
+# Whether knitr is knitting a document to LaTeX (PDF output) right now.
+.latex_knit <- function() {
+  isTRUE(getOption("knitr.in.progress")) &&
+    requireNamespace("knitr", quietly = TRUE) &&
+    isTRUE(knitr::is_latex_output())
+}
+
+# Whether the chunk being knitted writes its results into the document as
+# Markdown (results = "asis").
+.asis_chunk <- function() {
+  requireNamespace("knitr", quietly = TRUE) &&
+    identical(knitr::opts_current$get("results"), "asis")
+}
 
 # An alpha level keeps the digits it was given, with at least two: .05, .10,
 # .025, .001. Rounding to two decimals would print .001 as .00. A computed

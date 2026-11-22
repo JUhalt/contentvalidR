@@ -72,6 +72,58 @@ test_that("a console that is not UTF-8 prints the hyphen, and the object keeps t
   expect_true(any(grepl(minus, md, fixed = TRUE)))
 })
 
+test_that("knitted to PDF, the minus becomes LaTeX's own or the hyphen", {
+  fit <- congruence_fit()
+  md <- content_report(fit, format = "markdown")
+  tab <- content_report(fit)
+  # Markdown that goes into the document as Markdown: LaTeX's math minus,
+  # which pdflatex sets; the Unicode minus would stop it.
+  testthat::local_mocked_bindings(.latex_knit = function() TRUE,
+                                  .asis_chunk = function() TRUE)
+  out <- utils::capture.output(print(md))
+  expect_false(any(grepl(minus, out, fixed = TRUE)))
+  expect_true(any(grepl("$-$", out, fixed = TRUE)))
+  # Console output in the PDF (a verbatim block): the hyphen.
+  out <- utils::capture.output(print(tab))
+  expect_false(any(grepl(minus, out, fixed = TRUE)))
+  expect_false(any(grepl("$-$", out, fixed = TRUE)))
+})
+
+test_that("Markdown printed outside an asis chunk of a PDF gets the hyphen", {
+  md <- content_report(congruence_fit(), format = "markdown")
+  testthat::local_mocked_bindings(.latex_knit = function() TRUE,
+                                  .asis_chunk = function() FALSE)
+  out <- utils::capture.output(print(md))
+  expect_false(any(grepl(minus, out, fixed = TRUE)))
+  expect_false(any(grepl("$-$", out, fixed = TRUE)))
+})
+
+test_that("outside knitr the LaTeX checks are off", {
+  withr::local_options(knitr.in.progress = NULL)
+  expect_false(contentvalidR:::.latex_knit())
+})
+
+test_that("an empty report names its units and points to no table", {
+  rating <- data.frame(
+    item = rep("I1", 6), rater = 1:6,
+    assigned_construct = rep("A", 6), target_construct = "A",
+    stringsAsFactors = FALSE
+  )
+  rep <- content_report(sort_validity(rating))
+  expect_identical(attr(rep, "empty"), "There are no items to report.")
+  expect_null(attr(as.data.frame(rep), "empty"))
+  expect_identical(contentvalidR:::.report_unit(structure(list(),
+    class = c("contentvalid_judge", "contentvalid_workflow"))), "judges")
+  expect_identical(contentvalidR:::.report_unit(structure(list(),
+    class = c("contentvalid_domain", "contentvalid_workflow"))),
+    "blueprint cells")
+  # An object whose attribute was dropped still prints a sentence.
+  bare <- rep[0, ]
+  attr(bare, "empty") <- NULL
+  expect_true(any(grepl("There is nothing to report.",
+                        utils::capture.output(print(bare)), fixed = TRUE)))
+})
+
 test_that("the console printout, the numbers and the handoff stay ASCII", {
   fit <- congruence_fit()
   out <- utils::capture.output(print(fit), summary(fit))

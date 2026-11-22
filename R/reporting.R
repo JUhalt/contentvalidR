@@ -813,14 +813,23 @@ content_report <- function(x,
 
   if (format != "data.frame") {
     tab <- .report_apa_table(x, res, digits)
+    # An empty table says what it would have held, in the workflow's own
+    # word for its units.
+    unit <- .report_unit(x)
+    empty <- if (include == "flagged") {
+      sprintf("No %s were flagged for review.", unit)
+    } else {
+      sprintf("There are no %s to report.", unit)
+    }
     if (format == "apa") {
+      attr(tab, "empty") <- empty
       class(tab) <- c("contentvalid_report", "data.frame")
       return(tab)
     }
     lines <- character(0)
     if (!is.null(caption)) lines <- c(lines, caption, "")
     lines <- c(lines, if (!nrow(tab)) {
-      "_No units matched the requested selection._"
+      paste0("_", empty, "_")
     } else {
       md <- .report_display(tab)
       names(md) <- .md_symbols(.sentence_case(names(md)))
@@ -872,7 +881,11 @@ print.contentvalid_report <- function(x, ...) {
   .print_header(x, "Results table in APA style")
   cat("\n")
   if (!nrow(x)) {
-    .say("No units matched the requested selection.")
+    empty <- attr(x, "empty")
+    .say(if (is.character(empty)) empty else "There is nothing to report.")
+    # With no table there is no Markdown to point to.
+    .closing()
+    return(invisible(x))
   } else {
     # A Delphi table keeps what its decisions rest on at any width: Agree for
     # consensus, and the stability statistic, which Stable reads, with the df
@@ -910,11 +923,19 @@ as.data.frame.contentvalid_report <- function(x, ...) {
   class(x) <- "data.frame"
   attr(x, "display") <- NULL
   attr(x, "note") <- NULL
+  attr(x, "empty") <- NULL
   x
+}
+
+# The workflow's word for the units of its table.
+.report_unit <- function(x) {
+  if (inherits(x, "contentvalid_judge")) return("judges")
+  if (inherits(x, "contentvalid_domain")) return("blueprint cells")
+  "items"
 }
 
 #' @export
 print.contentvalid_markdown <- function(x, ...) {
-  cat(.console_minus(as.vector(unclass(x))), sep = "\n")
+  cat(.markdown_minus(as.vector(unclass(x))), sep = "\n")
   invisible(x)
 }

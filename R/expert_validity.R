@@ -798,13 +798,17 @@ expert_validity <- function(data,
     # removed, show their numeric columns as stored. (A fit saved before 1.0
     # is refused or printed as it is before this table is made.)
     num <- names(r)[vapply(r, is.numeric, logical(1))]
+    # The index and the mean ratings run from -1 to 1, so they print without
+    # a leading zero (APA 7, Section 6.36); a margin between two means can
+    # reach 2 and keeps it.
+    bounded <- c("target_ioc", "best_ioc", "target_mean", "competitor_mean")
     for (col in num) {
       whole <- all(is.na(r[[col]]) | r[[col]] == round(r[[col]]))
       # A count of experts is shown as a count, not with two decimals.
       tab[[col]] <- if (tolower(col) == "n_judges" && whole) {
         as.character(r[[col]])
       } else {
-        .fmt(r[[col]], digits, bounded = FALSE)
+        .fmt(r[[col]], digits, bounded = col %in% bounded)
       }
     }
   }

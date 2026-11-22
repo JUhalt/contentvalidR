@@ -148,7 +148,7 @@ test_that("an empty selection produces a readable note rather than a broken tabl
 
   md <- content_report(clean, format = "markdown", include = "flagged")
   expect_equal(length(md), 1L)
-  expect_match(md, "No units matched")
+  expect_identical(as.vector(unclass(md)), "_No items were flagged for review._")
 })
 
 test_that("columns that are entirely missing are dropped from manuscript tables", {
@@ -275,5 +275,7 @@ test_that("an APA report with no rows prints a note rather than an empty table",
   ))
   out <- utils::capture.output(print(content_report(clean, include = "flagged")))
   expect_identical(out[1:3], c("<contentvalid_report> Results table in APA style",
-                               "", "No units matched the requested selection."))
+                               "", "No items were flagged for review."))
+  # With no table there is no Markdown to point to.
+  expect_false(any(grepl("format = \"markdown\"", out, fixed = TRUE)))
 })

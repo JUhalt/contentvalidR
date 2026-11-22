@@ -110,7 +110,7 @@ test_that("a flagged-only Delphi report with nothing flagged keeps its note", {
                fixed = TRUE)
   expect_false(grepl("rest on the experts", note, fixed = TRUE))
   expect_match(flat_print(report),
-               "No units matched the requested selection.", fixed = TRUE)
+               "No items were flagged for review.", fixed = TRUE)
 })
 
 test_that("a judge table with every judge typical states no flag rule", {

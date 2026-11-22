@@ -496,13 +496,16 @@ judge_validity <- function(ratings,
       }))
     }
     if (too_severe[i]) {
+      # The severity is written as the printouts write numbers, rounded half
+      # up, so the sentence and the table beside it agree.
       return(paste0(sprintf(paste(
-        "This judge is markedly %s than the panel (%.2f %s relative to the",
+        "This judge is markedly %s than the panel (%s %s relative to the",
         "panel mean). Consistent severity does not invalidate their ratings,",
         "but it shifts absolute indices such as CVI, which is why the",
         "dependability coefficient is penalized by judge differences."
       ), if (severity_shown[i] > 0) "more severe" else "more lenient",
-         severity_shown[i], severity_units[i]), fit_note))
+         .fmt(severity_shown[i], 2, bounded = FALSE), severity_units[i]),
+        fit_note))
     }
     if (low_diff[i]) {
       return(paste0(paste(
