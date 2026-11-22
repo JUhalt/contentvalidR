@@ -32,7 +32,13 @@
   .validate_labels(d$item, "item")
   .validate_labels(d$rater, "rater")
   .validate_labels(d$target, "target_construct")
-  .validate_labels(d$assigned, "assigned_construct", allow_na = TRUE)
+  # read.csv() reads a judge's blank cell as "", not NA, so the message says
+  # how to code a skipped item rather than leaving the user to guess.
+  .validate_labels(
+    d$assigned, "assigned_construct", allow_na = TRUE,
+    empty_hint = paste0("Code an item a judge did not sort as NA, for ",
+                        "example read.csv(file, na.strings = c(\"\", \"NA\")).")
+  )
 
   # Labels are compared as text. A construct coded as a number would index a
   # table of counts by position, two factors with different levels cannot be
@@ -73,10 +79,63 @@
     )
   }
 
+  .check_target_coding(d, assigned_col, target_col)
+
   # Items keep the order of the data (or of a factor's levels), so numbered
   # items are not rearranged as text (Q1, Q10, Q2).
   attr(d, "item_order") <- unique(item_order)
   d
+}
+
+# Target and assigned labels are compared as text, so two columns coded
+# differently ("A" and "a", or 1 and "1.0") match nowhere: every target count
+# is 0, and every item is reviewed for a reason that is not in the data. A
+# target label that never appears among the assignments, but matches one
+# ignoring case or as a number, is that mistake, so it stops. When not one
+# assignment equals its item's target, the coding may differ in some other
+# way (numbers against letters), or the judges may have rejected every
+# target, so it warns.
+.check_target_coding <- function(d, assigned_col, target_col) {
+  valid <- !is.na(d$assigned)
+  if (!any(valid)) return(invisible(NULL))
+  assigned <- unique(d$assigned[valid])
+  absent <- setdiff(unique(d$target), assigned)
+  if (length(absent)) {
+    assigned_num <- suppressWarnings(as.numeric(assigned))
+    near <- vapply(absent, function(t) {
+      t_num <- suppressWarnings(as.numeric(t))
+      any(tolower(assigned) == tolower(t)) ||
+        (!is.na(t_num) && any(!is.na(assigned_num) & assigned_num == t_num))
+    }, logical(1))
+    if (any(near)) {
+      stop(sprintf(
+        paste0("Target construct(s) %s never appear in `%s`, which uses %s. ",
+               "Code both columns the same way."),
+        .list_some(absent[near], 10L), assigned_col, .list_some(assigned, 10L)
+      ), call. = FALSE)
+    }
+  }
+  if (!any(d$assigned[valid] == d$target[valid])) {
+    if (!isTRUE(.cv_state$quiet_target_check)) {
+      warning(sprintf(
+        paste0("Not one assignment in `%s` equals its item's `%s`, so every ",
+               "item's target count is 0. Check that both columns code the ",
+               "constructs the same way."),
+        assigned_col, target_col
+      ), call. = FALSE)
+    }
+  }
+  invisible(NULL)
+}
+
+# sort_validity() prepares the same assignments through compute_psa(),
+# compute_csv() and its own call, so it runs the first two without the
+# warning above, which its own call then gives once.
+.without_target_warning <- function(code) {
+  old <- .cv_state$quiet_target_check
+  .cv_state$quiet_target_check <- TRUE
+  on.exit(.cv_state$quiet_target_check <- old, add = TRUE)
+  code
 }
 
 # A label as text, whatever it was stored as. A number is written without

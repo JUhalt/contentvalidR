@@ -61,6 +61,111 @@
   code
 }
 
+# Runs `code` with its messages naming the caller's argument. expert_validity()
+# hands its `data` to aikens_v(), cvr() and ioc(), whose own argument names
+# (`ratings`, `essential`) the user never typed, so an error from them names
+# `data` instead, and the experts as experts.
+.as_argument <- function(code, arg, rater = NULL) {
+  old <- list(.cv_state$argument, .cv_state$rater)
+  .cv_state$argument <- arg
+  .cv_state$rater <- rater
+  on.exit({
+    .cv_state$argument <- old[[1]]
+    .cv_state$rater <- old[[2]]
+  }, add = TRUE)
+  code
+}
+
+# The argument name an input check should use: the caller's, inside
+# .as_argument(), and the function's own otherwise.
+.argument <- function(own) {
+  arg <- .cv_state$argument
+  if (is.null(arg)) own else arg
+}
+
+.rater_noun <- function(own = "judge") {
+  rater <- .cv_state$rater
+  if (is.null(rater)) own else rater
+}
+
+# Up to `max` values joined by commas, then a count of the rest, so a message
+# about a wide table stays short.
+.list_some <- function(x, max = 5L) {
+  x <- as.character(x)
+  out <- paste(utils::head(x, max), collapse = ", ")
+  if (length(x) > max) out <- paste0(out, " and ", length(x) - max, " more")
+  out
+}
+
+# Columns of a table as a message names them: quoted names, or numbers when
+# the table has no column names.
+.column_labels <- function(x, j) {
+  nm <- colnames(x)
+  if (is.null(nm)) as.character(j) else paste0("\"", nm[j], "\"")
+}
+
+# "column \"Item3\" holds text (such as \"N/A\")": the columns of a
+# judge-by-item table that are not numbers, with a value that is not a
+# number, which is usually what the user must recode. A column that holds
+# only numbers stored as text is named as such, beside any text columns, so
+# that one error names every column to convert rather than one fix at a time
+# revealing the next. NULL when every column is numeric or logical; otherwise
+# the phrase carries the number of columns named, as attribute "n_columns".
+.text_columns_phrase <- function(x) {
+  cols <- if (is.data.frame(x)) {
+    as.list(x)
+  } else {
+    m <- as.matrix(x)
+    lapply(seq_len(ncol(m)), function(j) m[, j])
+  }
+  bad <- which(!vapply(cols, function(v) is.numeric(v) || is.logical(v),
+                       logical(1)))
+  if (!length(bad)) return(NULL)
+  examples <- lapply(cols[bad], function(v) {
+    v <- as.character(v)
+    v[!is.na(v) & is.na(suppressWarnings(as.numeric(v)))]
+  })
+  texty <- lengths(examples) > 0L
+  columns_hold <- function(j) {
+    paste0(if (length(j) > 1L) "columns " else "column ",
+           .list_some(.column_labels(x, j)),
+           if (length(j) > 1L) " hold" else " holds")
+  }
+  parts <- character(0)
+  if (any(texty)) {
+    shown <- bad[texty]
+    ex <- examples[texty][[1L]][1L]
+    if (nchar(ex) > 40L) ex <- paste0(substr(ex, 1L, 37L), "...")
+    parts <- paste0(columns_hold(shown), " text (such as \"", ex, "\"",
+                    if (length(shown) > 1L) {
+                      paste0(" in column ", .column_labels(x, shown[1L]))
+                    },
+                    ")")
+  }
+  if (!all(texty)) {
+    parts <- c(parts, paste0(columns_hold(bad[!texty]),
+                             " numbers stored as text"))
+  }
+  structure(paste(parts, collapse = " and "), n_columns = length(bad))
+}
+
+# The error for a judge-by-item table that is not numeric. Data with one row
+# per rating, the shape delphi_validity() and congruence mode take, is the
+# usual way to arrive here, so the message states the shape the table needs.
+.stop_not_numeric <- function(x, arg, rater = "judge") {
+  which_cols <- .text_columns_phrase(x)
+  stop(sprintf(
+    paste0("`%s` must hold numeric ratings%s. `%s` needs one row per %s and ",
+           "one column per item, so data with one row per rating must be ",
+           "reshaped first. Otherwise convert %s to numbers, coding a missing ",
+           "rating as NA."),
+    arg, if (is.null(which_cols)) "" else paste0(", but ", which_cols),
+    arg, rater,
+    if (is.null(which_cols)) "the ratings" else
+      if (attr(which_cols, "n_columns") > 1L) "those columns" else "that column"
+  ), call. = FALSE)
+}
+
 # Wide ratings have one column per item. A rater-ID column left in the data
 # would be analyzed as an item when its values happen to fall on the scale, so
 # a column that looks like an ID stops the analysis. Two kinds are caught: a
@@ -131,7 +236,7 @@
   invisible(NULL)
 }
 
-.validate_labels <- function(x, name, allow_na = FALSE) {
+.validate_labels <- function(x, name, allow_na = FALSE, empty_hint = NULL) {
   if (!allow_na && anyNA(x)) {
     stop(sprintf("`%s` identifiers cannot be missing.", name), call. = FALSE)
   }
@@ -140,7 +245,8 @@
   # empty too.
   bad <- !is.na(z) & !nzchar(trimws(z, whitespace = "[\\h\\v]"))
   if (any(bad)) {
-    stop(sprintf("`%s` identifiers cannot be empty.", name), call. = FALSE)
+    stop(sprintf("`%s` identifiers cannot be empty.", name),
+         if (!is.null(empty_hint)) paste0(" ", empty_hint), call. = FALSE)
   }
   invisible(x)
 }
@@ -171,4 +277,15 @@
          call. = FALSE)
   }
   choices[i]
+}
+
+# A content_evidence() result lists stages and the items they carried, but it
+# is not a fitted workflow, so content_handoff() and content_report() cannot
+# take it. The message says what to use instead.
+.evidence_not_fit <- function(arg) {
+  sprintf(paste0("`%s` is a content_evidence() result, which combines stages ",
+                 "and is not a fitted workflow. Hand off or report each ",
+                 "stage's fit, use %s$carried for the items every deciding ",
+                 "stage carried, and as.data.frame(%s) for the evidence ",
+                 "table."), arg, arg, arg)
 }

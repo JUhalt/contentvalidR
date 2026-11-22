@@ -145,7 +145,10 @@
 #' lower of the two bands, is labeled as this package's suggestion, not
 #' Colquitt et al.'s.
 #'
-#' @param assignments A data.frame containing item-sort responses.
+#' @param assignments A data.frame containing item-sort responses. Code an
+#'   item a judge did not sort as `NA` in the assigned-construct column: a
+#'   blank label is an error. `read.csv(file, na.strings = c("", "NA"))`
+#'   reads blank cells as `NA`.
 #' @param item_col,rater_col,assigned_col,target_col Column names for the item,
 #'   rater, assigned construct, and intended target construct.
 #' @param p0 Null target-assignment probability for the exact binomial test.
@@ -311,9 +314,15 @@ sort_validity <- function(assignments,
   }
   invisible(.critical_target_count(1L, p0 = p0, alpha = alpha))
 
-  psa <- compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
-                     ci = proportion_ci, alpha = alpha)
-  csv <- compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
+  # The call to .prepare_sort_assignments() below warns, once, when no
+  # assignment matches its target; these two would repeat it.
+  psa <- .without_target_warning(
+    compute_psa(assignments, item_col, rater_col, assigned_col, target_col,
+                ci = proportion_ci, alpha = alpha)
+  )
+  csv <- .without_target_warning(
+    compute_csv(assignments, item_col, rater_col, assigned_col, target_col)
+  )
   # The components print as formatted tables; the workflow's results must not.
   psa <- .untag_component(psa)
   csv <- .untag_component(csv)

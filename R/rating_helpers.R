@@ -106,7 +106,8 @@
   d
 }
 
-.validate_rating_scale <- function(scale_min, scale_max, observed = NULL) {
+.validate_rating_scale <- function(scale_min, scale_max, observed = NULL,
+                                   defaults = c(FALSE, FALSE)) {
   vals <- c(scale_min, scale_max)
   if (!is.numeric(vals) || any(!is.finite(vals)) || length(scale_min) != 1L || length(scale_max) != 1L) {
     stop("`scale_min` and `scale_max` must be finite numeric scalars.", call. = FALSE)
@@ -131,10 +132,36 @@
   if (!is.null(observed)) {
     bad <- !is.na(observed) & (observed < scale_min | observed > scale_max)
     if (any(bad)) {
-      stop("Observed ratings must fall between `scale_min` and `scale_max`.", call. = FALSE)
+      stop(.out_of_scale_message(observed, scale_min, scale_max,
+                                 c("scale_min", "scale_max"), defaults,
+                                 who = "judges"),
+           call. = FALSE)
     }
   }
   anchors
+}
+
+# Ratings outside the scale, with the bounds in force and the range observed,
+# because a user who never set the bounds cannot see that a default (1 to 5)
+# was used. `defaults` says which bound was left at its default.
+.out_of_scale_message <- function(observed, lo, hi, names, defaults,
+                                  who = "judges") {
+  rng <- range(observed, na.rm = TRUE)
+  # Every digit, so a bound a hair off a whole number (1 + 1e-8) is not
+  # printed as 1 beside ratings that run from 1.
+  num <- function(v) format(v, digits = 15)
+  note <- if (all(defaults)) {
+    " (the defaults)"
+  } else if (any(defaults)) {
+    sprintf(" (`%s` is the default)", names[defaults])
+  } else {
+    ""
+  }
+  sprintf(paste0("Ratings run from %s to %s, outside `%s` = %s to `%s` = %s%s. ",
+                 "Set `%s` and `%s` to the lowest and highest points of the ",
+                 "scale the %s used, or correct the ratings."),
+          num(rng[1]), num(rng[2]), names[1], num(lo), names[2], num(hi),
+          note, names[1], names[2], who)
 }
 
 .item_rating_matrix <- function(df) {

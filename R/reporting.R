@@ -793,6 +793,9 @@ content_report <- function(x,
                            format = c("apa", "data.frame", "markdown"),
                            include = c("all", "flagged"),
                            caption = NULL) {
+  if (inherits(x, "contentvalid_evidence")) {
+    stop(.evidence_not_fit("x"), call. = FALSE)
+  }
   if (!inherits(x, "contentvalid_workflow")) {
     stop("`x` must be a fitted contentvalidR workflow object.", call. = FALSE)
   }

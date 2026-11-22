@@ -292,7 +292,8 @@ rating_validity <- function(ratings,
   judge_type <- .choose(judge_type)
   d <- .prepare_rating_data(ratings, item_col, rater_col, construct_col,
                             rating_col, target_map, target_col)
-  anchors <- .validate_rating_scale(scale_min, scale_max, d$rating)
+  anchors <- .validate_rating_scale(scale_min, scale_max, d$rating,
+                                    c(missing(scale_min), missing(scale_max)))
   construct_counts <- vapply(split(d, d$item, drop = TRUE),
                              function(z) length(unique(z$construct)), integer(1))
   too_few <- names(construct_counts)[construct_counts < 2L]

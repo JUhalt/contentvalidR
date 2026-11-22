@@ -62,12 +62,24 @@
 #' @export
 ioc <- function(ratings, na.rm = FALSE) {
   .validate_flag(na.rm, "na.rm")
+  # Named as the user named it: `data` when expert_validity() calls this.
+  arg <- .argument("ratings")
   req <- c("item", "judge", "objective", "score")
   if (!is.data.frame(ratings) || !all(req %in% names(ratings))) {
-    stop("`ratings` must be a data.frame with item, judge, objective, and score columns.", call. = FALSE)
+    absent <- if (is.data.frame(ratings)) setdiff(req, names(ratings))
+    stop(sprintf("`%s` must be a data.frame with item, judge, objective, and score columns.",
+                 arg),
+         if (length(absent)) {
+           sprintf(paste0(" It has no %s named %s (its columns: %s). Rename ",
+                          "the columns to match."),
+                   if (length(absent) > 1L) "columns" else "column",
+                   paste(absent, collapse = ", "),
+                   .list_some(names(ratings), 10L))
+         },
+         call. = FALSE)
   }
   d <- ratings[, req, drop = FALSE]
-  if (nrow(d) < 1L) stop("`ratings` contains no rows.", call. = FALSE)
+  if (nrow(d) < 1L) stop(sprintf("`%s` contains no rows.", arg), call. = FALSE)
   .validate_labels(d$item, "item")
   .validate_labels(d$judge, "judge")
   .validate_labels(d$objective, "objective")

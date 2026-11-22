@@ -156,7 +156,7 @@ test_that("logical ratings are accepted", {
 
 test_that("malformed inputs are rejected", {
   X <- krippendorff_panel()
-  expect_error(panel_agreement(matrix(letters[1:6], 2)), "must be numeric")
+  expect_error(panel_agreement(matrix(letters[1:6], 2)), "must hold numeric ratings")
   expect_error(panel_agreement(matrix(1:3, nrow = 1)), "at least two raters")
   expect_error(panel_agreement(matrix(1:3, ncol = 1)), "at least two raters")
   expect_error(panel_agreement(X, B = -1), "non-negative integer")
