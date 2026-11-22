@@ -107,8 +107,10 @@
 # "column \"Item3\" holds text (such as \"N/A\")": the columns of a
 # judge-by-item table that are not numbers, with a value that is not a
 # number, which is usually what the user must recode. A column that holds
-# only numbers stored as text is named as such. NULL when every column is
-# numeric or logical.
+# only numbers stored as text is named as such, beside any text columns, so
+# that one error names every column to convert rather than one fix at a time
+# revealing the next. NULL when every column is numeric or logical; otherwise
+# the phrase carries the number of columns named, as attribute "n_columns".
 .text_columns_phrase <- function(x) {
   cols <- if (is.data.frame(x)) {
     as.list(x)
@@ -124,23 +126,27 @@
     v[!is.na(v) & is.na(suppressWarnings(as.numeric(v)))]
   })
   texty <- lengths(examples) > 0L
-  many <- function(k) if (k > 1L) "columns" else "column"
+  columns_hold <- function(j) {
+    paste0(if (length(j) > 1L) "columns " else "column ",
+           .list_some(.column_labels(x, j)),
+           if (length(j) > 1L) " hold" else " holds")
+  }
+  parts <- character(0)
   if (any(texty)) {
     shown <- bad[texty]
     ex <- examples[texty][[1L]][1L]
     if (nchar(ex) > 40L) ex <- paste0(substr(ex, 1L, 37L), "...")
-    paste0(many(length(shown)), " ", .list_some(.column_labels(x, shown)),
-           if (length(shown) > 1L) " hold" else " holds",
-           " text (such as \"", ex, "\"",
-           if (length(shown) > 1L) {
-             paste0(" in column ", .column_labels(x, shown[1L]))
-           },
-           ")")
-  } else {
-    paste0(many(length(bad)), " ", .list_some(.column_labels(x, bad)),
-           if (length(bad) > 1L) " hold" else " holds",
-           " numbers stored as text")
+    parts <- paste0(columns_hold(shown), " text (such as \"", ex, "\"",
+                    if (length(shown) > 1L) {
+                      paste0(" in column ", .column_labels(x, shown[1L]))
+                    },
+                    ")")
   }
+  if (!all(texty)) {
+    parts <- c(parts, paste0(columns_hold(bad[!texty]),
+                             " numbers stored as text"))
+  }
+  structure(paste(parts, collapse = " and "), n_columns = length(bad))
 }
 
 # The error for a judge-by-item table that is not numeric. Data with one row
@@ -156,7 +162,7 @@
     arg, if (is.null(which_cols)) "" else paste0(", but ", which_cols),
     arg, rater,
     if (is.null(which_cols)) "the ratings" else
-      if (grepl("^columns ", which_cols)) "those columns" else "that column"
+      if (attr(which_cols, "n_columns") > 1L) "those columns" else "that column"
   ), call. = FALSE)
 }
 

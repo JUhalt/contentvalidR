@@ -84,8 +84,9 @@
 #' @param alpha Inferential/CI alpha level.
 #' @param na.rm Permit itemwise/cellwise missing ratings where supported.
 #' @param target_col In congruence mode, optional column identifying each
-#'   item's intended objective. If absent, every item-objective index is
-#'   described and no decision is made.
+#'   item's intended objective. If `data` has no column of the default name,
+#'   every item-objective index is described and no decision is made; a name
+#'   given explicitly that is not a column of `data` is an error.
 #' @param ioc_cut In congruence mode, the lowest index of item-objective
 #'   congruence that counts as congruent. The default, .70, is the criterion
 #'   Rovinelli and Hambleton (1977) applied. Turner and Carlson (2003) extend
@@ -348,15 +349,12 @@ expert_validity <- function(data,
                             seed = NULL,
                             legacy = FALSE) {
   mode <- .choose(mode)
-  proportion_ci <- .choose(proportion_ci)
-  agreement <- .choose(agreement)
-  agreement_level <- .choose(agreement_level)
-  .validate_flag(na.rm, "na.rm")
-  .validate_flag(legacy, "legacy")
   # Checked in every mode, though only congruence mode uses it: `ioc_cut`
   # entered the signature in 1.0.0 ahead of `proportion_ci`, so a call that
   # passes `proportion_ci` by position, as 0.4.0 took it, lands here and must
-  # stop rather than be ignored.
+  # stop rather than be ignored. It is checked before `proportion_ci` and the
+  # arguments after it, which such a call also shifts, so the error the user
+  # sees is the one that explains the shift.
   if (!is.numeric(ioc_cut) || length(ioc_cut) != 1L || !is.finite(ioc_cut) ||
       ioc_cut <= 0 || ioc_cut > 1) {
     stop("`ioc_cut` must be one number above 0 and at most 1.",
@@ -365,6 +363,11 @@ expert_validity <- function(data,
                   "`proportion_ci` and the arguments after it by name.")
          }, call. = FALSE)
   }
+  proportion_ci <- .choose(proportion_ci)
+  agreement <- .choose(agreement)
+  agreement_level <- .choose(agreement_level)
+  .validate_flag(na.rm, "na.rm")
+  .validate_flag(legacy, "legacy")
 
   if (mode == "relevance") {
     if (!is.numeric(lo) || length(lo) != 1L || !is.finite(lo) ||

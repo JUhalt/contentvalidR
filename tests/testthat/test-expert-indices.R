@@ -77,7 +77,7 @@ test_that("CVR matrix input calculates itemwise N", {
 })
 
 test_that("CVR validates counts", {
-  expect_error(cvr(c(5, 6), N = 5), "essential <= N")
+  expect_error(cvr(c(5, 6), N = 5), "`essential <= N`", fixed = TRUE)
   expect_error(cvr(c(2.5), N = 5), "integers")
   expect_error(cvr(c(3), N = NULL), "required")
 })

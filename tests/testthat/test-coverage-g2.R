@@ -92,7 +92,7 @@ test_that("a judge-by-item table without judges or items is refused", {
   no_judges <- matrix(numeric(0), nrow = 0, ncol = 2,
                       dimnames = list(NULL, c("A", "B")))
   no_items <- matrix(numeric(0), nrow = 3, ncol = 0)
-  msg <- "Matrix input must contain at least one judge and one item."
+  msg <- "`essential` must contain at least one judge and one item."
   expect_error(cvr(no_judges), msg, fixed = TRUE)
   expect_error(cvr(no_items), msg, fixed = TRUE)
 })

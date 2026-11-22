@@ -38,6 +38,12 @@ test_that("a positional call written for 0.4.0 stops instead of using Wilson", {
                fixed = TRUE)
   expect_match(err, "`proportion_ci` and the arguments after it by name.",
                fixed = TRUE)
+  # With the 11th argument too, `agreement` lands in `proportion_ci`; the
+  # `ioc_cut` error, which explains the shift, still comes first.
+  err11 <- r101_error(expert_validity(rel, "relevance", 1, 4, NULL, NULL, 0.05,
+                                      FALSE, "target_objective", "exact",
+                                      "ac1"))
+  expect_identical(err11, err)
   # Named, the same interval is used as before.
   fit <- expert_validity(rel, "relevance", proportion_ci = "exact",
                          agreement = "none")
@@ -176,6 +182,33 @@ test_that("relevance mode names `data`, the text column and the shape", {
   expect_false(grepl("`ratings`", err, fixed = TRUE))
 })
 
+test_that("one error names text columns and numbers stored as text alike", {
+  rel <- r101_csv("expert_relevance_example.csv")[, -1]
+  rel$Item2 <- as.character(rel$Item2)
+  rel$Item4 <- as.character(rel$Item4)
+  rel$Item4[2] <- "N/A"
+  err <- r101_error(expert_validity(rel))
+  expect_match(err, paste0("`data` must hold numeric ratings, but column ",
+                           "\"Item4\" holds text (such as \"N/A\") and column ",
+                           "\"Item2\" holds numbers stored as text."),
+               fixed = TRUE)
+  expect_match(err, "convert those columns to numbers", fixed = TRUE)
+  # The same in judge_validity(), panel_agreement() and essentiality mode.
+  expect_match(r101_error(judge_validity(rel)),
+               "and column \"Item2\" holds numbers stored as text.",
+               fixed = TRUE)
+  expect_match(r101_error(panel_agreement(rel)),
+               "and column \"Item2\" holds numbers stored as text.",
+               fixed = TRUE)
+  ess <- r101_csv("expert_essentiality_example.csv")[, -1]
+  ess[[1]] <- as.character(ess[[1]])
+  ess[[3]] <- ifelse(ess[[3]] == 1, "yes", "no")
+  expect_match(r101_error(expert_validity(ess, mode = "essentiality")),
+               paste0("column \"", names(ess)[3], "\" holds text (such as \"",
+                      ess[[3]][1], "\") and column \"", names(ess)[1],
+                      "\" holds numbers stored as text."), fixed = TRUE)
+})
+
 test_that("long data in relevance mode, judge_validity() and panel_agreement() get the shape", {
   rel <- r101_csv("expert_relevance_example.csv")[, -1]
   long <- data.frame(item = rep(names(rel)[1:3], each = nrow(rel)),
@@ -246,6 +279,20 @@ test_that("essentiality coded other than 0/1 says how to code it", {
   # Counts given to expert_validity() are `data` too.
   expect_error(expert_validity(c(1, Inf), mode = "essentiality", N = 5),
                "`data` must contain finite counts.", fixed = TRUE)
+  expect_error(expert_validity(c(13, 4), mode = "essentiality", N = 12),
+               paste("Essential counts and panel sizes must be valid",
+                     "nonnegative integers with `data <= N`."), fixed = TRUE)
+  expect_error(cvr(c(13, 4), N = 12), "with `essential <= N`.", fixed = TRUE)
+})
+
+test_that("an empty essentiality table names `data` and experts", {
+  ess <- r101_csv("expert_essentiality_example.csv")[, -1]
+  expect_error(expert_validity(ess[0, ], mode = "essentiality"),
+               "`data` must contain at least one expert and one item.",
+               fixed = TRUE)
+  expect_error(cvr(ess[0, ]),
+               "`essential` must contain at least one judge and one item.",
+               fixed = TRUE)
 })
 
 # ---- RU-04: a blank assignment ---------------------------------------------

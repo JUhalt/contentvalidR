@@ -85,7 +85,8 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
       stop("Missing ratings found. Use `na.rm = TRUE` for itemwise deletion.", call. = FALSE)
     }
     if (nrow(X) < 1L || ncol(X) < 1L) {
-      stop("Matrix input must contain at least one judge and one item.", call. = FALSE)
+      stop(sprintf("`%s` must contain at least one %s and one item.", arg,
+                   .rater_noun()), call. = FALSE)
     }
     item_names <- colnames(X)
     if (is.null(item_names)) item_names <- paste0("Item", seq_len(ncol(X)))
@@ -122,7 +123,9 @@ cvr <- function(essential, N = NULL, alpha = 0.05, na.rm = FALSE,
   if (any(N < 0 | !is.finite(N)) || any(essential < 0) || any(essential > N) ||
       any(abs(N - round(N)) > .Machine$double.eps^0.5) ||
       any(abs(essential - round(essential)) > .Machine$double.eps^0.5)) {
-    stop("Essential counts and panel sizes must be valid nonnegative integers with `essential <= N`.", call. = FALSE)
+    stop(sprintf(paste0("Essential counts and panel sizes must be valid ",
+                        "nonnegative integers with `%s <= N`."), arg),
+         call. = FALSE)
   }
   N <- as.integer(N)
   essential <- as.integer(essential)
